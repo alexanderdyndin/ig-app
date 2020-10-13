@@ -21,7 +21,7 @@ class NewVersionDialog(): DialogFragment() {
             val builder = AlertDialog.Builder(it)
             builder.setTitle("Вышла новая версия приложения!")
                     .setMessage("Вам необходимо обновиться для продолжения работы")
-                    .setPositiveButton("ОК") { dialog, id ->
+                    .setPositiveButton("ОК") { _, _ ->
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(NEW_VERSION_URL))
                         startActivity(intent)
                     }

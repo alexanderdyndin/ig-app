@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 
 
-class SampleFragmentPagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+class SampleFragmentPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     val PAGE_COUNT = 3
     private val tabTitles = arrayOf("Все группы", "Подписки", "Управление")
     var doOnFragmentViewCreated: (View) -> Unit = {}

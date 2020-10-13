@@ -10,7 +10,7 @@ class ActionApplicationDetailsScreen : SupportAppScreen() {
 
     override fun getActivityIntent(context: Context): Intent? = Intent().apply{
         action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        data = Uri.fromParts("package", context?.packageName, null)
+        data = Uri.fromParts("package", context.packageName, null)
     }
 
 }

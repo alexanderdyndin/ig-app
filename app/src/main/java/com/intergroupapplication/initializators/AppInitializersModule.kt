@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.gsonparserfactory.GsonParserFactory
-import com.crashlytics.android.Crashlytics
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.android.gms.ads.MobileAds
 import com.intergroupapplication.data.repository.PhotoRepository
@@ -19,7 +18,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
 import es.dmoral.toasty.Toasty
-import io.fabric.sdk.android.Fabric
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import okhttp3.OkHttpClient

@@ -32,7 +32,7 @@ class LoadingDialog : DialogFragment() {
     override fun onResume() {
         super.onResume()
         val metrics = DisplayMetrics()
-        val window = dialog.window
+        val window = dialog?.window
         window!!.windowManager.defaultDisplay.getMetrics(metrics)
         val dialogHeightPx = context!!.dpToPx(DIALOG_HEIGHT)
         window.setLayout(dialogHeightPx, dialogHeightPx)

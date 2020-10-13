@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.mikepenz:materialdrawer:6.0.9@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9afcabe81d1a7d771fc60945b2c0bbd5/jetified-materialdrawer-6.0.9/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9afcabe81d1a7d771fc60945b2c0bbd5/jetified-materialdrawer-6.0.9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9afcabe81d1a7d771fc60945b2c0bbd5/jetified-materialdrawer-6.0.9/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7ff45460ac1ea7ac9716ad3e8d7e90be/jetified-materialdrawer-6.0.9/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7ff45460ac1ea7ac9716ad3e8d7e90be/jetified-materialdrawer-6.0.9/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7ff45460ac1ea7ac9716ad3e8d7e90be/jetified-materialdrawer-6.0.9/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/materialdrawer/6.0.9/a8d8bbbaa6e9666769ae4f303fdc22263c2c3455/materialdrawer-6.0.9-javadoc.jar!/" />

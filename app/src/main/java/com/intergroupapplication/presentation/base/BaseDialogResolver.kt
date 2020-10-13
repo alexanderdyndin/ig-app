@@ -32,7 +32,7 @@ class BaseDialogResolver : DialogFragment() {
         setActionsToViews(actionsMap, dialogView)
         builder.setView(dialogView)
         return builder.create().apply {
-            window.attributes.windowAnimations = R.style.DialogTheme
+            window?.attributes?.windowAnimations = R.style.DialogTheme
             setCancelable(false)
             setCanceledOnTouchOutside(false)
         }

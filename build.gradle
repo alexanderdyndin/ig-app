@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.4.0'
+    ext.kotlin_version = '1.4.10'
     ext.tools_version = '4.0.1'
-    ext.fabric_version = '1.31.2'
+    //ext.fabric_version = '1.31.2'
     ext.realm_version = '6.0.2'
     ext.devmetrict_version = '0.6'
     ext.gms_version = '4.0.1'
@@ -10,13 +10,15 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url 'https://maven.fabric.io/public' }
+        //maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$tools_version"
+        classpath "com.android.tools.build:gradle:${tools_version}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "io.fabric.tools:gradle:$fabric_version"
+        //classpath "io.fabric.tools:gradle:$fabric_version"
+        classpath 'com.google.gms:google-services:4.3.4'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
         classpath "io.realm:realm-gradle-plugin:$realm_version"
         classpath "com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:$devmetrict_version"
         classpath "com.google.gms:google-services:$gms_version"
@@ -42,22 +44,22 @@ task clean(type: Delete) {
 }
 
 ext {
-    junitVersion = '4.12'
+    junitVersion = '4.13'
     mockitoVersion = '2.19.0'
     mockitoKotlinVersion = '1.5.0'
-    assertVersion = '3.10.0'
+    assertVersion = '3.17.2'
     espressoVersion = '2.2.2'
     supportLibraryVersion = '26.0.1'
     constraintVersion = '1.0.2'
     moxyVersion = '2.2.0'
-    retrofitVersion = '2.3.0'
-    loggingInterceptorVersion = '3.8.0'
+    retrofitVersion = '2.9.0'
+    loggingInterceptorVersion = '4.9.0'
     daggerVersion = '2.16'
     rxJavaVersion = '2.1.3'
     rxAndroidVersion = '2.1.0'
     ciceroneVersion = '5.1.1'
-    leakCanaryVersion = '1.6.1'
-    rxBindingVersion = '2.1.1'
+    leakCanaryVersion = '1.6.3'
+    rxBindingVersion = '2.2.0'
     androidLibraryVersion = '28.0.0'
     pinceAdapterVersion = '3.2.8'
     chinaAdapterVersion = '2.9.40'
@@ -83,19 +85,19 @@ ext {
     googleProgressBarVersion = '1.2.0'
     snackBarVersion = '1.1.1'
     fabTransformVersion = '1.0.0'
-    firebaseVersion = '16.0.4'
-    firebaseMessagingVersion = '17.3.3'
-    butterknifVersion = '10.2.0'
+    firebaseVersion = '17.5.1'
+    firebaseMessagingVersion = '20.3.0'
+    butterknifVersion = '10.2.3'
     pagingVersion = '1.0.1'
     pagingRuntimeVersion = "1.0.0"
-    adsVersion = '17.0.0'
-    gmsVersion = '16.0.1'
+    adsVersion = '19.4.0'
+    gmsVersion = '17.2.0'
     admobAdapterVersion = '1.4.6'
     materialDrawerVersion = '1.3.7'
     circleProgressBarVersion = '1.2.0'
     androidNetworkingVersion = '1.0.2'
     trueTimeVersion = '3.4'
-    jakeWhartonInstaTime = '1.1.1'
+    jakeWhartonInstaTime = '1.2.4'
     compressorVersion = '2.1.0'
     refreshVersion = '1.2.3@aar'
 }

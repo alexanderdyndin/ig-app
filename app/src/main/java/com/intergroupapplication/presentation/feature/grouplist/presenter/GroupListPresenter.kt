@@ -67,8 +67,8 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 Log.d("MY", "version_check_response = $isValid ")
                 if (isValid == "invalid") {
                     val myDialogFragment = NewVersionDialog()
-                    //myDialogFragment.isCancelable = false
-                    //myDialogFragment.show(fragmentManager, "myDialog")
+                    myDialogFragment.isCancelable = false
+                    myDialogFragment.show(fragmentManager, "myDialog")
                 }
             }  catch (e:Throwable) {
                 errorHandler.handle(e)

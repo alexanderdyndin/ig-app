@@ -61,7 +61,7 @@ class NetworkModule {
                     builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
                 } else {
                     builder.addHeader(DEVICE_ID, sessionStorage.firebaseToken?.token
-                            ?: FirebaseInstanceId.getInstance().token)
+                            ?: FirebaseInstanceId.getInstance().token!!)
                 }
                 val newRequest = builder.build()
                 chain.proceed(newRequest)
@@ -128,12 +128,12 @@ class NetworkModule {
                     val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
                     val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber
                             ?: ""
-                    response.request().newBuilder()
+                    response.request.newBuilder()
                             .header(TOKEN, "JWT " + sessionStorage.token?.access)
                             .header(IMEI, imei)
                             .header(SERIAL, serialNumber)
                             .header(DEVICE_ID, sessionStorage.firebaseToken?.token
-                                    ?: FirebaseInstanceId.getInstance().token)
+                                    ?: FirebaseInstanceId.getInstance().token!!)
                             .build()
                 } else {
                     null
@@ -144,7 +144,7 @@ class NetworkModule {
         var localResponse: Response? = response
         var result = 1
         while (true) {
-            localResponse = localResponse?.priorResponse()
+            localResponse = localResponse?.priorResponse
             if (localResponse != null) {
                 result++
             } else {

@@ -14,7 +14,7 @@ class BaseErrorParser @Inject constructor(private val gson: Gson) : ErrorParser 
     override fun parseError(httpException: HttpException): ApiErrorDto? {
         val apiError: ApiErrorDto?
         return try {
-            apiError = httpException.response().errorBody()?.let {
+            apiError = httpException.response()?.errorBody()?.let {
                 gson.fromJson(it.string(), ApiErrorDto::class.java)
             }
             apiError

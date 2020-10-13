@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.clockbyte:admobadapter:1.4.6@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd79b522699e57ad6752b0adfb803c7f/jetified-admobadapter-1.4.6/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd79b522699e57ad6752b0adfb803c7f/jetified-admobadapter-1.4.6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd79b522699e57ad6752b0adfb803c7f/jetified-admobadapter-1.4.6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28d2a20da89987625baa9fb052afd37b/jetified-admobadapter-1.4.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28d2a20da89987625baa9fb052afd37b/jetified-admobadapter-1.4.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28d2a20da89987625baa9fb052afd37b/jetified-admobadapter-1.4.6/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

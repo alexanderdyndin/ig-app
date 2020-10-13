@@ -1,7 +1,7 @@
 package com.intergroupapplication.presentation.base
 import android.util.Log
 import androidx.annotation.Nullable
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 
 /**
@@ -19,16 +19,17 @@ class BaseCrashlyticsTree : Timber.Tree() {
         if (isDegugging(priority)) {
             return
         }
-
-        Crashlytics.setInt(CRASHLYTICS_KEY_PRIORITY, priority)
-        Crashlytics.setString(CRASHLYTICS_KEY_TAG, tag)
-        Crashlytics.setString(CRASHLYTICS_KEY_MESSAGE, message)
-
-        if (t == null) {
-            Crashlytics.logException(Exception(message))
-        } else {
-            Crashlytics.logException(t)
-        }
+        //val crashlytics = FirebaseCrashlytics.getInstance()
+        TODO("update deprecated crashlitycs")
+//        Crashlytics.setInt(CRASHLYTICS_KEY_PRIORITY, priority)
+//        Crashlytics.setString(CRASHLYTICS_KEY_TAG, tag)
+//        Crashlytics.setString(CRASHLYTICS_KEY_MESSAGE, message)
+//
+//        if (t == null) {
+//            Crashlytics.logException(Exception(message))
+//        } else {
+//            Crashlytics.logException(t)
+//        }
     }
 
     private fun isDegugging(priority: Int): Boolean =

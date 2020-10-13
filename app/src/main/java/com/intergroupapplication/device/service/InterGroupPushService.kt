@@ -11,6 +11,7 @@ import com.intergroupapplication.domain.entity.FirebaseTokenEntity
 import dagger.android.AndroidInjection
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -32,23 +33,24 @@ class InterGroupPushService : FirebaseMessagingService() {
         super.onCreate()
     }
 
-    override fun onMessageReceived(message: RemoteMessage?) {
+    override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
         Timber.d("NOTIFICATION: ")
-        Timber.d("From: ${message?.from}")
-        Timber.d("Data payload: ${message?.data}")
-        Timber.d("Notification body: ${message?.notification?.body}")
+        Timber.d("From: ${message.from}")
+        Timber.d("Data payload: ${message.data}")
+        Timber.d("Notification body: ${message.notification?.body}")
 
         //FIXME -> bug if it receives notification without group_id, comment_id etc.
         //temporary solution -> check if contains key group_id
-        message?.takeIf { it.data.containsKey("group_id") }?.let { messageActions[NotificationTypes.NEW_COMMENT]?.proceed(it) }
+        message.takeIf { it.data.containsKey("group_id") }?.let { messageActions[NotificationTypes.NEW_COMMENT]?.proceed(it) }
+
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         super.onNewToken(token)
         val idUser = session.user?.id.orEmpty()
         //todo при релизе проверить
-        token?.let { t ->
+        token.let { t ->
             fbTokenRepository.refreshToken(DeviceModel(token), idUser)
                     .subscribeOn(Schedulers.io())
                     .subscribe({},
@@ -56,4 +58,5 @@ class InterGroupPushService : FirebaseMessagingService() {
             session.firebaseToken = FirebaseTokenEntity(t)
         }
     }
+
 }

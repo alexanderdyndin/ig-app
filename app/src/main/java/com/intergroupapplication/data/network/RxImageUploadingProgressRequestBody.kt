@@ -7,6 +7,8 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 
 class RxImageUploadingProgressRequestBody(private val file: File) : RequestBody() {
@@ -19,7 +21,7 @@ class RxImageUploadingProgressRequestBody(private val file: File) : RequestBody(
 
     fun getProgressObservable(): Observable<Int> = progressSubject
 
-    override fun contentType(): MediaType? = MediaType.parse("image/*")
+    override fun contentType(): MediaType? = "image/*".toMediaTypeOrNull()
 
     override fun writeTo(sink: BufferedSink) {
         val fileLength = file.length()
