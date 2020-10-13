@@ -44,7 +44,7 @@ task clean(type: Delete) {
 }
 
 ext {
-    junitVersion = '4.13'
+    junitVersion = '4.13.1'
     mockitoVersion = '2.19.0'
     mockitoKotlinVersion = '1.5.0'
     assertVersion = '3.17.2'
@@ -100,5 +100,6 @@ ext {
     jakeWhartonInstaTime = '1.2.4'
     compressorVersion = '2.1.0'
     refreshVersion = '1.2.3@aar'
+
 }
 

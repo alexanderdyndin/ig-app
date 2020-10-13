@@ -305,7 +305,7 @@ dependencies {
     implementation project(':ta_library')
 
     //RefreshLayout
-    implementation "com.github.orangegangsters:swipy:$refreshVersion"
+    implementation "com.github.orangegangsters:swipy:${refreshVersion}"
 
     implementation 'com.github.florent37:shapeofview:1.3.2'
 
