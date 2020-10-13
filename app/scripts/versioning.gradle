@@ -1,0 +1,7 @@
+
+
+androidGitVersion {
+    codeFormat 'MNNPPP'
+    format '%tag%%.count%%-branch%'
+    hideBranches = ['develop', 'master']
+}

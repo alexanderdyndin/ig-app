@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/whiteTextColor">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/intergroup_profile_view_size"
+        android:layout_height="@dimen/intergroup_profile_view_size"
+        android:layout_gravity="center"
+        fresco:placeholderImage="@drawable/profile_icon"/>
+
+    <TextView
+        android:id="@+id/darkCard"
+        android:layout_width="@dimen/intergroup_profile_view_size"
+        android:layout_height="@dimen/intergroup_profile_view_size"
+        android:layout_gravity="center"
+        android:background="@drawable/uploading_image_foreground_shadow_drawable"
+        android:visibility="invisible" />
+
+    <com.budiyev.android.circularprogressbar.CircularProgressBar
+        android:id="@+id/imageUploadingProgressBar"
+        android:layout_width="@dimen/image_uploading_circular_bar_size"
+        android:layout_height="@dimen/image_uploading_circular_bar_size"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="visible"
+        app:animateProgress="true"
+        app:backgroundStrokeColor="#424242"
+        app:backgroundStrokeWidth="2dp"
+        app:foregroundStrokeColor="#ffffff"
+        app:foregroundStrokeWidth="3dp"
+        app:progressAnimationDuration="2000" />
+
+    <TextView
+        android:id="@+id/errorView"
+        style="@style/InterGroupWhiteTextStyle."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/error"
+        android:visibility="invisible" />
+
+</FrameLayout>

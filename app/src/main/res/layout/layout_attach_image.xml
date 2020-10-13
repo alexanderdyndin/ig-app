@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/imageContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:padding="@dimen/big_padding">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/imagePreview"
+            android:layout_width="@dimen/attached_image_width"
+            android:layout_height="@dimen/attached_image_height"
+            fresco:roundedCornerRadius="8dp" />
+
+        <TextView
+            android:id="@+id/darkCard"
+            android:layout_width="@dimen/attached_image_width"
+            android:layout_height="@dimen/attached_image_height"
+            android:background="@drawable/uploading_image_foreground_rectangle_shadow_drawable"
+            android:visibility="invisible" />
+
+        <com.budiyev.android.circularprogressbar.CircularProgressBar
+            android:id="@+id/imageUploadingProgressBar"
+            android:layout_width="@dimen/image_uploading_circular_bar_size"
+            android:layout_height="@dimen/image_uploading_circular_bar_size"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            app:animateProgress="true"
+            app:backgroundStrokeColor="#424242"
+            app:backgroundStrokeWidth="2dp"
+            app:foregroundStrokeColor="#ffffff"
+            app:foregroundStrokeWidth="3dp"
+            app:progressAnimationDuration="2000" />
+
+        <ImageView
+            android:id="@+id/stopUploading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_close_white" />
+
+        <LinearLayout
+            android:id="@+id/refreshContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_replay" />
+
+            <TextView
+                style="@style/InterGroupSmallWhiteTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/little_margin"
+                android:text="@string/error" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/detachImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_circle_close" />
+
+</FrameLayout>

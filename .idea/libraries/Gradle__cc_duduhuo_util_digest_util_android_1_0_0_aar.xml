@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: cc.duduhuo.util:digest-util-android:1.0.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d42b283e6267c0e7125453fa5b6e297f/jetified-digest-util-android-1.0.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d42b283e6267c0e7125453fa5b6e297f/jetified-digest-util-android-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d42b283e6267c0e7125453fa5b6e297f/jetified-digest-util-android-1.0.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cc.duduhuo.util/digest-util-android/1.0.0/a950b77525d2b64b0ef69911202f2bf9f53cdcf0/digest-util-android-1.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/cc.duduhuo.util/digest-util-android/1.0.0/92205d08e5c6e45112aac1e4e90f9b73d8ca7d60/digest-util-android-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,8 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/createPost"
+    style="@style/BlueButton"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/group_action_button_height"
+    android:fontFamily="@font/roboto_medium"
+    android:padding="10dp"
+    android:text="@string/create_post" />

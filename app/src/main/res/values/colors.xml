@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <!--color name="colorAccent">#03A9F4</color-->
+
+    <color name="appBackgroundColor">#000000</color>
+    <color name="groupListColor">#242424</color>
+    <color name="editTextGrayBorderColor">#59FFFFFF</color>
+    <color name="editTextHintColor">#99FFFFFF</color>
+    <color name="interGroupLogoTextColor">#DEFFFFFF</color>
+    <color name="editTextLetterColors">#FFFFFF</color>
+    <color name="interGroupGreyTextColor">#80FFFFFF</color>
+    <color name="editTextWhiteBorderColor">#FFFFFF</color>
+    <color name="linkGrayTextColor">#99FFFFFF</color>
+    <color name="underTextLineColor">#26FFFFFF</color>
+    <color name="radioButtonCircleColor">#414041</color>
+    <color name="groupListItemColor">#303030</color>
+    <color name="brightListItemColor">#FF303030</color>
+    <color name="toolbarColor">#000000</color>
+    <color name="whiteTextColor">#FFFFFF</color>
+    <color name="blueButtonColor">#03A9F4</color>
+    <color name="brightBlueButtonColor">#FF30BEFD</color>
+    <color name="errorColor">#F53B54</color>
+    <color name="errorSnackBarColor">#FFBA1417</color>
+    <color name="cardsColor">#242424</color>
+    <color name="createPostBackgroundColor">#242424</color>
+    <color name="blueTextColor">#03A9F4</color>
+    <color name="commentEditTextHintColor">#757575</color>
+    <color name="disabledRectangleButtonColor">#9095A3</color>
+    <color name="brightDisabledRectangleButtonColor">#FF9095A3</color>
+    <color name="profileHeaderColor">#80000000</color>
+    <color name="profileTabColor">#424242</color>
+    <color name="selectionTabColor">#1AFFFFFF</color>
+    <color name="selectedItemTabColor">#03a9f4</color>
+    <color name="adTextColor">#99ffffff</color>
+    <color name="uploadingImageColorCover">#A6000000</color>
+    <color name="dialogHighlightColor">#99D9C9C9</color>
+
+    <!--New design-->
+    <color name="cerulean">#04a9f5</color>
+    <color name="manatee">#8F95A3</color>
+    <color name="whiteAutorize">#fefefe</color>
+    <color name="brickRed">#BF283C</color>
+    <color name="mainBlack">#1A1F28</color>
+    <color name="colorNoActive">#0C4B54</color>
+    <color name="colorAccent2">#048DB9</color>
+    <color name="colorAccent">#1ADEF9</color>
+    <color name="colorBlue">#2972FF</color>
+    <color name="colorPink">#FF3C5F</color>
+    <color name="colorLightBlue">#68B7FF</color>
+    <color name="colorLightPunk">#FF8096</color>
+    <color name="NoActiveText">#2A5879</color>
+
+</resources>

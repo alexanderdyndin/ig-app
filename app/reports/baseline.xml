@@ -1,0 +1,476 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <Blacklist timestamp="1558355218121"></Blacklist>
+  <Whitelist timestamp="1558355243042">
+    <ID>CommentOverPrivateProperty:ContextExtensions.kt$/** * Created by abakarmagomedov on 01/08/2018 at project InterGroupApplication. */</ID>
+    <ID>CommentOverPrivateProperty:TextViewExtensions.kt$/** * @param action The action performed when link clicked */</ID>
+    <ID>CommentOverPrivateProperty:ViewExtensions.kt$/** * Created by abakarmagomedov on 09/08/2018 at project InterGroupApplication. */</ID>
+    <ID>ComplexCondition:CreateGroupActivity.kt$CreateGroupActivity$groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR</ID>
+    <ID>ComplexCondition:CreateUserProfileActivity.kt$CreateUserProfileActivity$avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED || avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE || avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR</ID>
+    <ID>ComplexCondition:RightDrawableListener.kt$RightDrawableListener$event.action == MotionEvent.ACTION_UP &amp;&amp; view is AppCompatEditText &amp;&amp; view.compoundDrawables[drawableRight] != null</ID>
+    <ID>ComplexInterface:AppApi.kt$AppApi</ID>
+    <ID>ComplexMethod:BaseErrorAdapter.kt$BaseErrorAdapter$override fun adapt(throwable: Throwable): Throwable</ID>
+    <ID>ComplexMethod:DateFunctions.kt$fun translateEnglishStringToRussian(english: String): String</ID>
+    <ID>DataClassContainsFunctions:Inline.kt$ExpressionValue$infix fun then(action: (T) -&gt; Unit)</ID>
+    <ID>EmptySecondaryConstructor:WrapContentDraweeView.kt$WrapContentDraweeView${}</ID>
+    <ID>ExpressionBodySyntax:CommentDetailsAdapter.kt$CommentDetailsAdapter$return when (viewType) { loadingViewType -&gt; LoadingViewHolder(parent.inflate(R.layout.post_item_loading)) errorViewType -&gt; ErrorViewHolder(parent.inflate(R.layout.post_item_error)) else -&gt; CommentViewHolder(parent.inflate(R.layout.item_comment)) }</ID>
+    <ID>ExpressionBodySyntax:CreateGroupMapper.kt$CreateGroupMapper$return CreateGroupEntity( name = from.name, description = from.description, avatar = from.avatar )</ID>
+    <ID>ExpressionBodySyntax:CreateGroupMapper.kt$CreateGroupMapper$return CreateGroupModel( name = from.name, description = from.description, avatar = from.avatar )</ID>
+    <ID>ExpressionBodySyntax:CreateGroupService.kt$CreateGroupService$return api.createGroup(createGroupMapper.mapToDto(createGroupEntity)) .map { groupMapper.mapToDomainEntity(it) }</ID>
+    <ID>ExpressionBodySyntax:CreateGroupViewModule.kt$CreateGroupViewModule$return CreateGroupService(api, createGroupMapper, groupMapper)</ID>
+    <ID>ExpressionBodySyntax:DataPageState.kt$DataPageState$return InterGroupViewType.DATA_PAGE_STATE</ID>
+    <ID>ExpressionBodySyntax:DateFunctions.kt$return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &amp;&amp; cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &amp;&amp; cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR))</ID>
+    <ID>ExpressionBodySyntax:DateFunctions.kt$return if (TrueTimeRx.isInitialized()) { Single.fromCallable { val date = TrueTimeRx.now() val calendar = Calendar.getInstance(TimeZone.getDefault()) calendar.time = date calendar.time.time } } else { TrueTimeRx.build() .initializeRx("time.google.com") .map { it.time } .doOnError { Single.fromCallable { TimeAgo.TRUE_TIME_NOT_UPLOADED } } .subscribeOn(Schedulers.io()) }</ID>
+    <ID>ExpressionBodySyntax:ErrorState.kt$ErrorState$return InterGroupViewType.ERROR_VIEW_TYPE</ID>
+    <ID>ExpressionBodySyntax:GroupAdapter.kt$GroupAdapter$return when (viewType) { loadingViewType -&gt; LoadingViewHolder(parent.inflate(R.layout.post_item_loading)) errorViewType -&gt; ErrorViewHolder(parent.inflate(R.layout.post_item_error)) else -&gt; PostViewHolder(parent.inflate(R.layout.item_group_post)) }</ID>
+    <ID>ExpressionBodySyntax:GroupListAdapter.kt$GroupListAdapter$return when (viewType) { loadingViewType -&gt; LoadingViewHolder(parent.inflate(R.layout.post_item_loading)) errorViewType -&gt; ErrorViewHolder(parent.inflate(R.layout.post_item_error)) else -&gt; GroupViewHolder(parent.inflate(R.layout.item_group_in_list)) }</ID>
+    <ID>ExpressionBodySyntax:GroupMapper.kt$GroupMapper$return GroupEntity( id = from.id, followersCount = from.followersCount, name = from.name, description = from.description, isBlocked = from.isBlocked, owner = from.owner, isFollowing = from.isFollowing, avatar = from.avatar)</ID>
+    <ID>ExpressionBodySyntax:GroupMapper.kt$GroupMapper$return GroupModel( id = from.id, followersCount = from.followersCount, name = from.name, description = from.description, isBlocked = from.isBlocked, owner = from.owner, isFollowing = from.isFollowing, avatar = from.avatar)</ID>
+    <ID>ExpressionBodySyntax:GroupPostMapper.kt$GroupPostMapper$return CreateGroupPostModel( postText = from.postText, imageUrl = from.imageUrl )</ID>
+    <ID>ExpressionBodySyntax:GroupPostMapper.kt$GroupPostMapper$return GroupPostEntity( id = from.id, postText = from.postText, commentsCount = from.commentsCount ?: "0", date = from.date, groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost), photo = from.photo )</ID>
+    <ID>ExpressionBodySyntax:GroupPostMapper.kt$GroupPostMapper$return GroupPostModel( id = from.id, postText = from.postText, commentsCount = from.commentsCount, date = from.date, groupInPost = groupInPostMapper.mapToDto(from.groupInPost), photo = from.photo )</ID>
+    <ID>ExpressionBodySyntax:GroupPostsRepository.kt$GroupPostsRepository$return api.createPost(groupPostMapper.mapToDto(createGroupPostEntity), groupId) .map { groupPostMapper.mapToDomainEntity(it) }</ID>
+    <ID>ExpressionBodySyntax:GroupPostsRepository.kt$GroupPostsRepository$return api.getGroupPosts(groupId, page).map { groupPostMapper.mapListToDomainEntity(it.results) } .onErrorResumeNext { if (it is NoMorePage) { Single.fromCallable { mutableListOf&lt;GroupPostEntity&gt;() } } else { Single.error(it) } }</ID>
+    <ID>ExpressionBodySyntax:GroupPostsRepository.kt$GroupPostsRepository$return api.getNews(page).map { groupPostMapper.mapNewsListToDomainEntity(it) } .onErrorResumeNext { if (it is NoMorePage) { Single.fromCallable { mutableListOf&lt;GroupPostEntity&gt;() } } else { Single.error(it) } }</ID>
+    <ID>ExpressionBodySyntax:GroupPostsRepository.kt$GroupPostsRepository$return api.getPostById(postId).map { groupPostMapper.mapToDomainEntity(it) }</ID>
+    <ID>ExpressionBodySyntax:GroupRepository.kt$GroupRepository$return api.followGroup(FollowGroupModel(groupId))</ID>
+    <ID>ExpressionBodySyntax:GroupRepository.kt$GroupRepository$return api.getGroupInformation(groupId).map { groupMapper.mapToDomainEntity(it) }</ID>
+    <ID>ExpressionBodySyntax:GroupRepository.kt$GroupRepository$return api.getGroupList(page) .map { groupMapper.mapListToDomainEntity(it.groups) } .onErrorResumeNext { if (it is NoMorePage) { Single.fromCallable { mutableListOf&lt;GroupEntity&gt;() } } else { Single.error(it) } }</ID>
+    <ID>ExpressionBodySyntax:GroupRepository.kt$GroupRepository$return api.unfollowGroup(groupId)</ID>
+    <ID>ExpressionBodySyntax:GroupUseCase.kt$GroupUseCase$return userProfileGateway.getUserProfile() .map { if (it.id == groupEntity.owner) { return@map UserRole.ADMIN } when (groupEntity.isFollowing) { true -&gt; UserRole.USER_FOLLOWER false -&gt; UserRole.USER_NOT_FOLLOWER } }</ID>
+    <ID>ExpressionBodySyntax:Inline.kt$return ExpressionValue(this) { it != null &amp;&amp; predicate(it) }</ID>
+    <ID>ExpressionBodySyntax:Inline.kt$return ExpressionValue(this, predicate)</ID>
+    <ID>ExpressionBodySyntax:LoadingState.kt$LoadingState$return InterGroupViewType.LOADING_VIEW_TYPE</ID>
+    <ID>ExpressionBodySyntax:NewsAdapter.kt$NewsAdapter$return when (viewType) { loadingViewType -&gt; LoadingViewHolder(parent.inflate(R.layout.post_item_loading)) errorViewType -&gt; ErrorViewHolder(parent.inflate(R.layout.post_item_error)) else -&gt; PostViewHolder(parent.inflate(R.layout.item_group_post)) }</ID>
+    <ID>ExpressionBodySyntax:RxErrorCallAdapterFactory.kt$RxErrorCallAdapterFactory.RxCallAdapterWrapper$return errorAdapter.adapt(throwable)</ID>
+    <ID>ExpressionBodySyntax:RxExstenstions.kt$return this.doOnSubscribe { view?.showLoading(true) } .doFinally { view?.showLoading(false) }</ID>
+    <ID>ExpressionBodySyntax:UserProfileRepository.kt$UserProfileRepository$return api.getUserProfile() .map { val userProfile = userProfileMapper.mapToDomainEntity(it) sessionStorage.user = userProfile userProfile }</ID>
+    <ID>ExpressionBodySyntax:UserProfileRepository.kt$UserProfileRepository$return if (sessionStorage.user != null) { Single.fromCallable { sessionStorage.user } } else { uploadUserProfile() }</ID>
+    <ID>ExpressionBodySyntax:ViewExtensions.kt$return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)</ID>
+    <ID>MagicNumber:AbstractNotificationCreator.kt$AbstractNotificationCreator$1000</ID>
+    <ID>MagicNumber:AbstractNotificationCreator.kt$AbstractNotificationCreator$300</ID>
+    <ID>MagicNumber:AwsUploadingService.kt$AwsUploadingService$100</ID>
+    <ID>MagicNumber:AwsUploadingService.kt$AwsUploadingService$50</ID>
+    <ID>MagicNumber:BaseErrorAdapter.kt$BaseErrorAdapter$400</ID>
+    <ID>MagicNumber:BaseErrorAdapter.kt$BaseErrorAdapter$401</ID>
+    <ID>MagicNumber:BaseErrorAdapter.kt$BaseErrorAdapter$404</ID>
+    <ID>MagicNumber:BaseErrorAdapter.kt$BaseErrorAdapter$409</ID>
+    <ID>MagicNumber:CommentsDetailsActivity.kt$CommentsDetailsActivity$5</ID>
+    <ID>MagicNumber:ContextExtensions.kt$20</ID>
+    <ID>MagicNumber:DateFunctions.kt$12</ID>
+    <ID>MagicNumber:DateFunctions.kt$14</ID>
+    <ID>MagicNumber:DateFunctions.kt$20</ID>
+    <ID>MagicNumber:DateFunctions.kt$21</ID>
+    <ID>MagicNumber:DateFunctions.kt$22</ID>
+    <ID>MagicNumber:DateFunctions.kt$23</ID>
+    <ID>MagicNumber:DateFunctions.kt$24</ID>
+    <ID>MagicNumber:DateFunctions.kt$25</ID>
+    <ID>MagicNumber:DateFunctions.kt$3</ID>
+    <ID>MagicNumber:DateFunctions.kt$30</ID>
+    <ID>MagicNumber:DateFunctions.kt$31</ID>
+    <ID>MagicNumber:DateFunctions.kt$32</ID>
+    <ID>MagicNumber:DateFunctions.kt$33</ID>
+    <ID>MagicNumber:DateFunctions.kt$34</ID>
+    <ID>MagicNumber:DateFunctions.kt$35</ID>
+    <ID>MagicNumber:DateFunctions.kt$4</ID>
+    <ID>MagicNumber:DateFunctions.kt$40</ID>
+    <ID>MagicNumber:DateFunctions.kt$41</ID>
+    <ID>MagicNumber:DateFunctions.kt$42</ID>
+    <ID>MagicNumber:DateFunctions.kt$43</ID>
+    <ID>MagicNumber:DateFunctions.kt$44</ID>
+    <ID>MagicNumber:DateFunctions.kt$45</ID>
+    <ID>MagicNumber:DateFunctions.kt$5</ID>
+    <ID>MagicNumber:DateFunctions.kt$50</ID>
+    <ID>MagicNumber:DateFunctions.kt$51</ID>
+    <ID>MagicNumber:DateFunctions.kt$52</ID>
+    <ID>MagicNumber:DateFunctions.kt$53</ID>
+    <ID>MagicNumber:DateFunctions.kt$54</ID>
+    <ID>MagicNumber:DateFunctions.kt$55</ID>
+    <ID>MagicNumber:DateFunctions.kt$6</ID>
+    <ID>MagicNumber:DateFunctions.kt$60</ID>
+    <ID>MagicNumber:DateFunctions.kt$7</ID>
+    <ID>MagicNumber:ExitActivity.kt$ExitActivity$21</ID>
+    <ID>MagicNumber:GroupAdapter.kt$GroupAdapter$123</ID>
+    <ID>MagicNumber:GroupAdapter.kt$GroupAdapter$321</ID>
+    <ID>MagicNumber:GroupListAdapter.kt$GroupListAdapter$123</ID>
+    <ID>MagicNumber:GroupListAdapter.kt$GroupListAdapter$321</ID>
+    <ID>MagicNumber:InterGroupViewType.kt$InterGroupViewType.DATA_PAGE_STATE$3</ID>
+    <ID>MagicNumber:NewsAdapter.kt$NewsAdapter$123</ID>
+    <ID>MagicNumber:NewsAdapter.kt$NewsAdapter$321</ID>
+    <ID>MagicNumber:NewsViewModule.kt$NewsViewModule$10</ID>
+    <ID>MagicNumber:NewsViewModule.kt$NewsViewModule$4</ID>
+    <ID>MagicNumber:NewsViewModule.kt$NewsViewModule$7</ID>
+    <ID>MagicNumber:PhotoRepository.kt$PhotoRepository$75</ID>
+    <ID>MagicNumber:RxImageUploadingProgressRequestBody.kt$RxImageUploadingProgressRequestBody$100</ID>
+    <ID>MaxLineLength:AbstractNotificationCreator.kt$com.intergroupapplication.device.notification.notificationcreators.AbstractNotificationCreator.kt</ID>
+    <ID>MaxLineLength:AppApi.kt$com.intergroupapplication.data.network.AppApi.kt</ID>
+    <ID>MaxLineLength:AppModule.kt$com.intergroupapplication.di.module.AppModule.kt</ID>
+    <ID>MaxLineLength:CommentDetailsAdapter.kt$com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter.kt</ID>
+    <ID>MaxLineLength:CommentRepository.kt$com.intergroupapplication.data.repository.CommentRepository.kt</ID>
+    <ID>MaxLineLength:CommentsDetailsActivity.kt$com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.kt</ID>
+    <ID>MaxLineLength:CreatePostActivity.kt$com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity.kt</ID>
+    <ID>MaxLineLength:DataPageState.kt$com.intergroupapplication.presentation.base.adapter.DataPageState.kt</ID>
+    <ID>MaxLineLength:ErrorState.kt$com.intergroupapplication.presentation.base.adapter.ErrorState.kt</ID>
+    <ID>MaxLineLength:GroupActivity.kt$com.intergroupapplication.presentation.feature.group.view.GroupActivity.kt</ID>
+    <ID>MaxLineLength:GroupListAdapter.kt$com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter.kt</ID>
+    <ID>MaxLineLength:GroupPresenter.kt$com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter.kt</ID>
+    <ID>MaxLineLength:InterGroupPushService.kt$com.intergroupapplication.device.service.InterGroupPushService.kt</ID>
+    <ID>MaxLineLength:LoadingState.kt$com.intergroupapplication.presentation.base.adapter.LoadingState.kt</ID>
+    <ID>MaxLineLength:NavigationActivity.kt$com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity.kt</ID>
+    <ID>MaxLineLength:NetworkModule.kt$com.intergroupapplication.di.module.NetworkModule.kt</ID>
+    <ID>MaxLineLength:PhotoRepository.kt$com.intergroupapplication.data.repository.PhotoRepository.kt</ID>
+    <ID>MaxLineLength:UserSession.kt$com.intergroupapplication.data.session.UserSession.kt</ID>
+    <ID>MaxLineLength:WrapContentDraweeView.kt$com.intergroupapplication.presentation.customview.WrapContentDraweeView.kt</ID>
+    <ID>NestedBlockDepth:BaseDialogResolver.kt$BaseDialogResolver$private fun addDialogToList(fragmentManager: FragmentManager?, sameDialogs: MutableList&lt;BaseDialogResolver&gt;)</ID>
+    <ID>NestedBlockDepth:BaseErrorAdapter.kt$BaseErrorAdapter$override fun adapt(throwable: Throwable): Throwable</ID>
+    <ID>NestedBlockDepth:CommentDetailsAdapter.kt$CommentDetailsAdapter.CommentViewHolder$private fun getUserNameByCommentId(commentId: String): String</ID>
+    <ID>NestedBlockDepth:CommentDividerItemDecorator.kt$CommentDividerItemDecorator$override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State)</ID>
+    <ID>NestedBlockDepth:GroupAdapter.kt$GroupAdapter.PostViewHolder$fun bind(item: GroupPostEntity)</ID>
+    <ID>NestedBlockDepth:LoginActivity.kt$LoginActivity$override fun onValidationFailed(errors: MutableList&lt;ValidationError&gt;)</ID>
+    <ID>NestedBlockDepth:NewsAdapter.kt$NewsAdapter.PostViewHolder$fun bind(item: GroupPostEntity)</ID>
+    <ID>NestedBlockDepth:PagingDelegate.kt$PagingDelegate$override fun handleState(type: BasePagingState.Type)</ID>
+    <ID>NestedBlockDepth:RegistrationActivity.kt$RegistrationActivity$override fun onValidationFailed(errors: MutableList&lt;ValidationError&gt;)</ID>
+    <ID>NestedBlockDepth:RightDrawableListener.kt$RightDrawableListener$override fun onTouch(view: View, event: MotionEvent): Boolean</ID>
+    <ID>NestedBlockDepth:RxImageUploadingProgressRequestBody.kt$RxImageUploadingProgressRequestBody$override fun writeTo(sink: BufferedSink)</ID>
+    <ID>NewLineAtEndOfFile:AbstractNotificationCreator.kt$com.intergroupapplication.device.notification.notificationcreators.AbstractNotificationCreator.kt</ID>
+    <ID>NewLineAtEndOfFile:AmazonOkHttpClient.kt$com.intergroupapplication.di.qualifier.AmazonOkHttpClient.kt</ID>
+    <ID>NewLineAtEndOfFile:ApiError.kt$com.intergroupapplication.data.model.ApiError.kt</ID>
+    <ID>NewLineAtEndOfFile:ApplicationOkHttpClient.kt$com.intergroupapplication.di.qualifier.ApplicationOkHttpClient.kt</ID>
+    <ID>NewLineAtEndOfFile:BaseErrorAdapter.kt$com.intergroupapplication.data.network.BaseErrorAdapter.kt</ID>
+    <ID>NewLineAtEndOfFile:BaseErrorParser.kt$com.intergroupapplication.data.network.BaseErrorParser.kt</ID>
+    <ID>NewLineAtEndOfFile:BasePagingAdapter.kt$com.intergroupapplication.presentation.base.adapter.BasePagingAdapter.kt</ID>
+    <ID>NewLineAtEndOfFile:BasePagingState.kt$com.intergroupapplication.presentation.base.BasePagingState.kt</ID>
+    <ID>NewLineAtEndOfFile:CanClearViewErrorState.kt$com.intergroupapplication.presentation.base.CanClearViewErrorState.kt</ID>
+    <ID>NewLineAtEndOfFile:CanNotUploadPhoto.kt$com.intergroupapplication.domain.exception.CanNotUploadPhoto.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentDetailsAdapter.kt$com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentDividerItemDecorator.kt$com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentGateway.kt$com.intergroupapplication.domain.gateway.CommentGateway.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentModel.kt$com.intergroupapplication.data.model.CommentModel.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentUserEntity.kt$com.intergroupapplication.domain.entity.CommentUserEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentUserModel.kt$com.intergroupapplication.data.model.CommentUserModel.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentsDataSource.kt$com.intergroupapplication.presentation.feature.commentsdetails.pagingsource.CommentsDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentsDataSourceFactory.kt$com.intergroupapplication.presentation.feature.commentsdetails.pagingsource.CommentsDataSourceFactory.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentsDetailsView.kt$com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsView.kt</ID>
+    <ID>NewLineAtEndOfFile:CommentsDto.kt$com.intergroupapplication.data.model.CommentsDto.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateCommentEntity.kt$com.intergroupapplication.domain.entity.CreateCommentEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateCommentModel.kt$com.intergroupapplication.data.model.CreateCommentModel.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateGroupEntity.kt$com.intergroupapplication.domain.entity.CreateGroupEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateGroupGateway.kt$com.intergroupapplication.domain.gateway.CreateGroupGateway.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateGroupMapper.kt$com.intergroupapplication.data.mapper.CreateGroupMapper.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateGroupPostEntity.kt$com.intergroupapplication.domain.entity.CreateGroupPostEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateGroupPostModel.kt$com.intergroupapplication.data.model.CreateGroupPostModel.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateGroupService.kt$com.intergroupapplication.data.service.CreateGroupService.kt</ID>
+    <ID>NewLineAtEndOfFile:CreateGroupView.kt$com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupView.kt</ID>
+    <ID>NewLineAtEndOfFile:CreatePostView.kt$com.intergroupapplication.presentation.feature.createpost.view.CreatePostView.kt</ID>
+    <ID>NewLineAtEndOfFile:CreatorType.kt$com.intergroupapplication.device.notification.CreatorType.kt</ID>
+    <ID>NewLineAtEndOfFile:DataPageState.kt$com.intergroupapplication.presentation.base.adapter.DataPageState.kt</ID>
+    <ID>NewLineAtEndOfFile:EmailAlreadyExistException.kt$com.intergroupapplication.domain.exception.EmailAlreadyExistException.kt</ID>
+    <ID>NewLineAtEndOfFile:ErrorParser.kt$com.intergroupapplication.data.network.ErrorParser.kt</ID>
+    <ID>NewLineAtEndOfFile:ErrorState.kt$com.intergroupapplication.presentation.base.adapter.ErrorState.kt</ID>
+    <ID>NewLineAtEndOfFile:FirebaseTokenEntity.kt$com.intergroupapplication.domain.entity.FirebaseTokenEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:FollowGroupModel.kt$com.intergroupapplication.data.model.FollowGroupModel.kt</ID>
+    <ID>NewLineAtEndOfFile:FullGroupModelDto.kt$com.intergroupapplication.data.model.FullGroupModelDto.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupAlreadyExistException.kt$com.intergroupapplication.domain.exception.GroupAlreadyExistException.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupBlockedException.kt$com.intergroupapplication.domain.exception.GroupBlockedException.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupInPostEntity.kt$com.intergroupapplication.domain.entity.GroupInPostEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupInPostMapper.kt$com.intergroupapplication.data.mapper.GroupInPostMapper.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupInPostModel.kt$com.intergroupapplication.data.model.GroupInPostModel.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupListDataSourceFactory.kt$com.intergroupapplication.presentation.feature.grouplist.pagingsource.GroupListDataSourceFactory.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupListView.kt$com.intergroupapplication.presentation.feature.grouplist.view.GroupListView.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupMapper.kt$com.intergroupapplication.data.mapper.GroupMapper.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupModel.kt$com.intergroupapplication.data.model.GroupModel.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupPostDataSource.kt$com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupPostDataSourceFactory.kt$com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSourceFactory.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupPostEntity.kt$com.intergroupapplication.domain.entity.GroupPostEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupPostGateway.kt$com.intergroupapplication.domain.gateway.GroupPostGateway.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupPostModel.kt$com.intergroupapplication.data.model.GroupPostModel.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupPostsDto.kt$com.intergroupapplication.data.model.GroupPostsDto.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupRepository.kt$com.intergroupapplication.data.repository.GroupRepository.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupUseCase.kt$com.intergroupapplication.domain.usecase.GroupUseCase.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupView.kt$com.intergroupapplication.presentation.feature.group.view.GroupView.kt</ID>
+    <ID>NewLineAtEndOfFile:GroupsDto.kt$com.intergroupapplication.data.model.GroupsDto.kt</ID>
+    <ID>NewLineAtEndOfFile:ImageUploadDto.kt$com.intergroupapplication.data.model.ImageUploadDto.kt</ID>
+    <ID>NewLineAtEndOfFile:ImageUploader.kt$com.intergroupapplication.presentation.base.ImageUploader.kt</ID>
+    <ID>NewLineAtEndOfFile:ImageUploadingException.kt$com.intergroupapplication.domain.exception.ImageUploadingException.kt</ID>
+    <ID>NewLineAtEndOfFile:InfoForCommentEntity.kt$com.intergroupapplication.domain.entity.InfoForCommentEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:LoadingState.kt$com.intergroupapplication.presentation.base.adapter.LoadingState.kt</ID>
+    <ID>NewLineAtEndOfFile:NetworkErrorHandlingModule.kt$com.intergroupapplication.di.module.NetworkErrorHandlingModule.kt</ID>
+    <ID>NewLineAtEndOfFile:NewCommentNotificationCreator.kt$com.intergroupapplication.device.notification.notificationcreators.NewCommentNotificationCreator.kt</ID>
+    <ID>NewLineAtEndOfFile:NewsAdapter.kt$com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter.kt</ID>
+    <ID>NewLineAtEndOfFile:NewsDataSource.kt$com.intergroupapplication.presentation.feature.news.pagingsource.NewsDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:NewsDataSourceFactory.kt$com.intergroupapplication.presentation.feature.news.pagingsource.NewsDataSourceFactory.kt</ID>
+    <ID>NewLineAtEndOfFile:NewsDto.kt$com.intergroupapplication.data.model.NewsDto.kt</ID>
+    <ID>NewLineAtEndOfFile:NoMorePage.kt$com.intergroupapplication.domain.exception.NoMorePage.kt</ID>
+    <ID>NewLineAtEndOfFile:NotificationAction.kt$com.intergroupapplication.device.notification.actions.NotificationAction.kt</ID>
+    <ID>NewLineAtEndOfFile:NotificationCommentModel.kt$com.intergroupapplication.data.model.NotificationCommentModel.kt</ID>
+    <ID>NewLineAtEndOfFile:NotificationKey.kt$com.intergroupapplication.di.key.NotificationKey.kt</ID>
+    <ID>NewLineAtEndOfFile:NotificationTypes.kt$com.intergroupapplication.device.notification.NotificationTypes.kt</ID>
+    <ID>NewLineAtEndOfFile:OnNewCommentAction.kt$com.intergroupapplication.device.notification.actions.OnNewCommentAction.kt</ID>
+    <ID>NewLineAtEndOfFile:PagingAdapter.kt$com.intergroupapplication.presentation.base.adapter.PagingAdapter.kt</ID>
+    <ID>NewLineAtEndOfFile:PagingAdapterState.kt$com.intergroupapplication.presentation.base.adapter.PagingAdapterState.kt</ID>
+    <ID>NewLineAtEndOfFile:PagingDelegate.kt$com.intergroupapplication.presentation.delegate.PagingDelegate.kt</ID>
+    <ID>NewLineAtEndOfFile:PagingView.kt$com.intergroupapplication.presentation.base.PagingView.kt</ID>
+    <ID>NewLineAtEndOfFile:PerService.kt$com.intergroupapplication.di.scope.PerService.kt</ID>
+    <ID>NewLineAtEndOfFile:PhotoUploadFields.kt$com.intergroupapplication.data.model.PhotoUploadFields.kt</ID>
+    <ID>NewLineAtEndOfFile:RefreshOkHttpClient.kt$com.intergroupapplication.di.qualifier.RefreshOkHttpClient.kt</ID>
+    <ID>NewLineAtEndOfFile:RefreshTokenApi.kt$com.intergroupapplication.data.network.RefreshTokenApi.kt</ID>
+    <ID>NewLineAtEndOfFile:RefreshTokenModel.kt$com.intergroupapplication.data.model.RefreshTokenModel.kt</ID>
+    <ID>NewLineAtEndOfFile:RxImageUploadingProgressRequestBody.kt$com.intergroupapplication.data.network.RxImageUploadingProgressRequestBody.kt</ID>
+    <ID>NewLineAtEndOfFile:TokenInterceptor.kt$com.intergroupapplication.di.qualifier.TokenInterceptor.kt</ID>
+    <ID>NewLineAtEndOfFile:UnknowServerException.kt$com.intergroupapplication.domain.exception.UnknowServerException.kt</ID>
+    <ID>NewLineAtEndOfFile:UpdateAvatarModel.kt$com.intergroupapplication.data.model.UpdateAvatarModel.kt</ID>
+    <ID>NewLineAtEndOfFile:UserRole.kt$com.intergroupapplication.domain.entity.UserRole.kt</ID>
+    <ID>NotImplementedDeclaration:GroupListDataSource.kt$GroupListDataSource$TODO("not implemented")</ID>
+    <ID>NotImplementedDeclaration:GroupPostDataSource.kt$GroupPostDataSource$TODO("not implemented")</ID>
+    <ID>NotImplementedDeclaration:NewsDataSource.kt$NewsDataSource$TODO("not implemented")</ID>
+    <ID>ReturnCount:CommentDetailsAdapter.kt$CommentDetailsAdapter$override fun getItemViewType(position: Int): Int</ID>
+    <ID>ReturnCount:CommentsDetailsViewModule.kt$CommentsDetailsViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
+    <ID>ReturnCount:DateFunctions.kt$fun translateEnglishStringToRussian(english: String): String</ID>
+    <ID>ReturnCount:GroupAdapter.kt$GroupAdapter$override fun getItemViewType(position: Int): Int</ID>
+    <ID>ReturnCount:GroupListAdapter.kt$GroupListAdapter$override fun getItemViewType(position: Int): Int</ID>
+    <ID>ReturnCount:GroupListViewModule.kt$GroupListViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
+    <ID>ReturnCount:LoginViewModule.kt$LoginViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
+    <ID>ReturnCount:NavigationViewModule.kt$NavigationViewModule.&lt;no name provided&gt;$override fun createFragment(screenKey: String?, data: Any?): Fragment?</ID>
+    <ID>ReturnCount:NetworkModule.kt$NetworkModule$@PerApplication @Provides fun provideTokenAuthenticator(sessionStorage: UserSession, tokenMapper: TokenMapper, api: RefreshTokenApi): Authenticator</ID>
+    <ID>ReturnCount:NewsAdapter.kt$NewsAdapter$override fun getItemViewType(position: Int): Int</ID>
+    <ID>ReturnCount:RegistrationViewModule.kt$RegistrationViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
+    <ID>ReturnCount:SplashViewModule.kt$SplashViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
+    <ID>ReturnCount:ViewControlFunctions.kt$ fun optimizeVisibilityChanging(targetView: View, transformView: View, focusViews: Array&lt;out TextView&gt;): Boolean</ID>
+    <ID>ThrowingExceptionsWithoutMessageOrCause:FakeData.kt$FakeData$IOException()</ID>
+    <ID>TooGenericExceptionCaught:NetworkModule.kt$NetworkModule$e: Exception</ID>
+    <ID>TooManyFunctions:AppApi.kt$AppApi</ID>
+    <ID>TooManyFunctions:FakeData.kt$FakeData</ID>
+    <ID>TooManyFunctions:GroupActivity.kt$GroupActivity : BaseActivityGroupViewOnOffsetChangedListenerPagingView</ID>
+    <ID>UnsafeCallOnNullableType:BaseDialogResolver.kt$BaseDialogResolver$activity!!</ID>
+    <ID>UnsafeCallOnNullableType:DividerGroupItemDecorator.kt$DividerGroupItemDecorator$divider!!</ID>
+    <ID>UnsafeCallOnNullableType:LoadingDialog.kt$LoadingDialog$activity!!</ID>
+    <ID>UnsafeCallOnNullableType:LoadingDialog.kt$LoadingDialog$context!!</ID>
+    <ID>UnsafeCallOnNullableType:LoadingDialog.kt$LoadingDialog$window!!</ID>
+    <ID>UnusedImports:AbstractNotificationCreator.kt$import android.app.PendingIntent</ID>
+    <ID>UnusedImports:AbstractNotificationCreator.kt$import android.graphics.BitmapFactory</ID>
+    <ID>UnusedImports:AbstractNotificationCreator.kt$import android.graphics.Color</ID>
+    <ID>UnusedImports:AbstractNotificationCreator.kt$import android.media.RingtoneManager</ID>
+    <ID>UnusedImports:AbstractNotificationCreator.kt$import android.support.v4.content.ContextCompat</ID>
+    <ID>UnusedImports:AmazonApi.kt$import okhttp3.Request</ID>
+    <ID>UnusedImports:App.kt$import com.frogermcs.androiddevmetrics.AndroidDevMetrics</ID>
+    <ID>UnusedImports:App.kt$import com.instacart.library.truetime.TrueTimeRx</ID>
+    <ID>UnusedImports:App.kt$import com.jakewharton.threetenabp.AndroidThreeTen</ID>
+    <ID>UnusedImports:App.kt$import io.reactivex.disposables.CompositeDisposable</ID>
+    <ID>UnusedImports:App.kt$import io.reactivex.disposables.Disposable</ID>
+    <ID>UnusedImports:App.kt$import io.reactivex.schedulers.Schedulers</ID>
+    <ID>UnusedImports:AppApi.kt$import com.intergroupapplication.domain.entity.GroupEntity</ID>
+    <ID>UnusedImports:AppApi.kt$import okhttp3.MultipartBody</ID>
+    <ID>UnusedImports:AppModule.kt$import android.support.v4.app.NotificationManagerCompat</ID>
+    <ID>UnusedImports:AwsUploadingGateway.kt$import org.reactivestreams.Subscriber</ID>
+    <ID>UnusedImports:BaseActivity.kt$import android.app.Application</ID>
+    <ID>UnusedImports:BaseActivity.kt$import android.support.design.widget.CoordinatorLayout</ID>
+    <ID>UnusedImports:BaseActivity.kt$import com.intergroupapplication.initializators.Initializer</ID>
+    <ID>UnusedImports:BaseActivity.kt$import com.intergroupapplication.presentation.exstension.on</ID>
+    <ID>UnusedImports:BaseActivity.kt$import com.workable.errorhandler.Action</ID>
+    <ID>UnusedImports:BaseActivity.kt$import dagger.Provides</ID>
+    <ID>UnusedImports:BaseActivity.kt$import dagger.multibindings.IntoSet</ID>
+    <ID>UnusedImports:BaseDialogResolver.kt$import android.widget.Button</ID>
+    <ID>UnusedImports:BaseErrorParser.kt$import com.intergroupapplication.data.model.ApiError</ID>
+    <ID>UnusedImports:BaseFragment.kt$import javax.inject.Inject</ID>
+    <ID>UnusedImports:BaseFragment.kt$import ru.terrakok.cicerone.NavigatorHolder</ID>
+    <ID>UnusedImports:BaseFragment.kt$import ru.terrakok.cicerone.android.SupportAppNavigator</ID>
+    <ID>UnusedImports:BasePagingAdapter.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:CommentDividerItemDecorator.kt$import android.view.View</ID>
+    <ID>UnusedImports:CommentEntity.kt$import android.os.Parcelable</ID>
+    <ID>UnusedImports:CommentEntity.kt$import kotlinx.android.parcel.Parcelize</ID>
+    <ID>UnusedImports:CommentGateway.kt$import com.intergroupapplication.data.model.CreateCommentModel</ID>
+    <ID>UnusedImports:CommentRepository.kt$import com.intergroupapplication.data.model.CreateCommentModel</ID>
+    <ID>UnusedImports:CommentRepository.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:CommentUserEntity.kt$import com.google.gson.annotations.SerializedName</ID>
+    <ID>UnusedImports:CommentsDataSource.kt$import android.util.Log</ID>
+    <ID>UnusedImports:CommentsDataSource.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:CommentsDataSource.kt$import com.intergroupapplication.domain.gateway.GroupPostGateway</ID>
+    <ID>UnusedImports:CommentsDataSourceFactory.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:CommentsDataSourceFactory.kt$import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource</ID>
+    <ID>UnusedImports:CommentsDetailsActivity.kt$import android.view.inputmethod.InputMethodManager</ID>
+    <ID>UnusedImports:CommentsDetailsActivity.kt$import android.widget.TextView</ID>
+    <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.R</ID>
+    <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
+    <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:CommentsDto.kt$import com.intergroupapplication.domain.entity.CommentEntity</ID>
+    <ID>UnusedImports:ConfirmationMailPresenter.kt$import com.intergroupapplication.domain.gateway.UserProfileGateway</ID>
+    <ID>UnusedImports:ConfirmationMailView.kt$import com.intergroupapplication.presentation.base.CanShowError</ID>
+    <ID>UnusedImports:CreateGroupActivity.kt$import android.net.Uri</ID>
+    <ID>UnusedImports:CreateGroupActivity.kt$import com.intergroupapplication.domain.entity.CreateGroupEntity</ID>
+    <ID>UnusedImports:CreateGroupPostEntity.kt$import com.google.gson.annotations.SerializedName</ID>
+    <ID>UnusedImports:CreateGroupPresenter.kt$import com.intergroupapplication.domain.gateway.PhotoGateway</ID>
+    <ID>UnusedImports:CreateGroupViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
+    <ID>UnusedImports:CreateGroupViewModule.kt$import com.intergroupapplication.presentation.feature.login.view.LoginActivity</ID>
+    <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
+    <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity</ID>
+    <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity</ID>
+    <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.presentation.feature.group.view.GroupActivity</ID>
+    <ID>UnusedImports:CreateUserProfileActivity.kt$import android.widget.Toast</ID>
+    <ID>UnusedImports:CreateUserProfilePresenter.kt$import com.intergroupapplication.domain.gateway.PhotoGateway</ID>
+    <ID>UnusedImports:CreateUserProfileViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
+    <ID>UnusedImports:DateFunctions.kt$import org.threeten.bp.Instant</ID>
+    <ID>UnusedImports:DialogDelegate.kt$import android.support.design.widget.CoordinatorLayout</ID>
+    <ID>UnusedImports:ErrorParser.kt$import com.google.gson.Gson</ID>
+    <ID>UnusedImports:ErrorParser.kt$import com.intergroupapplication.data.model.ApiError</ID>
+    <ID>UnusedImports:ErrorParser.kt$import javax.inject.Inject</ID>
+    <ID>UnusedImports:FakeData.kt$import android.arch.paging.PagedList</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import android.graphics.drawable.Animatable</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import android.opengl.ETC1.getHeight</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import android.opengl.ETC1.getWidth</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import android.support.constraint.ConstraintLayout</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import android.view.View</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import android.view.ViewGroup</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import android.view.ViewTreeObserver</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import com.facebook.drawee.backends.pipeline.Fresco</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import com.facebook.drawee.controller.BaseControllerListener</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import com.facebook.drawee.interfaces.DraweeController</ID>
+    <ID>UnusedImports:FrescoImageLoader.kt$import com.facebook.imagepipeline.image.ImageInfo</ID>
+    <ID>UnusedImports:GatewayModule.kt$import com.intergroupapplication.data.mapper.GroupMapper</ID>
+    <ID>UnusedImports:GatewayModule.kt$import com.intergroupapplication.data.network.AppApi</ID>
+    <ID>UnusedImports:GatewayModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
+    <ID>UnusedImports:GatewayModule.kt$import com.intergroupapplication.di.scope.PerApplication</ID>
+    <ID>UnusedImports:GatewayModule.kt$import dagger.Provides</ID>
+    <ID>UnusedImports:GatewayModule.kt$import java.security.acl.Group</ID>
+    <ID>UnusedImports:GroupActivity.kt$import com.intergroupapplication.device.notification.notificationcreators.NewCommentNotificationCreator</ID>
+    <ID>UnusedImports:GroupAdapter.kt$import android.view.ViewTreeObserver</ID>
+    <ID>UnusedImports:GroupEntity.kt$import com.google.gson.annotations.SerializedName</ID>
+    <ID>UnusedImports:GroupGateway.kt$import com.intergroupapplication.data.model.GroupModel</ID>
+    <ID>UnusedImports:GroupInPostMapper.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:GroupInPostRealmModel.kt$import io.realm.RealmObject</ID>
+    <ID>UnusedImports:GroupListDataSource.kt$import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource</ID>
+    <ID>UnusedImports:GroupListDataSourceFactory.kt$import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource</ID>
+    <ID>UnusedImports:GroupListFragment.kt$import com.intergroupapplication.domain.entity.InfoForCommentEntity</ID>
+    <ID>UnusedImports:GroupListPresenter.kt$import com.intergroupapplication.domain.gateway.GroupGateway</ID>
+    <ID>UnusedImports:GroupListPresenter.kt$import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter</ID>
+    <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
+    <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment</ID>
+    <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.presentation.feature.login.view.LoginActivity</ID>
+    <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter</ID>
+    <ID>UnusedImports:GroupPostEntity.kt$import com.google.gson.annotations.SerializedName</ID>
+    <ID>UnusedImports:GroupPostRealmModel.kt$import io.realm.RealmObject</ID>
+    <ID>UnusedImports:GroupPostsRepository.kt$import com.intergroupapplication.domain.FakeData</ID>
+    <ID>UnusedImports:GroupPostsRepository.kt$import com.intergroupapplication.domain.entity.GroupInPostEntity</ID>
+    <ID>UnusedImports:GroupPostsRepository.kt$import io.reactivex.Maybe</ID>
+    <ID>UnusedImports:GroupPostsRepository.kt$import io.reactivex.Observable</ID>
+    <ID>UnusedImports:GroupPostsRepository.kt$import java.lang.Exception</ID>
+    <ID>UnusedImports:GroupPostsRepository.kt$import java.text.SimpleDateFormat</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import android.arch.paging.PagedList</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import android.content.Context</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import com.intergroupapplication.R</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import com.intergroupapplication.domain.entity.UserRole</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import com.intergroupapplication.domain.gateway.GroupPostGateway</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import com.intergroupapplication.initializators.AppInitializersModule.Companion.NOT_FOUND</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import com.intergroupapplication.presentation.delegate.PagingDelegate</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import io.reactivex.Observable</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import retrofit2.HttpException</ID>
+    <ID>UnusedImports:GroupPresenter.kt$import ru.terrakok.cicerone.result.ResultListener</ID>
+    <ID>UnusedImports:GroupRealmModel.kt$import io.realm.RealmObject</ID>
+    <ID>UnusedImports:GroupRepository.kt$import com.intergroupapplication.data.model.GroupModel</ID>
+    <ID>UnusedImports:GroupRepository.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:GroupUseCase.kt$import io.reactivex.internal.operators.single.SingleFromCallable</ID>
+    <ID>UnusedImports:GroupView.kt$import com.intergroupapplication.presentation.base.BasePagingState</ID>
+    <ID>UnusedImports:GroupViewModule.kt$import com.intergroupapplication.di.scope.PerFragment</ID>
+    <ID>UnusedImports:GroupViewModule.kt$import com.intergroupapplication.domain.entity.GroupEntity</ID>
+    <ID>UnusedImports:GroupViewModule.kt$import io.reactivex.disposables.CompositeDisposable</ID>
+    <ID>UnusedImports:ImageLoader.kt$import android.support.constraint.ConstraintLayout</ID>
+    <ID>UnusedImports:ImageLoader.kt$import android.view.View</ID>
+    <ID>UnusedImports:ImageLoadingDelegate.kt$import android.support.constraint.ConstraintLayout</ID>
+    <ID>UnusedImports:ImageLoadingDelegate.kt$import android.view.View</ID>
+    <ID>UnusedImports:ImageLoadingDelegate.kt$import retrofit2.http.Field</ID>
+    <ID>UnusedImports:ImageUploader.kt$import io.reactivex.Observable</ID>
+    <ID>UnusedImports:ImageUploadingDelegate.kt$import io.reactivex.Observable</ID>
+    <ID>UnusedImports:LayoutManagersModule.kt$import android.support.v7.widget.RecyclerView</ID>
+    <ID>UnusedImports:LayoutManagersModule.kt$import com.intergroupapplication.di.qualifier.LinearManager</ID>
+    <ID>UnusedImports:LayoutManagersModule.kt$import com.intergroupapplication.di.scope.PerApplication</ID>
+    <ID>UnusedImports:LoginEntity.kt$import com.google.gson.annotations.SerializedName</ID>
+    <ID>UnusedImports:LoginModel.kt$import com.google.gson.annotations.SerializedName</ID>
+    <ID>UnusedImports:LoginPresenter.kt$import android.content.Context</ID>
+    <ID>UnusedImports:LoginPresenter.kt$import com.intergroupapplication.domain.gateway.UserProfileGateway</ID>
+    <ID>UnusedImports:LoginPresenter.kt$import com.intergroupapplication.presentation.feature.ExitActivity</ID>
+    <ID>UnusedImports:LoginService.kt$import android.graphics.Canvas</ID>
+    <ID>UnusedImports:NavigationBuilderModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
+    <ID>UnusedImports:NavigationPresenter.kt$import com.intergroupapplication.domain.gateway.GroupGateway</ID>
+    <ID>UnusedImports:NavigationPresenter.kt$import com.intergroupapplication.domain.gateway.PhotoGateway</ID>
+    <ID>UnusedImports:NavigationPresenter.kt$import com.intergroupapplication.presentation.exstension.handleLoading</ID>
+    <ID>UnusedImports:NavigationView.kt$import com.intergroupapplication.domain.entity.GroupEntity</ID>
+    <ID>UnusedImports:NavigationView.kt$import com.intergroupapplication.presentation.base.CanShowLoading</ID>
+    <ID>UnusedImports:NavigationViewModule.kt$import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule</ID>
+    <ID>UnusedImports:NavigationViewModule.kt$import dagger.android.ContributesAndroidInjector</ID>
+    <ID>UnusedImports:NetworkErrorHandlingModule.kt$import dagger.Provides</ID>
+    <ID>UnusedImports:NewsAdapter.kt$import com.github.marlonlom.utilities.timeago.onNotNull</ID>
+    <ID>UnusedImports:NewsView.kt$import com.intergroupapplication.presentation.base.BasePagingState</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.clockbyte.admobadapter.bannerads.AdmobBannerAdapterWrapper</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.domain.entity.InfoForCommentEntity</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.group.di.GroupViewModule</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.news.view.NewsFragment</ID>
+    <ID>UnusedImports:PagingAdapterState.kt$import android.support.v7.widget.RecyclerView</ID>
+    <ID>UnusedImports:PhoneCharacteristicManager.kt$import android.provider.Settings</ID>
+    <ID>UnusedImports:PhotoGateway.kt$import com.intergroupapplication.data.model.ImageUploadDto</ID>
+    <ID>UnusedImports:PhotoGateway.kt$import io.reactivex.Completable</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.androidnetworking.common.Priority</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.androidnetworking.error.ANError</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.androidnetworking.interfaces.OkHttpResponseListener</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.androidnetworking.interfaces.UploadProgressListener</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.intergroupapplication.data.model.ImageUploadDto</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.intergroupapplication.data.model.PhotoUploadFields</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import com.intergroupapplication.domain.exception.ImageUploadingException</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import io.reactivex.Completable</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import java.util.concurrent.Executors</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import java.util.concurrent.ThreadPoolExecutor</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import okhttp3.MediaType</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import okhttp3.MultipartBody</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import okhttp3.RequestBody</ID>
+    <ID>UnusedImports:PhotoRepository.kt$import okhttp3.Response</ID>
+    <ID>UnusedImports:RegistrationView.kt$import com.intergroupapplication.presentation.base.CanShowError</ID>
+    <ID>UnusedImports:RxErrorCallAdapterFactory.kt$import com.google.gson.Gson</ID>
+    <ID>UnusedImports:RxErrorCallAdapterFactory.kt$import com.google.gson.JsonSyntaxException</ID>
+    <ID>UnusedImports:RxErrorCallAdapterFactory.kt$import com.intergroupapplication.data.model.ApiError</ID>
+    <ID>UnusedImports:RxErrorCallAdapterFactory.kt$import retrofit2.HttpException</ID>
+    <ID>UnusedImports:RxErrorCallAdapterFactory.kt$import timber.log.Timber</ID>
+    <ID>UnusedImports:RxModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
+    <ID>UnusedImports:RxModule.kt$import com.intergroupapplication.di.scope.PerApplication</ID>
+    <ID>UnusedImports:SplashActivity.kt$import ru.terrakok.cicerone.Router</ID>
+    <ID>UnusedImports:UserEntity.kt$import android.os.Parcelable</ID>
+    <ID>UnusedImports:UserEntity.kt$import kotlinx.android.parcel.Parcelize</ID>
+    <ID>UnusedImports:UserProfileGateway.kt$import com.intergroupapplication.domain.entity.UserRole</ID>
+    <ID>UnusedImports:UserProfileGateway.kt$import io.reactivex.Completable</ID>
+    <ID>UnusedImports:UserProfileMapper.kt$import com.intergroupapplication.data.model.UserModel</ID>
+    <ID>UnusedImports:UserProfileRepository.kt$import com.intergroupapplication.domain.entity.UserRole</ID>
+    <ID>UnusedImports:UserProfileRepository.kt$import io.reactivex.ObservableSource</ID>
+    <ID>UnusedImports:UserProfileRepository.kt$import io.reactivex.Observer</ID>
+    <ID>UnusedImports:UserProfileRepository.kt$import io.reactivex.internal.operators.single.SingleFromCallable</ID>
+    <ID>UnusedImports:ViewControlFunctions.kt$import android.content.Context</ID>
+    <ID>WildcardImport:AmazonApi.kt$import retrofit2.http.*</ID>
+    <ID>WildcardImport:AppApi.kt$import com.intergroupapplication.data.model.*</ID>
+    <ID>WildcardImport:AppApi.kt$import retrofit2.http.*</ID>
+    <ID>WildcardImport:AppComponent.kt$import com.intergroupapplication.di.module.*</ID>
+    <ID>WildcardImport:AppInitializersModule.kt$import com.intergroupapplication.domain.exception.*</ID>
+    <ID>WildcardImport:AvatarImageUploadingView.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:BaseActivity.kt$import com.intergroupapplication.domain.exception.*</ID>
+    <ID>WildcardImport:BaseErrorAdapter.kt$import com.intergroupapplication.domain.exception.*</ID>
+    <ID>WildcardImport:BaseErrorParser.kt$import com.intergroupapplication.domain.exception.*</ID>
+    <ID>WildcardImport:CommentsDetailsActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:CreateGroupActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:CreateUserProfileActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:FakeData.kt$import com.intergroupapplication.data.model.*</ID>
+    <ID>WildcardImport:FakeData.kt$import com.intergroupapplication.domain.entity.*</ID>
+    <ID>WildcardImport:GatewayModule.kt$import com.intergroupapplication.data.repository.*</ID>
+    <ID>WildcardImport:GatewayModule.kt$import com.intergroupapplication.domain.gateway.*</ID>
+    <ID>WildcardImport:GroupActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:GroupAdapter.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:GroupListAdapter.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:LoginActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:NetworkModule.kt$import com.intergroupapplication.data.network.*</ID>
+    <ID>WildcardImport:NewsAdapter.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:RegistrationActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:RxErrorCallAdapterFactory.kt$import com.intergroupapplication.domain.exception.*</ID>
+    <ID>WildcardImport:UserSession.kt$import com.intergroupapplication.domain.entity.*</ID>
+  </Whitelist>
+</SmellBaseline>

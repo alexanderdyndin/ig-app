@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.frogermcs.androiddevmetrics:androiddevmetrics-runtime:0.6@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8cd6bf57f80ad900733daffa708f6910/jetified-androiddevmetrics-runtime-0.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8cd6bf57f80ad900733daffa708f6910/jetified-androiddevmetrics-runtime-0.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8cd6bf57f80ad900733daffa708f6910/jetified-androiddevmetrics-runtime-0.6/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.frogermcs.androiddevmetrics/androiddevmetrics-runtime/0.6/9be080c60dd5395f0ad497793fa50240d6f16beb/androiddevmetrics-runtime-0.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.frogermcs.androiddevmetrics/androiddevmetrics-runtime/0.6/1748e4742650f53d2e2e6f4bda1fccd599aa1f10/androiddevmetrics-runtime-0.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

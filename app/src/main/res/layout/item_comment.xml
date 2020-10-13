@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/cardsColor"
+    android:padding="@dimen/big_padding">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/commentAvatar"
+        android:layout_width="@dimen/group_logo_inside_post_size"
+        android:layout_height="@dimen/group_logo_inside_post_size"
+        android:layout_marginEnd="@dimen/middle_margin"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        fresco:placeholderImage="@drawable/application_logo"
+        fresco:roundAsCircle="true" />
+
+    <TextView
+        android:id="@+id/commentUserName"
+        style="@style/InterGroupBlueTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:ellipsize="end"
+        android:singleLine="false"
+        android:maxWidth="@dimen/max_comment_width"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Никнейм пользователя" />
+
+    <TextView
+        android:id="@+id/responseToOtherComment"
+        style="@style/InterGroupResponseToCommentTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/settingsComment"
+        app:layout_constraintStart_toEndOf="@+id/commentUserName"
+        app:layout_constraintTop_toTopOf="@+id/commentUserName"
+        tools:text="ответ Маше" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/settingsComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings" />
+
+    <TextView
+        android:id="@+id/commentUserId"
+        style="@style/InterGroupGreyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/commentUserName"
+        app:layout_constraintTop_toBottomOf="@+id/commentUserName"
+        tools:text="ID 4547851" />
+
+    <TextView
+        android:id="@+id/commentText"
+        style="@style/InterGroupWhiteTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginTop="@dimen/middle_margin"
+        android:maxLines="100"
+        android:textSize="@dimen/middle_high_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/commentUserId"
+        tools:text="Текст для поста описание происходящегоподробности и факты, новости прочеепроисходящее в определенном месте или нет" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/reply"
+        android:layout_width="@dimen/post_comment_icon_size"
+        android:layout_height="@dimen/post_comment_icon_size"
+        android:layout_marginTop="@dimen/middle_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:layout_marginBottom="@dimen/middle_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentText"
+        app:srcCompat="@drawable/ic_reply" />
+
+    <TextView
+        android:id="@+id/commentPrescription"
+        style="@style/InterGroupGreyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginTop="@dimen/middle_margin"
+        android:textSize="@dimen/middle_high_size"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/commentText"
+        tools:text="сегодня 12:34" />
+
+    <androidx.constraintlayout.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,0 +1,25 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/joinToGroup"
+        style="@style/BlueButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/group_action_button_height"
+        android:fontFamily="@font/roboto_medium"
+        android:padding="10dp"
+        android:text="@string/join_the_group"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/goOutFromGroup"
+        style="@style/DisabledBlueButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/group_action_button_height"
+        android:fontFamily="@font/roboto_medium"
+        android:padding="10dp"
+        android:text="@string/go_out_from_group"
+        android:visibility="invisible" />
+
+</FrameLayout>

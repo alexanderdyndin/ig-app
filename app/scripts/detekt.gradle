@@ -1,0 +1,11 @@
+detekt {
+    version = "1.0.0.RC6-4"
+    defaultProfile {
+        input = file("src/main")
+        config = file("detekt.yml")
+        filters = ".*/resources/.*,.*/tmp/.*"
+        output = file("reports")
+        outputName = "detekt-report"
+        baseline = file("reports/baseline.xml")
+    }
+}

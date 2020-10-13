@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="ig-app/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ig-app.iml" filepath="$PROJECT_DIR$/.idea/modules/ig-app.iml" group="ig-app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ta_library/ta_library.iml" filepath="$PROJECT_DIR$/.idea/modules/ta_library/ta_library.iml" group="ig-app/ta_library" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/groupPostContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/middle_margin"
+    android:background="@color/cardsColor">
+
+    <TextView
+        android:id="@+id/goToGroupClickArea"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/go_to_group_click_area_height"
+        android:textSize="@dimen/middle_high_size"
+        app:layout_constraintBottom_toTopOf="@+id/postBody"
+        app:layout_constraintEnd_toStartOf="@+id/settingsPost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/groupPostAvatar"
+        android:layout_width="@dimen/group_logo_inside_post_size"
+        android:layout_height="@dimen/group_logo_inside_post_size"
+        android:layout_marginStart="@dimen/big_margin"
+        android:layout_marginTop="@dimen/big_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        fresco:placeholderImage="@drawable/application_logo"
+        fresco:roundAsCircle="true" />
+
+    <TextView
+        android:id="@+id/groupName"
+        style="@style/InterGroupAutoscrollWhiteTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/big_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        app:layout_constraintEnd_toStartOf="@+id/settingsPost"
+        app:layout_constraintStart_toEndOf="@+id/groupPostAvatar"
+        app:layout_constraintTop_toTopOf="@+id/groupPostAvatar"
+        tools:text="Имя группы" />
+
+    <TextView
+        android:id="@+id/postPrescription"
+        style="@style/InterGroupGreyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/groupName"
+        app:layout_constraintTop_toBottomOf="@+id/groupName"
+        tools:text="Неделю назад" />
+
+    <LinearLayout
+        android:id="@+id/postBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/low_big_margin"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/groupPostAvatar">
+
+        <TextView
+            android:id="@+id/postText"
+            style="@style/InterGroupWhiteTextStyle."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/big_margin"
+            android:layout_marginEnd="@dimen/big_margin"
+            android:textSize="@dimen/middle_high_size"
+            android:visibility="gone"
+            tools:text="Текст для поста описание происходящего
+подробности и факты, новости прочее
+происходящее в определенном месте или нет" />
+
+        <com.intergroupapplication.presentation.customview.WrapContentDraweeView
+            android:id="@+id/postImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/middle_margin"
+            android:layout_marginBottom="@dimen/middle_margin"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/commentImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/postBody"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:backgroundImage="@color/linkGrayTextColor"
+            fresco:placeholderImage="@drawable/application_logo" />
+
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/settingsPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/big_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/postPrescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/groupName"
+        app:srcCompat="@drawable/ic_settings" />
+
+    <TextView
+        android:id="@+id/commentImageClickArea"
+        android:layout_width="@dimen/comment_click_area_width"
+        android:layout_height="@dimen/comment_click_area_height"
+        android:textSize="@dimen/middle_high_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/postCommentsCount"
+        app:layout_constraintStart_toStartOf="@+id/commentImage" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/commentImage"
+        android:layout_width="@dimen/post_comment_icon_size"
+        android:layout_height="@dimen/post_comment_icon_size"
+        android:layout_marginTop="@dimen/low_big_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:layout_marginBottom="@dimen/low_big_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/groupPostAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/postBody"
+        app:srcCompat="@drawable/ic_mode_comment" />
+
+
+    <TextView
+        android:id="@+id/postCommentsCount"
+        style="@style/InterGroupGreyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:textSize="@dimen/middle_high_size"
+        app:layout_constraintBottom_toBottomOf="@+id/commentImage"
+        app:layout_constraintStart_toEndOf="@+id/commentImage"
+        app:layout_constraintTop_toTopOf="@+id/commentImage"
+        tools:text="12" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

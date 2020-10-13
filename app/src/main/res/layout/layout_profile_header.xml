@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/profileHeaderColor"
+    android:paddingStart="@dimen/big_padding"
+    android:paddingTop="@dimen/massive_padding"
+    android:paddingEnd="@dimen/big_padding"
+    android:paddingBottom="@dimen/high_big_padding">
+
+    <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+        android:id="@+id/profileAvatarHolder"
+        android:layout_width="@dimen/intergroup_logo_view_size"
+        android:layout_height="@dimen/intergroup_logo_view_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/profileName"
+        style="@style/InterGroupMiddleWhiteTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/low_big_margin"
+        app:layout_constraintStart_toStartOf="@+id/profileAvatarHolder"
+        app:layout_constraintTop_toBottomOf="@+id/profileAvatarHolder"
+        tools:text="Имя пользователя" />
+
+    <ImageView
+        android:id="@+id/drawerArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profileAvatarHolder"
+        app:srcCompat="@drawable/ic_arrow_forward" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

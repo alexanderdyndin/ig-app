@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CustomEditText">
+        <attr name="android:inputType" />
+        <attr name="android:padding" />
+        <attr name="android:paddingLeft" />
+        <attr name="android:paddingRight" />
+        <attr name="android:paddingTop" />
+        <attr name="android:paddingBottom" />
+        <attr name="inter_setBackgroundColor" format="color" />
+        <attr name="inter_setBorderColor" format="color" />
+        <attr name="inter_setBorderView" format="boolean" />
+        <attr name="inter_setFont" format="string" />
+        <attr name="inter_setStrokeWidth" format="dimension" />
+        <attr name="inter_setCornerRadius" format="dimension" />
+        <attr name="inter_setClearIconVisible" format="boolean" />
+        <attr name="inter_clearIconTint" format="color" />
+        <attr name="inter_hideShowPasswordIconTint" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="ViewBehavior">
+        <attr name="behavior_dependsOn" format="reference"/>
+        <attr name="behavior_dependType">
+            <enum name="height" value="0"/>
+            <enum name="width" value="1"/>
+            <enum name="x" value="2"/>
+            <enum name="y" value="3"/>
+        </attr>
+
+        <attr name="behavior_dependTarget" format="dimension"/>
+
+        <attr name="behavior_targetX" format="dimension"/>
+        <attr name="behavior_targetY" format="dimension"/>
+        <attr name="behavior_targetWidth" format="dimension"/>
+        <attr name="behavior_targetHeight" format="dimension"/>
+        <attr name="behavior_targetBackgroundColor" format="color"/>
+        <attr name="behavior_targetAlpha" format="float"/>
+        <attr name="behavior_targetRotateX" format="float"/>
+        <attr name="behavior_targetRotateY" format="float"/>
+
+        <attr name="behavior_animation" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="AvatarImageBehavior">
+        <attr name="finalYPosition" format="dimension"/>
+        <attr name="startXPosition" format="dimension"/>
+        <attr name="startToolbarPosition" format="dimension"/>
+        <attr name="startHeight" format="dimension"/>
+        <attr name="finalHeight" format="dimension"/>
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,85 @@
+default_platform(:android)
+
+desc "Building project."
+lane :build do
+
+gradle(
+    task: 'build'
+  )
+
+end
+
+desc "Testing project."
+lane :test do
+
+gradle(
+    task: 'test'
+  )
+
+end
+
+desc "Performs linting."
+lane :lint do
+  
+  gradle(
+    task: 'detektCheck'
+  )
+
+end
+
+desc "Uploads build to Fabric Beta."
+lane :fabric do
+  crashlytics_testers_group = load_required_var("CRASHLYTICS_GROUP")
+  crashlytics_token = load_required_var("CRASHLYTICS_API_TOKEN")
+  crashlytics_secret = load_required_var("CRASHLYTICS_BUILD_SECRET")
+
+  UI.message "Using tag \"#{crashlytics_token}\" as version source"
+
+  # build the release variant
+  gradle(task: "assembleDebug")
+
+  # upload to Beta by Crashlytics
+  crashlytics(
+    api_token: crashlytics_token,
+    build_secret: crashlytics_secret,
+    groups: crashlytics_testers_group,
+    notifications: true
+  )
+end
+
+desc "Uploading to playstore."
+lane :playstore do |options|
+
+  jks_name = load_option(options, :jks_name)
+  decryption_key = load_option(options, :decryption_key)
+
+  sh "openssl enc -in ../app/keystores/#{jks_name}.enc -out ../app/keystores/#{jks_name}.jks -d -aes256 -k #{decryption_key}", log: false
+  sh "export KEY_PATH=../app/keystores/#{jks_name}.jks", log: false
+
+  track_name = load_option(options, :track)
+
+  UI.message "Using tag \"#{track_name}\" as version source"
+
+  gradle(
+    task: 'assemble',
+    build_type: 'Release'
+  )
+  upload_to_play_store( # Uploads the APK built in the gradle step above
+    track: track_name
+  )
+end
+
+def load_required_var(var_name)
+  result = ENV[var_name]
+  return result != nil ? result : UI.user_error!("Please provide `#{var_name}` environment variable")
+end
+
+def load_optional_option(options, name, default)
+  option = options[name]
+  return option != nil ? option : default
+end
+
+def load_option(options, name)
+  option = options[name]
+  return option != nil ? option : UI.user_error!("Please provide `#{name}` environment variable")
+end

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "516160578944",
+    "firebase_url": "https://intergroupadmin.firebaseio.com",
+    "project_id": "intergroupadmin",
+    "storage_bucket": "intergroupadmin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:516160578944:android:3e00ac1afec9364baf8d65",
+        "android_client_info": {
+          "package_name": "com.intergroupapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "516160578944-mvg6iff3i0a3fcva4dtl7h7jgjk5qj5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv3PxfoP5LV6Ou8dqmeFEyFEAjBF7dJRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "516160578944-mvg6iff3i0a3fcva4dtl7h7jgjk5qj5b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
