@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.6">
+      <module name="ig-app.app" target="1.8" />
       <module name="ta_library" target="1.6" />
     </bytecodeTargetLevel>
   </component>

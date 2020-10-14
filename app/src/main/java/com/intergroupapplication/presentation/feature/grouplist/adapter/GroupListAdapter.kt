@@ -29,7 +29,8 @@ import java.time.format.TextStyle
  * Created by abakarmagomedov on 02/08/2018 at project InterGroupApplication.
  */
 class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
-                       private val imageLoadingDelegate: ImageLoadingDelegate)
+                       private val imageLoadingDelegate: ImageLoadingDelegate,
+                       private val userID: String?)
     : PagedListAdapter<GroupEntity, RecyclerView.ViewHolder>(diffCallback), PagingAdapter {
 
     companion object {
@@ -121,9 +122,9 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 item_group__comments.text = item.CommentsCount
                 item_group__dislike.text = item.postsLikes
                 item_group__like.text = item.postsDislikes
-                //groupClickPlace.setOnClickListener {
-                //    groupClickListener.invoke(item.id)
-                //}
+                item_group__btn_group_list.setOnClickListener {
+                    groupClickListener.invoke(item.id)
+                }
                 if (item.isFollowing) {
                     item_group__btn_group_list.setOnClickListener {
                         unsubscribeClickListener.invoke(item.id)
@@ -134,6 +135,10 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                         subscribeClickListener.invoke(item.id)
                     }
                     item_group__text_sub.text = "Подписаться"
+                }
+                if (userID == item.owner) {
+                    item_group__btn_group_list.visibility = View.GONE
+                    item_group__text_sub.visibility = View.GONE
                 }
                 doOrIfNull(item.avatar, {
                     imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)

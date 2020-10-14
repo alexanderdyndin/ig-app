@@ -21,7 +21,7 @@
         android:id="@+id/item_group__ava_group_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ava_group_shadow"
+        app:srcCompat="@drawable/ava_group_shadow"
         app:layout_constraintBottom_toBottomOf="@+id/groupAvatarHolder"
         app:layout_constraintEnd_toEndOf="@+id/groupAvatarHolder"
         app:layout_constraintStart_toStartOf="@+id/groupAvatarHolder" />
@@ -152,7 +152,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="19dp"
         android:background="#00FFFFFF"
-        android:src="@drawable/btn_group_list"
+        app:srcCompat="@drawable/btn_group_list"
         app:layout_constraintBottom_toBottomOf="@+id/item_group__like_dislike"
         app:layout_constraintEnd_toStartOf="@+id/item_group__right_line"
         app:layout_constraintStart_toEndOf="@+id/item_group__like_dislike"

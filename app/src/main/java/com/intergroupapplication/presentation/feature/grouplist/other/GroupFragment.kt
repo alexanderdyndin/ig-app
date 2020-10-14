@@ -77,7 +77,7 @@ open class GroupsFragment constructor(
         groupsList.setHasFixedSize(true)
         groupsList.itemAnimator = null
 
-        adapter =  GroupListAdapter(diffUtil, imageLoadingDelegate)
+        adapter =  GroupListAdapter(diffUtil, imageLoadingDelegate, "123")
         adapter.retryClickListener = { reload() }
         adapter.groupClickListener = { goToGroupScreen(it) }
         groupsList.adapter = adapter

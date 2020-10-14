@@ -10,10 +10,12 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import moxy.MvpView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -29,8 +31,9 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
-import com.intergroupapplication.presentation.feature.grouplist.other.CircularViewPagerHandler
+import com.intergroupapplication.presentation.feature.grouplist.other.GroupPageAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.SampleFragmentPagerAdapter
+import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import javax.inject.Inject
@@ -62,6 +65,11 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
+    lateinit var diffUtil: DiffUtil.ItemCallback<GroupEntity>
+
+    private val tabTitles = arrayOf("Все группы", "Подписки", "Управление")
+
+//    @Inject
     lateinit var adapter: GroupListAdapter
 
     private val textWatcher = object : TextWatcher {
@@ -77,10 +85,34 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adapter = GroupListAdapter(diffUtil, imageLoadingDelegate, sessionStorage.user?.id)
         // Получаем ViewPager и устанавливаем в него адаптер
-        val viewPager: ViewPager = view.findViewById(R.id.viewpager)
-        val pagerAdapter = SampleFragmentPagerAdapter(activity!!.supportFragmentManager)
-        pagerAdapter.doOnFragmentViewCreated = { it ->
+//        val viewPager: ViewPager = view.findViewById(R.id.viewpager)
+//        val pagerAdapter = SampleFragmentPagerAdapter(activity!!.supportFragmentManager)
+//        pagerAdapter.doOnFragmentViewCreated = { it ->
+//            val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
+//            val emptyText = it.findViewById<TextView>(R.id.emptyText)
+//            groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+//            groupsList.setHasFixedSize(true)
+//            groupsList.itemAnimator = null
+//            adapter.retryClickListener = { presenter.reload() }
+//            adapter.groupClickListener = { presenter.goToGroupScreen(it) }
+//            adapter.subscribeClickListener = { presenter.sub(it)}
+//            adapter.unsubscribeClickListener = { presenter.unsub(it) }
+//            groupsList.adapter = adapter
+//            pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
+//        }
+//        viewPager.adapter = pagerAdapter
+//        val handler = CircularViewPagerHandler(viewPager)
+//        handler.pageChanged = {
+//            presenter.groupList(it)
+//        }
+//        viewPager.addOnPageChangeListener(handler)
+        // Передаём ViewPager в TabLayout
+//        val tabLayout: TabLayout = view.findViewById(R.id.slidingCategories)
+//        tabLayout.setupWithViewPager(viewPager)
+        val gpAdapter = GroupPageAdapter(this)
+        gpAdapter.doOnFragmentViewCreated = { it ->
             val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
             val emptyText = it.findViewById<TextView>(R.id.emptyText)
             groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -93,15 +125,16 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             groupsList.adapter = adapter
             pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         }
-        viewPager.adapter = pagerAdapter
-        val handler = CircularViewPagerHandler(viewPager)
-        handler.pageChanged = {
-            presenter.groupList(it)
-        }
-        viewPager.addOnPageChangeListener(handler)
         // Передаём ViewPager в TabLayout
         val tabLayout: TabLayout = view.findViewById(R.id.slidingCategories)
-        tabLayout.setupWithViewPager(viewPager)
+        pager.apply {
+            adapter = gpAdapter
+            registerOnPageChangeCallback(ViewPager2Circular(pager))
+            (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        }
+        TabLayoutMediator(tabLayout, pager) { tab, position ->
+            tab.text = tabTitles[position]
+        }.attach()
         createGroup.setOnClickListener { openCreateGroup() }
         swipeLayout.setOnRefreshListener { presenter.groupList() }
     }
