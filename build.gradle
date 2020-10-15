@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = '1.4.10'
-    ext.tools_version = '4.0.1'
+    ext.tools_version = '4.1.0'
     //ext.fabric_version = '1.31.2'
     ext.realm_version = '6.0.2'
     ext.devmetrict_version = '0.6'

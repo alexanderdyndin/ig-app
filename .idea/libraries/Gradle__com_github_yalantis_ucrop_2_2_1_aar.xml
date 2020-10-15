@@ -2,11 +2,19 @@
   <library name="Gradle: com.github.yalantis:ucrop:2.2.1@aar">
     <ANNOTATIONS>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b57bd23c6473030fceba04bea67f4eec/jetified-ucrop-2.2.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e29c608ab5211f0ec8041e363eb1cb55/jetified-ucrop-2.2.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8550013ec67349eaa541472fbfb449a9/jetified-ucrop-2.2.1/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b57bd23c6473030fceba04bea67f4eec/jetified-ucrop-2.2.1/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b57bd23c6473030fceba04bea67f4eec/jetified-ucrop-2.2.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b57bd23c6473030fceba04bea67f4eec/jetified-ucrop-2.2.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e29c608ab5211f0ec8041e363eb1cb55/jetified-ucrop-2.2.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e29c608ab5211f0ec8041e363eb1cb55/jetified-ucrop-2.2.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e29c608ab5211f0ec8041e363eb1cb55/jetified-ucrop-2.2.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8550013ec67349eaa541472fbfb449a9/jetified-ucrop-2.2.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8550013ec67349eaa541472fbfb449a9/jetified-ucrop-2.2.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8550013ec67349eaa541472fbfb449a9/jetified-ucrop-2.2.1/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.yalantis/ucrop/2.2.1/5b8d44ff9c185862129abdd6706375415a58ff28/ucrop-2.2.1-javadoc.jar!/" />

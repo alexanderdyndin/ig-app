@@ -2,11 +2,19 @@
   <library name="Gradle: com.androidadvance:topsnackbar:1.1.1@aar">
     <ANNOTATIONS>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d7a333616709aeb35ddd16f7f321e9a5/jetified-topsnackbar-1.1.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24fab21c94925733c12cc4e4f1165131/jetified-topsnackbar-1.1.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/19a5373ad7e8761d9f55b137d53cb9c0/jetified-topsnackbar-1.1.1/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d7a333616709aeb35ddd16f7f321e9a5/jetified-topsnackbar-1.1.1/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d7a333616709aeb35ddd16f7f321e9a5/jetified-topsnackbar-1.1.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d7a333616709aeb35ddd16f7f321e9a5/jetified-topsnackbar-1.1.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24fab21c94925733c12cc4e4f1165131/jetified-topsnackbar-1.1.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24fab21c94925733c12cc4e4f1165131/jetified-topsnackbar-1.1.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/24fab21c94925733c12cc4e4f1165131/jetified-topsnackbar-1.1.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/19a5373ad7e8761d9f55b137d53cb9c0/jetified-topsnackbar-1.1.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/19a5373ad7e8761d9f55b137d53cb9c0/jetified-topsnackbar-1.1.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/19a5373ad7e8761d9f55b137d53cb9c0/jetified-topsnackbar-1.1.1/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.androidadvance/topsnackbar/1.1.1/ec707f9718616f1fa0b0a83e2a25ffe30f97de4/topsnackbar-1.1.1-javadoc.jar!/" />

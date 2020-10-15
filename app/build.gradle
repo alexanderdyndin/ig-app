@@ -283,7 +283,7 @@ dependencies {
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
     implementation "com.google.firebase:firebase-messaging:$firebaseMessagingVersion"
     implementation "com.jakewharton:butterknife:$butterknifVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifVersion"
+    kapt "com.jakewharton:butterknife-compiler:$butterknifVersion"
 
     //Paging
     implementation('androidx.paging:paging-runtime-ktx:2.1.2') {

@@ -1,15 +1,15 @@
 package com.intergroupapplication.presentation.feature.grouplist.other
 
-import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import android.view.View
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 
-class GroupPageAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class GroupPageAdapter(fragment: Fragment,
+                       private val adapterAll: GroupListAdapter,
+                       private val adapterSub: GroupListAdapter,
+                       private val adapterAdm: GroupListAdapter) : FragmentStateAdapter(fragment) {
 
     private val PAGE_COUNT = 3
     var doOnFragmentViewCreated: (View) -> Unit = {}
@@ -17,14 +17,14 @@ class GroupPageAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int = PAGE_COUNT
 
     override fun createFragment(position: Int): Fragment {
-        return when(position % PAGE_COUNT) {
-            0 -> AllGroupsFragment.newInstance(position + 1)
+        return when(position) {
+            0 -> GroupsFragment.newInstance(position + 1, adapterAll)
                     .apply { doOnViewCreated = doOnFragmentViewCreated }
-            1 -> SubscribedGroupsFragment.newInstance(position + 1)
+            1 -> GroupsFragment.newInstance(position + 1, adapterSub)
                     .apply { doOnViewCreated = doOnFragmentViewCreated }
-            2 -> AdminGroupsFragment.newInstance(position + 1)
+            2 -> GroupsFragment.newInstance(position + 1, adapterAdm)
                     .apply { doOnViewCreated = doOnFragmentViewCreated }
-            else -> AllGroupsFragment.newInstance(position + 1)
+            else -> GroupsFragment.newInstance(position + 1, adapterAll)
                     .apply { doOnViewCreated = doOnFragmentViewCreated }
         }
     }
@@ -37,7 +37,7 @@ class ViewPager2Circular(private val pager: ViewPager2) : ViewPager2.OnPageChang
     private var isScrolled = false
     private val lastPosition = pager.adapter!!.itemCount - 1
 
-    var pageChanged: (id: Int) -> Unit = {}
+    //var pageChanged: (id: Int) -> Unit = {}
 
     override fun onPageSelected(position: Int) {
         mCurrentPosition = position

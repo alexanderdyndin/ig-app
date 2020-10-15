@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.grouplist.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -67,7 +68,10 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     private val tabTitles = arrayOf("Все группы", "Подписки", "Управление")
 
-    lateinit var adapter: GroupListAdapter
+    //адаптеры для фрагментов сос списками групп
+    lateinit var adapterAll: GroupListAdapter
+    lateinit var adapterSub: GroupListAdapter
+    lateinit var adapterAdm: GroupListAdapter
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
@@ -80,35 +84,39 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun layoutRes() = R.layout.fragment_group_list
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = GroupListAdapter(diffUtil, imageLoadingDelegate, sessionStorage.user?.id)
-        val gpAdapter = GroupPageAdapter(this)
+        adapterAll = setAdapter()
+        adapterSub = setAdapter()
+        adapterAdm = setAdapter()
+        val gpAdapter = GroupPageAdapter(this, adapterAll, adapterSub, adapterAdm)
         gpAdapter.doOnFragmentViewCreated = { it ->
-            val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
             val emptyText = it.findViewById<TextView>(R.id.emptyText)
-            groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            groupsList.setHasFixedSize(true)
-            groupsList.itemAnimator = null
-            adapter.retryClickListener = { presenter.reload() }
-            adapter.groupClickListener = { presenter.goToGroupScreen(it) }
-            adapter.subscribeClickListener = { presenter.sub(it)}
-            adapter.unsubscribeClickListener = { presenter.unsub(it) }
-            groupsList.adapter = adapter
-            pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
+            val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
+            pagingDelegate.attachPagingView(groupsList.adapter as GroupListAdapter, swipeLayout, emptyText)
         }
-        // Передаём ViewPager в TabLayout
-        val tabLayout: TabLayout = view.findViewById(R.id.slidingCategories)
         pager.apply {
             adapter = gpAdapter
             registerOnPageChangeCallback(ViewPager2Circular(this))
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
-        TabLayoutMediator(tabLayout, pager) { tab, position ->
+        TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
         createGroup.setOnClickListener { openCreateGroup() }
         swipeLayout.setOnRefreshListener { presenter.groupList() }
+    }
+
+    private fun setAdapter(): GroupListAdapter {
+        val a = GroupListAdapter(diffUtil, imageLoadingDelegate, sessionStorage.user?.id)
+        with (a) {
+            retryClickListener = { presenter.reload() }
+            groupClickListener = { presenter.goToGroupScreen(it) }
+            subscribeClickListener = { presenter.sub(it)}
+            unsubscribeClickListener = { presenter.unsub(it) }
+        }
+        return a
     }
 
     override fun onResume() {
@@ -131,17 +139,21 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         }
     }
 
-    private fun spanLetters(textToSpan: String){
-        GroupListAdapter.lettersToSpan = textToSpan
-    }
-
     private fun openCreateGroup() {
         startActivityForResult(CreateGroupActivity.getIntent(context), GROUP_CREATED)
     }
 
     override fun groupListLoaded(groups: PagedList<GroupEntity>) {
-        adapter.submitList(groups)
+        adapterAll.submitList(groups)
 }
+
+    override fun groupListSubLoaded(groups: PagedList<GroupEntity>) {
+        adapterSub.submitList(groups)
+    }
+
+    override fun groupListAdmLoaded(groups: PagedList<GroupEntity>) {
+        adapterAdm.submitList(groups)
+    }
 
     override fun showLoading(show: Boolean) {
 

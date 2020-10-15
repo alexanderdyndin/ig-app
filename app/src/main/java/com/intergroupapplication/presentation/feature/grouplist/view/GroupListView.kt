@@ -12,4 +12,6 @@ import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupLis
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface GroupListView : MvpView, CanShowLoading, PagingView {
     fun groupListLoaded(groups: PagedList<GroupEntity>)
+    fun groupListSubLoaded(groups: PagedList<GroupEntity>)
+    fun groupListAdmLoaded(groups: PagedList<GroupEntity>)
 }

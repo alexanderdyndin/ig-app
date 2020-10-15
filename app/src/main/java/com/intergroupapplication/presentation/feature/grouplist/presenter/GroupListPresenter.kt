@@ -36,8 +36,6 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                                              private val appStatusUseCase: AppStatusUseCase)
     : BasePresenter<GroupListView>() {
 
-    var screenId = 0;
-
 
     private val groupsDisposable = CompositeDisposable()
 
@@ -76,19 +74,10 @@ class GroupListPresenter @Inject constructor(private val router: Router,
         }
     }
 
-    fun groupList(id: Int = screenId) {
-        screenId = id
-        when (screenId) {
-            0 -> {
-                getGroupsList()
-            }
-            1-> {
-                getFollowGroupsList()
-            }
-            2 -> {
-                getOwnedGroupsList()
-            }
-        }
+    fun groupList() {
+        getGroupsList()
+        getFollowGroupsList()
+        getOwnedGroupsList()
     }
 
     fun getGroupsList() {
@@ -140,7 +129,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    viewState.groupListLoaded(it)
+                    viewState.groupListSubLoaded(it)
                 }, {
                     errorHandler.handle(it)
                 }))
@@ -168,7 +157,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    viewState.groupListLoaded(it)
+                    viewState.groupListAdmLoaded(it)
                 }, {
                     errorHandler.handle(it)
                 }))
@@ -176,11 +165,15 @@ class GroupListPresenter @Inject constructor(private val router: Router,
 
     fun applySearchQuery(searchQuery:String){
         dsAll.source.applySearchFilter(searchQuery)
+        dsSub.source.applySearchFilter(searchQuery)
+        dsAdm.source.applySearchFilter(searchQuery)
         refresh()
     }
 
     fun reload() {
         dsAll.source.reload()
+        dsSub.source.reload()
+        dsAdm.source.reload()
     }
 
     fun refresh() {
