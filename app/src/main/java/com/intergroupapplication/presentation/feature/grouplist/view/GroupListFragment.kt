@@ -93,7 +93,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as NavigationActivity).navigationToolbar.visibility = View.GONE
         activity_main__icon_menu.setOnClickListener {
             (activity as NavigationActivity).drawer.openDrawer()
         }
@@ -148,6 +147,16 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     override fun onPause() {
         super.onPause()
         activity_main__search_input.removeTextChangedListener(textWatcher)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as NavigationActivity).navigationToolbar.visibility = View.VISIBLE
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (activity as NavigationActivity).navigationToolbar.visibility = View.GONE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

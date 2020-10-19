@@ -130,11 +130,13 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                         unsubscribeClickListener.invoke(item.id)
                     }
                     item_group__text_sub.text = resources.getText(R.string.unsubscribe)
+                    item_group__btn_group_list.setBackgroundResource(R.drawable.btn_unsub)
                 } else {
                     item_group__btn_group_list.setOnClickListener {
                         subscribeClickListener.invoke(item.id)
                     }
                     item_group__text_sub.text = resources.getText(R.string.subscribe)
+                    item_group__btn_group_list.setBackgroundResource(R.drawable.btn_sub)
                 }
                 if (userID == item.owner) {
                     item_group__btn_group_list.visibility = View.GONE
