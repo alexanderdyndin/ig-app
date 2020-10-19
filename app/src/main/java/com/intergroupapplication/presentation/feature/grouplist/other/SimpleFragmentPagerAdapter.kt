@@ -28,6 +28,7 @@ class GroupPageAdapter(fragment: Fragment,
                     .apply { doOnViewCreated = doOnFragmentViewCreated }
         }
     }
+
 }
 
 class ViewPager2Circular(private val pager: ViewPager2) : ViewPager2.OnPageChangeCallback() {
@@ -37,11 +38,11 @@ class ViewPager2Circular(private val pager: ViewPager2) : ViewPager2.OnPageChang
     private var isScrolled = false
     private val lastPosition = pager.adapter!!.itemCount - 1
 
-    //var pageChanged: (id: Int) -> Unit = {}
+    var pageChanged: (id: Int) -> Unit = {}
 
     override fun onPageSelected(position: Int) {
         mCurrentPosition = position
-        //pageChanged.invoke(position)
+        pageChanged.invoke(position)
     }
 
     override fun onPageScrollStateChanged(state: Int) {

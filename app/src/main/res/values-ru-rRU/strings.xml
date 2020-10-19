@@ -128,5 +128,7 @@
     <string name="change_e_mail">Изменить E-mail</string>
     <string name="new_version"> </string>
     <string name="search">Поиск</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="unsubscribe">Отписаться</string>
 
 </resources>

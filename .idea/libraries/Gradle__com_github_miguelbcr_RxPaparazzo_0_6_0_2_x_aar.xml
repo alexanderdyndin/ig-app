@@ -1,15 +1,15 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.miguelbcr:RxPaparazzo:0.6.0-2.x@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/940bea1c6a30ffa1a835773c26a76f9d/jetified-RxPaparazzo-0.6.0-2.x/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/940bea1c6a30ffa1a835773c26a76f9d/jetified-RxPaparazzo-0.6.0-2.x/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/940bea1c6a30ffa1a835773c26a76f9d/jetified-RxPaparazzo-0.6.0-2.x/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/059ef9975cd63a03fbb6d85ffc6ece35/jetified-RxPaparazzo-0.6.0-2.x/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/059ef9975cd63a03fbb6d85ffc6ece35/jetified-RxPaparazzo-0.6.0-2.x/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/059ef9975cd63a03fbb6d85ffc6ece35/jetified-RxPaparazzo-0.6.0-2.x/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e40303351211beee481bd7654d645eb4/jetified-RxPaparazzo-0.6.0-2.x/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e40303351211beee481bd7654d645eb4/jetified-RxPaparazzo-0.6.0-2.x/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e40303351211beee481bd7654d645eb4/jetified-RxPaparazzo-0.6.0-2.x/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/013cde004155c211e9f590da9e52e415/jetified-RxPaparazzo-0.6.0-2.x/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/013cde004155c211e9f590da9e52e415/jetified-RxPaparazzo-0.6.0-2.x/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/013cde004155c211e9f590da9e52e415/jetified-RxPaparazzo-0.6.0-2.x/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.miguelbcr/RxPaparazzo/0.6.0-2.x/e28fd11faf0d6452f5540bdaf125ef75c812344f/RxPaparazzo-0.6.0-2.x-javadoc.jar!/" />

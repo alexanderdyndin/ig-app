@@ -47,6 +47,10 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         fun getInstance() = GroupListFragment()
     }
 
+    private val pagingAll = PagingDelegate()
+//    private lateinit var pagingSub: PagingDelegate
+//    private lateinit var pagingAdm: PagingDelegate
+
     @Inject
     @InjectPresenter
     lateinit var presenter: GroupListPresenter
@@ -94,11 +98,23 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         gpAdapter.doOnFragmentViewCreated = { it ->
             val emptyText = it.findViewById<TextView>(R.id.emptyText)
             val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
-            pagingDelegate.attachPagingView(groupsList.adapter as GroupListAdapter, swipeLayout, emptyText)
+            groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            groupsList.setHasFixedSize(true)
+            groupsList.itemAnimator = null
+            pagingDelegate.attachPagingView(adapterAll, swipeLayout, emptyText)
         }
         pager.apply {
             adapter = gpAdapter
-            registerOnPageChangeCallback(ViewPager2Circular(this))
+            val handler = ViewPager2Circular(this)
+            handler.pageChanged = {
+                when (it) {
+                    0 -> pagingDelegate.changeAdapter(adapterAll)
+                    1 -> pagingDelegate.changeAdapter(adapterSub)
+                    2 -> pagingDelegate.changeAdapter(adapterAdm)
+                    else-> pagingDelegate.changeAdapter(adapterAll)
+                }
+            }
+            registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
         TabLayoutMediator(slidingCategories, pager) { tab, position ->

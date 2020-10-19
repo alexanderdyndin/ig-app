@@ -51,9 +51,6 @@ class GroupsFragment constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val groupsList = view.findViewById<RecyclerView>(R.id.allGroupsList)
-        groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        groupsList.setHasFixedSize(true)
-        groupsList.itemAnimator = null
         groupsList.adapter = adapter
         doOnViewCreated(view)
     }

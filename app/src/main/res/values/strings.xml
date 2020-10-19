@@ -126,4 +126,7 @@
     <string name="change_e_mail">Change E-mail</string>
     <string name="new_version"> </string>
     <string name="search">Search</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="unsubscribe">Unsubscribe</string>
+
 </resources>

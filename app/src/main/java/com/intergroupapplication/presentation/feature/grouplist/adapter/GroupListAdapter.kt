@@ -129,16 +129,19 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                     item_group__btn_group_list.setOnClickListener {
                         unsubscribeClickListener.invoke(item.id)
                     }
-                    item_group__text_sub.text = "Отписаться"
+                    item_group__text_sub.text = resources.getText(R.string.unsubscribe)
                 } else {
                     item_group__btn_group_list.setOnClickListener {
                         subscribeClickListener.invoke(item.id)
                     }
-                    item_group__text_sub.text = "Подписаться"
+                    item_group__text_sub.text = resources.getText(R.string.subscribe)
                 }
                 if (userID == item.owner) {
                     item_group__btn_group_list.visibility = View.GONE
                     item_group__text_sub.visibility = View.GONE
+                } else {
+                    item_group__btn_group_list.visibility = View.VISIBLE
+                    item_group__text_sub.visibility = View.VISIBLE
                 }
                 doOrIfNull(item.avatar, {
                     imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)

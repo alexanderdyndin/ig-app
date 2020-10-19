@@ -1,15 +1,15 @@
 <component name="libraryTable">
   <library name="Gradle: com.budiyev.android:circular-progress-bar:1.2.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/37a5f30807b156382600068ba83698ac/jetified-circular-progress-bar-1.2.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/37a5f30807b156382600068ba83698ac/jetified-circular-progress-bar-1.2.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/37a5f30807b156382600068ba83698ac/jetified-circular-progress-bar-1.2.0/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/254c4671cd02d53213398ae80678e8db/jetified-circular-progress-bar-1.2.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/254c4671cd02d53213398ae80678e8db/jetified-circular-progress-bar-1.2.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/254c4671cd02d53213398ae80678e8db/jetified-circular-progress-bar-1.2.0/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa7737125599e316d8eeb936f0261dbd/jetified-circular-progress-bar-1.2.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa7737125599e316d8eeb936f0261dbd/jetified-circular-progress-bar-1.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa7737125599e316d8eeb936f0261dbd/jetified-circular-progress-bar-1.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0c13f06df606b3668501dae5c424ea11/jetified-circular-progress-bar-1.2.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0c13f06df606b3668501dae5c424ea11/jetified-circular-progress-bar-1.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0c13f06df606b3668501dae5c424ea11/jetified-circular-progress-bar-1.2.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.budiyev.android/circular-progress-bar/1.2.0/4216e9923849f9e0c8bce8c3562bc65482deb2a1/circular-progress-bar-1.2.0-javadoc.jar!/" />

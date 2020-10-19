@@ -17,6 +17,10 @@ class PagingDelegate @Inject constructor() : PagingView {
     private var swipeLayout: ViewGroup? = null
     private var emptyStateView: View? = null
 
+    fun changeAdapter(adapter: PagingAdapter) {
+        this.adapter = adapter
+    }
+
     override fun attachPagingView(adapter: PagingAdapter, swipeLayout: ViewGroup, emptyStateView: View) {
         this.adapter = adapter
         this.swipeLayout = swipeLayout
