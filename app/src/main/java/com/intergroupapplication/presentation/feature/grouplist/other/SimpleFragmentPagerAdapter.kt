@@ -1,9 +1,11 @@
 package com.intergroupapplication.presentation.feature.grouplist.other
 
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 
 class GroupPageAdapter(fragment: Fragment,
@@ -12,7 +14,7 @@ class GroupPageAdapter(fragment: Fragment,
                        private val adapterAdm: GroupListAdapter) : FragmentStateAdapter(fragment) {
 
     private val PAGE_COUNT = 3
-    var doOnFragmentViewCreated: (View) -> Unit = {}
+    var doOnFragmentViewCreated: (View, PagingDelegate) -> Unit = { _, _ ->}
 
     override fun getItemCount(): Int = PAGE_COUNT
 
@@ -31,7 +33,8 @@ class GroupPageAdapter(fragment: Fragment,
 
 }
 
-class ViewPager2Circular(private val pager: ViewPager2) : ViewPager2.OnPageChangeCallback() {
+class ViewPager2Circular(private val pager: ViewPager2,
+                         private val swipeRefreshLayout: SwipeRefreshLayout) : ViewPager2.OnPageChangeCallback() {
 
     private var mCurrentPosition = 0
     private var mScrollState = 0
@@ -46,12 +49,17 @@ class ViewPager2Circular(private val pager: ViewPager2) : ViewPager2.OnPageChang
     }
 
     override fun onPageScrollStateChanged(state: Int) {
+        toggleRefreshing(state == ViewPager2.SCROLL_STATE_IDLE)
         if (isScrolled) {
             isScrolled = false
         } else {
             handleScrollState(state)
         }
         mScrollState = state
+    }
+
+    fun toggleRefreshing(enabled: Boolean) {
+        swipeRefreshLayout.isEnabled = enabled
     }
 
     private fun handleScrollState(state: Int) {

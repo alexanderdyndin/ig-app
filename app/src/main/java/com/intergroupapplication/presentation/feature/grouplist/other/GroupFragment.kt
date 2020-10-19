@@ -13,15 +13,17 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.delegate.PagingDelegate
+import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
 
 
 @SuppressLint("ValidFragment")
 class GroupsFragment constructor(
-        private val adapter: GroupListAdapter
-) : Fragment() {
+        private val adapter: GroupListAdapter,
+        private val pagingDelegate: PagingDelegate
+) : Fragment(), PagingView by pagingDelegate {
 
     private var mPage = 0
-    var doOnViewCreated: (View) -> Unit = {}
+    var doOnViewCreated: (View, PagingDelegate) -> Unit = { _, _ ->}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +38,7 @@ class GroupsFragment constructor(
                 : GroupsFragment {
             val args = Bundle()
             args.putInt(ARG_PAGE, page)
-            val fragment = GroupsFragment(adapter)
+            val fragment = GroupsFragment(adapter, PagingDelegate())
             fragment.arguments = args
             return fragment
         }
@@ -51,8 +53,12 @@ class GroupsFragment constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val groupsList = view.findViewById<RecyclerView>(R.id.allGroupsList)
+        val emptyText = view.findViewById<TextView>(R.id.emptyText)
+        groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        groupsList.setHasFixedSize(true)
+        groupsList.itemAnimator = null
         groupsList.adapter = adapter
-        doOnViewCreated(view)
+        doOnViewCreated(view, pagingDelegate)
     }
 
 }

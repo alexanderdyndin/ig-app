@@ -8,13 +8,16 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import co.zsmb.materialdrawerkt.builders.drawer
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import moxy.MvpView
@@ -30,12 +33,15 @@ import com.intergroupapplication.presentation.base.BasePresenter.Companion.GROUP
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
+import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupPageAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
-import kotlinx.android.synthetic.main.fragment_group_list.*
+import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
+import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.fragment_group_list1.*
 import javax.inject.Inject
 
 class GroupListFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegate)
@@ -46,10 +52,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     companion object {
         fun getInstance() = GroupListFragment()
     }
-
-    private val pagingAll = PagingDelegate()
-//    private lateinit var pagingSub: PagingDelegate
-//    private lateinit var pagingAdm: PagingDelegate
 
     @Inject
     @InjectPresenter
@@ -86,26 +88,28 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
     }
 
-    override fun layoutRes() = R.layout.fragment_group_list
+    override fun layoutRes() = R.layout.fragment_group_list1
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as NavigationActivity).navigationToolbar.visibility = View.GONE
+        activity_main__icon_menu.setOnClickListener {
+            (activity as NavigationActivity).drawer.openDrawer()
+        }
         adapterAll = setAdapter()
         adapterSub = setAdapter()
         adapterAdm = setAdapter()
         val gpAdapter = GroupPageAdapter(this, adapterAll, adapterSub, adapterAdm)
-        gpAdapter.doOnFragmentViewCreated = { it ->
-            val emptyText = it.findViewById<TextView>(R.id.emptyText)
-            val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
-            groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            groupsList.setHasFixedSize(true)
-            groupsList.itemAnimator = null
-            pagingDelegate.attachPagingView(adapterAll, swipeLayout, emptyText)
+        gpAdapter.doOnFragmentViewCreated = { v, pD ->
+            val emptyText = v.findViewById<TextView>(R.id.emptyText)
+            val groupsList = v.findViewById<RecyclerView>(R.id.allGroupsList)
+            pagingDelegate.attachPagingView(groupsList.adapter as GroupListAdapter, swipeLayout, emptyText)
+            //pD.attachPagingView(groupsList.adapter as GroupListAdapter, swipeLayout, emptyText)
         }
         pager.apply {
             adapter = gpAdapter
-            val handler = ViewPager2Circular(this)
+            val handler = ViewPager2Circular(this, swipeLayout)
             handler.pageChanged = {
                 when (it) {
                     0 -> pagingDelegate.changeAdapter(adapterAll)
@@ -120,7 +124,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
-        createGroup.setOnClickListener { openCreateGroup() }
+        activity_main__text_created_group.setOnClickListener { openCreateGroup() }
         swipeLayout.setOnRefreshListener { presenter.groupList() }
     }
 
@@ -138,12 +142,12 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     override fun onResume() {
         super.onResume()
         presenter.checkNewVersionAvaliable(fragmentManager!!)
-        searchField.addTextChangedListener(textWatcher)
+        activity_main__search_input.addTextChangedListener(textWatcher)
     }
 
     override fun onPause() {
         super.onPause()
-        searchField.removeTextChangedListener(textWatcher)
+        activity_main__search_input.removeTextChangedListener(textWatcher)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.drawerlayout.widget.DrawerLayout
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import moxy.presenter.InjectPresenter
@@ -21,6 +22,7 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.navigation.presenter.NavigationPresenter
+import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
@@ -57,6 +59,8 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     private lateinit var view: View
 
+    lateinit var drawer: Drawer
+
     private lateinit var profileAvatarHolder: AvatarImageUploadingView
 
     private var exitHandler: Handler? = null
@@ -71,7 +75,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
         profileAvatarHolder = view.profileAvatarHolder
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
-        drawer {
+        drawer = drawer {
             sliderBackgroundColorRes = R.color.profileTabColor
             headerView = view
             actionBarDrawerToggleEnabled = true

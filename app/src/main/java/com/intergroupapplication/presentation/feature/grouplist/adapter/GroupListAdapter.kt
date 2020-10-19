@@ -122,7 +122,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 item_group__comments.text = item.CommentsCount
                 item_group__dislike.text = item.postsLikes
                 item_group__like.text = item.postsDislikes
-                item_group__btn_group_list.setOnClickListener {
+                groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
                 }
                 if (item.isFollowing) {
