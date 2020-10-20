@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: ig-app.ta_library.ta_library">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ta_library/build/libs/ta_library.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
