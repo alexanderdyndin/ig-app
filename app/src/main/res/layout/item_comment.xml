@@ -100,7 +100,7 @@
         app:layout_constraintTop_toBottomOf="@+id/commentText"
         tools:text="сегодня 12:34" />
 
-    <androidx.constraintlayout.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
