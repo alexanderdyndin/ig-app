@@ -73,13 +73,13 @@ interface AppApi {
     @DELETE("groups/follows/{group_id}/")
     fun unfollowGroup(@Path("group_id") groupId: String): Completable
 
-    @GET("/s3/posts/")
+    @GET("s3/posts/")
     fun uploadPhoto(@Query("ext") imageExt: String): Single<ImageUploadDto>
 
-    @GET("/s3/users/")
+    @GET("s3/users/")
     fun uploadUserAvatar(@Query("ext") imageExt: String): Single<ImageUploadDto>
 
-    @GET("/s3/groups/")
+    @GET("s3/groups/")
     fun uploadGroupAvatar(@Query("ext") imageExt: String): Single<ImageUploadDto>
 
     @PATCH("users/profiles/{user-id}/")
