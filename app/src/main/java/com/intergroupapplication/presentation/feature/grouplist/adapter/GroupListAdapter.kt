@@ -21,7 +21,7 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.getGroupFollowersCount
 import com.intergroupapplication.presentation.exstension.inflate
-import kotlinx.android.synthetic.main.itemgroupinlist.view.*
+import kotlinx.android.synthetic.main.item_group_in_list.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
 
 
@@ -51,7 +51,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
         return when (viewType) {
             loadingViewType -> LoadingViewHolder(parent.inflate(R.layout.post_item_loading))
             errorViewType -> ErrorViewHolder(parent.inflate(R.layout.post_item_error))
-            else -> GroupViewHolder(parent.inflate(R.layout.itemgroupinlist))
+            else -> GroupViewHolder(parent.inflate(R.layout.item_group_in_list))
         }
     }
 

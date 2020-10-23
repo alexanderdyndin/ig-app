@@ -18,7 +18,6 @@ import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.presentation.base.ImageLoader
-import kotlinx.android.synthetic.main.itemgroupinlist.view.*
 import javax.inject.Inject
 
 /**

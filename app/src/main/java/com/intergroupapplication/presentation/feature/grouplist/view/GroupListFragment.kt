@@ -44,7 +44,7 @@ import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import kotlinx.android.synthetic.main.activity_navigation.*
-import kotlinx.android.synthetic.main.fragment_group_list1.*
+import kotlinx.android.synthetic.main.fragment_group_list.*
 import javax.inject.Inject
 
 class GroupListFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegateGroup)
@@ -91,7 +91,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
     }
 
-    override fun layoutRes() = R.layout.fragment_group_list1
+    override fun layoutRes() = R.layout.fragment_group_list
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
