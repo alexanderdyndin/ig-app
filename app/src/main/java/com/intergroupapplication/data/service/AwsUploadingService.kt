@@ -18,12 +18,17 @@ class AwsUploadingService @Inject constructor() : AwsUploadingGateway {
     override fun uploadImageToAws(uploadUrl: String, progressObserver: Observer<Float>,
                                   fields: PhotoUploadFields,
                                   uploadingFile: File) {
+        val fileName = uploadingFile.name
         AndroidNetworking.upload(uploadUrl)
                 .addMultipartParameter(
-                        mutableMapOf("AWSAccessKeyId" to fields.awsAccessKeyId,
-                                "key" to fields.key,
+                        mutableMapOf(//"AWSAccessKeyId" to "AKIAIOSFODNN7EXAMPLE",
                                 "policy" to fields.policy,
-                                "signature" to fields.signature))
+                                "acl" to "public-read",
+                                "key" to fields.key,
+                                "x-amz-algorithm" to fields.algorithm,
+                                "x-amz-credential" to fields.credential,
+                                "x-amz-date" to fields.date,
+                                "x-amz-signature" to fields.signature))
                 .addMultipartFile("file", uploadingFile)
                 .setPriority(Priority.HIGH)
                 .setPercentageThresholdForCancelling(50)

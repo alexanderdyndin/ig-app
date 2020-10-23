@@ -10,13 +10,11 @@ buildscript {
     repositories {
         google()
         jcenter()
-        //maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${tools_version}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        //classpath "io.fabric.tools:gradle:$fabric_version"
         classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
         classpath "io.realm:realm-gradle-plugin:$realm_version"

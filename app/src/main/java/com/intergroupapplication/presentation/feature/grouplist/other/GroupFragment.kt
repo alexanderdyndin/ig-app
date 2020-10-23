@@ -13,17 +13,17 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.delegate.PagingDelegate
+import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
 
 
 @SuppressLint("ValidFragment")
 class GroupsFragment constructor(
-        private val adapter: GroupListAdapter,
-        private val pagingDelegate: PagingDelegate
-) : Fragment(), PagingView by pagingDelegate {
+        private val adapter: GroupListAdapter
+) : Fragment() {
 
     private var mPage = 0
-    var doOnViewCreated: (View, PagingDelegate) -> Unit = { _, _ ->}
+    var doOnViewCreated: (View) -> Unit = { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +38,7 @@ class GroupsFragment constructor(
                 : GroupsFragment {
             val args = Bundle()
             args.putInt(ARG_PAGE, page)
-            val fragment = GroupsFragment(adapter, PagingDelegate())
+            val fragment = GroupsFragment(adapter)
             fragment.arguments = args
             return fragment
         }
@@ -58,7 +58,7 @@ class GroupsFragment constructor(
         groupsList.setHasFixedSize(true)
         groupsList.itemAnimator = null
         groupsList.adapter = adapter
-        doOnViewCreated(view, pagingDelegate)
+        doOnViewCreated(view)
     }
 
 }

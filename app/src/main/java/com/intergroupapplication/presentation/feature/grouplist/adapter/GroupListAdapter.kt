@@ -1,15 +1,16 @@
 package com.intergroupapplication.presentation.feature.grouplist.adapter
 
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.CharacterStyle
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.text.style.TypefaceSpan
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.ImageView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,6 @@ import com.intergroupapplication.presentation.exstension.getGroupFollowersCount
 import com.intergroupapplication.presentation.exstension.inflate
 import kotlinx.android.synthetic.main.itemgroupinlist.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
-import java.time.format.TextStyle
 
 
 /**
@@ -148,6 +148,19 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 doOrIfNull(item.avatar, {
                     imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
                 }, { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupAvatarHolder) })
+//                doOrIfNull(item.avatar, {
+//                    val vto = groupAvatarHolder1.viewTreeObserver
+//                    vto.addOnPreDrawListener{
+//                        groupAvatarHolder1.measuredHeight
+//                        groupAvatarHolder1.measuredWidth
+//                        groupAvatarHolder1.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
+//                        true
+//                    }
+//                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupAvatarHolder) })
+//                val matrix = Matrix()
+//                groupAvatarHolder1.scaleType = ImageView.ScaleType.MATRIX
+//                matrix.preRotate(315f, groupAvatarHolder1.drawable.bounds.exactCenterX(), groupAvatarHolder1.drawable.bounds.exactCenterY())
+//                groupAvatarHolder1.imageMatrix = matrix
             }
         }
 
@@ -155,8 +168,8 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 val spanStartPositions = item.name.mapIndexed { index: Int, c: Char -> item.name.indexOf(lettersToSpan, index, true) }.filterNot { it == -1 }.toSet()
                 val wordToSpan: Spannable = SpannableString(item.name)
                 spanStartPositions.forEach{
-                    wordToSpan.setSpan(ForegroundColorSpan(Color.CYAN), it, it+lettersToSpan.length , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    wordToSpan.setSpan(StyleSpan(Typeface.BOLD), it, it+lettersToSpan.length , Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    wordToSpan.setSpan(ForegroundColorSpan(Color.CYAN), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    wordToSpan.setSpan(StyleSpan(Typeface.BOLD), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 itemView.item_group__list_header.text = wordToSpan
         }

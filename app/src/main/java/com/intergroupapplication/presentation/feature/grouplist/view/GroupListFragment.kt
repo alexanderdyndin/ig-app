@@ -31,8 +31,11 @@ import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.GROUP_CREATED
 import com.intergroupapplication.presentation.base.PagingView
+import com.intergroupapplication.presentation.base.PagingViewGroup
+import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
+import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
@@ -44,10 +47,10 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_group_list1.*
 import javax.inject.Inject
 
-class GroupListFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegate)
-    : BaseFragment(), GroupListView, PagingView by pagingDelegate {
+class GroupListFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegateGroup)
+    : BaseFragment(), GroupListView, PagingViewGroup by pagingDelegate {
 
-    constructor() : this(PagingDelegate())
+    constructor() : this(PagingDelegateGroup())
 
     companion object {
         fun getInstance() = GroupListFragment()
@@ -99,24 +102,16 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         adapterAll = setAdapter()
         adapterSub = setAdapter()
         adapterAdm = setAdapter()
+        pagingDelegate.attachPagingView(swipeLayout)
         val gpAdapter = GroupPageAdapter(this, adapterAll, adapterSub, adapterAdm)
-        gpAdapter.doOnFragmentViewCreated = { v, pD ->
+        gpAdapter.doOnFragmentViewCreated = { v ->
             val emptyText = v.findViewById<TextView>(R.id.emptyText)
             val groupsList = v.findViewById<RecyclerView>(R.id.allGroupsList)
-            pagingDelegate.attachPagingView(groupsList.adapter as GroupListAdapter, swipeLayout, emptyText)
-            //pD.attachPagingView(groupsList.adapter as GroupListAdapter, swipeLayout, emptyText)
+            pagingDelegate.addAdapter(groupsList.adapter as PagingAdapter, emptyText)
         }
         pager.apply {
             adapter = gpAdapter
             val handler = ViewPager2Circular(this, swipeLayout)
-            handler.pageChanged = {
-                when (it) {
-                    0 -> pagingDelegate.changeAdapter(adapterAll)
-                    1 -> pagingDelegate.changeAdapter(adapterSub)
-                    2 -> pagingDelegate.changeAdapter(adapterAdm)
-                    else-> pagingDelegate.changeAdapter(adapterAll)
-                }
-            }
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
