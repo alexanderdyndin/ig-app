@@ -14,7 +14,7 @@ class GroupPageAdapter(fragment: Fragment,
                        private val adapterAdm: GroupListAdapter) : FragmentStateAdapter(fragment) {
 
     private val PAGE_COUNT = 3
-    var doOnFragmentViewCreated: (View, PagingDelegate) -> Unit = { _, _ ->}
+    var doOnFragmentViewCreated: (View) -> Unit = { }
 
     override fun getItemCount(): Int = PAGE_COUNT
 

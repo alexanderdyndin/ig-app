@@ -61,7 +61,7 @@
     <dimen name="divider_height">1dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="group_logo_size_in_list">40dp</dimen>
+    <dimen name="group_logo_size_in_list">53dp</dimen>
     <dimen name="post_comment_icon_size">24dp</dimen>
     <dimen name="comment_edit_text_height">50dp</dimen>
     <dimen name="toolbar_icon_size">24dp</dimen>

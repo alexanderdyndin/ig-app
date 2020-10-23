@@ -31,13 +31,15 @@
         android:id="@+id/groupAvatarHolder"
         android:layout_width="@dimen/group_logo_size_in_list"
         android:layout_height="@dimen/group_logo_size_in_list"
-
+        android:layout_marginStart="1dp"
+        android:layout_marginBottom="3dp"
         app:layout_constraintBottom_toBottomOf="@+id/item_group__ava_group_shadow"
         app:layout_constraintEnd_toEndOf="@+id/item_group__ava_group_shadow"
         app:layout_constraintStart_toStartOf="@+id/item_group__ava_group_shadow"
         app:layout_constraintTop_toTopOf="@+id/item_group__ava_group_shadow"
         fresco:placeholderImage="@drawable/application_logo"
-        fresco:roundAsCircle="true" />
+        app:roundAsCircle="true"/>
+
 
 
     <ImageView

@@ -3,7 +3,11 @@ package com.intergroupapplication.presentation.feature.navigation.view
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
+import android.util.Log
+import android.util.Log.ERROR
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
@@ -28,6 +32,9 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import timber.log.Timber
+import java.io.File
+import java.io.IOException
 import javax.inject.Inject
 
 
@@ -51,6 +58,17 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     @Inject
     override lateinit var navigator: SupportAppNavigator
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
+        val file = File("$filepatch.nomedia")
+        try {
+            file.createNewFile()
+        } catch (e: IOException) {
+            Timber.e(e)
+        }
+    }
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate

@@ -118,9 +118,9 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     }
                     //todo исправить пагинацию
                     if (it.error !is PageNotFoundException) {
-                        viewState.handleState(it.type)
+                        viewState.handleState1(it.type)
                     } else {
-                        viewState.handleState(BasePagingState.Type.NONE)
+                        viewState.handleState1(BasePagingState.Type.NONE)
                     }
                 }, {}))
 
@@ -146,9 +146,9 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     }
                     //todo исправить пагинацию
                     if (it.error !is PageNotFoundException) {
-                        viewState.handleState(it.type)
+                        viewState.handleState2(it.type)
                     } else {
-                        viewState.handleState(BasePagingState.Type.NONE)
+                        viewState.handleState2(BasePagingState.Type.NONE)
                     }
                 }, {}))
 
