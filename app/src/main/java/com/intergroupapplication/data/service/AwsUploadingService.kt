@@ -20,8 +20,11 @@ class AwsUploadingService @Inject constructor() : AwsUploadingGateway {
                                   uploadingFile: File) {
         AndroidNetworking.upload(uploadUrl)
                 .addMultipartParameter(
-                        mutableMapOf("AWSAccessKeyId" to fields.awsAccessKeyId,
+                        mutableMapOf("AWSAccessKeyId" to "AKIAIOSFODNN7EXAMPLE",
                                 "key" to fields.key,
+                                "x-amz-credential" to fields.credential,
+                                "x-amz-algorithm" to fields.algorithm,
+                                "x-amz-date" to fields.date,
                                 "policy" to fields.policy,
                                 "signature" to fields.signature))
                 .addMultipartFile("file", uploadingFile)
