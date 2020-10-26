@@ -176,6 +176,7 @@ dependencies {
     implementation 'androidx.media:media:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
+    implementation 'androidx.palette:palette-ktx:1.0.0'
     testImplementation "junit:junit:$jUnitVersion"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -35,7 +35,7 @@
             android:drawableBottom="@drawable/underline"
             android:drawablePadding="4dp"
             android:fontFamily="@font/play"
-            android:text="Создать группу"
+            android:text="@string/create_group"
             android:textColor="@color/colorAccent"
             android:textSize="14sp"
             app:fontFamily="@font/play"
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="64dp"
-            android:text="Группы"
+            android:text="@string/groups"
             android:textColor="@color/mainBlack"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -71,9 +71,9 @@
             android:id="@+id/activity_main__search_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/search_anim"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_main__header_bg" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_main__header_bg"
+            app:srcCompat="@drawable/search_anim" />
 
         <View
             android:id="@+id/activity_main__margin"
@@ -83,20 +83,33 @@
             app:layout_constraintBottom_toBottomOf="@+id/activity_main__search_bg"
             app:layout_constraintStart_toStartOf="@+id/activity_main__search_bg" />
 
+
+        <TextView
+            android:id="@+id/searchTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="@string/search"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/mainBlack"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_main__search_bg"
+            app:layout_constraintStart_toStartOf="@+id/activity_main__search_bg"
+            app:layout_constraintTop_toTopOf="@+id/activity_main__search_bg"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="25dp"/>
         <EditText
             android:id="@+id/activity_main__search_input"
-            android:layout_width="230dp"
+            android:layout_width="200dp"
             android:layout_height="31dp"
             android:background="#00FFFFFF"
             android:ems="10"
             android:fontFamily="@font/play"
-            android:hint="Поиск:"
             android:inputType="textShortMessage"
             android:textColor="@android:color/white"
             android:textColorHint="@color/mainBlack"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/activity_main__search_bg"
-            app:layout_constraintStart_toStartOf="@+id/activity_main__search_bg"
+            app:layout_constraintEnd_toStartOf="@+id/activity_main__btn_search"
             app:layout_constraintTop_toTopOf="@+id/activity_main__search_bg" />
 
         <ImageButton

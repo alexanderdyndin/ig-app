@@ -4,6 +4,7 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fff5edfaeac2b9e560a22670eef7e625/jetified-easydeviceinfo-base-2.4.1/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f61589d9d5cb26ee78806c6287a5e7cc/jetified-easydeviceinfo-base-2.4.1/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/faef687d346b39369d02358c19a59446/jetified-easydeviceinfo-base-2.4.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e48cb38c00b5715169a41e537e135e1b/jetified-easydeviceinfo-base-2.4.1/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ce7d83f512172e0d31e5cad4a8c3f909/jetified-easydeviceinfo-base-2.4.1/res" />
@@ -17,6 +18,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/faef687d346b39369d02358c19a59446/jetified-easydeviceinfo-base-2.4.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/faef687d346b39369d02358c19a59446/jetified-easydeviceinfo-base-2.4.1/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/faef687d346b39369d02358c19a59446/jetified-easydeviceinfo-base-2.4.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e48cb38c00b5715169a41e537e135e1b/jetified-easydeviceinfo-base-2.4.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e48cb38c00b5715169a41e537e135e1b/jetified-easydeviceinfo-base-2.4.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e48cb38c00b5715169a41e537e135e1b/jetified-easydeviceinfo-base-2.4.1/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.nisrulz/easydeviceinfo-base/2.4.1/90a6e7bc1ab6b3868469e2073ef0e653ba9d8a55/easydeviceinfo-base-2.4.1-javadoc.jar!/" />

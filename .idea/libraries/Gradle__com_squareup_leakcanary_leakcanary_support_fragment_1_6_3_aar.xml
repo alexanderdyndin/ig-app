@@ -10,6 +10,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67de2d11af20eef8ae0d84a3e55b23b4/jetified-leakcanary-support-fragment-1.6.3/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67de2d11af20eef8ae0d84a3e55b23b4/jetified-leakcanary-support-fragment-1.6.3/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67de2d11af20eef8ae0d84a3e55b23b4/jetified-leakcanary-support-fragment-1.6.3/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ee99b38d19294bb002a48da26f77b42b/jetified-leakcanary-support-fragment-1.6.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ee99b38d19294bb002a48da26f77b42b/jetified-leakcanary-support-fragment-1.6.3/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ee99b38d19294bb002a48da26f77b42b/jetified-leakcanary-support-fragment-1.6.3/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leakcanary-support-fragment/1.6.3/bab0799cf2348f3c32960d4d3b4530abc148ccac/leakcanary-support-fragment-1.6.3-javadoc.jar!/" />

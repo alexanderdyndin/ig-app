@@ -10,6 +10,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72d1bd94895f78216314e1b89ac5886b/jetified-materialdrawer-6.0.9/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72d1bd94895f78216314e1b89ac5886b/jetified-materialdrawer-6.0.9/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72d1bd94895f78216314e1b89ac5886b/jetified-materialdrawer-6.0.9/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/badd0b4580ad71d2dd41d6b0f9df02fa/jetified-materialdrawer-6.0.9/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/badd0b4580ad71d2dd41d6b0f9df02fa/jetified-materialdrawer-6.0.9/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/badd0b4580ad71d2dd41d6b0f9df02fa/jetified-materialdrawer-6.0.9/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/materialdrawer/6.0.9/a8d8bbbaa6e9666769ae4f303fdc22263c2c3455/materialdrawer-6.0.9-javadoc.jar!/" />

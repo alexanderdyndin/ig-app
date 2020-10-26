@@ -9,6 +9,7 @@ import android.os.Handler
 import android.util.Log
 import android.util.Log.ERROR
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.Toolbar
@@ -158,6 +159,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
     override fun showImageUploaded() {
         presenter.changeUserAvatar()
     }
+
 
     override fun avatarChanged(url: String) {
         profileAvatarHolder.showAvatar(url)

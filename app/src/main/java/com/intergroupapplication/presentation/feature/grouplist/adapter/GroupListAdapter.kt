@@ -146,21 +146,9 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                     item_group__text_sub.visibility = View.VISIBLE
                 }
                 doOrIfNull(item.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupAvatarHolder) })
-//                doOrIfNull(item.avatar, {
-//                    val vto = groupAvatarHolder1.viewTreeObserver
-//                    vto.addOnPreDrawListener{
-//                        groupAvatarHolder1.measuredHeight
-//                        groupAvatarHolder1.measuredWidth
-//                        groupAvatarHolder1.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
-//                        true
-//                    }
-//                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupAvatarHolder) })
-//                val matrix = Matrix()
-//                groupAvatarHolder1.scaleType = ImageView.ScaleType.MATRIX
-//                matrix.preRotate(315f, groupAvatarHolder1.drawable.bounds.exactCenterX(), groupAvatarHolder1.drawable.bounds.exactCenterY())
-//                groupAvatarHolder1.imageMatrix = matrix
+//                    imageLoadingDelegate.loadImageFromUrl(it, imageview123)
+                    imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
+                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.ava_group, groupAvatarHolder) })
             }
         }
 

@@ -7,9 +7,10 @@
         android:id="@+id/allGroupsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/groupListItemColor"
+        android:background="@color/mainBlack"
         android:clipToPadding="false"
-        android:paddingBottom="@dimen/group_list_recycler_bottom_padding" />
+        android:paddingBottom="@dimen/group_list_recycler_bottom_padding"
+        />
 
     <TextView
         android:id="@+id/emptyText"

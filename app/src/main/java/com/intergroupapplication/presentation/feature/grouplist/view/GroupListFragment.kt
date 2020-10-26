@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toolbar
 import androidx.paging.PagedList
@@ -75,7 +76,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     @Inject
     lateinit var diffUtil: DiffUtil.ItemCallback<GroupEntity>
 
-    private val tabTitles = arrayOf("Все группы", "Подписки", "Управление")
 
     //адаптеры для фрагментов сос списками групп
     lateinit var adapterAll: GroupListAdapter
@@ -115,11 +115,20 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
+        val tabTitles = arrayOf(resources.getString(R.string.allGroups), resources.getString(R.string.subGroups), resources.getString(R.string.admGroups))
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
         activity_main__text_created_group.setOnClickListener { openCreateGroup() }
         swipeLayout.setOnRefreshListener { presenter.groupList() }
+        activity_main__btn_search.setOnClickListener {
+            activity_main__search_input.requestFocus()
+            if (activity is NavigationActivity) {
+                val imm: InputMethodManager = (activity as NavigationActivity).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                imm.showSoftInput(this.view, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
     }
 
     private fun setAdapter(): GroupListAdapter {

@@ -79,7 +79,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
                     myDialogFragment.show(manager, "myDialog")
                 }
             } catch (e:Throwable) {
-                errorHandler.handle(e)
+                //errorHandler.handle(e)
             }
         }
     }
@@ -91,7 +91,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
                 .subscribe({
                     viewState?.showMessage(R.string.complaint_send)
                 }, {
-                    errorHandler.handle(it)
+                    //errorHandler.handle(it)
                 }))
     }
 

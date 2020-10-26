@@ -130,5 +130,9 @@
     <string name="search">Поиск</string>
     <string name="subscribe">Подписаться</string>
     <string name="unsubscribe">Отписаться</string>
+    <string name="searchString">Поиск</string>
+    <string name="allGroups">Все группы</string>
+    <string name="subGroups">Подписки</string>
+    <string name="admGroups">Управление</string>
 
 </resources>

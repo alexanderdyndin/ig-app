@@ -69,7 +69,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     myDialogFragment.show(fragmentManager, "myDialog")
                 }
             }  catch (e:Throwable) {
-                errorHandler.handle(e)
+                //errorHandler.handle(e)
             }
         }
     }
