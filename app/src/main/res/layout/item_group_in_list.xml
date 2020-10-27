@@ -47,12 +47,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        android:foreground="@drawable/avatar_foreground"
+        android:foreground="@drawable/ava_foreground_l"
         app:layout_constraintBottom_toBottomOf="@+id/item_group__ava_group_shadow"
         app:layout_constraintEnd_toEndOf="@+id/item_group__ava_group_shadow"
         app:layout_constraintStart_toStartOf="@+id/item_group__ava_group_shadow"
         app:layout_constraintTop_toTopOf="@+id/item_group__ava_group_shadow"/>
-
+  
 
 
     <ImageView
