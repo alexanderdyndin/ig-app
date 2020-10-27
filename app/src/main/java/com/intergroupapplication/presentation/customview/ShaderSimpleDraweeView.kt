@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.customview
 
-import android.R.attr.angle
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
@@ -13,8 +12,6 @@ import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.BasePostprocessor
 import com.facebook.imagepipeline.request.ImageRequest.RequestLevel
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.intergroupapplication.R
-import com.intergroupapplication.presentation.exstension.MaskedDrawablePorterDuffSrcIn
 
 
 class ShaderSimpleDraweeView: SimpleDraweeView {

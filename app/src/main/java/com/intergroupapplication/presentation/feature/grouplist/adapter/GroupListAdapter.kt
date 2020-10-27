@@ -146,8 +146,8 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                     item_group__text_sub.visibility = View.VISIBLE
                 }
                 doOrIfNull(item.avatar, {
-//                    imageLoadingDelegate.loadImageFromUrl(it, imageview123)
-                    imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
+                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
+                    //imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
                 }, { imageLoadingDelegate.loadImageFromResources(R.drawable.ava_group, groupAvatarHolder) })
             }
         }

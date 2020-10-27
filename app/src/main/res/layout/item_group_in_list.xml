@@ -26,34 +26,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ava_group_shadow"
         android:layout_marginRight="15dp"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
-    <com.intergroupapplication.presentation.customview.ShaderSimpleDraweeView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/groupAvatarHolder"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__ava_group_shadow"
-        app:layout_constraintEnd_toEndOf="@+id/item_group__ava_group_shadow"
-        app:layout_constraintStart_toStartOf="@+id/item_group__ava_group_shadow"
-        app:layout_constraintTop_toTopOf="@+id/item_group__ava_group_shadow"
-        fresco:placeholderImage="@drawable/ava_group"
-        android:visibility="gone"
-        android:scaleType="centerCrop"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_group__sub"
+        app:layout_constraintTop_toTopOf="parent"
+        android:foreground="@drawable/ava_group_alfa"
         app:actualImageScaleType="centerCrop"
-        app:roundAsCircle="false"/>
-
-    <ImageView
-        android:id="@+id/imageview123"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:foreground="@drawable/ava_foreground_l"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__ava_group_shadow"
-        app:layout_constraintEnd_toEndOf="@+id/item_group__ava_group_shadow"
-        app:layout_constraintStart_toStartOf="@+id/item_group__ava_group_shadow"
-        app:layout_constraintTop_toTopOf="@+id/item_group__ava_group_shadow"/>
-  
-
+        android:layout_marginRight="15dp"/>
 
     <ImageView
         android:id="@+id/item_group__right_line"

@@ -38,36 +38,25 @@ class ImageLoadingDelegate @Inject constructor(private val imageLoader: ImageLoa
         imageLoader.loadImageFromUrl(url, target)
     }
 
-    fun loadImageFromFile(filePath: String, target: ShaderSimpleDraweeView) {
-        imageLoader.loadImageFromFile(filePath, target)
-    }
 
-    fun loadImageFromResources(resId: Int, target: ShaderSimpleDraweeView) {
-        imageLoader.loadImageFromResources(resId, target)
-    }
-
-    fun loadImageFromUrl(url: String, target: ImageView) {
-        imageLoader.loadImageFromUrl(url, target)
-    }
-
-    fun loadBitmapFromUrl(url: String): Bitmap? {
-        val uri = Uri.parse(url)
-        val pipeline = Fresco.getImagePipeline()
-        val request = ImageRequestBuilder
-                .newBuilderWithSource(uri)
-                .setRequestPriority(Priority.HIGH)
-                .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
-                .build()
-        val ds = pipeline.fetchDecodedImage(request, null)
-        val ref = DataSources.waitForFinalResult(ds)
-        ref?.use { ref ->
-            val image = ref.get()
-            if (image is CloseableBitmap) {
-                return image.underlyingBitmap
-            }
-        }
-        return null
-    }
+//    fun loadBitmapFromUrl(url: String): Bitmap? {
+//        val uri = Uri.parse(url)
+//        val pipeline = Fresco.getImagePipeline()
+//        val request = ImageRequestBuilder
+//                .newBuilderWithSource(uri)
+//                .setRequestPriority(Priority.HIGH)
+//                .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
+//                .build()
+//        val ds = pipeline.fetchDecodedImage(request, null)
+//        val ref = DataSources.waitForFinalResult(ds)
+//        ref?.use { ref ->
+//            val image = ref.get()
+//            if (image is CloseableBitmap) {
+//                return image.underlyingBitmap
+//            }
+//        }
+//        return null
+//    }
 //
 //    private fun cropBitmap(src: Bitmap): Bitmap {
 //        lateinit var bitmap: Bitmap
