@@ -67,7 +67,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
         try {
             file.createNewFile()
         } catch (e: IOException) {
-            Timber.e(e)
+            Log.e("file", e.message)
         }
     }
 
