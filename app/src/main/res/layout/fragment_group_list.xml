@@ -109,8 +109,9 @@
             android:textColor="@android:color/white"
             android:textColorHint="@color/mainBlack"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/activity_main__btn_search"
-            app:layout_constraintTop_toTopOf="@+id/activity_main__search_bg" />
+            app:layout_constraintStart_toStartOf="@id/activity_main__header"
+            app:layout_constraintTop_toTopOf="@+id/activity_main__search_bg"
+            android:layout_marginStart="5dp"/>
 
         <ImageButton
             android:id="@+id/activity_main__btn_search"
@@ -120,8 +121,6 @@
             app:srcCompat="@drawable/icon_search"
             app:layout_constraintBottom_toBottomOf="@+id/activity_main__search_bg"
             app:layout_constraintEnd_toEndOf="parent" />
-
-
 
         <ImageView
             android:id="@+id/activity_main__bg_tabs"

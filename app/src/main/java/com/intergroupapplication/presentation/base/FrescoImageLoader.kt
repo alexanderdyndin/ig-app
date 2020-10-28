@@ -32,21 +32,7 @@ class FrescoImageLoader(private val callerContext: BaseActivity) : ImageLoader {
         //target.setImageURI(Uri.fromFile(File(filePath)), callerContext)
     }
 
-    override fun loadImageFromFile(filePath: String, target: ShaderSimpleDraweeView) {
-        val request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(filePath)))
-                .build()
-        target.setImageRequest(request)
-    }
-
     override fun loadImageFromResources(resId: Int, target: SimpleDraweeView) {
-        val uri = Uri.Builder()
-                .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
-                .path(resId.toString())
-                .build()
-        target.setImageURI(uri, callerContext)
-    }
-
-    override fun loadImageFromResources(resId: Int, target: ShaderSimpleDraweeView) {
         val uri = Uri.Builder()
                 .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
                 .path(resId.toString())
@@ -56,10 +42,6 @@ class FrescoImageLoader(private val callerContext: BaseActivity) : ImageLoader {
 
     override fun loadImageFromUrl(url: String, target: SimpleDraweeView) {
         target.setImageURI(Uri.parse(url), callerContext)
-    }
-
-    override fun loadImageFromUrl(url: String, target: ImageView) {
-        target.setImageURI(Uri.parse(url))
     }
 
 }

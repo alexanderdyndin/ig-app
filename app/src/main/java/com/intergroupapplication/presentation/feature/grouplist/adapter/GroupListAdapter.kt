@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.grouplist.adapter
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -14,6 +15,7 @@ import android.widget.ImageView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.common.util.UriUtil
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
@@ -125,30 +127,31 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
                 }
-                if (item.isFollowing) {
-                    item_group__btn_group_list.setOnClickListener {
-                        unsubscribeClickListener.invoke(item.id)
+                with (item_group__btn_group_list) {
+                    if (item.isFollowing) {
+                        setOnClickListener {
+                            unsubscribeClickListener.invoke(item.id)
+                        }
+                        text = resources.getText(R.string.unsubscribe)
+                        setBackgroundResource(R.drawable.btn_unsub)
+                    } else {
+                        setOnClickListener {
+                            subscribeClickListener.invoke(item.id)
+                        }
+                        text = resources.getText(R.string.subscribe)
+                        setBackgroundResource(R.drawable.btn_sub)
                     }
-                    item_group__text_sub.text = resources.getText(R.string.unsubscribe)
-                    item_group__btn_group_list.setBackgroundResource(R.drawable.btn_unsub)
-                } else {
-                    item_group__btn_group_list.setOnClickListener {
-                        subscribeClickListener.invoke(item.id)
+                    if (userID == item.owner) {
+                        visibility = View.GONE
+                    } else {
+                        visibility = View.VISIBLE
                     }
-                    item_group__text_sub.text = resources.getText(R.string.subscribe)
-                    item_group__btn_group_list.setBackgroundResource(R.drawable.btn_sub)
-                }
-                if (userID == item.owner) {
-                    item_group__btn_group_list.visibility = View.GONE
-                    item_group__text_sub.visibility = View.GONE
-                } else {
-                    item_group__btn_group_list.visibility = View.VISIBLE
-                    item_group__text_sub.visibility = View.VISIBLE
                 }
                 doOrIfNull(item.avatar, {
-//                    imageLoadingDelegate.loadImageFromUrl(it, imageview123)
-                    imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.ava_group, groupAvatarHolder) })
+                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
+                    //imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
+                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.application_icon, groupAvatarHolder)
+                })
             }
         }
 

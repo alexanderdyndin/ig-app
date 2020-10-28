@@ -11,7 +11,4 @@ interface ImageLoader {
     fun loadImageFromFile(filePath: String, target: SimpleDraweeView)
     fun loadImageFromResources(resId: Int, target: SimpleDraweeView)
     fun loadImageFromUrl(url: String, target: SimpleDraweeView)
-    fun loadImageFromFile(filePath: String, target: ShaderSimpleDraweeView)
-    fun loadImageFromResources(resId: Int, target: ShaderSimpleDraweeView)
-    fun loadImageFromUrl(url: String, target: ImageView)
 }
