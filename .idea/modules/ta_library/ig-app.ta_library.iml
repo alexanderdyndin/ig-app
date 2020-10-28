@@ -21,7 +21,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/../../../ta_library/build/classes/kotlin/main" />
-          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.10/ea29e063d2bbe695be13e9d044dcfb0c7add398e/kotlin-stdlib-1.4.10.jar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/com.jakewharton.threetenabp/threetenabp/1.2.4/815135bc51e6a48304776566aba4db3f3001aaf3/threetenabp-1.2.4.aar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.10/6229be3465805c99db1142ad75e6c6ddeac0b04c/kotlin-stdlib-common-1.4.10.jar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/org.threeten/threetenbp/1.4.4/61d503fa650d0b8458953d2f671f9561102c2381/threetenbp-1.4.4-no-tzdb.jar" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.10/ea29e063d2bbe695be13e9d044dcfb0c7add398e/kotlin-stdlib-1.4.10.jar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/com.jakewharton.threetenabp/threetenabp/1.3.0/e67088ad0c8a0a98e14b15933a977b5ac37a757/threetenabp-1.3.0.aar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.10/6229be3465805c99db1142ad75e6c6ddeac0b04c/kotlin-stdlib-common-1.4.10.jar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar;C:/Users/Alexandr/.gradle/caches/modules-2/files-2.1/org.threeten/threetenbp/1.5.0/736eaa38380d86f857b4ba455200f04fc611b4fe/threetenbp-1.5.0-no-tzdb.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="ta_library" />
@@ -73,7 +73,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: com.jakewharton.threetenabp:threetenabp:1.2.4:aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.jakewharton.threetenabp:threetenabp:1.3.0:aar" level="project" />
     <orderEntry type="module-library">
       <library name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.10">
         <CLASSES>
@@ -87,13 +87,13 @@
     </orderEntry>
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
     <orderEntry type="module-library">
-      <library name="Gradle: org.threeten:threetenbp:1.4.4:no-tzdb">
+      <library name="Gradle: org.threeten:threetenbp:1.5.0:no-tzdb">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.threeten/threetenbp/1.4.4/61d503fa650d0b8458953d2f671f9561102c2381/threetenbp-1.4.4-no-tzdb.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.threeten/threetenbp/1.5.0/736eaa38380d86f857b4ba455200f04fc611b4fe/threetenbp-1.5.0-no-tzdb.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.threeten/threetenbp/1.4.4/dde3597329958489d3562ccba028d0ddd31c00bb/threetenbp-1.4.4-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.threeten/threetenbp/1.5.0/8007179c3fd2b547ab4a3a9fd1ad4ff5234be558/threetenbp-1.5.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
