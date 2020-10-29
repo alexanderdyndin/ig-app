@@ -54,7 +54,6 @@
                 android:layout_marginEnd="@dimen/large_margin"
                 android:text="@string/create_new_profile"
                 android:textAllCaps="true"
-                android:textColor="@color/whiteTextColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textView" />
@@ -87,7 +86,6 @@
                 android:id="@+id/etMail"
                 style="@style/EditTextAuthStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginTop="@dimen/low_big_margin"
                 android:layout_marginEnd="@dimen/large_margin"
@@ -116,7 +114,6 @@
                 android:id="@+id/password"
                 style="@style/EditTextAuthStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginTop="@dimen/low_big_margin"
                 android:layout_marginEnd="@dimen/large_margin"
@@ -156,8 +153,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/enter"
-                    android:textAllCaps="true"
-                    android:textColor="@color/whiteTextColor" />
+                    android:textAllCaps="true"/>
 
                 <include layout="@layout/auth_loader" />
 
@@ -171,6 +167,7 @@
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginTop="@dimen/middle_high_big_margin"
                 android:layout_marginEnd="@dimen/large_margin"
+                android:textColor="@android:color/white"
                 android:background="@drawable/background_button_red"
                 android:text="@string/repeat_passwd"
                 app:layout_constraintEnd_toEndOf="parent"

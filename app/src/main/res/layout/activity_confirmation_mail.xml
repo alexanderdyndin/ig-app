@@ -56,7 +56,6 @@
                     android:id="@+id/confirmation"
                     style="@style/EditTextAuthStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/large_margin"
                     android:layout_marginEnd="@dimen/large_margin"
                     android:hint="@string/your_code"
@@ -86,6 +85,7 @@
                     android:layout_marginEnd="@dimen/large_margin"
                     android:background="@drawable/background_button_red"
                     android:text="@string/change_e_mail"
+                    android:textColor="@android:color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btnRepeatCode" />

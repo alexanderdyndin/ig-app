@@ -134,5 +134,7 @@
     <string name="allGroups">Все группы</string>
     <string name="subGroups">Подписки</string>
     <string name="admGroups">Управление</string>
+    <string name="terms_accept_privacy">Условия политики принимаю\t\t\t</string>
+    <string name="terms_accept_agreement">Условия соглашения принимаю\t \t\t</string>
 
 </resources>
