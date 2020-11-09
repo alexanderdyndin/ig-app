@@ -1,170 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/mainBlack">
 
     <View
-        android:id="@+id/item_group__bg"
-        android:layout_width="wrap_content"
-        android:layout_height="113dp"
-        android:background="@drawable/bg_lists"
+        android:id="@+id/item_group__bg_list"
+        android:layout_width="match_parent"
+        android:layout_height="93dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@drawable/bg_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/item_group__ava_group_shadow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/item_group__sub"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ava_group_shadow"
-        android:layout_marginRight="15dp"
-        android:visibility="gone"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/groupAvatarHolder"
         android:layout_width="85dp"
         android:layout_height="85dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/item_group__sub"
-        app:layout_constraintTop_toTopOf="parent"
         android:foreground="@drawable/ava_group_alfa"
         app:actualImageScaleType="centerCrop"
-        android:layout_marginRight="15dp"
-        fresco:placeholderImage="@drawable/ava_group_shadow"
-        android:scaleType="centerCrop"/>
+        fresco:placeholderImage="@drawable/variant_10"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"
+        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"
+        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list" />
 
-    <ImageView
-        android:id="@+id/item_group__right_line"
+    <TextView
+        android:id="@+id/item_group__text_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
-        android:background="@drawable/right_line"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg"
-        app:layout_constraintEnd_toEndOf="@+id/item_group__bg"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg"
-        />
+        android:text="12+"
+        android:textSize="8dp"
+        android:padding="1dp"
+        android:textColor="@color/mainBlack"
+        android:background="@drawable/bg_age"
+        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list"
+        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"/>
+
+    <ImageView
+        android:id="@+id/item_group__bg_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_lock"
+        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"
+        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list" />
+
+    <ImageView
+        android:id="@+id/item_group__icon_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_open"
+        android:paddingLeft="3dp"
+        android:paddingBottom="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_lock"
+        app:layout_constraintStart_toStartOf="@+id/item_group__bg_lock" />
 
     <TextView
         android:id="@+id/item_group__list_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="107dp"
-        android:layout_marginLeft="107dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/play"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="4dp"
         android:text="Искусство"
         android:textColor="@color/colorAccent"
         android:textSize="16sp"
         app:fontFamily="@font/play"
-        app:layout_constraintStart_toStartOf="@+id/item_group__bg"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg" />
+        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"
+        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list" />
 
     <LinearLayout
         android:id="@+id/item_group__sub"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/item_group__right_line"
         app:layout_constraintStart_toStartOf="@+id/item_group__list_header"
         app:layout_constraintTop_toBottomOf="@+id/item_group__list_header">
 
         <TextView
             android:id="@+id/item_group__subscribers"
-            android:layout_width="wrap_content"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/icon_subscribers"
             android:drawablePadding="4dp"
+            android:paddingLeft="4dp"
             android:text="500"
             android:textColor="@color/colorAccent2"
             app:fontFamily="@font/play" />
 
         <TextView
             android:id="@+id/item_group__posts"
-            android:layout_width="wrap_content"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/icon_posts"
             android:drawablePadding="4dp"
+            android:paddingLeft="4dp"
             android:text="1500"
             android:textColor="@color/colorAccent2"
-            app:fontFamily="@font/play" />
+            app:fontFamily="@font/play"
+            android:layout_marginLeft="16dp"/>
 
         <TextView
             android:id="@+id/item_group__comments"
-            android:layout_width="wrap_content"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/icon_comments"
             android:drawablePadding="4dp"
+            android:paddingLeft="4dp"
             android:text="10к"
             android:textColor="@color/colorAccent2"
-            app:fontFamily="@font/play" />
+            app:fontFamily="@font/play"
+            android:layout_marginLeft="16dp"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/item_group__like_dislike"
-        android:layout_width="119dp"
+    <FrameLayout
+        android:id="@+id/item_group__dislikes"
+        android:layout_width="64dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/item_group__text_sub"
         app:layout_constraintStart_toStartOf="@+id/item_group__sub"
-        app:layout_constraintTop_toBottomOf="@+id/item_group__sub">
+        app:layout_constraintTop_toTopOf="@+id/item_group__text_sub">
 
         <TextView
             android:id="@+id/item_group__dislike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginLeft="4dp"
             android:drawableLeft="@drawable/icon_dislike"
             android:drawablePadding="4dp"
-            android:fontFamily="@font/play"
             android:text="150"
             android:textColor="@color/colorLightBlue"
             android:textSize="14sp"
             app:fontFamily="@font/play" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/item_group__likes"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        app:layout_constraintStart_toEndOf="@+id/item_group__dislikes"
+        app:layout_constraintTop_toTopOf="@+id/item_group__dislikes"
+        android:layout_marginLeft="16dp">
+
 
         <TextView
             android:id="@+id/item_group__like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:drawableLeft="@drawable/icon_like"
             android:drawablePadding="4dp"
-            android:fontFamily="@font/play"
-            android:text="101к"
+            android:text="999к"
+            android:layout_marginLeft="4dp"
             android:textColor="@color/colorLightPunk"
             android:textSize="14sp"
-            app:fontFamily="@font/play" />
-    </LinearLayout>
+            app:fontFamily="@font/play"/>
+    </FrameLayout>
 
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/item_group__btn_group_list"
+    <TextView
+        android:id="@+id/item_group__text_sub"
         android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:layout_marginLeft="19dp"
-        android:background="@drawable/btn_group_list"
-        app:srcCompat="@drawable/btn_group_list"
-        android:text="@string/subscribe"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_sub"
+        android:gravity="center"
+        android:paddingBottom="2dp"
+        android:text="Подписаться"
         android:textColor="@color/mainBlack"
         android:textSize="12sp"
         app:fontFamily="@font/play"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__like_dislike"
-        app:layout_constraintEnd_toStartOf="@+id/item_group__right_line"
-        app:layout_constraintStart_toEndOf="@+id/item_group__like_dislike"
-        app:layout_constraintTop_toTopOf="@+id/item_group__like_dislike"
-        android:visibility="visible"/>
-
+        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"
+        app:layout_constraintEnd_toEndOf="@+id/item_group__bg_list"
+        app:layout_constraintStart_toEndOf="@+id/item_group__likes"
+        app:layout_constraintTop_toBottomOf="@+id/item_group__sub" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

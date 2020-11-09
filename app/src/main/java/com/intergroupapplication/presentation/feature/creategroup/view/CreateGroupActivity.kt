@@ -13,7 +13,6 @@ import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.exstension.setLinkClickable
 import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
@@ -25,6 +24,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_create_group.*
 import kotlinx.android.synthetic.main.auth_loader.*
+import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
@@ -60,11 +60,11 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
     override fun getSnackBarCoordinator(): CoordinatorLayout = createGroupCoordinator
 
     override fun viewCreated() {
-        groupName = findViewById(R.id.groupName)
+        groupName = findViewById(R.id.groupNameInput)
         createGroup.setOnClickListener {
             validator.validate()
         }
-        addGroupAvatar.setLinkClickable {
+        groupAvatarHolder.setOnClickListener {
             dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
                     mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
         }

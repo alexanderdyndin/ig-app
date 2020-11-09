@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Log.ERROR
 import android.view.View
@@ -32,6 +33,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
+import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import timber.log.Timber
 import java.io.File
@@ -67,7 +69,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
         try {
             file.createNewFile()
         } catch (e: IOException) {
-            Log.e("file", e.message)
+            Log.e("file", e.message ?: "404")
         }
     }
 
@@ -84,6 +86,8 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     private var exitHandler: Handler? = null
 
+    val r = Runnable { this.doubleBackToExitPressedOnce = false }
+
     @LayoutRes
     override fun layoutRes() = R.layout.activity_navigation
 
@@ -99,7 +103,6 @@ class NavigationActivity : BaseActivity(), NavigationView {
             headerView = view
             actionBarDrawerToggleEnabled = true
             translucentStatusBar = true
-            toolbar = navigationToolbar as Toolbar
             view.profileAvatarHolder.setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                         || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
@@ -148,6 +151,9 @@ class NavigationActivity : BaseActivity(), NavigationView {
             setSelection(drawerItem)
             view.drawerArrow.setOnClickListener { closeDrawer() }
         }
+        navigationToolbar.toolbarMenu.setOnClickListener {
+            drawer.openDrawer()
+        }
         presenter.getUserInfo()
     }
 
@@ -194,12 +200,12 @@ class NavigationActivity : BaseActivity(), NavigationView {
         }
         this.doubleBackToExitPressedOnce = true
         Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-        exitHandler = Handler()
-        exitHandler?.postDelayed({ doubleBackToExitPressedOnce = false }, EXIT_DELAY)
+        exitHandler = Handler(Looper.getMainLooper())
+        exitHandler?.postDelayed(r, EXIT_DELAY)
     }
 
     override fun onDestroy() {
-        exitHandler?.removeCallbacks(null)
+        exitHandler?.removeCallbacks(r)
         super.onDestroy()
     }
 }

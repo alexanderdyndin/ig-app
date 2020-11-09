@@ -48,11 +48,11 @@ androidExtensions {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.intergroupapplication"
-        minSdkVersion 19
-        targetSdkVersion 28
+        minSdkVersion 23
+        targetSdkVersion 30
         versionCode 1000002
 //        androidGitVersion.code()
         versionName "2.0.0.0"

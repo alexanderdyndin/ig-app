@@ -18,62 +18,12 @@
 
 
         <ImageView
-            android:id="@+id/activity_main__header_bg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/bg_header"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/activity_main__text_created_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:drawableBottom="@drawable/underline"
-            android:drawablePadding="4dp"
-            android:fontFamily="@font/play"
-            android:text="@string/create_group"
-            android:textColor="@color/colorAccent"
-            android:textSize="14sp"
-            app:fontFamily="@font/play"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/activity_main__header_bg" />
-
-        <TextView
-            android:id="@+id/activity_main__header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="64dp"
-            android:text="@string/groups"
-            android:textColor="@color/mainBlack"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:fontFamily="@font/play_bold"
-            app:layout_constraintBottom_toBottomOf="@+id/activity_main__header_bg"
-            app:layout_constraintStart_toEndOf="@+id/activity_main__icon_menu"
-            app:layout_constraintTop_toTopOf="@+id/activity_main__header_bg"
-            app:layout_constraintVertical_bias="0.523" />
-
-        <ImageView
-            android:id="@+id/activity_main__icon_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/activity_main__header_bg"
-            app:layout_constraintStart_toStartOf="@+id/activity_main__header_bg"
-            app:layout_constraintTop_toTopOf="@+id/activity_main__header_bg"
-            app:srcCompat="@drawable/icon_menu" />
-
-        <ImageView
             android:id="@+id/activity_main__search_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_main__header_bg"
-            app:srcCompat="@drawable/search_anim" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bg_search" />
 
         <View
             android:id="@+id/activity_main__margin"
@@ -90,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:text="@string/search"
-            android:textColor="@android:color/white"
+            android:textColor="@color/mainBlack"
             android:textColorHint="@color/mainBlack"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/activity_main__search_bg"
@@ -109,33 +59,24 @@
             android:textColor="@android:color/white"
             android:textColorHint="@color/mainBlack"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@id/activity_main__header"
             app:layout_constraintTop_toTopOf="@+id/activity_main__search_bg"
-            android:layout_marginStart="5dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="111dp"/>
 
         <ImageButton
-            android:id="@+id/activity_main__btn_search"
+            android:id="@+id/activity_main__btn_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_search"
-            app:srcCompat="@drawable/icon_search"
+            android:background="@drawable/btn_filter"
+            app:srcCompat="@drawable/icon_filter"
             app:layout_constraintBottom_toBottomOf="@+id/activity_main__search_bg"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <ImageView
-            android:id="@+id/activity_main__bg_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-2dp"
-            android:background="@drawable/bg_tabs"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_main__margin" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/slidingCategories"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_tabs"
             app:tabBackground="@android:color/transparent"
             app:tabGravity="center"
             app:tabIndicatorColor="@color/colorAccent"
@@ -145,35 +86,33 @@
             app:tabSelectedTextColor="@color/mainBlack"
             app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
             app:tabTextColor="@color/NoActiveText"
-            app:layout_constraintEnd_toEndOf="@+id/activity_main__bg_tabs"
-            app:layout_constraintStart_toStartOf="@+id/activity_main__bg_tabs"
-            app:layout_constraintTop_toTopOf="@+id/activity_main__bg_tabs">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main__margin" >
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Все" />
+                android:text="@string/allGroups" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Подписки" />
+                android:text="@string/subGroups" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Управление" />
+                android:text="@string/admGroups" />
         </com.google.android.material.tabs.TabLayout>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_marginTop="6dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/activity_main__bg_tabs"
-                />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slidingCategories" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

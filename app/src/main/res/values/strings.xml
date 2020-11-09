@@ -135,4 +135,16 @@
     <string name="terms_accept_privacy">Accept privacy policy conditions\t \t\t</string>
     <string name="terms_accept_agreement">Accept user agreement conditions\t \t\t</string>
 
+    <string-array name="topic__arrays">
+        <item>Спорт</item>
+        <item>Питание</item>
+        <item>Бизнес</item>
+        <item>Развлечение</item>
+        <item>Кино</item>
+        <item>Музыка</item>
+        <item>Развитие</item>
+        <item>Путешествия</item>
+    </string-array>
+    <string name="topic__prompt">Select the topic of your group</string>
+    <string name="question" translatable="false">\?</string>
 </resources>

@@ -70,9 +70,9 @@ class CreatePostActivity : BaseActivity(), CreatePostView {
             } else {
                 if (postContainer.childCount == 1) {
                     presenter.createPost(CreateGroupPostEntity(postText.text.toString().trim(), null),
-                            intent.getStringExtra(GROUP_ID))
+                            intent.getStringExtra(GROUP_ID)!!)
                 } else {
-                    presenter.createPostWithImage(postText.text.toString().trim(), intent.getStringExtra(GROUP_ID))
+                    presenter.createPostWithImage(postText.text.toString().trim(), intent.getStringExtra(GROUP_ID)!!)
                 }
             }
         }

@@ -21,7 +21,6 @@ import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
-import com.intergroupapplication.presentation.exstension.getGroupFollowersCount
 import com.intergroupapplication.presentation.exstension.inflate
 import kotlinx.android.synthetic.main.item_group_in_list.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
@@ -119,7 +118,8 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
         fun bind(item: GroupEntity) {
             with(itemView) {
                 spanLetters(item)
-                item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
+                //item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
+                item_group__subscribers.text = item.followersCount
                 item_group__posts.text = item.postsCount
                 item_group__comments.text = item.CommentsCount
                 item_group__dislike.text = item.postsLikes
@@ -127,7 +127,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
                 }
-                with (item_group__btn_group_list) {
+                with (item_group__text_sub) {
                     if (item.isFollowing) {
                         setOnClickListener {
                             unsubscribeClickListener.invoke(item.id)
@@ -150,7 +150,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 doOrIfNull(item.avatar, {
                     imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
                     //imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.application_icon, groupAvatarHolder)
+                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
                 })
             }
         }

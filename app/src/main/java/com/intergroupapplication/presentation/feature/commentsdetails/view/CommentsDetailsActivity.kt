@@ -336,7 +336,7 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
                 }
             }
         } else {
-            presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID))
+            presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID)!!)
         }
 
     }

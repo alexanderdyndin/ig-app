@@ -26,7 +26,7 @@ class WebActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_web)
-        val path = intent.getStringExtra(KEY_PATH)
+        val path = intent.getStringExtra(KEY_PATH)!!
         val name = intent.getIntExtra(KEY_TITLE, R.string.inter_group)
 
 
@@ -38,7 +38,7 @@ class WebActivity : AppCompatActivity() {
         webView.loadUrl(path)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             android.R.id.home -> finish()
         }

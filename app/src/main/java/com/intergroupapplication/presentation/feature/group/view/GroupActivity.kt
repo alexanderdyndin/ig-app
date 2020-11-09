@@ -96,7 +96,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     override fun viewCreated() {
         groupPosts.layoutManager = layoutManager
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
-        val groupId = intent.getStringExtra(GROUP_ID)
+        val groupId = intent.getStringExtra(GROUP_ID) ?: "0"
         adapter.retryClickListener = { presenter.reload() }
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         adapter.complaintListener = { id -> presenter.complaintPost(id) }
@@ -169,7 +169,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     }
 
     override fun showImageUploaded() {
-        presenter.changeGroupAvatar(intent.getStringExtra(GROUP_ID))
+        presenter.changeGroupAvatar(intent.getStringExtra(GROUP_ID)!!)
     }
 
     override fun avatarChanged(url: String) {
@@ -228,7 +228,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     private fun renderAdminPage() {
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
-            openCreatePost(intent.getStringExtra(GROUP_ID))
+            openCreatePost(intent.getStringExtra(GROUP_ID)!!)
         }
         groupAvatarHolder.setOnClickListener {
             if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
@@ -307,13 +307,13 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    presenter.followGroup(intent.getStringExtra(GROUP_ID), groupStrength.text.toString().split(" ")[0].toInt())
+                    presenter.followGroup(intent.getStringExtra(GROUP_ID)!!, groupStrength.text.toString().split(" ")[0].toInt())
                 }.let { { d: Disposable -> compositeDisposable.add(d) } }
         RxView.clicks(goOutFromGroup)
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    presenter.unfollowGroup(intent.getStringExtra(GROUP_ID), groupStrength.text.toString().split(" ")[0].toInt())
+                    presenter.unfollowGroup(intent.getStringExtra(GROUP_ID)!!, groupStrength.text.toString().split(" ")[0].toInt())
                 }.let { { d: Disposable -> compositeDisposable.add(d) } }
     }
 

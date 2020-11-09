@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="40dp"
-            android:text="@string/groups_list"
+            android:text="@string/create_group"
             android:textColor="@color/mainBlack"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -37,12 +37,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/toolbarMenu"
+            android:id="@+id/toolbarBackAction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:drawableLeft="@drawable/icon_menu"
-            app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
+            android:layout_marginTop="4dp"
+            android:drawableLeft="@drawable/icon_back"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/groupCreate__headerBg"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -46,6 +46,7 @@ import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupL
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
+import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import javax.inject.Inject
 
 class GroupListFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegateGroup)
@@ -96,9 +97,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity_main__icon_menu.setOnClickListener {
-            (activity as NavigationActivity).drawer.openDrawer()
-        }
         adapterAll = setAdapter()
         adapterSub = setAdapter()
         adapterAdm = setAdapter()
@@ -119,14 +117,22 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
-        activity_main__text_created_group.setOnClickListener { openCreateGroup() }
         swipeLayout.setOnRefreshListener { presenter.groupList() }
-        activity_main__btn_search.setOnClickListener {
-            activity_main__search_input.requestFocus()
-            if (activity is NavigationActivity) {
-                val imm: InputMethodManager = (activity as NavigationActivity).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-                imm.showSoftInput(this.view, InputMethodManager.SHOW_IMPLICIT)
+//        activity_main__btn_search.setOnClickListener {
+//            activity_main__search_input.requestFocus()
+//            if (activity is NavigationActivity) {
+//                val imm: InputMethodManager = (activity as NavigationActivity).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+//                imm.showSoftInput(this.view, InputMethodManager.SHOW_IMPLICIT)
+//            }
+//        }
+        activity_main__btn_filter.setOnClickListener {
+            //todo
+        }
+        if (activity is NavigationActivity) {
+            with (activity as NavigationActivity) {
+                navigationToolbar.activity_main__text_created_group.visibility = View.VISIBLE
+                navigationToolbar.activity_main__text_created_group.setOnClickListener { openCreateGroup() }
             }
         }
     }
@@ -153,15 +159,14 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         activity_main__search_input.removeTextChangedListener(textWatcher)
     }
 
-    override fun onStop() {
-        super.onStop()
-        (activity as NavigationActivity).navigationToolbar.visibility = View.VISIBLE
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (activity is NavigationActivity) {
+            (activity as NavigationActivity).navigationToolbar.activity_main__text_created_group.visibility = View.INVISIBLE
+        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        (activity as NavigationActivity).navigationToolbar.visibility = View.GONE
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
