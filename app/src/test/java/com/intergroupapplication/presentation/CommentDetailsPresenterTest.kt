@@ -1,9 +1,12 @@
 package com.intergroupapplication.presentation
 
 import android.content.Context
+import androidx.paging.PagedList
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.CommentGateway
+import com.intergroupapplication.domain.gateway.ComplaintsGetaway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import com.intergroupapplication.presentation.feature.commentsdetails.pagingsource.CommentsDataSourceFactory
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsView
 import com.intergroupapplication.testingutils.RxSchedulesRule
@@ -17,6 +20,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import ru.terrakok.cicerone.Router
 
@@ -35,11 +40,13 @@ class CommentDetailsPresenterTest {
     private val errorHandler: ErrorHandler = spy(ErrorHandler.defaultErrorHandler())
     private val context: Context = mock()
     private val commentDetailsView: CommentsDetailsView = mock()
+    private val commentsDataSourceFactory: CommentsDataSourceFactory = mock()
+    private val complaintsGetaway: ComplaintsGetaway = mock()
 
     @Before
     fun setUp() {
         commentsDetailsPresenter = CommentsDetailsPresenter(router, commentGateway,
-                postGateway, errorHandler)
+                postGateway, commentsDataSourceFactory, complaintsGetaway, errorHandler)
         commentsDetailsPresenter.attachView(commentDetailsView)
     }
 
@@ -65,17 +72,27 @@ class CommentDetailsPresenterTest {
 
     @Test
     fun shouldSuccessUploadPostsComments() {
-        whenever(commentGateway.getComments("1")).thenReturn(Single.just(FakeData.getCommentsList()))
+        whenever(commentGateway.getComments("1",1)).thenReturn(Single.just(FakeData.getCommentsList()))
         commentsDetailsPresenter.getPostComments("1")
         verify(commentDetailsView).showLoading(true)
         verify(commentDetailsView).showLoading(false)
-        verify(commentDetailsView).commentsLoaded(FakeData.getCommentsList())
+        verify(commentDetailsView).commentsLoaded(mockPagedList(FakeData.getCommentsList()))
     }
 
     @Test
     fun shouldExitGroupBecauseItIsBlocked() {
         //whenever(commentGateway.getComments("1")).thenReturn()
         //To test it backend should add exception for group blocked
+    }
+
+    fun <T> mockPagedList(list: List<T>): PagedList<T> {
+        val pagedList = Mockito.mock(PagedList::class.java) as PagedList<T>
+        Mockito.`when`(pagedList.get(ArgumentMatchers.anyInt())).then { invocation ->
+            val index = invocation.arguments.first() as Int
+            list[index]
+        }
+        Mockito.`when`(pagedList.size).thenReturn(list.size)
+        return pagedList
     }
 
 

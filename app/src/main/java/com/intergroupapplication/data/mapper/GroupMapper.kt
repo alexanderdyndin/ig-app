@@ -23,7 +23,11 @@ class GroupMapper @Inject constructor() {
                 isBlocked = from.isBlocked,
                 owner = from.owner,
                 isFollowing = from.isFollowing,
-                avatar = from.avatar)
+                avatar = from.avatar,
+                subject = from.subject,
+                rules = from.rules,
+                isClosed = from.isClosed,
+                ageRestriction = from.ageRestriction.replace("+","", true))
     }
 
     fun mapToDomainEntity(from: GroupModel): GroupEntity {
@@ -40,7 +44,11 @@ class GroupMapper @Inject constructor() {
                 isBlocked = from.isBlocked,
                 owner = from.owner,
                 isFollowing = from.isFollowing,
-                avatar = from.avatar)
+                avatar = from.avatar,
+                subject = from.subject,
+                rules = from.rules,
+                isClosed = from.isClosed,
+                ageRestriction =  "${from.ageRestriction}+" )
     }
 
     fun mapListToDomainEntity(from: List<GroupModel>): List<GroupEntity> =

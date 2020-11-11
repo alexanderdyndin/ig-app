@@ -17,4 +17,8 @@ data class GroupEntity(val id: String,
                        val isBlocked: Boolean,
                        val owner: String,
                        val isFollowing: Boolean,
-                       val avatar: String?)
+                       val avatar: String?,
+                       val subject: String,
+                       val rules: String,
+                       val isClosed: Boolean,
+                      val ageRestriction: String)

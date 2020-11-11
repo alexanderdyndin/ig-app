@@ -29,16 +29,16 @@ class CreateGroupPresenter @Inject constructor(private val router: Router,
 
     private var uploadingDisposable: Disposable? = null
 
-    fun createGroup(groupName: String, groupDescription: String) {
+    fun createGroup(groupName: String, groupDescription: String, subject: String, rules: String, isClosed: Boolean, ageRestriction: String) {
         compositeDisposable.add(
                 imageUploadingDelegate.getLastPhotoUploadedUrl()
                         .flatMap {
-                            if (!it.isEmpty()) {
+                            if (it.isNotEmpty()) {
                                 createGroupGateway.createGroup(CreateGroupEntity(groupName,
-                                        groupDescription, it))
+                                        groupDescription, it, subject, rules, isClosed, ageRestriction))
                             } else {
                                 createGroupGateway.createGroup(CreateGroupEntity(groupName,
-                                        groupDescription, null))
+                                        groupDescription, null, subject, rules, isClosed, ageRestriction))
                             }
                         }
                         .subscribeOn(Schedulers.io())
@@ -70,7 +70,7 @@ class CreateGroupPresenter @Inject constructor(private val router: Router,
         uploadingDisposable?.dispose()
     }
 
-    fun goToGroupScreen(entity: GroupEntity) {
+    private fun goToGroupScreen(entity: GroupEntity) {
         router.replaceScreen(GroupScreen(entity.id))
     }
 

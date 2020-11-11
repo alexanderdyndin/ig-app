@@ -20,19 +20,37 @@ FakeData {
     val groupAlreadyExistsException = GroupAlreadyExistException()
     val ioException = IOException()
 
-//    fun getGroupList(): List<GroupEntity> =
-//            Arrays.asList(GroupEntity("1", "15", "Cloud Nine",
-//                    "cs go player group", false, "9", true, null),
-//                    GroupEntity("2", "20", "Gamers two",
-//                            "cs go player group", true, "9", false, null),
-//                    GroupEntity("3", "1500", "Natus Wincere",
-//                            "cs go player group", false, "15", true, null),
-//                    GroupEntity("4", "15", "Cloud Nine",
-//                            "cs go player group", false, "9", true, null),
-//                    GroupEntity("5", "15", "Cloud Nine",
-//                            "cs go player group", false, "9", true, null),
-//                    GroupEntity("6", "15", "Cloud Nine",
-//                            "cs go player group", false, "9", true, null))
+    fun getGroupList(): List<GroupEntity> =
+            Arrays.asList(GroupEntity("1", "15", "0",
+                    "0", "0", "9", "",
+                    "cs go player group","Cloud Nine",false,
+                    "1",true,null,"no subject","no rules",
+                    false,"12+"),
+                    GroupEntity("1", "15", "1",
+                            "0", "0", "9", "",
+                            "cs go player group","Cloud Nine",false,
+                            "2",true,null,"no subject","no rules",
+                            false,"12+"),
+                    GroupEntity("1", "15", "2",
+                            "1", "1", "9", "",
+                            "cs go player group","Cloud Nine",true,
+                            "3",false,null,"no subject","no rules",
+                            false,"12+"),
+                    GroupEntity("1", "15", "3333",
+                            "2", "2", "9", "",
+                            "cs go player group","Cloud Nine",false,
+                            "4",true,null,"no subject","no rules",
+                            true,"12+"),
+                    GroupEntity("1", "15", "0",
+                            "3", "3", "9", "",
+                            "cs go player group","Cloud Nine",false,
+                            "5",true,null,"no subject","no rules",
+                            false,"16+"),
+                    GroupEntity("1", "15", "0",
+                            "1110", "44440", "9", "",
+                            "cs go player group","Cloud Nine",false,
+                            "6",true,null,"no subject","no rules",
+                            false,"18+"))
 
     fun getCommentsList(): MutableList<CommentEntity> =
             Arrays.asList(CommentEntity("0", "New comment", "2018-03-15.45",
@@ -69,21 +87,33 @@ FakeData {
     fun getUserAdminRole() = UserEntity("1", "dude", "duck", "2018-03-03", "male", "cool@mail.ru",
             false, false, null)
 
-//    fun getGroupForUserAdmin(): GroupEntity = GroupEntity("2", "20", "Gamers two",
-//            "cs go player group", false, "1", false, null)
-//
-//    fun getGroupForUserFollowing(): GroupEntity = GroupEntity("2", "20", "Gamers two",
-//            "cs go player group", false, "4", true, null)
-//
-//    fun getGroupForUserNotFollowing(): GroupEntity = GroupEntity("2", "20", "Gamers two",
-//            "cs go player group", false, "5", false, null)
-//
-//    fun getGroupPostEntity() = GroupPostEntity("1", "Простое описание поста",
-//            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null)
-//
-//
-//    fun getGroupEntity(): GroupEntity = GroupEntity("3", "1500", "Natus Wincere",
-//            "cs go player group", false, "15", true, null)
+    fun getGroupForUserAdmin(): GroupEntity = GroupEntity("1", "15", "0",
+            "1110", "44440", "9", "",
+            "cs go player group","Cloud Nine",false,
+            "1",true,null,"no subject","no rules",
+            false,"18+")
+
+    fun getGroupForUserFollowing(): GroupEntity = GroupEntity("1", "15", "0",
+            "1110", "44440", "9", "",
+            "cs go player group","Cloud Nine",false,
+            "6",true,null,"no subject","no rules",
+            false,"18+")
+
+    fun getGroupForUserNotFollowing(): GroupEntity = GroupEntity("1", "15", "0",
+            "1110", "44440", "9", "",
+            "cs go player group","Cloud Nine",false,
+            "6",false,null,"no subject","no rules",
+            false,"18+")
+
+    fun getGroupPostEntity() = GroupPostEntity("1", "Простое описание поста",
+            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null)
+
+
+    fun getGroupEntity(): GroupEntity = GroupEntity("1", "15", "2",
+            "1", "1", "9", "",
+            "cs go player group","Cloud Nine",true,
+            "3",false,null,"no subject","no rules",
+            false,"12+")
 
     fun getRegistrationEntity(): RegistrationEntity =
             RegistrationEntity("cool@mail.ru", "igjfduhg57hygu5i4","cool@mail.ru", "igjfduhg57hygu5i4")
@@ -112,6 +142,11 @@ FakeData {
     fun getRegistrationResponseModel(): RegistrationResponseModel =
             RegistrationResponseModel(true, "temp@mail.ru")
 
+    fun getRegistrationResponse(): RegistrationReesponce =
+            RegistrationReesponce( "cool@mail.ru",
+                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjU3NDk4MjExMiwidHlwZSI6InJlZnJlc2giLCJ1c2VyX2lkIjo2MDAsImlhdCI6MTYwNTA4NzU1NCwiZXhwIjoxNjA3Njc5NTU0fQ.gu8G-CfXhkhyDwkxa4Fmv6kHABrv291oWNUfrl-fIGE",
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ1NTMzNDcyMiwidHlwZSI6ImFjY2VzcyIsInVzZXJfaWQiOjYwMCwiaWF0IjoxNjA1MDg3NTU0LCJleHAiOjE2MDUxNzM5NTR9.WJW3YLfcjnb0y3X5zsZt38wgMzmPfY8gJspovRCGUIs")
+
     fun getTokenConfirmModel(): TokenConfirmModel =
             TokenConfirmModel(CONFIRM_MAIL_CODE)
 
@@ -129,7 +164,8 @@ FakeData {
             TokenModel("gkmfdjksgnsjkgmnfs324234", "fjknguj543gjierjgi9jegomdf")
 
     fun getCreateGroupEntity(): CreateGroupEntity =
-            CreateGroupEntity("Natus Wincere", "Cs go Players", null)
+            CreateGroupEntity("Natus Wincere", "Cs go Players", null,
+                    "no subject","no rules", false,"12+")
 
     fun getCreateGroupPostEntity(): CreateGroupPostEntity =
             CreateGroupPostEntity("New post", null)

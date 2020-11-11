@@ -77,6 +77,18 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         RxView.focusChanges(groupName).subscribe { groupNameInput.error = null }
                 .let { { d: Disposable -> compositeDisposable.add(d) } }
         groupAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
+        groupCreate__radioGroup.setOnCheckedChangeListener { _, i ->
+            when (i) {
+                R.id.radioOpen -> {
+                    radioOpen.setButtonDrawable(R.drawable.radio_btn_active)
+                    radioClose.setButtonDrawable(R.drawable.radio_btn_noactive)
+                }
+                R.id.radioClose -> {
+                    radioClose.setButtonDrawable(R.drawable.radio_btn_active)
+                    radioOpen.setButtonDrawable(R.drawable.radio_btn_noactive)
+                }
+            }
+        }
     }
 
     override fun showImageUploadingStarted(path: String) {
@@ -110,7 +122,9 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
                 groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
                 groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
-            presenter.createGroup(groupName.text.toString().trim(), "Simple group")
+            presenter.createGroup(groupName.text.toString().trim(),
+                    descriptionGroup.text.toString().trim(), "no theme",
+                    rulesGroup.text.toString().trim(),radioClose.isChecked,"16")
         } else {
             dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
         }

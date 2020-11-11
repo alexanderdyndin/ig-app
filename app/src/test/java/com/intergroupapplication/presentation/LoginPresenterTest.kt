@@ -3,8 +3,10 @@ package com.intergroupapplication.presentation
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.LoginGateway
+import com.intergroupapplication.domain.usecase.GetProfileUseCase
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
 import com.intergroupapplication.presentation.feature.login.view.LoginView
+import com.intergroupapplication.presentation.feature.navigation.view.NavigationScreen
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.*
 import com.workable.errorhandler.ErrorHandler
@@ -31,11 +33,11 @@ class LoginPresenterTest {
     private val imeiGateway: ImeiGateway = mock()
     private val errorHandler: ErrorHandler = spy(ErrorHandler.defaultErrorHandler())
     private val loginView: LoginView = mock()
-
+    private val getProfileUseCase: GetProfileUseCase = mock()
 
     @Before
     fun setUp() {
-        loginPresenter = LoginPresenter(router, loginGateway, imeiGateway, errorHandler)
+        loginPresenter = LoginPresenter(router, loginGateway, imeiGateway, errorHandler,getProfileUseCase)
         loginPresenter.attachView(loginView)
     }
 
@@ -49,7 +51,7 @@ class LoginPresenterTest {
         verify(loginView).showLoading(true)
         verify(loginView).showLoading(false)
         verify(loginView, never()).clearViewErrorState()
-        verify(router).newRootScreen(Screens.NAVIGATION_SCREEN)
+        verify(router).newRootScreen(NavigationScreen())
     }
 
     @Test
@@ -60,7 +62,7 @@ class LoginPresenterTest {
         loginPresenter.performLogin(FakeData.getLoginEntity())
         verify(loginView).showLoading(true)
         verify(loginView).showLoading(false)
-        verify(router, never()).newRootScreen(Screens.NAVIGATION_SCREEN)
+        verify(router, never()).newRootScreen(NavigationScreen())
         //verify(errorHandler).handle(FakeData.invalidCredentialsException)
     }
 }

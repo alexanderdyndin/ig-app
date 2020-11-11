@@ -3,8 +3,10 @@ package com.intergroupapplication.presentation
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
+import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.feature.createuserprofile.presenter.CreateUserProfilePresenter
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileView
+import com.intergroupapplication.presentation.feature.navigation.view.NavigationScreen
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
@@ -30,14 +32,14 @@ class CreateUserProfilePresenterTest {
     private lateinit var createUserProfilePresenter: CreateUserProfilePresenter
     private val router: Router = mock()
     private val userProfileGateway: UserProfileGateway = mock()
-    private val photoGateway: PhotoGateway = mock()
+    private val imageUploader: ImageUploader = mock()
     private val errorHandler: ErrorHandler = mock()
     private val createUserProfileView: CreateUserProfileView = mock()
 
 
     @Before
     fun setUp() {
-        createUserProfilePresenter = CreateUserProfilePresenter(router, userProfileGateway, photoGateway, errorHandler)
+        createUserProfilePresenter = CreateUserProfilePresenter(router, userProfileGateway, imageUploader, errorHandler)
         createUserProfilePresenter.attachView(createUserProfileView)
     }
 
@@ -45,20 +47,20 @@ class CreateUserProfilePresenterTest {
     fun shouldSuccessCreateProfile() {
         whenever(userProfileGateway.createUserProfile(FakeData.getCreateUserEntity()))
                 .thenReturn(Single.fromCallable { FakeData.getUserEntity() })
-        createUserProfilePresenter.createUserProfile(FakeData.getCreateUserEntity())
+        createUserProfilePresenter.createUserProfile("dude", "duck", "2018-03-03", "male")
         verify(createUserProfileView).showLoading(true)
         verify(createUserProfileView).showLoading(false)
-        verify(router).newRootScreen(Screens.NAVIGATION_SCREEN)
+        verify(router).newRootScreen(NavigationScreen())
     }
 
     @Test
     fun shouldCallErrorHandler() {
         whenever(userProfileGateway.createUserProfile(FakeData.getCreateUserEntity()))
                 .thenReturn(Single.error(FakeData.invalidCredentialsException))
-        createUserProfilePresenter.createUserProfile(FakeData.getCreateUserEntity())
+        createUserProfilePresenter.createUserProfile("dude", "duck", "2018-03-03", "male")
         verify(createUserProfileView).showLoading(true)
         verify(createUserProfileView).showLoading(false)
-        verify(router, never()).newRootScreen(Screens.NAVIGATION_SCREEN)
+        verify(router, never()).newRootScreen(NavigationScreen())
     }
 
 }

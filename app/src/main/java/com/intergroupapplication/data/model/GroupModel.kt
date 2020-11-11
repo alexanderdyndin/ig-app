@@ -15,5 +15,9 @@ data class GroupModel(
         @SerializedName("is_blocked") val isBlocked: Boolean,
         val owner: String,
         @SerializedName("is_followed") val isFollowing: Boolean,
-        val avatar: String?
+        val avatar: String?,
+        val subject: String,
+        val rules: String,
+        @SerializedName("is_closed") val isClosed: Boolean,
+        @SerializedName("age_restriction") val ageRestriction: String
 )

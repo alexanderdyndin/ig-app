@@ -124,6 +124,20 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 item_group__comments.text = item.CommentsCount
                 item_group__dislike.text = item.postsLikes
                 item_group__like.text = item.postsDislikes
+                item_group__text_age.text = item.ageRestriction
+                when(item.ageRestriction) {
+                    "12+" -> item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
+                    "16+" -> item_group__text_age.setBackgroundResource(R.drawable.bg_age16)
+                    "18+" -> item_group__text_age.setBackgroundResource(R.drawable.bg_age18)
+                    else -> item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
+                }
+                if (item.isClosed) {
+                    item_group__icon_lock.setImageResource(R.drawable.icon_close)
+                    item_group__bg_lock.setImageResource(R.drawable.bg_lock)
+                } else {
+                    item_group__icon_lock.setImageResource(R.drawable.icon_open)
+                    item_group__bg_lock.setImageResource(R.drawable.bg_unlock)
+                }
                 groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
                 }

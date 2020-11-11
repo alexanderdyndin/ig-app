@@ -2,8 +2,10 @@ package com.intergroupapplication.presentation
 
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.ConfirmationMailGateway
+import com.intergroupapplication.domain.gateway.ResendCodeGateway
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
 import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailView
+import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileScreen
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
@@ -31,10 +33,12 @@ class ConfirmationPresenterTest {
     private val confirmationMailGateway: ConfirmationMailGateway = mock()
     private val errorHandler: ErrorHandler = mock()
     private val confirmationMailView: ConfirmationMailView = mock()
+    private val resendCodeGateway: ResendCodeGateway = mock()
 
     @Before
     fun setUp() {
-        confirmationMailPresenter = ConfirmationMailPresenter(router, confirmationMailGateway, errorHandler)
+        confirmationMailPresenter = ConfirmationMailPresenter(router, confirmationMailGateway, errorHandler,
+                "cool@mail.ru", resendCodeGateway)
         confirmationMailPresenter.attachView(confirmationMailView)
     }
 
@@ -44,7 +48,7 @@ class ConfirmationPresenterTest {
         confirmationMailPresenter.confirmMail(FakeData.CONFIRM_MAIL_CODE)
         verify(confirmationMailView).showLoading(true)
         verify(confirmationMailView).showLoading(false)
-        verify(router).newRootScreen(Screens.CREATE_USER_PROFILE_SCREEN)
+        verify(router).newRootScreen(CreateUserProfileScreen())
     }
 
     @Test
@@ -53,7 +57,7 @@ class ConfirmationPresenterTest {
         confirmationMailPresenter.confirmMail(FakeData.CONFIRM_MAIL_CODE)
         verify(confirmationMailView).showLoading(true)
         verify(confirmationMailView).showLoading(false)
-        verify(router, never()).newRootScreen(Screens.CREATE_USER_PROFILE_SCREEN)
+        verify(router, never()).newRootScreen(CreateUserProfileScreen())
     }
 
 }

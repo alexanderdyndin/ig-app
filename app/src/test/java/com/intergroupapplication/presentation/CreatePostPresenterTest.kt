@@ -2,6 +2,8 @@ package com.intergroupapplication.presentation
 
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import com.intergroupapplication.domain.gateway.PhotoGateway
+import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
 import com.intergroupapplication.testingutils.RxSchedulesRule
@@ -28,11 +30,14 @@ class CreatePostPresenterTest {
     private val groupPostGateway: GroupPostGateway = mock()
     private val errorHandler: ErrorHandler = spy(ErrorHandler.defaultErrorHandler())
     private val createPostView: CreatePostView = mock()
+    private val photoGateway: PhotoGateway = mock()
+    private val imageUploadingDelegate: ImageUploadingDelegate = mock()
 
 
     @Before
     fun setUp() {
-        createPostPresenter = CreatePostPresenter(router, groupPostGateway, errorHandler)
+        createPostPresenter = CreatePostPresenter(router, groupPostGateway, photoGateway,
+                errorHandler, imageUploadingDelegate)
         createPostPresenter.attachView(createPostView)
     }
 

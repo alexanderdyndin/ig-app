@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.RegistrationGateway
+import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailScreen
 import com.intergroupapplication.presentation.feature.registration.presenter.RegistrationPresenter
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationView
 import com.intergroupapplication.testingutils.RxSchedulesRule
@@ -44,7 +45,7 @@ class RegistrationPresenterTest {
         registrationPresenter.performRegistration(FakeData.getRegistrationEntity())
         verify(registrationView).showLoading(true)
         verify(registrationView).showLoading(false)
-        verify(router).newRootScreen(Screens.CONFIRMATION_MAIL_SCREEN)
+        verify(router).newRootScreen(ConfirmationMailScreen("cool@mail.ru"))
     }
 
     @Test
@@ -55,7 +56,7 @@ class RegistrationPresenterTest {
         verify(registrationView).showLoading(true)
         verify(registrationView).showLoading(false)
         verify(errorHandler).handle(FakeData.invalidCredentialsException)
-        verify(router, never()).newRootScreen(Screens.CONFIRMATION_MAIL_SCREEN)
+        verify(router, never()).newRootScreen(ConfirmationMailScreen("cool@mail.ru"))
     }
 
 }

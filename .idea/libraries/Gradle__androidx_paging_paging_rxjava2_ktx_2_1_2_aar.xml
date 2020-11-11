@@ -2,9 +2,11 @@
   <library name="Gradle: androidx.paging:paging-rxjava2-ktx:2.1.2@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b91962902f47169fef41afae1b410de0/jetified-paging-rxjava2-ktx-2.1.2/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9188246bb84480a2decabeb0d91c3497/jetified-paging-rxjava2-ktx-2.1.2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9188246bb84480a2decabeb0d91c3497/jetified-paging-rxjava2-ktx-2.1.2/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9188246bb84480a2decabeb0d91c3497/jetified-paging-rxjava2-ktx-2.1.2/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/831a8d1a59354d577f7261205d4acdb6/jetified-paging-rxjava2-ktx-2.1.2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7a6994a0629470a492d65e804d354314/jetified-paging-rxjava2-ktx-2.1.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7a6994a0629470a492d65e804d354314/jetified-paging-rxjava2-ktx-2.1.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7a6994a0629470a492d65e804d354314/jetified-paging-rxjava2-ktx-2.1.2/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
