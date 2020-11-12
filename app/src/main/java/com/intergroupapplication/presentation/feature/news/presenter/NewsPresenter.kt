@@ -45,12 +45,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    //todo исправить пагинацию
-                    if (it.error !is PageNotFoundException) {
-                        viewState.handleState(it.type)
-                    } else {
-                        viewState.handleState(BasePagingState.Type.NONE)
-                    }
+                    viewState.handleState(it.type)
                 }, {}))
 
         compositeDisposable.add(RxPagedListBuilder(newsDataSourceFactory, PAGINATION_PAGE_SIZE)
@@ -59,8 +54,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
                 .subscribe({
-                    val t = it
-                    viewState.newsLoaded(t)
+                    viewState.newsLoaded(it)
                 }, {
                     errorHandler.handle(it)
                 }))
@@ -91,7 +85,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
                 .subscribe({
                     viewState?.showMessage(R.string.complaint_send)
                 }, {
-                    //errorHandler.handle(it)
+                    errorHandler.handle(it)
                 }))
     }
 

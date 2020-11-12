@@ -5,6 +5,7 @@ import com.intergroupapplication.data.model.GroupPostModel
 import com.intergroupapplication.data.model.NewsDto
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.NewsEntity
 import javax.inject.Inject
 
 /**
@@ -34,8 +35,18 @@ class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapp
         )
     }
 
-    fun mapNewsListToDomainEntity(from: NewsDto) =
-            from.news.map { mapToDomainEntity(it.post) }
+    fun mapNewsListToDomainEntity(from: NewsDto): NewsEntity {
+        val regex = Regex(".*page=")
+        val previous = if (from.previous == "http://backend-v2:8080/groups/news/") { //TODO попросить пофиксить бэкэнд
+            1
+        } else {
+            from.previous?.replace(regex, "")?.toInt()
+        }
+        return NewsEntity(from.count.toInt(), from.next?.replace(regex,"")?.toInt(),
+                previous, from.news.map { mapToDomainEntity(it.post) })
+    }
+
+
 
     fun mapToDto(from: CreateGroupPostEntity): CreateGroupPostModel {
         return CreateGroupPostModel(

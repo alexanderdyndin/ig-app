@@ -20,7 +20,6 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
 
     companion object {
         const val FIRST_PAGE = 1
-        const val SECOND_PAGE = 2
     }
 
     private val subject: PublishSubject<BasePagingState> = PublishSubject.create()
@@ -31,13 +30,16 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
     fun observeState(): Observable<BasePagingState> = subject
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, GroupPostEntity>) {
+
         compositeDisposable.add(groupPostGateway.getNewsPosts(FIRST_PAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
-                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
+                .doOnSuccess {
+                    subject.onNext(BasePagingState(BasePagingState.Type.NONE))
+                }
                 .subscribe({
-                    callback.onResult(it, null, SECOND_PAGE)
+                    callback.onResult(it.news, it.previous, it.next)
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))
@@ -50,9 +52,11 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
-                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
+                .doOnSuccess {
+                    subject.onNext(BasePagingState(BasePagingState.Type.NONE))
+                }
                 .subscribe({
-                    callback.onResult(it, params.key + 1)
+                    callback.onResult(it.news, it.next)
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))
@@ -60,6 +64,19 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
                 }))
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, GroupPostEntity>) = Unit
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, GroupPostEntity>) {
+//        compositeDisposable.add(groupPostGateway.getNewsPosts(params.key)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
+//                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
+//                .subscribe({
+//                    callback.onResult(it.news, it.previous)
+//                    retryAction = null
+//                }, {
+//                    subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))
+//                    retryAction = { loadAfter(params, callback) }
+//                }))
+    }
 
 }

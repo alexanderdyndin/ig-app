@@ -16,9 +16,6 @@ class PagingDelegate @Inject constructor() : PagingView {
     private var swipeLayout: ViewGroup? = null
     private var emptyStateView: View? = null
 
-    fun changeAdapter(adapter: PagingAdapter) {
-        this.adapter = adapter
-    }
 
     override fun attachPagingView(adapter: PagingAdapter, swipeLayout: ViewGroup, emptyStateView: View) {
         this.adapter = adapter
@@ -42,7 +39,7 @@ class PagingDelegate @Inject constructor() : PagingView {
                 adapter?.removeError()
                 emptyStateView?.hide()
                 adapter?.itemCount()?.let {
-                    if (it > 0) {
+                    if (it  > 0) {
                         adapter?.addLoading()
                     } else {
                         (swipeLayout as? SwipeRefreshLayout)?.isRefreshing = true

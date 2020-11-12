@@ -40,6 +40,8 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     }
 
+    var i: Int = 0
+
     @Inject
     @InjectPresenter
     lateinit var presenter: NewsPresenter
@@ -63,13 +65,13 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
         newsPosts.layoutManager = layoutManager
         newsPosts.itemAnimator = null
         adapter.retryClickListener = { presenter.reload() }
         adapter.commentClickListener = { openCommentDerails(InfoForCommentEntity(it, true)) }
         adapter.groupClickListener = { presenter.goToGroupScreen(it) }
         adapter.complaintListener = { presenter.complaintPost(it) }
-        pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
         newsPosts.adapter = adapterWrapper
         newSwipe.setOnRefreshListener { presenter.refresh() }
         presenter.getNews()
@@ -77,7 +79,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun onResume() {
         super.onResume()
-        presenter.checkNewVersionAvaliable(fragmentManager!!)
+        presenter.checkNewVersionAvaliable(activity?.supportFragmentManager!!)
     }
 
     override fun newsLoaded(posts: PagedList<GroupPostEntity>) {

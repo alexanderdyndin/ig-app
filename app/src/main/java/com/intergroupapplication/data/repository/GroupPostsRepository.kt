@@ -6,6 +6,7 @@ import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupInPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import io.reactivex.Maybe
@@ -44,11 +45,13 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
-    override fun getNewsPosts(page: Int): Single<List<GroupPostEntity>> {
+    override fun getNewsPosts(page: Int): Single<NewsEntity> {
          return api.getNews(page).map { groupPostMapper.mapNewsListToDomainEntity(it) }
                 .onErrorResumeNext {
                     if (it is NoMorePage) {
-                        Single.fromCallable { mutableListOf<GroupPostEntity>() }
+                        Single.fromCallable {
+                            NewsEntity(0,null,null, mutableListOf<GroupPostEntity>())
+                        }
                     } else {
                         Single.error(it)
                     }
