@@ -1,7 +1,9 @@
 package com.intergroupapplication.data.mapper
 
 import com.intergroupapplication.data.model.GroupModel
+import com.intergroupapplication.data.model.GroupsDto
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupListEntity
 import javax.inject.Inject
 
 /**
@@ -53,4 +55,25 @@ class GroupMapper @Inject constructor() {
 
     fun mapListToDomainEntity(from: List<GroupModel>): List<GroupEntity> =
             from.map { mapToDomainEntity(it) }
+
+    fun mapToDomainEntity(from: GroupsDto): GroupListEntity {
+        val regex = Regex(pattern = "=\\d*&")
+        val previous = if (from.previous == "http://backend-v2:8080/groups/?search=") {
+            1
+        } else if (from.previous == null) {
+            null
+        } else {
+            regex.find(from.previous)?.value?.replace("=","")?.replace("&", "")?.toInt()
+        }
+        val next = if (from.next == null) {
+            null
+        } else {
+            regex.find(from.next)?.value?.replace("=","")?.replace("&", "")?.toInt()
+        }
+        return GroupListEntity(
+                count = from.count.toInt(),
+                next,
+                previous,
+                mapListToDomainEntity(from.groups))
+    }
 }

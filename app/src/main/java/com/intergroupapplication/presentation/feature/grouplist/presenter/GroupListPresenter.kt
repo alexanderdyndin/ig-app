@@ -88,14 +88,9 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
-                }
-                        //todo исправить пагинацию
-                        if (it.error !is PageNotFoundException) {
-                            viewState.handleState(it.type)
-                        } else {
-                            viewState.handleState(BasePagingState.Type.NONE)
-                        }
-    }, {}))
+                    }
+                    viewState.handleState(it.type)
+        }, {}))
         groupsDisposable.add(RxPagedListBuilder(dsAll, PAGINATION_PAGE_SIZE)
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
@@ -116,12 +111,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    //todo исправить пагинацию
-                    if (it.error !is PageNotFoundException) {
-                        viewState.handleState1(it.type)
-                    } else {
-                        viewState.handleState1(BasePagingState.Type.NONE)
-                    }
+                    viewState.handleState(it.type)
                 }, {}))
 
         groupsDisposable.add(RxPagedListBuilder(dsSub, PAGINATION_PAGE_SIZE)
@@ -144,12 +134,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    //todo исправить пагинацию
-                    if (it.error !is PageNotFoundException) {
-                        viewState.handleState2(it.type)
-                    } else {
-                        viewState.handleState2(BasePagingState.Type.NONE)
-                    }
+                    viewState.handleState(it.type)
                 }, {}))
 
         groupsDisposable.add(RxPagedListBuilder(dsAdm, PAGINATION_PAGE_SIZE)

@@ -6,6 +6,7 @@ import com.intergroupapplication.data.model.GroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupListEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.NoMorePage
@@ -21,36 +22,36 @@ import javax.inject.Inject
 class GroupRepository @Inject constructor(private val api: AppApi,
                                           private val groupMapper: GroupMapper) : GroupGateway {
 
-    override fun getGroupList(page: Int, searchFilter:String): Single<List<GroupEntity>> {
+    override fun getGroupList(page: Int, searchFilter:String): Single<GroupListEntity> {
         return api.getGroupList(page, searchFilter)
-                .map { groupMapper.mapListToDomainEntity(it.groups) }
+                .map { groupMapper.mapToDomainEntity(it) }
                 .onErrorResumeNext {
                     if (it is NoMorePage) {
-                        Single.fromCallable { mutableListOf<GroupEntity>() }
+                        Single.fromCallable { GroupListEntity(0, null, null, mutableListOf<GroupEntity>()) }
                     } else {
                         Single.error(it)
                     }
                 }
     }
 
-    override fun getAdminGroupList(page: Int, searchFilter:String): Single<List<GroupEntity>> {
+    override fun getAdminGroupList(page: Int, searchFilter:String): Single<GroupListEntity> {
         return api.getAdminGroupList(page, searchFilter)
-                .map { groupMapper.mapListToDomainEntity(it.groups) }
+                .map { groupMapper.mapToDomainEntity(it) }
                 .onErrorResumeNext {
                     if (it is NoMorePage) {
-                        Single.fromCallable { mutableListOf<GroupEntity>() }
+                        Single.fromCallable { GroupListEntity(0, null, null, mutableListOf<GroupEntity>()) }
                     } else {
                         Single.error(it)
                     }
                 }
     }
 
-    override fun getSubscribedGroupList(page: Int, searchFilter: String): Single<List<GroupEntity>> {
+    override fun getSubscribedGroupList(page: Int, searchFilter: String): Single<GroupListEntity> {
         return api.getSubscribedGroupList(page, searchFilter)
-                .map { groupMapper.mapListToDomainEntity(it.groups) }
+                .map { groupMapper.mapToDomainEntity(it) }
                 .onErrorResumeNext {
                     if (it is NoMorePage) {
-                        Single.fromCallable { mutableListOf<GroupEntity>() }
+                        Single.fromCallable { GroupListEntity(0, null, null, mutableListOf<GroupEntity>()) }
                     } else {
                         Single.error(it)
                     }

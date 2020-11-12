@@ -18,7 +18,6 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
 
     companion object {
         const val FIRST_PAGE = 1
-        const val SECOND_PAGE = 2
     }
     var search = ""
 
@@ -41,7 +40,7 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
                 .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
                 .subscribe({
-                    callback.onResult(it, null, SECOND_PAGE)
+                    callback.onResult(it.groups, it.previous, it.next)
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))
@@ -57,7 +56,7 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
                 .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
                 .subscribe({
-                    callback.onResult(it, params.key + 1)
+                    callback.onResult(it.groups, it.next)
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))
