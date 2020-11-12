@@ -23,7 +23,8 @@ import com.workable.errorhandler.ErrorHandler
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+//import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import io.reactivex.disposables.CompositeDisposable
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -31,14 +32,17 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-abstract class BaseActivity : MvpAppCompatActivity(), HasSupportFragmentInjector {
+abstract class BaseActivity : MvpAppCompatActivity(), /*HasSupportFragmentInjector,*/ HasAndroidInjector {
 
     companion object {
         const val PASSWORD_REQUIRED_LENGTH = 8
     }
 
+//    @Inject
+//    lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
+
     @Inject
-    lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var supportFragmentInjector: DispatchingAndroidInjector<Any>
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
@@ -89,7 +93,9 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasSupportFragmentInjector
         super.onDestroy()
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
+    //override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
+
+    override fun androidInjector() = supportFragmentInjector
 
     @LayoutRes
     protected abstract fun layoutRes(): Int

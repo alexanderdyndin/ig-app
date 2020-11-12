@@ -8,7 +8,6 @@ import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
-import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import javax.inject.Inject
 
 class PagingDelegate @Inject constructor() : PagingView {

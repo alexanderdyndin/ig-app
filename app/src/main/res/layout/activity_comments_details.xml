@@ -48,7 +48,7 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
             android:id="@+id/swipeLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -127,7 +127,7 @@
                 </LinearLayout>
 
             </androidx.core.widget.NestedScrollView>
-        </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+        </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
         <LinearLayout
             android:id="@+id/commentHolder"

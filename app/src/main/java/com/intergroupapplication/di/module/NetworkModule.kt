@@ -15,6 +15,7 @@ import com.intergroupapplication.di.qualifier.ApplicationOkHttpClient
 import com.intergroupapplication.di.qualifier.RefreshOkHttpClient
 import com.intergroupapplication.di.qualifier.TokenInterceptor
 import com.intergroupapplication.di.scope.PerApplication
+import com.intergroupapplication.presentation.manager.PhoneCharacteristicManager
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -50,14 +51,14 @@ class NetworkModule {
     @PerApplication
     @Provides
     @TokenInterceptor
-    fun provideTokenInterceptor(sessionStorage: UserSession): Interceptor =
+    fun provideTokenInterceptor(sessionStorage: UserSession, infoManager: PhoneCharacteristicManager): Interceptor =
             Interceptor { chain ->
                 val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
                 val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: ""
                 val builder = chain.request()
                         .newBuilder()
                         .addHeader(IMEI, imei)
-                    builder.addHeader(SERIAL, if(serialNumber.isNotEmpty()) serialNumber else "maksPidor") //fixme serial number on some devices returns blank
+                    builder.addHeader(SERIAL, serialNumber)
                 if (sessionStorage.isLoggedIn()) {
                     builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
                 } else {
@@ -124,6 +125,7 @@ class NetworkModule {
                     Timber.e(e)
                     return@Authenticator null
                 }
+
                 if (refreshResult != null) {
                     sessionStorage.token = tokenMapper.mapToDomainEntity(refreshResult)
                     val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
@@ -192,4 +194,5 @@ class NetworkModule {
             .client(httpClient)
             .baseUrl(BuildConfig.BASE_URL)
             .build().create(AppApi::class.java)
+
 }

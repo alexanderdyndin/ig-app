@@ -18,12 +18,7 @@ class ImeiRepository @Inject constructor(private val infoManager: PhoneCharacter
     override fun extractDeviceInfo(): Completable = Completable.fromAction {
         val imei = infoManager.getImei()
         val serialNumber = infoManager.getSerialNumber()
-        if (serialNumber.isEmpty()) {
-            session.deviceInfoEntity = DeviceInfoEntity(encryptor.encryptSha224Hex(imei), serialNumber)
-        } else {
-            session.deviceInfoEntity = DeviceInfoEntity(encryptor.encryptSha224Hex(imei),
-                    encryptor.encryptSha224Hex(serialNumber))
-        }
+        session.deviceInfoEntity = DeviceInfoEntity(encryptor.encryptSha224Hex(imei),
+                encryptor.encryptSha224Hex(serialNumber))
     }
-
 }

@@ -51,7 +51,7 @@ ext {
     moxyVersion = '2.2.0'
     retrofitVersion = '2.9.0'
     loggingInterceptorVersion = '4.9.0'
-    daggerVersion = '2.16'
+    daggerVersion = '2.29.1'
     rxJavaVersion = '2.1.3'
     rxAndroidVersion = '2.1.0'
     ciceroneVersion = '5.1.1'
