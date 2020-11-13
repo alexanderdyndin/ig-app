@@ -82,7 +82,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
 
     fun getGroupsList() {
         groupsDisposable.add(dsAll.source.observeState()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
                 .subscribe({
@@ -104,14 +104,14 @@ class GroupListPresenter @Inject constructor(private val router: Router,
 
     fun getFollowGroupsList() {
         groupsDisposable.add(dsSub.source.observeState()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState(it.type)
+                    viewState.handleState1(it.type)
                 }, {}))
 
         groupsDisposable.add(RxPagedListBuilder(dsSub, PAGINATION_PAGE_SIZE)
@@ -127,14 +127,14 @@ class GroupListPresenter @Inject constructor(private val router: Router,
 
     fun getOwnedGroupsList() {
         groupsDisposable.add(dsAdm.source.observeState()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState(it.type)
+                    viewState.handleState2(it.type)
                 }, {}))
 
         groupsDisposable.add(RxPagedListBuilder(dsAdm, PAGINATION_PAGE_SIZE)

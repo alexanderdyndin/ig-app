@@ -5,13 +5,18 @@ import android.app.Activity
 import androidx.paging.PagedList
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -23,9 +28,14 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_COUNT_VALUE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_DETAILS_REQUEST
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
+import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
+import com.intergroupapplication.presentation.feature.navigation.view.NavigationScreen
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
+import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.main_toolbar_layout.*
+import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import javax.inject.Inject
 
 class NewsFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegate)
@@ -40,8 +50,6 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     }
 
-    var i: Int = 0
-
     @Inject
     @InjectPresenter
     lateinit var presenter: NewsPresenter
@@ -50,10 +58,13 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     fun providePresenter(): NewsPresenter = presenter
 
     @Inject
+    lateinit var adapter: NewsAdapter
+
+    @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
-    lateinit var adapter: NewsAdapter
+    lateinit var diffUtil: DiffUtil.ItemCallback<GroupPostEntity>
 
     @Inject
     lateinit var layoutManager: RecyclerView.LayoutManager
@@ -75,12 +86,16 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         newsPosts.adapter = adapterWrapper
         newSwipe.setOnRefreshListener { presenter.refresh() }
         presenter.getNews()
+        (activity as NavigationActivity).newsLaunchCount++
     }
+
 
     override fun onResume() {
         super.onResume()
         presenter.checkNewVersionAvaliable(activity?.supportFragmentManager!!)
+        presenter.refresh()
     }
+
 
     override fun newsLoaded(posts: PagedList<GroupPostEntity>) {
         adapter.submitList(posts)
@@ -94,7 +109,10 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         if (show) {
             emptyText.hide()
             adapter.removeError()
-            adapter.addLoading()
+            //TODO ПОФИКСИТЬ ПЕРЕСКАКИВАНИЕ В КОНЕЦ СПИСКА ПРИ ПОВТОРНОЙ ЗАГРУЗКЕ ФРАГМЕНТА
+            if ((activity as NavigationActivity).newsLaunchCount == 1) {
+                adapter.addLoading()
+            }
         } else {
             newSwipe.isRefreshing = false
             adapter.removeLoading()

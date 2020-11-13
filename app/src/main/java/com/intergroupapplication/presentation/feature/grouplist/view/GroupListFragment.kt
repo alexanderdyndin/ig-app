@@ -48,6 +48,7 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class GroupListFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegateGroup)
     : BaseFragment(), GroupListView, PagingViewGroup by pagingDelegate {
@@ -79,8 +80,16 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
 
     //адаптеры для фрагментов сос списками групп
+    @Inject
+    @Named("AdapterAll")
     lateinit var adapterAll: GroupListAdapter
+
+    @Inject
+    @Named("AdapterSub")
     lateinit var adapterSub: GroupListAdapter
+
+    @Inject
+    @Named("AdapterAdm")
     lateinit var adapterAdm: GroupListAdapter
 
     private val textWatcher = object : TextWatcher {
@@ -97,9 +106,9 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapterAll = setAdapter()
-        adapterSub = setAdapter()
-        adapterAdm = setAdapter()
+        setAdapter(adapterAll)
+        setAdapter(adapterSub)
+        setAdapter(adapterAdm)
         pagingDelegate.attachPagingView(swipeLayout)
         val gpAdapter = GroupPageAdapter(this, adapterAll, adapterSub, adapterAdm)
         gpAdapter.doOnFragmentViewCreated = { v ->
@@ -137,15 +146,14 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         }
     }
 
-    private fun setAdapter(): GroupListAdapter {
-        val a = GroupListAdapter(diffUtil, imageLoadingDelegate, sessionStorage.user?.id)
-        with (a) {
+    private fun setAdapter(adapter: GroupListAdapter) {
+        with (adapter) {
+            userID = sessionStorage.user?.id
             retryClickListener = { presenter.reload() }
             groupClickListener = { presenter.goToGroupScreen(it) }
             subscribeClickListener = { presenter.sub(it)}
             unsubscribeClickListener = { presenter.unsub(it) }
         }
-        return a
     }
 
     override fun onResume() {

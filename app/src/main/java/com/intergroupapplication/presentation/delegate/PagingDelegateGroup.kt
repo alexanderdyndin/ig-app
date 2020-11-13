@@ -44,7 +44,7 @@ class PagingDelegateGroup @Inject constructor() : PagingViewGroup {
         }
     }
 
-    fun hState(type: BasePagingState.Type, adapter: PagingAdapter, emptyStateView: View) {
+    private fun hState(type: BasePagingState.Type, adapter: PagingAdapter, emptyStateView: View) {
         when (type) {
             BasePagingState.Type.NONE -> {
                 adapter.removeLoading()

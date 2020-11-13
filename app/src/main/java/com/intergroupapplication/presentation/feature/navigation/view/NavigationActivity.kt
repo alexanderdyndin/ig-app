@@ -82,6 +82,8 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     lateinit var drawer: Drawer
 
+    var newsLaunchCount: Int = 0
+
     private lateinit var profileAvatarHolder: AvatarImageUploadingView
 
     private var exitHandler: Handler? = null

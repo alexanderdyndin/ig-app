@@ -31,13 +31,14 @@ import kotlinx.android.synthetic.main.post_item_error.view.*
  */
 class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                        private val imageLoadingDelegate: ImageLoadingDelegate,
-                       private val userID: String?)
+                       )
     : PagedListAdapter<GroupEntity, RecyclerView.ViewHolder>(diffCallback), PagingAdapter {
 
     companion object {
         var lettersToSpan = ""
     }
 
+    var userID: String? = null
     var groupClickListener: (groupId: String) -> Unit = {}
     var retryClickListener: () -> Unit = {}
     var subscribeClickListener: (groupId: String) -> Unit = {}

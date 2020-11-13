@@ -23,11 +23,26 @@ class GroupListViewModule {
         override fun areContentsTheSame(oldItem: GroupEntity, newItem: GroupEntity) = oldItem == newItem
     }
 
-//    @PerFragment
-//    @Provides
-//    fun provideGroupList(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
-//                                imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter =
-//            GroupListAdapter(diffUtil, imageLoadingDelegate)
+    @PerFragment
+    @Provides
+    @Named("AdapterAll")
+    fun provideGroupList1(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
+                          imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter =
+            GroupListAdapter(diffUtil, imageLoadingDelegate)
+
+    @PerFragment
+    @Provides
+    @Named("AdapterSub")
+    fun provideGroupList2(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
+                          imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter =
+            GroupListAdapter(diffUtil, imageLoadingDelegate)
+
+    @PerFragment
+    @Provides
+    @Named("AdapterAdm")
+    fun provideGroupList3(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
+                          imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter =
+            GroupListAdapter(diffUtil, imageLoadingDelegate)
 
     @PerFragment
     @Provides

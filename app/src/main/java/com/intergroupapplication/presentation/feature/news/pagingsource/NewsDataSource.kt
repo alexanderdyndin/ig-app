@@ -20,10 +20,13 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
 
     companion object {
         const val FIRST_PAGE = 1
+        const val SECOND_PAGE = 2
     }
 
     private val subject: PublishSubject<BasePagingState> = PublishSubject.create()
     private var retryAction: (() -> Unit)? = null
+
+    lateinit var list: List<GroupPostEntity>
 
     fun reload() = retryAction?.invoke()
 
@@ -39,7 +42,12 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
                     subject.onNext(BasePagingState(BasePagingState.Type.NONE))
                 }
                 .subscribe({
-                    callback.onResult(it.news, it.previous, it.next)
+                    if (it.next == null) {
+                        callback.onResult(it.news, it.previous, it.next)
+                    } else {
+                        callback.onResult(it.news, it.previous, SECOND_PAGE)
+                    }
+                    list = it.news
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))
@@ -52,11 +60,14 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
-                .doOnSuccess {
-                    subject.onNext(BasePagingState(BasePagingState.Type.NONE))
-                }
+                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
                 .subscribe({
-                    callback.onResult(it.news, it.next)
+                    if (it.next == null) {
+                        callback.onResult(it.news, it.next)
+                    } else {
+                        callback.onResult(it.news, params.key + 1)
+                    }
+                    list = it.news
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))

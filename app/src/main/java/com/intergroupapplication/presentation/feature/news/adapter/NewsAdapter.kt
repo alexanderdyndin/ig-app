@@ -6,12 +6,14 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedList
 import com.github.marlonlom.utilities.timeago.onNotNull
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.news.pagingsource.NewsDataSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -27,6 +29,7 @@ class NewsAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var retryClickListener: () -> Unit = {}
     var groupClickListener: (groupId: String) -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
+    var items: List<GroupPostEntity> = mutableListOf<GroupPostEntity>()
     private val loadingViewType = 123
     private val errorViewType = 321
     private var isLoading = false
@@ -175,6 +178,13 @@ class NewsAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     inner class ErrorViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind() {
             itemView.buttonRetry.setOnClickListener { retryClickListener.invoke() }
+        }
+    }
+
+    override fun submitList(pagedList: PagedList<GroupPostEntity>?) {
+        super.submitList(pagedList)
+        if (pagedList?.loadedCount ?:0 > 0) {
+            items = (pagedList?.dataSource as NewsDataSource).list
         }
     }
 
