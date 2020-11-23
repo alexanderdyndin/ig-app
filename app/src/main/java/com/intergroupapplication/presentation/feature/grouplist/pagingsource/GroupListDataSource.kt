@@ -3,9 +3,11 @@ package com.intergroupapplication.presentation.feature.grouplist.pagingsource
 import androidx.paging.PageKeyedDataSource
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupListEntity
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.presentation.base.BasePagingState
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -19,12 +21,17 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
     companion object {
         const val FIRST_PAGE = 1
     }
-    var search = ""
+    private var search = ""
+
+    private var getGroupList: (Int, String) -> Single<GroupListEntity> = { page: Int, search: String ->
+        groupGateway.getGroupList(page, search)
+    }
 
     private val subject: PublishSubject<BasePagingState> = PublishSubject.create()
     private var retryAction: (() -> Unit)? = null
 
     fun reload() = retryAction?.invoke()
+
 
     fun observeState(): Observable<BasePagingState> = subject
 
@@ -32,9 +39,26 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
         search = query
     }
 
+    fun applyAllGroupList() {
+        getGroupList = { page: Int, search: String ->
+            groupGateway.getGroupList(page, search)
+        }
+    }
+
+    fun applySubscribedGroupList() {
+        getGroupList = { page: Int, search: String ->
+            groupGateway.getSubscribedGroupList(page, search)
+        }
+    }
+
+    fun applyOwnedGroupList() {
+        getGroupList = { page: Int, search: String ->
+            groupGateway.getAdminGroupList(page, search)
+        }
+    }
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, GroupEntity>) {
-        compositeDisposable.add(groupGateway.getGroupList(FIRST_PAGE, search)
+        compositeDisposable.add(getGroupList.invoke(FIRST_PAGE, search)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
@@ -50,7 +74,7 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, GroupEntity>) {
-        compositeDisposable.add(groupGateway.getGroupList(params.key, search)
+        compositeDisposable.add(getGroupList.invoke(FIRST_PAGE, search)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }

@@ -2,50 +2,39 @@ package com.intergroupapplication.presentation.feature.grouplist.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import android.widget.Toolbar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.paging.PagedList
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
-import co.zsmb.materialdrawerkt.builders.drawer
-import com.google.android.material.tabs.TabLayout
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import moxy.MvpView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import moxy.viewstate.strategy.AddToEndSingleStrategy
-import moxy.viewstate.strategy.StateStrategyType
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.GROUP_CREATED
-import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.base.PagingViewGroup
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
-import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupPageAdapter
+import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
+import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -72,11 +61,13 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     @Inject
     lateinit var layoutManager: LinearLayoutManager
 
-    @Inject
-    lateinit var imageLoadingDelegate: ImageLoadingDelegate
+    lateinit var doOnFragmentViewCreated: (View) -> Unit
 
-    @Inject
-    lateinit var diffUtil: DiffUtil.ItemCallback<GroupEntity>
+//    @Inject
+//    lateinit var imageLoadingDelegate: ImageLoadingDelegate
+//
+//    @Inject
+//    lateinit var diffUtil: DiffUtil.ItemCallback<GroupEntity>
 
 
     //адаптеры для фрагментов сос списками групп
@@ -110,12 +101,12 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         setAdapter(adapterSub)
         setAdapter(adapterAdm)
         pagingDelegate.attachPagingView(swipeLayout)
-        val gpAdapter = GroupPageAdapter(this, adapterAll, adapterSub, adapterAdm)
-        gpAdapter.doOnFragmentViewCreated = { v ->
-            val emptyText = v.findViewById<TextView>(R.id.emptyText)
-            val groupsList = v.findViewById<RecyclerView>(R.id.allGroupsList)
+        doOnFragmentViewCreated = {
+            val emptyText = it.findViewById<TextView>(R.id.emptyText)
+            val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
             pagingDelegate.addAdapter(groupsList.adapter as PagingAdapter, emptyText)
         }
+        val gpAdapter = GroupPageAdapter(requireActivity())
         pager.apply {
             adapter = gpAdapter
             val handler = ViewPager2Circular(this, swipeLayout)
@@ -144,6 +135,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
                 navigationToolbar.activity_main__text_created_group.setOnClickListener { openCreateGroup() }
             }
         }
+        //presenter.groupList()
     }
 
     private fun setAdapter(adapter: GroupListAdapter) {
@@ -158,7 +150,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onResume() {
         super.onResume()
-        presenter.checkNewVersionAvaliable(fragmentManager!!)
+        presenter.checkNewVersionAvaliable(requireActivity().supportFragmentManager)
         activity_main__search_input.addTextChangedListener(textWatcher)
     }
 
@@ -202,6 +194,56 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     }
 
     override fun showLoading(show: Boolean) {
+        if (show) {
+            when (pager.currentItem) {
+                0 -> {
+                    adapterAll.removeError()
+                    adapterAll.addLoading()
+                }
+                1 -> {
+                    adapterAdm.removeError()
+                    adapterAdm.addLoading()
+                }
+                2 -> {
+                    adapterSub.removeError()
+                    adapterSub.addLoading()
+                }
+            }
+        } else {
+            swipeLayout.isRefreshing = false
+            when (pager.currentItem) {
+                0 -> {
+                    adapterAll.removeLoading()
+                }
+                1 -> {
+                    adapterAdm.removeLoading()
+                }
+                2 -> {
+                    adapterSub.removeLoading()
+                }
+            }
+        }
+    }
+
+    private inner class GroupPageAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+
+        private val PAGE_COUNT = 3
+
+
+        override fun getItemCount(): Int = PAGE_COUNT
+
+        override fun createFragment(position: Int): Fragment {
+            return when(position) {
+                0 -> GroupsFragment.newInstance(position, adapterAll)
+                        .apply { doOnViewCreated = doOnFragmentViewCreated }
+                1 -> GroupsFragment.newInstance(position, adapterSub)
+                        .apply { doOnViewCreated = doOnFragmentViewCreated }
+                2 -> GroupsFragment.newInstance(position, adapterAdm)
+                        .apply { doOnViewCreated = doOnFragmentViewCreated }
+                else -> GroupsFragment.newInstance(position, adapterAll)
+                        .apply { doOnViewCreated = doOnFragmentViewCreated }
+            }
+        }
 
     }
 }

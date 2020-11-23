@@ -10,12 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.R
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
+import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
-
+import moxy.InjectViewState
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
+import javax.inject.Inject
+import javax.inject.Named
 
 @SuppressLint("ValidFragment")
 class GroupsFragment constructor(
@@ -44,9 +50,11 @@ class GroupsFragment constructor(
         }
     }
 
+    fun layoutRes() = R.layout.fragment_group_category
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.fragment_group_category, container, false)
+        val view = inflater.inflate(layoutRes(), container, false)
         return view
     }
 

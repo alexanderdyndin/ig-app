@@ -2,36 +2,14 @@ package com.intergroupapplication.presentation.feature.grouplist.other
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 
-class GroupPageAdapter(fragment: Fragment,
-                       private val adapterAll: GroupListAdapter,
-                       private val adapterSub: GroupListAdapter,
-                       private val adapterAdm: GroupListAdapter) : FragmentStateAdapter(fragment) {
 
-    private val PAGE_COUNT = 3
-    var doOnFragmentViewCreated: (View) -> Unit = { }
-
-    override fun getItemCount(): Int = PAGE_COUNT
-
-    override fun createFragment(position: Int): Fragment {
-        return when(position) {
-            0 -> GroupsFragment.newInstance(position + 1, adapterAll)
-                    .apply { doOnViewCreated = doOnFragmentViewCreated }
-            1 -> GroupsFragment.newInstance(position + 1, adapterSub)
-                    .apply { doOnViewCreated = doOnFragmentViewCreated }
-            2 -> GroupsFragment.newInstance(position + 1, adapterAdm)
-                    .apply { doOnViewCreated = doOnFragmentViewCreated }
-            else -> GroupsFragment.newInstance(position + 1, adapterAll)
-                    .apply { doOnViewCreated = doOnFragmentViewCreated }
-        }
-    }
-
-}
 
 class ViewPager2Circular(private val pager: ViewPager2,
                          private val swipeRefreshLayout: SwipeRefreshLayout) : ViewPager2.OnPageChangeCallback() {

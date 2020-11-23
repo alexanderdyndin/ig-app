@@ -52,7 +52,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
+                //.handleLoading(viewState)
                 .subscribe({
                     viewState.newsLoaded(it)
                 }, {
@@ -104,5 +104,10 @@ class NewsPresenter @Inject constructor(private val router: Router,
 
     private fun unsubscribe() {
         compositeDisposable.clear()
+    }
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        getNews()
     }
 }

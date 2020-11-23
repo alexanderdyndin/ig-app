@@ -85,8 +85,8 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         adapter.complaintListener = { presenter.complaintPost(it) }
         newsPosts.adapter = adapterWrapper
         newSwipe.setOnRefreshListener { presenter.refresh() }
-        presenter.getNews()
-        (activity as NavigationActivity).newsLaunchCount++
+        //presenter.getNews()
+        //(activity as NavigationActivity).newsLaunchCount++
     }
 
 
@@ -110,9 +110,9 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
             emptyText.hide()
             adapter.removeError()
             //TODO ПОФИКСИТЬ ПЕРЕСКАКИВАНИЕ В КОНЕЦ СПИСКА ПРИ ПОВТОРНОЙ ЗАГРУЗКЕ ФРАГМЕНТА
-            if ((activity as NavigationActivity).newsLaunchCount == 1) {
+            //if ((activity as NavigationActivity).newsLaunchCount == 1) {
                 adapter.addLoading()
-            }
+            //}
         } else {
             newSwipe.isRefreshing = false
             adapter.removeLoading()
