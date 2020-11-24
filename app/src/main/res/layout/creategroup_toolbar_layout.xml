@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="32dp"
     android:background="@color/mainBlack"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:popupTheme="@style/ToolbarPopupTheme"
@@ -14,55 +14,28 @@
         android:layout_height="match_parent"
         android:background="@color/mainBlack">
 
-        <ImageView
-            android:id="@+id/groupCreate__headerBg"
+        <ImageButton
+            android:id="@+id/toolbarBackAction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_toolbar"
+            android:background="@drawable/bg_toolbarback"
+            android:src="@drawable/ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/toolbarTittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
             android:text="@string/create_group"
-            android:textColor="@color/mainBlack"
+            android:textColor="@color/colorAccent"
             android:textSize="18sp"
             android:textStyle="bold"
             app:fontFamily="@font/play_bold"
-            app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
-            app:layout_constraintEnd_toEndOf="@+id/groupCreate__headerBg"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/toolbarBackAction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:drawableLeft="@drawable/icon_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/groupCreate__headerBg"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/activity_main__text_created_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="4dp"
-            android:fontFamily="@font/play"
-            android:text="@string/create_group"
-            android:textAlignment="center"
-            android:textColor="@color/colorAccent"
-            android:textSize="12sp"
-            android:visibility="invisible"
-            app:drawableBottomCompat="@drawable/underline"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbarTittle"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbarBackAction"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/toolbarTittle" />
-
+            app:layout_constraintStart_toEndOf="@+id/toolbarBackAction"
+            app:layout_constraintTop_toTopOf="@+id/toolbarBackAction" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>

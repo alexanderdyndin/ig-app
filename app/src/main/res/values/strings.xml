@@ -145,6 +145,36 @@
         <item>Развитие</item>
         <item>Путешествия</item>
     </string-array>
+
+    <string-array name="countries">
+        <item>Abkhazia</item>
+        <item>Afghanistan</item>
+        <item>Albania</item>
+        <item>Algeria</item>
+        <item>Argentina</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Australia</item>
+        <item>Austria</item>
+        <item>Azerbaijan</item>
+    </string-array>
+
     <string name="topic__prompt">Select the topic of your group</string>
     <string name="question" translatable="false">\?</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="language">Language</string>
+    <string name="subject">Subject</string>
+    <string name="create_group_agreement">I agree with terms</string>
+    <string name="group_rules">Rules of the group</string>
+    <string name="group_description">Description</string>
+    <string name="group_open">Opened</string>
+    <string name="group_close">Closed</string>
+    <string name="group_age">Age</string>
+    <string name="group_avatar_add">Add avatar</string>
 </resources>

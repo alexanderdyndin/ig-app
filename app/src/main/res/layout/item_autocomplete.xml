@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/mainBlack">
+
+    <TextView
+        android:id="@+id/autoCompleteItem"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="14sp"
+        android:fontFamily="@font/play"
+        android:text="element12312321321321"
+        android:textColor="@color/colorAccent" />
+
+    <ImageView
+        android:id="@+id/groupCreate__lineInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line_input"
+        android:layout_marginTop="1dp"/>
+
+</LinearLayout>

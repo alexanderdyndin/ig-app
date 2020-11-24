@@ -137,5 +137,16 @@
     <string name="terms_accept_privacy">Условия политики принимаю\t\t\t</string>
     <string name="terms_accept_agreement">Условия соглашения принимаю\t \t\t</string>
     <string name="topic__prompt">Выберите подходящую тематику для вашей группы</string>
+    <string name="country">Страна</string>
+    <string name="city">Город</string>
+    <string name="language">Язык</string>
+    <string name="subject">Тематика</string>
+    <string name="create_group_agreement">Я прочитал  и согласен с правилами</string>
+    <string name="group_rules">Правила группы</string>
+    <string name="group_description">Описание группы</string>
+    <string name="group_open">Открытая</string>
+    <string name="group_close">Закрытая</string>
+    <string name="group_age">Возраст</string>
+    <string name="group_avatar_add">Добавить аватар</string>
 
 </resources>

@@ -54,5 +54,10 @@
     <color name="red">#FF1313</color>
     <color name="colorInput">#12161E</color>
     <color name="colorTextNoActive">#547B84</color>
+    <color name="colorAge12">#F0C600</color>
+    <color name="colorAge16">#F24B04</color>
+    <color name="colorAge18">#000000</color>
+    <color name="colorTextBtnNoActive">#657694</color>
+    <color name="ActiveText">#1A1F28</color>
 
 </resources>

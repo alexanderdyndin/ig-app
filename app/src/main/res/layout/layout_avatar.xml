@@ -12,7 +12,7 @@
         android:layout_width="@dimen/intergroup_profile_view_size"
         android:layout_height="@dimen/intergroup_profile_view_size"
         android:layout_gravity="center"
-        fresco:placeholderImage="@drawable/profile_icon"/>
+        fresco:placeholderImage="@drawable/variant_10"/>
 
     <TextView
         android:id="@+id/darkCard"
