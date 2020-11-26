@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
@@ -13,6 +15,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -23,6 +26,7 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.feature.creategroup.other.InputDialog
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -79,19 +83,31 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         autoCompleteTextViewCountry.setAdapter(adapter)
         autoCompleteTextViewCountry.threshold = 2
 
+        groupCreate_btnOpen.isChecked = true
+        groupCreate__btnAge12.isChecked = true
+
+        groupCreate__desc.setOnClickListener {
+            val myDialogFragment = InputDialog("1234")
+            myDialogFragment.changedText = {
+                groupCreate__desc.setText(it)
+            }
+            val manager = supportFragmentManager
+            myDialogFragment.show(manager, "myDialog")
+        }
+
         groupCreate__radioGroup.setOnCheckedChangeListener { _, i ->
             when (i) {
-                R.id.groupCreate__btnOpen -> {
-                    groupCreate__btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_open_btn_act), null, null, null)
-                    groupCreate__btnOpen.setTextColor(getColor(R.color.ActiveText))
-                    groupCreate__btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_close_btn), null, null, null)
-                    groupCreate__btnClose.setTextColor(getColor(R.color.colorPink))
+                R.id.groupCreate_btnOpen -> {
+                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_open_btn_act), null, null, null)
+                    groupCreate_btnOpen.setTextColor(getColor(R.color.ActiveText))
+                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_close_btn), null, null, null)
+                    groupCreate_btnClose.setTextColor(getColor(R.color.colorPink))
                 }
-                R.id.groupCreate__btnClose -> {
-                    groupCreate__btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_open_btn), null, null, null)
-                    groupCreate__btnOpen.setTextColor(getColor(R.color.colorAccent))
-                    groupCreate__btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_close_btn_act), null, null, null)
-                    groupCreate__btnClose.setTextColor(getColor(R.color.ActiveText))
+                R.id.groupCreate_btnClose -> {
+                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_open_btn), null, null, null)
+                    groupCreate_btnOpen.setTextColor(getColor(R.color.colorAccent))
+                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_close_btn_act), null, null, null)
+                    groupCreate_btnClose.setTextColor(getColor(R.color.ActiveText))
                 }
             }
         }
@@ -227,38 +243,36 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         RxView.focusChanges(groupName).subscribe { groupName.error = null }
                 .let { { d: Disposable -> compositeDisposable.add(d) } }
 
-//        groupAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
-//        groupCreate__radioGroup.setOnCheckedChangeListener { _, _ ->
-//                groupCreate__btnOpen.isChecked = !(groupCreate__btnOpen.isChecked)
-//                groupCreate__btnClose.isChecked = !(groupCreate__btnClose.isChecked)
-//        }
+        groupAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
         checkBoxAgreement.setOnCheckedChangeListener { _, b ->
             if (b) {
                 createGroup.setBackgroundResource(R.drawable.btn_main_act)
                 createGroup.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
+                //checkBoxAgreement.setMarginBottom(5)
                 createGroup.isEnabled = true
             } else {
                 createGroup.setBackgroundResource(R.drawable.btn_main)
                 createGroup.setTextColor(resources.getColor(R.color.colorTextBtnNoActive, this.theme))
+                //checkBoxAgreement.setMarginBottom(0)
                 createGroup.isEnabled = false
             }
         }
     }
 
     override fun showImageUploadingStarted(path: String) {
-       // groupAvatarHolder.showImageUploadingStarted(path)
+       groupAvatarHolder.showImageUploadingStarted(path)
     }
 
     override fun showImageUploaded() {
-        //groupAvatarHolder.showImageUploaded()
+        groupAvatarHolder.showImageUploaded()
     }
 
     override fun showImageUploadingProgress(progress: Float) {
-        //groupAvatarHolder.showImageUploadingProgress(progress)
+        groupAvatarHolder.showImageUploadingProgress(progress)
     }
 
     override fun showImageUploadingError() {
-        //groupAvatarHolder.showImageUploadingError()
+        groupAvatarHolder.showImageUploadingError()
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -273,16 +287,15 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
     }
 
     override fun onValidationSucceeded() {
-        //TODO решить вопрос с дизайном аватарки
-//        if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
-//                groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
-//                groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
+        if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
+                groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
+                groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
             presenter.createGroup(groupName.text.toString().trim(),
                     groupCreate__desc.text.toString().trim(), "no theme",
-                    groupCreate__rule.text.toString().trim(),groupCreate__btnClose.isChecked, age)
-//        } else {
-//            dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
-//        }
+                    groupCreate__rule.text.toString().trim(),groupCreate_btnClose.isChecked, age)
+        } else {
+            dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
+        }
     }
 
     override fun showLoading(show: Boolean) {
@@ -301,6 +314,18 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
 
     private fun loadFromGallery() {
         presenter.takePhotoFromGallery()
+    }
+
+    fun View.setMarginTop(topMargin: Int) {
+        val params = layoutParams as ViewGroup.MarginLayoutParams
+        params.setMargins(params.leftMargin, topMargin, params.rightMargin, params.bottomMargin)
+        layoutParams = params
+    }
+
+    fun View.setMarginBottom(bottomMargin: Int) {
+        val params = layoutParams as ViewGroup.MarginLayoutParams
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMargin)
+        layoutParams = params
     }
 
 }

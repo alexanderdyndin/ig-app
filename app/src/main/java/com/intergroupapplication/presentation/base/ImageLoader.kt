@@ -1,8 +1,6 @@
 package com.intergroupapplication.presentation.base
 
-import android.widget.ImageView
 import com.facebook.drawee.view.SimpleDraweeView
-import com.intergroupapplication.presentation.customview.ShaderSimpleDraweeView
 
 /**
  * Created by abakarmagomedov on 06/08/2018 at project InterGroupApplication.

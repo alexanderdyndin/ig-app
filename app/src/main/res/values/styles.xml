@@ -11,10 +11,6 @@
 
     <style name="AppTheme.ActionBar" parent="Theme.AppCompat" />
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
     <style name="ToolbarPopupTheme" parent="ThemeOverlay.AppCompat.Light">
         <!--<item name="android:colorBackground">@color/colorPrimary</item>-->
     </style>
@@ -33,13 +29,6 @@
         <item name="android:windowEnterAnimation">@anim/grow_animation</item>
         <item name="android:windowExitAnimation">@anim/slip_animation</item>
         <item name="android:fontFamily">sans-serif</item>
-    </style>
-
-    <style name="linkGrayTextStyle" parent="BaseStyle">
-        <item name="android:textSize">@dimen/big_size</item>
-        <item name="android:textColor">@color/linkGrayTextColor</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
     </style>
 
     <style name="InterGroupLogoTextStyle" parent="BaseStyle">
@@ -102,10 +91,6 @@
         <item name="android:textSize">@dimen/big_size</item>
     </style>
 
-    <style name="InterGroupRadioButtonStyle" parent="InterGroupWhiteTextStyle">
-        <!--        <item name="android:button">@drawable/radiobutton_drawable</item>-->
-    </style>
-
     <style name="autoscroll">
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">marquee</item>
@@ -113,14 +98,6 @@
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
         <item name="android:scrollHorizontally">true</item>
-    </style>
-
-    <style name="FloatingButtonStyle">
-        <item name="fab_colorNormal">@color/colorAccent</item>
-        <item name="fab_colorPressed">@color/colorPrimaryDark</item>
-        <item name="fab_showAnimation">@anim/fab_scale_up</item>
-        <item name="fab_hideAnimation">@anim/fab_scale_down</item>
-        <item name="fabCustomSize">@dimen/floating_enter_button_size</item>
     </style>
 
     <style name="PrimaryFlatButton" parent="Theme.AppCompat.Light">
@@ -190,19 +167,6 @@
         <item name="android:layout_marginEnd">@dimen/big_margin</item>
     </style>
 
-    <style name="InterGroupCustomEditTextStyle" parent="BaseStyle">
-        <item name="android:padding">@dimen/big_padding</item>
-        <item name="android:textColorHint">@color/editTextHintColor</item>
-        <item name="android:textColor">@color/editTextLetterColors</item>
-        <item name="android:textSize">@dimen/big_size</item>
-        <item name="android:background">@drawable/edit_text_drawable</item>
-        <!--<item name="inter_setBorderView">true</item>-->
-        <item name="inter_setCornerRadius">@dimen/small_corner_radius</item>
-        <item name="inter_setStrokeWidth">@dimen/small_width</item>
-        <item name="android:imeOptions">actionNext</item>
-        <item name="android:singleLine">true</item>
-    </style>
-
     <style name="InterGroupCommentEditTextStyle" parent="BaseStyle">
         <item name="android:paddingStart">@dimen/big_padding</item>
         <item name="android:paddingEnd">@dimen/big_padding</item>
@@ -222,26 +186,9 @@
         <item name="android:textSize">@dimen/big_size</item>
     </style>
 
-    <style name="InterGroupInputEditTextStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/errorColor</item>
-        <item name="android:textSize">@dimen/middle_low_size</item>
-        <!--<item name="inter_setBorderView">true</item>-->
-        <item name="fontFamily">@font/roboto</item>
-        <item name="inter_setCornerRadius">@dimen/small_corner_radius</item>
-        <item name="inter_setStrokeWidth">@dimen/small_width</item>
-        <item name="android:imeOptions">actionNext</item>
-        <item name="android:singleLine">true</item>
-    </style>
-
     <style name="InterGroupEmptyHintTextStyle" parent="BaseStyle">
         <item name="android:textColor">@color/interGroupGreyTextColor</item>
         <item name="android:textSize">@dimen/middle_low_size</item>
-    </style>
-
-    <style name="ErrorTextStyle">
-        <item name="android:textSize">@dimen/middle_low_size</item>
-        <item name="android:textColor">@color/errorColor</item>
-        <item name="android:fontFamily">@font/roboto</item>
     </style>
 
     <style name="ButtonAuthStyle">
@@ -273,17 +220,6 @@
         <item name="android:background">@drawable/background_edit_text</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:layout_height">48dp</item>
-    </style>
-
-    <style name="spinner_style">
-        <item name="android:background">@drawable/black_spinner</item>
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginRight">5dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:paddingLeft">6dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:popupBackground">@color/colorInput</item>
     </style>
 
 

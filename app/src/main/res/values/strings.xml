@@ -1,49 +1,25 @@
 <resources>
     <string name="app_name">InterGroupApplication</string>
     <string name="application_logo">Application Logo</string>
-    <string name="type_message">Type message</string>
-    <string name="type_subject">Type subject</string>
     <string name="notification_channel_id">notification_chanel_intergroup</string>
     <string name="inter_group">Inter Group</string>
-    <string name="mail">Email</string>
-    <string name="password">Password</string>
     <string name="registration">Registration</string>
-    <string name="retry_password">Confirm password</string>
     <string name="enter">Login</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="lost_connection">Internet disappeared</string>
     <string name="unknown_error">Unknown error</string>
-    <string name="profile_empty">Профиль не заполнин</string>
-    <string name="bio">Full name</string>
-    <string name="birth_date">Birthdate</string>
-    <string name="add">Add</string>
     <string name="men"> \t\tMen</string>
     <string name="women">\t\tWomen</string>
-    <string name="change">Change</string>
     <string name="from_gallery">Gallery</string>
     <string name="from_camera">Camera</string>
     <string name="server_error">Server error</string>
     <string name="no_network_connection">No internet connection</string>
     <string name="password_minimum_eight_symbols">Password must be at least 8 characters including a number and letter</string>
     <string name="email_not_valid">Email does not exist</string>
-    <string name="passwords_do_not_match">Password does not match</string>
-    <string name="wrong_password_or_email">Wrong email or password</string>
-    <string name="write_confirmation_code">Enter confirmation code</string>
-    <string name="confirmation_code_is_not_valid"> Confirmation code is not valid</string>
-    <string name="email_already_exists">User with that email already exists</string>
-    <string name="name">First name</string>
-    <string name="surName">Last name</string>
     <string name="next">Continue</string>
-    <string name="bad_request">Something went wrong</string>
     <string name="read_phone_state_permission">This app requires access to a phone</string>
     <string name="ok">OK</string>
     <string name="field_should_not_be_empty">Field can not be empty</string>
-    <string name="can_not_get_photo">Can\'t get photo</string>
-    <string name="user_with_email_already_exist">User with that email already exists</string>
-    <string name="wrong_credentials">Wrong email or password</string>
-    <string name="wrong_confirm_code">Wrong confirmation code</string>
     <string name="group_name">Group name</string>
-    <string name="create">Create</string>
     <string name="create_group">Create group</string>
     <string name="join_the_group">Join the group</string>
     <string name="create_post">Create a post</string>
@@ -56,18 +32,13 @@
     <string name="response_to" formatted="true">response %1$s</string>
     <string name="id" formatted="true">ID %1$s</string>
     <string name="create_note">Create note</string>
-    <string name="groups_list">Group List</string>
     <string name="post_should_contains_text">You can not create post without content</string>
     <string name="go_out_from_group">Leave group</string>
-    <string name="join_to_group">Join group</string>
     <string name="no_comments_yet">There are no comments yet</string>
     <string name="comment_should_contain_text">Comment cannot be empty</string>
     <string name="intergroup_notification">Notification from InterGroup</string>
-    <string name="group_already_exist">Group with that name already exists</string>
-    <string name="group_blocked">This group is blocked</string>
     <string name="here_no_groups_yet">There are no groups yet</string>
     <string name="user_blocked">User blocked</string>
-    <string name="loading">Loading</string>
     <string name="loading_error">Loading error</string>
     <string name="retry">Retry</string>
     <string name="response_to_comment">Response to a comment</string>
@@ -79,7 +50,6 @@
     <string name="advertising">ad</string>
     <string name="cancel">Cancel</string>
     <string name="image_still_uploading">Image is still uploading</string>
-    <string name="there_are_no_news_yet">There are no news yet</string>
     <string name="can_not_change_avatar">You can not add the picture</string>
     <string name="add_photo_or_text">Type the text (enter the text or attach photo)</string>
     <string name="unknown">Unknown</string>
@@ -124,27 +94,14 @@
     <string name="complaint">Report abuse</string>
     <string name="complaint_send">Your complaint was sent</string>
     <string name="change_e_mail">Change E-mail</string>
-    <string name="new_version"> </string>
     <string name="search">Search</string>
     <string name="subscribe">Subscribe</string>
     <string name="unsubscribe">Unsubscribe</string>
-    <string name="searchString">Search</string>
     <string name="allGroups">All groups</string>
     <string name="subGroups">Subscribed</string>
     <string name="admGroups">Management</string>
     <string name="terms_accept_privacy">Accept privacy policy conditions\t \t\t</string>
     <string name="terms_accept_agreement">Accept user agreement conditions\t \t\t</string>
-
-    <string-array name="topic__arrays">
-        <item>Спорт</item>
-        <item>Питание</item>
-        <item>Бизнес</item>
-        <item>Развлечение</item>
-        <item>Кино</item>
-        <item>Музыка</item>
-        <item>Развитие</item>
-        <item>Путешествия</item>
-    </string-array>
 
     <string-array name="countries">
         <item>Abkhazia</item>
@@ -164,7 +121,6 @@
         <item>Azerbaijan</item>
     </string-array>
 
-    <string name="topic__prompt">Select the topic of your group</string>
     <string name="question" translatable="false">\?</string>
     <string name="country">Country</string>
     <string name="city">City</string>

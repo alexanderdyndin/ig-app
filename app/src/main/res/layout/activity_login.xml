@@ -15,7 +15,6 @@
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".presentation.feature.login.view.LoginActivity">

@@ -32,15 +32,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/navigationToolbar" />
 
-            <ImageView
+            <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/groupCreate_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="115dp"
+                android:layout_height="115dp"
                 android:layout_marginTop="21dp"
-                android:src="@drawable/avatar_fill"
+                app:shape_clip_drawable="@drawable/ava_mask"
+                android:foreground="@drawable/ava_shadow"
                 app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
-                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg" />
+                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
 
+                <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+                    android:id="@+id/groupAvatarHolder"
+                    android:layout_width="115dp"
+                    android:layout_height="115dp">
+                </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
+
+            </com.github.florent37.shapeofview.ShapeOfView>
 
             <TextView
                 android:id="@+id/groupCreate__addAvatar"
@@ -107,25 +115,24 @@
                 app:layout_constraintTop_toBottomOf="@+id/groupCreate__titleBg">
 
                 <RadioButton
-                    android:id="@+id/groupCreate__btnOpen"
+                    android:id="@+id/groupCreate_btnOpen"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="33dp"
                     android:layout_marginRight="16dp"
                     android:background="@drawable/gcreate_btnopen_selector"
                     android:button="@android:color/transparent"
-                    android:drawableLeft="@drawable/ic_open_btn_act"
+                    android:drawableLeft="@drawable/ic_open_btn"
                     android:drawablePadding="6dp"
                     android:fontFamily="@font/play"
                     android:paddingLeft="12dp"
                     android:text="@string/group_open"
-                    android:textColor="@color/ActiveText"
-                    android:textSize="12sp"
-                    android:checked="true"/>
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp"/>
 
                 <RadioButton
-                    android:id="@+id/groupCreate__btnClose"
+                    android:id="@+id/groupCreate_btnClose"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="33dp"
                     android:background="@drawable/gcreate_btnclose_selector"
                     android:button="@android:color/transparent"
                     android:drawableLeft="@drawable/ic_close_btn"
@@ -134,8 +141,7 @@
                     android:paddingLeft="12dp"
                     android:text="@string/group_close"
                     android:textColor="@color/colorPink"
-                    android:textSize="12sp"
-                    android:checked="false"/>
+                    android:textSize="12sp"/>
 
             </RadioGroup>
 
@@ -184,7 +190,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/groupCreate__radioGroup"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate__ageHelp">
@@ -197,12 +202,11 @@
                     android:background="@drawable/gcreate_12age_selector"
                     android:button="@android:color/transparent"
                     android:fontFamily="@font/play"
+                    android:padding="4dp"
                     android:gravity="center_horizontal"
-                    android:paddingTop="4dp"
                     android:text="12+"
-                    android:textColor="@color/ActiveText"
-                    android:textSize="16sp"
-                    android:checked="true"/>
+                    android:textColor="@color/colorAge12"
+                    android:textSize="16sp"/>
 
                 <RadioButton
                     android:id="@+id/groupCreate__btnAge16"
@@ -213,10 +217,11 @@
                     android:button="@android:color/transparent"
                     android:fontFamily="@font/play"
                     android:gravity="center_horizontal"
-                    android:paddingTop="4dp"
+                    android:padding="4dp"
                     android:text="16+"
                     android:textColor="@color/colorAge16"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    />
 
                 <RadioButton
                     android:id="@+id/groupCreate__btnAge18"
@@ -226,10 +231,11 @@
                     android:button="@android:color/transparent"
                     android:fontFamily="@font/play"
                     android:gravity="center_horizontal"
-                    android:paddingTop="4dp"
+                    android:padding="4dp"
                     android:text="18+"
                     android:textColor="@color/colorPink"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    />
 
             </RadioGroup>
 
@@ -279,7 +285,6 @@
 
 
             <ProgressBar
-                android:id="@+id/progressBar123"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -328,7 +333,6 @@
                 app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput"/>
 
             <EditText
-                android:id="@+id/groupCreate__city"
                 android:layout_width="336dp"
                 android:layout_height="34dp"
                 android:background="@drawable/bg_inp_create"
@@ -363,7 +367,6 @@
                 app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput2"/>
 
             <EditText
-                android:id="@+id/groupCreate__lang"
                 android:layout_width="336dp"
                 android:layout_height="34dp"
                 android:background="@drawable/bg_inp_create"
@@ -543,7 +546,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkBoxAgreement">
+                app:layout_constraintTop_toBottomOf="@+id/checkBoxAgreement"
+                android:layout_marginTop="8dp">
 
                 <include layout="@layout/auth_loader" />
 
@@ -552,7 +556,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn_main"
-                    android:layout_marginTop="8dp"
                     android:text="@string/create_group"
                     android:textColor="@color/colorTextBtnNoActive"
                     android:enabled="false"/>
