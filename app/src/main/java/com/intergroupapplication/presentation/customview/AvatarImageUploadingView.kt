@@ -68,7 +68,7 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
             ifNull { showAvatar(R.drawable.application_logo) }
             ifNotNull { showAvatar(it) }
         }*/
-        doOrIfNull(lastAvatar, { showAvatar(it) }, { showAvatar(R.drawable.profile_icon) })
+        doOrIfNull(lastAvatar, { showAvatar(it) }, { showAvatar(R.drawable.variant_10) })
         state = AvatarUploadingState.NONE
     }
 

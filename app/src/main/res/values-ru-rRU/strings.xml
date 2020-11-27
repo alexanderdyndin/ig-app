@@ -108,12 +108,14 @@
     <string name="city">Город</string>
     <string name="language">Язык</string>
     <string name="subject">Тематика</string>
-    <string name="create_group_agreement">Я прочитал  и согласен с правилами</string>
+    <string name="create_group_agreement"><u>Я прочитал  и согласен с правилами</u></string>
     <string name="group_rules">Правила группы</string>
     <string name="group_description">Описание группы</string>
     <string name="group_open">Открытая</string>
     <string name="group_close">Закрытая</string>
     <string name="group_age">Возраст</string>
     <string name="group_avatar_add">Добавить аватар</string>
+    <string name="empty_subject_error">Пожалуйста, введите тематику!</string>
+    <string name="full_subject_error">Вы не можете добавить больше 5 тематик</string>
 
 </resources>

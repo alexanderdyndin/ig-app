@@ -68,6 +68,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
     lateinit var imageLoaderDelegate: ImageLoadingDelegate
 
     private var age: String = "12"
+    private var subjects: MutableList<String> = mutableListOf<String>()
 
     @LayoutRes
     override fun layoutRes() = R.layout.activity_group_create
@@ -82,9 +83,6 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
 
         autoCompleteTextViewCountry.setAdapter(adapter)
         autoCompleteTextViewCountry.threshold = 2
-
-        groupCreate_btnOpen.isChecked = true
-        groupCreate__btnAge12.isChecked = true
 
         groupCreate__desc.setOnClickListener {
             val myDialogFragment = InputDialog("1234")
@@ -115,28 +113,18 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         groupCreate__subject_btn.setOnClickListener {
             val keyword: String = groupCreate__subject.text.toString()
             if (keyword.isEmpty()) {
-                Toast.makeText(this, "Please enter the keyword!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.empty_subject_error, Toast.LENGTH_SHORT).show()
+            } else if (subjects.size>=5) {
+                Toast.makeText(this, R.string.full_subject_error, Toast.LENGTH_SHORT).show()
             } else {
                 try {
                     val inflater = LayoutInflater.from(this)
-
-                    // Create a Chip from Layout.
                     val newChip = inflater.inflate(R.layout.layout_chip_entry, chipGroupSubject, false) as Chip
                     newChip.text = keyword
-
-                    //
-                    // Other methods:
-                    //
-                    // newChip.setCloseIconVisible(true);
-                    // newChip.setCloseIconResource(R.drawable.your_icon);
-                    // newChip.setChipIconResource(R.drawable.your_icon);
-                    // newChip.setChipBackgroundColorResource(R.color.red);
-                    // newChip.setTextAppearanceResource(R.style.ChipTextStyle);
-                    // newChip.setElevation(15);
+                    subjects.add(keyword)
                     chipGroupSubject.addView(newChip)
-
-                    // Set Listener for the Chip:
-                    newChip.setOnClickListener {
+                    newChip.setOnCloseIconClickListener {
+                        subjects.remove((it as Chip).text)
                         chipGroupSubject.removeView(it)
                     }
                     groupCreate__subject.setText("")
@@ -257,6 +245,9 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
                 createGroup.isEnabled = false
             }
         }
+
+        groupCreate_btnOpen.isChecked = true
+        groupCreate__btnAge12.isChecked = true
     }
 
     override fun showImageUploadingStarted(path: String) {

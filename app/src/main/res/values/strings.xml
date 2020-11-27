@@ -126,11 +126,18 @@
     <string name="city">City</string>
     <string name="language">Language</string>
     <string name="subject">Subject</string>
-    <string name="create_group_agreement">I agree with terms</string>
+    <string name="create_group_agreement"><u>I agree with terms</u></string>
     <string name="group_rules">Rules of the group</string>
     <string name="group_description">Description</string>
     <string name="group_open">Opened</string>
     <string name="group_close">Closed</string>
     <string name="group_age">Age</string>
     <string name="group_avatar_add">Add avatar</string>
+    <string name="empty_subject_error">Please enter the keyword!</string>
+    <string name="full_subject_error">There are can be not more then 5 subjects</string>
+    <string name="separateline" translatable="false">SeparateLine</string>
+    <string name="imagebg" translatable="false">ImageBG</string>
+    <string name="_18" translatable="false">18+</string>
+    <string name="_12" translatable="false">12+</string>
+    <string name="_16" translatable="false">16+</string>
 </resources>

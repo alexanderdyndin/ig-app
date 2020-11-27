@@ -60,6 +60,7 @@
     <dimen name="data_edit_text_size">48dp</dimen>
     <dimen name="year_edit_text_size">88dp</dimen>
     <dimen name="max_comment_width">150dp</dimen>
+    <dimen name="heightgroupcreateBG">52dp</dimen>
 
 
 </resources>
