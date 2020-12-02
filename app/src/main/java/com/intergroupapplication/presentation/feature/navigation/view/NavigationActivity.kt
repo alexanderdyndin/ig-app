@@ -18,6 +18,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.UserSettings
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
@@ -41,10 +43,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 
+
 class NavigationActivity : BaseActivity(), NavigationView {
 
     companion object {
         private const val EXIT_DELAY = 2000L
+        private const val APPODEAL_APP_KEY = "57968e20342bf80c873fd55868f65f7b"
 
         fun getIntent(context: Context?) = Intent(context, NavigationActivity::class.java)
                 .apply {
@@ -64,6 +68,9 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //Appodeal.setUserAge()
+        //Appodeal.setUserGender(if (userSession.user.gender)UserSettings.Gender.)
+       // Appodeal.initialize(this, APPODEAL_APP_KEY, Appodeal.NATIVE, true);
         val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
         val file = File("$filepatch.nomedia")
         try {

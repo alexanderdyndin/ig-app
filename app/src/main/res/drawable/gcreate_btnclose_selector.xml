@@ -3,9 +3,11 @@
     <item
         android:state_checked="true"
         android:drawable="@drawable/btn_r_angle_red_act"
+        android:color="@color/ActiveText"
         />
     <item
         android:state_checked="false"
         android:drawable="@drawable/btn_r_angle"
+        android:color="@color/colorPink"
         />
 </selector>

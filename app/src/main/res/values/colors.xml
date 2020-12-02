@@ -50,5 +50,7 @@
     <color name="colorAge16">#F24B04</color>
     <color name="colorTextBtnNoActive">#657694</color>
     <color name="ActiveText">#1A1F28</color>
+    <color name="colorBlue">#2972FF</color>
+    <color name="colorPink2">#FF5C70</color>
 
 </resources>

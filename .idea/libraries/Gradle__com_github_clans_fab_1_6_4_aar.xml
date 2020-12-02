@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.clans:fab:1.6.4@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be0fe5ef44316005b74cc7f9f50fbae9/jetified-fab-1.6.4/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be0fe5ef44316005b74cc7f9f50fbae9/jetified-fab-1.6.4/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be0fe5ef44316005b74cc7f9f50fbae9/jetified-fab-1.6.4/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c9baf1d4338938a6b28e09dcbb9e12f5/jetified-fab-1.6.4/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c9baf1d4338938a6b28e09dcbb9e12f5/jetified-fab-1.6.4/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c9baf1d4338938a6b28e09dcbb9e12f5/jetified-fab-1.6.4/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.clans/fab/1.6.4/9f4322ba4a76940484e06a05e98fa77457822f1c/fab-1.6.4-javadoc.jar!/" />

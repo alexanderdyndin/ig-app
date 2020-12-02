@@ -35,28 +35,24 @@
                 app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
                 android:contentDescription="@string/imagebg" />
 
-            <FrameLayout
+
+            <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/groupCreate_avatar"
-                android:layout_width="115dp"
-                android:layout_height="120dp"
+                android:layout_width="@dimen/intergroup_profile_view_size"
+                android:layout_height="@dimen/intergroup_profile_view_size"
+                app:shape_clip_drawable="@drawable/ava_mask"
                 android:foreground="@drawable/ava_shadow"
                 android:layout_marginTop="21dp"
                 app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
 
-                <com.github.florent37.shapeofview.ShapeOfView
-                    android:layout_width="115dp"
-                    android:layout_height="115dp"
-                    app:shape_clip_drawable="@drawable/ava_mask">
+                <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+                    android:id="@+id/groupAvatarHolder"
+                    android:layout_width="@dimen/intergroup_profile_view_size"
+                    android:layout_height="@dimen/intergroup_profile_view_size">
+                </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
 
-                    <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
-                        android:id="@+id/groupAvatarHolder"
-                        android:layout_width="115dp"
-                        android:layout_height="115dp">
-                    </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
-
-                </com.github.florent37.shapeofview.ShapeOfView>
-            </FrameLayout>
+            </com.github.florent37.shapeofview.ShapeOfView>
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/groupCreate_title_type_container"
                 android:layout_width="0dp"
@@ -131,12 +127,13 @@
 
                 </RadioGroup>
             </androidx.appcompat.widget.LinearLayoutCompat>
+
             <TextView
                 android:id="@+id/groupCreate__addAvatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="63dp"
                 android:layout_marginTop="3dp"
+                android:layout_marginStart="20dp"
                 android:background="@drawable/btn_addava"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/play"
@@ -146,9 +143,9 @@
                 android:text="@string/group_avatar_add"
                 android:textColor="@color/colorAccent2"
                 android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg"
-                app:drawableLeftCompat="@drawable/ic_plus_addava" />
+                app:drawableLeftCompat="@drawable/ic_plus_addava"
+                app:layout_constraintStart_toStartOf="@+id/frameLayout3"
+                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg" />
 
             <ImageView
                 android:id="@+id/groupCreate_line_r"
@@ -272,7 +269,7 @@
                 android:id="@+id/groupCreate__countryBg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/heightgroupcreateBG"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
                 app:layout_constraintTop_toBottomOf="@id/groupCreate__lineAge"/>
 
@@ -302,7 +299,7 @@
                 android:id="@+id/groupCreate__cityBg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/heightgroupcreateBG"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
                 app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput"/>
 
@@ -333,7 +330,7 @@
                 android:id="@+id/groupCreate__langBg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/heightgroupcreateBG"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
                 app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput2"/>
 
@@ -363,7 +360,7 @@
                 android:id="@+id/groupCreate__subjectBg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
                 app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput3">
 
@@ -396,7 +393,7 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginEnd="15dp"
-                        app:drawableRightCompat="@drawable/btn_plus"
+                        app:drawableLeftCompat="@drawable/btn_plus"
                         tools:ignore="RelativeOverlap" />
 
                 </RelativeLayout>
@@ -425,37 +422,56 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:id="@+id/groupCreate__descBg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
-                app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput4">
-                <RelativeLayout
-                    android:id="@+id/groupCreate__desc_layout"
+                app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput4"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/groupCreate__desc"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                    <TextView
-                        android:id="@+id/groupCreate__desc"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:text="@string/group_description"
+                    android:textSize="14sp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorAccent2"
+                    app:drawableRightCompat="@drawable/ic_write" />
+                <LinearLayout
+                    android:id="@+id/groupCreate__descContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginRight="12dp"
-                        android:background="@android:color/transparent"
-                        android:gravity="center_vertical"
-                        android:text="@string/group_description"
-                        android:textSize="14sp"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:textColor="@color/colorAccent2"
-                        app:drawableRightCompat="@drawable/ic_write" />
-                </RelativeLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_inp_big"
+                        android:layout_marginTop="8dp">
+                        <EditText
+                            android:id="@+id/groupCreate__descEdit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="120dp"
+                            android:padding="5dp"
+                            android:background="@android:color/transparent"
+                            android:inputType="textMultiLine"/>
+                    </FrameLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        android:background="@drawable/line_shadow" />
+                </LinearLayout>
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/groupCreate__lineInput5"
@@ -467,39 +483,58 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+
+
+            <LinearLayout
                 android:id="@+id/groupCreate__ruleBg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
+                android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@id/groupCreate__lineInput5">
-                <RelativeLayout
-                    android:id="@+id/groupCreate__rule_layout"
+                <TextView
+                    android:id="@+id/groupCreate__rule"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                    <TextView
-                        android:id="@+id/groupCreate__rule"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:text="@string/group_rules"
+                    android:textSize="14sp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:textColor="@color/colorAccent2"
+                    app:drawableRightCompat="@drawable/ic_write" />
+                <LinearLayout
+                    android:id="@+id/groupCreate__ruleContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginRight="12dp"
-                        android:background="@android:color/transparent"
-                        android:gravity="center_vertical"
-                        android:text="@string/group_rules"
-                        android:textSize="14sp"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:textColor="@color/colorAccent2"
-                        app:drawableRightCompat="@drawable/ic_write" />
-                </RelativeLayout>
-
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_inp_big"
+                        android:layout_marginTop="8dp">
+                        <EditText
+                            android:id="@+id/groupCreate__ruleEdit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxHeight="120dp"
+                            android:padding="5dp"
+                            android:background="@android:color/transparent"
+                            android:inputType="textMultiLine"/>
+                    </FrameLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        android:background="@drawable/line_shadow" />
+                </LinearLayout>
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/groupCreate__lineInput6"
@@ -539,12 +574,14 @@
             </LinearLayout>
 
             <FrameLayout
+                android:id="@+id/frameLayout3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkBoxAgreementContainer"
-                android:layout_marginTop="8dp">
+                app:layout_constraintTop_toBottomOf="@+id/checkBoxAgreementContainer">
 
                 <include layout="@layout/auth_loader" />
 
@@ -553,9 +590,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn_main"
+                    android:enabled="false"
+                    android:gravity="bottom|center_horizontal"
+                    android:paddingBottom="9dp"
                     android:text="@string/create_group"
-                    android:textColor="@color/colorTextBtnNoActive"
-                    android:enabled="false"/>
+                    android:textColor="@color/colorTextBtnNoActive" />
 
             </FrameLayout>
 

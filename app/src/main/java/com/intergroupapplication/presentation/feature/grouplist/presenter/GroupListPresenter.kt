@@ -45,6 +45,8 @@ class GroupListPresenter @Inject constructor(private val router: Router,
     @Inject
     lateinit var groupGateway: GroupGateway
 
+    var currentScreen = 1
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -72,9 +74,16 @@ class GroupListPresenter @Inject constructor(private val router: Router,
     }
 
     fun groupList() {
-        getGroupsList()
-        getFollowGroupsList()
-        getOwnedGroupsList()
+//        when (currentScreen) {
+//            1 -> getGroupsList()
+//            2 -> getFollowGroupsList()
+//            3 -> getOwnedGroupsList()
+//            else -> {
+                getGroupsList()
+                getFollowGroupsList()
+                getOwnedGroupsList()
+//            }
+//        }
     }
 
     fun getGroupsList() {
@@ -92,6 +101,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .handleLoading(viewState)
                 .subscribe({
                     viewState.groupListLoaded(it)
                 }, {
@@ -103,7 +113,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
         groupsDisposable.add(dsSub.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                //.handleLoading(viewState)
+                .handleLoading(viewState)
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
@@ -115,6 +125,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .handleLoading(viewState)
                 .subscribe({
                     viewState.groupListSubLoaded(it)
                 }, {
@@ -126,7 +137,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
         groupsDisposable.add(dsAdm.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                //.handleLoading(viewState)
+                .handleLoading(viewState)
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
@@ -138,6 +149,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .handleLoading(viewState)
                 .subscribe({
                     viewState.groupListAdmLoaded(it)
                 }, {

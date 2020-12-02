@@ -3,10 +3,10 @@ package com.intergroupapplication.presentation.feature.creategroup.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
@@ -15,10 +15,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
@@ -26,20 +23,19 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.creategroup.other.InputDialog
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
-import com.mobsandgeeks.saripaar.annotation.Length
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_group_create.*
-import kotlinx.android.synthetic.main.auth_loader.progressBar
+import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
-import java.util.stream.Stream
 import javax.inject.Inject
 
 class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.ValidationListener {
@@ -80,18 +76,46 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         val adapter = ArrayAdapter<String>(
                 this, R.layout.item_autocomplete, R.id.autoCompleteItem, countries
         )
-
+        val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         autoCompleteTextViewCountry.setAdapter(adapter)
         autoCompleteTextViewCountry.threshold = 2
 
         groupCreate__desc.setOnClickListener {
-            val myDialogFragment = InputDialog("1234")
-            myDialogFragment.changedText = {
-                groupCreate__desc.setText(it)
-            }
-            val manager = supportFragmentManager
-            myDialogFragment.show(manager, "myDialog")
+            it.visibility = View.GONE
+            groupCreate__descContainer.visibility = View.VISIBLE
+            hideKeyboard(imm)
+            groupCreate__descContainer.performClick()
         }
+
+        groupCreate__descEdit.setOnFocusChangeListener { _, b ->
+            if (!b) {
+                groupCreate__desc.visibility = View.VISIBLE
+                groupCreate__descContainer.visibility = View.GONE
+            }
+        }
+
+        groupCreate__rule.setOnClickListener {
+            it.visibility = View.GONE
+            groupCreate__ruleContainer.visibility = View.VISIBLE
+            hideKeyboard(imm)
+            groupCreate__ruleContainer.performClick()
+        }
+
+        groupCreate__ruleEdit.setOnFocusChangeListener { _, b ->
+            if (!b) {
+                groupCreate__rule.visibility = View.VISIBLE
+                groupCreate__ruleContainer.visibility = View.GONE
+            }
+        }
+        groupCreate__ruleContainer.setOnClickListener {
+            groupCreate__ruleEdit.requestFocus()
+            showKeyboard(imm)
+        }
+        groupCreate__descContainer.setOnClickListener {
+            groupCreate__descEdit.requestFocus()
+            showKeyboard(imm)
+        }
+
 
         groupCreate__radioGroup.setOnCheckedChangeListener { _, i ->
             when (i) {
@@ -126,8 +150,10 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
                     newChip.setOnCloseIconClickListener {
                         subjects.remove((it as Chip).text)
                         chipGroupSubject.removeView(it)
+                        groupCreate__lineInput4.changeSeparatorBackground(subjects.isNotEmpty())
                     }
                     groupCreate__subject.setText("")
+                    groupCreate__lineInput4.changeSeparatorBackground(subjects.isNotEmpty())
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Toast.makeText(this, "Error: " + e.message, Toast.LENGTH_LONG).show()
@@ -135,7 +161,35 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
             }
         }
 
-        groupCreate__checkAge.setOnCheckedChangeListener { radioGroup, i ->
+        groupCreate__subject_btn.setOnTouchListener { v, motionEvent ->
+            v as TextView
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this@CreateGroupActivity, R.drawable.btn_plus_act), null, null, null)
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this@CreateGroupActivity, R.drawable.btn_plus), null, null, null)
+                    v.performClick()
+
+                }
+
+                MotionEvent.ACTION_CANCEL -> {
+
+                }
+
+                else ->{
+
+                }
+            }
+            true
+        }
+
+        groupCreate__checkAge.setOnCheckedChangeListener { _, i ->
+            groupCreate__lineAge.setBackgroundResource(R.drawable.line_input_act)
             when (i) {
                 R.id.groupCreate__btnAge12 -> {
                     groupCreate__btnAge12.setTextColor(getColor(R.color.ActiveText))
@@ -160,6 +214,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     v.setBackgroundResource(R.drawable.btn_addava_act)
+                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_plus_addava_act), null, null, null)
                     v.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
                 }
 
@@ -169,6 +224,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
                 MotionEvent.ACTION_UP -> {
                     v.setBackgroundResource(R.drawable.btn_addava)
                     v.setTextColor(resources.getColor(R.color.colorAccent, this.theme))
+                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_plus_addava), null, null, null)
                     v.performClick()
 
                 }
@@ -211,8 +267,9 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
             }
             true
         }
+
         groupCreate__ageHelp.setOnClickListener {
-            Toast.makeText(this,"12+\n16+\n18+", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "12+\n16+\n18+", Toast.LENGTH_LONG).show()
         }
         groupName = findViewById(R.id.groupCreate_title)
         createGroup.setOnClickListener {
@@ -236,15 +293,83 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
             if (b) {
                 createGroup.setBackgroundResource(R.drawable.btn_main_act)
                 createGroup.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
-                //checkBoxAgreement.setMarginBottom(5)
                 createGroup.isEnabled = true
             } else {
                 createGroup.setBackgroundResource(R.drawable.btn_main)
                 createGroup.setTextColor(resources.getColor(R.color.colorTextBtnNoActive, this.theme))
-                //checkBoxAgreement.setMarginBottom(0)
                 createGroup.isEnabled = false
             }
         }
+
+        createGroup.setOnTouchListener { v, motionEvent ->
+            v as TextView
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    v.setBackgroundResource(R.drawable.btn_main_press)
+                    v.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    v.setBackgroundResource(R.drawable.btn_main_act)
+                    v.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
+                    v.performClick()
+
+                }
+
+                MotionEvent.ACTION_CANCEL -> {
+
+                }
+
+                else ->{
+
+                }
+            }
+            true
+        }
+        groupName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                if (s.isNotEmpty()) {
+                    groupCreate__lineOpenClose.setBackgroundResource(R.drawable.line_openclose_act)
+                    groupCreate__lineAge.setBackgroundResource(R.drawable.line_input_act)
+                } else {
+                    groupCreate__lineOpenClose.setBackgroundResource(R.drawable.line_openclose)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+
+        autoCompleteTextViewCountry.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                groupCreate__lineInput.changeSeparatorBackground(s.isNotEmpty())
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+
+        autoCompleteTextViewCity.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                groupCreate__lineInput2.changeSeparatorBackground(s.isNotEmpty())
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+
+        autoCompleteTextViewLang.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                groupCreate__lineInput3.changeSeparatorBackground(s.isNotEmpty())
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+
 
         groupCreate_btnOpen.isChecked = true
         groupCreate__btnAge12.isChecked = true
@@ -256,6 +381,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
 
     override fun showImageUploaded() {
         groupAvatarHolder.showImageUploaded()
+        groupCreate_line_r.setBackgroundResource(R.drawable.line_addava_act)
     }
 
     override fun showImageUploadingProgress(progress: Float) {
@@ -283,7 +409,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
                 groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
             presenter.createGroup(groupName.text.toString().trim(),
                     groupCreate__desc.text.toString().trim(), "no theme",
-                    groupCreate__rule.text.toString().trim(),groupCreate_btnClose.isChecked, age)
+                    groupCreate__rule.text.toString().trim(), groupCreate_btnClose.isChecked, age)
         } else {
             dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
         }
@@ -317,6 +443,23 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         val params = layoutParams as ViewGroup.MarginLayoutParams
         params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMargin)
         layoutParams = params
+    }
+
+    fun View.changeSeparatorBackground(active: Boolean) {
+        if (active) {
+            setBackgroundResource(R.drawable.line_input_act)
+        } else {
+            setBackgroundResource(R.drawable.line_input)
+        }
+    }
+
+    private fun hideKeyboard(imm: InputMethodManager) {
+        val view: View? = this.currentFocus
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun showKeyboard(imm: InputMethodManager) {
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
     }
 
 }

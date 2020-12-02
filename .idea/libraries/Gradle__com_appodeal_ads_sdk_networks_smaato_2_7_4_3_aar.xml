@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.appodeal.ads.sdk.networks:smaato:2.7.4.3@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa79f65d5e9a6d8a95f19afca1eac01f/jetified-smaato-2.7.4.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa79f65d5e9a6d8a95f19afca1eac01f/jetified-smaato-2.7.4.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa79f65d5e9a6d8a95f19afca1eac01f/jetified-smaato-2.7.4.3/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

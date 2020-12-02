@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.appodeal.ads.sdk.networks:yandex:2.7.4.5@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/90247602c9a9132f7d46d93679b2d870/jetified-yandex-2.7.4.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/90247602c9a9132f7d46d93679b2d870/jetified-yandex-2.7.4.5/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/90247602c9a9132f7d46d93679b2d870/jetified-yandex-2.7.4.5/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

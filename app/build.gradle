@@ -30,6 +30,9 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+        maven {
+            url "https://artifactory.appodeal.com/appodeal"
+        }
     }
 }
 
@@ -124,7 +127,7 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled true
+            minifyEnabled false
             signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles fileTree('proguard').asList().toArray()
@@ -315,5 +318,7 @@ dependencies {
 
     implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
 
+    //appodeal
+    implementation 'com.appodeal.ads:sdk:2.7.4.+'
 
 }

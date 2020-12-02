@@ -10,12 +10,13 @@ buildscript {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+        maven { url "https://artifactory.appodeal.com/appodeal" }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${tools_version}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.4'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
         classpath "io.realm:realm-gradle-plugin:$realm_version"
         classpath "com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:$devmetrict_version"
         classpath "com.google.gms:google-services:$gms_version"

@@ -40,7 +40,7 @@
 
     <dimen name="group_logo_inside_post_size">40dp</dimen>
     <dimen name="intergroup_logo_view_size">72dp</dimen>
-    <dimen name="intergroup_profile_view_size">115dp</dimen>
+    <dimen name="intergroup_profile_view_size">120dp</dimen>
     <dimen name="group_action_button_height">36dp</dimen>
 
     <dimen name="post_comment_icon_size">24dp</dimen>
@@ -61,6 +61,7 @@
     <dimen name="year_edit_text_size">88dp</dimen>
     <dimen name="max_comment_width">150dp</dimen>
     <dimen name="heightgroupcreateBG">52dp</dimen>
+    <dimen name="marginTopGroupCreateBG">2dp</dimen>
 
 
 </resources>

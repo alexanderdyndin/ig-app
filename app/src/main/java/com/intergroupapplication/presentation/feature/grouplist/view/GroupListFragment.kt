@@ -33,6 +33,7 @@ import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
@@ -110,6 +111,10 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         pager.apply {
             adapter = gpAdapter
             val handler = ViewPager2Circular(this, swipeLayout)
+            handler.pageChanged = {
+                presenter.currentScreen = it
+                //presenter.groupList()
+            }
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
@@ -195,33 +200,37 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun showLoading(show: Boolean) {
         if (show) {
-            when (pager.currentItem) {
-                0 -> {
-                    adapterAll.removeError()
-                    adapterAll.addLoading()
-                }
-                1 -> {
-                    adapterAdm.removeError()
-                    adapterAdm.addLoading()
-                }
-                2 -> {
-                    adapterSub.removeError()
-                    adapterSub.addLoading()
-                }
-            }
+//            when (pager.currentItem) {
+//                0 -> {
+//                    adapterAll.removeError()
+//                    adapterAll.addLoading()
+//                }
+//                1 -> {
+//                    adapterAdm.removeError()
+//                    adapterAdm.addLoading()
+//                }
+//                2 -> {
+//                    adapterSub.removeError()
+//                    adapterSub.addLoading()
+//                }
+            //}
+            //pager.visibility = View.INVISIBLE
+            //progressBar.visibility = View.VISIBLE
         } else {
             swipeLayout.isRefreshing = false
-            when (pager.currentItem) {
-                0 -> {
-                    adapterAll.removeLoading()
-                }
-                1 -> {
-                    adapterAdm.removeLoading()
-                }
-                2 -> {
-                    adapterSub.removeLoading()
-                }
-            }
+//            when (pager.currentItem) {
+//                0 -> {
+//                    adapterAll.removeLoading()
+//                }
+//                1 -> {
+//                    adapterAdm.removeLoading()
+//                }
+//                2 -> {
+//                    adapterSub.removeLoading()
+//                }
+//            }
+            //pager.visibility = View.VISIBLE
+            //progressBar.visibility = View.INVISIBLE
         }
     }
 

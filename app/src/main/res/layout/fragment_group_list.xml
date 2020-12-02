@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="@+id/activity_main__search_bg"
             app:layout_constraintTop_toTopOf="@+id/activity_main__search_bg"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="25dp"/>
+            android:layout_marginStart="5dp"/>
         <EditText
             android:id="@+id/activity_main__search_input"
             android:layout_width="200dp"
@@ -113,5 +113,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/slidingCategories" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slidingCategories">
+
+            <include layout="@layout/auth_loader" />
+        </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

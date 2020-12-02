@@ -10,9 +10,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d3f5b4bf0e8830632355edaaa21b9b1f/jetified-materialize-1.1.2/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d3f5b4bf0e8830632355edaaa21b9b1f/jetified-materialize-1.1.2/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d3f5b4bf0e8830632355edaaa21b9b1f/jetified-materialize-1.1.2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b126e9817d353f7b5d2c4b0ac8a48ecf/jetified-materialize-1.1.2/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b126e9817d353f7b5d2c4b0ac8a48ecf/jetified-materialize-1.1.2/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b126e9817d353f7b5d2c4b0ac8a48ecf/jetified-materialize-1.1.2/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/47cff3dd4efa01fc1cebbfe1762ab17e/jetified-materialize-1.1.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/47cff3dd4efa01fc1cebbfe1762ab17e/jetified-materialize-1.1.2/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/47cff3dd4efa01fc1cebbfe1762ab17e/jetified-materialize-1.1.2/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mikepenz/materialize/1.1.2/79e75cf64cf1e5928ef045f70905058eb44baae2/materialize-1.1.2-javadoc.jar!/" />
