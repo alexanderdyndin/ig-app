@@ -74,7 +74,7 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, GroupEntity>) {
-        compositeDisposable.add(getGroupList.invoke(FIRST_PAGE, search)
+        compositeDisposable.add(getGroupList.invoke(params.key, search)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }

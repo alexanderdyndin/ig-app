@@ -52,7 +52,8 @@ class PagingDelegateGroup @Inject constructor() : PagingViewGroup {
                 (swipeLayout as? SwipeRefreshLayout)?.isRefreshing = false
                 emptyStateView.hide()
                 if (adapter.itemCount() == 0) {
-                    emptyStateView.show()
+                    //emptyStateView.show()
+                    //TODO починить отображние надписи при 1 странице групп
                 }
             }
             BasePagingState.Type.LOADING -> {

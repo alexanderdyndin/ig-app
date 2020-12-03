@@ -24,6 +24,7 @@ import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.isVisible
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_COUNT_VALUE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_DETAILS_REQUEST
@@ -113,9 +114,13 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
             //if ((activity as NavigationActivity).newsLaunchCount == 1) {
                 adapter.addLoading()
             //}
+            //newsPosts.visibility = View.INVISIBLE
+            //progressBar.visibility = View.VISIBLE
         } else {
             newSwipe.isRefreshing = false
             adapter.removeLoading()
+            //progressBar.visibility = View.INVISIBLE
+            //newsPosts.visibility = View.VISIBLE
         }
     }
 

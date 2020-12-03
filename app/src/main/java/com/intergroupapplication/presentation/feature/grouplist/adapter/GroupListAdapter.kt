@@ -36,13 +36,13 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
 
     companion object {
         var lettersToSpan = ""
+        var userID: String? = null
+        var groupClickListener: (groupId: String) -> Unit = {}
+        var retryClickListener: () -> Unit = {}
+        var subscribeClickListener: (groupId: String) -> Unit = {}
+        var unsubscribeClickListener: (groupId: String) -> Unit = {}
     }
 
-    var userID: String? = null
-    var groupClickListener: (groupId: String) -> Unit = {}
-    var retryClickListener: () -> Unit = {}
-    var subscribeClickListener: (groupId: String) -> Unit = {}
-    var unsubscribeClickListener: (groupId: String) -> Unit = {}
 
     private val loadingViewType = 123
     private val errorViewType = 321

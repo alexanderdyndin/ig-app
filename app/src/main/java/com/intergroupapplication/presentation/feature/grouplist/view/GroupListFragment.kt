@@ -64,14 +64,9 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     lateinit var doOnFragmentViewCreated: (View) -> Unit
 
-//    @Inject
-//    lateinit var imageLoadingDelegate: ImageLoadingDelegate
-//
-//    @Inject
-//    lateinit var diffUtil: DiffUtil.ItemCallback<GroupEntity>
 
 
-    //адаптеры для фрагментов сос списками групп
+    //адаптеры для фрагментов со списками групп
     @Inject
     @Named("AdapterAll")
     lateinit var adapterAll: GroupListAdapter
@@ -98,9 +93,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setAdapter(adapterAll)
-        setAdapter(adapterSub)
-        setAdapter(adapterAdm)
+        setAdapter()
         pagingDelegate.attachPagingView(swipeLayout)
         doOnFragmentViewCreated = {
             val emptyText = it.findViewById<TextView>(R.id.emptyText)
@@ -143,8 +136,8 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         //presenter.groupList()
     }
 
-    private fun setAdapter(adapter: GroupListAdapter) {
-        with (adapter) {
+    private fun setAdapter() {
+        with (GroupListAdapter) {
             userID = sessionStorage.user?.id
             retryClickListener = { presenter.reload() }
             groupClickListener = { presenter.goToGroupScreen(it) }
@@ -199,6 +192,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     }
 
     override fun showLoading(show: Boolean) {
+        //TODO починить отсутствие получения статуса false для showloading
         if (show) {
 //            when (pager.currentItem) {
 //                0 -> {

@@ -62,11 +62,12 @@ class GroupsFragment constructor(
         super.onViewCreated(view, savedInstanceState)
         val groupsList = view.findViewById<RecyclerView>(R.id.allGroupsList)
         val emptyText = view.findViewById<TextView>(R.id.emptyText)
+        emptyText.visibility = View.INVISIBLE
         groupsList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         groupsList.setHasFixedSize(true)
         groupsList.itemAnimator = null
         groupsList.adapter = adapter
-        doOnViewCreated(view)
+        doOnViewCreated.invoke(view)
     }
 
 }
