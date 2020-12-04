@@ -1,13 +1,16 @@
 package com.intergroupapplication.initializators
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.gsonparserfactory.GsonParserFactory
+import com.appodeal.ads.Appodeal
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.android.gms.ads.MobileAds
 import com.intergroupapplication.data.repository.PhotoRepository
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.qualifier.AmazonOkHttpClient
 import com.intergroupapplication.domain.exception.*
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -18,13 +21,14 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
 import es.dmoral.toasty.Toasty
-import io.realm.Realm
-import io.realm.RealmConfiguration
+//import io.realm.Realm
+//import io.realm.RealmConfiguration
 import okhttp3.OkHttpClient
 import retrofit2.HttpException
 import java.lang.IllegalStateException
 import java.net.ConnectException
 import java.net.UnknownHostException
+import kotlin.coroutines.coroutineContext
 
 /**
  * Created by abakarmagomedov on 10/08/2018 at project InterGroupApplication.
@@ -38,9 +42,9 @@ class AppInitializersModule {
     @IntoSet
     fun provideRealmInitializer(context: Context): Initializer = object : Initializer {
         override fun initialize(app: Application) {
-            Realm.init(context)
-            val realmConfiguration = RealmConfiguration.Builder().name("intergroup,database").build()
-            Realm.setDefaultConfiguration(realmConfiguration)
+//            Realm.init(context)
+//            val realmConfiguration = RealmConfiguration.Builder().name("intergroup,database").build()
+//            Realm.setDefaultConfiguration(realmConfiguration)
         }
     }
 

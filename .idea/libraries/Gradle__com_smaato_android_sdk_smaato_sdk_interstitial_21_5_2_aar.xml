@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.smaato.android.sdk:smaato-sdk-interstitial:21.5.2@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5fd4e0abe67e200a202b8f168185b2e8/jetified-smaato-sdk-interstitial-21.5.2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5fd4e0abe67e200a202b8f168185b2e8/jetified-smaato-sdk-interstitial-21.5.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5fd4e0abe67e200a202b8f168185b2e8/jetified-smaato-sdk-interstitial-21.5.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b95f8010d086057eb86802d0a2becb91/jetified-smaato-sdk-interstitial-21.5.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b95f8010d086057eb86802d0a2becb91/jetified-smaato-sdk-interstitial-21.5.2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b95f8010d086057eb86802d0a2becb91/jetified-smaato-sdk-interstitial-21.5.2/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.smaato.android.sdk/smaato-sdk-interstitial/21.5.2/c9e2fa9a8d66531e23671c8f7589c6650b3ead9b/smaato-sdk-interstitial-21.5.2-javadoc.jar!/" />

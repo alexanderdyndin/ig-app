@@ -15,9 +15,10 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/845dbc507eac8f848ad3c36844e8724c/jetified-rxbinding-leanback-v17-2.2.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b38b95ced4406d3f5e5b46853c5690fd/jetified-rxbinding-leanback-v17-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b1fcfe5b8d3d19891e7374d639213fa2/jetified-rxbinding-leanback-v17-2.2.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6da10d84c2f75a24db0f0f30cfe2cfee/jetified-rxbinding-leanback-v17-2.2.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6da10d84c2f75a24db0f0f30cfe2cfee/jetified-rxbinding-leanback-v17-2.2.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6da10d84c2f75a24db0f0f30cfe2cfee/jetified-rxbinding-leanback-v17-2.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a854ddcc6d65bc3f10ae2da5c7775376/jetified-rxbinding-leanback-v17-2.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a854ddcc6d65bc3f10ae2da5c7775376/jetified-rxbinding-leanback-v17-2.2.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a854ddcc6d65bc3f10ae2da5c7775376/jetified-rxbinding-leanback-v17-2.2.0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jakewharton.rxbinding2/rxbinding-leanback-v17/2.2.0/31d144128ed86cd74f084e6ecd502cfd022ca5e7/rxbinding-leanback-v17-2.2.0-javadoc.jar!/" />

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigationActivity">
+
+    <activity
+        android:id="@+id/navigationActivity"
+        android:name="com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity"
+        android:label="NavigationActivity" >
+        <action
+            android:id="@+id/action_navigationActivity_to_groupListFragment"
+            app:destination="@id/groupListFragment" />
+        <action
+            android:id="@+id/action_navigationActivity_to_newsFragment"
+            app:destination="@id/newsFragment" />
+        <action
+            android:id="@+id/action_navigationActivity_to_groupsFragment"
+            app:destination="@id/groupsFragment" />
+    </activity>
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="com.intergroupapplication.presentation.feature.news.view.NewsFragment"
+        android:label="fragment_news"
+        tools:layout="@layout/fragment_news" />
+    <fragment
+        android:id="@+id/groupListFragment"
+        android:name="com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment"
+        android:label="GroupListFragment" />
+    <fragment
+        android:id="@+id/groupsFragment"
+        android:name="com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment"
+        android:label="GroupsFragment" />
+</navigation>

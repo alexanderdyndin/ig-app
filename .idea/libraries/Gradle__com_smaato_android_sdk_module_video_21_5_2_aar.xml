@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.smaato.android.sdk:module-video:21.5.2@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c75d0920fe3f3dcd204520d514ece69b/jetified-module-video-21.5.2/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f65feb6034a946e17c19cfe315df7bf4/jetified-module-video-21.5.2/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c75d0920fe3f3dcd204520d514ece69b/jetified-module-video-21.5.2/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c75d0920fe3f3dcd204520d514ece69b/jetified-module-video-21.5.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c75d0920fe3f3dcd204520d514ece69b/jetified-module-video-21.5.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f65feb6034a946e17c19cfe315df7bf4/jetified-module-video-21.5.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f65feb6034a946e17c19cfe315df7bf4/jetified-module-video-21.5.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f65feb6034a946e17c19cfe315df7bf4/jetified-module-video-21.5.2/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: com.unity3d.ads:unity-ads:3.4.8@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0cbeaff92d72bd54129a4737dcc8bb06/jetified-unity-ads-3.4.8/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0cbeaff92d72bd54129a4737dcc8bb06/jetified-unity-ads-3.4.8/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0cbeaff92d72bd54129a4737dcc8bb06/jetified-unity-ads-3.4.8/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/91003591afa690c2846a7ca33e7ddae9/jetified-unity-ads-3.4.8/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/91003591afa690c2846a7ca33e7ddae9/jetified-unity-ads-3.4.8/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/91003591afa690c2846a7ca33e7ddae9/jetified-unity-ads-3.4.8/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.unity3d.ads/unity-ads/3.4.8/dec8b3aad87e841559ccc13d3135ac78ae5bd5f2/unity-ads-3.4.8-javadoc.jar!/" />

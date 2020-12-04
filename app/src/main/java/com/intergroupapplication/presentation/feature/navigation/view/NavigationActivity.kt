@@ -7,21 +7,14 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import android.util.Log.ERROR
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.drawerlayout.widget.DrawerLayout
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.UserSettings
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseActivity
@@ -36,12 +29,17 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 import javax.inject.Inject
-
 
 
 class NavigationActivity : BaseActivity(), NavigationView {
@@ -68,9 +66,18 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //Appodeal.setUserAge()
-        //Appodeal.setUserGender(if (userSession.user.gender)UserSettings.Gender.)
-       // Appodeal.initialize(this, APPODEAL_APP_KEY, Appodeal.NATIVE, true);
+        Appodeal.initialize(this, "57968e20342bf80c873fd55868f65f7b", Appodeal.NATIVE, userSession.isAcceptTerms())
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        Appodeal.setUserAge(year - date.year)
+        val gender = when (userSession.user?.gender) {
+            "male" -> UserSettings.Gender.MALE
+            "female" -> UserSettings.Gender.FEMALE
+            else -> UserSettings.Gender.OTHER
+        }
+        Appodeal.setUserGender(gender)
+        Appodeal.cache(this, Appodeal.NATIVE, 3)
         val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
         val file = File("$filepatch.nomedia")
         try {
@@ -126,8 +133,9 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-                onClick { _ ->
+                onClick { v ->
                     presenter.goToNewsScreen()
+                    //v?.findNavController()?.navigate(R.id.action_navigationActivity_to_groupsFragment)
                     toolbarTittle.text = getString(R.string.news)
                     false
                 }
@@ -139,8 +147,9 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-                onClick { _ ->
+                onClick { v ->
                     presenter.goToGroupListScreen()
+                    //v?.findNavController()?.navigate(R.id.action_navigationActivity_to_groupListFragment)
                     toolbarTittle.text = getString(R.string.groups)
                     false
                 }

@@ -2,6 +2,9 @@ package com.intergroupapplication.presentation.feature.splash
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.util.AttributeSet
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.intergroupapplication.R
@@ -31,11 +34,12 @@ class SplashActivity : BaseActivity() {
     override fun getSnackBarCoordinator(): CoordinatorLayout? = null
 
     override fun viewCreated() {
-
         when {
             !userSession.isAcceptTerms() -> router.newRootScreen(AgreementsScreen())
             !userSession.isLoggedIn() -> router.newRootScreen(RegistrationScreen())
             else -> router.newRootScreen(NavigationScreen())
         }
     }
+
+
 }

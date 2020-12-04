@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.my.target:mytarget-sdk:5.11.3@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1b3843ee356b28d02a5d79d14e610d8c/jetified-mytarget-sdk-5.11.3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1b3843ee356b28d02a5d79d14e610d8c/jetified-mytarget-sdk-5.11.3/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1b3843ee356b28d02a5d79d14e610d8c/jetified-mytarget-sdk-5.11.3/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be31e0b8d5c189df499b847b72bbf49b/jetified-mytarget-sdk-5.11.3/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be31e0b8d5c189df499b847b72bbf49b/jetified-mytarget-sdk-5.11.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be31e0b8d5c189df499b847b72bbf49b/jetified-mytarget-sdk-5.11.3/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

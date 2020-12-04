@@ -1,12 +1,13 @@
 package com.intergroupapplication.presentation.feature.news.di
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.LinearLayout
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.clockbyte.admobadapter.bannerads.BannerAdViewWrappingStrategy
 import com.google.android.gms.ads.AdView
@@ -21,6 +22,7 @@ import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import dagger.Module
 import dagger.Provides
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 
 @Module
 class NewsViewModule {
@@ -42,7 +44,7 @@ class NewsViewModule {
     @PerFragment
     @Provides
     fun provideAdmobBammerAdapter(context: Context,
-                                  newsAdapter: NewsAdapter): AdmobBannerRecyclerAdapterWrapper =
+                                  newsAdapter: NewsAdapter, activity: NavigationActivity): AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
                     .setLimitOfAds(10)
                     .setFirstAdIndex(4)
@@ -51,15 +53,19 @@ class NewsViewModule {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
                             container.removeAllViews()
                             container.addView(ad)
+                            val t = Appodeal.getNativeAds(1)
+                            if (t.size>0) {
+                                val nativeAdView = NativeAdViewAppWall(activity, t[0])
+                                container.addView(nativeAdView)
+                            }
                         }
-
                         override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
                             return LayoutInflater.from(parent?.context).inflate(R.layout.layout_admob_news,
                                     parent, false) as ViewGroup
                         }
                     })
                     .setNoOfDataBetweenAds(7)
-                    .setSingleAdUnitId(BuildConfig.BANNER_AD_UNIT_ID)
+                    //.setSingleAdUnitId(BuildConfig.BANNER_AD_UNIT_ID)
                     //.setTestDeviceIds(arrayOf("BA4CB07CBCAA1F64824EE76EC089BA5A"))
                     .setAdapter(newsAdapter)
                     .build()

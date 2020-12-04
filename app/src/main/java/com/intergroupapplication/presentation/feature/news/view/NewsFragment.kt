@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.appodeal.ads.Appodeal
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
@@ -85,7 +86,9 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         adapter.groupClickListener = { presenter.goToGroupScreen(it) }
         adapter.complaintListener = { presenter.complaintPost(it) }
         newsPosts.adapter = adapterWrapper
-        newSwipe.setOnRefreshListener { presenter.refresh() }
+        newSwipe.setOnRefreshListener { presenter.refresh()
+            val t = Appodeal.getNativeAds(2)
+            t}
         //presenter.getNews()
         //(activity as NavigationActivity).newsLaunchCount++
     }

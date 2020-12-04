@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.klinkerapps:link_builder:2.0.5@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/15cf8816e0a238a7a6d30e38645667d0/jetified-link_builder-2.0.5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/15cf8816e0a238a7a6d30e38645667d0/jetified-link_builder-2.0.5/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/15cf8816e0a238a7a6d30e38645667d0/jetified-link_builder-2.0.5/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1ad1000c49e716a1f50b80bfc27dc05f/jetified-link_builder-2.0.5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1ad1000c49e716a1f50b80bfc27dc05f/jetified-link_builder-2.0.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1ad1000c49e716a1f50b80bfc27dc05f/jetified-link_builder-2.0.5/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.klinkerapps/link_builder/2.0.5/b9e0eb957d6434d8fedb64fb92901030dae5bc4d/link_builder-2.0.5-javadoc.jar!/" />

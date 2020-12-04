@@ -32,14 +32,11 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-abstract class BaseActivity : MvpAppCompatActivity(), /*HasSupportFragmentInjector,*/ HasAndroidInjector {
+abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
 
     companion object {
         const val PASSWORD_REQUIRED_LENGTH = 8
     }
-
-//    @Inject
-//    lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     @Inject
     lateinit var supportFragmentInjector: DispatchingAndroidInjector<Any>
@@ -93,7 +90,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), /*HasSupportFragmentInject
         super.onDestroy()
     }
 
-    //override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
 
     override fun androidInjector() = supportFragmentInjector
 
@@ -126,7 +122,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), /*HasSupportFragmentInject
                 UserNotVerifiedException::class.java to openConfirmationEmail(),
                 ImeiException::class.java to getActionForBlockedImei(),
                 InvalidRefreshException::class.java to openAutorize(),
-                //todo исправить пагинацию
                 PageNotFoundException::class.java to Action { _, _ -> })
 
         errorHandlerInitializer.initializeErrorHandler(errorMap,
