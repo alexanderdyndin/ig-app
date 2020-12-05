@@ -46,13 +46,13 @@ class NewsViewModule {
     fun provideAdmobBammerAdapter(context: Context,
                                   newsAdapter: NewsAdapter, activity: NavigationActivity): AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
-                    .setLimitOfAds(10)
+                    .setLimitOfAds(20)
                     .setFirstAdIndex(4)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
                             container.removeAllViews()
-                            container.addView(ad)
+                            //container.addView(ad)
                             val t = Appodeal.getNativeAds(1)
                             if (t.size>0) {
                                 val nativeAdView = NativeAdViewAppWall(activity, t[0])

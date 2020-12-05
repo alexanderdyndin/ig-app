@@ -16,10 +16,10 @@
         android:layout_marginTop="@dimen/small_margin"
         android:layout_marginBottom="@dimen/small_margin"
         android:text="@string/advertising"
-        android:textColor="@color/adTextColor"
-        android:textSize="14sp" />
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"/>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
         android:id="@+id/adsCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -15,6 +15,7 @@ import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.UserSettings
+import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseActivity
@@ -46,7 +47,6 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     companion object {
         private const val EXIT_DELAY = 2000L
-        private const val APPODEAL_APP_KEY = "57968e20342bf80c873fd55868f65f7b"
 
         fun getIntent(context: Context?) = Intent(context, NavigationActivity::class.java)
                 .apply {
@@ -66,7 +66,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Appodeal.initialize(this, "57968e20342bf80c873fd55868f65f7b", Appodeal.NATIVE, userSession.isAcceptTerms())
+        Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
         val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -77,7 +77,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
             else -> UserSettings.Gender.OTHER
         }
         Appodeal.setUserGender(gender)
-        Appodeal.cache(this, Appodeal.NATIVE, 3)
+        Appodeal.cache(this, Appodeal.NATIVE, 5)
         val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
         val file = File("$filepatch.nomedia")
         try {

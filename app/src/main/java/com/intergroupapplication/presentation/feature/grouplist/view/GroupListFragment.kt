@@ -14,6 +14,8 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.appodeal.ads.Appodeal
+import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.google.android.material.tabs.TabLayoutMediator
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -79,6 +81,18 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     @Named("AdapterAdm")
     lateinit var adapterAdm: GroupListAdapter
 
+    @Inject
+    @Named("AdapterAll")
+    lateinit var adapterAllAD: AdmobBannerRecyclerAdapterWrapper
+
+    @Inject
+    @Named("AdapterSub")
+    lateinit var adapterSubAD: AdmobBannerRecyclerAdapterWrapper
+
+    @Inject
+    @Named("AdapterAdm")
+    lateinit var adapterAdmAD: AdmobBannerRecyclerAdapterWrapper
+
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
             presenter.applySearchQuery(s.toString())
@@ -93,12 +107,13 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         setAdapter()
         pagingDelegate.attachPagingView(swipeLayout)
         doOnFragmentViewCreated = {
             val emptyText = it.findViewById<TextView>(R.id.emptyText)
             val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
-            pagingDelegate.addAdapter(groupsList.adapter as PagingAdapter, emptyText)
+            pagingDelegate.addAdapter((groupsList.adapter as AdmobBannerRecyclerAdapterWrapper).adapter as PagingAdapter, emptyText)
         }
         val gpAdapter = GroupPageAdapter(requireActivity())
         pager.apply {
@@ -237,13 +252,13 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
         override fun createFragment(position: Int): Fragment {
             return when(position) {
-                0 -> GroupsFragment.newInstance(position, adapterAll)
+                0 -> GroupsFragment.newInstance(position, adapterAllAD)
                         .apply { doOnViewCreated = doOnFragmentViewCreated }
-                1 -> GroupsFragment.newInstance(position, adapterSub)
+                1 -> GroupsFragment.newInstance(position, adapterSubAD)
                         .apply { doOnViewCreated = doOnFragmentViewCreated }
-                2 -> GroupsFragment.newInstance(position, adapterAdm)
+                2 -> GroupsFragment.newInstance(position, adapterAdmAD)
                         .apply { doOnViewCreated = doOnFragmentViewCreated }
-                else -> GroupsFragment.newInstance(position, adapterAll)
+                else -> GroupsFragment.newInstance(position, adapterAllAD)
                         .apply { doOnViewCreated = doOnFragmentViewCreated }
             }
         }
