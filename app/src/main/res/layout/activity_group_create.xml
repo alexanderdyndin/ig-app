@@ -42,7 +42,7 @@
                 android:layout_height="@dimen/intergroup_profile_view_size"
                 app:shape_clip_drawable="@drawable/ava_mask"
                 android:foreground="@drawable/ava_shadow"
-                android:layout_marginTop="21dp"
+                android:layout_marginTop="11dp"
                 app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
 
@@ -133,7 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="24dp"
                 android:background="@drawable/btn_addava"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/play"

@@ -133,11 +133,11 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                     else -> item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
                 }
                 if (item.isClosed) {
-                    item_group__icon_lock.setImageResource(R.drawable.icon_close)
-                    item_group__bg_lock.setImageResource(R.drawable.bg_lock)
+                    item_group__lock.setImageResource(R.drawable.icon_close)
+                    item_group__lock.setBackgroundResource(R.drawable.bg_lock)
                 } else {
-                    item_group__icon_lock.setImageResource(R.drawable.icon_open)
-                    item_group__bg_lock.setImageResource(R.drawable.bg_unlock)
+                    item_group__lock.setImageResource(R.drawable.icon_open)
+                    item_group__lock.setBackgroundResource(R.drawable.bg_unlock)
                 }
                 groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
@@ -157,7 +157,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                         setBackgroundResource(R.drawable.btn_sub)
                     }
                     if (userID == item.owner) {
-                        visibility = View.GONE
+                        visibility = View.INVISIBLE
                     } else {
                         visibility = View.VISIBLE
                     }

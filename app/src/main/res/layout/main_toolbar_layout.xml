@@ -31,7 +31,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:fontFamily="@font/play_bold"
-            android:layout_marginRight="32dp"
+            android:layout_marginRight="40dp"
             app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
             app:layout_constraintEnd_toEndOf="@+id/groupCreate__headerBg"
             app:layout_constraintTop_toTopOf="@+id/groupCreate__headerBg" />

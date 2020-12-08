@@ -40,7 +40,9 @@
 
     <dimen name="group_logo_inside_post_size">40dp</dimen>
     <dimen name="intergroup_logo_view_size">72dp</dimen>
-    <dimen name="intergroup_profile_view_size">120dp</dimen>
+    <dimen name="intergroup_profile_view_size">125dp</dimen>
+    <dimen name="group_in_list_profile_view_size">90dp</dimen>
+    <dimen name="group_header_profile_view_size">190dp</dimen>
     <dimen name="group_action_button_height">36dp</dimen>
 
     <dimen name="post_comment_icon_size">24dp</dimen>
