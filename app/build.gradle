@@ -16,8 +16,6 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'com.google.firebase.crashlytics'
 
 //apply plugin: 'realm-android'

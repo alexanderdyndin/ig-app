@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.paging.PagedList
@@ -158,6 +159,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             groupClickListener = { presenter.goToGroupScreen(it) }
             subscribeClickListener = { presenter.sub(it)}
             unsubscribeClickListener = { presenter.unsub(it) }
+            getColor = { ContextCompat.getColor(this@GroupListFragment.requireContext(), R.color.whiteTextColor) }
         }
     }
 

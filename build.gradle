@@ -64,7 +64,7 @@ ext {
     chinaAdapterVersion = '2.9.40'
     multiDexVersion = '1.0.3'
     cryptoLibraryVersion = '1.0.0'
-    rxPaparazzoVersion = '0.6.0-2.x'
+    rxPaparazzoVersion = '0.6.1-2.x'
     deviceInfoVersion = '2.4.1'
     frescoVersion = '1.10.0'
     timberVersion = '4.7.1'
