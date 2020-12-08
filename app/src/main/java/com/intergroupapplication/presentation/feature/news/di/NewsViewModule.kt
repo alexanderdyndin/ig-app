@@ -13,6 +13,7 @@ import com.clockbyte.admobadapter.bannerads.BannerAdViewWrappingStrategy
 import com.google.android.gms.ads.AdView
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -44,10 +45,11 @@ class NewsViewModule {
     @PerFragment
     @Provides
     fun provideAdmobBammerAdapter(context: Context,
-                                  newsAdapter: NewsAdapter, activity: NavigationActivity): AdmobBannerRecyclerAdapterWrapper =
+                                  newsAdapter: NewsAdapter, activity: NavigationActivity,
+                                  userSession: UserSession): AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
-                    .setLimitOfAds(20)
-                    .setFirstAdIndex(4)
+                    .setLimitOfAds(userSession.countAd?.limitOfAdsNews ?: 20)
+                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexNews ?: 4)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
@@ -64,7 +66,7 @@ class NewsViewModule {
                                     parent, false) as ViewGroup
                         }
                     })
-                    .setNoOfDataBetweenAds(7)
+                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsNews ?: 7)
                     //.setSingleAdUnitId(BuildConfig.BANNER_AD_UNIT_ID)
                     //.setTestDeviceIds(arrayOf("BA4CB07CBCAA1F64824EE76EC089BA5A"))
                     .setAdapter(newsAdapter)

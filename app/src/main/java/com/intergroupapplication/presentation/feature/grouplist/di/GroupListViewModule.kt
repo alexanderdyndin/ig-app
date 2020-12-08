@@ -11,6 +11,7 @@ import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.clockbyte.admobadapter.bannerads.BannerAdViewWrappingStrategy
 import com.google.android.gms.ads.AdView
 import com.intergroupapplication.R
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -58,10 +59,12 @@ class GroupListViewModule {
     @Provides
     @Named("AdapterAll")
     fun provideAdmobBammerAdapter(context: Context,
-                                  @Named("AdapterAll") groupsAdapter: GroupListAdapter, activity: NavigationActivity): AdmobBannerRecyclerAdapterWrapper =
+                                  @Named("AdapterAll") groupsAdapter: GroupListAdapter,
+                                  activity: NavigationActivity, userSession: UserSession):
+            AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
-                    .setLimitOfAds(20)
-                    .setFirstAdIndex(4)
+                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
+                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexGroups ?: 4)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
@@ -78,48 +81,21 @@ class GroupListViewModule {
                                     parent, false) as ViewGroup
                         }
                     })
-                    .setNoOfDataBetweenAds(7)
+                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
                     .setAdapter(groupsAdapter)
                     .build()
+
 
     @PerFragment
     @Provides
     @Named("AdapterSub")
     fun provideAdmobBammerAdapter2(context: Context,
-                                   @Named("AdapterSub") groupsAdapter: GroupListAdapter, activity: NavigationActivity): AdmobBannerRecyclerAdapterWrapper {
-        return AdmobBannerRecyclerAdapterWrapper.builder(context)
-                .setLimitOfAds(20)
-                .setFirstAdIndex(4)
-                .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
-                    override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
-                        val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
-                        container.removeAllViews()
-                        //container.addView(ad)
-                        val t = Appodeal.getNativeAds(1)
-                        if (t.size > 0) {
-                            val nativeAdView = NativeAdViewAppWall(activity, t[0])
-                            container.addView(nativeAdView)
-                        }
-                    }
-
-                    override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
-                        return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
-                                parent, false) as ViewGroup
-                    }
-                })
-                .setNoOfDataBetweenAds(7)
-                .setAdapter(groupsAdapter)
-                .build()
-    }
-
-    @PerFragment
-    @Provides
-    @Named("AdapterAdm")
-    fun provideAdmobBammerAdapter3(context: Context,
-                                   @Named("AdapterAdm") groupsAdapter: GroupListAdapter, activity: NavigationActivity): AdmobBannerRecyclerAdapterWrapper =
+                                   @Named("AdapterSub") groupsAdapter: GroupListAdapter,
+                                   activity: NavigationActivity, userSession: UserSession):
+            AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
-                    .setLimitOfAds(20)
-                    .setFirstAdIndex(4)
+                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
+                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexGroups ?: 4)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
@@ -136,7 +112,38 @@ class GroupListViewModule {
                                     parent, false) as ViewGroup
                         }
                     })
-                    .setNoOfDataBetweenAds(7)
+                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
+                    .setAdapter(groupsAdapter)
+                    .build()
+
+
+    @PerFragment
+    @Provides
+    @Named("AdapterAdm")
+    fun provideAdmobBammerAdapter3(context: Context,
+                                   @Named("AdapterAdm") groupsAdapter: GroupListAdapter,
+                                   activity: NavigationActivity, userSession: UserSession):
+            AdmobBannerRecyclerAdapterWrapper =
+            AdmobBannerRecyclerAdapterWrapper.builder(context)
+                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
+                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexGroups ?: 4)
+                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
+                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
+                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
+                            container.removeAllViews()
+                            //container.addView(ad)
+                            val t = Appodeal.getNativeAds(1)
+                            if (t.size>0) {
+                                val nativeAdView = NativeAdViewAppWall(activity, t[0])
+                                container.addView(nativeAdView)
+                            }
+                        }
+                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
+                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
+                                    parent, false) as ViewGroup
+                        }
+                    })
+                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
                     .setAdapter(groupsAdapter)
                     .build()
 
