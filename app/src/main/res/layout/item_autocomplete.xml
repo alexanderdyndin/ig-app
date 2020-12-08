@@ -9,17 +9,11 @@
         android:id="@+id/autoCompleteItem"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:textSize="14sp"
+        android:padding="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
         android:fontFamily="@font/play"
         android:text="element12312321321321"
-        android:textColor="@color/colorAccent" />
-
-    <ImageView
-        android:id="@+id/groupCreate__lineInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_input"
-        android:layout_marginTop="1dp"/>
+        android:textColor="@color/colorAccent2" />
 
 </LinearLayout>

@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/appBackgroundColor</item>
+        <item name="android:windowBackground">@color/mainBlack</item>
     </style>
 
     <style name="AppTheme.ActionBar" parent="Theme.AppCompat" />
@@ -20,12 +20,12 @@
     </style>
 
     <style name="AppScreenStyle">
-        <item name="android:background">@color/appBackgroundColor</item>
+        <item name="android:background">@color/mainBlack</item>
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/appBackgroundColor</item>
+        <item name="android:windowBackground">@color/mainBlack</item>
         <item name="android:windowEnterAnimation">@anim/grow_animation</item>
         <item name="android:windowExitAnimation">@anim/slip_animation</item>
         <item name="android:fontFamily">sans-serif</item>
