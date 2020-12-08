@@ -71,6 +71,7 @@
             android:layout_marginEnd="@dimen/big_margin"
             android:textSize="@dimen/middle_high_size"
             android:visibility="gone"
+            tools:visibility="visible"
             tools:text="Текст для поста описание происходящего
 подробности и факты, новости прочее
 происходящее в определенном месте или нет" />
@@ -83,6 +84,7 @@
             android:layout_marginBottom="@dimen/middle_margin"
             android:adjustViewBounds="true"
             android:visibility="gone"
+            tools:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/commentImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +92,12 @@
             fresco:actualImageScaleType="centerCrop"
             fresco:backgroundImage="@color/linkGrayTextColor"
             fresco:placeholderImage="@drawable/application_logo" />
+
+        <com.google.android.exoplayer2.ui.StyledPlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            />
 
 
     </LinearLayout>

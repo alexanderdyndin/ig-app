@@ -2,11 +2,14 @@ package com.intergroupapplication.presentation.feature.group.adapter
 
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
@@ -19,6 +22,7 @@ import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
 import timber.log.Timber
 
+
 /**
  * Created by abakarmagomedov on 27/08/2018 at project InterGroupApplication.
  */
@@ -29,11 +33,13 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
     var retryClickListener: () -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
-    private val loadingViewType = 123
+    private val loadingViewType = 123       //todo Почему это переменная экземпляра? Мб лучше вынести в статик?
     private val errorViewType = 321
     private var isLoading = false
     private var isError = false
     private var compositeDisposable = CompositeDisposable()
+
+    private val TEST_VIDEO_URI = "http://92.53.65.93:8888/test/index.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio/20201208//s3/aws4_request&X-Amz-Date=20201208T190620Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=2f0f8e7b65ed33bbb387dd4e3483ea644a826fd45ad85c84a48d8309728cbe07"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -50,6 +56,17 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
             errorViewType -> (holder as ErrorViewHolder).bind()
             else -> getItem(position)?.let { (holder as PostViewHolder).bind(it) }
         }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is PostViewHolder) {
+            holder.exoPlayerView.player?.release()
+            holder.exoPlayerView.player?.let {
+                Toast.makeText(holder.exoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount() = super.getItemCount() + (if (isLoading) 1 else 0) + (if (isError) 1 else 0)
@@ -101,6 +118,8 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val exoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.playerView)
+
         fun bind(item: GroupPostEntity) {
             with(itemView) {
                 compositeDisposable.add(getDateDescribeByString(item.date)
@@ -134,6 +153,16 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+
+                //init player
+                val player = SimpleExoPlayer.Builder(exoPlayerView.context).build()
+                exoPlayerView.player = player
+                // Build the media item.
+                val mediaItem: MediaItem = MediaItem.fromUri(TEST_VIDEO_URI)        //Todo юри видео должно быть в Entity
+                // Set the media item to be played.
+                player.setMediaItem(mediaItem)
+                // Prepare the player.
+                player.prepare()
             }
         }
 

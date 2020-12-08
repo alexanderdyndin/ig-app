@@ -3,5 +3,6 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">3.22.152.232</domain>
         <domain includeSubdomains="true">intergroupsn.com</domain>
+        <domain includeSubdomains="true">92.53.65.93</domain>
     </domain-config>
 </network-security-config>
