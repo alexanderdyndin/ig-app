@@ -161,6 +161,9 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
     private fun createToast(message: Int) =
             Action { _, _ -> Toast.makeText(this, getString(message), Toast.LENGTH_SHORT).show() }
 
+    protected fun showToast(message: String) =
+            Action { _, _ -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
+
     private fun openCreateProfile() = Action { _, _ ->
         router.newRootScreen(CreateUserProfileScreen())
     }

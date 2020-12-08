@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.news.presenter
 import androidx.paging.RxPagedListBuilder
 import androidx.fragment.app.FragmentManager
 import android.util.Log
+import androidx.lifecycle.LiveData
 import moxy.InjectViewState
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
@@ -35,7 +36,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
                                         private val complaintsGetaway: ComplaintsGetaway,
                                         private val appStatusUseCase: AppStatusUseCase)
     : BasePresenter<NewsView>() {
-
+    lateinit var liveData: LiveData<String>
     fun getNews() {
         compositeDisposable.add(newsDataSourceFactory.source.observeState()
                 .subscribeOn(Schedulers.newThread())

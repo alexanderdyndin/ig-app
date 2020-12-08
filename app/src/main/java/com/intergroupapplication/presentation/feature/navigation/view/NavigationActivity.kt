@@ -1,7 +1,9 @@
 package com.intergroupapplication.presentation.feature.navigation.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Environment
@@ -15,6 +17,8 @@ import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.UserSettings
+import com.appodeal.ads.utils.PermissionsHelper.AppodealPermissionCallbacks
+import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseActivity
@@ -36,8 +40,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
@@ -46,7 +48,6 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     companion object {
         private const val EXIT_DELAY = 2000L
-        private const val APPODEAL_APP_KEY = "57968e20342bf80c873fd55868f65f7b"
 
         fun getIntent(context: Context?) = Intent(context, NavigationActivity::class.java)
                 .apply {
@@ -66,7 +67,18 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Appodeal.initialize(this, "57968e20342bf80c873fd55868f65f7b", Appodeal.NATIVE, userSession.isAcceptTerms())
+        setAppodeal()
+        val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
+        val file = File("$filepatch.nomedia")
+        try {
+            file.createNewFile()
+        } catch (e: IOException) {
+            Timber.e(e)
+        }
+    }
+
+    private fun setAppodeal() {
+        Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
         val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -77,14 +89,9 @@ class NavigationActivity : BaseActivity(), NavigationView {
             else -> UserSettings.Gender.OTHER
         }
         Appodeal.setUserGender(gender)
-        Appodeal.cache(this, Appodeal.NATIVE, 3)
-        val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
-        val file = File("$filepatch.nomedia")
-        try {
-            file.createNewFile()
-        } catch (e: IOException) {
-            Timber.e(e)
-        }
+        Appodeal.cache(this, Appodeal.NATIVE, 5)
+        Appodeal.setUserId(userSession.user?.id ?: "123")
+
     }
 
     @Inject

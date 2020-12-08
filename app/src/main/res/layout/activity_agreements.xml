@@ -142,6 +142,35 @@
                 app:layout_constraintTop_toBottomOf="@+id/btnRightholders"
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAppodeal"
+                style="@style/ButtonAuthStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:text="@string/appodealpolicy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cbRH" />
+
+            <CheckBox
+                android:id="@+id/cbAp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/ic_check_box"
+                android:fontFamily="@font/roboto"
+                android:layoutDirection="rtl"
+                android:paddingTop="@dimen/high_middle_padding"
+                android:paddingBottom="@dimen/small_big_padding"
+                android:text="@string/terms_accept"
+                android:textColor="@color/manatee"
+                android:textSize="@dimen/big_size"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnAppodeal"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvIMEI"
                 android:layout_width="wrap_content"

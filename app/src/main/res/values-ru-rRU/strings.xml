@@ -117,5 +117,6 @@
     <string name="group_avatar_add">Добавить аватар</string>
     <string name="empty_subject_error">Пожалуйста, введите тематику!</string>
     <string name="full_subject_error">Вы не можете добавить больше 5 тематик</string>
+    <string name="appodealpolicy">Политика Appodeal</string>
 
 </resources>

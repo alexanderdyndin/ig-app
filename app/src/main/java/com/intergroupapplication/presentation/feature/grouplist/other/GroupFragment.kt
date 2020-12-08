@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.PagingView
@@ -25,7 +26,7 @@ import javax.inject.Named
 
 @SuppressLint("ValidFragment")
 class GroupsFragment constructor(
-        private val adapter: GroupListAdapter
+        private val adapter: AdmobBannerRecyclerAdapterWrapper
 ) : Fragment() {
 
     private var mPage = 0
@@ -34,13 +35,13 @@ class GroupsFragment constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            mPage = arguments!!.getInt(ARG_PAGE)
+            mPage = requireArguments().getInt(ARG_PAGE)
         }
     }
 
     companion object {
         const val ARG_PAGE = "ARG_PAGE"
-        fun newInstance(page: Int, adapter: GroupListAdapter)
+        fun newInstance(page: Int, adapter: AdmobBannerRecyclerAdapterWrapper)
                 : GroupsFragment {
             val args = Bundle()
             args.putInt(ARG_PAGE, page)

@@ -30,10 +30,12 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
         private const val URL_PRIVACY_POLICY = "https://igsn.net/agreement/1.html"
         private const val URL_TERMS_OF_USE = "https://igsn.net/agreement/2.html"
         private const val URL_RIGHTHOLDERS = "https://igsn.net/agreement/3.html"
+        private const val URL_APPODEAL = "https://www.appodeal.com/home/privacy-policy/"
 
         private const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
         private const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
         private const val RES_ID_RIGHTHOLDERS = R.string.rightholders
+        private const val RES_ID_APPODEAL = R.string.appodealpolicy
     }
 
     fun next() {
@@ -58,6 +60,10 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
 
     fun openRightholders() {
         router.navigateTo(WebScreen(URL_RIGHTHOLDERS, RES_ID_RIGHTHOLDERS))
+    }
+
+    fun openAppodealPolicy() {
+        router.navigateTo(WebScreen(URL_APPODEAL, RES_ID_APPODEAL))
     }
 
     fun goToSettingsScreen() {

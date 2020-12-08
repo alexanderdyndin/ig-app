@@ -3,10 +3,13 @@ package com.intergroupapplication.presentation.feature.agreements.view
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.utils.PermissionsHelper
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
@@ -70,7 +73,7 @@ class AgreementsActivity : BaseActivity(), AgreementsView, CompoundButton.OnChec
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         val textColor = ContextCompat.getColor(this, if (isChecked) android.R.color.white else R.color.manatee)
         buttonView?.setTextColor(textColor)
-        if (cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked) {
+        if (cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked && cbAp.isChecked) {
             btnNext.background = ContextCompat.getDrawable(this, R.drawable.background_button)
             btnNext.isEnabled = true
         } else {
@@ -83,17 +86,36 @@ class AgreementsActivity : BaseActivity(), AgreementsView, CompoundButton.OnChec
         cbRH.setOnCheckedChangeListener(this)
         cbPP.setOnCheckedChangeListener(this)
         cbTOU.setOnCheckedChangeListener(this)
+        cbAp.setOnCheckedChangeListener(this)
     }
 
     private fun initBtn() {
         btnPrivacyPolicy.clicks().subscribe { presenter.openPrivacyPolicy() }.also { compositeDisposable.add(it) }
         btnRightholders.clicks().subscribe { presenter.openRightholders() }.also { compositeDisposable.add(it) }
         btnTermsOfUse.clicks().subscribe { presenter.openTermsOfUse() }.also { compositeDisposable.add(it) }
+        btnAppodeal.clicks().subscribe { presenter.openAppodealPolicy() }.also { compositeDisposable.add(it) }
     }
 
     private fun next() {
         compositeDisposable.add(RxPermissions(this).request(Manifest.permission.READ_PHONE_STATE)
                 .subscribe({
+                    Appodeal.requestAndroidMPermissions(this, object : PermissionsHelper.AppodealPermissionCallbacks {
+                        override fun writeExternalStorageResponse(result: Int) {
+                            if (result == PackageManager.PERMISSION_GRANTED) {
+                                showToast("WRITE_EXTERNAL_STORAGE permission was granted")
+                            } else {
+                                showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
+                            }
+                        }
+
+                        override fun accessCoarseLocationResponse(result: Int) {
+                            if (result == PackageManager.PERMISSION_GRANTED) {
+                                showToast("ACCESS_COARSE_LOCATION permission was granted")
+                            } else {
+                                showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
+                            }
+                        }
+                    })
                     if (it) {
                         presenter.next()
                     } else {

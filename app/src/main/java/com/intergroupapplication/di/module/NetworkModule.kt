@@ -1,7 +1,6 @@
 package com.intergroupapplication.di.module
 
-
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intergroupapplication.BuildConfig
@@ -15,7 +14,6 @@ import com.intergroupapplication.di.qualifier.ApplicationOkHttpClient
 import com.intergroupapplication.di.qualifier.RefreshOkHttpClient
 import com.intergroupapplication.di.qualifier.TokenInterceptor
 import com.intergroupapplication.di.scope.PerApplication
-import com.intergroupapplication.presentation.manager.PhoneCharacteristicManager
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -51,10 +49,10 @@ class NetworkModule {
     @PerApplication
     @Provides
     @TokenInterceptor
-    fun provideTokenInterceptor(sessionStorage: UserSession, infoManager: PhoneCharacteristicManager): Interceptor =
+    fun provideTokenInterceptor(sessionStorage: UserSession): Interceptor =
             Interceptor { chain ->
-                val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
-                val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: ""
+                val imei = sessionStorage.deviceInfoEntity?.imei ?: IMEI
+                val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: SERIAL
                 val builder = chain.request()
                         .newBuilder()
                         .addHeader(IMEI, imei)
@@ -63,7 +61,7 @@ class NetworkModule {
                     builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
                 } else {
                     builder.addHeader(DEVICE_ID, sessionStorage.firebaseToken?.token
-                            ?: FirebaseInstanceId.getInstance().token!!)
+                            ?: FirebaseMessaging.getInstance().token.result )  //not sure in this command
                 }
                 val newRequest = builder.build()
                 chain.proceed(newRequest)
@@ -136,7 +134,7 @@ class NetworkModule {
                             .header(IMEI, imei)
                             .header(SERIAL, serialNumber)
                             .header(DEVICE_ID, sessionStorage.firebaseToken?.token
-                                    ?: FirebaseInstanceId.getInstance().token!!)
+                                    ?: FirebaseMessaging.getInstance().token.result )  //not sure in this command
                             .build()
                 } else {
                     null

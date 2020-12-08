@@ -41,6 +41,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
         var retryClickListener: () -> Unit = {}
         var subscribeClickListener: (groupId: String) -> Unit = {}
         var unsubscribeClickListener: (groupId: String) -> Unit = {}
+        var getColor:((color: Int) -> Int)? = null
     }
 
 
@@ -129,7 +130,10 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 when(item.ageRestriction) {
                     "12+" -> item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
                     "16+" -> item_group__text_age.setBackgroundResource(R.drawable.bg_age16)
-                    "18+" -> item_group__text_age.setBackgroundResource(R.drawable.bg_age18)
+                    "18+" -> {
+                        item_group__text_age.setBackgroundResource(R.drawable.bg_age18)
+                        item_group__text_age.setTextColor(getColor!!.invoke(R.color.whiteTextColor))
+                    }
                     else -> item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
                 }
                 if (item.isClosed) {

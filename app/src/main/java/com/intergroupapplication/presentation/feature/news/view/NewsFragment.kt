@@ -78,6 +78,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
         newsPosts.layoutManager = layoutManager
         newsPosts.itemAnimator = null

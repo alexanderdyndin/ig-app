@@ -16,8 +16,6 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'com.google.firebase.crashlytics'
 
 //apply plugin: 'realm-android'
@@ -172,12 +170,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.browser:browser:1.2.0'
+    implementation 'androidx.browser:browser:1.3.0'
     implementation 'androidx.leanback:leanback:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
-    implementation 'androidx.media:media:1.2.0'
+    implementation 'androidx.media:media:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
     implementation 'androidx.palette:palette-ktx:1.0.0'
@@ -197,6 +195,7 @@ dependencies {
     //Reactive
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "android.arch.lifecycle:reactivestreams:1.1.1"
 
     //Network
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
