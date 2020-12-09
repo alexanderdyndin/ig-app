@@ -108,7 +108,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
+        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
         setAdapter()
         pagingDelegate.attachPagingView(swipeLayout)
         doOnFragmentViewCreated = {
@@ -131,7 +131,10 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
-        swipeLayout.setOnRefreshListener { presenter.groupList() }
+        swipeLayout.setOnRefreshListener {
+            presenter.groupList()
+            Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
+        }
 //        activity_main__btn_search.setOnClickListener {
 //            activity_main__search_input.requestFocus()
 //            if (activity is NavigationActivity) {

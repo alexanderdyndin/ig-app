@@ -21,7 +21,7 @@
         android:id="@+id/adsCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_list"
+        android:background="@android:color/white"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         app:layout_constraintEnd_toEndOf="parent"
