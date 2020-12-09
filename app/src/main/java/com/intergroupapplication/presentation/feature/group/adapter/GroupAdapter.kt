@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -40,6 +41,8 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     private var compositeDisposable = CompositeDisposable()
 
     private val TEST_VIDEO_URI = "http://92.53.65.93:8888/test/index.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio/20201208//s3/aws4_request&X-Amz-Date=20201208T190620Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=2f0f8e7b65ed33bbb387dd4e3483ea644a826fd45ad85c84a48d8309728cbe07"
+    private val TEST_MUSIC_URI = "http://92.53.65.93:8888/test/Children-Of-Bodom-Blooddrunk.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20201209%2F%2Fs3%2Faws4_request&X-Amz-Date=20201209T180239Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=30307f21ef9f9a7980f49d4e8e97a82b37d4c52ded83851151cf038331fdc285"
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -60,9 +63,9 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.exoPlayerView.player?.release()
-            holder.exoPlayerView.player?.let {
-                Toast.makeText(holder.exoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+            holder.videoPlayerView.player?.release()
+            holder.videoPlayerView.player?.let {
+                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -118,7 +121,8 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val exoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.playerView)
+        val videoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.videoExoPlayerView)
+        val musicPlayerView = itemView.findViewById<PlayerView>(R.id.musicExoPlayerView)
 
         fun bind(item: GroupPostEntity) {
             with(itemView) {
@@ -154,18 +158,32 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
-                //init player
-                val player = SimpleExoPlayer.Builder(exoPlayerView.context).build()
-                exoPlayerView.player = player
-                // Build the media item.
-                val mediaItem: MediaItem = MediaItem.fromUri(TEST_VIDEO_URI)        //Todo юри видео должно быть в Entity
-                // Set the media item to be played.
-                player.setMediaItem(mediaItem)
-                // Prepare the player.
-                player.prepare()
+                initializeVideoPlayer()
+                initializeAudioPlayer()
             }
         }
 
+        private fun initializeVideoPlayer() {
+            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
+            videoPlayerView.player = videoPlayer
+            // Build the media item.
+            val videoMediaItem: MediaItem = MediaItem.fromUri(TEST_VIDEO_URI)        //Todo юри видео должно быть в Entity
+            // Set the media item to be played.
+            videoPlayer.setMediaItem(videoMediaItem)
+            // Prepare the player.
+            videoPlayer.prepare()
+        }
+
+        private fun initializeAudioPlayer() {
+            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
+            musicPlayerView.player = musicPlayer
+            // Build the media item.
+            val musicMediaItem: MediaItem = MediaItem.fromUri(TEST_MUSIC_URI)        //Todo юри аудио должно быть в Entity
+            // Set the media item to be played.
+            musicPlayer.setMediaItem(musicMediaItem)
+            // Prepare the player.
+            musicPlayer.prepare()
+        }
 
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)

@@ -94,11 +94,21 @@
             fresco:placeholderImage="@drawable/application_logo" />
 
         <com.google.android.exoplayer2.ui.StyledPlayerView
-            android:id="@+id/playerView"
+            android:id="@+id/videoExoPlayerView"
             android:layout_width="match_parent"
             android:layout_height="250dp"
+            app:show_buffering="when_playing"
             />
 
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/musicExoPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:controller_layout_id="@layout/layout_music_player"
+            android:layout_marginBottom="20dp"
+            app:hide_on_touch="false"
+            app:show_timeout="0"
+            />
 
     </LinearLayout>
 
