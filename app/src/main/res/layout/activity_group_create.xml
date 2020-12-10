@@ -134,16 +134,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_marginStart="24dp"
-                android:background="@drawable/btn_addava"
+                android:background="@drawable/selector_add_avatar"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/play"
                 android:gravity="center_vertical"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
                 android:text="@string/group_avatar_add"
-                android:textColor="@color/colorAccent2"
+                android:textColor="@color/selector_addava_color"
                 android:textSize="12sp"
-                app:drawableLeftCompat="@drawable/ic_plus_addava"
+                app:drawableLeftCompat="@drawable/selector_addava_drawleft"
                 app:layout_constraintStart_toStartOf="@+id/frameLayout3"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate_bg" />
 
@@ -194,12 +194,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="14dp"
-                    android:background="@drawable/bg_agehelp"
+                    android:background="@drawable/selector_agehelp"
                     android:fontFamily="@font/play"
                     android:gravity="center_horizontal"
                     android:paddingTop="4dp"
                     android:text="@string/question"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/selector_addava_color"
                     android:textSize="16sp" />
 
                 <RadioGroup
@@ -222,7 +222,7 @@
                         android:gravity="center_horizontal"
                         android:paddingTop="4dp"
                         android:text="@string/_12"
-                        android:textColor="@color/ActiveText"
+                        android:textColor="@color/age12_selector_color"
                         android:textSize="16sp" />
 
                     <RadioButton
@@ -236,7 +236,7 @@
                         android:gravity="center_horizontal"
                         android:paddingTop="4dp"
                         android:text="@string/_16"
-                        android:textColor="@color/colorAge16"
+                        android:textColor="@color/age16_selector_color"
                         android:textSize="16sp" />
 
                     <RadioButton
@@ -393,7 +393,7 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
                         android:layout_marginEnd="15dp"
-                        app:drawableLeftCompat="@drawable/btn_plus"
+                        app:drawableLeftCompat="@drawable/selector_btn_plus"
                         tools:ignore="RelativeOverlap" />
 
                 </RelativeLayout>
@@ -451,7 +451,8 @@
                     android:layout_marginRight="12dp"
                     android:layout_marginLeft="12dp"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -468,7 +469,7 @@
                             android:textColor="@color/colorAccent"
                             android:textColorHint="@color/colorAccent2"
                             android:textSize="14sp"
-                            android:background="@android:color/transparent"
+                            android:background="@drawable/bg_inp_big"
                             android:inputType="textMultiLine"/>
                     </FrameLayout>
                 </LinearLayout>
@@ -531,7 +532,8 @@
                             android:textColorHint="@color/colorAccent2"
                             android:textSize="14sp"
                             android:background="@android:color/transparent"
-                            android:inputType="textMultiLine"/>
+                            android:inputType="textMultiLine"
+                            android:importantForAutofill="no" />
                     </FrameLayout>
                 </LinearLayout>
             </LinearLayout>

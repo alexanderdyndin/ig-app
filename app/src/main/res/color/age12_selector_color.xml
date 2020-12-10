@@ -2,10 +2,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_checked="true"
-        android:drawable="@drawable/bg_radioage12"
+        android:color="@color/ActiveText"
         />
     <item
         android:state_checked="false"
-        android:drawable="@drawable/bg_radioage"
+        android:color="@color/colorAge12"
         />
 </selector>

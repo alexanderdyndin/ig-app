@@ -161,112 +161,18 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
             }
         }
 
-        groupCreate__subject_btn.setOnTouchListener { v, motionEvent ->
-            v as TextView
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this@CreateGroupActivity, R.drawable.btn_plus_act), null, null, null)
-                }
 
-                MotionEvent.ACTION_MOVE -> {
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this@CreateGroupActivity, R.drawable.btn_plus), null, null, null)
-                    v.performClick()
-
-                }
-
-                MotionEvent.ACTION_CANCEL -> {
-
-                }
-
-                else ->{
-
-                }
-            }
-            true
-        }
 
         groupCreate__checkAge.setOnCheckedChangeListener { _, i ->
             groupCreate__lineAge.setBackgroundResource(R.drawable.line_input_act)
             when (i) {
-                R.id.groupCreate__btnAge12 -> {
-                    groupCreate__btnAge12.setTextColor(getColor(R.color.ActiveText))
-                    groupCreate__btnAge16.setTextColor(getColor(R.color.colorAge16))
-                    age = "12"
-                }
-                R.id.groupCreate__btnAge16 -> {
-                    groupCreate__btnAge12.setTextColor(getColor(R.color.colorAge12))
-                    groupCreate__btnAge16.setTextColor(getColor(R.color.ActiveText))
-                    age = "16"
-                }
-                R.id.groupCreate__btnAge18 -> {
-                    groupCreate__btnAge12.setTextColor(getColor(R.color.colorAge12))
-                    groupCreate__btnAge16.setTextColor(getColor(R.color.colorAge16))
-                    age = "18"
-                }
+                R.id.groupCreate__btnAge12 -> age = "12"
+                R.id.groupCreate__btnAge16 -> age = "16"
+                R.id.groupCreate__btnAge18 -> age = "18"
             }
         }
 
-        groupCreate__addAvatar.setOnTouchListener { v, motionEvent ->
-            v as TextView
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.setBackgroundResource(R.drawable.btn_addava_act)
-                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_plus_addava_act), null, null, null)
-                    v.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
-                }
 
-                MotionEvent.ACTION_MOVE -> {
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    v.setBackgroundResource(R.drawable.btn_addava)
-                    v.setTextColor(resources.getColor(R.color.colorAccent, this.theme))
-                    v.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_plus_addava), null, null, null)
-                    v.performClick()
-
-                }
-
-                MotionEvent.ACTION_CANCEL -> {
-
-                }
-
-                else ->{
-
-                }
-            }
-            true
-        }
-        groupCreate__ageHelp.setOnTouchListener { v, motionEvent ->
-            v as TextView
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.setBackgroundResource(R.drawable.bg_agehelp_click)
-                    v.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    v.setBackgroundResource(R.drawable.bg_agehelp)
-                    v.setTextColor(resources.getColor(R.color.colorAccent, this.theme))
-                    v.performClick()
-
-                }
-
-                MotionEvent.ACTION_CANCEL -> {
-
-                }
-
-                else ->{
-
-                }
-            }
-            true
-        }
 
         groupCreate__ageHelp.setOnClickListener {
             Toast.makeText(this, "12+\n16+\n18+", Toast.LENGTH_LONG).show()
@@ -291,7 +197,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         groupAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
         checkBoxAgreement.setOnCheckedChangeListener { _, b ->
             if (b) {
-                createGroup.setBackgroundResource(R.drawable.btn_main_act)
+                createGroup.setBackgroundResource(R.drawable.selector_btn_create)
                 createGroup.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
                 createGroup.isEnabled = true
             } else {
@@ -301,34 +207,6 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
             }
         }
 
-        createGroup.setOnTouchListener { v, motionEvent ->
-            v as TextView
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.setBackgroundResource(R.drawable.btn_main_press)
-                    v.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    v.setBackgroundResource(R.drawable.btn_main_act)
-                    v.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
-                    v.performClick()
-
-                }
-
-                MotionEvent.ACTION_CANCEL -> {
-
-                }
-
-                else ->{
-
-                }
-            }
-            true
-        }
         groupName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 if (s.isNotEmpty()) {
