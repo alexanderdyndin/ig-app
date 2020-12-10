@@ -141,4 +141,5 @@
     <string name="_12" translatable="false">12+</string>
     <string name="_16" translatable="false">16+</string>
     <string name="appodealpolicy">Appodeal policy</string>
+    <string name="offered_posts">Offered posts</string>
 </resources>

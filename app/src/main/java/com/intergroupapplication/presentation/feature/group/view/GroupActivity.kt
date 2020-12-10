@@ -43,6 +43,7 @@ import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
 import kotlinx.android.synthetic.main.layout_user_join_button.*
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
+import kotlin.math.abs
 
 
 class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity(), GroupView,
@@ -126,7 +127,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
         swipeLayout.isEnabled = (verticalOffset == 0)
         val maxScroll = appBarLayout.totalScrollRange
-        val percentage = Math.abs(verticalOffset).toFloat() / maxScroll.toFloat()
+        val percentage = abs(verticalOffset).toFloat() / maxScroll.toFloat()
 
         handleAlphaOnTitle(percentage)
         handleToolbarTitleVisibility(percentage)
@@ -145,7 +146,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
 
     override fun showGroupInfo(groupEntity: GroupEntity) {
         collapsGroupName.text = groupEntity.name
-        groupName.text = groupEntity.name
+        //groupName.text = groupEntity.name
         groupStrength.text = getGroupFollowersCount(groupEntity.followersCount.toInt())
         doOrIfNull(groupEntity.avatar, {
             groupAvatarHolder.showAvatar(it)

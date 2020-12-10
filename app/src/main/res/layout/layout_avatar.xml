@@ -2,22 +2,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:background="@color/whiteTextColor">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/avatar"
-        android:layout_width="@dimen/intergroup_profile_view_size"
-        android:layout_height="@dimen/intergroup_profile_view_size"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         fresco:placeholderImage="@drawable/variant_10"/>
 
     <TextView
         android:id="@+id/darkCard"
-        android:layout_width="@dimen/intergroup_profile_view_size"
-        android:layout_height="@dimen/intergroup_profile_view_size"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="@drawable/uploading_image_foreground_shadow_drawable"
         android:visibility="invisible" />
