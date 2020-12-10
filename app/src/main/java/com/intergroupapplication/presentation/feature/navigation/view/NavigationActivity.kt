@@ -79,6 +79,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     private fun setAppodeal() {
         Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
+        Appodeal.setTesting(true)
         val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)

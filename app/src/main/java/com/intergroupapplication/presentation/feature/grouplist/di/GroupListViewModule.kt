@@ -24,6 +24,8 @@ import dagger.Provides
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Named
 
+const val GROUPS = "Groups"
+
 @Module
 class GroupListViewModule {
 
@@ -72,7 +74,7 @@ class GroupListViewModule {
                             //container.addView(ad)
                             val t = Appodeal.getNativeAds(1)
                             if (t.size>0) {
-                                val nativeAdView = NativeAdViewAppWall(activity, t[0])
+                                val nativeAdView = NativeAdViewAppWall(activity, t[0], GROUPS)
                                 container.addView(nativeAdView)
                             }
                         }
@@ -103,7 +105,7 @@ class GroupListViewModule {
                             //container.addView(ad)
                             val t = Appodeal.getNativeAds(1)
                             if (t.size>0) {
-                                val nativeAdView = NativeAdViewAppWall(activity, t[0])
+                                val nativeAdView = NativeAdViewAppWall(activity, t[0], GROUPS)
                                 container.addView(nativeAdView)
                             }
                         }
@@ -134,7 +136,7 @@ class GroupListViewModule {
                             //container.addView(ad)
                             val t = Appodeal.getNativeAds(1)
                             if (t.size>0) {
-                                val nativeAdView = NativeAdViewAppWall(activity, t[0])
+                                val nativeAdView = NativeAdViewAppWall(activity, t[0], GROUPS)
                                 container.addView(nativeAdView)
                             }
                         }

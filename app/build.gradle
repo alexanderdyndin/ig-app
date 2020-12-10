@@ -221,8 +221,8 @@ dependencies {
 
     //Navigation
     implementation "ru.terrakok.cicerone:cicerone:$ciceroneVersion"
-    implementation "android.arch.navigation:navigation-fragment:${nav_version}"
-    implementation "android.arch.navigation:navigation-ui:$nav_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "android.arch.navigation:navigation-testing:$nav_version"
 
     //LeackCanary
@@ -297,6 +297,7 @@ dependencies {
 
     //Ads
     implementation "com.google.android.gms:play-services-ads:$adsVersion"
+    implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
     implementation "com.google.firebase:firebase-ads:$adsVersion"
     implementation "com.google.android.gms:play-services-tasks:$gmsVersion"
     implementation "com.github.clockbyte:admobadapter:$admobAdapterVersion"
@@ -319,5 +320,6 @@ dependencies {
 
     //appodeal
     implementation 'com.appodeal.ads:sdk:2.7.4.+'
+    implementation 'com.explorestack:consent:1.0.2'
 
 }

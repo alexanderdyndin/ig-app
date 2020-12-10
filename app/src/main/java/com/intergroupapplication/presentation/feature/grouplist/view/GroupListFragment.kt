@@ -135,14 +135,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             presenter.groupList()
             Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
         }
-//        activity_main__btn_search.setOnClickListener {
-//            activity_main__search_input.requestFocus()
-//            if (activity is NavigationActivity) {
-//                val imm: InputMethodManager = (activity as NavigationActivity).getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-//                imm.showSoftInput(this.view, InputMethodManager.SHOW_IMPLICIT)
-//            }
-//        }
         activity_main__btn_filter.setOnClickListener {
             //todo
         }
@@ -152,7 +144,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
                 navigationToolbar.activity_main__text_created_group.setOnClickListener { openCreateGroup() }
             }
         }
-        //presenter.groupList()
     }
 
     private fun setAdapter() {

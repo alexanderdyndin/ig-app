@@ -24,6 +24,7 @@ import dagger.Module
 import dagger.Provides
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 
+const val NEWS = "News"
 
 @Module
 class NewsViewModule {
@@ -57,7 +58,7 @@ class NewsViewModule {
                             //container.addView(ad)
                             val t = Appodeal.getNativeAds(1)
                             if (t.size>0) {
-                                val nativeAdView = NativeAdViewAppWall(activity, t[0])
+                                val nativeAdView = NativeAdViewAppWall(activity, t[0], NEWS)
                                 container.addView(nativeAdView)
                             }
                         }
