@@ -6,6 +6,7 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/77101177bc69ee2a4eda7c9887e8b972/jetified-imagepipeline-base-1.10.0/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c2182657393ae3d7190cea243cf60b6f/jetified-imagepipeline-base-1.10.0/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/11481a10a4700689a9836a2ca29102d1/jetified-imagepipeline-base-1.10.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/909600bb27b61964533d6ca58d16d957/jetified-imagepipeline-base-1.10.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d12d44c659264bd550488b10ce3ab5c3/jetified-imagepipeline-base-1.10.0/res" />
@@ -29,6 +30,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/11481a10a4700689a9836a2ca29102d1/jetified-imagepipeline-base-1.10.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/11481a10a4700689a9836a2ca29102d1/jetified-imagepipeline-base-1.10.0/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/11481a10a4700689a9836a2ca29102d1/jetified-imagepipeline-base-1.10.0/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/909600bb27b61964533d6ca58d16d957/jetified-imagepipeline-base-1.10.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/909600bb27b61964533d6ca58d16d957/jetified-imagepipeline-base-1.10.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/909600bb27b61964533d6ca58d16d957/jetified-imagepipeline-base-1.10.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.fresco/imagepipeline-base/1.10.0/1de25bf750d2493d77bfc172fff95549f3b2c346/imagepipeline-base-1.10.0-javadoc.jar!/" />
