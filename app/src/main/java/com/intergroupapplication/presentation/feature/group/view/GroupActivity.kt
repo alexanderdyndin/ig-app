@@ -38,6 +38,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.auth_loader.*
+import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.item_group_header_view.*
 import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
 import kotlinx.android.synthetic.main.layout_user_join_button.*
@@ -106,7 +107,6 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
         appbar.addOnOffsetChangedListener(this)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        collapsGroupName.visibility = View.INVISIBLE
         pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         presenter.getGroupDetailInfo(groupId)
         swipeLayout.setOnRefreshListener {
@@ -130,7 +130,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
         val percentage = abs(verticalOffset).toFloat() / maxScroll.toFloat()
 
         handleAlphaOnTitle(percentage)
-        handleToolbarTitleVisibility(percentage)
+        //handleToolbarTitleVisibility(percentage)
     }
 
     override fun changeCommentsCount(pair: Pair<String, String>) {
@@ -145,12 +145,17 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     }
 
     override fun showGroupInfo(groupEntity: GroupEntity) {
-        collapsGroupName.text = groupEntity.name
+        toolbarTittle.text = groupEntity.name
         //groupName.text = groupEntity.name
-        groupStrength.text = getGroupFollowersCount(groupEntity.followersCount.toInt())
+        id_group.text = getString(R.string.idg, groupEntity.id)
+        likes_count.text = groupEntity.postsLikes
+        dislikes_count.text = groupEntity.postsDislikes
+        comments_count.text = groupEntity.CommentsCount
+        posts_count.text = groupEntity.postsCount
+        groupStrength.text = groupEntity.followersCount
         doOrIfNull(groupEntity.avatar, {
             groupAvatarHolder.showAvatar(it)
-        }, { groupAvatarHolder.showAvatar(R.drawable.application_logo) })
+        }, { groupAvatarHolder.showAvatar(R.drawable.variant_10) })
     }
 
     override fun postsLoaded(posts: PagedList<GroupPostEntity>) {
@@ -200,14 +205,14 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     override fun groupFollowed(followersCount: Int) {
         joinToGroup.hide()
         goOutFromGroup.show()
-        groupStrength.text = getGroupFollowersCount(followersCount)
+        groupStrength.text = followersCount.toString()
         listenButtonClicks()
     }
 
     override fun groupUnfollowed(followersCount: Int) {
         goOutFromGroup.hide()
         joinToGroup.show()
-        groupStrength.text = getGroupFollowersCount(followersCount)
+        groupStrength.text = followersCount.toString()
         listenButtonClicks()
     }
 
@@ -280,12 +285,12 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
         if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
 
             if (!mIsTheTitleVisible) {
-                startAlphaAnimation(collapsGroupName, ALPHA_ANIMATIONS_DURATION.toLong(), View.VISIBLE)
+                startAlphaAnimation(toolbarTittle, ALPHA_ANIMATIONS_DURATION.toLong(), View.VISIBLE)
                 mIsTheTitleVisible = true
             }
         } else {
             if (mIsTheTitleVisible) {
-                startAlphaAnimation(collapsGroupName, ALPHA_ANIMATIONS_DURATION.toLong(), View.INVISIBLE)
+                startAlphaAnimation(toolbarTittle, ALPHA_ANIMATIONS_DURATION.toLong(), View.INVISIBLE)
                 mIsTheTitleVisible = false
             }
         }

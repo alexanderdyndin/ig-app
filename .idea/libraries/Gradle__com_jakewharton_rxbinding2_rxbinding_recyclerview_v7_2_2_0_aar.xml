@@ -22,6 +22,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/debbab3b259e180bf96ccb9d5010df98/jetified-rxbinding-recyclerview-v7-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/debbab3b259e180bf96ccb9d5010df98/jetified-rxbinding-recyclerview-v7-2.2.0/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/debbab3b259e180bf96ccb9d5010df98/jetified-rxbinding-recyclerview-v7-2.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab9dd912dfbf2578279b4cb646eb686a/jetified-rxbinding-recyclerview-v7-2.2.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab9dd912dfbf2578279b4cb646eb686a/jetified-rxbinding-recyclerview-v7-2.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab9dd912dfbf2578279b4cb646eb686a/jetified-rxbinding-recyclerview-v7-2.2.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jakewharton.rxbinding2/rxbinding-recyclerview-v7/2.2.0/93a9d23c2be046af15d5475a8bc37bab0306fa28/rxbinding-recyclerview-v7-2.2.0-javadoc.jar!/" />
