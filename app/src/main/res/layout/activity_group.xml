@@ -8,41 +8,6 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="?android:attr/actionBarSize"-->
-<!--        android:background="@android:color/transparent"-->
-<!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-<!--        app:layout_collapseMode="pin"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:popupTheme="@style/ToolbarPopupTheme"-->
-<!--        app:title="">-->
-
-<!--        <FrameLayout-->
-<!--            android:id="@+id/toolbarBackAction"-->
-<!--            android:layout_width="@dimen/toolbar_back_action_click_area_size"-->
-<!--            android:layout_height="match_parent">-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="@dimen/toolbar_icon_size"-->
-<!--                android:layout_height="@dimen/toolbar_icon_size"-->
-<!--                android:layout_gravity="center_vertical"-->
-<!--                android:background="?android:attr/selectableItemBackground"-->
-<!--                app:srcCompat="@drawable/ic_navigate_before" />-->
-<!--        </FrameLayout>-->
-
-
-<!--        <TextView-->
-<!--            android:id="@+id/collapsGroupName"-->
-<!--            style="@style/InterGroupBigAutoscrollWhiteTextStyle"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/big_margin"-->
-<!--            android:paddingStart="@dimen/large_padding"-->
-<!--            tools:text="Имя группы" />-->
-
-<!--    </androidx.appcompat.widget.Toolbar>-->
     <include
         android:id="@+id/navigationToolbar"
         layout="@layout/creategroup_toolbar_layout" />

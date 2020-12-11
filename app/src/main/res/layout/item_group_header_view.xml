@@ -10,20 +10,15 @@
 
     <include layout="@layout/constraint_loader" />
 
-    <ImageButton
-        android:id="@+id/settingsBtn"
+    <ImageView
+        android:id="@+id/avatarBg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_settings"
-        android:paddingStart="31dp"
-        android:paddingTop="23dp"
-        android:paddingEnd="6dp"
-        android:paddingBottom="12dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/btn_group_settings"
-        app:layout_constraintRight_toRightOf="@+id/avatarBg"
-        app:layout_constraintTop_toTopOf="@+id/avatarBg"
-        android:contentDescription="btn" />
+        android:src="@drawable/bg_group_avatar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="bg" />
+
 
     <LinearLayout
         android:id="@+id/groupPositionContainer"
@@ -66,6 +61,7 @@
         android:id="@+id/groupCounts"
         android:layout_width="0dp"
         android:layout_height="57dp"
+        style="?android:attr/buttonBarStyle"
         android:layout_marginTop="5dp"
         android:background="@color/colorInput"
         android:orientation="horizontal"
@@ -77,13 +73,14 @@
         app:layout_constraintStart_toEndOf="@+id/avatarBg"
         app:layout_constraintTop_toBottomOf="@+id/groupPositionContainer">
 
-        <TextView
+        <Button
             android:id="@+id/groupStrength"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1"
             android:layout_marginEnd="30dp"
-            android:background="@drawable/btn_group_counter"
+            android:background="@drawable/selector_btn_counter"
             android:drawablePadding="-3dp"
             android:fontFamily="@font/play"
             android:gravity="center"
@@ -93,12 +90,13 @@
             android:textSize="12sp"
             app:drawableTopCompat="@drawable/ic_sub_grey" />
 
-        <TextView
+        <Button
             android:id="@+id/posts_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1"
-            android:background="@drawable/btn_group_counter"
+            android:background="@drawable/selector_btn_counter"
             android:drawablePadding="-3dp"
             android:fontFamily="@font/play"
             android:gravity="center"
@@ -192,7 +190,7 @@
                 android:id="@+id/proposedPost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_main_act"
+                android:background="@drawable/selector_btn_create"
                 android:enabled="false"
                 android:gravity="bottom|center_horizontal"
                 android:paddingBottom="9dp"
@@ -226,30 +224,6 @@
     </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/avatarBg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/bg_group_avatar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="bg" />
-
-    <TextView
-        android:id="@+id/helpBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center"
-        android:text="@string/question"
-        android:textSize="12sp"
-        android:textColor="@color/colorAccent"
-        android:fontFamily="@font/play"
-        android:background="@drawable/bg_group_help"
-        app:layout_constraintStart_toStartOf="@id/avatarBg"
-        app:layout_constraintTop_toTopOf="@id/avatarBg"
-        />
-
     <TextView
         android:id="@+id/id_group"
         android:layout_width="wrap_content"
@@ -280,6 +254,36 @@
             android:layout_height="@dimen/group_header_profile_view_size" />
 
     </com.github.florent37.shapeofview.ShapeOfView>
+
+    <ImageButton
+        android:id="@+id/settingsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_settings"
+        android:paddingStart="31dp"
+        android:paddingTop="23dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="12dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/selector_btn_settings"
+        app:layout_constraintRight_toRightOf="@+id/avatarBg"
+        app:layout_constraintTop_toTopOf="@+id/avatarBg"
+        android:contentDescription="btn" />
+
+    <TextView
+        android:id="@+id/helpBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:text="@string/question"
+        android:textSize="12sp"
+        android:textColor="@color/colorAccent"
+        android:fontFamily="@font/play"
+        android:background="@drawable/bg_group_help"
+        app:layout_constraintStart_toStartOf="@id/avatarBg"
+        app:layout_constraintTop_toTopOf="@id/avatarBg"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

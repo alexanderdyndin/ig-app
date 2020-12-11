@@ -1,7 +1,7 @@
 <Button android:id="@+id/createPost"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/btn_main_act"
+    android:background="@drawable/selector_btn_create"
     android:gravity="bottom|center_horizontal"
     android:paddingBottom="9dp"
     android:text="@string/create_post"
