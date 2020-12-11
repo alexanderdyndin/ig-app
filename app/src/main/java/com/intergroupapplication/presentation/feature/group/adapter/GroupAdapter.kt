@@ -40,8 +40,10 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     private var isError = false
     private var compositeDisposable = CompositeDisposable()
 
-    private val TEST_VIDEO_URI = "http://92.53.65.93:8888/test/index.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio/20201208//s3/aws4_request&X-Amz-Date=20201208T190620Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=2f0f8e7b65ed33bbb387dd4e3483ea644a826fd45ad85c84a48d8309728cbe07"
-    private val TEST_MUSIC_URI = "http://92.53.65.93:8888/test/Children-Of-Bodom-Blooddrunk.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20201209%2F%2Fs3%2Faws4_request&X-Amz-Date=20201209T180239Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=30307f21ef9f9a7980f49d4e8e97a82b37d4c52ded83851151cf038331fdc285"
+    companion object {
+        val TEST_VIDEO_URI = "http://92.53.65.93:8888/test/index.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio/20201208//s3/aws4_request&X-Amz-Date=20201208T190620Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=2f0f8e7b65ed33bbb387dd4e3483ea644a826fd45ad85c84a48d8309728cbe07"
+        val TEST_MUSIC_URI = "http://92.53.65.93:8888/test/Children-Of-Bodom-Blooddrunk.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20201209%2F%2Fs3%2Faws4_request&X-Amz-Date=20201209T180239Z&X-Amz-Expires=432000&X-Amz-SignedHeaders=host&X-Amz-Signature=30307f21ef9f9a7980f49d4e8e97a82b37d4c52ded83851151cf038331fdc285"
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

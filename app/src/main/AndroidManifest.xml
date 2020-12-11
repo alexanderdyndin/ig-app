@@ -8,7 +8,6 @@
     <uses-feature
         android:name="android.software.leanback"
         android:required="false" />
-
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -32,6 +31,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <service android:name=".presentation.feature.mediaPlayer.IGMediaService">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService"/>
+            </intent-filter>
+        </service>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -40,43 +45,34 @@
             android:name=".presentation.feature.login.view.LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <activity
             android:name=".presentation.feature.splash.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-
                 <action android:name="android.intent.action.VIEW" />
-
-
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".presentation.feature.web.WebActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.ActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <activity
             android:name=".presentation.feature.registration.view.RegistrationActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <activity
             android:name=".presentation.feature.createuserprofile.view.CreateUserProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <activity
             android:name=".presentation.feature.recoveryPassword.view.RecoveryPasswordActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <activity
             android:name=".presentation.feature.navigation.view.NavigationActivity"
             android:parentActivityName=".presentation.feature.splash.SplashActivity"
@@ -113,7 +109,6 @@
             android:name=".presentation.feature.createpost.view.CreatePostActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".presentation.feature.agreements.view.AgreementsActivity"
             android:launchMode="singleTask"
@@ -131,22 +126,18 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/application_logo" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="default_channel_id"/>
-
+            android:value="default_channel_id" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/primary" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1717383973096668~8939439101" />
-
     </application>
 
 </manifest>

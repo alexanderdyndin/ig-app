@@ -1,8 +1,15 @@
 package com.intergroupapplication.presentation.feature.group.view
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -11,15 +18,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.presentation.base.BaseActivity
-import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.POST_CREATED
 import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.base.PagingView
@@ -33,6 +37,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity
 import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
+import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -41,6 +46,8 @@ import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.item_group_header_view.*
 import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
 import kotlinx.android.synthetic.main.layout_user_join_button.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
@@ -59,6 +66,79 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
                     action = groupId
                     putExtra(GROUP_ID, groupId)
                 }
+    }
+
+    private lateinit var mMediaBrowserCompat: MediaBrowserCompat                                                                                            // todo сделать более гибкое подключение коллбэков
+    private val connectionCallback: MediaBrowserCompat.ConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
+        override fun onConnected() {
+
+            // The browser connected to the session successfully, use the token to create the controller
+            super.onConnected()
+            mMediaBrowserCompat.sessionToken.also { token ->
+                val mediaController = MediaControllerCompat( applicationContext, token)
+                MediaControllerCompat.setMediaController(this@GroupActivity, mediaController)
+            }
+            playPauseBuild()
+            Log.d("MediaPlayer", "Controller Connected")
+        }
+
+        override fun onConnectionFailed() {
+            super.onConnectionFailed()
+            Log.d("MediaPlayer", "Connection Failed")
+
+        }
+
+    }
+    private val mControllerCallback = object : MediaControllerCompat.Callback() {
+    }
+
+    fun playPauseBuild() {
+        val mediaController = MediaControllerCompat.getMediaController(this)
+        btn.setOnClickListener {
+            val state = mediaController.playbackState.state
+            // if it is not playing then what are you waiting for ? PLAY !
+            if (state == PlaybackStateCompat.STATE_PAUSED ||
+                    state == PlaybackStateCompat.STATE_STOPPED ||
+                    state == PlaybackStateCompat.STATE_NONE
+            ) {
+
+                mediaController.transportControls.playFromUri(Uri.parse(GroupAdapter.TEST_MUSIC_URI), null)
+                btn.text = "Pause"
+            }
+            // you are playing ? knock it off !
+            else if (state == PlaybackStateCompat.STATE_PLAYING ||
+                    state == PlaybackStateCompat.STATE_BUFFERING ||
+                    state == PlaybackStateCompat.STATE_CONNECTING
+            ) {
+                mediaController.transportControls.pause()
+                btn.text = "Play"
+            }
+        }
+        mediaController.registerCallback(mControllerCallback)
+
+    }
+
+    fun initializeMediaBrowser() {
+        val componentName = ComponentName(this, IGMediaService::class.java)
+        // initialize the browser
+        mMediaBrowserCompat = MediaBrowserCompat(
+                this, componentName, //Identifier for the service
+                connectionCallback,
+                null
+        )
+    }
+
+    fun connectMediaBrowser() {
+        // connect the controllers again to the session
+        // without this connect() you won't be able to start the service neither control it with the controller
+        mMediaBrowserCompat.connect()
+    }
+
+    fun disconnectMediaBrowser() {
+        // Release the resources
+        val controllerCompat = MediaControllerCompat.getMediaController(this)
+        controllerCompat?.unregisterCallback(mControllerCallback)
+        mMediaBrowserCompat.disconnect()
     }
 
     constructor() : this(PagingDelegate())
@@ -93,6 +173,11 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = adminGroupCoordinator
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initializeMediaBrowser()
+    }
+
     override fun viewCreated() {
         groupPosts.layoutManager = layoutManager
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
@@ -111,6 +196,13 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
         swipeLayout.setOnRefreshListener {
             presenter.refresh(groupId)
         }
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        connectMediaBrowser()
     }
 
     override fun onResume() {
@@ -121,6 +213,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     override fun onStop() {
         appbar.removeOnOffsetChangedListener(this)
         super.onStop()
+        disconnectMediaBrowser()
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
