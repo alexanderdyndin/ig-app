@@ -94,6 +94,7 @@
             app:drawableTopCompat="@drawable/ic_sub_grey" />
 
         <TextView
+            android:id="@+id/posts_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -122,7 +123,7 @@
         app:layout_constraintTop_toBottomOf="@+id/groupCounts">
 
         <TextView
-            android:id="@+id/posts_count"
+            android:id="@+id/comments_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -132,6 +133,7 @@
             android:textColor="@color/colorAccent"
             app:drawableTopCompat="@drawable/ic_comnts_big" />
         <TextView
+            android:id="@+id/dislikes_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -141,6 +143,7 @@
             android:textColor="@color/colorLightBlue"
             app:drawableTopCompat="@drawable/ic_dislike_big" />
         <TextView
+            android:id="@+id/likes_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -216,7 +219,7 @@
 
         <ViewStub
             android:id="@+id/headGroupCreatePostViewStub"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout="@layout/layout_admin_create_post_button"/>
 
@@ -248,13 +251,15 @@
         />
 
     <TextView
+        android:id="@+id/id_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="42dp"
         android:rotation="-45"
-        android:text="IDG:1347884244"
+        android:text="@string/idg"
         android:fontFamily="@font/play"
         android:textColor="@color/mainBlack"
+        android:ems="7"
         android:textSize="12sp"
         app:layout_constraintTop_toTopOf="@+id/avatarBg"
         app:layout_constraintStart_toStartOf="@+id/avatarBg"/>

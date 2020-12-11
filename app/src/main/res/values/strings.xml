@@ -142,4 +142,5 @@
     <string name="_16" translatable="false">16+</string>
     <string name="appodealpolicy">Appodeal policy</string>
     <string name="offered_posts">Offered posts</string>
+    <string name="idg" translatable="false">IDG:%1$s</string>
 </resources>
