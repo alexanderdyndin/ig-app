@@ -50,7 +50,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.intergroupapplication"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 28
         versionCode 1000002
 //        androidGitVersion.code()
@@ -317,9 +317,10 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
-
     //appodeal
     implementation 'com.appodeal.ads:sdk:2.7.4.+'
     implementation 'com.explorestack:consent:1.0.2'
+    //Video player
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'S
 
 }

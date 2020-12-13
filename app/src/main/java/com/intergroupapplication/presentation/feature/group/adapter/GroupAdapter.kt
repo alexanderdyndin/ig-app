@@ -2,11 +2,15 @@ package com.intergroupapplication.presentation.feature.group.adapter
 
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
@@ -19,6 +23,7 @@ import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
 import timber.log.Timber
 
+
 /**
  * Created by abakarmagomedov on 27/08/2018 at project InterGroupApplication.
  */
@@ -29,11 +34,17 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
     var retryClickListener: () -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
-    private val loadingViewType = 123
+    private val loadingViewType = 123       //todo Почему это переменная экземпляра? Мб лучше вынести в статик?
     private val errorViewType = 321
     private var isLoading = false
     private var isError = false
     private var compositeDisposable = CompositeDisposable()
+
+    companion object {
+        val TEST_VIDEO_URI = "http://92.53.65.93:8888/test/index.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20201213%2Fru-selectel%2Fs3%2Faws4_request&X-Amz-Date=20201213T153938Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=d7b725d82941449b6b2b2fb2250b7ec45116d4356db6e432e69039818be2916f"
+        val TEST_MUSIC_URI = "http://92.53.65.93:8888/test/Children-Of-Bodom-Blooddrunk.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20201213%2Fru-selectel%2Fs3%2Faws4_request&X-Amz-Date=20201213T153911Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a8d09369e9f032bdb592c32aff62448a179e5d9c851df4b8b2f433b6714dacb0"
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -50,6 +61,17 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
             errorViewType -> (holder as ErrorViewHolder).bind()
             else -> getItem(position)?.let { (holder as PostViewHolder).bind(it) }
         }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is PostViewHolder) {
+            holder.videoPlayerView.player?.release()
+            holder.videoPlayerView.player?.let {
+                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount() = super.getItemCount() + (if (isLoading) 1 else 0) + (if (isError) 1 else 0)
@@ -101,6 +123,9 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val videoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.videoExoPlayerView)
+        val musicPlayerView = itemView.findViewById<PlayerView>(R.id.musicExoPlayerView)
+
         fun bind(item: GroupPostEntity) {
             with(itemView) {
                 compositeDisposable.add(getDateDescribeByString(item.date)
@@ -134,9 +159,33 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+
+                initializeVideoPlayer()
+                initializeAudioPlayer()
             }
         }
 
+        private fun initializeVideoPlayer() {
+            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
+            videoPlayerView.player = videoPlayer
+            // Build the media item.
+            val videoMediaItem: MediaItem = MediaItem.fromUri(TEST_VIDEO_URI)        //Todo юри видео должно быть в Entity
+            // Set the media item to be played.
+            videoPlayer.setMediaItem(videoMediaItem)
+            // Prepare the player.
+            videoPlayer.prepare()
+        }
+
+        private fun initializeAudioPlayer() {
+            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
+            musicPlayerView.player = musicPlayer
+            // Build the media item.
+            val musicMediaItem: MediaItem = MediaItem.fromUri(TEST_MUSIC_URI)        //Todo юри аудио должно быть в Entity
+            // Set the media item to be played.
+            musicPlayer.setMediaItem(musicMediaItem)
+            // Prepare the player.
+            musicPlayer.prepare()
+        }
 
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)

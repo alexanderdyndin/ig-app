@@ -1,7 +1,6 @@
 package com.intergroupapplication.domain.entity
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -14,4 +13,5 @@ data class GroupPostEntity(
         var commentsCount: String,
         val date: String,
         val groupInPost: GroupInPostEntity,
-        val photo: String?) : Parcelable
+        val photo: String?
+        ) : Parcelable
