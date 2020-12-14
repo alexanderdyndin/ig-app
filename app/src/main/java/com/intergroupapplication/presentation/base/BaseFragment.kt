@@ -133,6 +133,8 @@ abstract class BaseFragment : MvpAppCompatFragment() {
      *
      */
 
+    open fun viewCreated() {}
+
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         compositeDisposable = CompositeDisposable()
@@ -141,6 +143,13 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?, savedInstanceState: Bundle?): View =
-            inflater.inflate(layoutRes(), container, false)
+                              container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return inflater.inflate(layoutRes(), container, false)
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewCreated()
+        super.onViewCreated(view, savedInstanceState)
+    }
 }

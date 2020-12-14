@@ -24,7 +24,7 @@ class LoginViewModule {
     @PerActivity
     @Provides
     fun provideDialogManager(activity: LoginActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
     @PerActivity
@@ -38,5 +38,5 @@ class LoginViewModule {
     @PerActivity
     @Provides
     fun provideSupportAppNavigator(activity: LoginActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+            SupportAppNavigator(activity.requireActivity(), 0)
 }

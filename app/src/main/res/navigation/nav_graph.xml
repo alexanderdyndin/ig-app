@@ -15,21 +15,16 @@
             android:id="@+id/action_splashActivity_to_agreementsActivity"
             app:destination="@id/agreementsActivity" />
         <action
-            android:id="@+id/action_splashActivity_to_registrationActivity"
-            app:destination="@id/registrationActivity" />
-        <action
             android:id="@+id/action_splashActivity_to_navigationActivity"
             app:destination="@id/navigationActivity" />
+        <action
+            android:id="@+id/action_splashActivity_to_registrationActivity"
+            app:destination="@id/registrationActivity" />
     </fragment>
     <activity
         android:id="@+id/agreementsActivity"
         android:name="com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity"
         android:label="AgreementsActivity" />
-    <activity
-        android:id="@+id/registrationActivity"
-        android:name="com.intergroupapplication.presentation.feature.registration.view.RegistrationActivity"
-        android:label="activity_registration"
-        tools:layout="@layout/activity_registration" />
     <activity
         android:id="@+id/navigationActivity"
         android:name="com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity"
@@ -39,11 +34,27 @@
         android:name="com.intergroupapplication.presentation.feature.web.WebActivity"
         android:label="WebActivity" />
     <activity
-        android:id="@+id/loginActivity"
-        android:name="com.intergroupapplication.presentation.feature.login.view.LoginActivity"
-        android:label="LoginActivity" />
-    <activity
         android:id="@+id/recoveryPasswordActivity"
         android:name="com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordActivity"
         android:label="RecoveryPasswordActivity" />
+    <fragment
+        android:id="@+id/registrationActivity"
+        android:name="com.intergroupapplication.presentation.feature.registration.view.RegistrationActivity"
+        android:label="activity_registration"
+        tools:layout="@layout/activity_registration" >
+        <action
+            android:id="@+id/action_registrationActivity_to_loginActivity2"
+            app:destination="@id/loginActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginActivity"
+        android:name="com.intergroupapplication.presentation.feature.login.view.LoginActivity"
+        android:label="LoginActivity" >
+        <action
+            android:id="@+id/action_loginActivity_to_splashActivity"
+            app:destination="@id/splashActivity" />
+        <action
+            android:id="@+id/action_loginActivity_to_registrationActivity"
+            app:destination="@id/registrationActivity" />
+    </fragment>
 </navigation>

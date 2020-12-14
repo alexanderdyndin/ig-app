@@ -26,13 +26,15 @@ class LoginPresenter @Inject constructor(private val router: Router,
                                          private val getProfileUseCase: GetProfileUseCase)
     : BasePresenter<LoginView>() {
 
+    var navigate: (()-> Unit)? = null;
+
     fun performLogin(loginEntity: LoginEntity) {
         compositeDisposable.add(loginGateway.performLogin(loginEntity)
                 .flatMap { getProfileUseCase.getUserProfile() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
-                .subscribe({ goToNavigationScreen() }) {
+                .subscribe({ navigate?.invoke() }) {
                     errorHandler.handle(it)
                 })
     }

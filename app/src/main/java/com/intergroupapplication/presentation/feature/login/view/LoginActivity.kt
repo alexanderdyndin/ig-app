@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
@@ -15,6 +16,8 @@ import com.intergroupapplication.domain.exception.EMAIL
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.PASSWORD
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
@@ -37,7 +40,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class LoginActivity : BaseActivity(), LoginView, Validator.ValidationListener {
+class LoginActivity : BaseFragment(), LoginView, Validator.ValidationListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
@@ -64,8 +67,8 @@ class LoginActivity : BaseActivity(), LoginView, Validator.ValidationListener {
     @Inject
     lateinit var validator: Validator
 
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
+//    @Inject
+//    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
@@ -79,9 +82,10 @@ class LoginActivity : BaseActivity(), LoginView, Validator.ValidationListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
+        presenter.navigate = {findNavController().navigate(R.id.action_loginActivity_to_splashActivity)}
         rxPermission = RxPermissions(this)
-        mail = findViewById(R.id.etMail)
-        password = findViewById(R.id.password)
+        mail = requireView().findViewById(R.id.etMail)
+        password = requireView().findViewById(R.id.password)
         listenInputs()
         RxView.clicks(next)
                 .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
@@ -89,7 +93,7 @@ class LoginActivity : BaseActivity(), LoginView, Validator.ValidationListener {
                 .subscribe { validator.validate() }
                 .also { compositeDisposable.add(it) }
         registration.clicks()
-                .subscribe { presenter.goToRegistrationScreen() }
+                .subscribe { findNavController().navigate(R.id.action_loginActivity_to_registrationActivity) }
                 .also { compositeDisposable.add(it) }
         mail.setOnTouchListener(rightDrawableListener)
         btnRecoveryPassword.clicks()
@@ -115,7 +119,7 @@ class LoginActivity : BaseActivity(), LoginView, Validator.ValidationListener {
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         for (error in errors) {
             val view = error.view
-            val message = error.getCollatedErrorMessage(this)
+            val message = error.getCollatedErrorMessage(requireContext())
             if (view is AppCompatEditText) {
                 when (view.id) {
                     R.id.etMail -> {
