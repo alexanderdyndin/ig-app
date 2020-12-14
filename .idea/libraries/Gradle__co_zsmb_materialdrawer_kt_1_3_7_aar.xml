@@ -25,9 +25,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/af59a4f248617799be9410064d03b49c/jetified-materialdrawer-kt-1.3.7/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/af59a4f248617799be9410064d03b49c/jetified-materialdrawer-kt-1.3.7/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/af59a4f248617799be9410064d03b49c/jetified-materialdrawer-kt-1.3.7/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b675e91a47d7033d00524532ff3d1a0/jetified-materialdrawer-kt-1.3.7/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b675e91a47d7033d00524532ff3d1a0/jetified-materialdrawer-kt-1.3.7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b675e91a47d7033d00524532ff3d1a0/jetified-materialdrawer-kt-1.3.7/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/397e15c4f4f33cfb214a374dd5dfe7d9/jetified-materialdrawer-kt-1.3.7/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/397e15c4f4f33cfb214a374dd5dfe7d9/jetified-materialdrawer-kt-1.3.7/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/397e15c4f4f33cfb214a374dd5dfe7d9/jetified-materialdrawer-kt-1.3.7/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/co.zsmb/materialdrawer-kt/1.3.7/f765afed758f81e473ba193e372ee1db0ecaccea/materialdrawer-kt-1.3.7-javadoc.jar!/" />

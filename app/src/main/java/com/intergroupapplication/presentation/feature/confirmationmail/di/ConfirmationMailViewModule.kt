@@ -19,7 +19,7 @@ class ConfirmationMailViewModule {
     @PerActivity
     @Provides
     fun provideDialogManager(activity: ConfirmationMailActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
     @PerActivity
@@ -32,12 +32,12 @@ class ConfirmationMailViewModule {
     @PerActivity
     @Provides
     fun provideSupportAppNavigator(activity: ConfirmationMailActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+            SupportAppNavigator(activity.requireActivity(), 0)
 
-    @PerActivity
-    @Provides
-    fun provideRegistrationEntity(activity: ConfirmationMailActivity): String? {
-        return activity.intent?.getStringExtra(REGISTRATION_ENTITY)
-    }
+//    @PerActivity
+//    @Provides
+//    fun provideRegistrationEntity(activity: ConfirmationMailActivity): String? {
+//        return "activity.intent?.getStringExtra(REGISTRATION_ENTITY)"
+//    }
 
 }

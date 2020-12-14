@@ -6,8 +6,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28bcae6408e6a025f467250c035ce089/jetified-play-services-ads-base-19.5.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ca99634b8edb633e38828b011178f9a/jetified-play-services-ads-base-19.5.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2ffb75260efe5e44be9098a269c13244/jetified-play-services-ads-base-19.5.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2ffb75260efe5e44be9098a269c13244/jetified-play-services-ads-base-19.5.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2ffb75260efe5e44be9098a269c13244/jetified-play-services-ads-base-19.5.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0a8bac27bce94a18a7367598400c21a9/jetified-play-services-ads-base-19.5.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0a8bac27bce94a18a7367598400c21a9/jetified-play-services-ads-base-19.5.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0a8bac27bce94a18a7367598400c21a9/jetified-play-services-ads-base-19.5.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-ads-base/19.5.0/c9cfe329caed53df2d630f13f112ba6c9c8e3a81/play-services-ads-base-19.5.0-javadoc.jar!/" />

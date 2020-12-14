@@ -3,8 +3,9 @@
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e304fe0befee952a49dd72bdb96da0c/jetified-unity_ads-2.7.4.6/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a6affe47b2960271983f992b22c7f9a7/jetified-unity_ads-2.7.4.6/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a6affe47b2960271983f992b22c7f9a7/jetified-unity_ads-2.7.4.6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a6affe47b2960271983f992b22c7f9a7/jetified-unity_ads-2.7.4.6/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/58ad2c87fb179e7256d156483814f7cd/jetified-unity_ads-2.7.4.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/58ad2c87fb179e7256d156483814f7cd/jetified-unity_ads-2.7.4.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/58ad2c87fb179e7256d156483814f7cd/jetified-unity_ads-2.7.4.6/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -9,12 +9,14 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
@@ -26,7 +28,7 @@ import kotlinx.android.synthetic.main.auth_loader.*
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
-class ConfirmationMailActivity : BaseActivity(), ConfirmationMailView {
+class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {
 
     companion object {
         const val REGISTRATION_ENTITY = "REGISTRATION_ENTITY"
@@ -48,20 +50,21 @@ class ConfirmationMailActivity : BaseActivity(), ConfirmationMailView {
     @ProvidePresenter
     fun providePresenter(): ConfirmationMailPresenter = presenter
 
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
+//    @Inject
+//    override lateinit var navigator: SupportAppNavigator
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = confirmationCoordinator
 
     override fun viewCreated() {
+        presenter.entity = arguments?.getString("amount")
         presenter.start()
 
-        setSupportActionBar(tollbar)
-        supportActionBar?.apply {
-            setHomeButtonEnabled(true)
-            setDisplayHomeAsUpEnabled(true)
-            title = ""
-        }
+//        setSupportActionBar(tollbar)
+//        supportActionBar?.apply {
+//            setHomeButtonEnabled(true)
+//            setDisplayHomeAsUpEnabled(true)
+//            title = ""
+//        }
 
         setErrorHandler()
 
@@ -70,7 +73,7 @@ class ConfirmationMailActivity : BaseActivity(), ConfirmationMailView {
                 .let { compositeDisposable.add(it) }
 
         btnChangeEmail.clicks()
-                .subscribe { finish() }
+                .subscribe { findNavController().popBackStack() }
                 .also { compositeDisposable.add(it) }
 
         btnRepeatCode.clicks()
@@ -80,7 +83,7 @@ class ConfirmationMailActivity : BaseActivity(), ConfirmationMailView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -100,7 +103,7 @@ class ConfirmationMailActivity : BaseActivity(), ConfirmationMailView {
     }
 
     override fun fillData(email: String) {
-        val color = ContextCompat.getColor(this, R.color.cerulean)
+        val color = ContextCompat.getColor(requireContext(), R.color.cerulean)
         val descriptionMail1 = getString(R.string.description_email_part_1)
         val descriptionMail2 = getString(R.string.description_email_part_2)
         val desc = SpannableString("$descriptionMail1$email$descriptionMail2")
@@ -111,7 +114,7 @@ class ConfirmationMailActivity : BaseActivity(), ConfirmationMailView {
     }
 
     override fun showMessage(resId: Int) {
-        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), resId, Toast.LENGTH_SHORT).show()
     }
 
     private fun setErrorHandler() {

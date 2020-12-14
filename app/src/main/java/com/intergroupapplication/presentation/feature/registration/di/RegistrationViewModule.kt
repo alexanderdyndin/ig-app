@@ -39,7 +39,7 @@ class RegistrationViewModule {
     @PerFragment
     @Provides
     fun provideValidator(fragment: RegistrationActivity): Validator =
-            Validator(fragment.requireActivity())//.apply { setValidationListener(fragment) }
+            Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
 
 //    @PerActivity
 //    @Provides

@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
@@ -61,8 +62,6 @@ class RegistrationActivity : BaseFragment(), RegistrationView, Validator.Validat
     @ProvidePresenter
     fun providePresenter(): RegistrationPresenter = presenter
 
-//    @Inject
-//    override lateinit var navigator: SupportAppNavigator
 
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     @Email(messageResId = R.string.email_not_valid)
@@ -86,6 +85,10 @@ class RegistrationActivity : BaseFragment(), RegistrationView, Validator.Validat
 
 
     override fun viewCreated() {
+        presenter.confirmMail = {
+            val bundle = bundleOf("entity" to it)
+            view?.findNavController()?.navigate(R.id.action_registrationActivity_to_confirmationMailActivity2, bundle)
+        }
         mail = requireView().findViewById(R.id.etMail)
         password = requireView().findViewById(R.id.etPassword)
         rxPermission = RxPermissions(this)

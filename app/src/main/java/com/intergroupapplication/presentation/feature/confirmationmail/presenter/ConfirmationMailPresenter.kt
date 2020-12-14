@@ -19,9 +19,10 @@ import javax.inject.Inject
 class ConfirmationMailPresenter @Inject constructor(private val router: Router,
                                                     private val confirmationMailGateway: ConfirmationMailGateway,
                                                     private val errorHandler: ErrorHandler,
-                                                    private val entity: String?,
                                                     private val resendCodeGateway: ResendCodeGateway)
     : BasePresenter<ConfirmationMailView>() {
+
+    var entity: String? = null
 
     fun start() {
         entity?.let {
@@ -46,7 +47,7 @@ class ConfirmationMailPresenter @Inject constructor(private val router: Router,
                         .observeOn(AndroidSchedulers.mainThread())
                         .handleLoading(viewState)
                         .subscribe({
-                            router.newRootScreen(CreateUserProfileScreen())
+
                         }) {
                             viewState.clearViewErrorState()
                             errorHandler.handle(it)

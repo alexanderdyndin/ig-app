@@ -5,9 +5,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e35a57face1c176bc1706e17b18cf878/palette-1.0.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9534e64189d827ca723d7caa9de053b6/palette-1.0.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2b16eb79fb07adbaf2eee08dc3d57247/palette-1.0.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d2bfd9a300a4709aff321bc949acf3f3/palette-1.0.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d2bfd9a300a4709aff321bc949acf3f3/palette-1.0.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d2bfd9a300a4709aff321bc949acf3f3/palette-1.0.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/80813af847ca26503f237fa80305c58a/palette-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/80813af847ca26503f237fa80305c58a/palette-1.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/80813af847ca26503f237fa80305c58a/palette-1.0.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

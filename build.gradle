@@ -6,6 +6,7 @@ buildscript {
     ext.devmetrict_version = '0.6'
     ext.gms_version = '4.0.1'
     ext.dokka_version = '0.9.17'
+    ext.nav_version = '2.3.2'
     repositories {
         google()
         jcenter()
@@ -22,6 +23,7 @@ buildscript {
         classpath "com.google.gms:google-services:$gms_version"
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
         classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-rc2'
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
     }
 
 }
@@ -42,7 +44,6 @@ task clean(type: Delete) {
 }
 
 ext {
-    nav_version = '2.3.1'
     junitVersion = '4.13.1'
     mockitoVersion = '2.19.0'
     mockitoKotlinVersion = '1.5.0'

@@ -80,6 +80,10 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 createSnackBarAction(R.string.unknown_error))
     }
 
+    protected fun showErrorMessage(message: String) {
+        dialogDelegate.showErrorSnackBar(message)
+    }
+
     private fun getActionForBlockedUser() =
             if (userSession.isLoggedIn()) {
                 actionForBlockedUser

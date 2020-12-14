@@ -6,9 +6,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/84adbe72502c553ea5ba0742dc02cde1/jetified-moxy-material-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d58831cbbd36328b47e50ec77c0ca315/jetified-moxy-material-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2398c27737aca26310c4e77377c30f66/jetified-moxy-material-2.2.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2d23e7375de9ee321b23a6d6173da5c8/jetified-moxy-material-2.2.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2d23e7375de9ee321b23a6d6173da5c8/jetified-moxy-material-2.2.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2d23e7375de9ee321b23a6d6173da5c8/jetified-moxy-material-2.2.0/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae0f52b09342d01edc0d20f9d0c4dc10/jetified-moxy-material-2.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae0f52b09342d01edc0d20f9d0c4dc10/jetified-moxy-material-2.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ae0f52b09342d01edc0d20f9d0c4dc10/jetified-moxy-material-2.2.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

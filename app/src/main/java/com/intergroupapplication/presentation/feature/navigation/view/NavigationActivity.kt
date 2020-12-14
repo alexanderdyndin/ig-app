@@ -167,9 +167,9 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { _ ->
+                onClick { v ->
                     presenter.goOutFromProfile()
-
+                    //v?.findNavController()?.popBackStack()
                     toolbarTittle.text = getString(R.string.logout)
                     false
                 }
@@ -220,16 +220,16 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
     }
 
-    override fun onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            ExitActivity.exitApplication(this)
-            return
-        }
-        this.doubleBackToExitPressedOnce = true
-        Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-        exitHandler = Handler(Looper.getMainLooper())
-        exitHandler?.postDelayed(r, EXIT_DELAY)
-    }
+ //   override fun onBackPressed() {
+//        if (doubleBackToExitPressedOnce) {
+//            ExitActivity.exitApplication(this)
+//            return
+//        }
+//        this.doubleBackToExitPressedOnce = true
+//        Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+//        exitHandler = Handler(Looper.getMainLooper())
+//        exitHandler?.postDelayed(r, EXIT_DELAY)
+  //  }
 
     override fun onDestroy() {
         exitHandler?.removeCallbacks(r)

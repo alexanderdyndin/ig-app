@@ -24,6 +24,8 @@ class RegistrationPresenter @Inject constructor(private val router: Router,
                                                 private val errorHandler: ErrorHandler)
     : BasePresenter<RegistrationView>() {
 
+    var confirmMail: (email: String) -> Unit = {}
+
     fun performRegistration(entity: RegistrationEntity) {
         compositeDisposable.add(
                 registrationGateway.performRegistration(entity)
@@ -31,7 +33,7 @@ class RegistrationPresenter @Inject constructor(private val router: Router,
                         .observeOn(AndroidSchedulers.mainThread())
                         .handleLoading(viewState)
                         .subscribe({
-                            router.navigateTo(ConfirmationMailScreen(entity.email))
+                            confirmMail.invoke(entity.email)
                         }) {
                             errorHandler.always { _, _ -> viewState.clearViewErrorState() }
                                     .handle(it)

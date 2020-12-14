@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_registrationActivity_to_loginActivity2"
             app:destination="@id/loginActivity" />
+        <action
+            android:id="@+id/action_registrationActivity_to_confirmationMailActivity2"
+            app:destination="@id/confirmationMailActivity" />
     </fragment>
     <fragment
         android:id="@+id/loginActivity"
@@ -56,5 +59,14 @@
         <action
             android:id="@+id/action_loginActivity_to_registrationActivity"
             app:destination="@id/registrationActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmationMailActivity"
+        android:name="com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailActivity"
+        android:label="ConfirmationMailActivity" >
+        <argument
+            android:name="entity"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>
