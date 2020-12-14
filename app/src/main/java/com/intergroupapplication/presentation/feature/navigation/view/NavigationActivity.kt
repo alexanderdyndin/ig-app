@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.findNavController
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
@@ -62,7 +63,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
     @ProvidePresenter
     fun providePresenter(): NavigationPresenter = presenter
 
-    @Inject
+    //@Inject
     override lateinit var navigator: SupportAppNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,8 +143,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
                 onClick { v ->
-                    presenter.goToNewsScreen()
-                    //v?.findNavController()?.navigate(R.id.action_navigationActivity_to_groupsFragment)
+                    v?.findNavController()?.navigate(R.id.action_groupListFragment2_to_newsFragment2)
                     toolbarTittle.text = getString(R.string.news)
                     false
                 }
@@ -156,8 +156,8 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
                 onClick { v ->
-                    presenter.goToGroupListScreen()
-                    //v?.findNavController()?.navigate(R.id.action_navigationActivity_to_groupListFragment)
+                    //presenter.goToGroupListScreen()
+                    v?.findNavController()?.navigate(R.id.action_newsFragment2_to_groupListFragment2)
                     toolbarTittle.text = getString(R.string.groups)
                     false
                 }
@@ -169,6 +169,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { _ ->
                     presenter.goOutFromProfile()
+
                     toolbarTittle.text = getString(R.string.logout)
                     false
                 }

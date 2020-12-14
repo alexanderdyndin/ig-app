@@ -75,7 +75,7 @@ class NavigationPresenter @Inject constructor(private val router: Router,
 
     fun goOutFromProfile() {
         sessionStorage.logout()
-        router.newRootScreen(LoginScreen())
+        //router.newRootScreen(LoginScreen())
     }
 
     fun goToGroupListScreen() {

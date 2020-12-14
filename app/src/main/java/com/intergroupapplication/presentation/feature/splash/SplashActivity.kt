@@ -40,7 +40,7 @@ class SplashActivity : BaseFragment() {
 //            else -> router.newRootScreen(NavigationScreen())
             !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_splashActivity_to_agreementsActivity)
             !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_splashActivity_to_registrationActivity)
-            else -> findNavController().navigate(R.id.action_splashActivity_to_newsFragment)
+            else -> findNavController().navigate(R.id.action_splashActivity_to_newsFragment2)
         }
     }
 

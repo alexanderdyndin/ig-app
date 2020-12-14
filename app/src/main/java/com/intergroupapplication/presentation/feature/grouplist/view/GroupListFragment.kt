@@ -138,12 +138,12 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         activity_main__btn_filter.setOnClickListener {
             //todo
         }
-        if (activity is NavigationActivity) {
-            with (activity as NavigationActivity) {
-                navigationToolbar.activity_main__text_created_group.visibility = View.VISIBLE
-                navigationToolbar.activity_main__text_created_group.setOnClickListener { openCreateGroup() }
-            }
-        }
+//        if (activity is NavigationActivity) {
+//            with (activity as NavigationActivity) {
+//                navigationToolbar.activity_main__text_created_group.visibility = View.VISIBLE
+//                navigationToolbar.activity_main__text_created_group.setOnClickListener { openCreateGroup() }
+//            }
+//        }
     }
 
     private fun setAdapter() {
