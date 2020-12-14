@@ -3,33 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/navigationActivity">
+    app:startDestination="@id/newsFragment">
 
-    <activity
-        android:id="@+id/navigationActivity"
-        android:name="com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity"
-        android:label="NavigationActivity" >
-        <action
-            android:id="@+id/action_navigationActivity_to_groupListFragment"
-            app:destination="@id/groupListFragment" />
-        <action
-            android:id="@+id/action_navigationActivity_to_newsFragment"
-            app:destination="@id/newsFragment" />
-        <action
-            android:id="@+id/action_navigationActivity_to_groupsFragment"
-            app:destination="@id/groupsFragment" />
-    </activity>
     <fragment
         android:id="@+id/newsFragment"
         android:name="com.intergroupapplication.presentation.feature.news.view.NewsFragment"
         android:label="fragment_news"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_newsFragment_to_groupListFragment"
+            app:destination="@id/groupListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/groupListFragment"
         android:name="com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment"
-        android:label="GroupListFragment" />
+        android:label="groupListFragment" >
+        <action
+            android:id="@+id/action_groupListFragment_to_newsFragment"
+            app:destination="@id/newsFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/groupsFragment"
-        android:name="com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment"
-        android:label="GroupsFragment" />
+        android:id="@+id/splashActivity"
+        android:name="com.intergroupapplication.presentation.feature.splash.SplashActivity"
+        android:label="activity_splash"
+        tools:layout="@layout/activity_splash" >
+        <action
+            android:id="@+id/action_splashActivity_to_newsFragment"
+            app:destination="@id/newsFragment" />
+        <action
+            android:id="@+id/action_splashActivity_to_agreementsActivity"
+            app:destination="@id/agreementsActivity" />
+        <action
+            android:id="@+id/action_splashActivity_to_registrationActivity"
+            app:destination="@id/registrationActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/agreementsActivity"
+        android:name="com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity"
+        android:label="AgreementsActivity" />
+    <activity
+        android:id="@+id/registrationActivity"
+        android:name="com.intergroupapplication.presentation.feature.registration.view.RegistrationActivity"
+        android:label="activity_registration"
+        tools:layout="@layout/activity_registration" />
 </navigation>

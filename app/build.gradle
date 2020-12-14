@@ -179,6 +179,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
     implementation 'androidx.palette:palette-ktx:1.0.0'
+    implementation 'androidx.wear:wear:1.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
@@ -208,6 +209,7 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    compileOnly 'com.google.android.wearable:wearable:2.6.0'
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
@@ -223,7 +225,8 @@ dependencies {
     implementation "ru.terrakok.cicerone:cicerone:$ciceroneVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    androidTestImplementation "android.arch.navigation:navigation-testing:$nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-compose:1.0.0-alpha03"
 
     //LeackCanary
 //    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
@@ -321,6 +324,6 @@ dependencies {
     implementation 'com.appodeal.ads:sdk:2.7.4.+'
     implementation 'com.explorestack:consent:1.0.2'
     //Video player
-    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'S
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
 
 }

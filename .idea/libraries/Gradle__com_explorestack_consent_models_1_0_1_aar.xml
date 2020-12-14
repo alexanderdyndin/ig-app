@@ -11,6 +11,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f5c93b5ee93ce3d9a73dd89e47c61c7b/jetified-consent-models-1.0.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f5c93b5ee93ce3d9a73dd89e47c61c7b/jetified-consent-models-1.0.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f5c93b5ee93ce3d9a73dd89e47c61c7b/jetified-consent-models-1.0.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ef43fa67059e9dc51542a917ad5bd7c0/jetified-consent-models-1.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ef43fa67059e9dc51542a917ad5bd7c0/jetified-consent-models-1.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ef43fa67059e9dc51542a917ad5bd7c0/jetified-consent-models-1.0.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

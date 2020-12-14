@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.splash.di
 
 import android.content.Context
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.feature.splash.SplashActivity
 import com.intergroupapplication.presentation.manager.DialogManager
@@ -18,22 +19,22 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 @Module
 class SplashViewModule {
 
-    @PerActivity
-    @Provides
-    fun provideDialogManager(activity: SplashActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+//    @PerFragment
+//    @Provides
+//    fun provideDialogManager(activity: SplashActivity): DialogManager =
+//            DialogManager(activity.supportFragmentManager)
 
 
-    @PerActivity
-    @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
-            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+//    @PerFragment
+//    @Provides
+//    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+//                       context: Context)
+//            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
-    @Provides
-    fun provideSupportAppNavigator(activity: SplashActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+//    @PerFragment
+//    @Provides
+//    fun provideSupportAppNavigator(activity: SplashActivity): SupportAppNavigator =
+//            SupportAppNavigator(activity, 0)
 
 }

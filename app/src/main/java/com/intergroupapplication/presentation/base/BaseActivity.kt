@@ -75,12 +75,12 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
 
     override fun onResume() {
         super.onResume()
-        navigatorHolder.setNavigator(navigator)
+//        navigatorHolder.setNavigator(navigator)
         dialogDelegate.coordinator = getSnackBarCoordinator()
     }
 
     override fun onPause() {
-        navigatorHolder.removeNavigator()
+//        navigatorHolder.removeNavigator()
         dialogDelegate.coordinator = null
         super.onPause()
     }
