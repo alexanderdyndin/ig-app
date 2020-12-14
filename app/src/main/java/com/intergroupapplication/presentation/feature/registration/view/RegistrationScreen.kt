@@ -6,7 +6,8 @@ import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class RegistrationScreen : SupportAppScreen() {
 
-    override fun getActivityIntent(context: Context) =
-            RegistrationActivity.getIntent(context)
+    override fun getActivityIntent(context: Context) = null
+            //RegistrationActivity.getIntent(context)
+
 
 }

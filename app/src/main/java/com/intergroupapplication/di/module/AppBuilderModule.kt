@@ -2,6 +2,7 @@ package com.intergroupapplication.di.module
 
 import com.intergroupapplication.device.service.InterGroupPushService
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.di.scope.PerService
 import com.intergroupapplication.presentation.feature.agreements.di.AgreementsViewModule
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity
@@ -43,7 +44,7 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [(LoginViewModule::class)])
     fun provideLoginActivityFactory(): LoginActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [(RegistrationViewModule::class)])
     fun provideRegistrationActivityFactory(): RegistrationActivity
 
@@ -60,7 +61,7 @@ interface AppBuilderModule {
         ConfirmationUserProfileGatewayModule::class])
     fun provideConfirmationMailActivityFactory(): ConfirmationMailActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [SplashViewModule::class])
     fun provideSplashActivityFactory(): SplashActivity
 

@@ -54,12 +54,12 @@ class AgreementsActivity : BaseActivity(), AgreementsView, CompoundButton.OnChec
     override fun layoutRes() = R.layout.activity_agreements
 
     override fun viewCreated() {
-        initCheckBox()
-        initBtn()
-        clicks(btnNext)
-                .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { next() }.let(compositeDisposable::add)
+//        initCheckBox()
+//        initBtn()
+//        clicks(btnNext)
+//                .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe { next() }.let(compositeDisposable::add)
 //        ConsentManager.getInstance(this).requestConsentInfoUpdate(
 //                BuildConfig.APPODEAL_APP_KEY,
 //                object : ConsentInfoUpdateListener {

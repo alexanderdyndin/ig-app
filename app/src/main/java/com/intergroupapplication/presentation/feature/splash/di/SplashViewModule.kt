@@ -19,17 +19,17 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 @Module
 class SplashViewModule {
 
-//    @PerFragment
-//    @Provides
-//    fun provideDialogManager(activity: SplashActivity): DialogManager =
-//            DialogManager(activity.supportFragmentManager)
+    @PerFragment
+    @Provides
+    fun provideDialogManager(activity: SplashActivity): DialogManager =
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
-//    @PerFragment
-//    @Provides
-//    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-//                       context: Context)
-//            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+    @PerFragment
+    @Provides
+    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+                       context: Context)
+            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
 //    @PerFragment

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    android:id="@+id/nav_graph"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
     app:startDestination="@id/splashActivity">
 
     <fragment
@@ -19,9 +20,6 @@
         <action
             android:id="@+id/action_splashActivity_to_navigationActivity"
             app:destination="@id/navigationActivity" />
-        <action
-            android:id="@+id/action_splashActivity_to_newsFragment2"
-            app:destination="@id/newsFragment2" />
     </fragment>
     <activity
         android:id="@+id/agreementsActivity"
@@ -36,21 +34,16 @@
         android:id="@+id/navigationActivity"
         android:name="com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity"
         android:label="NavigationActivity" />
-    <fragment
-        android:id="@+id/newsFragment2"
-        android:name="com.intergroupapplication.presentation.feature.news.view.NewsFragment"
-        android:label="fragment_news"
-        tools:layout="@layout/fragment_news">
-        <action
-            android:id="@+id/action_newsFragment2_to_groupListFragment2"
-            app:destination="@id/groupListFragment2" />
-    </fragment>
-    <fragment
-        android:id="@+id/groupListFragment2"
-        android:name="com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment"
-        android:label="GroupListFragment">
-        <action
-            android:id="@+id/action_groupListFragment2_to_newsFragment2"
-            app:destination="@id/newsFragment2" />
-    </fragment>
+    <activity
+        android:id="@+id/webActivity"
+        android:name="com.intergroupapplication.presentation.feature.web.WebActivity"
+        android:label="WebActivity" />
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.intergroupapplication.presentation.feature.login.view.LoginActivity"
+        android:label="LoginActivity" />
+    <activity
+        android:id="@+id/recoveryPasswordActivity"
+        android:name="com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordActivity"
+        android:label="RecoveryPasswordActivity" />
 </navigation>
