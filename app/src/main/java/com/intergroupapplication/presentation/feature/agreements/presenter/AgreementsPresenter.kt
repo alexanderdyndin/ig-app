@@ -38,6 +38,8 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
         private const val RES_ID_APPODEAL = R.string.appodealpolicy
     }
 
+    var splash: () -> Unit = {}
+
     fun next() {
         compositeDisposable.add(imeiGateway.extractDeviceInfo()
                 .subscribeOn(Schedulers.io())
@@ -46,7 +48,7 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
                 .handleLoading(viewState)
                 .subscribe({
                     userSession.acceptTerms = TermsEntity(true)
-                    router.newRootScreen(SplashScreen())
+                    splash.invoke()
                 }, { errorHandler.handle(it) }))
     }
 

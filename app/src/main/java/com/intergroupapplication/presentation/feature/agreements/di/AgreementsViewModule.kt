@@ -17,7 +17,7 @@ class AgreementsViewModule {
     @PerActivity
     @Provides
     fun provideDialogManager(activity: AgreementsActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
     @PerActivity
@@ -26,9 +26,9 @@ class AgreementsViewModule {
                        context: Context)
             : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-    @PerActivity
-    @Provides
-    fun provideNavigator(activity: AgreementsActivity) =
-            SupportAppNavigator(activity, 0)
+//    @PerActivity
+//    @Provides
+//    fun provideNavigator(activity: AgreementsActivity) =
+//            SupportAppNavigator(activity, 0)
 
 }

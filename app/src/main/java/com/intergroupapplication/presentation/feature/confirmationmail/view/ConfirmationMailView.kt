@@ -12,5 +12,6 @@ import com.intergroupapplication.presentation.base.CanShowLoading
 interface ConfirmationMailView : MvpView, CanShowLoading, CanClearViewErrorState {
     fun showMessage(resId: Int)
     fun fillData(email: String)
+    fun completed()
 }
 

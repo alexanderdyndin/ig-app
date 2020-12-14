@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.utils.PermissionsHelper
 import com.explorestack.consent.*
@@ -15,6 +17,7 @@ import com.explorestack.consent.exception.ConsentManagerException
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
@@ -32,16 +35,27 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class AgreementsActivity : BaseActivity(), AgreementsView, CompoundButton.OnCheckedChangeListener {
+class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnCheckedChangeListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
+        private const val KEY_PATH = "PATH"
+        private const val KEY_TITLE = "TITLE"
+        private const val URL_PRIVACY_POLICY = "https://igsn.net/agreement/1.html"
+        private const val URL_TERMS_OF_USE = "https://igsn.net/agreement/2.html"
+        private const val URL_RIGHTHOLDERS = "https://igsn.net/agreement/3.html"
+        private const val URL_APPODEAL = "https://www.appodeal.com/home/privacy-policy/"
+
+        private const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
+        private const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
+        private const val RES_ID_RIGHTHOLDERS = R.string.rightholders
+        private const val RES_ID_APPODEAL = R.string.appodealpolicy
 
         fun getIntent(context: Context) = Intent(context, AgreementsActivity::class.java)
     }
 
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
+//    @Inject
+//    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     @InjectPresenter
@@ -54,12 +68,13 @@ class AgreementsActivity : BaseActivity(), AgreementsView, CompoundButton.OnChec
     override fun layoutRes() = R.layout.activity_agreements
 
     override fun viewCreated() {
-//        initCheckBox()
-//        initBtn()
-//        clicks(btnNext)
-//                .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe { next() }.let(compositeDisposable::add)
+        initCheckBox()
+        initBtn()
+        presenter.splash = {findNavController().navigate(R.id.action_agreementsActivity2_to_splashActivity)}
+        clicks(btnNext)
+                .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { next() }.let(compositeDisposable::add)
 //        ConsentManager.getInstance(this).requestConsentInfoUpdate(
 //                BuildConfig.APPODEAL_APP_KEY,
 //                object : ConsentInfoUpdateListener {
@@ -110,13 +125,13 @@ class AgreementsActivity : BaseActivity(), AgreementsView, CompoundButton.OnChec
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        val textColor = ContextCompat.getColor(this, if (isChecked) android.R.color.white else R.color.manatee)
+        val textColor = ContextCompat.getColor(requireContext(), if (isChecked) android.R.color.white else R.color.manatee)
         buttonView?.setTextColor(textColor)
-        if (cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked && cbAp.isChecked) {
-            btnNext.background = ContextCompat.getDrawable(this, R.drawable.background_button)
+        if (cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked) {
+            btnNext.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_button)
             btnNext.isEnabled = true
         } else {
-            btnNext.background = ContextCompat.getDrawable(this, R.drawable.background_button_disable)
+            btnNext.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_button_disable)
             btnNext.isEnabled = false
         }
     }
@@ -125,40 +140,46 @@ class AgreementsActivity : BaseActivity(), AgreementsView, CompoundButton.OnChec
         cbRH.setOnCheckedChangeListener(this)
         cbPP.setOnCheckedChangeListener(this)
         cbTOU.setOnCheckedChangeListener(this)
-        cbAp.setOnCheckedChangeListener(this)
     }
 
     private fun initBtn() {
-        btnPrivacyPolicy.clicks().subscribe { presenter.openPrivacyPolicy() }.also { compositeDisposable.add(it) }
-        btnRightholders.clicks().subscribe { presenter.openRightholders() }.also { compositeDisposable.add(it) }
-        btnTermsOfUse.clicks().subscribe { presenter.openTermsOfUse() }.also { compositeDisposable.add(it) }
-        btnAppodeal.clicks().subscribe { presenter.openAppodealPolicy() }.also { compositeDisposable.add(it) }
-
+        btnPrivacyPolicy.clicks().subscribe {
+            val bundle = bundleOf(KEY_PATH to URL_PRIVACY_POLICY, KEY_TITLE to RES_ID_PRIVACY_POLICY)
+            findNavController().navigate(R.id.action_agreementsActivity2_to_webActivity, bundle)
+        }.also { compositeDisposable.add(it) }
+        btnRightholders.clicks().subscribe {
+            val bundle = bundleOf(KEY_PATH to URL_TERMS_OF_USE, KEY_TITLE to RES_ID_TERMS_OF_USE)
+            findNavController().navigate(R.id.action_agreementsActivity2_to_webActivity, bundle)
+        }.also { compositeDisposable.add(it) }
+        btnTermsOfUse.clicks().subscribe {
+            val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
+            findNavController().navigate(R.id.action_agreementsActivity2_to_webActivity, bundle)
+        }.also { compositeDisposable.add(it) }
     }
 
     private fun next() {
         compositeDisposable.add(RxPermissions(this).request(Manifest.permission.READ_PHONE_STATE)
                 .subscribe({
-                    Appodeal.requestAndroidMPermissions(this, object : PermissionsHelper.AppodealPermissionCallbacks {
-                        override fun writeExternalStorageResponse(result: Int) {
-                            if (result == PackageManager.PERMISSION_GRANTED) {
-                                showToast("WRITE_EXTERNAL_STORAGE permission was granted")
-                            } else {
-                                showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
-                            }
-                        }
-
-                        override fun accessCoarseLocationResponse(result: Int) {
-                            if (result == PackageManager.PERMISSION_GRANTED) {
-                                showToast("ACCESS_COARSE_LOCATION permission was granted")
-                            } else {
-                                showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
-                            }
-                        }
-                    })
                     if (it) {
                         presenter.next()
                     } else {
+                        Appodeal.requestAndroidMPermissions(requireActivity(), object : PermissionsHelper.AppodealPermissionCallbacks {
+                            override fun writeExternalStorageResponse(result: Int) {
+                                if (result == PackageManager.PERMISSION_GRANTED) {
+                                    showToast("WRITE_EXTERNAL_STORAGE permission was granted")
+                                } else {
+                                    showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
+                                }
+                            }
+
+                            override fun accessCoarseLocationResponse(result: Int) {
+                                if (result == PackageManager.PERMISSION_GRANTED) {
+                                    showToast("ACCESS_COARSE_LOCATION permission was granted")
+                                } else {
+                                    showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
+                                }
+                            }
+                        })
                         dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
                                 mapOf(R.id.permissionOk to {
                                     presenter.goToSettingsScreen()

@@ -56,8 +56,7 @@ class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {
     override fun getSnackBarCoordinator(): CoordinatorLayout = confirmationCoordinator
 
     override fun viewCreated() {
-        presenter.entity = arguments?.getString("amount")
-        presenter.start()
+        presenter.start(arguments?.getString("amount"))
 
 //        setSupportActionBar(tollbar)
 //        supportActionBar?.apply {
@@ -111,6 +110,10 @@ class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {
         val end = descriptionMail1.length + email.length
         desc.setSpan(ForegroundColorSpan(color), start, end, 0)
         tvWel.text = desc
+    }
+
+    override fun completed() {
+        findNavController().navigate(R.id.action_confirmationMailActivity_to_createUserProfileActivity)
     }
 
     override fun showMessage(resId: Int) {

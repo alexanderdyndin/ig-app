@@ -85,10 +85,6 @@ class RegistrationActivity : BaseFragment(), RegistrationView, Validator.Validat
 
 
     override fun viewCreated() {
-        presenter.confirmMail = {
-            val bundle = bundleOf("entity" to it)
-            view?.findNavController()?.navigate(R.id.action_registrationActivity_to_confirmationMailActivity2, bundle)
-        }
         mail = requireView().findViewById(R.id.etMail)
         password = requireView().findViewById(R.id.etPassword)
         rxPermission = RxPermissions(this)
@@ -131,6 +127,11 @@ class RegistrationActivity : BaseFragment(), RegistrationView, Validator.Validat
                         etPassword.text.toString(),
                         etDoubleMail.text.toString(),
                         etDoublePassword.text.toString()))
+    }
+
+    override fun confirmMail(email: String) {
+        val bundle = bundleOf("entity" to email)
+        view?.findNavController()?.navigate(R.id.action_registrationActivity_to_confirmationMailActivity2, bundle)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {

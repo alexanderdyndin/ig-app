@@ -26,12 +26,14 @@ class CreateUserProfilePresenter @Inject constructor(private val router: Router,
 
     private var uploadingDisposable: Disposable? = null
 
+
+
     fun createUserProfile(name: String, surName: String,
                           birthDay: String, gender: String) {
         compositeDisposable.add(
                 imageUploadingDelegate.getLastPhotoUploadedUrl()
                         .flatMap {
-                            if (!it.isEmpty()) {
+                            if (it.isNotEmpty()) {
                                 userProfileGateway.createUserProfile(CreateUserEntity(name,
                                         surName, birthDay, gender, it))
                             } else {
@@ -43,7 +45,7 @@ class CreateUserProfilePresenter @Inject constructor(private val router: Router,
                         .observeOn(AndroidSchedulers.mainThread())
                         .handleLoading(viewState)
                         .subscribe({
-                            goToNavigationScreen()
+                            viewState.completed()
                         }, {
                             errorHandler.handle(it)
                         }))

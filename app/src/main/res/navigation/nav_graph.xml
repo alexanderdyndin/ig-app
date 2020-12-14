@@ -12,27 +12,19 @@
         android:label="activity_splash"
         tools:layout="@layout/activity_splash" >
         <action
-            android:id="@+id/action_splashActivity_to_agreementsActivity"
-            app:destination="@id/agreementsActivity" />
-        <action
             android:id="@+id/action_splashActivity_to_navigationActivity"
             app:destination="@id/navigationActivity" />
         <action
             android:id="@+id/action_splashActivity_to_registrationActivity"
             app:destination="@id/registrationActivity" />
+        <action
+            android:id="@+id/action_splashActivity_to_agreementsActivity2"
+            app:destination="@id/agreementsActivity2" />
     </fragment>
-    <activity
-        android:id="@+id/agreementsActivity"
-        android:name="com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity"
-        android:label="AgreementsActivity" />
     <activity
         android:id="@+id/navigationActivity"
         android:name="com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity"
         android:label="NavigationActivity" />
-    <activity
-        android:id="@+id/webActivity"
-        android:name="com.intergroupapplication.presentation.feature.web.WebActivity"
-        android:label="WebActivity" />
     <activity
         android:id="@+id/recoveryPasswordActivity"
         android:name="com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordActivity"
@@ -68,5 +60,38 @@
             android:name="entity"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_confirmationMailActivity_to_createUserProfileActivity"
+            app:destination="@id/createUserProfileActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/agreementsActivity2"
+        android:name="com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity"
+        android:label="AgreementsActivity" >
+        <action
+            android:id="@+id/action_agreementsActivity2_to_webActivity"
+            app:destination="@id/webActivity" />
+        <action
+            android:id="@+id/action_agreementsActivity2_to_splashActivity"
+            app:destination="@id/splashActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/webActivity"
+        android:name="com.intergroupapplication.presentation.feature.web.WebActivity"
+        android:label="WebActivity" >
+        <argument
+            android:name="PATH"
+            app:argType="string" />
+        <argument
+            android:name="TITLE"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/createUserProfileActivity"
+        android:name="com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity"
+        android:label="CreateUserProfileActivity" >
+        <action
+            android:id="@+id/action_createUserProfileActivity_to_navigationActivity"
+            app:destination="@id/navigationActivity" />
     </fragment>
 </navigation>

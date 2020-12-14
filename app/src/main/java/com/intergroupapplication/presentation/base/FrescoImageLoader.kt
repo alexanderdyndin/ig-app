@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.base
 
+import android.app.Activity
 import android.net.Uri
 import com.facebook.common.util.UriUtil
 import com.facebook.drawee.view.SimpleDraweeView
@@ -10,7 +11,7 @@ import java.io.File
 /**
  * Created by abakarmagomedov on 06/08/2018 at project InterGroupApplication.
  */
-class FrescoImageLoader(private val callerContext: BaseActivity) : ImageLoader {
+class FrescoImageLoader(private val callerContext: Activity) : ImageLoader {
 
     override fun loadImageFromFile(filePath: String, target: SimpleDraweeView) {
         val request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(filePath)))

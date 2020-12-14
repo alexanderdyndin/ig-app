@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
@@ -20,6 +21,7 @@ import com.intergroupapplication.domain.exception.FIRST_NAME
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.SECOND_NAME
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
@@ -37,7 +39,7 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
 
-class CreateUserProfileActivity : BaseActivity(), CreateUserProfileView,
+class CreateUserProfileActivity : BaseFragment(), CreateUserProfileView,
         CompoundButton.OnCheckedChangeListener, Validator.ValidationListener {
 
     companion object {
@@ -50,9 +52,9 @@ class CreateUserProfileActivity : BaseActivity(), CreateUserProfileView,
 
     @ProvidePresenter
     fun providePresenter(): CreateUserProfilePresenter = presenter
-
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
+//
+//    @Inject
+//    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     lateinit var colorStateList: ColorStateList
@@ -75,15 +77,15 @@ class CreateUserProfileActivity : BaseActivity(), CreateUserProfileView,
     override fun getSnackBarCoordinator(): CoordinatorLayout = createUserCoordinator
 
     override fun viewCreated() {
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeButtonEnabled(true)
-            setTitle(R.string.editor_profile)
-        }
+//        setSupportActionBar(toolbar)
+//        supportActionBar?.apply {
+//            setDisplayHomeAsUpEnabled(true)
+//            setHomeButtonEnabled(true)
+//            setTitle(R.string.editor_profile)
+//        }
 
-        name = findViewById(R.id.name)
-        surName = findViewById(R.id.surName)
+        name = requireView().findViewById(R.id.name)
+        surName = requireView().findViewById(R.id.surName)
 
         CompoundButtonCompat.setButtonTintList(man, colorStateList)
         CompoundButtonCompat.setButtonTintList(woman, colorStateList)
@@ -101,9 +103,13 @@ class CreateUserProfileActivity : BaseActivity(), CreateUserProfileView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun completed() {
+        findNavController().navigate(R.id.action_createUserProfileActivity_to_navigationActivity)
     }
 
     override fun showLoading(show: Boolean) {
@@ -133,14 +139,14 @@ class CreateUserProfileActivity : BaseActivity(), CreateUserProfileView,
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        buttonView?.setTextColor(ContextCompat.getColor(this,
+        buttonView?.setTextColor(ContextCompat.getColor(requireContext(),
                 if (isChecked) R.color.whiteAutorize else R.color.manatee))
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         for (error in errors) {
             val view = error.view
-            val message = error.getCollatedErrorMessage(this)
+            val message = error.getCollatedErrorMessage(requireContext())
             if (view is AppCompatEditText) {
                 when (view.id) {
                     R.id.name -> {
@@ -199,7 +205,7 @@ class CreateUserProfileActivity : BaseActivity(), CreateUserProfileView,
     }
 
     private fun createUserProfile() {
-        val gender: String = if (genderRadioGroup.indexOfChild(findViewById
+        val gender: String = if (genderRadioGroup.indexOfChild(requireView().findViewById
                 (genderRadioGroup.checkedRadioButtonId)) == 0) {
             "male"
         } else {

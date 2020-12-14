@@ -38,7 +38,7 @@ class SplashActivity : BaseFragment() {
 //            !userSession.isAcceptTerms() -> router.newRootScreen(AgreementsScreen())
 //            !userSession.isLoggedIn() -> router.newRootScreen(RegistrationScreen())
 //            else -> router.newRootScreen(NavigationScreen())
-            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_splashActivity_to_agreementsActivity)
+            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_splashActivity_to_agreementsActivity2)
             !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_splashActivity_to_registrationActivity)
             else -> findNavController().navigate(R.id.action_splashActivity_to_navigationActivity)
         }

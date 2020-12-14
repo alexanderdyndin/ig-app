@@ -1,6 +1,8 @@
 package com.intergroupapplication.data.repository
 
+import android.app.Activity
 import android.graphics.Bitmap
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
@@ -34,7 +36,7 @@ import java.util.concurrent.ThreadPoolExecutor
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
-class PhotoRepository @Inject constructor(private val activity: AppCompatActivity,
+class PhotoRepository @Inject constructor(private val activity: Activity,
                                           private val cropOptions: UCrop.Options,
                                           private val appApi: AppApi,
                                           private val awsUploadingGateway: AwsUploadingGateway) : PhotoGateway {

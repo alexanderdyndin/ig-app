@@ -9,4 +9,5 @@ import com.intergroupapplication.presentation.base.CanShowLoading
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface LoginView : MvpView, CanShowLoading, CanClearViewErrorState {
     fun deviceInfoExtracted()
+    fun login()
 }

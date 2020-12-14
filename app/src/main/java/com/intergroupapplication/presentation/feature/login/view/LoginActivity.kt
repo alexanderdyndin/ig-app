@@ -82,7 +82,7 @@ class LoginActivity : BaseFragment(), LoginView, Validator.ValidationListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
-        presenter.navigate = {findNavController().navigate(R.id.action_loginActivity_to_splashActivity)}
+
         rxPermission = RxPermissions(this)
         mail = requireView().findViewById(R.id.etMail)
         password = requireView().findViewById(R.id.password)
@@ -114,6 +114,10 @@ class LoginActivity : BaseFragment(), LoginView, Validator.ValidationListener {
 
     override fun deviceInfoExtracted() {
         presenter.performLogin(LoginEntity(mail.text.toString().trim(), password.text.toString().trim()))
+    }
+
+    override fun login() {
+        findNavController().navigate(R.id.action_loginActivity_to_splashActivity)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {

@@ -33,7 +33,7 @@ class RegistrationPresenter @Inject constructor(private val router: Router,
                         .observeOn(AndroidSchedulers.mainThread())
                         .handleLoading(viewState)
                         .subscribe({
-                            confirmMail.invoke(entity.email)
+                            viewState.confirmMail(entity.email)
                         }) {
                             errorHandler.always { _, _ -> viewState.clearViewErrorState() }
                                     .handle(it)

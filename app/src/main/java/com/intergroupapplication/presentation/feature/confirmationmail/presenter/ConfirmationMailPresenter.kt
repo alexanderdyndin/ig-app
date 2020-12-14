@@ -22,9 +22,8 @@ class ConfirmationMailPresenter @Inject constructor(private val router: Router,
                                                     private val resendCodeGateway: ResendCodeGateway)
     : BasePresenter<ConfirmationMailView>() {
 
-    var entity: String? = null
 
-    fun start() {
+    fun start(entity: String?) {
         entity?.let {
             viewState?.fillData(it)
         }
@@ -47,7 +46,7 @@ class ConfirmationMailPresenter @Inject constructor(private val router: Router,
                         .observeOn(AndroidSchedulers.mainThread())
                         .handleLoading(viewState)
                         .subscribe({
-
+                            viewState.completed()
                         }) {
                             viewState.clearViewErrorState()
                             errorHandler.handle(it)

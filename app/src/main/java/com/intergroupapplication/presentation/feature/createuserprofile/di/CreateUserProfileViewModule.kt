@@ -31,13 +31,13 @@ class CreateUserProfileViewModule {
     @Provides
     fun providePhotoGateway(activity: CreateUserProfileActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
     @PerActivity
     @Provides
     fun provideFrescoImageLoader(activity: CreateUserProfileActivity): ImageLoader =
-            FrescoImageLoader(activity)
+            FrescoImageLoader(activity.requireActivity())
 
     @PerActivity
     @Provides
@@ -54,7 +54,7 @@ class CreateUserProfileViewModule {
     @PerActivity
     @Provides
     fun provideDialogManager(activity: CreateUserProfileActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
     @PerActivity
@@ -71,10 +71,10 @@ class CreateUserProfileViewModule {
             Calendar.getInstance(Locale.getDefault())
 
 
-    @PerActivity
-    @Provides
-    fun provideSupportAppNavigator(activity: CreateUserProfileActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+//    @PerActivity
+//    @Provides
+//    fun provideSupportAppNavigator(activity: CreateUserProfileActivity): SupportAppNavigator =
+//            SupportAppNavigator(activity, 0)
 
     @PerActivity
     @Provides

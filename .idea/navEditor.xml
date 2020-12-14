@@ -8,14 +8,28 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="agreementsActivity">
+                  <entry key="agreementsActivity2">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-173" />
-                            <option name="y" value="-503" />
+                            <option name="x" value="-138" />
+                            <option name="y" value="-482" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_agreementsActivity2_to_splashActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_agreementsActivity2_to_webActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -25,9 +39,39 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="40" />
-                            <option name="y" value="188" />
+                            <option name="x" value="42" />
+                            <option name="y" value="279" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_confirmationMailActivity_to_createUserProfileActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="createUserProfileActivity">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="339" />
+                            <option name="y" value="-56" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_createUserProfileActivity_to_navigationActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -93,6 +137,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_registrationActivity_to_confirmationMailActivity2">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_registrationActivity_to_loginActivity2">
                               <value>
                                 <LayoutPositions />
@@ -114,7 +163,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_splashActivity_to_agreementsActivity">
+                            <entry key="action_splashActivity_to_agreementsActivity2">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -139,8 +188,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="187" />
-                            <option name="y" value="-816" />
+                            <option name="x" value="362" />
+                            <option name="y" value="-492" />
                           </Point>
                         </option>
                       </LayoutPositions>
