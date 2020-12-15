@@ -321,6 +321,6 @@ dependencies {
     implementation 'com.appodeal.ads:sdk:2.7.4.+'
     implementation 'com.explorestack:consent:1.0.2'
     //Video player
-    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'S
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
 
 }
