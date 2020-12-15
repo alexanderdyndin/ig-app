@@ -34,55 +34,55 @@ class GroupViewModule {
         const val COMMENT_POST_ENTITY = "comment_post"
     }
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideFrescoImageLoader(activity: GroupActivity): ImageLoader =
             FrescoImageLoader(activity.requireActivity())
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun providePhotoGateway(activity: GroupActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
             PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageUploader(photoGateway: PhotoGateway): ImageUploader =
             ImageUploadingDelegate(photoGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideDialogManager(activity: GroupActivity): DialogManager =
             DialogManager(activity.requireActivity().supportFragmentManager)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupPostEntity>() {
         override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem == newItem
     }
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideGroupAdapter(diffUtil: DiffUtil.ItemCallback<GroupPostEntity>,
                             imageLoadingDelegate: ImageLoadingDelegate): GroupAdapter =
             GroupAdapter(diffUtil, imageLoadingDelegate)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideLinearLayoutManager(activity: GroupActivity): RecyclerView.LayoutManager =
             LinearLayoutManager(activity.requireActivity(), LinearLayoutManager.VERTICAL, false)

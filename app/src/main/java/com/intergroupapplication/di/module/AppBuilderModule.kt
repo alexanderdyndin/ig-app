@@ -23,6 +23,8 @@ import com.intergroupapplication.presentation.feature.grouplist.di.GroupListView
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.login.di.LoginViewModule
 import com.intergroupapplication.presentation.feature.login.view.LoginActivity
+import com.intergroupapplication.presentation.feature.mainActivity.di.MainActivityViewModule
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import com.intergroupapplication.presentation.feature.news.di.NewsViewModule
@@ -43,7 +45,7 @@ interface AppBuilderModule {
     @ContributesAndroidInjector()
     fun provideInterGroupPushService(): InterGroupPushService
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [(LoginViewModule::class)])
     fun provideLoginActivityFactory(): LoginActivity
 
@@ -51,7 +53,7 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [(RegistrationViewModule::class)])
     fun provideRegistrationActivityFactory(): RegistrationActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [(CreateUserProfileViewModule::class)])
     fun provideCreateProfileActivityFactory(): CreateUserProfileActivity
 
@@ -59,7 +61,7 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [(NavigationViewModule::class)])
     fun provideNavigationActivityFactory(): NavigationActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [ConfirmationMailViewModule::class,
         ConfirmationUserProfileGatewayModule::class])
     fun provideConfirmationMailActivityFactory(): ConfirmationMailActivity
@@ -72,7 +74,7 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [CreateGroupViewModule::class])
     fun provideCreateGroupActivityFactory(): CreateGroupActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [GroupViewModule::class])
     fun provideAdminGroupActivityFactory(): GroupActivity
 
@@ -84,11 +86,11 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])
     fun provideCreatePostActivityFactory(): CreatePostActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [AgreementsViewModule::class])
     fun provideAgreementsActivityFactory(): AgreementsActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [RecoveryPasswordModule::class])
     fun provideRecoveryPasswordFactory(): RecoveryPasswordActivity
 
@@ -99,6 +101,10 @@ interface AppBuilderModule {
     @PerFragment
     @ContributesAndroidInjector(modules = [NewsViewModule::class])
     fun provideNewsFragmentFactory(): NewsFragment
+
+    @PerActivity
+    @ContributesAndroidInjector(modules = [MainActivityViewModule::class])
+    fun provideMainActivityFactory(): MainActivity
 
 
 }

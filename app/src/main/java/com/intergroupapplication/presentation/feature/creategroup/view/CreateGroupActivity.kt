@@ -28,6 +28,7 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -57,7 +58,6 @@ class CreateGroupActivity : BaseFragment(), CreateGroupView, Validator.Validatio
 
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var groupName: EditText
-
 
     @Inject
     lateinit var validator: Validator

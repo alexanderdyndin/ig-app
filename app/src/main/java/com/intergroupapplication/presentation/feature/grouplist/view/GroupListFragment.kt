@@ -171,7 +171,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             retryClickListener = { presenter.reload() }
             groupClickListener = {
                 val data = bundleOf("groupId" to it)
-                findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+                findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
             subscribeClickListener = { presenter.sub(it)}
             unsubscribeClickListener = { presenter.unsub(it) }

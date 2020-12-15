@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.group.pagingsource
 
 import androidx.paging.PageKeyedDataSource
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import com.intergroupapplication.presentation.base.BasePagingState
@@ -16,7 +17,7 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 19/09/2018 at project InterGroupApplication.
  */
-@PerActivity
+@PerFragment
 class GroupPostDataSource @Inject constructor(private val groupPostGateway: GroupPostGateway,
                                               private val compositeDisposable: CompositeDisposable)
     : PageKeyedDataSource<Int, GroupPostEntity>() {

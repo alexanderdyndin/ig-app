@@ -39,6 +39,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_COUNT_VALUE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_DETAILS_REQUEST
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationScreen
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationView
@@ -97,6 +98,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as MainActivity).showErrorMessage("12345")
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
         newsPosts.layoutManager = layoutManager

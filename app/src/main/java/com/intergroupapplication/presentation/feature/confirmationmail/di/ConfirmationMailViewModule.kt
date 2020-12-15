@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.confirmationmail.di
 
 import android.content.Context
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailActivity
@@ -16,28 +17,23 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 @Module
 class ConfirmationMailViewModule {
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideDialogManager(activity: ConfirmationMailActivity): DialogManager =
             DialogManager(activity.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
             : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideSupportAppNavigator(activity: ConfirmationMailActivity): SupportAppNavigator =
             SupportAppNavigator(activity.requireActivity(), 0)
 
-//    @PerActivity
-//    @Provides
-//    fun provideRegistrationEntity(activity: ConfirmationMailActivity): String? {
-//        return "activity.intent?.getStringExtra(REGISTRATION_ENTITY)"
-//    }
 
 }

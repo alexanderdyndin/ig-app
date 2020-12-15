@@ -122,11 +122,6 @@ class NewsViewModule {
                     .setAdapter(newsAdapter)
                     .build()
 
-//    @PerFragment
-//    @Provides
-//    fun provideSupportAppNavigator(activity: NavigationActivity): SupportAppNavigator =
-//            SupportAppNavigator(activity.requireActivity(), 0)
-
     @PerFragment
     @Provides
     fun provideLinearLayoutManager(fragment: NewsFragment): RecyclerView.LayoutManager =

@@ -229,6 +229,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha03"
+    implementation 'android.arch.navigation:navigation-ui:1.0.0'
 
     //LeackCanary
 //    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
@@ -265,7 +266,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxBindingVersion"
     implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxBindingVersion"
     implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxBindingVersion"
-    implementation "com.jakewharton.rxbinding2:rxbinding-leanback-v17:$rxBindingVersion"
+    //implementation "com.jakewharton.rxbinding2:rxbinding-leanback-v17:$rxBindingVersion"
     implementation "com.github.miguelbcr:RxPaparazzo:$rxPaparazzoVersion"
 
     //CryptoLibrary

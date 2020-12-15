@@ -4,6 +4,7 @@ import android.content.Context
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
@@ -27,37 +28,37 @@ import java.util.*
 @Module
 class CreateUserProfileViewModule {
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun providePhotoGateway(activity: CreateUserProfileActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
             PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideFrescoImageLoader(activity: CreateUserProfileActivity): ImageLoader =
             FrescoImageLoader(activity.requireActivity())
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideUploadingDelegate(photoGateway: PhotoGateway): ImageUploader =
             ImageUploadingDelegate(photoGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideDialogManager(activity: CreateUserProfileActivity): DialogManager =
             DialogManager(activity.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
@@ -65,18 +66,13 @@ class CreateUserProfileViewModule {
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideCalendar(): Calendar =
             Calendar.getInstance(Locale.getDefault())
 
 
-//    @PerActivity
-//    @Provides
-//    fun provideSupportAppNavigator(activity: CreateUserProfileActivity): SupportAppNavigator =
-//            SupportAppNavigator(activity, 0)
-
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideValidator(activity: CreateUserProfileActivity): Validator =
             Validator(activity).apply { setValidationListener(activity) }

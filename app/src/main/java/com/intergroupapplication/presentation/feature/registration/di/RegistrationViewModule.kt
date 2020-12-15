@@ -41,8 +41,4 @@ class RegistrationViewModule {
     fun provideValidator(fragment: RegistrationActivity): Validator =
             Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
 
-//    @PerActivity
-//    @Provides
-//    fun provideSupportAppNavigator(activity: RegistrationActivity): SupportAppNavigator =
-//            SupportAppNavigator(activity, 0)
 }
