@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
@@ -24,6 +25,7 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.POST_CREATED
 import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.base.PagingView
@@ -54,7 +56,7 @@ import javax.inject.Inject
 import kotlin.math.abs
 
 
-class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity(), GroupView,
+class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment(), GroupView,
         AppBarLayout.OnOffsetChangedListener, PagingView by pagingDelegate {
 
     companion object {
@@ -77,8 +79,8 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
             // The browser connected to the session successfully, use the token to create the controller
             super.onConnected()
             mMediaBrowserCompat.sessionToken.also { token ->
-                val mediaController = MediaControllerCompat( applicationContext, token)
-                MediaControllerCompat.setMediaController(this@GroupActivity, mediaController)
+                val mediaController = MediaControllerCompat( this@GroupActivity.requireActivity().applicationContext, token)
+                MediaControllerCompat.setMediaController(requireActivity(), mediaController)
             }
             playPauseBuild()
             Log.d("MediaPlayer", "Controller Connected")
@@ -95,7 +97,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     }
 
     fun playPauseBuild() {
-        val mediaController = MediaControllerCompat.getMediaController(this)
+        val mediaController = MediaControllerCompat.getMediaController(requireActivity())
         btn.setOnClickListener {
             val state = mediaController.playbackState.state
             // if it is not playing then what are you waiting for ? PLAY !
@@ -121,10 +123,10 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     }
 
     fun initializeMediaBrowser() {
-        val componentName = ComponentName(this, IGMediaService::class.java)
+        val componentName = ComponentName(requireContext(), IGMediaService::class.java)
         // initialize the browser
         mMediaBrowserCompat = MediaBrowserCompat(
-                this, componentName, //Identifier for the service
+                requireContext(), componentName, //Identifier for the service
                 connectionCallback,
                 null
         )
@@ -138,7 +140,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
 
     fun disconnectMediaBrowser() {
         // Release the resources
-        val controllerCompat = MediaControllerCompat.getMediaController(this)
+        val controllerCompat = MediaControllerCompat.getMediaController(requireActivity())
         controllerCompat?.unregisterCallback(mControllerCallback)
         mMediaBrowserCompat.disconnect()
     }
@@ -152,8 +154,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     @ProvidePresenter
     fun providePresenter(): GroupPresenter = presenter
 
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
+    private lateinit var groupId: String
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
@@ -177,28 +178,27 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        groupId = arguments?.getString("groupId")!!
         initializeMediaBrowser()
     }
 
     override fun viewCreated() {
         groupPosts.layoutManager = layoutManager
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
-        val groupId = intent.getStringExtra(GROUP_ID) ?: "0"
         adapter.retryClickListener = { presenter.reload() }
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         adapter.complaintListener = { id -> presenter.complaintPost(id) }
         groupPosts.adapter = adapter
         toolbarBackAction.setOnClickListener { presenter.goBack() }
         appbar.addOnOffsetChangedListener(this)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        toolbarBackAction.setOnClickListener {
+            findNavController().popBackStack()
+        }
         pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         presenter.getGroupDetailInfo(groupId)
         swipeLayout.setOnRefreshListener {
             presenter.refresh(groupId)
         }
-
-
     }
 
     override fun onStart() {
@@ -268,7 +268,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     }
 
     override fun showImageUploaded() {
-        presenter.changeGroupAvatar(intent.getStringExtra(GROUP_ID)!!)
+        presenter.changeGroupAvatar(groupId)
     }
 
     override fun avatarChanged(url: String) {
@@ -313,21 +313,21 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                COMMENTS_DETAILS_REQUEST -> presenter.refresh(intent.getStringExtra(GROUP_ID).orEmpty())
+                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
                 POST_CREATED -> presenter.refresh(data?.getStringExtra(GROUP_ID_VALUE).orEmpty())
             }
         }
     }
 
     override fun showMessage(res: Int) {
-        Toast.makeText(this, res, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), res, Toast.LENGTH_SHORT).show()
     }
 
 
     private fun renderAdminPage() {
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
-            openCreatePost(intent.getStringExtra(GROUP_ID)!!)
+            openCreatePost(groupId)
         }
         groupAvatarHolder.setOnClickListener {
             if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
@@ -341,7 +341,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     private fun renderUserPage(viewId: Int) {
         headGroupJoinViewStub.inflate()
         listenButtonClicks()
-        findViewById<TextView>(viewId).show()
+        requireView().findViewById<TextView>(viewId).show()
     }
 
     override fun groupFollowedError() {
@@ -367,11 +367,11 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
     }
 
     private fun openCommentDetails(entity: InfoForCommentEntity) {
-        startActivityForResult(CommentsDetailsActivity.getIntent(this, entity), COMMENTS_DETAILS_REQUEST)
+        startActivityForResult(CommentsDetailsActivity.getIntent(requireContext(), entity), COMMENTS_DETAILS_REQUEST)
     }
 
     private fun openCreatePost(post: String) {
-        startActivityForResult(CreatePostActivity.getIntent(this, post), POST_CREATED)
+        startActivityForResult(CreatePostActivity.getIntent(requireContext(), post), POST_CREATED)
     }
 
     private fun handleToolbarTitleVisibility(percentage: Float) {
@@ -406,13 +406,13 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseActivity()
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    presenter.followGroup(intent.getStringExtra(GROUP_ID)!!, groupStrength.text.toString().split(" ")[0].toInt())
+                    presenter.followGroup(groupId, groupStrength.text.toString().split(" ")[0].toInt())
                 }.let { { d: Disposable -> compositeDisposable.add(d) } }
         RxView.clicks(goOutFromGroup)
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    presenter.unfollowGroup(intent.getStringExtra(GROUP_ID)!!, groupStrength.text.toString().split(" ")[0].toInt())
+                    presenter.unfollowGroup(groupId, groupStrength.text.toString().split(" ")[0].toInt())
                 }.let { { d: Disposable -> compositeDisposable.add(d) } }
     }
 

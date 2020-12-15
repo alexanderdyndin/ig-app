@@ -38,13 +38,13 @@ class CreateGroupViewModule {
     @Provides
     fun providePhotoGateway(activity: CreateGroupActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
     @PerActivity
     @Provides
     fun provideFrescoImageLoader(activity: CreateGroupActivity): ImageLoader =
-            FrescoImageLoader(activity)
+            FrescoImageLoader(activity.requireActivity())
 
     @PerActivity
     @Provides
@@ -68,7 +68,7 @@ class CreateGroupViewModule {
     @PerActivity
     @Provides
     fun provideDialogManager(activity: CreateGroupActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
     @PerActivity
@@ -79,9 +79,5 @@ class CreateGroupViewModule {
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
-    @Provides
-    fun provideSupportAppNavigator(activity: CreateGroupActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
 
 }

@@ -8,11 +8,15 @@ import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
@@ -34,15 +38,15 @@ import kotlinx.android.synthetic.main.activity_recovery_password.etPassword
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
-class RecoveryPasswordActivity : BaseActivity(), RecoveryPasswordView, Validator.ValidationListener {
+class RecoveryPasswordActivity : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener {
 
     companion object {
         fun getIntent(context: Context?): Intent =
                 Intent(context, RecoveryPasswordActivity::class.java)
     }
 
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
+//    @Inject
+//    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     @InjectPresenter
@@ -65,13 +69,13 @@ class RecoveryPasswordActivity : BaseActivity(), RecoveryPasswordView, Validator
     override fun getSnackBarCoordinator() = coordinator
 
     override fun viewCreated() {
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setHomeButtonEnabled(true)
+        //setSupportActionBar(toolbar)
+        toolbar.apply {
+            this.setNavigationOnClickListener { findNavController().popBackStack() }
             setTitle(R.string.settings_password)
         }
-        password = findViewById(R.id.etPassword)
+
+        password = requireView().findViewById(R.id.etPassword)
 
         listenInputs()
         initValidator()
@@ -97,7 +101,7 @@ class RecoveryPasswordActivity : BaseActivity(), RecoveryPasswordView, Validator
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -114,8 +118,8 @@ class RecoveryPasswordActivity : BaseActivity(), RecoveryPasswordView, Validator
     }
 
     override fun successSaveSetings() {
-        finish()
-        Toast.makeText(this, R.string.save_password, Toast.LENGTH_SHORT).show()
+        findNavController().popBackStack()
+        Toast.makeText(requireContext(), R.string.save_password, Toast.LENGTH_SHORT).show()
     }
 
     override fun showLoading(show: Boolean) {
@@ -153,7 +157,7 @@ class RecoveryPasswordActivity : BaseActivity(), RecoveryPasswordView, Validator
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         for (error in errors) {
             val view = error.view
-            val message = error.getCollatedErrorMessage(this)
+            val message = error.getCollatedErrorMessage(requireContext())
             if (view is AppCompatEditText) {
                 when (view.id) {
                     R.id.etPassword -> {

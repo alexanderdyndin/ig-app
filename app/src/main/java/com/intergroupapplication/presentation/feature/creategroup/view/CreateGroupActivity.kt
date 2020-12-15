@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.creategroup.view
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,9 +16,12 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.hide
@@ -38,7 +42,7 @@ import moxy.presenter.ProvidePresenter
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
-class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.ValidationListener {
+class CreateGroupActivity : BaseFragment(), CreateGroupView, Validator.ValidationListener {
 
     companion object {
         fun getIntent(context: Context?) = Intent(context, CreateGroupActivity::class.java)
@@ -54,8 +58,6 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var groupName: EditText
 
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     lateinit var validator: Validator
@@ -74,9 +76,9 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
     override fun viewCreated() {
         val countries = resources.getStringArray(R.array.countries)
         val adapter = ArrayAdapter<String>(
-                this, R.layout.item_autocomplete, R.id.autoCompleteItem, countries
+                requireContext(), R.layout.item_autocomplete, R.id.autoCompleteItem, countries
         )
-        val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm: InputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         autoCompleteTextViewCountry.setAdapter(adapter)
         autoCompleteTextViewCountry.threshold = 2
 
@@ -120,16 +122,16 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         groupCreate__radioGroup.setOnCheckedChangeListener { _, i ->
             when (i) {
                 R.id.groupCreate_btnOpen -> {
-                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_open_btn_act), null, null, null)
-                    groupCreate_btnOpen.setTextColor(getColor(R.color.ActiveText))
-                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_close_btn), null, null, null)
-                    groupCreate_btnClose.setTextColor(getColor(R.color.colorPink))
+                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_open_btn_act), null, null, null)
+                    groupCreate_btnOpen.setTextColor(requireContext().getColor(R.color.ActiveText))
+                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_btn), null, null, null)
+                    groupCreate_btnClose.setTextColor(requireContext().getColor(R.color.colorPink))
                 }
                 R.id.groupCreate_btnClose -> {
-                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_open_btn), null, null, null)
-                    groupCreate_btnOpen.setTextColor(getColor(R.color.colorAccent))
-                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_close_btn_act), null, null, null)
-                    groupCreate_btnClose.setTextColor(getColor(R.color.ActiveText))
+                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_open_btn), null, null, null)
+                    groupCreate_btnOpen.setTextColor(requireContext().getColor(R.color.colorAccent))
+                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_btn_act), null, null, null)
+                    groupCreate_btnClose.setTextColor(requireContext().getColor(R.color.ActiveText))
                 }
             }
         }
@@ -137,12 +139,12 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         groupCreate__subject_btn.setOnClickListener {
             val keyword: String = groupCreate__subject.text.toString()
             if (keyword.isEmpty()) {
-                Toast.makeText(this, R.string.empty_subject_error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.empty_subject_error, Toast.LENGTH_SHORT).show()
             } else if (subjects.size>=5) {
-                Toast.makeText(this, R.string.full_subject_error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.full_subject_error, Toast.LENGTH_SHORT).show()
             } else {
                 try {
-                    val inflater = LayoutInflater.from(this)
+                    val inflater = LayoutInflater.from(requireContext())
                     val newChip = inflater.inflate(R.layout.layout_chip_entry, chipGroupSubject, false) as Chip
                     newChip.text = keyword
                     subjects.add(keyword)
@@ -156,7 +158,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
                     groupCreate__lineInput4.changeSeparatorBackground(subjects.isNotEmpty())
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(this, "Error: " + e.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Error: " + e.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -175,9 +177,9 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
 
 
         groupCreate__ageHelp.setOnClickListener {
-            Toast.makeText(this, "12+\n16+\n18+", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "12+\n16+\n18+", Toast.LENGTH_LONG).show()
         }
-        groupName = findViewById(R.id.groupCreate_title)
+        groupName = requireView().findViewById(R.id.groupCreate_title)
         createGroup.setOnClickListener {
             validator.validate()
         }
@@ -186,8 +188,9 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
                     mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
         }
         toolbarBackAction.setOnClickListener {
-            setResult(Activity.RESULT_OK)
-            finish()
+//            setResult(Activity.RESULT_OK)
+//            finish()
+                findNavController().popBackStack()
         }
         RxTextView.afterTextChangeEvents(groupName).subscribe { groupName.error = null }
                 .let { { d: Disposable -> compositeDisposable.add(d) } }
@@ -198,11 +201,11 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         checkBoxAgreement.setOnCheckedChangeListener { _, b ->
             if (b) {
                 createGroup.setBackgroundResource(R.drawable.selector_btn_create)
-                createGroup.setTextColor(resources.getColor(R.color.ActiveText, this.theme))
+                createGroup.setTextColor(resources.getColor(R.color.ActiveText, requireContext().theme))
                 createGroup.isEnabled = true
             } else {
                 createGroup.setBackgroundResource(R.drawable.btn_main)
-                createGroup.setTextColor(resources.getColor(R.color.colorTextBtnNoActive, this.theme))
+                createGroup.setTextColor(resources.getColor(R.color.colorTextBtnNoActive, requireContext().theme))
                 createGroup.isEnabled = false
             }
         }
@@ -291,7 +294,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         for (error in errors) {
             val view = error.view
-            val message = error.getCollatedErrorMessage(this)
+            val message = error.getCollatedErrorMessage(requireContext())
             if (view is AppCompatEditText) {
                 groupName.error = message
                 setViewErrorState(view)
@@ -309,6 +312,11 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         } else {
             dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
         }
+    }
+
+    override fun goToGroupScreen(id: String) {
+        val data = bundleOf("groupId" to id)
+        findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
     }
 
     override fun showLoading(show: Boolean) {
@@ -329,17 +337,6 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
         presenter.takePhotoFromGallery()
     }
 
-    fun View.setMarginTop(topMargin: Int) {
-        val params = layoutParams as ViewGroup.MarginLayoutParams
-        params.setMargins(params.leftMargin, topMargin, params.rightMargin, params.bottomMargin)
-        layoutParams = params
-    }
-
-    fun View.setMarginBottom(bottomMargin: Int) {
-        val params = layoutParams as ViewGroup.MarginLayoutParams
-        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMargin)
-        layoutParams = params
-    }
 
     fun View.changeSeparatorBackground(active: Boolean) {
         if (active) {
@@ -350,7 +347,7 @@ class CreateGroupActivity : BaseActivity(), CreateGroupView, Validator.Validatio
     }
 
     private fun hideKeyboard(imm: InputMethodManager) {
-        val view: View? = this.currentFocus
+        val view: View? = this.requireActivity().currentFocus
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 

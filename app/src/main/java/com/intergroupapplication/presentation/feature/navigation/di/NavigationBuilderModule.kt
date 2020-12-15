@@ -12,14 +12,14 @@ import dagger.android.ContributesAndroidInjector
 /**
  * Created by abakarmagomedov on 16/10/2018 at project InterGroupApplication.
  */
-@Module
-interface NavigationBuilderModule {
-
-    @PerFragment
-    @ContributesAndroidInjector(modules = [GroupListViewModule::class])
-    fun provideGroupListFragmentFactory(): GroupListFragment
-
-    @PerFragment
-    @ContributesAndroidInjector(modules = [NewsViewModule::class])
-    fun provideNewsFragmentFactory(): NewsFragment
-}
+//@Module
+//interface NavigationBuilderModule {
+//
+//    @PerFragment
+//    @ContributesAndroidInjector(modules = [GroupListViewModule::class])
+//    fun provideGroupListFragmentFactory(): GroupListFragment
+//
+//    @PerFragment
+//    @ContributesAndroidInjector(modules = [NewsViewModule::class])
+//    fun provideNewsFragmentFactory(): NewsFragment
+//}

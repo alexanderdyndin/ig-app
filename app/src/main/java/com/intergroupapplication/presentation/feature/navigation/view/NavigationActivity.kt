@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
@@ -23,6 +24,7 @@ import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
@@ -45,7 +47,7 @@ import java.util.*
 import javax.inject.Inject
 
 
-class NavigationActivity : BaseActivity(), NavigationView {
+class NavigationActivity : BaseFragment(), NavigationView {
 
     companion object {
         private const val EXIT_DELAY = 2000L
@@ -64,11 +66,11 @@ class NavigationActivity : BaseActivity(), NavigationView {
     fun providePresenter(): NavigationPresenter = presenter
 
     //@Inject
-    override lateinit var navigator: SupportAppNavigator
+    //override lateinit var navigator: SupportAppNavigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setAppodeal()
+       // setAppodeal()
         val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
         val file = File("$filepatch.nomedia")
         try {
@@ -78,30 +80,30 @@ class NavigationActivity : BaseActivity(), NavigationView {
         }
     }
 
-    private fun setAppodeal() {
-        Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
-        Appodeal.setTesting(true)
-        val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        Appodeal.setUserAge(year - date.year)
-        val gender = when (userSession.user?.gender) {
-            "male" -> UserSettings.Gender.MALE
-            "female" -> UserSettings.Gender.FEMALE
-            else -> UserSettings.Gender.OTHER
-        }
-        Appodeal.setUserGender(gender)
-        Appodeal.cache(this, Appodeal.NATIVE, 5)
-        Appodeal.setUserId(userSession.user?.id ?: "123")
-
-    }
+//    private fun setAppodeal() {
+//        Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
+//        Appodeal.setTesting(true)
+//        val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
+//        val c = Calendar.getInstance()
+//        val year = c.get(Calendar.YEAR)
+//        Appodeal.setUserAge(year - date.year)
+//        val gender = when (userSession.user?.gender) {
+//            "male" -> UserSettings.Gender.MALE
+//            "female" -> UserSettings.Gender.FEMALE
+//            else -> UserSettings.Gender.OTHER
+//        }
+//        Appodeal.setUserGender(gender)
+//        Appodeal.cache(this, Appodeal.NATIVE, 5)
+//        Appodeal.setUserId(userSession.user?.id ?: "123")
+//
+//    }
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     private var doubleBackToExitPressedOnce = false
 
-    private lateinit var view: View
+    private lateinit var viewDrawer: View
 
     lateinit var drawer: Drawer
 
@@ -119,16 +121,16 @@ class NavigationActivity : BaseActivity(), NavigationView {
     override fun getSnackBarCoordinator(): CoordinatorLayout = navigationCoordinator
 
     override fun viewCreated() {
-        view = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
-        profileAvatarHolder = view.profileAvatarHolder
+        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
+        profileAvatarHolder = viewDrawer.profileAvatarHolder
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
         drawer = drawer {
             sliderBackgroundColorRes = R.color.profileTabColor
-            headerView = view
+            headerView = viewDrawer
             actionBarDrawerToggleEnabled = true
             translucentStatusBar = true
-            view.profileAvatarHolder.setOnClickListener {
+            viewDrawer.profileAvatarHolder.setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                         || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
                     dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
@@ -141,7 +143,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
                     v?.findNavController()?.navigate(R.id.action_groupListFragment2_to_newsFragment2)
                     toolbarTittle.text = getString(R.string.news)
@@ -154,7 +156,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
                     //presenter.goToGroupListScreen()
                     v?.findNavController()?.navigate(R.id.action_newsFragment2_to_groupListFragment2)
@@ -163,7 +165,7 @@ class NavigationActivity : BaseActivity(), NavigationView {
                 }
             }
             primaryItem(getString(R.string.logout)) {
-                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
@@ -176,12 +178,13 @@ class NavigationActivity : BaseActivity(), NavigationView {
             }
         }.apply {
             setSelection(drawerItem)
-            view.drawerArrow.setOnClickListener { closeDrawer() }
+            //view.drawerArrow.setOnClickListener { closeDrawer() }
         }
         navigationToolbar.toolbarMenu.setOnClickListener {
             drawer.openDrawer()
         }
         presenter.getUserInfo()
+        findNavController().navigate(R.id.action_navigationActivity2_to_newsFragment2)
     }
 
     override fun showImageUploadingStarted(path: String) {
@@ -214,22 +217,22 @@ class NavigationActivity : BaseActivity(), NavigationView {
 
     override fun showUserInfo(userEntity: UserEntity) {
         val userName = userEntity.firstName + " " + userEntity.surName
-        view.profileName.text = userName
+        viewDrawer.profileName.text = userName
         doOrIfNull(userEntity.avatar,
                 { profileAvatarHolder.showAvatar(it) },
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
     }
 
- //   override fun onBackPressed() {
+//    override fun onBackPressed() {
 //        if (doubleBackToExitPressedOnce) {
-//            ExitActivity.exitApplication(this)
+//            ExitActivity.exitApplication(requireContext())
 //            return
 //        }
 //        this.doubleBackToExitPressedOnce = true
-//        Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(), getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
 //        exitHandler = Handler(Looper.getMainLooper())
 //        exitHandler?.postDelayed(r, EXIT_DELAY)
-  //  }
+//    }
 
     override fun onDestroy() {
         exitHandler?.removeCallbacks(r)

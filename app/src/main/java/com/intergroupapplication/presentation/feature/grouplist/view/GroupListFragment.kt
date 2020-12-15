@@ -3,18 +3,24 @@ package com.intergroupapplication.presentation.feature.grouplist.view
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.google.android.material.tabs.TabLayoutMediator
@@ -23,22 +29,32 @@ import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.InfoForCommentEntity
+import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.GROUP_CREATED
 import com.intergroupapplication.presentation.base.PagingViewGroup
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
+import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
+import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
 import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
+import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.layout_profile_header.view.*
+import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -65,9 +81,16 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     @Inject
     lateinit var layoutManager: LinearLayoutManager
 
+    @Inject
+    lateinit var imageLoadingDelegate: ImageLoadingDelegate
+
     lateinit var doOnFragmentViewCreated: (View) -> Unit
 
+    private lateinit var viewDrawer: View
 
+    lateinit var drawer: Drawer
+
+    private lateinit var profileAvatarHolder: AvatarImageUploadingView
 
     //адаптеры для фрагментов со списками групп
     @Inject
@@ -138,19 +161,18 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         activity_main__btn_filter.setOnClickListener {
             //todo
         }
-//        if (activity is NavigationActivity) {
-//            with (activity as NavigationActivity) {
-//                navigationToolbar.activity_main__text_created_group.visibility = View.VISIBLE
-//                navigationToolbar.activity_main__text_created_group.setOnClickListener { openCreateGroup() }
-//            }
-//        }
+        createGroup.visibility = View.VISIBLE
+        createGroup.setOnClickListener { openCreateGroup() }
     }
 
     private fun setAdapter() {
         with (GroupListAdapter) {
             userID = sessionStorage.user?.id
             retryClickListener = { presenter.reload() }
-            groupClickListener = { presenter.goToGroupScreen(it) }
+            groupClickListener = {
+                val data = bundleOf("groupId" to it)
+                findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+            }
             subscribeClickListener = { presenter.sub(it)}
             unsubscribeClickListener = { presenter.unsub(it) }
             getColor = { ContextCompat.getColor(this@GroupListFragment.requireContext(), R.color.whiteTextColor) }
@@ -169,13 +191,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     }
 
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (activity is NavigationActivity) {
-            (activity as NavigationActivity).navigationToolbar.activity_main__text_created_group.visibility = View.INVISIBLE
-        }
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -187,7 +202,8 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     }
 
     private fun openCreateGroup() {
-        startActivityForResult(CreateGroupActivity.getIntent(context), GROUP_CREATED)
+        //startActivityForResult(CreateGroupActivity.getIntent(context), GROUP_CREATED)
+        findNavController().navigate(R.id.action_groupListFragment2_to_createGroupActivity)
     }
 
     override fun groupListLoaded(groups: PagedList<GroupEntity>) {
@@ -259,5 +275,113 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             }
         }
 
+    }
+
+    fun openCommentDerails(entity: InfoForCommentEntity) {
+        startActivityForResult(CommentsDetailsActivity.getIntent(context, entity), CommentsDetailsActivity.COMMENTS_DETAILS_REQUEST)
+    }
+
+    override fun showImageUploadingStarted(path: String) {
+        //profileAvatarHolder.showImageUploadingStarted(path)
+        profileAvatarHolder.showImageUploadingStartedWithoutFile()
+    }
+
+    override fun showImageUploaded() {
+        presenter.changeUserAvatar()
+    }
+
+
+    override fun avatarChanged(url: String) {
+        profileAvatarHolder.showAvatar(url)
+        profileAvatarHolder.showImageUploaded()
+    }
+
+    override fun showLastAvatar(lastAvatar: String?) {
+        profileAvatarHolder.clearUploadingState(lastAvatar)
+    }
+
+    override fun showImageUploadingProgress(progress: Float) {
+        profileAvatarHolder.showImageUploadingProgress(progress)
+    }
+
+    override fun showImageUploadingError() {
+        profileAvatarHolder.clearUploadingState()
+        presenter.showLastUserAvatar()
+    }
+
+    override fun showUserInfo(userEntity: UserEntity) {
+        val userName = userEntity.firstName + " " + userEntity.surName
+        viewDrawer.profileName.text = userName
+        doOrIfNull(userEntity.avatar,
+                { profileAvatarHolder.showAvatar(it) },
+                { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+    }
+
+    override fun viewCreated() {
+        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
+        profileAvatarHolder = viewDrawer.profileAvatarHolder
+        profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
+        lateinit var drawerItem: PrimaryDrawerItem
+        drawer = drawer {
+            sliderBackgroundColorRes = R.color.profileTabColor
+            headerView = viewDrawer
+            actionBarDrawerToggleEnabled = true
+            translucentStatusBar = true
+            viewDrawer.profileAvatarHolder.setOnClickListener {
+                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
+                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+                }
+            }
+            primaryItem(getString(R.string.news)) {
+                icon = R.drawable.ic_news
+                selectedIcon = R.drawable.ic_news_blue
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                onClick { v ->
+                    findNavController().navigate(R.id.action_groupListFragment2_to_newsFragment2)
+                    toolbarTittle.text = getString(R.string.news)
+                    false
+                }
+            }
+            drawerItem = primaryItem(getString(R.string.groups)) {
+                icon = R.drawable.ic_groups
+                selectedIcon = R.drawable.ic_groups_blue
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                onClick { v ->
+                    //presenter.goToGroupListScreen()
+                    //v?.findNavController()?.navigate(R.id.action_newsFragment2_to_groupListFragment2)
+                    toolbarTittle.text = getString(R.string.groups)
+                    false
+                }
+            }
+            primaryItem(getString(R.string.logout)) {
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                onClick { v ->
+                    presenter.goOutFromProfile()
+                    //v?.findNavController()?.popBackStack()
+                    toolbarTittle.text = getString(R.string.logout)
+                    false
+                }
+            }
+        }.apply {
+            setSelection(drawerItem)
+            //view.drawerArrow.setOnClickListener { closeDrawer() }
+        }
+        toolbarMenu.setOnClickListener {
+            drawer.openDrawer()
+        }
+        presenter.getUserInfo()
+        //findNavController().navigate(R.id.action_navigationActivity2_to_newsFragment2)
+        //drawer.openDrawer()
     }
 }

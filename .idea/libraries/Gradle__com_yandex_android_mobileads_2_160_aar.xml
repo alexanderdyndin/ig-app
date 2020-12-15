@@ -2,9 +2,7 @@
   <library name="Gradle: com.yandex.android:mobileads:2.160@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1e50b8a8d8eae5319463ff447a6cd79d/jetified-mobileads-2.160/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/92a88a25b49a48035e41f78ffc8a525f/jetified-mobileads-2.160/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/92a88a25b49a48035e41f78ffc8a525f/jetified-mobileads-2.160/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/92a88a25b49a48035e41f78ffc8a525f/jetified-mobileads-2.160/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/12a20f8a283c1d66b6eaadbae659a28b/jetified-mobileads-2.160/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/12a20f8a283c1d66b6eaadbae659a28b/jetified-mobileads-2.160/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/12a20f8a283c1d66b6eaadbae659a28b/jetified-mobileads-2.160/AndroidManifest.xml" />
@@ -15,6 +13,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63bdb3da3804b628b9b0e66928ebafb3/jetified-mobileads-2.160/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63bdb3da3804b628b9b0e66928ebafb3/jetified-mobileads-2.160/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63bdb3da3804b628b9b0e66928ebafb3/jetified-mobileads-2.160/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd9eab78cad19f22fe30eabcdd7a4517/jetified-mobileads-2.160/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd9eab78cad19f22fe30eabcdd7a4517/jetified-mobileads-2.160/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd9eab78cad19f22fe30eabcdd7a4517/jetified-mobileads-2.160/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yandex.android/mobileads/2.160/1718201f651c0bd061c817f980b7a90c3215c8d6/mobileads-2.160-javadoc.jar!/" />

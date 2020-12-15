@@ -10,6 +10,7 @@ import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.initializators.Initializer
@@ -38,36 +39,36 @@ class NavigationViewModule {
         const val GROUP_ID = "group_id"
     }
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideFrescoImageLoader(activity: NavigationActivity): ImageLoader =
-            FrescoImageLoader(activity)
+            FrescoImageLoader(activity.requireActivity())
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun providePhotoGateway(activity: NavigationActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageUploader(photoGateway: PhotoGateway): ImageUploader =
             ImageUploadingDelegate(photoGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideDialogManager(activity: NavigationActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
@@ -75,10 +76,10 @@ class NavigationViewModule {
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
-    @Provides
-    fun provideSupportAppNavigator(activity: NavigationActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, R.id.mainContainer)
+//    @PerActivity
+//    @Provides
+//    fun provideSupportAppNavigator(activity: NavigationActivity): SupportAppNavigator =
+//            SupportAppNavigator(activity, R.id.mainContainer)
 
 //    @PerActivity
 //    @Provides

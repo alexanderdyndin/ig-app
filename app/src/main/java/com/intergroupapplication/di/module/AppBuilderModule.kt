@@ -19,11 +19,14 @@ import com.intergroupapplication.presentation.feature.createpost.di.CreatePostVi
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity
 import com.intergroupapplication.presentation.feature.createuserprofile.di.CreateUserProfileViewModule
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity
+import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
+import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.login.di.LoginViewModule
 import com.intergroupapplication.presentation.feature.login.view.LoginActivity
-import com.intergroupapplication.presentation.feature.navigation.di.NavigationBuilderModule
 import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
+import com.intergroupapplication.presentation.feature.news.di.NewsViewModule
+import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.feature.recoveryPassword.di.RecoveryPasswordModule
 import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordActivity
 import com.intergroupapplication.presentation.feature.registration.di.RegistrationViewModule
@@ -52,8 +55,8 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [(CreateUserProfileViewModule::class)])
     fun provideCreateProfileActivityFactory(): CreateUserProfileActivity
 
-    @PerActivity
-    @ContributesAndroidInjector(modules = [(NavigationViewModule::class), (NavigationBuilderModule::class)])
+    @PerFragment
+    @ContributesAndroidInjector(modules = [(NavigationViewModule::class)])
     fun provideNavigationActivityFactory(): NavigationActivity
 
     @PerActivity
@@ -88,6 +91,14 @@ interface AppBuilderModule {
     @PerActivity
     @ContributesAndroidInjector(modules = [RecoveryPasswordModule::class])
     fun provideRecoveryPasswordFactory(): RecoveryPasswordActivity
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [GroupListViewModule::class])
+    fun provideGroupListFragmentFactory(): GroupListFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [NewsViewModule::class])
+    fun provideNewsFragmentFactory(): NewsFragment
 
 
 }

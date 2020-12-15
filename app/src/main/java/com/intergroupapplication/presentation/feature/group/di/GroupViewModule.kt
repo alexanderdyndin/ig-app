@@ -37,7 +37,7 @@ class GroupViewModule {
     @PerActivity
     @Provides
     fun provideFrescoImageLoader(activity: GroupActivity): ImageLoader =
-            FrescoImageLoader(activity)
+            FrescoImageLoader(activity.requireActivity())
 
     @PerActivity
     @Provides
@@ -48,7 +48,7 @@ class GroupViewModule {
     @Provides
     fun providePhotoGateway(activity: GroupActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
     @PerActivity
     @Provides
@@ -59,7 +59,7 @@ class GroupViewModule {
     @PerActivity
     @Provides
     fun provideDialogManager(activity: GroupActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
     @PerActivity
     @Provides
@@ -84,12 +84,7 @@ class GroupViewModule {
 
     @PerActivity
     @Provides
-    fun provideSupportAppNavigator(activity: GroupActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
-
-    @PerActivity
-    @Provides
     fun provideLinearLayoutManager(activity: GroupActivity): RecyclerView.LayoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(activity.requireActivity(), LinearLayoutManager.VERTICAL, false)
 
 }

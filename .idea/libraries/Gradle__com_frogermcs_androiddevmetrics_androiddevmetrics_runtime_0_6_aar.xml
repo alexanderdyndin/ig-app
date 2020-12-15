@@ -1,9 +1,6 @@
 <component name="libraryTable">
   <library name="Gradle: com.frogermcs.androiddevmetrics:androiddevmetrics-runtime:0.6@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/efd08d2fdcbded02aadc31969073e4a0/jetified-androiddevmetrics-runtime-0.6/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/efd08d2fdcbded02aadc31969073e4a0/jetified-androiddevmetrics-runtime-0.6/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/efd08d2fdcbded02aadc31969073e4a0/jetified-androiddevmetrics-runtime-0.6/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/294e696f5c2b83a7b10d5646444b7301/jetified-androiddevmetrics-runtime-0.6/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/294e696f5c2b83a7b10d5646444b7301/jetified-androiddevmetrics-runtime-0.6/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/294e696f5c2b83a7b10d5646444b7301/jetified-androiddevmetrics-runtime-0.6/AndroidManifest.xml" />
@@ -13,6 +10,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc8c7fd1f92a37e78ece49a91aac9a38/jetified-androiddevmetrics-runtime-0.6/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc8c7fd1f92a37e78ece49a91aac9a38/jetified-androiddevmetrics-runtime-0.6/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc8c7fd1f92a37e78ece49a91aac9a38/jetified-androiddevmetrics-runtime-0.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b258b752e3bb2cfeb39a06609f69bc8/jetified-androiddevmetrics-runtime-0.6/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b258b752e3bb2cfeb39a06609f69bc8/jetified-androiddevmetrics-runtime-0.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8b258b752e3bb2cfeb39a06609f69bc8/jetified-androiddevmetrics-runtime-0.6/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.frogermcs.androiddevmetrics/androiddevmetrics-runtime/0.6/9be080c60dd5395f0ad497793fa50240d6f16beb/androiddevmetrics-runtime-0.6-javadoc.jar!/" />

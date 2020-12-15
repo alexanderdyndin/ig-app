@@ -97,7 +97,7 @@ class LoginActivity : BaseFragment(), LoginView, Validator.ValidationListener {
                 .also { compositeDisposable.add(it) }
         mail.setOnTouchListener(rightDrawableListener)
         btnRecoveryPassword.clicks()
-                .subscribe { presenter.goToRecoveryPassword() }
+                .subscribe { findNavController().navigate(R.id.action_loginActivity_to_recoveryPasswordActivity) }
                 .also { compositeDisposable.add(it) }
     }
 

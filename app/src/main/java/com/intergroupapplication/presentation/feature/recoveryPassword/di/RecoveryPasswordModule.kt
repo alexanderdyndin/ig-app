@@ -18,7 +18,7 @@ class RecoveryPasswordModule {
     @PerActivity
     @Provides
     fun provideDialogManager(activity: RecoveryPasswordActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
     @PerActivity
@@ -32,11 +32,11 @@ class RecoveryPasswordModule {
     @PerActivity
     @Provides
     fun provideSupportAppNavigator(activity: RecoveryPasswordActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+            SupportAppNavigator(activity.requireActivity(), 0)
 
     @PerActivity
     @Provides
     fun provideValidator(activity: RecoveryPasswordActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+            Validator(activity.requireActivity()).apply { setValidationListener(activity) }
 
 }

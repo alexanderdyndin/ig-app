@@ -45,7 +45,7 @@ class CreateGroupPresenter @Inject constructor(private val router: Router,
                         .observeOn(AndroidSchedulers.mainThread())
                         .handleLoading(viewState)
                         .subscribe({
-                            goToGroupScreen(it)
+                            viewState.goToGroupScreen(it.id)
                         }, {
                             errorHandler.handle(it)
                         }))
