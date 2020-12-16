@@ -15,6 +15,7 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.isVisible
@@ -29,7 +30,7 @@ import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
-class CreatePostActivity : BaseActivity(), CreatePostView {
+class CreatePostActivity : BaseFragment(), CreatePostView {
 
     companion object {
 
@@ -48,9 +49,6 @@ class CreatePostActivity : BaseActivity(), CreatePostView {
     fun providePresenter(): CreatePostPresenter = presenter
 
     @Inject
-    override lateinit var navigator: SupportAppNavigator
-
-    @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @LayoutRes
@@ -60,7 +58,10 @@ class CreatePostActivity : BaseActivity(), CreatePostView {
 
     private var uploadingView: View? = null
 
+    private lateinit var groupId: String
+
     override fun viewCreated() {
+        groupId = arguments?.getString(GROUP_ID)!!
         createAction.setOnClickListener {
             val post = postText.text.toString().trim()
             if (post.isEmpty() && postContainer.childCount == 1) {
@@ -70,9 +71,9 @@ class CreatePostActivity : BaseActivity(), CreatePostView {
             } else {
                 if (postContainer.childCount == 1) {
                     presenter.createPost(CreateGroupPostEntity(postText.text.toString().trim(), null),
-                            intent.getStringExtra(GROUP_ID)!!)
+                            groupId)
                 } else {
-                    presenter.createPostWithImage(postText.text.toString().trim(), intent.getStringExtra(GROUP_ID)!!)
+                    presenter.createPostWithImage(postText.text.toString().trim(), groupId)
                 }
             }
         }
@@ -203,16 +204,16 @@ class CreatePostActivity : BaseActivity(), CreatePostView {
     }
 
     private fun onResultOk(groupId: String) {
-        val newIntent = Intent().apply {
-            putExtra(GROUP_ID_VALUE, groupId)
-        }
-        setResult(Activity.RESULT_OK, newIntent)
-        finish()
+//        val newIntent = Intent().apply {
+//            putExtra(GROUP_ID_VALUE, groupId)
+//        }
+//        setResult(Activity.RESULT_OK, newIntent)
+//        finish()
     }
 
     private fun onResultCancel() {
-        setResult(Activity.RESULT_CANCELED)
-        finish()
+//        setResult(Activity.RESULT_CANCELED)
+//        finish()
     }
 
 }

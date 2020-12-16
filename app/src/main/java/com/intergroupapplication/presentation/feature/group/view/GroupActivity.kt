@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
@@ -189,7 +190,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         adapter.complaintListener = { id -> presenter.complaintPost(id) }
         groupPosts.adapter = adapter
-        toolbarBackAction.setOnClickListener { presenter.goBack() }
+        toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
         toolbarBackAction.setOnClickListener {
             findNavController().popBackStack()
@@ -327,7 +328,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
     private fun renderAdminPage() {
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
-            openCreatePost(groupId)
+          openCreatePost(groupId)
         }
         groupAvatarHolder.setOnClickListener {
             if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
@@ -367,11 +368,15 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
     }
 
     private fun openCommentDetails(entity: InfoForCommentEntity) {
-        startActivityForResult(CommentsDetailsActivity.getIntent(requireContext(), entity), COMMENTS_DETAILS_REQUEST)
+        val data = bundleOf("comment_post" to entity)
+        findNavController().navigate(R.id.action_groupActivity_to_commentsDetailsActivity, data)
+        //startActivityForResult(CommentsDetailsActivity.getIntent(requireContext(), entity), COMMENTS_DETAILS_REQUEST)
     }
 
     private fun openCreatePost(post: String) {
-        startActivityForResult(CreatePostActivity.getIntent(requireContext(), post), POST_CREATED)
+        val data = bundleOf(GROUP_ID to post)
+        findNavController().navigate(R.id.action_groupActivity_to_createPostActivity, data)
+        //startActivityForResult(CreatePostActivity.getIntent(requireContext(), post), POST_CREATED)
     }
 
     private fun handleToolbarTitleVisibility(percentage: Float) {

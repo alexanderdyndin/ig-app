@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
@@ -26,6 +28,7 @@ import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
@@ -50,7 +53,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : BaseActivity(), CommentsDetailsView, Validator.ValidationListener,
+class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
         AppBarLayout.OnOffsetChangedListener, PagingView by pagingDelegate {
 
     constructor() : this(PagingDelegate())
@@ -89,8 +92,6 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
     @ProvidePresenter
     fun providePresenter(): CommentsDetailsPresenter = presenter
 
-    @Inject
-    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
@@ -119,8 +120,8 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
     override fun getSnackBarCoordinator(): ViewGroup? = coordinator
 
     override fun viewCreated() {
-        commentEditText = findViewById(R.id.commentEditText)
-        val decorator = CommentDividerItemDecorator(this)
+        commentEditText = requireView().findViewById(R.id.commentEditText)
+        val decorator = CommentDividerItemDecorator(requireContext())
         prepareEditText()
         commentsList.layoutManager = layoutManager
         commentsList.setHasFixedSize(true)
@@ -128,11 +129,11 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
         commentsList.addItemDecoration(decorator)
         commentsList.adapter = adapter
         prepareAdapter()
-        val infoForCommentEntity: InfoForCommentEntity? = intent.getParcelableExtra(COMMENT_POST_ENTITY)
+        val infoForCommentEntity: InfoForCommentEntity? = arguments?.getParcelable(COMMENT_POST_ENTITY)
         manageDataFlow(infoForCommentEntity)
         controlCommentEditTextChanges()
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        //setSupportActionBar(toolbar)
+        //supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbarAction.setOnClickListener { onResultOk(groupPostEntity.id, postCommentsCount.text.toString()) }
         pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         ViewCompat.setNestedScrollingEnabled(commentsList, false)
@@ -147,9 +148,9 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
         swipeLayout.isRefreshing = false
     }
 
-    override fun onBackPressed() {
-        onResultOk(groupPostEntity.id, postCommentsCount.text.toString())
-    }
+//    override fun onBackPressed() {
+//        onResultOk(groupPostEntity.id, postCommentsCount.text.toString())
+//    }
 
     override fun onResume() {
         super.onResume()
@@ -173,7 +174,7 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
         groupPostEntity.postText.let {
-            if (!it.isEmpty()) {
+            if (it.isNotEmpty()) {
                 postText.text = it
                 postText.show()
             } else {
@@ -217,7 +218,7 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         for (error in errors) {
-            val message = error.getCollatedErrorMessage(this)
+            val message = error.getCollatedErrorMessage(requireContext())
             dialogDelegate.showErrorSnackBar(message)
         }
     }
@@ -257,7 +258,7 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
     }
 
     override fun showMessage(value: Int) {
-        Toast.makeText(this, value, Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
     }
 
     private fun setErrorHandler() {
@@ -289,7 +290,7 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
                                 null, null)
                     } else {
                         view.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(this, R.drawable.ic_send), null)
+                                ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
                     }
                 }
                 .let(compositeDisposable::add)
@@ -322,7 +323,7 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
     private fun prepareEditText() {
         commentEditText.isVerticalScrollBarEnabled = true
         commentEditText.maxLines = 5
-        commentEditText.setScroller(Scroller(this))
+        commentEditText.setScroller(Scroller(requireContext()))
         commentEditText.movementMethod = ScrollingMovementMethod()
     }
 
@@ -332,11 +333,12 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
             showPostDetailInfo(groupPostEntity)
             if (infoForCommentEntity.isFromNewsScreen) {
                 goToGroupClickArea.setOnClickListener {
-                    presenter.goToGroupScreen(groupPostEntity.groupInPost.id)
+                    findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, bundleOf(GROUP_ID to groupPostEntity.groupInPost.id))
+                    //presenter.goToGroupScreen(groupPostEntity.groupInPost.id)
                 }
             }
         } else {
-            presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID)!!)
+            //presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID)!!)
         }
 
     }
@@ -346,12 +348,12 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
             putExtra(GROUP_ID_VALUE, groupId)
             putExtra(COMMENTS_COUNT_VALUE, commentsCount)
         }
-        setResult(Activity.RESULT_OK, intent)
-        finish()
+        //setResult(Activity.RESULT_OK, intent)
+        //finish()
     }
 
     private fun showPopupMenu(view: View) {
-        val popupMenu = PopupMenu(this, view)
+        val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.inflate(R.menu.settings_menu)
 
         popupMenu.setOnMenuItemClickListener {

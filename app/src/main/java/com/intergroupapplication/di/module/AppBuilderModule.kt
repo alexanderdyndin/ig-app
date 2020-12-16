@@ -78,11 +78,11 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [GroupViewModule::class])
     fun provideAdminGroupActivityFactory(): GroupActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [CommentsDetailsViewModule::class])
     fun provideCommentsDetailsActivityFactory(): CommentsDetailsActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])
     fun provideCreatePostActivityFactory(): CreatePostActivity
 

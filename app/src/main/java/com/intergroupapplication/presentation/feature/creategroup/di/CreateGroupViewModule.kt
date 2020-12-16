@@ -33,7 +33,7 @@ class CreateGroupViewModule {
     @PerFragment
     @Provides
     fun provideValidator(activity: CreateGroupActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+            Validator(activity.requireActivity()).apply { setValidationListener(activity) }
 
     @PerFragment
     @Provides
@@ -75,9 +75,9 @@ class CreateGroupViewModule {
     @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: CreateGroupActivity)
+                       context: Context)
             : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context.requireActivity())
+            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
 

@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-138" />
-                            <option name="y" value="-482" />
+                            <option name="x" value="-601" />
+                            <option name="y" value="-801" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -34,13 +34,39 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="commentsDetailsActivity">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="665" />
+                            <option name="y" value="789" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_commentsDetailsActivity_to_groupActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_commentsDetailsActivity_to_newsFragment2">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="confirmationMailActivity">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-47" />
-                            <option name="y" value="480" />
+                            <option name="x" value="-681" />
+                            <option name="y" value="722" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -60,8 +86,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="1192" />
-                            <option name="y" value="-121" />
+                            <option name="x" value="1392" />
+                            <option name="y" value="-230" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -76,13 +102,25 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="createPostActivity">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="1722" />
+                            <option name="y" value="711" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="createUserProfileActivity">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="204" />
-                            <option name="y" value="435" />
+                            <option name="x" value="39" />
+                            <option name="y" value="676" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -107,9 +145,23 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="902" />
-                            <option name="y" value="532" />
+                            <option name="x" value="1350" />
+                            <option name="y" value="623" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_groupActivity_to_commentsDetailsActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_groupActivity_to_createPostActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -119,12 +171,17 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="795" />
-                            <option name="y" value="-138" />
+                            <option name="x" value="944" />
+                            <option name="y" value="-67" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_groupListFragment2_to_commentsDetailsActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_groupListFragment2_to_createGroupActivity">
                               <value>
                                 <LayoutPositions />
@@ -140,6 +197,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_groupListFragment2_to_splashActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -150,8 +212,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-529" />
-                            <option name="y" value="818" />
+                            <option name="x" value="-626" />
+                            <option name="y" value="210" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -181,8 +243,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-69" />
-                            <option name="y" value="-57" />
+                            <option name="x" value="-58" />
+                            <option name="y" value="-671" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -202,18 +264,28 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="254" />
-                            <option name="y" value="-82" />
+                            <option name="x" value="162" />
+                            <option name="y" value="-291" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_newsFragment2_to_commentsDetailsActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_newsFragment2_to_groupActivity">
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
                             <entry key="action_newsFragment2_to_groupListFragment2">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_newsFragment2_to_splashActivity">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -228,8 +300,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-131" />
-                            <option name="y" value="898" />
+                            <option name="x" value="-257" />
+                            <option name="y" value="206" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -240,8 +312,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-394" />
-                            <option name="y" value="166" />
+                            <option name="x" value="-1151" />
+                            <option name="y" value="555" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -302,8 +374,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="362" />
-                            <option name="y" value="-492" />
+                            <option name="x" value="-81" />
+                            <option name="y" value="-1070" />
                           </Point>
                         </option>
                       </LayoutPositions>

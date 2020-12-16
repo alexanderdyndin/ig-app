@@ -30,50 +30,50 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 @Module
 class CommentsDetailsViewModule {
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<CommentEntity>() {
         override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem == newItem
     }
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideCommentDetailsAdapter(diffUtil: DiffUtil.ItemCallback<CommentEntity>,
                                      imageLoadingDelegate: ImageLoadingDelegate): CommentDetailsAdapter =
             CommentDetailsAdapter(diffUtil, imageLoadingDelegate)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideValidator(activity: CommentsDetailsActivity): Validator =
             Validator(activity).apply { setValidationListener(activity) }
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun providePhotoGateway(activity: CommentsDetailsActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideFrescoImageLoader(activity: CommentsDetailsActivity): ImageLoader =
-            FrescoImageLoader(activity)
+            FrescoImageLoader(activity.requireActivity())
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideDialogManager(activity: CommentsDetailsActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
@@ -81,14 +81,14 @@ class CommentsDetailsViewModule {
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideSupportAppNavigator(activity: CommentsDetailsActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+            SupportAppNavigator(activity.requireActivity(), 0)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideLinearLayoutManager(activity: CommentsDetailsActivity): RecyclerView.LayoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(activity.requireActivity(), LinearLayoutManager.VERTICAL, false)
 
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
@@ -24,44 +25,38 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 @Module
 class CreatePostViewModule {
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideDialogManager(activity: CreatePostActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+            DialogManager(activity.requireActivity().supportFragmentManager)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun providePhotoGateway(activity: CreatePostActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideFrescoImageLoader(activity: CreatePostActivity): ImageLoader =
-            FrescoImageLoader(activity)
+            FrescoImageLoader(activity.requireActivity())
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageUploadingDelegate(photoGateway: PhotoGateway): ImageUploader =
             ImageUploadingDelegate(photoGateway)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
-
-    @PerActivity
-    @Provides
-    fun provideSupportAppNavigator(activity: CreatePostActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
 
 }

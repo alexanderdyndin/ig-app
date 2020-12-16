@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_groupListFragment2_to_splashActivity"
             app:destination="@id/splashActivity" />
+        <action
+            android:id="@+id/action_groupListFragment2_to_commentsDetailsActivity"
+            app:destination="@id/commentsDetailsActivity" />
     </fragment>
     <fragment
         android:id="@+id/newsFragment2"
@@ -37,6 +40,9 @@
         <action
             android:id="@+id/action_newsFragment2_to_splashActivity"
             app:destination="@id/splashActivity" />
+        <action
+            android:id="@+id/action_newsFragment2_to_commentsDetailsActivity"
+            app:destination="@id/commentsDetailsActivity" />
     </fragment>
     <fragment
         android:id="@+id/splashActivity"
@@ -155,5 +161,33 @@
         <argument
             android:name="groupId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_groupActivity_to_createPostActivity"
+            app:destination="@id/createPostActivity" />
+        <action
+            android:id="@+id/action_groupActivity_to_commentsDetailsActivity"
+            app:destination="@id/commentsDetailsActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPostActivity"
+        android:name="com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity"
+        android:label="CreatePostActivity" >
+        <argument
+            android:name="group_id"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentsDetailsActivity"
+        android:name="com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity"
+        android:label="CommentsDetailsActivity" >
+        <argument
+            android:name="comment_post"
+            app:argType="com.intergroupapplication.domain.entity.InfoForCommentEntity" />
+        <action
+            android:id="@+id/action_commentsDetailsActivity_to_groupActivity"
+            app:destination="@id/groupActivity" />
+        <action
+            android:id="@+id/action_commentsDetailsActivity_to_newsFragment2"
+            app:destination="@id/newsFragment2" />
     </fragment>
 </navigation>
