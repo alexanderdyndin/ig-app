@@ -34,7 +34,7 @@
                 android:layout_height="@dimen/toolbar_icon_size"
                 android:layout_gravity="start"
                 android:background="?android:attr/selectableItemBackground"
-                app:srcCompat="@drawable/ic_close" />
+                android:src="@drawable/ic_close" />
 
             <TextView
                 style="@style/InterGroupBigWhiteTextStyle"
@@ -63,7 +63,7 @@
                     android:layout_height="@dimen/toolbar_icon_size"
                     android:layout_gravity="center"
                     android:background="?android:attr/selectableItemBackground"
-                    app:srcCompat="@drawable/ic_done" />
+                    android:src="@drawable/ic_done" />
             </FrameLayout>
 
         </androidx.appcompat.widget.Toolbar>

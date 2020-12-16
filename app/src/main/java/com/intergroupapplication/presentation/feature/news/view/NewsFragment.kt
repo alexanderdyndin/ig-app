@@ -40,6 +40,7 @@ import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.layout_drawer.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import javax.inject.Inject

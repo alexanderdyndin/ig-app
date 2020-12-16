@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="invisible"
-            app:srcCompat="@drawable/ic_close_white" />
+            android:src="@drawable/ic_close_white" />
 
         <LinearLayout
             android:id="@+id/refreshContainer"
@@ -57,7 +57,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_replay" />
+                android:src="@drawable/ic_replay" />
 
             <TextView
                 style="@style/InterGroupSmallWhiteTextStyle"
@@ -75,6 +75,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:visibility="invisible"
-        app:srcCompat="@drawable/ic_circle_close" />
+        android:src="@drawable/ic_circle_close" />
 
 </FrameLayout>

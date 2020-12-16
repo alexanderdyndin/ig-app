@@ -32,9 +32,4 @@ class SplashViewModule {
             : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-//    @PerFragment
-//    @Provides
-//    fun provideSupportAppNavigator(activity: SplashActivity): SupportAppNavigator =
-//            SupportAppNavigator(activity, 0)
-
 }

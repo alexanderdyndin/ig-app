@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_groupListFragment2_to_commentsDetailsActivity"
             app:destination="@id/commentsDetailsActivity" />
+        <action
+            android:id="@+id/action_groupListFragment2_to_loginActivity"
+            app:destination="@id/loginActivity" />
     </fragment>
     <fragment
         android:id="@+id/newsFragment2"
@@ -43,6 +46,9 @@
         <action
             android:id="@+id/action_newsFragment2_to_commentsDetailsActivity"
             app:destination="@id/commentsDetailsActivity" />
+        <action
+            android:id="@+id/action_newsFragment2_to_loginActivity"
+            app:destination="@id/loginActivity" />
     </fragment>
     <fragment
         android:id="@+id/splashActivity"

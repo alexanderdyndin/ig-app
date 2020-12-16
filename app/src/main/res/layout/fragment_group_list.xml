@@ -36,7 +36,7 @@
                 android:drawablePadding="40dp"
                 android:ems="15"
                 android:fontFamily="@font/play"
-                android:hint="Поиск"
+                android:hint="@string/search"
                 android:inputType="textShortMessage"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@color/NoActiveText"
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_filter"
-                app:srcCompat="@drawable/icon_filter"
+                android:src="@drawable/icon_filter"
                 app:layout_constraintTop_toTopOf="@+id/activity_main__search_input"
                 app:layout_constraintEnd_toEndOf="parent"/>
 

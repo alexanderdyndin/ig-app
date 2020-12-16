@@ -133,6 +133,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         compositeDisposable = CompositeDisposable()
+        initErrorHandler()
         super.onAttach(context)
     }
 
@@ -144,7 +145,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewCreated()
-        initErrorHandler()
         super.onViewCreated(view, savedInstanceState)
     }
 

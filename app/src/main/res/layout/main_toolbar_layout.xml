@@ -44,7 +44,7 @@
             app:layout_constraintStart_toStartOf="@+id/groupCreate__headerBg"
             app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
             app:layout_constraintTop_toTopOf="@+id/groupCreate__headerBg"
-            app:drawableLeftCompat="@drawable/icon_menu" />
+            android:drawableLeft="@drawable/icon_menu" />
 
         <TextView
             android:id="@+id/createGroup"

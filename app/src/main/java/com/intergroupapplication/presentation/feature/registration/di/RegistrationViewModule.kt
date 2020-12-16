@@ -1,15 +1,8 @@
 package com.intergroupapplication.presentation.feature.registration.di
 
 import android.content.Context
-import android.content.Intent
-import androidx.fragment.app.Fragment
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.presentation.Screens
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailActivity
-import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity
-import com.intergroupapplication.presentation.feature.login.view.LoginActivity
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationActivity
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
