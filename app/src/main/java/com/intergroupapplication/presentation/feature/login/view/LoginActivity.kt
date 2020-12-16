@@ -103,7 +103,6 @@ class LoginActivity : BaseFragment(), LoginView, Validator.ValidationListener {
 
     override fun onResume() {
         super.onResume()
-        initErrorHandler()
         setErrorHandler()
     }
 

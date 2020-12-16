@@ -38,7 +38,6 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
         private const val RES_ID_APPODEAL = R.string.appodealpolicy
     }
 
-    var splash: () -> Unit = {}
 
     fun next() {
         compositeDisposable.add(imeiGateway.extractDeviceInfo()
@@ -48,24 +47,8 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
                 .handleLoading(viewState)
                 .subscribe({
                     userSession.acceptTerms = TermsEntity(true)
-                    splash.invoke()
+                    viewState.toSplash()
                 }, { errorHandler.handle(it) }))
-    }
-
-    fun openPrivacyPolicy() {
-        router.navigateTo(WebScreen(URL_PRIVACY_POLICY, RES_ID_PRIVACY_POLICY))
-    }
-
-    fun openTermsOfUse() {
-        router.navigateTo(WebScreen(URL_TERMS_OF_USE, RES_ID_TERMS_OF_USE))
-    }
-
-    fun openRightholders() {
-        router.navigateTo(WebScreen(URL_RIGHTHOLDERS, RES_ID_RIGHTHOLDERS))
-    }
-
-    fun openAppodealPolicy() {
-        router.navigateTo(WebScreen(URL_APPODEAL, RES_ID_APPODEAL))
     }
 
     fun goToSettingsScreen() {

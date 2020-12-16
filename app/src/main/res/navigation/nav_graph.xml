@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_groupListFragment2_to_groupActivity"
             app:destination="@id/groupActivity" />
+        <action
+            android:id="@+id/action_groupListFragment2_to_splashActivity"
+            app:destination="@id/splashActivity" />
     </fragment>
     <fragment
         android:id="@+id/newsFragment2"
@@ -31,6 +34,9 @@
         <action
             android:id="@+id/action_newsFragment2_to_groupActivity"
             app:destination="@id/groupActivity" />
+        <action
+            android:id="@+id/action_newsFragment2_to_splashActivity"
+            app:destination="@id/splashActivity" />
     </fragment>
     <fragment
         android:id="@+id/splashActivity"

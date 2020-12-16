@@ -70,7 +70,7 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [SplashViewModule::class])
     fun provideSplashActivityFactory(): SplashActivity
 
-    @PerActivity
+    @PerFragment
     @ContributesAndroidInjector(modules = [CreateGroupViewModule::class])
     fun provideCreateGroupActivityFactory(): CreateGroupActivity
 

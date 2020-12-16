@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -89,6 +90,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     lateinit var adapterWrapper: AdmobBannerRecyclerAdapterWrapper
 
     override fun layoutRes() = R.layout.fragment_news
+    override fun getSnackBarCoordinator(): ViewGroup? = newsCoordinator
 
     private lateinit var viewDrawer: View
 
@@ -98,7 +100,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as MainActivity).showErrorMessage("12345")
+
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
         newsPosts.layoutManager = layoutManager
@@ -260,7 +262,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { v ->
                     presenter.goOutFromProfile()
-                    //v?.findNavController()?.popBackStack()
+                    findNavController().navigate(R.id.action_newsFragment2_to_splashActivity)
                     toolbarTittle.text = getString(R.string.logout)
                     false
                 }

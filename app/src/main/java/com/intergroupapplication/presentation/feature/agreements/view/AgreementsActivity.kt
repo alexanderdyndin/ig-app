@@ -54,8 +54,6 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
         fun getIntent(context: Context) = Intent(context, AgreementsActivity::class.java)
     }
 
-//    @Inject
-//    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     @InjectPresenter
@@ -70,7 +68,6 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
     override fun viewCreated() {
         initCheckBox()
         initBtn()
-        presenter.splash = {findNavController().navigate(R.id.action_agreementsActivity2_to_splashActivity)}
         clicks(btnNext)
                 .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -113,6 +110,10 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     override fun getSnackBarCoordinator(): ViewGroup? = container
+
+    override fun toSplash() {
+        findNavController().navigate(R.id.action_agreementsActivity2_to_splashActivity)
+    }
 
     override fun showLoading(show: Boolean) {
         if (show) {
@@ -158,28 +159,28 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     private fun next() {
+        Appodeal.requestAndroidMPermissions(requireActivity(), object : PermissionsHelper.AppodealPermissionCallbacks {
+            override fun writeExternalStorageResponse(result: Int) {
+                if (result == PackageManager.PERMISSION_GRANTED) {
+                    showToast("WRITE_EXTERNAL_STORAGE permission was granted")
+                } else {
+                    showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
+                }
+            }
+
+            override fun accessCoarseLocationResponse(result: Int) {
+                if (result == PackageManager.PERMISSION_GRANTED) {
+                    showToast("ACCESS_COARSE_LOCATION permission was granted")
+                } else {
+                    showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
+                }
+            }
+        })
         compositeDisposable.add(RxPermissions(this).request(Manifest.permission.READ_PHONE_STATE)
                 .subscribe({
                     if (it) {
                         presenter.next()
                     } else {
-                        Appodeal.requestAndroidMPermissions(requireActivity(), object : PermissionsHelper.AppodealPermissionCallbacks {
-                            override fun writeExternalStorageResponse(result: Int) {
-                                if (result == PackageManager.PERMISSION_GRANTED) {
-                                    showToast("WRITE_EXTERNAL_STORAGE permission was granted")
-                                } else {
-                                    showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
-                                }
-                            }
-
-                            override fun accessCoarseLocationResponse(result: Int) {
-                                if (result == PackageManager.PERMISSION_GRANTED) {
-                                    showToast("ACCESS_COARSE_LOCATION permission was granted")
-                                } else {
-                                    showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
-                                }
-                            }
-                        })
                         dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
                                 mapOf(R.id.permissionOk to {
                                     presenter.goToSettingsScreen()

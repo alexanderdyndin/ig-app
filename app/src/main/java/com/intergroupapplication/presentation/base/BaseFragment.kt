@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.exception.*
@@ -17,12 +18,14 @@ import com.intergroupapplication.presentation.feature.agreements.view.Agreements
 import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailScreen
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileScreen
 import com.intergroupapplication.presentation.feature.login.view.LoginScreen
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationScreen
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.activity_main.*
 import moxy.MvpAppCompatFragment
 import ru.terrakok.cicerone.Router
 import java.net.UnknownHostException
@@ -39,7 +42,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     protected lateinit var compositeDisposable: CompositeDisposable
 
-    protected open fun getSnackBarCoordinator(): ViewGroup? { return null}
+    protected abstract fun getSnackBarCoordinator(): ViewGroup?
 
     @Inject
     protected lateinit var router: Router
@@ -56,7 +59,8 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     @Inject
     protected lateinit var dialogDelegate: DialogDelegate
 
-    protected fun initErrorHandler() {
+
+    private fun initErrorHandler() {
         errorHandler.clear()
 
         val errorMap = mapOf(
@@ -80,8 +84,11 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 createSnackBarAction(R.string.unknown_error))
     }
 
-    protected fun showErrorMessage(message: String) {
-        dialogDelegate.showErrorSnackBar(message)
+    private fun getActionForBlockedImei() = Action { throwable, _ ->
+        //        startActivity(Intent(this, AgreementsActivity::class.java))
+        dialogDelegate.showErrorSnackBar((throwable as ImeiException).message.orEmpty())
+        userSession.clearAllData()
+
     }
 
     private fun getActionForBlockedUser() =
@@ -91,11 +98,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 createSnackBarAction(R.string.user_blocked)
             }
 
-    private fun getActionForBlockedImei() = Action { throwable, _ ->
-        //startActivity(Intent(this, AgreementsActivity::class.java))
-        dialogDelegate.showErrorSnackBar((throwable as ImeiException).message.orEmpty())
-        userSession.clearAllData()
-    }
 
     private fun getActionForBlockedGroup() = actionForBlockedGroup
 
@@ -116,22 +118,24 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     private fun createToast(message: Int) =
             Action { _, _ -> Toast.makeText(requireContext(), getString(message), Toast.LENGTH_SHORT).show() }
 
-    protected fun showToast(message: String) =
+    fun showToast(message: String) =
             Action { _, _ -> Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show() }
 
+    protected fun showErrorMessage(message: String) {
+        dialogDelegate.showErrorSnackBar(message)
+    }
+
     private fun openCreateProfile() = Action { _, _ ->
-        router.newRootScreen(CreateUserProfileScreen())
     }
 
     private fun openConfirmationEmail() = Action { _, _ ->
         val email = userSession.email?.email.orEmpty()
-        router.newRootChain(RegistrationScreen(), ConfirmationMailScreen(email))
     }
 
     private fun openAutorize() = Action { _, _ ->
         userSession.logout()
-        router.newRootChain(LoginScreen())
     }
+
 
     /**
      *
@@ -142,7 +146,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         compositeDisposable = CompositeDisposable()
-        initErrorHandler()
         super.onAttach(context)
     }
 
@@ -154,6 +157,17 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewCreated()
+        initErrorHandler()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialogDelegate.coordinator = getSnackBarCoordinator()
+    }
+
+    override fun onPause() {
+        dialogDelegate.coordinator = null
+        super.onPause()
     }
 }

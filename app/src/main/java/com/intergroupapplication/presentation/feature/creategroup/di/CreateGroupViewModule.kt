@@ -7,6 +7,7 @@ import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.service.CreateGroupService
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.CreateGroupGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -29,54 +30,54 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator
 @Module
 class CreateGroupViewModule {
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideValidator(activity: CreateGroupActivity): Validator =
             Validator(activity).apply { setValidationListener(activity) }
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun providePhotoGateway(activity: CreateGroupActivity, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
             PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideFrescoImageLoader(activity: CreateGroupActivity): ImageLoader =
             FrescoImageLoader(activity.requireActivity())
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageUploadingDelegate(photoGateway: PhotoGateway): ImageUploader =
             ImageUploadingDelegate(photoGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideCreateGroupGateway(api: AppApi, createGroupMapper: CreateGroupMapper,
                                   groupMapper: GroupMapper): CreateGroupGateway {
         return CreateGroupService(api, createGroupMapper, groupMapper)
     }
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideDialogManager(activity: CreateGroupActivity): DialogManager =
             DialogManager(activity.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
+                       context: CreateGroupActivity)
             : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+            DialogDelegate(dialogManager, dialogProvider, toastManager, context.requireActivity())
 
 
 
