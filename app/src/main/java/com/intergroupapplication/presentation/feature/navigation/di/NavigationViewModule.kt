@@ -28,7 +28,7 @@ import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoSet
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import java.text.SimpleDateFormat
 import java.util.*
 

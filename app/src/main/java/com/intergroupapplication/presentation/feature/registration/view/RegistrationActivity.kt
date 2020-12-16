@@ -42,7 +42,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.activity_registration.*
 import kotlinx.android.synthetic.main.auth_loader.*
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

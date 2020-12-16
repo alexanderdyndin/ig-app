@@ -11,7 +11,7 @@ import com.intergroupapplication.presentation.manager.ToastManager
 import com.mobsandgeeks.saripaar.Validator
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 
 @Module
 class LoginViewModule {

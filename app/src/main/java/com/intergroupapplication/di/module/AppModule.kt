@@ -20,9 +20,6 @@ import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
 import id.zelory.compressor.Compressor
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,19 +34,7 @@ class AppModule {
 
     @PerApplication
     @Provides
-    fun provideCicerone(): Cicerone<Router> = Cicerone.create()
-
-    @PerApplication
-    @Provides
-    fun provideNavigatorHolder(cicerone: Cicerone<Router>): NavigatorHolder = cicerone.navigatorHolder
-
-    @PerApplication
-    @Provides
     fun provideGsonParserFactory(): GsonParserFactory = GsonParserFactory()
-
-    @PerApplication
-    @Provides
-    fun provideRouter(cicerone: Cicerone<Router>): Router = cicerone.router
 
     @PerApplication
     @Provides

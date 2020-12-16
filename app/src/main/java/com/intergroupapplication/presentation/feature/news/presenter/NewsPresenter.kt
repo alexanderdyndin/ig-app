@@ -3,23 +3,17 @@ package com.intergroupapplication.presentation.feature.news.presenter
 import androidx.paging.RxPagedListBuilder
 import androidx.fragment.app.FragmentManager
 import android.util.Log
-import androidx.lifecycle.LiveData
 import moxy.InjectViewState
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.domain.entity.InfoForCommentEntity
-import com.intergroupapplication.domain.exception.PageNotFoundException
 import com.intergroupapplication.domain.gateway.ComplaintsGetaway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
-import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsScreen
-import com.intergroupapplication.presentation.feature.group.view.GroupScreen
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
 import com.intergroupapplication.presentation.feature.news.pagingsource.NewsDataSourceFactory
 import com.intergroupapplication.presentation.feature.news.view.NewsView
@@ -29,13 +23,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ru.terrakok.cicerone.Router
-import java.lang.Exception
+
 import javax.inject.Inject
 
 @InjectViewState
-class NewsPresenter @Inject constructor(private val router: Router,
-                                        private val errorHandler: ErrorHandler,
+class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                         private val newsDataSourceFactory: NewsDataSourceFactory,
                                         private val complaintsGetaway: ComplaintsGetaway,
                                         private val appStatusUseCase: AppStatusUseCase,
@@ -98,7 +90,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
     }
 
     fun goToGroupScreen(groupId: String) {
-        router.navigateTo(GroupScreen(groupId))
+        //router.navigateTo(GroupScreen(groupId))
     }
 
     fun reload() {
@@ -165,7 +157,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
 
     fun goOutFromProfile() {
         sessionStorage.logout()
-        //router.newRootScreen(LoginScreen())
+        ////router.newRootScreen(LoginScreen())
     }
 
     override fun onFirstViewAttach() {

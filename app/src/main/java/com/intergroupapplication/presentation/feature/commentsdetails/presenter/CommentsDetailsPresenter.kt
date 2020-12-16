@@ -11,23 +11,20 @@ import com.intergroupapplication.domain.exception.PageNotFoundException
 import com.intergroupapplication.domain.gateway.CommentGateway
 import com.intergroupapplication.domain.gateway.ComplaintsGetaway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
-import com.intergroupapplication.presentation.Screens
 import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
 import com.intergroupapplication.presentation.exstension.handleLoading
 import com.intergroupapplication.presentation.feature.commentsdetails.pagingsource.CommentsDataSourceFactory
-import com.intergroupapplication.presentation.feature.group.view.GroupScreen
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class CommentsDetailsPresenter @Inject constructor(private val router: Router,
-                                                   private val commentGateway: CommentGateway,
+class CommentsDetailsPresenter @Inject constructor(private val commentGateway: CommentGateway,
                                                    private val postGateway: GroupPostGateway,
                                                    private val commentsDataSourceFactory: CommentsDataSourceFactory,
                                                    private val complaintsGetaway: ComplaintsGetaway,
@@ -112,10 +109,6 @@ class CommentsDetailsPresenter @Inject constructor(private val router: Router,
                     errorHandler.handle(it)
                     viewState.hideSwipeLayout()
                 }))
-    }
-
-    fun goToGroupScreen(groupId: String) {
-        router.replaceScreen(GroupScreen(groupId))
     }
 
     fun complaintPost(postId: Int) {

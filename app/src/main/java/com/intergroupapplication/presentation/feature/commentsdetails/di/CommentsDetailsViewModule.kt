@@ -25,7 +25,7 @@ import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 
 @Module
 class CommentsDetailsViewModule {
@@ -80,11 +80,6 @@ class CommentsDetailsViewModule {
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-
-    @PerFragment
-    @Provides
-    fun provideSupportAppNavigator(activity: CommentsDetailsActivity): SupportAppNavigator =
-            SupportAppNavigator(activity.requireActivity(), 0)
 
     @PerFragment
     @Provides

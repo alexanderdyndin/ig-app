@@ -8,19 +8,15 @@ import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.PermissionAutorizeGetaway
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.ActionApplicationDetailsScreen
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsView
-import com.intergroupapplication.presentation.feature.splash.SplashScreen
-import com.intergroupapplication.presentation.feature.web.WebScreen
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class AgreementsPresenter @Inject constructor(private val router: Router,
-                                              private val errorHandler: ErrorHandler,
+class AgreementsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                               private val imeiGateway: ImeiGateway,
                                               private val userSession: UserSession,
                                               private val permissionGetaway: PermissionAutorizeGetaway)
@@ -52,7 +48,7 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
     }
 
     fun goToSettingsScreen() {
-        router.navigateTo(ActionApplicationDetailsScreen())
+        ////router.navigateTo(ActionApplicationDetailsScreen())
     }
 
 }

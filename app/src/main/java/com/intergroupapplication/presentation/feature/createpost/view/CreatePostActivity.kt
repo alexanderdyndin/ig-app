@@ -27,7 +27,7 @@ import com.intergroupapplication.presentation.feature.navigation.di.NavigationVi
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.activity_create_post.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import javax.inject.Inject
 
 class CreatePostActivity : BaseFragment(), CreatePostView {

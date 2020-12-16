@@ -12,7 +12,7 @@ import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 
 @Module
 class ConfirmationMailViewModule {
@@ -28,12 +28,6 @@ class ConfirmationMailViewModule {
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
             : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
-
-    @PerFragment
-    @Provides
-    fun provideSupportAppNavigator(activity: ConfirmationMailActivity): SupportAppNavigator =
-            SupportAppNavigator(activity.requireActivity(), 0)
 
 
 }

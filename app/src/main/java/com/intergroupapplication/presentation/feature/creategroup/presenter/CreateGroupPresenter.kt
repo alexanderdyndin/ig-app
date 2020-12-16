@@ -7,22 +7,18 @@ import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.CreateGroupEntity
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.gateway.CreateGroupGateway
-import com.intergroupapplication.domain.gateway.PhotoGateway
-import com.intergroupapplication.presentation.Screens
 import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.group.view.GroupScreen
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class CreateGroupPresenter @Inject constructor(private val router: Router,
-                                               private val imageUploadingDelegate: ImageUploader,
+class CreateGroupPresenter @Inject constructor(private val imageUploadingDelegate: ImageUploader,
                                                private val createGroupGateway: CreateGroupGateway,
                                                private val errorHandler: ErrorHandler)
     : BasePresenter<CreateGroupView>() {
@@ -71,7 +67,7 @@ class CreateGroupPresenter @Inject constructor(private val router: Router,
     }
 
     private fun goToGroupScreen(entity: GroupEntity) {
-        router.replaceScreen(GroupScreen(entity.id))
+        //router.replaceScreen(GroupScreen(entity.id))
     }
 
 }

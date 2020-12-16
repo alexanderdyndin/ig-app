@@ -25,7 +25,7 @@ import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.activity_confirmation_mail.*
 import kotlinx.android.synthetic.main.activity_registration.*
 import kotlinx.android.synthetic.main.auth_loader.*
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import javax.inject.Inject
 
 class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {

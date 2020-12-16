@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import timber.log.Timber
 import java.io.File
 import java.io.IOException

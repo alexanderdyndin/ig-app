@@ -48,7 +48,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_comments_details.*
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import timber.log.Timber
 import javax.inject.Inject
 

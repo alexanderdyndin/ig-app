@@ -7,20 +7,15 @@ import com.intergroupapplication.domain.gateway.LoginGateway
 import com.intergroupapplication.domain.usecase.GetProfileUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.ActionApplicationDetailsScreen
 import com.intergroupapplication.presentation.feature.login.view.LoginView
-import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordScreen
-import com.intergroupapplication.presentation.feature.registration.view.RegistrationScreen
-import com.intergroupapplication.presentation.feature.splash.SplashScreen
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class LoginPresenter @Inject constructor(private val router: Router,
-                                         private val loginGateway: LoginGateway,
+class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
                                          private val imeiGateway: ImeiGateway,
                                          private val errorHandler: ErrorHandler,
                                          private val getProfileUseCase: GetProfileUseCase)
@@ -47,18 +42,18 @@ class LoginPresenter @Inject constructor(private val router: Router,
     }
 
     fun goToRegistrationScreen() {
-        router.newRootScreen(RegistrationScreen())
+        //router.newRootScreen(RegistrationScreen())
     }
 
     fun goToSettingsScreen() {
-        router.navigateTo(ActionApplicationDetailsScreen())
+        //router.navigateTo(ActionApplicationDetailsScreen())
     }
 
     fun goToRecoveryPassword() {
-        router.navigateTo(RecoveryPasswordScreen())
+        //router.navigateTo(RecoveryPasswordScreen())
     }
 
     private fun goToNavigationScreen() {
-        router.newRootScreen(SplashScreen())
+        //router.newRootScreen(SplashScreen())
     }
 }

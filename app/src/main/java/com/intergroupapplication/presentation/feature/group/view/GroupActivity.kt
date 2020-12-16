@@ -52,7 +52,7 @@ import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
 import kotlinx.android.synthetic.main.layout_user_join_button.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import javax.inject.Inject
 import kotlin.math.abs
 

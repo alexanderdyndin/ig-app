@@ -14,12 +14,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class CreatePostPresenter @Inject constructor(private val router: Router,
-                                              private val groupPostGateway: GroupPostGateway,
+class CreatePostPresenter @Inject constructor(private val groupPostGateway: GroupPostGateway,
                                               private val photoGateway: PhotoGateway,
                                               private val errorHandler: ErrorHandler,
                                               private val imageUploadingDelegate: ImageUploader)

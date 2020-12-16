@@ -5,7 +5,6 @@ import com.intergroupapplication.domain.gateway.ConfirmationMailGateway
 import com.intergroupapplication.domain.gateway.ResendCodeGateway
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
 import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailView
-import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileScreen
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
@@ -18,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import ru.terrakok.cicerone.Router
+
 
 /**
  * Created by abakarmagomedov on 20/08/2018 at project InterGroupApplication.

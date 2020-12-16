@@ -3,22 +3,16 @@ package com.intergroupapplication.presentation.feature.grouplist.presenter
 import android.util.Log
 import androidx.fragment.app.FragmentManager
 import androidx.paging.RxPagedListBuilder
-import com.androidnetworking.core.MainThreadExecutor
 import moxy.InjectViewState
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.domain.FakeData
-import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.domain.exception.PageNotFoundException
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
-import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.group.view.GroupScreen
 import com.intergroupapplication.presentation.feature.grouplist.pagingsource.*
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
@@ -28,15 +22,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.Screen
+
 import javax.inject.Inject
 
 @InjectViewState
-class GroupListPresenter @Inject constructor(private val router: Router,
-                                             private val errorHandler: ErrorHandler,
+class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                              private val appStatusUseCase: AppStatusUseCase,
                                              private val dsAll: GroupListDataSourceFactory,
                                              private val dsSub: GroupListDataSourceFactory,
@@ -183,7 +174,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
     }
 
     fun goToGroupScreen(groupId: String) {
-        router.navigateTo(GroupScreen(groupId))
+        //router.navigateTo(GroupScreen(groupId))
     }
 
     fun sub(groupId: String) {
@@ -268,7 +259,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
 
     fun goOutFromProfile() {
         sessionStorage.logout()
-        //router.newRootScreen(LoginScreen())
+        ////router.newRootScreen(LoginScreen())
     }
 
 

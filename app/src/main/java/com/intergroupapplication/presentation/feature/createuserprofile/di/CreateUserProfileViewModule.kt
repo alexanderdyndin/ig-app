@@ -22,7 +22,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import java.util.*
 
 @Module

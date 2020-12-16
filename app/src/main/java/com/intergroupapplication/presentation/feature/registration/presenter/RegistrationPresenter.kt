@@ -4,22 +4,17 @@ import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.RegistrationGateway
-import com.intergroupapplication.presentation.Screens
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.ActionApplicationDetailsScreen
-import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailScreen
-import com.intergroupapplication.presentation.feature.login.view.LoginScreen
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class RegistrationPresenter @Inject constructor(private val router: Router,
-                                                private val registrationGateway: RegistrationGateway,
+class RegistrationPresenter @Inject constructor(private val registrationGateway: RegistrationGateway,
                                                 private val imeiGateway: ImeiGateway,
                                                 private val errorHandler: ErrorHandler)
     : BasePresenter<RegistrationView>() {
@@ -50,11 +45,11 @@ class RegistrationPresenter @Inject constructor(private val router: Router,
     }
 
     fun goToLoginScreen() {
-        router.newRootScreen(LoginScreen())
+        //router.newRootScreen(LoginScreen())
     }
 
     fun goToSettingsScreen() {
-        router.navigateTo(ActionApplicationDetailsScreen())
+        //router.navigateTo(ActionApplicationDetailsScreen())
     }
 
 }

@@ -272,7 +272,7 @@
     <ID>UnusedImports:BaseDialogResolver.kt$import android.widget.Button</ID>
     <ID>UnusedImports:BaseErrorParser.kt$import com.intergroupapplication.data.model.ApiError</ID>
     <ID>UnusedImports:BaseFragment.kt$import javax.inject.Inject</ID>
-    <ID>UnusedImports:BaseFragment.kt$import ru.terrakok.cicerone.NavigatorHolder</ID>
+    <ID>UnusedImports:BaseFragment.kt$</ID>
     <ID>UnusedImports:BaseFragment.kt$import ru.terrakok.cicerone.android.SupportAppNavigator</ID>
     <ID>UnusedImports:BasePagingAdapter.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
     <ID>UnusedImports:CommentDividerItemDecorator.kt$import android.view.View</ID>
@@ -436,7 +436,7 @@
     <ID>UnusedImports:RxErrorCallAdapterFactory.kt$import timber.log.Timber</ID>
     <ID>UnusedImports:RxModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
     <ID>UnusedImports:RxModule.kt$import com.intergroupapplication.di.scope.PerApplication</ID>
-    <ID>UnusedImports:SplashActivity.kt$import ru.terrakok.cicerone.Router</ID>
+    <ID>UnusedImports:SplashActivity.kt$</ID>
     <ID>UnusedImports:UserEntity.kt$import android.os.Parcelable</ID>
     <ID>UnusedImports:UserEntity.kt$import kotlinx.android.parcel.Parcelize</ID>
     <ID>UnusedImports:UserProfileGateway.kt$import com.intergroupapplication.domain.entity.UserRole</ID>

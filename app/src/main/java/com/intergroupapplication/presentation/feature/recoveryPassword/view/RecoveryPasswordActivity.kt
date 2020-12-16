@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_recovery_password.*
 import kotlinx.android.synthetic.main.activity_recovery_password.etDoublePassword
 import kotlinx.android.synthetic.main.activity_recovery_password.etMail
 import kotlinx.android.synthetic.main.activity_recovery_password.etPassword
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import javax.inject.Inject
 
 class RecoveryPasswordActivity : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener {

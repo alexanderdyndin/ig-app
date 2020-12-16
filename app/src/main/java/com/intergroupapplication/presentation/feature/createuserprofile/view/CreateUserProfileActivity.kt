@@ -35,7 +35,7 @@ import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.activity_create_user_profile.*
 import kotlinx.android.synthetic.main.auth_loader.*
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import javax.inject.Inject
 
 

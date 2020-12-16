@@ -40,7 +40,7 @@ import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import javax.inject.Inject
 
 class CreateGroupActivity : BaseFragment(), CreateGroupView, Validator.ValidationListener {

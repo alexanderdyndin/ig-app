@@ -34,7 +34,7 @@ import com.intergroupapplication.presentation.manager.ToastManager
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import javax.inject.Named
 
 const val GROUPS = "Groups"

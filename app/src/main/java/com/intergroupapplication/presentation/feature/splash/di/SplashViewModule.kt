@@ -10,7 +10,7 @@ import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 
 /**
  * Created by abakarmagomedov on 06/08/2018 at project InterGroupApplication.
