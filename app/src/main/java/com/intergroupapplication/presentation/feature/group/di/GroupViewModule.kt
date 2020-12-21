@@ -85,6 +85,6 @@ class GroupViewModule {
     @PerFragment
     @Provides
     fun provideLinearLayoutManager(activity: GroupActivity): RecyclerView.LayoutManager =
-            LinearLayoutManager(activity.requireActivity(), LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(activity.requireContext(), LinearLayoutManager.VERTICAL, false)
 
 }

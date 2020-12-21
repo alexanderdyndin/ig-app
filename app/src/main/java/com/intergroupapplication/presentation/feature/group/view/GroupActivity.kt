@@ -10,7 +10,9 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
@@ -18,6 +20,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
@@ -65,6 +68,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
         private const val GROUP_ID = "group_id"
+        const val FRAGMENT_RESULT = "fragmentResult"
 
         fun getIntent(context: Context?, groupId: String) = Intent(context, GroupActivity::class.java)
                 .apply {
@@ -179,12 +183,21 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        groupId = arguments?.getString("groupId")!!
+        groupId = arguments?.getString(GROUP_ID)!!
         initializeMediaBrowser()
     }
 
     override fun viewCreated() {
-        groupPosts.layoutManager = layoutManager
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(FRAGMENT_RESULT)?.observe(
+                viewLifecycleOwner) { request ->
+            when (request) {
+                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
+                POST_CREATED -> presenter.refresh(groupId)
+            }
+        }
+        //crashing app when provide it by dagger
+        //groupPosts.layoutManager = layoutManager
+        groupPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         adapter.retryClickListener = { presenter.reload() }
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
@@ -192,9 +205,6 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
         groupPosts.adapter = adapter
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
-        toolbarBackAction.setOnClickListener {
-            findNavController().popBackStack()
-        }
         pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         presenter.getGroupDetailInfo(groupId)
         swipeLayout.setOnRefreshListener {

@@ -16,6 +16,7 @@ import com.intergroupapplication.device.notification.CreatorType
 import com.intergroupapplication.device.notification.NotificationCreatorOptions
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
 import com.intergroupapplication.presentation.feature.group.view.GroupActivity
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 
 /**
@@ -56,7 +57,7 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
         val navigationIntent = createNavigationIntent()
 
         val stackBuilder = TaskStackBuilder.create(context).apply {
-            addParentStack(CommentsDetailsActivity::class.java)
+            addParentStack(MainActivity::class.java)
             addNextIntent(navigationIntent)
             addNextIntent(groupIntent)
             addNextIntent(commentIntent)

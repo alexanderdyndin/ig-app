@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
@@ -34,12 +35,16 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_COUNT_VALUE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_DETAILS_REQUEST
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
+import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule.Companion.GROUP_ID
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
+import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.fragment_news.emptyText
 import kotlinx.android.synthetic.main.layout_drawer.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
@@ -93,12 +98,14 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
-        newsPosts.layoutManager = layoutManager
+        //crashing app when provide it by dagger
+        //newsPosts.layoutManager = layoutManager
+        newsPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         newsPosts.itemAnimator = null
         adapter.retryClickListener = { presenter.reload() }
-        adapter.commentClickListener = { openCommentDerails(InfoForCommentEntity(it, true)) }
+        adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it, true)) }
         adapter.groupClickListener = {
-            val data = bundleOf("groupId" to it)
+            val data = bundleOf(GROUP_ID to it)
             findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
         }
         adapter.complaintListener = { presenter.complaintPost(it) }
@@ -161,8 +168,10 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         super.onDestroy()
     }
 
-    fun openCommentDerails(entity: InfoForCommentEntity) {
-        startActivityForResult(CommentsDetailsActivity.getIntent(context, entity), COMMENTS_DETAILS_REQUEST)
+    fun openCommentDetails(entity: InfoForCommentEntity) {
+        //startActivityForResult(CommentsDetailsActivity.getIntent(context, entity), COMMENTS_DETAILS_REQUEST)
+        val data = bundleOf(GroupViewModule.COMMENT_POST_ENTITY to entity)
+        findNavController().navigate(R.id.action_newsFragment2_to_commentsDetailsActivity, data)
     }
 
     override fun showImageUploadingStarted(path: String) {

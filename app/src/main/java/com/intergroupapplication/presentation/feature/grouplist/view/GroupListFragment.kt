@@ -47,6 +47,7 @@ import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupLis
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
+import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule.Companion.GROUP_ID
 import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
@@ -173,7 +174,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             userID = sessionStorage.user?.id
             retryClickListener = { presenter.reload() }
             groupClickListener = {
-                val data = bundleOf("groupId" to it)
+                val data = bundleOf(GROUP_ID to it)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
             subscribeClickListener = { presenter.sub(it)}

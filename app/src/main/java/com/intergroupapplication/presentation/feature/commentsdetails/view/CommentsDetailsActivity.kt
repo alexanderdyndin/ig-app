@@ -16,6 +16,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import moxy.presenter.InjectPresenter
@@ -37,6 +38,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.adapter.Co
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
+import com.intergroupapplication.presentation.feature.group.view.GroupActivity.Companion.FRAGMENT_RESULT
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -46,6 +48,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_comments_details.*
+import kotlinx.android.synthetic.main.activity_comments_details.emptyText
+import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
 
@@ -123,7 +127,9 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
         commentEditText = requireView().findViewById(R.id.commentEditText)
         val decorator = CommentDividerItemDecorator(requireContext())
         prepareEditText()
-        commentsList.layoutManager = layoutManager
+        //crashing app when provide it by dagger
+        //commentsList.layoutManager = layoutManager
+        commentsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         commentsList.setHasFixedSize(true)
         commentsList.itemAnimator = null
         commentsList.addItemDecoration(decorator)
@@ -333,13 +339,15 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
             showPostDetailInfo(groupPostEntity)
             if (infoForCommentEntity.isFromNewsScreen) {
                 goToGroupClickArea.setOnClickListener {
-                    findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, bundleOf(GROUP_ID to groupPostEntity.groupInPost.id))
+                    val data = bundleOf(GROUP_ID to groupPostEntity.groupInPost.id)
+                    findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, data)
                     //presenter.goToGroupScreen(groupPostEntity.groupInPost.id)
                 }
             }
-        } else {
-            //presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID)!!)
         }
+//        else {
+//            presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID)!!)
+//        }
 
     }
 
@@ -350,6 +358,9 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
         }
         //setResult(Activity.RESULT_OK, intent)
         //finish()
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, COMMENTS_DETAILS_REQUEST)
+        //findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount)
+        findNavController().popBackStack()
     }
 
     private fun showPopupMenu(view: View) {

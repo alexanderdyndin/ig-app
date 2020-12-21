@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
@@ -16,6 +17,7 @@ import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseFragment
+import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.isVisible
@@ -23,6 +25,7 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.exstension.showKeyboard
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
+import com.intergroupapplication.presentation.feature.group.view.GroupActivity.Companion.FRAGMENT_RESULT
 import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule.Companion.GROUP_ID
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.activity_create_post.*
@@ -209,11 +212,14 @@ class CreatePostActivity : BaseFragment(), CreatePostView {
 //        }
 //        setResult(Activity.RESULT_OK, newIntent)
 //        finish()
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, BasePresenter.POST_CREATED)
+        //findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID_VALUE, groupId)
+        findNavController().popBackStack()
     }
 
     private fun onResultCancel() {
-//        setResult(Activity.RESULT_CANCELED)
-//        finish()
+        //findNavController().previousBackStackEntry?.savedStateHandle?.set("fragmentResult", Activity.RESULT_CANCELED)
+        findNavController().popBackStack()
     }
 
 }
