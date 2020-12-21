@@ -36,6 +36,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_DETAILS_REQUEST
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule.Companion.GROUP_ID
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
@@ -46,6 +47,7 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.emptyText
 import kotlinx.android.synthetic.main.layout_drawer.*
+import kotlinx.android.synthetic.main.layout_profile_header.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import javax.inject.Inject
@@ -91,7 +93,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     lateinit var drawer: Drawer
 
-    private lateinit var profileAvatarHolder: AvatarImageUploadingView
+    lateinit var profileAvatarHolder: AvatarImageUploadingView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -120,7 +122,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     override fun onResume() {
         super.onResume()
         presenter.checkNewVersionAvaliable(activity?.supportFragmentManager!!)
-        presenter.refresh()
+        //presenter.refresh()
     }
 
 
@@ -134,11 +136,11 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun showLoading(show: Boolean) {
         if (show) {
-            emptyText.hide()
-            adapter.removeError()
+            //emptyText.hide()
+            //adapter.removeError()
             //TODO ПОФИКСИТЬ ПЕРЕСКАКИВАНИЕ В КОНЕЦ СПИСКА ПРИ ПОВТОРНОЙ ЗАГРУЗКЕ ФРАГМЕНТА
             //if ((activity as NavigationActivity).newsLaunchCount == 1) {
-                adapter.addLoading()
+                //adapter.addLoading()
             //}
             //newsPosts.visibility = View.INVISIBLE
             //progressBar.visibility = View.VISIBLE
@@ -174,6 +176,83 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         findNavController().navigate(R.id.action_newsFragment2_to_commentsDetailsActivity, data)
     }
 
+
+    override fun viewCreated() {
+        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
+        viewDrawer.profileAvatarHolder.setOnClickListener {
+                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
+                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+                }
+            }
+        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
+        profileAvatarHolder = viewDrawer.profileAvatarHolder
+        profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
+        lateinit var drawerItem: PrimaryDrawerItem
+        drawer = drawer {
+            sliderBackgroundColorRes = R.color.profileTabColor
+            headerView = viewDrawer
+            actionBarDrawerToggleEnabled = true
+            translucentStatusBar = true
+            viewDrawer.profileAvatarHolder.setOnClickListener {
+                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
+                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+                }
+            }
+            drawerItem = primaryItem(getString(R.string.news)) {
+                icon = R.drawable.ic_news
+                selectedIcon = R.drawable.ic_news_blue
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                onClick { v ->
+                    toolbarTittle.text = getString(R.string.news)
+                    false
+                }
+            }
+            primaryItem(getString(R.string.groups)) {
+                icon = R.drawable.ic_groups
+                selectedIcon = R.drawable.ic_groups_blue
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                onClick { v ->
+                    findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
+                    toolbarTittle.text = getString(R.string.groups)
+                    false
+                }
+            }
+            primaryItem(getString(R.string.logout)) {
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                onClick { v ->
+                    userSession.logout()
+                    findNavController().navigate(R.id.action_newsFragment2_to_loginActivity)
+                    false
+                }
+            }
+        }.apply {
+            setSelection(drawerItem)
+            viewDrawer.drawerArrow.setOnClickListener { closeDrawer() }
+            drawerItem.withOnDrawerItemClickListener { _, _, _ ->
+                findNavController().navigate(R.id.action_newsFragment2_self)
+                toolbarTittle.text = getString(R.string.news)
+                false
+            }
+        }
+        toolbarMenu.setOnClickListener {
+            drawer.openDrawer()
+        }
+        presenter.getUserInfo()
+    }
+
     override fun showImageUploadingStarted(path: String) {
         //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
@@ -182,7 +261,6 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     override fun showImageUploaded() {
         presenter.changeUserAvatar()
     }
-
 
     override fun avatarChanged(url: String) {
         profileAvatarHolder.showAvatar(url)
@@ -208,70 +286,5 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         doOrIfNull(userEntity.avatar,
                 { profileAvatarHolder.showAvatar(it) },
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
-    }
-
-    override fun viewCreated() {
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
-        profileAvatarHolder = viewDrawer.profileAvatarHolder
-        profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
-        lateinit var drawerItem: PrimaryDrawerItem
-        drawer = drawer {
-            sliderBackgroundColorRes = R.color.profileTabColor
-            headerView = viewDrawer
-            actionBarDrawerToggleEnabled = true
-            translucentStatusBar = true
-            viewDrawer.profileAvatarHolder.setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
-                }
-            }
-            drawerItem = primaryItem(getString(R.string.news)) {
-                icon = R.drawable.ic_news
-                selectedIcon = R.drawable.ic_news_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
-                   // v?.findNavController()?.navigate(R.id.action_groupListFragment2_to_newsFragment2)
-                    toolbarTittle.text = getString(R.string.news)
-                    false
-                }
-            }
-            primaryItem(getString(R.string.groups)) {
-                icon = R.drawable.ic_groups
-                selectedIcon = R.drawable.ic_groups_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
-                    //presenter.goToGroupListScreen()
-                    findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
-                    toolbarTittle.text = getString(R.string.groups)
-                    false
-                }
-            }
-            primaryItem(getString(R.string.logout)) {
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { v ->
-                    presenter.goOutFromProfile()
-                    findNavController().navigate(R.id.action_newsFragment2_to_splashActivity)
-                    toolbarTittle.text = getString(R.string.logout)
-                    false
-                }
-            }
-        }.apply {
-            setSelection(drawerItem)
-        }
-        toolbarMenu.setOnClickListener {
-            drawer.openDrawer()
-        }
-        presenter.getUserInfo()
     }
 }

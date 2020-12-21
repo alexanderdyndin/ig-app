@@ -40,8 +40,8 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
                 .contentIntent(createPendingIntent(type))
                 .priority(NotificationCompat.PRIORITY_MAX)
                 .lights(Color.RED)
-                .smallIcon(R.drawable.application_logo)
-                .largeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.application_logo))
+                .smallIcon(R.drawable.avatar_fill)
+                .largeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.avatar_fill))
                 .color(ContextCompat.getColor(context, R.color.colorPrimary))
                 .vibrationPattern(longArrayOf(500, 500))
                 .build()
@@ -52,25 +52,26 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
     override fun getId(): Int = COMMENTS_NOTIFICATION_ID
 
     private fun createPendingIntent(type: CreatorType.Comment): PendingIntent? {
-        val commentIntent = createCommentIntent(type)
-        val groupIntent = createGroupIntent(type)
+//        val commentIntent = createCommentIntent(type)
+//        val groupIntent = createGroupIntent(type)
         val navigationIntent = createNavigationIntent()
 
         val stackBuilder = TaskStackBuilder.create(context).apply {
             addParentStack(MainActivity::class.java)
+            //todo rewrite it for fragments
             addNextIntent(navigationIntent)
-            addNextIntent(groupIntent)
-            addNextIntent(commentIntent)
+//            addNextIntent(groupIntent)
+//            addNextIntent(commentIntent)
         }
 
         return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
-
-    private fun createCommentIntent(type: CreatorType.Comment) =
-            CommentsDetailsActivity.getIntent(context, type.groupId, type.commentId, type.postId)
-
-    private fun createGroupIntent(type: CreatorType.Comment): Intent =
-            GroupActivity.getIntent(context, type.groupId)
-
+//
+//    private fun createCommentIntent(type: CreatorType.Comment) =
+//            CommentsDetailsActivity.getIntent(context, type.groupId, type.commentId, type.postId)
+//
+//    private fun createGroupIntent(type: CreatorType.Comment): Intent =
+//            GroupActivity.getIntent(context, type.groupId)
+//
     private fun createNavigationIntent(): Intent = NavigationActivity.getIntent(context)
 }

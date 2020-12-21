@@ -246,7 +246,9 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
         compositeDisposable.add(userProfileGateway.getUserProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ viewState.showUserInfo(it) }, {
+                .subscribe({
+                    viewState.showUserInfo(it)
+                           }, {
                     viewState.showImageUploadingError()
                     errorHandler.handle(it)
                 }))

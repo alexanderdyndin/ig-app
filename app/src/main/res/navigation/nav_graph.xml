@@ -12,7 +12,9 @@
         android:label="GroupListFragment">
         <action
             android:id="@+id/action_groupListFragment2_to_newsFragment2"
-            app:destination="@id/newsFragment2" />
+            app:destination="@id/newsFragment2"
+            app:popUpTo="@+id/newsFragment2"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_groupListFragment2_to_createGroupActivity"
             app:destination="@id/createGroupActivity" />
@@ -21,13 +23,22 @@
             app:destination="@id/groupActivity" />
         <action
             android:id="@+id/action_groupListFragment2_to_splashActivity"
-            app:destination="@id/splashActivity" />
+            app:destination="@id/splashActivity"
+            app:popUpTo="@+id/splashActivity"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_groupListFragment2_to_commentsDetailsActivity"
             app:destination="@id/commentsDetailsActivity" />
         <action
-            android:id="@+id/action_groupListFragment2_to_loginActivity"
-            app:destination="@id/loginActivity" />
+            android:id="@+id/action_groupListFragment2_self"
+            app:destination="@id/groupListFragment2"
+            app:popUpTo="@+id/groupListFragment2"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_groupListFragment2_to_loginActivity2"
+            app:destination="@id/loginActivity"
+            app:popUpTo="@+id/loginActivity"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/newsFragment2"
@@ -36,19 +47,30 @@
         tools:layout="@layout/fragment_news">
         <action
             android:id="@+id/action_newsFragment2_to_groupListFragment2"
-            app:destination="@id/groupListFragment2" />
+            app:destination="@id/groupListFragment2"
+            app:popUpTo="@+id/groupListFragment2"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_newsFragment2_to_groupActivity"
             app:destination="@id/groupActivity" />
         <action
             android:id="@+id/action_newsFragment2_to_splashActivity"
-            app:destination="@id/splashActivity" />
+            app:destination="@id/splashActivity"
+            app:popUpTo="@+id/splashActivity"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_newsFragment2_to_commentsDetailsActivity"
             app:destination="@id/commentsDetailsActivity" />
         <action
             android:id="@+id/action_newsFragment2_to_loginActivity"
-            app:destination="@id/loginActivity" />
+            app:destination="@id/loginActivity"
+            app:popUpTo="@+id/loginActivity"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_newsFragment2_self"
+            app:destination="@id/newsFragment2"
+            app:popUpTo="@+id/newsFragment2"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/splashActivity"
@@ -75,7 +97,9 @@
         tools:layout="@layout/activity_registration" >
         <action
             android:id="@+id/action_registrationActivity_to_loginActivity2"
-            app:destination="@id/loginActivity" />
+            app:destination="@id/loginActivity"
+            app:popUpTo="@+id/loginActivity"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_registrationActivity_to_confirmationMailActivity2"
             app:destination="@id/confirmationMailActivity" />
@@ -89,7 +113,9 @@
             app:destination="@id/splashActivity" />
         <action
             android:id="@+id/action_loginActivity_to_registrationActivity"
-            app:destination="@id/registrationActivity" />
+            app:destination="@id/registrationActivity"
+            app:popUpTo="@+id/registrationActivity"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_loginActivity_to_recoveryPasswordActivity"
             app:destination="@id/recoveryPasswordActivity" />
@@ -115,7 +141,9 @@
             app:destination="@id/webActivity" />
         <action
             android:id="@+id/action_agreementsActivity2_to_splashActivity"
-            app:destination="@id/splashActivity" />
+            app:destination="@id/splashActivity"
+            app:popUpTo="@+id/splashActivity"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/webActivity"

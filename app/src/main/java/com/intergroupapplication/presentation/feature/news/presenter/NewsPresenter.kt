@@ -19,6 +19,7 @@ import com.intergroupapplication.presentation.feature.news.pagingsource.NewsData
 import com.intergroupapplication.presentation.feature.news.view.NewsView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
@@ -36,8 +37,10 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                         private val sessionStorage: UserSession)
     : BasePresenter<NewsView>() {
 
+    private val newsDisposable = CompositeDisposable()
+
     fun getNews() {
-        compositeDisposable.add(newsDataSourceFactory.source.observeState()
+        newsDisposable.add(newsDataSourceFactory.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
@@ -48,11 +51,11 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                     viewState.handleState(it.type)
                 }, {}))
 
-        compositeDisposable.add(RxPagedListBuilder(newsDataSourceFactory, PAGINATION_PAGE_SIZE)
+        newsDisposable.add(RxPagedListBuilder(newsDataSourceFactory, PAGINATION_PAGE_SIZE)
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                //.handleLoading(viewState)
+                .handleLoading(viewState)
                 .subscribe({
                     viewState.newsLoaded(it)
                 }, {
@@ -79,7 +82,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
     }
 
     fun complaintPost(postId: Int) {
-        compositeDisposable.add(complaintsGetaway.complaintPost(postId)
+        newsDisposable.add(complaintsGetaway.complaintPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -87,10 +90,6 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                 }, {
                     errorHandler.handle(it)
                 }))
-    }
-
-    fun goToGroupScreen(groupId: String) {
-        //router.navigateTo(GroupScreen(groupId))
     }
 
     fun reload() {
@@ -103,7 +102,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
     }
 
     private fun unsubscribe() {
-        compositeDisposable.clear()
+        newsDisposable.clear()
     }
 
     private var uploadingImageDisposable: Disposable? = null
@@ -140,16 +139,14 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
         compositeDisposable.add(userProfileGateway.getUserProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ viewState.showUserInfo(it) }, {
+                .subscribe({
+                    viewState.showUserInfo(it)
+                           }, {
                     viewState.showImageUploadingError()
                     errorHandler.handle(it)
                 }))
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopImageUploading()
-    }
 
     private fun stopImageUploading() {
         uploadingImageDisposable?.dispose()

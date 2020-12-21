@@ -55,6 +55,7 @@ import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.layout_profile_header.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
@@ -281,9 +282,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     }
 
-    fun openCommentDerails(entity: InfoForCommentEntity) {
-        startActivityForResult(CommentsDetailsActivity.getIntent(context, entity), CommentsDetailsActivity.COMMENTS_DETAILS_REQUEST)
-    }
 
     override fun showImageUploadingStarted(path: String) {
         //profileAvatarHolder.showImageUploadingStarted(path)
@@ -358,12 +356,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
-                    //presenter.goToGroupListScreen()
-                    //v?.findNavController()?.navigate(R.id.action_newsFragment2_to_groupListFragment2)
-                    toolbarTittle.text = getString(R.string.groups)
-                    false
-                }
             }
             primaryItem(getString(R.string.logout)) {
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
@@ -372,14 +364,18 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { v ->
                     presenter.goOutFromProfile()
-                    //v?.findNavController()?.popBackStack()
-                    toolbarTittle.text = getString(R.string.logout)
+                    findNavController().navigate(R.id.action_groupListFragment2_to_loginActivity2)
                     false
                 }
             }
         }.apply {
             setSelection(drawerItem)
-            //view.drawerArrow.setOnClickListener { closeDrawer() }
+            drawerItem.withOnDrawerItemClickListener { _, _, _ ->
+                findNavController().navigate(R.id.action_groupListFragment2_self)
+                toolbarTittle.text = getString(R.string.groups)
+                false
+            }
+            viewDrawer.drawerArrow.setOnClickListener { closeDrawer() }
         }
         toolbarMenu.setOnClickListener {
             drawer.openDrawer()

@@ -181,6 +181,7 @@ class CreateGroupActivity : BaseFragment(), CreateGroupView, Validator.Validatio
         }
         groupName = requireView().findViewById(R.id.groupCreate_title)
         createGroup.setOnClickListener {
+            //todo write rules for validator
             validator.validate()
         }
         groupCreate__addAvatar.setOnClickListener {

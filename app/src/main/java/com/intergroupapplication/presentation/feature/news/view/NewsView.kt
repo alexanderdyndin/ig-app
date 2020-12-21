@@ -6,10 +6,7 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.UserEntity
-import com.intergroupapplication.presentation.base.BasePagingState
-import com.intergroupapplication.presentation.base.CanShowLoading
-import com.intergroupapplication.presentation.base.ImageUploadingView
-import com.intergroupapplication.presentation.base.PagingView
+import com.intergroupapplication.presentation.base.*
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface NewsView : MvpView, CanShowLoading, PagingView, ImageUploadingView {
