@@ -88,7 +88,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity) {
-        onResultOk(postEntity.groupInPost.id)
+        onResultOk(/*postEntity.groupInPost.id*/)
     }
 
     override fun showLoading(show: Boolean) {
