@@ -5,35 +5,33 @@ import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.di.scope.PerService
 import com.intergroupapplication.presentation.feature.agreements.di.AgreementsViewModule
-import com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity
+import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
-import com.intergroupapplication.presentation.feature.group.view.GroupActivity
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.di.CommentsDetailsViewModule
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.confirmationmail.di.ConfirmationMailViewModule
 import com.intergroupapplication.presentation.feature.confirmationmail.di.ConfirmationUserProfileGatewayModule
-import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailActivity
+import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailFragment
 import com.intergroupapplication.presentation.feature.creategroup.di.CreateGroupViewModule
-import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
+import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupFragment
 import com.intergroupapplication.presentation.feature.createpost.di.CreatePostViewModule
-import com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity
+import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.createuserprofile.di.CreateUserProfileViewModule
-import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity
+import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.login.di.LoginViewModule
-import com.intergroupapplication.presentation.feature.login.view.LoginActivity
+import com.intergroupapplication.presentation.feature.login.view.LoginFragment
 import com.intergroupapplication.presentation.feature.mainActivity.di.MainActivityViewModule
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import com.intergroupapplication.presentation.feature.news.di.NewsViewModule
 import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.feature.recoveryPassword.di.RecoveryPasswordModule
-import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordActivity
+import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordFragment
 import com.intergroupapplication.presentation.feature.registration.di.RegistrationViewModule
-import com.intergroupapplication.presentation.feature.registration.view.RegistrationActivity
-import com.intergroupapplication.presentation.feature.splash.SplashActivity
+import com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment
+import com.intergroupapplication.presentation.feature.splash.SplashFragment
 import com.intergroupapplication.presentation.feature.splash.di.SplashViewModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -47,52 +45,48 @@ interface AppBuilderModule {
 
     @PerFragment
     @ContributesAndroidInjector(modules = [(LoginViewModule::class)])
-    fun provideLoginActivityFactory(): LoginActivity
+    fun provideLoginActivityFactory(): LoginFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [(RegistrationViewModule::class)])
-    fun provideRegistrationActivityFactory(): RegistrationActivity
+    fun provideRegistrationActivityFactory(): RegistrationFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [(CreateUserProfileViewModule::class)])
-    fun provideCreateProfileActivityFactory(): CreateUserProfileActivity
-
-    @PerFragment
-    @ContributesAndroidInjector(modules = [(NavigationViewModule::class)])
-    fun provideNavigationActivityFactory(): NavigationActivity
+    fun provideCreateProfileActivityFactory(): CreateUserProfileFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [ConfirmationMailViewModule::class,
         ConfirmationUserProfileGatewayModule::class])
-    fun provideConfirmationMailActivityFactory(): ConfirmationMailActivity
+    fun provideConfirmationMailActivityFactory(): ConfirmationMailFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [SplashViewModule::class])
-    fun provideSplashActivityFactory(): SplashActivity
+    fun provideSplashActivityFactory(): SplashFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [CreateGroupViewModule::class])
-    fun provideCreateGroupActivityFactory(): CreateGroupActivity
+    fun provideCreateGroupActivityFactory(): CreateGroupFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [GroupViewModule::class])
-    fun provideAdminGroupActivityFactory(): GroupActivity
+    fun provideAdminGroupActivityFactory(): GroupFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [CommentsDetailsViewModule::class])
-    fun provideCommentsDetailsActivityFactory(): CommentsDetailsActivity
+    fun provideCommentsDetailsActivityFactory(): CommentsDetailsFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])
-    fun provideCreatePostActivityFactory(): CreatePostActivity
+    fun provideCreatePostFragmentFactory(): CreatePostFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [AgreementsViewModule::class])
-    fun provideAgreementsActivityFactory(): AgreementsActivity
+    fun provideAgreementsFragmentFactory(): AgreementsFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [RecoveryPasswordModule::class])
-    fun provideRecoveryPasswordFactory(): RecoveryPasswordActivity
+    fun provideRecoveryPasswordFactory(): RecoveryPasswordFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [GroupListViewModule::class])

@@ -78,7 +78,7 @@
                             android:layout_height="match_parent"
                             android:clipToPadding="false"
                             android:orientation="vertical"
-                            tools:context=".presentation.feature.commentsdetails.view.CommentsDetailsActivity">
+                            tools:context=".presentation.feature.commentsdetails.view.CommentsDetailsFragment">
 
                             <include
                                 layout="@layout/item_group_post"

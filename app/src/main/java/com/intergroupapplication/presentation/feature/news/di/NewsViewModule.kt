@@ -28,7 +28,6 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.manager.DialogManager

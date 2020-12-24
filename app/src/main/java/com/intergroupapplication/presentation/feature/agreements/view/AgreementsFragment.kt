@@ -25,7 +25,7 @@ import com.intergroupapplication.presentation.feature.agreements.presenter.Agree
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_agreements.*
+import kotlinx.android.synthetic.main.fragment_agreements.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnCheckedChangeListener {
+class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnCheckedChangeListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
@@ -51,7 +51,6 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
         private const val RES_ID_RIGHTHOLDERS = R.string.rightholders
         private const val RES_ID_APPODEAL = R.string.appodealpolicy
 
-        fun getIntent(context: Context) = Intent(context, AgreementsActivity::class.java)
     }
 
 
@@ -63,7 +62,7 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
     fun providePresenter(): AgreementsPresenter = presenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_agreements
+    override fun layoutRes() = R.layout.fragment_agreements
 
     override fun viewCreated() {
         initCheckBox()
@@ -112,7 +111,7 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
     override fun getSnackBarCoordinator(): ViewGroup? = container
 
     override fun toSplash() {
-        findNavController().navigate(R.id.action_agreementsActivity2_to_splashActivity)
+        findNavController().navigate(R.id.action_AgreementsFragment2_to_splashActivity)
     }
 
     override fun showLoading(show: Boolean) {
@@ -146,15 +145,15 @@ class AgreementsActivity : BaseFragment(), AgreementsView, CompoundButton.OnChec
     private fun initBtn() {
         btnPrivacyPolicy.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_PRIVACY_POLICY, KEY_TITLE to RES_ID_PRIVACY_POLICY)
-            findNavController().navigate(R.id.action_agreementsActivity2_to_webActivity, bundle)
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
         btnRightholders.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_TERMS_OF_USE, KEY_TITLE to RES_ID_TERMS_OF_USE)
-            findNavController().navigate(R.id.action_agreementsActivity2_to_webActivity, bundle)
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
         btnTermsOfUse.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
-            findNavController().navigate(R.id.action_agreementsActivity2_to_webActivity, bundle)
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
     }
 

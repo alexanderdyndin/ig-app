@@ -19,8 +19,6 @@ class RegistrationPresenter @Inject constructor(private val registrationGateway:
                                                 private val errorHandler: ErrorHandler)
     : BasePresenter<RegistrationView>() {
 
-    var confirmMail: (email: String) -> Unit = {}
-
     fun performRegistration(entity: RegistrationEntity) {
         compositeDisposable.add(
                 registrationGateway.performRegistration(entity)
@@ -44,9 +42,6 @@ class RegistrationPresenter @Inject constructor(private val registrationGateway:
                 }))
     }
 
-    fun goToLoginScreen() {
-        //router.newRootScreen(LoginScreen())
-    }
 
     fun goToSettingsScreen() {
         //router.navigateTo(ActionApplicationDetailsScreen())

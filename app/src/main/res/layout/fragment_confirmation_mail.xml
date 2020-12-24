@@ -25,7 +25,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:navigationIcon="@drawable/ic_arrow_gray"
-                app:titleTextColor="@color/whiteTextColor" />
+                app:titleTextColor="@color/whiteTextColor"
+                android:visibility="invisible"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvWel"

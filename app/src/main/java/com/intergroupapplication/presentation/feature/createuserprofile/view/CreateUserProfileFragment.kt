@@ -20,7 +20,6 @@ import com.intergroupapplication.R
 import com.intergroupapplication.domain.exception.FIRST_NAME
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.SECOND_NAME
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -33,17 +32,17 @@ import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.activity_create_user_profile.*
+import kotlinx.android.synthetic.main.fragment_create_user_profile.*
 import kotlinx.android.synthetic.main.auth_loader.*
 
 import javax.inject.Inject
 
 
-class CreateUserProfileActivity : BaseFragment(), CreateUserProfileView,
+class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         CompoundButton.OnCheckedChangeListener, Validator.ValidationListener {
 
     companion object {
-        fun getIntent(context: Context?) = Intent(context, CreateUserProfileActivity::class.java)
+        fun getIntent(context: Context?) = Intent(context, CreateUserProfileFragment::class.java)
     }
 
     @Inject
@@ -72,7 +71,7 @@ class CreateUserProfileActivity : BaseFragment(), CreateUserProfileView,
     lateinit var name: AppCompatEditText
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_create_user_profile
+    override fun layoutRes() = R.layout.fragment_create_user_profile
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createUserCoordinator
 
@@ -109,7 +108,7 @@ class CreateUserProfileActivity : BaseFragment(), CreateUserProfileView,
     }
 
     override fun completed() {
-        findNavController().navigate(R.id.action_createUserProfileActivity_to_navigationActivity2)
+        findNavController().navigate(R.id.action_createUserProfileActivity_to_splashActivity)
     }
 
     override fun showLoading(show: Boolean) {

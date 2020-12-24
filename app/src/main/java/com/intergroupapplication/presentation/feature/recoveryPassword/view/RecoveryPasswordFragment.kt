@@ -14,7 +14,6 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.exception.*
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
@@ -31,22 +30,14 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.activity_recovery_password.*
-import kotlinx.android.synthetic.main.activity_recovery_password.etDoublePassword
-import kotlinx.android.synthetic.main.activity_recovery_password.etMail
-import kotlinx.android.synthetic.main.activity_recovery_password.etPassword
+import kotlinx.android.synthetic.main.fragment_recovery_password.*
+import kotlinx.android.synthetic.main.fragment_recovery_password.etDoublePassword
+import kotlinx.android.synthetic.main.fragment_recovery_password.etMail
+import kotlinx.android.synthetic.main.fragment_recovery_password.etPassword
 
 import javax.inject.Inject
 
-class RecoveryPasswordActivity : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener {
-
-    companion object {
-        fun getIntent(context: Context?): Intent =
-                Intent(context, RecoveryPasswordActivity::class.java)
-    }
-
-//    @Inject
-//    override lateinit var navigator: SupportAppNavigator
+class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener {
 
     @Inject
     @InjectPresenter
@@ -64,7 +55,7 @@ class RecoveryPasswordActivity : BaseFragment(), RecoveryPasswordView, Validator
     @Inject
     lateinit var validator: Validator
 
-    override fun layoutRes() = R.layout.activity_recovery_password
+    override fun layoutRes() = R.layout.fragment_recovery_password
 
     override fun getSnackBarCoordinator() = coordinator
 

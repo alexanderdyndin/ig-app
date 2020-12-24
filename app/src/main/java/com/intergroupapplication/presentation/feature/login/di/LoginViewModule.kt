@@ -1,10 +1,9 @@
 package com.intergroupapplication.presentation.feature.login.di
 
 import android.content.Context
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.login.view.LoginActivity
+import com.intergroupapplication.presentation.feature.login.view.LoginFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -18,14 +17,14 @@ class LoginViewModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(activity: LoginActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: LoginFragment): Validator =
+            Validator(fragment).apply { setValidationListener(fragment) }
 
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: LoginActivity): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: LoginFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment

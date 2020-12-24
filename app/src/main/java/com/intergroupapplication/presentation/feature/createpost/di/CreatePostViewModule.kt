@@ -13,7 +13,7 @@ import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity
+import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -27,18 +27,18 @@ class CreatePostViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: CreatePostActivity): DialogManager =
+    fun provideDialogManager(activity: CreatePostFragment): DialogManager =
             DialogManager(activity.requireActivity().supportFragmentManager)
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(activity: CreatePostActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(activity: CreatePostFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
             PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: CreatePostActivity): ImageLoader =
+    fun provideFrescoImageLoader(activity: CreatePostFragment): ImageLoader =
             FrescoImageLoader(activity.requireActivity())
 
 

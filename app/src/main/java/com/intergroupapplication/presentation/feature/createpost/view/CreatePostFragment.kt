@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -15,7 +14,6 @@ import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -23,26 +21,16 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.isVisible
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.exstension.showKeyboard
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
-import com.intergroupapplication.presentation.feature.group.view.GroupActivity.Companion.FRAGMENT_RESULT
-import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule.Companion.GROUP_ID
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.activity_create_post.*
+import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
 
 import javax.inject.Inject
 
-class CreatePostActivity : BaseFragment(), CreatePostView {
+class CreatePostFragment : BaseFragment(), CreatePostView {
 
-    companion object {
-
-        fun getIntent(context: Context?, groupId: String) =
-                Intent(context, CreatePostActivity::class.java).apply {
-                    putExtra(GROUP_ID, groupId)
-                }
-
-    }
 
     @Inject
     @InjectPresenter
@@ -55,7 +43,7 @@ class CreatePostActivity : BaseFragment(), CreatePostView {
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_create_post
+    override fun layoutRes() = R.layout.fragment_create_post
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createPostCoordinator
 
@@ -206,12 +194,7 @@ class CreatePostActivity : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun onResultOk(groupId: String) {
-//        val newIntent = Intent().apply {
-//            putExtra(GROUP_ID_VALUE, groupId)
-//        }
-//        setResult(Activity.RESULT_OK, newIntent)
-//        finish()
+    private fun onResultOk(/*groupId: String*/) {
         findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, BasePresenter.POST_CREATED)
         //findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID_VALUE, groupId)
         findNavController().popBackStack()

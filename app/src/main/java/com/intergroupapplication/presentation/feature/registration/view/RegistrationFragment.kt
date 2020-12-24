@@ -2,8 +2,6 @@ package com.intergroupapplication.presentation.feature.registration.view
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -19,7 +17,6 @@ import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
@@ -40,7 +37,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.activity_registration.*
+import kotlinx.android.synthetic.main.fragment_registration.*
 import kotlinx.android.synthetic.main.auth_loader.*
 
 import timber.log.Timber
@@ -48,11 +45,10 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class RegistrationActivity : BaseFragment(), RegistrationView, Validator.ValidationListener, ActionMode.Callback {
+class RegistrationFragment : BaseFragment(), RegistrationView, Validator.ValidationListener, ActionMode.Callback {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
-        //fun getIntent(context: Context?) = Intent(context, RegistrationActivity::class.java)
     }
 
     @Inject
@@ -79,7 +75,7 @@ class RegistrationActivity : BaseFragment(), RegistrationView, Validator.Validat
     private lateinit var rxPermission: RxPermissions
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_registration
+    override fun layoutRes() = R.layout.fragment_registration
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = registrationCoordinator
 
@@ -111,7 +107,7 @@ class RegistrationActivity : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)

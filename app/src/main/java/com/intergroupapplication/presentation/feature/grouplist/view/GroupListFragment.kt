@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +29,6 @@ import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.GROUP_CREATED
@@ -40,18 +38,13 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.exstension.doOrIfNull
-import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
-import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
-import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule.Companion.GROUP_ID
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
-import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import kotlinx.android.synthetic.main.fragment_news.*
@@ -198,7 +191,8 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        //super.onActivityResult(requestCode, resultCode, data)
+        //todo добавить livedata из фрагмента создания группы
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GROUP_CREATED -> presenter.refresh()
@@ -384,4 +378,5 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         //findNavController().navigate(R.id.action_navigationActivity2_to_newsFragment2)
         //drawer.openDrawer()
     }
+
 }

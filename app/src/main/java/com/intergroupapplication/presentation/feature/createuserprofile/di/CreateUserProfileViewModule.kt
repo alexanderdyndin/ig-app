@@ -3,7 +3,6 @@ package com.intergroupapplication.presentation.feature.createuserprofile.di
 import android.content.Context
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -13,12 +12,11 @@ import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity
+import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.mobsandgeeks.saripaar.Validator
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
@@ -30,15 +28,15 @@ class CreateUserProfileViewModule {
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(activity: CreateUserProfileActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(fragment: CreateUserProfileFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: CreateUserProfileActivity): ImageLoader =
-            FrescoImageLoader(activity.requireActivity())
+    fun provideFrescoImageLoader(fragment: CreateUserProfileFragment): ImageLoader =
+            FrescoImageLoader(fragment.requireActivity())
 
     @PerFragment
     @Provides
@@ -54,8 +52,8 @@ class CreateUserProfileViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: CreateUserProfileActivity): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: CreateUserProfileFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
@@ -74,6 +72,6 @@ class CreateUserProfileViewModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(activity: CreateUserProfileActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: CreateUserProfileFragment): Validator =
+            Validator(fragment).apply { setValidationListener(fragment) }
 }

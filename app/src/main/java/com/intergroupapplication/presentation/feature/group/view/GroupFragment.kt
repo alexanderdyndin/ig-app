@@ -10,9 +10,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
@@ -28,7 +26,6 @@ import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserRole
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.POST_CREATED
 import com.intergroupapplication.presentation.base.ImageUploader
@@ -37,17 +34,15 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_DETAILS_REQUEST
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
-import com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_DETAILS_REQUEST
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_group.*
+import kotlinx.android.synthetic.main.fragment_group.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.item_group_header_view.*
@@ -60,7 +55,7 @@ import javax.inject.Inject
 import kotlin.math.abs
 
 
-class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment(), GroupView,
+class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment(), GroupView,
         AppBarLayout.OnOffsetChangedListener, PagingView by pagingDelegate {
 
     companion object {
@@ -70,7 +65,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
         private const val GROUP_ID = "group_id"
         const val FRAGMENT_RESULT = "fragmentResult"
 
-        fun getIntent(context: Context?, groupId: String) = Intent(context, GroupActivity::class.java)
+        fun getIntent(context: Context?, groupId: String) = Intent(context, GroupFragment::class.java)
                 .apply {
                     action = groupId
                     putExtra(GROUP_ID, groupId)
@@ -84,7 +79,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
             // The browser connected to the session successfully, use the token to create the controller
             super.onConnected()
             mMediaBrowserCompat.sessionToken.also { token ->
-                val mediaController = MediaControllerCompat( this@GroupActivity.requireActivity().applicationContext, token)
+                val mediaController = MediaControllerCompat( this@GroupFragment.requireActivity().applicationContext, token)
                 MediaControllerCompat.setMediaController(requireActivity(), mediaController)
             }
             playPauseBuild()
@@ -177,7 +172,7 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
     private var mIsTheTitleContainerVisible = true
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_group
+    override fun layoutRes() = R.layout.fragment_group
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = adminGroupCoordinator
 
@@ -321,7 +316,8 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        //super.onActivityResult(requestCode, resultCode, data)
+        //todo переписать callback под фрагменты
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
@@ -385,8 +381,8 @@ class GroupActivity(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
     private fun openCreatePost(post: String) {
         val data = bundleOf(GROUP_ID to post)
-        findNavController().navigate(R.id.action_groupActivity_to_createPostActivity, data)
-        //startActivityForResult(CreatePostActivity.getIntent(requireContext(), post), POST_CREATED)
+        findNavController().navigate(R.id.action_groupActivity_to_CreatePostFragment, data)
+        //startActivityForResult(CreatePostFragment.getIntent(requireContext(), post), POST_CREATED)
     }
 
     private fun handleToolbarTitleVisibility(percentage: Float) {

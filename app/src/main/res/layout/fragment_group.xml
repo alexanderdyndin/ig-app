@@ -22,14 +22,14 @@
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.feature.group.view.GroupActivity">
+        tools:context=".presentation.feature.group.view.GroupFragment">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/adminGroupCoordinator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            tools:context=".presentation.feature.group.view.GroupActivity">
+            tools:context=".presentation.feature.group.view.GroupFragment">
 
 
             <com.google.android.material.appbar.AppBarLayout

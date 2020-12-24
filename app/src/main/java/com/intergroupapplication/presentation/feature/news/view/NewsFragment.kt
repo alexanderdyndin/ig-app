@@ -6,6 +6,7 @@ import androidx.paging.PagedList
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -30,36 +31,29 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
-import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_COUNT_VALUE
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.COMMENTS_DETAILS_REQUEST
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.Companion.GROUP_ID_VALUE
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_COUNT_VALUE
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_DETAILS_REQUEST
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
-import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.navigation.di.NavigationViewModule.Companion.GROUP_ID
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
-import kotlinx.android.synthetic.main.activity_group.*
-import kotlinx.android.synthetic.main.activity_navigation.*
+import com.workable.errorhandler.Action
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.emptyText
-import kotlinx.android.synthetic.main.layout_drawer.*
-import kotlinx.android.synthetic.main.layout_profile_header.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import javax.inject.Inject
 
 class NewsFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegate)
-    : BaseFragment(), NewsView,
-        PagingView by pagingDelegate {
+    : BaseFragment(), NewsView, PagingView by pagingDelegate {
 
     constructor() : this(PagingDelegate())
 
     companion object {
-
+        private const val EXIT_DELAY = 2000L
         fun getInstance() = NewsFragment()
 
     }
@@ -85,6 +79,12 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     @Inject
     lateinit var adapterWrapper: AdmobBannerRecyclerAdapterWrapper
+
+    private var exitHandler: Handler? = null
+
+    private var doubleBackToExitPressedOnce = false
+
+    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
     override fun layoutRes() = R.layout.fragment_news
     override fun getSnackBarCoordinator(): ViewGroup? = newsCoordinator
@@ -113,7 +113,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         adapter.complaintListener = { presenter.complaintPost(it) }
         newsPosts.adapter = adapterWrapper
         newSwipe.setOnRefreshListener { presenter.refresh()
-            val t = Appodeal.getNativeAds(2)}
+            }
         //presenter.getNews()
         //(activity as NavigationActivity).newsLaunchCount++
     }
@@ -153,7 +153,8 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        //super.onActivityResult(requestCode, resultCode, data)
+        //todo посмотреть что тут и переписать под фрагменты
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 COMMENTS_DETAILS_REQUEST -> {
@@ -287,4 +288,11 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
                 { profileAvatarHolder.showAvatar(it) },
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
     }
+
+    override fun openConfirmationEmail() = Action { _, _ ->
+        val email = userSession.email?.email.orEmpty()
+        val data = bundleOf("entity" to email)
+        findNavController().navigate(R.id.action_newsFragment2_to_confirmationMailActivity, data)
+    }
+
 }

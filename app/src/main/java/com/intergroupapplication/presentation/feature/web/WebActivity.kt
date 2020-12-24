@@ -7,25 +7,16 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
-import kotlinx.android.synthetic.main.activity_web.*
+import kotlinx.android.synthetic.main.fragment_web.*
 
 class WebActivity : Fragment() {
 
     companion object {
         private const val KEY_PATH = "PATH"
         private const val KEY_TITLE = "TITLE"
-
-        fun getIntent(context: Context?, path: String, title: Int): Intent {
-            return Intent(context, WebActivity::class.java)
-                    .apply {
-                        putExtra(KEY_PATH, path)
-                        putExtra(KEY_TITLE, title)
-                    }
-        }
     }
 
     private lateinit var path: String
@@ -33,7 +24,7 @@ class WebActivity : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         path = arguments?.getString(KEY_PATH)!!
-        return inflater.inflate(R.layout.activity_web, container, false)
+        return inflater.inflate(R.layout.fragment_web, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

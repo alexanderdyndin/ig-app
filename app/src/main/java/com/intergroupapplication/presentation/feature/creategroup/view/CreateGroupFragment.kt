@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.creategroup.view
 
-import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
@@ -10,7 +9,6 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
@@ -20,7 +18,6 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.intergroupapplication.R
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -28,14 +25,13 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
-import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_group_create.*
+import kotlinx.android.synthetic.main.fragment_group_create.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import moxy.presenter.InjectPresenter
@@ -43,10 +39,10 @@ import moxy.presenter.ProvidePresenter
 
 import javax.inject.Inject
 
-class CreateGroupActivity : BaseFragment(), CreateGroupView, Validator.ValidationListener {
+class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.ValidationListener {
 
     companion object {
-        fun getIntent(context: Context?) = Intent(context, CreateGroupActivity::class.java)
+        fun getIntent(context: Context?) = Intent(context, CreateGroupFragment::class.java)
     }
 
     @Inject
@@ -69,7 +65,7 @@ class CreateGroupActivity : BaseFragment(), CreateGroupView, Validator.Validatio
     private var subjects: MutableList<String> = mutableListOf<String>()
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_group_create
+    override fun layoutRes() = R.layout.fragment_group_create
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createGroupCoordinator
 

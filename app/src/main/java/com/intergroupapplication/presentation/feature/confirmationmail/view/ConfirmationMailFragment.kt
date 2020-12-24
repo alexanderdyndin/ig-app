@@ -1,11 +1,8 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.view
 
-import android.content.Context
-import android.content.Intent
 import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -13,31 +10,22 @@ import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.activity_confirmation_mail.*
-import kotlinx.android.synthetic.main.activity_registration.*
+import kotlinx.android.synthetic.main.fragment_confirmation_mail.*
 import kotlinx.android.synthetic.main.auth_loader.*
 
 import javax.inject.Inject
 
-class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {
+class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
     companion object {
         const val REGISTRATION_ENTITY = "REGISTRATION_ENTITY"
-
-        fun getIntent(context: Context?, entity: String) =
-                Intent(context, ConfirmationMailActivity::class.java)
-                        .apply {
-                            putExtra(REGISTRATION_ENTITY, entity)
-                        }
     }
 
     @Inject
@@ -45,25 +33,16 @@ class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {
     lateinit var presenter: ConfirmationMailPresenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_confirmation_mail
+    override fun layoutRes() = R.layout.fragment_confirmation_mail
 
     @ProvidePresenter
     fun providePresenter(): ConfirmationMailPresenter = presenter
 
-//    @Inject
-//    override lateinit var navigator: SupportAppNavigator
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = confirmationCoordinator
 
     override fun viewCreated() {
         presenter.start(arguments?.getString("amount"))
-
-//        setSupportActionBar(tollbar)
-//        supportActionBar?.apply {
-//            setHomeButtonEnabled(true)
-//            setDisplayHomeAsUpEnabled(true)
-//            title = ""
-//        }
 
         setErrorHandler()
 
@@ -72,7 +51,7 @@ class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {
                 .let { compositeDisposable.add(it) }
 
         btnChangeEmail.clicks()
-                .subscribe { findNavController().popBackStack() }
+                .subscribe { findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity) }
                 .also { compositeDisposable.add(it) }
 
         btnRepeatCode.clicks()
@@ -80,12 +59,12 @@ class ConfirmationMailActivity : BaseFragment(), ConfirmationMailView {
                 .also { compositeDisposable.add(it) }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
-            android.R.id.home -> findNavController().popBackStack()
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            android.R.id.home -> findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity)
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     override fun clearViewErrorState() {
         confirmation.text?.clear()

@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
@@ -28,7 +27,6 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -38,7 +36,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.adapter.Co
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
-import com.intergroupapplication.presentation.feature.group.view.GroupActivity.Companion.FRAGMENT_RESULT
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -47,8 +45,8 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_comments_details.*
-import kotlinx.android.synthetic.main.activity_comments_details.emptyText
+import kotlinx.android.synthetic.main.fragment_comments_details.*
+import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
@@ -57,7 +55,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
+class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
         AppBarLayout.OnOffsetChangedListener, PagingView by pagingDelegate {
 
     constructor() : this(PagingDelegate())
@@ -70,23 +68,6 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
         private const val GROUP_ID = "group_id"
         private const val COMMENT_ID = "comment_id"
         private const val POST_ID = "post_id"
-
-        fun getIntent(context: Context,
-                      groupId: String,
-                      commentId: String,
-                      postId: String) = Intent(context, CommentsDetailsActivity::class.java)
-                .apply {
-                    action = groupId + commentId + postId
-                    putExtra(GROUP_ID, groupId)
-                    putExtra(COMMENT_ID, commentId)
-                    putExtra(POST_ID, postId)
-                }
-
-        fun getIntent(context: Context?,
-                      entity: InfoForCommentEntity?) = Intent(context, CommentsDetailsActivity::class.java)
-                .apply {
-                    putExtra(COMMENT_POST_ENTITY, entity)
-                }
     }
 
     @Inject
@@ -119,7 +100,7 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
     private var lastRepliedComment: CommentEntity? = null
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_comments_details
+    override fun layoutRes() = R.layout.fragment_comments_details
 
     override fun getSnackBarCoordinator(): ViewGroup? = coordinator
 
@@ -352,10 +333,10 @@ class CommentsDetailsActivity(private val pagingDelegate: PagingDelegate) : Base
     }
 
     private fun onResultOk(groupId: String, commentsCount: String) {
-        val intent = Intent().apply {
-            putExtra(GROUP_ID_VALUE, groupId)
-            putExtra(COMMENTS_COUNT_VALUE, commentsCount)
-        }
+//        val intent = Intent().apply {
+//            putExtra(GROUP_ID_VALUE, groupId)
+//            putExtra(COMMENTS_COUNT_VALUE, commentsCount)
+//        }
         //setResult(Activity.RESULT_OK, intent)
         //finish()
         findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, COMMENTS_DETAILS_REQUEST)

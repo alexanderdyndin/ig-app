@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
@@ -14,10 +13,7 @@ import androidx.core.content.ContextCompat
 import com.intergroupapplication.R
 import com.intergroupapplication.device.notification.CreatorType
 import com.intergroupapplication.device.notification.NotificationCreatorOptions
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
-import com.intergroupapplication.presentation.feature.group.view.GroupActivity
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
 
 /**
  * Created by abakarmagomedov on 27/09/2018 at project InterGroupApplication.
@@ -54,12 +50,12 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
     private fun createPendingIntent(type: CreatorType.Comment): PendingIntent? {
 //        val commentIntent = createCommentIntent(type)
 //        val groupIntent = createGroupIntent(type)
-        val navigationIntent = createNavigationIntent()
+        //val navigationIntent = createNavigationIntent()
 
         val stackBuilder = TaskStackBuilder.create(context).apply {
             addParentStack(MainActivity::class.java)
             //todo rewrite it for fragments
-            addNextIntent(navigationIntent)
+            //addNextIntent(navigationIntent)
 //            addNextIntent(groupIntent)
 //            addNextIntent(commentIntent)
         }
@@ -73,5 +69,5 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
 //    private fun createGroupIntent(type: CreatorType.Comment): Intent =
 //            GroupActivity.getIntent(context, type.groupId)
 //
-    private fun createNavigationIntent(): Intent = NavigationActivity.getIntent(context)
+    //private fun createNavigationIntent(): Intent = MainActivity.getIntent(context)
 }

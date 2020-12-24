@@ -3,7 +3,7 @@ package com.intergroupapplication.presentation.feature.registration.di
 import android.content.Context
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.registration.view.RegistrationActivity
+import com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -17,7 +17,7 @@ class RegistrationViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(fragment: RegistrationActivity): DialogManager =
+    fun provideDialogManager(fragment: RegistrationFragment): DialogManager =
             DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
@@ -31,7 +31,7 @@ class RegistrationViewModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(fragment: RegistrationActivity): Validator =
+    fun provideValidator(fragment: RegistrationFragment): Validator =
             Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
 
 }

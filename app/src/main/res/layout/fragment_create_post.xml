@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:background="@color/createPostBackgroundColor"
         android:orientation="vertical"
-        tools:context=".presentation.feature.createpost.view.CreatePostActivity">
+        tools:context=".presentation.feature.createpost.view.CreatePostFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.presentation.delegate.DialogDelegate
+import com.intergroupapplication.presentation.exstension.show
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import dagger.android.support.AndroidSupportInjection
@@ -25,6 +28,10 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     @LayoutRes
     protected abstract fun layoutRes(): Int
+
+    companion object {
+        const val GROUP_ID = "group_id"
+    }
 
     /**
      *     BaseActivity compatibility
@@ -65,14 +72,15 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 UserNotVerifiedException::class.java to openConfirmationEmail(),
                 ImeiException::class.java to getActionForBlockedImei(),
                 InvalidRefreshException::class.java to openAutorize(),
-                PageNotFoundException::class.java to Action { _, _ -> })
+                PageNotFoundException::class.java to
+                        Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())})
 
         errorHandlerInitializer.initializeErrorHandler(errorMap,
                 createSnackBarAction(R.string.unknown_error))
     }
 
     private fun getActionForBlockedImei() = Action { throwable, _ ->
-        //        startActivity(Intent(this, AgreementsActivity::class.java))
+        //        startActivity(Intent(this, AgreementsFragment::class.java))
         dialogDelegate.showErrorSnackBar((throwable as ImeiException).message.orEmpty())
         userSession.clearAllData()
 
@@ -95,7 +103,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     private val actionForBlockedUser = Action { _, _ ->
         userSession.clearAllData()
-//        startActivity(Intent(this, AgreementsActivity::class.java).also
+//        startActivity(Intent(this, AgreementsFragment::class.java).also
 //        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
     }
 
@@ -115,8 +123,8 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     private fun openCreateProfile() = Action { _, _ ->
     }
 
-    private fun openConfirmationEmail() = Action { _, _ ->
-        val email = userSession.email?.email.orEmpty()
+    protected open fun openConfirmationEmail() = Action { _, _ ->
+
     }
 
     private fun openAutorize() = Action { _, _ ->

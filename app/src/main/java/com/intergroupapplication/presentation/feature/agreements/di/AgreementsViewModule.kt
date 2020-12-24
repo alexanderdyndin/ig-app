@@ -4,7 +4,7 @@ import android.content.Context
 import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity
+import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -17,7 +17,7 @@ class AgreementsViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: AgreementsActivity): DialogManager =
+    fun provideDialogManager(activity: AgreementsFragment): DialogManager =
             DialogManager(activity.requireActivity().supportFragmentManager)
 
 

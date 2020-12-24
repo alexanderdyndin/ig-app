@@ -1,10 +1,9 @@
 package com.intergroupapplication.presentation.feature.recoveryPassword.di
 
 import android.content.Context
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordActivity
+import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -18,8 +17,8 @@ class RecoveryPasswordModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: RecoveryPasswordActivity): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: RecoveryPasswordFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
@@ -32,7 +31,7 @@ class RecoveryPasswordModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(activity: RecoveryPasswordActivity): Validator =
-            Validator(activity.requireActivity()).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: RecoveryPasswordFragment): Validator =
+            Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
 
 }

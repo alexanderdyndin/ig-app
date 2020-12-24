@@ -23,6 +23,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 import javax.inject.Inject
 
@@ -173,17 +174,13 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
         groupList()
     }
 
-    fun goToGroupScreen(groupId: String) {
-        //router.navigateTo(GroupScreen(groupId))
-    }
-
     fun sub(groupId: String) {
         groupsDisposable.add(groupGateway.followGroup(groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     groupList()
-                    Log.d("123", "Subscribed")
+                    Timber.d("Subscribed")
                 }, {
                     errorHandler.handle(it)
                 }))
@@ -195,7 +192,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     groupList()
-                    Log.d("123", "UnSubscribed")
+                    Timber.d("UnSubscribed")
                 }, {
                     errorHandler.handle(it)
                 }))
@@ -261,7 +258,6 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
 
     fun goOutFromProfile() {
         sessionStorage.logout()
-        ////router.newRootScreen(LoginScreen())
     }
 
 

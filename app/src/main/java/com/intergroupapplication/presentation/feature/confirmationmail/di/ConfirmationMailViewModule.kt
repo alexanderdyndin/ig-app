@@ -1,12 +1,9 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.di
 
 import android.content.Context
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailActivity
-import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailActivity.Companion.REGISTRATION_ENTITY
+import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -19,8 +16,8 @@ class ConfirmationMailViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: ConfirmationMailActivity): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: ConfirmationMailFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment

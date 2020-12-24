@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
@@ -16,8 +15,7 @@ import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
-import com.intergroupapplication.presentation.feature.news.view.NewsFragment
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -45,20 +43,20 @@ class CommentsDetailsViewModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(activity: CommentsDetailsActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: CommentsDetailsFragment): Validator =
+            Validator(fragment).apply { setValidationListener(fragment) }
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(activity: CommentsDetailsActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(fragment: CommentsDetailsFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: CommentsDetailsActivity): ImageLoader =
-            FrescoImageLoader(activity.requireActivity())
+    fun provideFrescoImageLoader(fragment: CommentsDetailsFragment): ImageLoader =
+            FrescoImageLoader(fragment.requireActivity())
 
 
     @PerFragment
@@ -69,8 +67,8 @@ class CommentsDetailsViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: CommentsDetailsActivity): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: CommentsDetailsFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
@@ -83,7 +81,7 @@ class CommentsDetailsViewModule {
 
     @PerFragment
     @Provides
-    fun provideLinearLayoutManager(activity: CommentsDetailsActivity): RecyclerView.LayoutManager =
-            LinearLayoutManager(activity.requireActivity(), LinearLayoutManager.VERTICAL, false)
+    fun provideLinearLayoutManager(fragment: CommentsDetailsFragment): RecyclerView.LayoutManager =
+            LinearLayoutManager(fragment.requireActivity(), LinearLayoutManager.VERTICAL, false)
 
 }

@@ -11,8 +11,7 @@ import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.agreements.view.AgreementsActivity
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
+import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import dagger.android.AndroidInjection
@@ -118,7 +117,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
     }
 
     private fun getActionForBlockedImei() = Action { throwable, _ ->
-        startActivity(Intent(this, AgreementsActivity::class.java))
+        startActivity(Intent(this, AgreementsFragment::class.java))
         dialogDelegate.showErrorSnackBar((throwable as ImeiException).message.orEmpty())
         userSession.clearAllData()
     }
@@ -134,14 +133,14 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
     private fun getActionForBlockedGroup() = actionForBlockedGroup
 
     private val actionForBlockedGroup = Action { _, _ ->
-        startActivity(Intent(this, NavigationActivity::class.java).also
-        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
+//        startActivity(Intent(this, NavigationActivity::class.java).also
+//        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
     }
 
     private val actionForBlockedUser = Action { _, _ ->
         userSession.clearAllData()
-        startActivity(Intent(this, AgreementsActivity::class.java).also
-        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
+//        startActivity(Intent(this, AgreementsFragment::class.java).also
+//        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
     }
 
     private fun createSnackBarAction(message: Int) =
@@ -158,7 +157,7 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
     }
 
     private fun openConfirmationEmail() = Action { _, _ ->
-        val email = userSession.email?.email.orEmpty()
+        //val email = userSession.email?.email.orEmpty()
         //router.newRootChain(RegistrationScreen(), ConfirmationMailScreen(email))
     }
 

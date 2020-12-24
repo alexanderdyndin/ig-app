@@ -6,7 +6,6 @@ import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.service.CreateGroupService
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.CreateGroupGateway
@@ -17,7 +16,7 @@ import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity
+import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -32,20 +31,20 @@ class CreateGroupViewModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(activity: CreateGroupActivity): Validator =
-            Validator(activity.requireActivity()).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: CreateGroupFragment): Validator =
+            Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(activity: CreateGroupActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(fragment: CreateGroupFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: CreateGroupActivity): ImageLoader =
-            FrescoImageLoader(activity.requireActivity())
+    fun provideFrescoImageLoader(fragment: CreateGroupFragment): ImageLoader =
+            FrescoImageLoader(fragment.requireActivity())
 
     @PerFragment
     @Provides
@@ -68,8 +67,8 @@ class CreateGroupViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: CreateGroupActivity): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: CreateGroupFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
@@ -18,7 +17,7 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter
-import com.intergroupapplication.presentation.feature.group.view.GroupActivity
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -36,8 +35,8 @@ class GroupViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: GroupActivity): ImageLoader =
-            FrescoImageLoader(activity.requireActivity())
+    fun provideFrescoImageLoader(fragment: GroupFragment): ImageLoader =
+            FrescoImageLoader(fragment.requireActivity())
 
     @PerFragment
     @Provides
@@ -46,9 +45,9 @@ class GroupViewModule {
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(activity: GroupActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(fragment: GroupFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides
@@ -58,8 +57,8 @@ class GroupViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(activity: GroupActivity): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: GroupFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
     @PerFragment
     @Provides
@@ -84,7 +83,7 @@ class GroupViewModule {
 
     @PerFragment
     @Provides
-    fun provideLinearLayoutManager(activity: GroupActivity): RecyclerView.LayoutManager =
-            LinearLayoutManager(activity.requireContext(), LinearLayoutManager.VERTICAL, false)
+    fun provideLinearLayoutManager(fragment: GroupFragment): RecyclerView.LayoutManager =
+            LinearLayoutManager(fragment.requireContext(), LinearLayoutManager.VERTICAL, false)
 
 }

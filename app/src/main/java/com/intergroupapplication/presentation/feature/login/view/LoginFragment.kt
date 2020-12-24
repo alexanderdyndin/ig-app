@@ -15,7 +15,6 @@ import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.exception.EMAIL
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.PASSWORD
-import com.intergroupapplication.presentation.base.BaseActivity
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.*
@@ -32,7 +31,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.auth_loader.*
 
 import timber.log.Timber
@@ -40,12 +39,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class LoginActivity : BaseFragment(), LoginView, Validator.ValidationListener {
+class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
 
-        fun getIntent(context: Context?) = Intent(context, LoginActivity::class.java)
+        fun getIntent(context: Context?) = Intent(context, LoginFragment::class.java)
     }
 
     @Inject
@@ -67,14 +66,12 @@ class LoginActivity : BaseFragment(), LoginView, Validator.ValidationListener {
     @Inject
     lateinit var validator: Validator
 
-//    @Inject
-//    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
 
     @LayoutRes
-    override fun layoutRes() = R.layout.activity_login
+    override fun layoutRes() = R.layout.fragment_login
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = loginCoordinator
 
