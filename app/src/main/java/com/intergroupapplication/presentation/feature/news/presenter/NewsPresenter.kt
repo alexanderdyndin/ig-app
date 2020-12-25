@@ -24,6 +24,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 import javax.inject.Inject
 
@@ -43,7 +44,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
         newsDisposable.add(newsDataSourceFactory.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
+                //.handleLoading(viewState)
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
@@ -55,7 +56,9 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
+                //.handleLoading(viewState)
+                .doOnSubscribe { viewState.showLoading(true) }
+                .doFinally { viewState.showLoading(false) }
                 .subscribe({
                     viewState.newsLoaded(it)
                 }, {
@@ -101,7 +104,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
         getNews()
     }
 
-    private fun unsubscribe() {
+    fun unsubscribe() {
         newsDisposable.clear()
     }
 
@@ -152,14 +155,10 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
         uploadingImageDisposable?.dispose()
     }
 
-    fun goOutFromProfile() {
-        sessionStorage.logout()
-        ////router.newRootScreen(LoginScreen())
-    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        getNews()
+        refresh()
     }
 
 

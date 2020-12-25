@@ -21,7 +21,9 @@ import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
+import com.intergroupapplication.presentation.exstension.show
 import kotlinx.android.synthetic.main.item_group_in_list.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
 
@@ -50,6 +52,18 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
     private var isLoading = false
     private var isError = false
 
+    fun itemUpdate(id: String) {
+        currentList?.first { it.id == id }.let {
+            it?.isFollowing = !(it?.isFollowing ?: true)
+            if (it?.isFollowing == true) {
+                it.followersCount = (it.followersCount.toInt() + 1).toString()
+            } else if (it?.isFollowing == false) {
+                it.followersCount = (it.followersCount.toInt() - 1).toString()
+            }
+        }
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             loadingViewType -> LoadingViewHolder(parent.inflate(R.layout.post_item_loading))
@@ -70,6 +84,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
     override fun getItemCount() = super.getItemCount() + (if (isLoading) 1 else 0) + (if (isError) 1 else 0)
 
     override fun itemCount() = itemCount
+
 
     override fun getItemViewType(position: Int): Int {
         if (position == itemCount - 1) {
@@ -150,12 +165,14 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                     if (item.isFollowing) {
                         setOnClickListener {
                             unsubscribeClickListener.invoke(item.id)
+                            view.subscribingProgress.show()
                         }
                         text = resources.getText(R.string.unsubscribe)
                         setBackgroundResource(R.drawable.btn_unsub)
                     } else {
                         setOnClickListener {
                             subscribeClickListener.invoke(item.id)
+                            view.subscribingProgress.show()
                         }
                         text = resources.getText(R.string.subscribe)
                         setBackgroundResource(R.drawable.btn_sub)
@@ -171,6 +188,7 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                     //imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
                 }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
                 })
+                view.subscribingProgress.hide()
             }
         }
 

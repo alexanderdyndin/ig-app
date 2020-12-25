@@ -39,7 +39,7 @@ class PagingDelegate @Inject constructor() : PagingView {
                 adapter?.removeError()
                 emptyStateView?.hide()
                 adapter?.itemCount()?.let {
-                    if (it  > 0) {
+                    if (it > 0) {
                         adapter?.addLoading()
                     } else {
                         (swipeLayout as? SwipeRefreshLayout)?.isRefreshing = true

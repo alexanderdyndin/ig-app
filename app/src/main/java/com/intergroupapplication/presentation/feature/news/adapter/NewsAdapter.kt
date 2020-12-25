@@ -119,7 +119,7 @@ class NewsAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 //postPrescription.text = getDateDescribeByString(item.date)
                 postCommentsCount.text = item.commentsCount
                 item.postText.let { it ->
-                    if (!it.isEmpty()) {
+                    if (it.isNotEmpty()) {
                         postText.text = item.postText
                         postText.show()
                         postText.setOnClickListener {

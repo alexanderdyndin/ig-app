@@ -20,4 +20,5 @@ interface GroupListView : MvpView, CanShowLoading, PagingViewGroup, ImageUploadi
     fun showUserInfo(userEntity: UserEntity)
     fun avatarChanged(url: String)
     fun showLastAvatar(lastAvatar: String?)
+    fun subscribeGroup(id: String)
 }

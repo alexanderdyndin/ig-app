@@ -121,7 +121,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
         controlCommentEditTextChanges()
         //setSupportActionBar(toolbar)
         //supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbarAction.setOnClickListener { onResultOk(groupPostEntity.id, postCommentsCount.text.toString()) }
+        toolbarAction.setOnClickListener { findNavController().popBackStack() }
         pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         ViewCompat.setNestedScrollingEnabled(commentsList, false)
         settingsPost.clicks()
@@ -135,10 +135,6 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
         swipeLayout.isRefreshing = false
     }
 
-//    override fun onBackPressed() {
-//        onResultOk(groupPostEntity.id, postCommentsCount.text.toString())
-//    }
-
     override fun onResume() {
         super.onResume()
         appbar.addOnOffsetChangedListener(this)
@@ -148,6 +144,11 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
         appbar.removeOnOffsetChangedListener(this)
         super.onStop()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
         swipeLayout.isEnabled = (verticalOffset == 0)
@@ -266,6 +267,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
         var commentsCount = postCommentsCount.text.toString().toInt()
         commentsCount++
         postCommentsCount.text = commentsCount.toString()
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount.toString())
     }
 
     private fun controlCommentEditTextChanges() {
@@ -332,17 +334,6 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
 
     }
 
-    private fun onResultOk(groupId: String, commentsCount: String) {
-//        val intent = Intent().apply {
-//            putExtra(GROUP_ID_VALUE, groupId)
-//            putExtra(COMMENTS_COUNT_VALUE, commentsCount)
-//        }
-        //setResult(Activity.RESULT_OK, intent)
-        //finish()
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, COMMENTS_DETAILS_REQUEST)
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount)
-        findNavController().popBackStack()
-    }
 
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)

@@ -40,6 +40,8 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
 
 
     private val groupsDisposable = CompositeDisposable()
+    private val groupsSubDisposable = CompositeDisposable()
+    private val groupsAdmDisposable = CompositeDisposable()
 
     @Inject
     lateinit var groupGateway: GroupGateway
@@ -90,6 +92,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
+                .doOnNext { Timber.d("doOnNext") }
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
@@ -101,6 +104,8 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
+                .doOnSubscribe { Timber.d("doOnSubscribe") }
+                .doOnNext { Timber.d("doOnNext") }
                 .subscribe({
                     viewState.groupListLoaded(it)
                 }, {
@@ -108,8 +113,8 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 }))
     }
 
-    private fun getFollowGroupsList() {
-        groupsDisposable.add(dsSub.source.observeState()
+    fun getFollowGroupsList() {
+        groupsSubDisposable.add(dsSub.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
@@ -120,7 +125,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                     viewState.handleState1(it.type)
                 }, {}))
 
-        groupsDisposable.add(RxPagedListBuilder(dsSub, PAGINATION_PAGE_SIZE)
+        groupsSubDisposable.add(RxPagedListBuilder(dsSub, PAGINATION_PAGE_SIZE)
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -133,7 +138,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
     }
 
     private fun getOwnedGroupsList() {
-        groupsDisposable.add(dsAdm.source.observeState()
+        groupsAdmDisposable.add(dsAdm.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
@@ -144,7 +149,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                     viewState.handleState2(it.type)
                 }, {}))
 
-        groupsDisposable.add(RxPagedListBuilder(dsAdm, PAGINATION_PAGE_SIZE)
+        groupsAdmDisposable.add(RxPagedListBuilder(dsAdm, PAGINATION_PAGE_SIZE)
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -178,9 +183,12 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
         groupsDisposable.add(groupGateway.followGroup(groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    groupList()
+                .doFinally {
                     Timber.d("Subscribed")
+                }
+                .subscribe({
+                    viewState.subscribeGroup(groupId)
+                    Timber.d("Subscribing")
                 }, {
                     errorHandler.handle(it)
                 }))
@@ -191,7 +199,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    groupList()
+                    viewState.subscribeGroup(groupId)
                     Timber.d("UnSubscribed")
                 }, {
                     errorHandler.handle(it)

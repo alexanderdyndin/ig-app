@@ -73,20 +73,20 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 ImeiException::class.java to getActionForBlockedImei(),
                 InvalidRefreshException::class.java to openAutorize(),
                 PageNotFoundException::class.java to
-                        Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())})
-
+                        Action { _, _ ->
+                /*dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())*/})
         errorHandlerInitializer.initializeErrorHandler(errorMap,
                 createSnackBarAction(R.string.unknown_error))
     }
 
-    private fun getActionForBlockedImei() = Action { throwable, _ ->
+    protected open fun getActionForBlockedImei() = Action { throwable, _ ->
         //        startActivity(Intent(this, AgreementsFragment::class.java))
-        dialogDelegate.showErrorSnackBar((throwable as ImeiException).message.orEmpty())
-        userSession.clearAllData()
+        //dialogDelegate.showErrorSnackBar((throwable as ImeiException).message.orEmpty())
+        //userSession.clearAllData()
 
     }
 
-    private fun getActionForBlockedUser() =
+    protected open fun getActionForBlockedUser() =
             if (userSession.isLoggedIn()) {
                 actionForBlockedUser
             } else {
@@ -94,7 +94,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
             }
 
 
-    private fun getActionForBlockedGroup() = actionForBlockedGroup
+    protected open fun getActionForBlockedGroup() = actionForBlockedGroup
 
     private val actionForBlockedGroup = Action { _, _ ->
 //        startActivity(Intent(this, NavigationActivity::class.java).also
@@ -107,13 +107,13 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 //        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
     }
 
-    private fun createSnackBarAction(message: Int) =
+    protected fun createSnackBarAction(message: Int) =
             Action { _, _ -> dialogDelegate.showErrorSnackBar(getString(message)) }
 
-    private fun createToast(message: Int) =
+    protected fun createToast(message: Int) =
             Action { _, _ -> Toast.makeText(requireContext(), getString(message), Toast.LENGTH_SHORT).show() }
 
-    fun showToast(message: String) =
+    protected fun showToast(message: String) =
             Action { _, _ -> Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show() }
 
     protected fun showErrorMessage(message: String) {
@@ -131,12 +131,11 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         userSession.logout()
     }
 
+    open fun viewCreated() { }
 
     /**
      *
      */
-
-    open fun viewCreated() {}
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)

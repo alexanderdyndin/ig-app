@@ -167,12 +167,12 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         with (GroupListAdapter) {
             userID = sessionStorage.user?.id
             retryClickListener = { presenter.reload() }
+            subscribeClickListener = { presenter.sub(it) }
+            unsubscribeClickListener = { presenter.unsub(it) }
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
-            subscribeClickListener = { presenter.sub(it)}
-            unsubscribeClickListener = { presenter.unsub(it) }
             getColor = { ContextCompat.getColor(this@GroupListFragment.requireContext(), R.color.whiteTextColor) }
         }
     }
@@ -294,6 +294,11 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun showLastAvatar(lastAvatar: String?) {
         profileAvatarHolder.clearUploadingState(lastAvatar)
+    }
+
+    override fun subscribeGroup(id: String) {
+        adapterAll.itemUpdate(id)
+        presenter.getFollowGroupsList()
     }
 
     override fun showImageUploadingProgress(progress: Float) {

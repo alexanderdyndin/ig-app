@@ -31,10 +31,13 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_COUNT_VALUE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_DETAILS_REQUEST
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.mikepenz.materialdrawer.Drawer
@@ -51,12 +54,6 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     : BaseFragment(), NewsView, PagingView by pagingDelegate {
 
     constructor() : this(PagingDelegate())
-
-    companion object {
-        private const val EXIT_DELAY = 2000L
-        fun getInstance() = NewsFragment()
-
-    }
 
     @Inject
     @InjectPresenter
@@ -80,13 +77,8 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     @Inject
     lateinit var adapterWrapper: AdmobBannerRecyclerAdapterWrapper
 
-    private var exitHandler: Handler? = null
-
-    private var doubleBackToExitPressedOnce = false
-
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
-
     override fun layoutRes() = R.layout.fragment_news
+
     override fun getSnackBarCoordinator(): ViewGroup? = newsCoordinator
 
     private lateinit var viewDrawer: View
@@ -95,9 +87,11 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     lateinit var profileAvatarHolder: AvatarImageUploadingView
 
+    var clickedPostId: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        var commentsCount: String? = null
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
         //crashing app when provide it by dagger
@@ -105,17 +99,20 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         newsPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         newsPosts.itemAnimator = null
         adapter.retryClickListener = { presenter.reload() }
-        adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it, true)) }
+        adapter.commentClickListener = {
+            clickedPostId = it.id
+            openCommentDetails(InfoForCommentEntity(it, true)) }
         adapter.groupClickListener = {
             val data = bundleOf(GROUP_ID to it)
             findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
         }
         adapter.complaintListener = { presenter.complaintPost(it) }
         newsPosts.adapter = adapterWrapper
-        newSwipe.setOnRefreshListener { presenter.refresh()
-            }
-        //presenter.getNews()
-        //(activity as NavigationActivity).newsLaunchCount++
+        newSwipe.setOnRefreshListener { presenter.refresh() }
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(COMMENTS_COUNT_VALUE)?.observe(
+                viewLifecycleOwner) { commentCount ->
+            adapter.itemUpdate(clickedPostId.orEmpty(), commentCount)
+        }
     }
 
 
@@ -136,38 +133,22 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun showLoading(show: Boolean) {
         if (show) {
-            //emptyText.hide()
-            //adapter.removeError()
-            //TODO ПОФИКСИТЬ ПЕРЕСКАКИВАНИЕ В КОНЕЦ СПИСКА ПРИ ПОВТОРНОЙ ЗАГРУЗКЕ ФРАГМЕНТА
-            //if ((activity as NavigationActivity).newsLaunchCount == 1) {
-                //adapter.addLoading()
-            //}
-            //newsPosts.visibility = View.INVISIBLE
-            //progressBar.visibility = View.VISIBLE
+            emptyText.hide()
+//            adapter.removeError()
+//            adapter.addLoading()
+            newsPosts.hide()
+            progressBar.show()
         } else {
-            newSwipe.isRefreshing = false
-            adapter.removeLoading()
-            //progressBar.visibility = View.INVISIBLE
-            //newsPosts.visibility = View.VISIBLE
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        //super.onActivityResult(requestCode, resultCode, data)
-        //todo посмотреть что тут и переписать под фрагменты
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                COMMENTS_DETAILS_REQUEST -> {
-                    val groupId = data?.getStringExtra(GROUP_ID_VALUE).orEmpty()
-                    val commentCount = data?.getStringExtra(COMMENTS_COUNT_VALUE).orEmpty()
-                    adapter.itemUpdate(groupId, commentCount)
-                }
-            }
+//            newSwipe.isRefreshing = false
+//            adapter.removeLoading()
+            newsPosts.show()
+            progressBar.hide()
         }
     }
 
     override fun onDestroy() {
         adapterWrapper.release()
+        presenter.unsubscribe()
         super.onDestroy()
     }
 
