@@ -61,6 +61,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                 .doFinally { viewState.showLoading(false) }
                 .subscribe({
                     viewState.newsLoaded(it)
+                    viewState.showLoading(false)
                 }, {
                     errorHandler.handle(it)
                 }))
