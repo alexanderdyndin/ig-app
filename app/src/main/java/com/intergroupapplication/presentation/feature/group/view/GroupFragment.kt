@@ -59,8 +59,9 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         private const val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
-        private const val GROUP_ID = "group_id"
+        const val GROUP_ID = "group_id"
         const val FRAGMENT_RESULT = "fragmentResult"
+        const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
 
     private lateinit var mMediaBrowserCompat: MediaBrowserCompat                                                                                            // todo сделать более гибкое подключение коллбэков
@@ -147,6 +148,8 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
     private lateinit var groupId: String
 
+    private var isGroupCreatedNow = false
+
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
@@ -170,6 +173,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString(GROUP_ID)!!
+        isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
         initializeMediaBrowser()
     }
 
@@ -189,7 +193,12 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         adapter.complaintListener = { id -> presenter.complaintPost(id) }
         groupPosts.adapter = adapter
-        toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
+        toolbarBackAction.setOnClickListener {
+            if (isGroupCreatedNow) {
+                findNavController().navigate(R.id.action_groupActivity_to_groupListFragment2)
+            } else {
+                findNavController().popBackStack()
+            }}
         appbar.addOnOffsetChangedListener(this)
         pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         presenter.getGroupDetailInfo(groupId)
@@ -326,6 +335,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
 
     private fun renderAdminPage() {
+        //todo разобраться с падением приложения при создании поста в только что созданной группе
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
           openCreatePost(groupId)

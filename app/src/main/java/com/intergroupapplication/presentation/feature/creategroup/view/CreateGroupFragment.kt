@@ -25,6 +25,8 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.IS_GROUP_CREATED_NOW
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -183,7 +185,7 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
         toolbarBackAction.setOnClickListener {
 //            setResult(Activity.RESULT_OK)
 //            finish()
-                findNavController().popBackStack()
+            findNavController().popBackStack()
         }
         RxTextView.afterTextChangeEvents(groupName).subscribe { groupName.error = null }
                 .let { { d: Disposable -> compositeDisposable.add(d) } }
@@ -308,8 +310,8 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     }
 
     override fun goToGroupScreen(id: String) {
-        val data = bundleOf("groupId" to id)
-        findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+        val data = bundleOf(GroupFragment.GROUP_ID to id, IS_GROUP_CREATED_NOW to true)
+        findNavController().navigate(R.id.action_createGroupActivity_to_groupActivity, data)
     }
 
     override fun showLoading(show: Boolean) {

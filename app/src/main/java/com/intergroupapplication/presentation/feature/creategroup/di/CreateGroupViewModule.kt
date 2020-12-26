@@ -32,7 +32,7 @@ class CreateGroupViewModule {
     @PerFragment
     @Provides
     fun provideValidator(fragment: CreateGroupFragment): Validator =
-            Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
+            Validator(fragment).apply { setValidationListener(fragment) }
 
     @PerFragment
     @Provides

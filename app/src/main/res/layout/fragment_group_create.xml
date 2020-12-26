@@ -469,8 +469,9 @@
                             android:textColor="@color/colorAccent"
                             android:textColorHint="@color/colorAccent2"
                             android:textSize="14sp"
-                            android:background="@drawable/bg_inp_big"
-                            android:inputType="textMultiLine"/>
+                            android:background="@android:color/transparent"
+                            android:inputType="textMultiLine"
+                            android:importantForAutofill="no" />
                     </FrameLayout>
                 </LinearLayout>
             </LinearLayout>
