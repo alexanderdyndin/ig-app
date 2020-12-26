@@ -34,8 +34,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                         private val complaintsGetaway: ComplaintsGetaway,
                                         private val appStatusUseCase: AppStatusUseCase,
                                         private val userProfileGateway: UserProfileGateway,
-                                        private val imageUploadingDelegate: ImageUploadingDelegate,
-                                        private val sessionStorage: UserSession)
+                                        private val imageUploadingDelegate: ImageUploadingDelegate)
     : BasePresenter<NewsView>() {
 
     private val newsDisposable = CompositeDisposable()
@@ -159,7 +158,12 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        refresh()
+        getNews()
+    }
+
+    override fun destroyView(view: NewsView?) {
+        unsubscribe()
+        super.destroyView(view)
     }
 
 

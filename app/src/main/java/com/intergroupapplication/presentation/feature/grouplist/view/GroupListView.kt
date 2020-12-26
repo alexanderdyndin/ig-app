@@ -11,8 +11,9 @@ import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.base.PagingViewGroup
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
+import moxy.viewstate.strategy.SkipStrategy
 
-@StateStrategyType(AddToEndSingleStrategy::class)
+@StateStrategyType(SkipStrategy::class)
 interface GroupListView : MvpView, CanShowLoading, PagingViewGroup, ImageUploadingView {
     fun groupListLoaded(groups: PagedList<GroupEntity>)
     fun groupListSubLoaded(groups: PagedList<GroupEntity>)

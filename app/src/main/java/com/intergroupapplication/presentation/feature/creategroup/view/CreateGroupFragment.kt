@@ -41,10 +41,6 @@ import javax.inject.Inject
 
 class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.ValidationListener {
 
-    companion object {
-        fun getIntent(context: Context?) = Intent(context, CreateGroupFragment::class.java)
-    }
-
     @Inject
     @InjectPresenter
     lateinit var presenter: CreateGroupPresenter

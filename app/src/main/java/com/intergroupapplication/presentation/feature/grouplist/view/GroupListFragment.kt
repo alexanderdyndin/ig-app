@@ -29,6 +29,7 @@ import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.GROUP_CREATED
@@ -38,6 +39,7 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
@@ -87,6 +89,10 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     lateinit var drawer: Drawer
 
     private lateinit var profileAvatarHolder: AvatarImageUploadingView
+
+    var groupInfoEntity: GroupInfoEntity? = null
+
+    var currentScreen = 0
 
     //адаптеры для фрагментов со списками групп
     @Inject
@@ -142,8 +148,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             adapter = gpAdapter
             val handler = ViewPager2Circular(this, swipeLayout)
             handler.pageChanged = {
-                presenter.currentScreen = it
-                //presenter.groupList()
+                currentScreen = it
             }
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
@@ -153,7 +158,11 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             tab.text = tabTitles[position]
         }.attach()
         swipeLayout.setOnRefreshListener {
-            presenter.groupList()
+            when(currentScreen) {
+                0 -> presenter.refreshAll()
+                1 -> presenter.refreshFollowed()
+                2 -> presenter.refreshAdmin()
+            }
             Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
         }
         activity_main__btn_filter.setOnClickListener {
@@ -161,6 +170,15 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         }
         createGroup.visibility = View.VISIBLE
         createGroup.setOnClickListener { openCreateGroup() }
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<GroupInfoEntity>(GROUP_ID)?.observe(
+                viewLifecycleOwner) { groupInfo ->
+            if (groupInfoEntity != groupInfo) { // avoid get same info on ever fragment start
+                adapterAll.itemUpdate(groupInfo)
+                presenter.refreshFollowed()
+                groupInfoEntity = groupInfo
+            }
+            //presenter.refresh()
+        }
     }
 
     private fun setAdapter() {
@@ -298,7 +316,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun subscribeGroup(id: String) {
         adapterAll.itemUpdate(id)
-        presenter.getFollowGroupsList()
+        presenter.refreshFollowed()
     }
 
     override fun showImageUploadingProgress(progress: Float) {

@@ -22,10 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.domain.entity.InfoForCommentEntity
-import com.intergroupapplication.domain.entity.UserRole
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.BasePresenter.Companion.POST_CREATED
 import com.intergroupapplication.presentation.base.ImageUploader
@@ -64,12 +61,6 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         private const val ALPHA_ANIMATIONS_DURATION = 200
         private const val GROUP_ID = "group_id"
         const val FRAGMENT_RESULT = "fragmentResult"
-
-        fun getIntent(context: Context?, groupId: String) = Intent(context, GroupFragment::class.java)
-                .apply {
-                    action = groupId
-                    putExtra(GROUP_ID, groupId)
-                }
     }
 
     private lateinit var mMediaBrowserCompat: MediaBrowserCompat                                                                                            // todo сделать более гибкое подключение коллбэков
@@ -255,6 +246,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         doOrIfNull(groupEntity.avatar, {
             groupAvatarHolder.showAvatar(it)
         }, { groupAvatarHolder.showAvatar(R.drawable.variant_10) })
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupEntity.id, groupEntity.followersCount, groupEntity.isFollowing))
     }
 
     override fun postsLoaded(posts: PagedList<GroupPostEntity>) {
@@ -306,6 +298,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         goOutFromGroup.show()
         groupStrength.text = followersCount.toString()
         listenButtonClicks()
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupId, groupStrength.text.toString(), true))
     }
 
     override fun groupUnfollowed(followersCount: Int) {
@@ -313,6 +306,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         joinToGroup.show()
         groupStrength.text = followersCount.toString()
         listenButtonClicks()
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupId, groupStrength.text.toString(), false))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -46,8 +46,6 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
     @Inject
     lateinit var groupGateway: GroupGateway
 
-    var currentScreen = 1
-
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -75,16 +73,9 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
     }
 
     fun groupList() {
-//        when (currentScreen) {
-//            1 -> getGroupsList()
-//            2 -> getFollowGroupsList()
-//            3 -> getOwnedGroupsList()
-//            else -> {
                 getGroupsList()
                 getFollowGroupsList()
                 getOwnedGroupsList()
-//            }
-//        }
     }
 
     fun getGroupsList() {
@@ -179,6 +170,21 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
         groupList()
     }
 
+    fun refreshAll() {
+        groupsDisposable.clear()
+        getGroupsList()
+    }
+
+    fun refreshFollowed() {
+        groupsSubDisposable.clear()
+        getFollowGroupsList()
+    }
+
+    fun refreshAdmin() {
+        groupsAdmDisposable.clear()
+        getOwnedGroupsList()
+    }
+
     fun sub(groupId: String) {
         groupsDisposable.add(groupGateway.followGroup(groupId)
                 .subscribeOn(Schedulers.io())
@@ -210,11 +216,15 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
     override fun onDestroy() {
         super.onDestroy()
         groupsDisposable.clear()
+        groupsSubDisposable.clear()
+        groupsAdmDisposable.clear()
         stopImageUploading()
     }
 
     private fun unsubscribe() {
         groupsDisposable.clear()
+        groupsSubDisposable.clear()
+        groupsAdmDisposable.clear()
     }
 
     private var uploadingImageDisposable: Disposable? = null

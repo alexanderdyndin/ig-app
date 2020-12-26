@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.facebook.common.util.UriUtil
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
@@ -60,6 +61,14 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
             } else if (it?.isFollowing == false) {
                 it.followersCount = (it.followersCount.toInt() - 1).toString()
             }
+        }
+        notifyDataSetChanged()
+    }
+
+    fun itemUpdate(groupInfoEntity: GroupInfoEntity) {
+        currentList?.first { (it.id == groupInfoEntity.groupId) }.let {
+            it?.isFollowing = groupInfoEntity.isFollowed
+            it?.followersCount = groupInfoEntity.followersCount
         }
         notifyDataSetChanged()
     }
