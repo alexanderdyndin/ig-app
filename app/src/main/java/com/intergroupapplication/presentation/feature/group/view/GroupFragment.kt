@@ -193,12 +193,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         adapter.complaintListener = { id -> presenter.complaintPost(id) }
         groupPosts.adapter = adapter
-        toolbarBackAction.setOnClickListener {
-            if (isGroupCreatedNow) {
-                findNavController().navigate(R.id.action_groupActivity_to_groupListFragment2)
-            } else {
-                findNavController().popBackStack()
-            }}
+        toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
         pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         presenter.getGroupDetailInfo(groupId)
@@ -255,7 +250,6 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         doOrIfNull(groupEntity.avatar, {
             groupAvatarHolder.showAvatar(it)
         }, { groupAvatarHolder.showAvatar(R.drawable.variant_10) })
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupEntity.id, groupEntity.followersCount, groupEntity.isFollowing))
     }
 
     override fun postsLoaded(posts: PagedList<GroupPostEntity>) {

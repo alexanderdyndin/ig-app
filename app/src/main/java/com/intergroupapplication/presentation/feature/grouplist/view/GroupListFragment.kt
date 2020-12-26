@@ -63,7 +63,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     constructor() : this(PagingDelegateGroup())
 
     companion object {
-        fun getInstance() = GroupListFragment()
+        const val CREATED_GROUP_ID = "created_group_id"
     }
 
     @Inject
@@ -91,6 +91,8 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     private lateinit var profileAvatarHolder: AvatarImageUploadingView
 
     var groupInfoEntity: GroupInfoEntity? = null
+
+    var groupId: String? = null
 
     var currentScreen = 0
 
@@ -178,6 +180,15 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
                 groupInfoEntity = groupInfo
             }
             //presenter.refresh()
+        }
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(CREATED_GROUP_ID)?.observe(
+                viewLifecycleOwner) { id ->
+            if (groupId != id) { // avoid get same info on ever fragment start
+                val data = bundleOf(GROUP_ID to id)
+                findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
+                groupId = id
+                presenter.refresh()
+            }
         }
     }
 
