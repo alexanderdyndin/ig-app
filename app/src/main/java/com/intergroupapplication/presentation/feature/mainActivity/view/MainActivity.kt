@@ -7,6 +7,9 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.UserSettings
+import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.presentation.delegate.DialogDelegate
@@ -23,6 +26,8 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 import javax.inject.Inject
@@ -62,7 +67,7 @@ class MainActivity : FragmentActivity(), MainActivityView {
         AndroidInjection.inject(this)
         setContentView(R.layout.activity_main)
         compositeDisposable = CompositeDisposable()
-        // setAppodeal()
+        setAppodeal()
         val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
         val file = File("$filepatch.nomedia")
         try {
@@ -72,23 +77,22 @@ class MainActivity : FragmentActivity(), MainActivityView {
         }
     }
 
-    //    private fun setAppodeal() {
-//        Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
-//        Appodeal.setTesting(true)
-//        val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
-//        val c = Calendar.getInstance()
-//        val year = c.get(Calendar.YEAR)
-//        Appodeal.setUserAge(year - date.year)
-//        val gender = when (userSession.user?.gender) {
-//            "male" -> UserSettings.Gender.MALE
-//            "female" -> UserSettings.Gender.FEMALE
-//            else -> UserSettings.Gender.OTHER
-//        }
-//        Appodeal.setUserGender(gender)
-//        Appodeal.cache(this, Appodeal.NATIVE, 5)
-//        Appodeal.setUserId(userSession.user?.id ?: "123")
-//
-//    }
+    private fun setAppodeal() {
+        Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
+        Appodeal.setTesting(true)
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(userSession.user?.birthday)
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        Appodeal.setUserAge(year - date.year)
+        val gender = when (userSession.user?.gender) {
+            "male" -> UserSettings.Gender.MALE
+            "female" -> UserSettings.Gender.FEMALE
+            else -> UserSettings.Gender.OTHER
+        }
+        Appodeal.setUserGender(gender)
+        Appodeal.cache(this, Appodeal.NATIVE, 5)
+        Appodeal.setUserId(userSession.user?.id ?: "123")
+    }
 
     override fun onBackPressed() {
         val currentFragment = my_nav_host_fragment.findNavController().currentDestination?.label

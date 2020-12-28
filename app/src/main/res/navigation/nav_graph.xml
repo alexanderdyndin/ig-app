@@ -13,7 +13,6 @@
         <action
             android:id="@+id/action_groupListFragment2_to_newsFragment2"
             app:destination="@id/newsFragment2"
-            app:enterAnim="@anim/custom_overshoot_interpolator"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
@@ -25,7 +24,11 @@
             app:popExitAnim="@anim/fragment_close_exit" />
         <action
             android:id="@+id/action_groupListFragment2_to_groupActivity"
-            app:destination="@id/groupActivity" />
+            app:destination="@id/groupActivity"
+            app:enterAnim="@anim/fragment_close_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
         <action
             android:id="@+id/action_groupListFragment2_to_commentsDetailsActivity"
             app:destination="@id/commentsDetailsActivity" />
@@ -63,11 +66,6 @@
             app:destination="@id/groupActivity"
             app:enterAnim="@anim/fragment_close_enter"
             app:exitAnim="@anim/fragment_close_exit" />
-        <action
-            android:id="@+id/action_newsFragment2_to_splashActivity"
-            app:destination="@id/splashActivity"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_newsFragment2_to_commentsDetailsActivity"
             app:destination="@id/commentsDetailsActivity" />
