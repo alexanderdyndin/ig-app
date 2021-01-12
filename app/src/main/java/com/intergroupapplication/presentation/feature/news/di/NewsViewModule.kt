@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.news.di
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -98,7 +99,7 @@ class NewsViewModule {
                                   userSession: UserSession): AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
                     .setLimitOfAds(userSession.countAd?.limitOfAdsNews ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexNews ?: 4)
+                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexNews ?: 10)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
@@ -108,6 +109,8 @@ class NewsViewModule {
                             if (t.size>0) {
                                 val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], NEWS)
                                 container.addView(nativeAdView)
+                            } else {
+                                //wrapper.visibility = View.GONE
                             }
                         }
                         override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {

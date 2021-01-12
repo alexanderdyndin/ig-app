@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             app:show_buffering="when_playing"
-            />
+            android:visibility="gone"/>
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/musicExoPlayerView"
@@ -107,7 +107,7 @@
             android:layout_marginBottom="20dp"
             app:hide_on_touch="false"
             app:show_timeout="0"
-            />
+            android:visibility="gone"/>
 
     </LinearLayout>
 
