@@ -43,8 +43,8 @@ class GroupListViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: GroupListFragment): ImageLoader =
-            FrescoImageLoader(activity.requireActivity())
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
 
     @PerFragment

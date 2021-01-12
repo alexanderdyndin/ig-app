@@ -38,8 +38,8 @@ class CreatePostViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: CreatePostFragment): ImageLoader =
-            FrescoImageLoader(activity.requireActivity())
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
 
     @PerFragment

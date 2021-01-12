@@ -55,8 +55,8 @@ class CommentsDetailsViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(fragment: CommentsDetailsFragment): ImageLoader =
-            FrescoImageLoader(fragment.requireActivity())
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
 
     @PerFragment

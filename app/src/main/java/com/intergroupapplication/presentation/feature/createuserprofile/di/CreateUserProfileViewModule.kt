@@ -35,8 +35,8 @@ class CreateUserProfileViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(fragment: CreateUserProfileFragment): ImageLoader =
-            FrescoImageLoader(fragment.requireActivity())
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
     @PerFragment
     @Provides

@@ -46,8 +46,8 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: NewsFragment): ImageLoader =
-            FrescoImageLoader(activity.requireActivity())
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
 
     @PerFragment
@@ -109,9 +109,9 @@ class NewsViewModule {
                             if (t.size>0) {
                                 val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], NEWS)
                                 container.addView(nativeAdView)
-                            } else {
+                            }// else {
                                 //wrapper.visibility = View.GONE
-                            }
+                            //}
                         }
                         override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
                             return LayoutInflater.from(parent?.context).inflate(R.layout.layout_admob_news,

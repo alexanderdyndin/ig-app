@@ -46,6 +46,7 @@ import com.workable.errorhandler.Action
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.fragment_news.emptyText
+import kotlinx.android.synthetic.main.layout_avatar.view.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import javax.inject.Inject
@@ -91,7 +92,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var commentsCount: String? = null
+        //var commentsCount: String? = null
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
         //crashing app when provide it by dagger
