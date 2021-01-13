@@ -43,7 +43,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
         newsDisposable.add(newsDataSourceFactory.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                //.handleLoading(viewState)
+                .handleLoading(viewState)
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
@@ -55,12 +55,9 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                //.handleLoading(viewState)
-                .doOnSubscribe { viewState.showLoading(true) }
-                .doFinally { viewState.showLoading(false) }
+                .handleLoading(viewState)
                 .subscribe({
                     viewState.newsLoaded(it)
-                    viewState.showLoading(false)
                 }, {
                     errorHandler.handle(it)
                 }))

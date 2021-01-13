@@ -120,7 +120,6 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     override fun onResume() {
         super.onResume()
         presenter.checkNewVersionAvaliable(activity?.supportFragmentManager!!)
-        //presenter.refresh()
     }
 
 
@@ -133,17 +132,14 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     }
 
     override fun showLoading(show: Boolean) {
+        //todo пофиксить перескакивание в конец списка или оставить как есть сейчас
         if (show) {
             emptyText.hide()
-//            adapter.removeError()
-//            adapter.addLoading()
-            newsPosts.hide()
-            progressBar.show()
+            adapter.removeError()
+            //adapter.addLoading()
         } else {
-//            newSwipe.isRefreshing = false
-//            adapter.removeLoading()
-            newsPosts.show()
-            progressBar.hide()
+            newSwipe.isRefreshing = false
+            adapter.removeLoading()
         }
     }
 

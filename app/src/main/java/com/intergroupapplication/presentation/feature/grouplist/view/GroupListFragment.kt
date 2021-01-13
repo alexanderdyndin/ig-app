@@ -218,19 +218,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     }
 
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        //super.onActivityResult(requestCode, resultCode, data)
-        //todo добавить livedata из фрагмента создания группы
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                GROUP_CREATED -> presenter.refresh()
-            }
-        }
-    }
-
     private fun openCreateGroup() {
-        //startActivityForResult(CreateGroupActivity.getIntent(context), GROUP_CREATED)
         findNavController().navigate(R.id.action_groupListFragment2_to_createGroupActivity)
     }
 
@@ -247,39 +235,35 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     }
 
     override fun showLoading(show: Boolean) {
-        //TODO починить отсутствие получения статуса false для showloading
+        //todo пофиксить перескакивание в конец списка или оставить как есть сейчас
         if (show) {
-//            when (pager.currentItem) {
-//                0 -> {
-//                    adapterAll.removeError()
-//                    adapterAll.addLoading()
-//                }
-//                1 -> {
-//                    adapterAdm.removeError()
-//                    adapterAdm.addLoading()
-//                }
-//                2 -> {
-//                    adapterSub.removeError()
-//                    adapterSub.addLoading()
-//                }
-            //}
-            //pager.visibility = View.INVISIBLE
-            //progressBar.visibility = View.VISIBLE
+            when (pager.currentItem) {
+                0 -> {
+                    adapterAll.removeError()
+                    //adapterAll.addLoading()
+                }
+                1 -> {
+                    adapterAdm.removeError()
+                    //adapterAdm.addLoading()
+                }
+                2 -> {
+                    adapterSub.removeError()
+                    //adapterSub.addLoading()
+                }
+            }
         } else {
             swipeLayout.isRefreshing = false
-//            when (pager.currentItem) {
-//                0 -> {
-//                    adapterAll.removeLoading()
-//                }
-//                1 -> {
-//                    adapterAdm.removeLoading()
-//                }
-//                2 -> {
-//                    adapterSub.removeLoading()
-//                }
-//            }
-            //pager.visibility = View.VISIBLE
-            //progressBar.visibility = View.INVISIBLE
+            when (pager.currentItem) {
+                0 -> {
+                    adapterAll.removeLoading()
+                }
+                1 -> {
+                    adapterAdm.removeLoading()
+                }
+                2 -> {
+                    adapterSub.removeLoading()
+                }
+            }
         }
     }
 

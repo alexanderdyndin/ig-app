@@ -73,9 +73,9 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
     }
 
     fun groupList() {
-                getGroupsList()
-                getFollowGroupsList()
-                getOwnedGroupsList()
+        getGroupsList()
+        getFollowGroupsList()
+        getOwnedGroupsList()
     }
 
     fun getGroupsList() {
@@ -83,7 +83,6 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
-                .doOnNext { Timber.d("doOnNext") }
                 .subscribe({
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
@@ -95,8 +94,6 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
-                .doOnSubscribe { Timber.d("doOnSubscribe") }
-                .doOnNext { Timber.d("doOnNext") }
                 .subscribe({
                     viewState.groupListLoaded(it)
                 }, {
