@@ -87,7 +87,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState(it.type)
+                    viewState.handleState(it.type, it.count)
         }, {}))
         groupsDisposable.add(RxPagedListBuilder(dsAll, PAGINATION_PAGE_SIZE)
                 .buildObservable()
@@ -110,7 +110,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState1(it.type)
+                    viewState.handleState1(it.type, it.count)
                 }, {}))
 
         groupsSubDisposable.add(RxPagedListBuilder(dsSub, PAGINATION_PAGE_SIZE)
@@ -134,7 +134,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState2(it.type)
+                    viewState.handleState2(it.type, it.count)
                 }, {}))
 
         groupsAdmDisposable.add(RxPagedListBuilder(dsAdm, PAGINATION_PAGE_SIZE)

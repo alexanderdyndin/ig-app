@@ -26,8 +26,6 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
     private val subject: PublishSubject<BasePagingState> = PublishSubject.create()
     private var retryAction: (() -> Unit)? = null
 
-    lateinit var list: List<GroupPostEntity>
-
     fun reload() = retryAction?.invoke()
 
     fun observeState(): Observable<BasePagingState> = subject
@@ -38,16 +36,13 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
-                .doOnSuccess {
-                    subject.onNext(BasePagingState(BasePagingState.Type.NONE))
-                }
+                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE, null, it.count)) }
                 .subscribe({
                     if (it.next == null) {
                         callback.onResult(it.news, it.previous, it.next)
                     } else {
                         callback.onResult(it.news, it.previous, SECOND_PAGE)
                     }
-                    list = it.news
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))
@@ -60,14 +55,13 @@ class NewsDataSource @Inject constructor(private val groupPostGateway: GroupPost
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
-                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
+                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE, null, it.count)) }
                 .subscribe({
                     if (it.next == null) {
                         callback.onResult(it.news, it.next)
                     } else {
                         callback.onResult(it.news, params.key + 1)
                     }
-                    list = it.news
                     retryAction = null
                 }, {
                     subject.onNext(BasePagingState(BasePagingState.Type.ERROR, it))

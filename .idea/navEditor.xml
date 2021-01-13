@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-592" />
+                            <option name="y" value="-1186" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -62,11 +62,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_commentsDetailsActivity_to_newsFragment2">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -107,15 +102,6 @@
                             <option name="y" value="-663" />
                           </Point>
                         </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_createGroupActivity_to_groupActivity">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -124,8 +110,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-1252" />
-                            <option name="y" value="-224" />
+                            <option name="x" value="-1222" />
+                            <option name="y" value="-284" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -212,11 +198,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_groupListFragment2_to_splashActivity">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -258,8 +239,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-35" />
-                            <option name="y" value="-227" />
+                            <option name="x" value="5" />
+                            <option name="y" value="-329" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -294,11 +275,6 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_newsFragment2_to_splashActivity">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -321,8 +297,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-815" />
-                            <option name="y" value="-20" />
+                            <option name="x" value="-657" />
+                            <option name="y" value="198" />
                           </Point>
                         </option>
                         <option name="myPositions">

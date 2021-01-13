@@ -181,11 +181,5 @@ class NewsAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
         }
     }
 
-    override fun submitList(pagedList: PagedList<GroupPostEntity>?) {
-        super.submitList(pagedList)
-        if (pagedList?.loadedCount ?:0 > 0) {
-            items = (pagedList?.dataSource as NewsDataSource).list
-        }
-    }
 
 }

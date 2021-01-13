@@ -273,4 +273,8 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
         findNavController().navigate(R.id.action_newsFragment2_to_confirmationMailActivity, data)
     }
 
+    override fun openCreateProfile()  = Action { _, _ ->
+        findNavController().navigate(R.id.action_newsFragment2_to_createUserProfileActivity)
+    }
+
 }

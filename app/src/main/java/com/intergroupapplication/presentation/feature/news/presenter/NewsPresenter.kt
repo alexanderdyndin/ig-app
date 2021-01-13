@@ -48,7 +48,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState(it.type)
+                    viewState.handleState(it.type, it.count)
                 }, {}))
 
         newsDisposable.add(RxPagedListBuilder(newsDataSourceFactory, PAGINATION_PAGE_SIZE)

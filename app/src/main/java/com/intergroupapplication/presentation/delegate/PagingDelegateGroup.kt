@@ -26,34 +26,33 @@ class PagingDelegateGroup @Inject constructor() : PagingViewGroup {
         this.swipeLayout = swipeLayout
     }
 
-    override fun handleState(type: BasePagingState.Type) {
+    override fun handleState(type: BasePagingState.Type, count: Int) {
         if (adapters.size>0 && emptyStateViews.size>0) {
-            hState(type,adapters[0], emptyStateViews[0])
+            hState(type,adapters[0], emptyStateViews[0], count)
         }
     }
 
-    override fun handleState1(type: BasePagingState.Type) {
+    override fun handleState1(type: BasePagingState.Type, count: Int) {
         if (adapters.size>1 && emptyStateViews.size>1) {
-            hState(type,adapters[1], emptyStateViews[1])
+            hState(type,adapters[1], emptyStateViews[1], count)
         }
     }
 
-    override fun handleState2(type: BasePagingState.Type) {
+    override fun handleState2(type: BasePagingState.Type, count: Int) {
         if (adapters.size>2 && emptyStateViews.size>2) {
-            hState(type,adapters[2], emptyStateViews[2])
+            hState(type,adapters[2], emptyStateViews[2], count)
         }
     }
 
-    private fun hState(type: BasePagingState.Type, adapter: PagingAdapter, emptyStateView: View) {
+    private fun hState(type: BasePagingState.Type, adapter: PagingAdapter, emptyStateView: View, count: Int) {
         when (type) {
             BasePagingState.Type.NONE -> {
                 adapter.removeLoading()
                 adapter.removeError()
                 (swipeLayout as? SwipeRefreshLayout)?.isRefreshing = false
                 emptyStateView.hide()
-                if (adapter.itemCount() == 0) {
-                    //emptyStateView.show()
-                    //TODO починить отображние надписи при 1 странице групп
+                if (adapter.itemCount() == 0 && count == 0) {
+                    emptyStateView.show()
                 }
             }
             BasePagingState.Type.LOADING -> {

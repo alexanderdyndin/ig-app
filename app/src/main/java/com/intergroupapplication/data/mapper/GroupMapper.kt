@@ -58,12 +58,16 @@ class GroupMapper @Inject constructor() {
 
     fun mapToDomainEntity(from: GroupsDto): GroupListEntity {
         val regex = Regex(pattern = "=\\d*&")
-        val previous = if (from.previous == "http://backend-v2:8080/groups/?search=") {
-            1
-        } else if (from.previous == null) {
-            null
-        } else {
-            regex.find(from.previous)?.value?.replace("=","")?.replace("&", "")?.toInt()
+        val previous = when (from.previous) {
+            "http://backend-v2:8080/groups/?search=" -> {
+                1
+            }
+            null -> {
+                null
+            }
+            else -> {
+                regex.find(from.previous)?.value?.replace("=","")?.replace("&", "")?.toInt()
+            }
         }
         val next = if (from.next == null) {
             null

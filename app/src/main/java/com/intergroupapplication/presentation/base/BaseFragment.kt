@@ -120,7 +120,8 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         dialogDelegate.showErrorSnackBar(message)
     }
 
-    private fun openCreateProfile() = Action { _, _ ->
+    protected open fun openCreateProfile() = Action { _, _ ->
+
     }
 
     protected open fun openConfirmationEmail() = Action { _, _ ->
