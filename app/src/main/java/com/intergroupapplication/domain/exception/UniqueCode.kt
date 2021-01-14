@@ -8,6 +8,7 @@ const val USER_BLOCKED = "login.user_is_blocked"
 const val NOT_PROFILE = "users_profile-me.not_found"
 const val GROUP_BLOCKED = "groups-detail.is_blocked"
 const val INVALID_REFRESH = "refresh.refresh.invalid"
+const val INVALID_LOGIN = "login.invalid"
 
 //todo сделать правильно пагинацию
 const val PAGE_ERROR_GROUP = "groups-list.not_found"

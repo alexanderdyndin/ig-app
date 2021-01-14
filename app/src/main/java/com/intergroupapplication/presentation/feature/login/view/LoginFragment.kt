@@ -43,8 +43,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
-
-        fun getIntent(context: Context?) = Intent(context, LoginFragment::class.java)
     }
 
     @Inject
@@ -79,7 +77,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
-
         rxPermission = RxPermissions(this)
         mail = requireView().findViewById(R.id.etMail)
         password = requireView().findViewById(R.id.password)
@@ -100,7 +97,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     override fun onResume() {
         super.onResume()
-        setErrorHandler()
+        //setErrorHandler()
     }
 
     override fun onPause() {

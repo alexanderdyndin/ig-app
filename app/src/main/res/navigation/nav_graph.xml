@@ -40,7 +40,8 @@
         <action
             android:id="@+id/action_groupListFragment2_to_loginActivity2"
             app:destination="@id/loginActivity"
-            app:popUpTo="@id/loginActivity"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_groupListFragment2_to_confirmationMailActivity"
