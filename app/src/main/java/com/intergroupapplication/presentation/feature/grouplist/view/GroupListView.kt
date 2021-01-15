@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.grouplist.view
 
+import android.view.View
 import androidx.paging.PagedList
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
@@ -22,4 +23,6 @@ interface GroupListView : MvpView, CanShowLoading, PagingViewGroup, ImageUploadi
     fun avatarChanged(url: String)
     fun showLastAvatar(lastAvatar: String?)
     fun subscribeGroup(id: String)
+    fun subscribingProcess(isOver: Boolean, groupElement: View)
+    fun unsubscribingProcess(isOver: Boolean, groupElement: View)
 }

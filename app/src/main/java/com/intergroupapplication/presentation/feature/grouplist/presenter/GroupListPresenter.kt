@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.grouplist.presenter
 
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.paging.RxPagedListBuilder
 import moxy.InjectViewState
@@ -13,6 +14,8 @@ import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAG
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.grouplist.pagingsource.*
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
@@ -21,6 +24,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.item_group_in_list.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -183,29 +187,32 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
         getOwnedGroupsList()
     }
 
-    fun sub(groupId: String) {
+    fun sub(groupId: String, groupElement: View) {
         groupsDisposable.add(groupGateway.followGroup(groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doFinally {
-                    Timber.d("Subscribed")
-                }
-                .subscribe({
+                .doOnSubscribe { viewState.subscribingProcess(false, groupElement) }
+                .doOnComplete {
                     viewState.subscribeGroup(groupId)
-                    Timber.d("Subscribing")
-                }, {
+                    viewState.subscribingProcess(true, groupElement)
+                }
+                .doOnError { viewState.unsubscribingProcess(true, groupElement) }
+                .subscribe({ }, {
                     errorHandler.handle(it)
                 }))
     }
 
-    fun unsub(groupId: String) {
+    fun unsub(groupId: String, groupElement: View) {
         groupsDisposable.add(groupGateway.unfollowGroup(groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                .doOnSubscribe { viewState.unsubscribingProcess(false, groupElement) }
+                .doOnComplete {
+                    viewState.unsubscribingProcess(true, groupElement)
                     viewState.subscribeGroup(groupId)
-                    Timber.d("UnSubscribed")
-                }, {
+                }
+                .doOnError { viewState.subscribingProcess(true, groupElement) }
+                .subscribe({ }, {
                     errorHandler.handle(it)
                 }))
     }

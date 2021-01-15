@@ -39,6 +39,8 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
@@ -50,6 +52,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import kotlinx.android.synthetic.main.fragment_news.*
+import kotlinx.android.synthetic.main.item_group_in_list.view.*
 import kotlinx.android.synthetic.main.layout_profile_header.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
@@ -95,6 +98,7 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     var groupId: String? = null
 
     var currentScreen = 0
+
 
     //адаптеры для фрагментов со списками групп
     @Inject
@@ -196,8 +200,12 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         with (GroupListAdapter) {
             userID = sessionStorage.user?.id
             retryClickListener = { presenter.reload() }
-            subscribeClickListener = { presenter.sub(it) }
-            unsubscribeClickListener = { presenter.unsub(it) }
+            subscribeClickListener = { id, view ->
+                presenter.sub(id, view)
+            }
+            unsubscribeClickListener = { id, view ->
+                presenter.unsub(id, view)
+            }
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
@@ -312,6 +320,38 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     override fun subscribeGroup(id: String) {
         adapterAll.itemUpdate(id)
         presenter.refreshFollowed()
+    }
+
+    override fun subscribingProcess(isOver: Boolean, groupElement: View) {
+        if (isOver) {
+            groupElement.subscribingProgressBar.hide()
+            with (groupElement.item_group__text_sub) {
+                isEnabled = true
+//                text = resources.getText(R.string.unsubscribe)
+//                setBackgroundResource(R.drawable.btn_unsub)
+            }
+        } else {
+            groupElement.subscribingProgressBar.show()
+            with (groupElement.item_group__text_sub) {
+                isEnabled = false
+            }
+        }
+    }
+
+    override fun unsubscribingProcess(isOver: Boolean, groupElement: View) {
+        if (isOver) {
+            groupElement.subscribingProgressBar.hide()
+            with (groupElement.item_group__text_sub) {
+                isEnabled = true
+//                text = resources.getText(R.string.subscribe)
+//                setBackgroundResource(R.drawable.btn_sub)
+            }
+        } else {
+            groupElement.subscribingProgressBar.show()
+            with (groupElement.item_group__text_sub) {
+                isEnabled = false
+            }
+        }
     }
 
     override fun showImageUploadingProgress(progress: Float) {

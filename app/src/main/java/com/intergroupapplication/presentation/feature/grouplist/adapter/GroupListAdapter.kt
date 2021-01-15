@@ -42,8 +42,8 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
         var userID: String? = null
         var groupClickListener: (groupId: String) -> Unit = {}
         var retryClickListener: () -> Unit = {}
-        var subscribeClickListener: (groupId: String) -> Unit = {}
-        var unsubscribeClickListener: (groupId: String) -> Unit = {}
+        var subscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
+        var unsubscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
         var getColor:((color: Int) -> Int)? = null
     }
 
@@ -173,23 +173,21 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 with (item_group__text_sub) {
                     if (item.isFollowing) {
                         setOnClickListener {
-                            unsubscribeClickListener.invoke(item.id)
-                            view.subscribingProgress.show()
+                            unsubscribeClickListener.invoke(item.id, view)
                         }
                         text = resources.getText(R.string.unsubscribe)
                         setBackgroundResource(R.drawable.btn_unsub)
                     } else {
                         setOnClickListener {
-                            subscribeClickListener.invoke(item.id)
-                            view.subscribingProgress.show()
+                            subscribeClickListener.invoke(item.id, view)
                         }
                         text = resources.getText(R.string.subscribe)
                         setBackgroundResource(R.drawable.btn_sub)
                     }
-                    if (userID == item.owner) {
-                        visibility = View.INVISIBLE
+                    visibility = if (userID == item.owner) {
+                        View.INVISIBLE
                     } else {
-                        visibility = View.VISIBLE
+                        View.VISIBLE
                     }
                 }
                 doOrIfNull(item.avatar, {
@@ -197,7 +195,6 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                     //imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
                 }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
                 })
-                view.subscribingProgress.hide()
             }
         }
 
