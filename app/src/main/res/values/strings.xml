@@ -143,4 +143,7 @@
     <string name="appodealpolicy">Appodeal policy</string>
     <string name="offered_posts">Offered posts</string>
     <string name="idg" translatable="false">IDG:%1$s</string>
+    <string name="allUsers">Followers</string>
+    <string name="blockedUsers">Blocked</string>
+    <string name="admUsers">Administrators</string>
 </resources>

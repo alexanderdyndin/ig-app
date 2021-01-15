@@ -239,6 +239,9 @@
             android:name="isGroupCreatedNow"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_groupActivity_to_userListFragment"
+            app:destination="@id/userListFragment" />
     </fragment>
     <fragment
         android:id="@+id/CreatePostFragment"
@@ -258,5 +261,13 @@
         <action
             android:id="@+id/action_commentsDetailsActivity_to_groupActivity"
             app:destination="@id/groupActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="com.intergroupapplication.presentation.feature.userlist.view.UserListFragment"
+        android:label="UserListFragment" >
+        <argument
+            android:name="group_id"
+            app:argType="string" />
     </fragment>
 </navigation>

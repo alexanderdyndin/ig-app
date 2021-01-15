@@ -76,6 +76,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
         getGroupsList()
         getFollowGroupsList()
         getOwnedGroupsList()
+
     }
 
     fun getGroupsList() {

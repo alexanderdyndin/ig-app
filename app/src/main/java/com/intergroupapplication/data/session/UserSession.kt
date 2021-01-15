@@ -32,6 +32,8 @@ class UserSession @Inject constructor(private val sharedPreferences: SharedPrefe
     }
 
     fun logout() {
+        user = null
+        token = null
         sharedPreferences.edit()
                 .remove(UserEntity::class.java.name)
                 .remove(TokenEntity::class.java.name)

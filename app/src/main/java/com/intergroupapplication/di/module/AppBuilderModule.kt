@@ -33,6 +33,8 @@ import com.intergroupapplication.presentation.feature.registration.di.Registrati
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment
 import com.intergroupapplication.presentation.feature.splash.SplashFragment
 import com.intergroupapplication.presentation.feature.splash.di.SplashViewModule
+import com.intergroupapplication.presentation.feature.userlist.di.UserListViewModule
+import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -99,6 +101,10 @@ interface AppBuilderModule {
     @PerActivity
     @ContributesAndroidInjector(modules = [MainActivityViewModule::class])
     fun provideMainActivityFactory(): MainActivity
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [UserListViewModule::class])
+    fun provideUserListFragmentFactory(): UserListFragment
 
 
 }

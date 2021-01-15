@@ -200,6 +200,10 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         swipeLayout.setOnRefreshListener {
             presenter.refresh(groupId)
         }
+        groupStrength.setOnClickListener {
+            val data = bundleOf(GROUP_ID to groupId)
+            findNavController().navigate(R.id.action_groupActivity_to_userListFragment, data)
+        }
     }
 
     override fun onStart() {

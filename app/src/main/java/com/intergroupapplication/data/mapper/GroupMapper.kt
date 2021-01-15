@@ -1,8 +1,10 @@
 package com.intergroupapplication.data.mapper
 
+import com.intergroupapplication.data.model.GroupFollowModel
 import com.intergroupapplication.data.model.GroupModel
 import com.intergroupapplication.data.model.GroupsDto
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupFollowEntity
 import com.intergroupapplication.domain.entity.GroupListEntity
 import javax.inject.Inject
 
@@ -79,5 +81,13 @@ class GroupMapper @Inject constructor() {
                 next,
                 previous,
                 mapListToDomainEntity(from.groups))
+    }
+
+    fun followsToModel(from: GroupFollowEntity): GroupFollowModel {
+        return GroupFollowModel(from.id, from.is_blocked, from.time_blocked, from.user, from.group)
+    }
+
+    fun followsToEntity(from: GroupFollowModel): GroupFollowEntity {
+        return GroupFollowEntity(from.id, from.is_blocked, from.time_blocked, from.user, from.group)
     }
 }
