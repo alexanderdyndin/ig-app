@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +42,7 @@ import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
+import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.workable.errorhandler.Action
@@ -60,6 +63,8 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     @InjectPresenter
     lateinit var presenter: NewsPresenter
 
+    //lateinit var viewModel: NewsViewModel
+
     @ProvidePresenter
     fun providePresenter(): NewsPresenter = presenter
 
@@ -78,6 +83,9 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     @Inject
     lateinit var adapterWrapper: AdmobBannerRecyclerAdapterWrapper
 
+    @Inject lateinit var modelFactory: ViewModelProvider.Factory
+    private lateinit var model: NewsViewModel
+
     override fun layoutRes() = R.layout.fragment_news
 
     override fun getSnackBarCoordinator(): ViewGroup? = newsCoordinator
@@ -92,6 +100,7 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        model = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
         //var commentsCount: String? = null
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)

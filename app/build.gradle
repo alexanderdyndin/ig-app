@@ -181,6 +181,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.paging:paging-runtime-ktx:2.1.2'
     implementation 'androidx.palette:palette-ktx:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
@@ -326,4 +327,8 @@ dependencies {
     //Video player
     implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
 
+    //paging 3
+    def paging_version = "3.0.0-alpha12"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 }

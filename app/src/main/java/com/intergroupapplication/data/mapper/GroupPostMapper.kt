@@ -1,11 +1,7 @@
 package com.intergroupapplication.data.mapper
 
-import com.intergroupapplication.data.model.CreateGroupPostModel
-import com.intergroupapplication.data.model.GroupPostModel
-import com.intergroupapplication.data.model.NewsDto
-import com.intergroupapplication.domain.entity.CreateGroupPostEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.domain.entity.NewsEntity
+import com.intergroupapplication.data.model.*
+import com.intergroupapplication.domain.entity.*
 import javax.inject.Inject
 
 /**
@@ -15,24 +11,52 @@ class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapp
 
     fun mapToDto(from: GroupPostEntity): GroupPostModel {
         return GroupPostModel(
-                id = from.id,
-                postText = from.postText,
-                commentsCount = from.commentsCount,
-                date = from.date,
-                groupInPost = groupInPostMapper.mapToDto(from.groupInPost),
-                photo = from.photo
+                from.id,
+                groupInPostMapper.mapToDto(from.groupInPost),
+                from.postText,
+                from.date,
+                from.photo,
+                from.commentsCount,
+                from.activeCommentsCount,
+                from.isActive,
+                from.isOffered,
+                from.images?.map { mapToDto(it) },
+                from.audios?.map { mapToDto(it) },
+                from.videos?.map { mapToDto(it) }
         )
     }
 
     fun mapToDomainEntity(from: GroupPostModel): GroupPostEntity {
         return GroupPostEntity(
-                id = from.id,
-                postText = from.postText,
-                commentsCount = from.commentsCount ?: "0",
-                date = from.date,
-                groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost),
-                photo = from.photo
+                from.id,
+                groupInPostMapper.mapToDomainEntity(from.groupInPost),
+                from.postText,
+                from.date,
+                from.photo,
+                from.commentsCount,
+                from.activeCommentsCount,
+                from.isActive,
+                from.isOffered,
+                from.images?.map { mapToDomainEntity(it) },
+                from.audios?.map { mapToDomainEntity(it) },
+                from.videos?.map { mapToDomainEntity(it) }
         )
+    }
+
+    fun mapToDto(from: FileEntity): ImageVideoModel {
+        return ImageVideoModel(from.id, from.file, from.description, from.title, from.post, from.owner)
+    }
+
+    fun mapToDomainEntity(from: ImageVideoModel): FileEntity {
+        return FileEntity(from.id, from.file, from.description, from.title, from.post, from.owner)
+    }
+
+    fun mapToDto(from: AudioEntity): AudioModel {
+        return AudioModel(from.id, from.file, from.description, from.song, from.artist, from.genre, from.post, from.owner)
+    }
+
+    fun mapToDomainEntity(from: AudioModel): AudioEntity {
+        return AudioEntity(from.id, from.file, from.description, from.song, from.artist, from.genre, from.post, from.owner)
     }
 
     fun mapNewsListToDomainEntity(from: NewsDto): NewsEntity {

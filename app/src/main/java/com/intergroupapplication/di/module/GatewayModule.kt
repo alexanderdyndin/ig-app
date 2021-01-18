@@ -5,6 +5,9 @@ import com.intergroupapplication.data.service.AwsUploadingService
 import com.intergroupapplication.data.service.LoginService
 import com.intergroupapplication.data.service.RegistrationService
 import com.intergroupapplication.domain.gateway.*
+import com.intergroupapplication.presentation.feature.news.pagingsource.NewsDataSource3
+import com.intergroupapplication.presentation.feature.news.pagingsource.NewsRepository
+import com.intergroupapplication.presentation.feature.news.pagingsource.NewsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 
@@ -53,5 +56,8 @@ interface GatewayModule {
 
     @Binds
     fun provideComplaintsRepository(complaintsRepository: ComplaintsRepository): ComplaintsGetaway
+
+    @Binds
+    fun provideNewsRepository(newsRepository: NewsRepositoryImpl): NewsRepository
 
 }
