@@ -18,18 +18,6 @@ class GroupListViewModel @Inject constructor(
         private val compositeDisposable: CompositeDisposable
 ): ViewModel() {
 
-    val query: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
-
-    val searchQuery: MutableStateFlow<String> by lazy {
-        MutableStateFlow<String>("")
-    }
-
-    val scrollingRecycler: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
-    }
-
 
     fun fetchGroups(query: String = ""): Flowable<PagingData<GroupEntity>> {
         return useCase.getGroupList(query).cachedIn(viewModelScope)

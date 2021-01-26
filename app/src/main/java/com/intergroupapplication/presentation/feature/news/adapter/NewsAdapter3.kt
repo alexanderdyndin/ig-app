@@ -1,13 +1,13 @@
 package com.intergroupapplication.presentation.feature.news.adapter
 
 import android.content.Context
-import android.view.ContextMenu
-import androidx.recyclerview.widget.DiffUtil
-import androidx.appcompat.widget.PopupMenu
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
@@ -92,6 +92,13 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
 
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+
+                item.images.forEach {
+                    val image = SimpleDraweeView(itemView.context)
+                    image.layoutParams = ViewGroup.LayoutParams(80, 80)
+                    imageLoadingDelegate.loadImageFromUrl(it.file, image)
+                    postBody.addView(image)
+                }
             }
         }
 

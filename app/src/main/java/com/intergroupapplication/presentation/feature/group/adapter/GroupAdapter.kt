@@ -7,6 +7,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
@@ -162,6 +163,12 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
 
                 initializeVideoPlayer()
                 initializeAudioPlayer()
+                item.images.forEach {
+                    val image = SimpleDraweeView(itemView.context)
+                    image.layoutParams = ViewGroup.LayoutParams(300, 300)
+                    imageLoadingDelegate.loadImageFromUrl(it.file, image)
+                    postBody.addView(image)
+                }
             }
         }
 

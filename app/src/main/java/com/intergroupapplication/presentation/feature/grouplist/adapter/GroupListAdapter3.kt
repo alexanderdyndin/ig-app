@@ -44,9 +44,9 @@ class GroupListAdapter3(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
         var lettersToSpan = ""
         var userID: String? = null
         var groupClickListener: (groupId: String) -> Unit = {}
+        var unsubscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
+        var subscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
     }
-    var unsubscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
-    var subscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
 
     private lateinit var context: Context
     private val loadingViewType = 123
