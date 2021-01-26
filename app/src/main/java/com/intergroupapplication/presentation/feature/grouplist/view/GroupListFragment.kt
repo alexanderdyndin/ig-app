@@ -1,69 +1,50 @@
 package com.intergroupapplication.presentation.feature.grouplist.view
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
-import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.google.android.material.tabs.TabLayoutMediator
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupInfoEntity
+import com.intergroupapplication.domain.entity.GroupType
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.base.BasePresenter.Companion.GROUP_CREATED
-import com.intergroupapplication.presentation.base.PagingViewGroup
-import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.exstension.doOrIfNull
-import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter3
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
+import com.intergroupapplication.presentation.feature.grouplist.viewModel.GroupListViewModel
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
-import kotlinx.android.synthetic.main.fragment_news.*
-import kotlinx.android.synthetic.main.item_group_in_list.view.*
-import kotlinx.android.synthetic.main.layout_profile_header.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
-import kotlinx.android.synthetic.main.main_toolbar_layout.view.*
 import javax.inject.Inject
-import javax.inject.Named
 
-class GroupListFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegateGroup)
-    : BaseFragment(), GroupListView, PagingViewGroup by pagingDelegate {
+class GroupListFragment()
+    : BaseFragment(), GroupListView {
 
-    constructor() : this(PagingDelegateGroup())
 
     companion object {
         const val CREATED_GROUP_ID = "created_group_id"
@@ -79,13 +60,16 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     @Inject
     lateinit var sessionStorage: UserSession
 
-    @Inject
-    lateinit var layoutManager: LinearLayoutManager
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
-    lateinit var doOnFragmentViewCreated: (View) -> Unit
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: GroupListViewModel
+
+    //lateinit var doOnFragmentViewCreated: (View) -> Unit
 
     private lateinit var viewDrawer: View
 
@@ -100,34 +84,10 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
     var currentScreen = 0
 
 
-    //адаптеры для фрагментов со списками групп
-    @Inject
-    @Named("AdapterAll")
-    lateinit var adapterAll: GroupListAdapter
-
-    @Inject
-    @Named("AdapterSub")
-    lateinit var adapterSub: GroupListAdapter
-
-    @Inject
-    @Named("AdapterAdm")
-    lateinit var adapterAdm: GroupListAdapter
-
-    @Inject
-    @Named("AdapterAll")
-    lateinit var adapterAllAD: AdmobBannerRecyclerAdapterWrapper
-
-    @Inject
-    @Named("AdapterSub")
-    lateinit var adapterSubAD: AdmobBannerRecyclerAdapterWrapper
-
-    @Inject
-    @Named("AdapterAdm")
-    lateinit var adapterAdmAD: AdmobBannerRecyclerAdapterWrapper
-
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
-            presenter.applySearchQuery(s.toString())
+            //presenter.applySearchQuery(s.toString())
+            viewModel.query.value = s.toString()
         }
 
         override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -141,18 +101,13 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity(), modelFactory)[GroupListViewModel::class.java]
+        viewModel.query.value = activity_main__search_input.text.toString()
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
-        setAdapter()
-        pagingDelegate.attachPagingView(swipeLayout)
-        doOnFragmentViewCreated = {
-            val emptyText = it.findViewById<TextView>(R.id.emptyText)
-            val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
-            pagingDelegate.addAdapter((groupsList.adapter as AdmobBannerRecyclerAdapterWrapper).adapter as PagingAdapter, emptyText)
-        }
         val gpAdapter = GroupPageAdapter(requireActivity())
         pager.apply {
             adapter = gpAdapter
-            val handler = ViewPager2Circular(this, swipeLayout)
+            val handler = ViewPager2Circular(this/*, swipeLayout*/)
             handler.pageChanged = {
                 currentScreen = it
             }
@@ -163,60 +118,75 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
-        swipeLayout.setOnRefreshListener {
-            when(currentScreen) {
-                0 -> presenter.refreshAll()
-                1 -> presenter.refreshFollowed()
-                2 -> presenter.refreshAdmin()
-            }
-            Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
-        }
+
+        viewModel.scrollingRecycler.observe(viewLifecycleOwner, Observer {
+            pager.isUserInputEnabled = it
+        })
         activity_main__btn_filter.setOnClickListener {
             //todo
         }
         createGroup.visibility = View.VISIBLE
         createGroup.setOnClickListener { openCreateGroup() }
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<GroupInfoEntity>(GROUP_ID)?.observe(
-                viewLifecycleOwner) { groupInfo ->
-            if (groupInfoEntity != groupInfo) { // avoid get same info on ever fragment start
-                adapterAll.itemUpdate(groupInfo)
-                presenter.refreshFollowed()
-                groupInfoEntity = groupInfo
-            }
-            //presenter.refresh()
-        }
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(CREATED_GROUP_ID)?.observe(
-                viewLifecycleOwner) { id ->
-            if (groupId != id) { // avoid get same info on ever fragment start
-                val data = bundleOf(GROUP_ID to id)
-                findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
-                groupId = id
-                presenter.refresh()
-            }
-        }
-    }
-
-    private fun setAdapter() {
-        with (GroupListAdapter) {
+        with (GroupListAdapter3) {
             userID = sessionStorage.user?.id
-            retryClickListener = { presenter.reload() }
-            subscribeClickListener = { id, view ->
-                presenter.sub(id, view)
-            }
-            unsubscribeClickListener = { id, view ->
-                presenter.unsub(id, view)
-            }
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
-            getColor = { ContextCompat.getColor(this@GroupListFragment.requireContext(), R.color.whiteTextColor) }
         }
     }
 
+//    fun setPagingOld() {
+        //pagingDelegate.attachPagingView(swipeLayout)
+//        doOnFragmentViewCreated = {
+//            val emptyText = it.findViewById<TextView>(R.id.emptyText)
+//            val groupsList = it.findViewById<RecyclerView>(R.id.allGroupsList)
+//            pagingDelegate.addAdapter((groupsList.adapter as AdmobBannerRecyclerAdapterWrapper).adapter as PagingAdapter, emptyText)
+//        }
+//        with (GroupListAdapter) {
+//            userID = sessionStorage.user?.id
+//            retryClickListener = { presenter.reload() }
+//
+//            unsubscribeClickListener = { id, view ->
+//                presenter.unsub(id, view)
+//            }
+//            groupClickListener = {
+//                val data = bundleOf(GROUP_ID to it)
+//                findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
+//            }
+//            getColor = { ContextCompat.getColor(this@GroupListFragment.requireContext(), R.color.whiteTextColor) }
+//        }
+//        swipeLayout.setOnRefreshListener {
+//            when(currentScreen) {
+//                0 -> presenter.refreshAll()
+//                1 -> presenter.refreshFollowed()
+//                2 -> presenter.refreshAdmin()
+//            }
+//            Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
+//        }
+//        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<GroupInfoEntity>(GROUP_ID)?.observe(
+//                viewLifecycleOwner) { groupInfo ->
+//            if (groupInfoEntity != groupInfo) { // avoid get same info on ever fragment start
+//                adapterAll.itemUpdate(groupInfo)
+//                presenter.refreshFollowed()
+//                groupInfoEntity = groupInfo
+//            }
+            //presenter.refresh()
+//        }
+//        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(CREATED_GROUP_ID)?.observe(
+//                viewLifecycleOwner) { id ->
+//            if (groupId != id) { // avoid get same info on ever fragment start
+//                val data = bundleOf(GROUP_ID to id)
+//                findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
+//                groupId = id
+//                presenter.refresh()
+//            }
+//        }
+//    }
+
+
     override fun onResume() {
         super.onResume()
-        presenter.checkNewVersionAvaliable(requireActivity().supportFragmentManager)
         activity_main__search_input.addTextChangedListener(textWatcher)
     }
 
@@ -225,73 +195,23 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         activity_main__search_input.removeTextChangedListener(textWatcher)
     }
 
-
     private fun openCreateGroup() {
         findNavController().navigate(R.id.action_groupListFragment2_to_createGroupActivity)
     }
 
-    override fun groupListLoaded(groups: PagedList<GroupEntity>) {
-        adapterAll.submitList(groups)
-}
-
-    override fun groupListSubLoaded(groups: PagedList<GroupEntity>) {
-        adapterSub.submitList(groups)
-    }
-
-    override fun groupListAdmLoaded(groups: PagedList<GroupEntity>) {
-        adapterAdm.submitList(groups)
-    }
-
-    override fun showLoading(show: Boolean) {
-        //todo пофиксить перескакивание в конец списка или оставить как есть сейчас
-        if (show) {
-            when (pager.currentItem) {
-                0 -> {
-                    adapterAll.removeError()
-                    //adapterAll.addLoading()
-                }
-                1 -> {
-                    adapterAdm.removeError()
-                    //adapterAdm.addLoading()
-                }
-                2 -> {
-                    adapterSub.removeError()
-                    //adapterSub.addLoading()
-                }
-            }
-        } else {
-            swipeLayout.isRefreshing = false
-            when (pager.currentItem) {
-                0 -> {
-                    adapterAll.removeLoading()
-                }
-                1 -> {
-                    adapterAdm.removeLoading()
-                }
-                2 -> {
-                    adapterSub.removeLoading()
-                }
-            }
-        }
-    }
 
     private inner class GroupPageAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
         private val PAGE_COUNT = 3
 
-
         override fun getItemCount(): Int = PAGE_COUNT
 
         override fun createFragment(position: Int): Fragment {
             return when(position) {
-                0 -> GroupsFragment.newInstance(position, adapterAllAD)
-                        .apply { doOnViewCreated = doOnFragmentViewCreated }
-                1 -> GroupsFragment.newInstance(position, adapterSubAD)
-                        .apply { doOnViewCreated = doOnFragmentViewCreated }
-                2 -> GroupsFragment.newInstance(position, adapterAdmAD)
-                        .apply { doOnViewCreated = doOnFragmentViewCreated }
-                else -> GroupsFragment.newInstance(position, adapterAllAD)
-                        .apply { doOnViewCreated = doOnFragmentViewCreated }
+                0 -> GroupsFragment(GroupType.ALL)
+                1 -> GroupsFragment(GroupType.FOLLOWED)
+                2 -> GroupsFragment(GroupType.OWNED)
+                else -> GroupsFragment(GroupType.ALL)
             }
         }
 
@@ -317,42 +237,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
         profileAvatarHolder.clearUploadingState(lastAvatar)
     }
 
-    override fun subscribeGroup(id: String) {
-        adapterAll.itemUpdate(id)
-        presenter.refreshFollowed()
-    }
-
-    override fun subscribingProcess(isOver: Boolean, groupElement: View) {
-        if (isOver) {
-            groupElement.subscribingProgressBar.hide()
-            with (groupElement.item_group__text_sub) {
-                isEnabled = true
-//                text = resources.getText(R.string.unsubscribe)
-//                setBackgroundResource(R.drawable.btn_unsub)
-            }
-        } else {
-            groupElement.subscribingProgressBar.show()
-            with (groupElement.item_group__text_sub) {
-                isEnabled = false
-            }
-        }
-    }
-
-    override fun unsubscribingProcess(isOver: Boolean, groupElement: View) {
-        if (isOver) {
-            groupElement.subscribingProgressBar.hide()
-            with (groupElement.item_group__text_sub) {
-                isEnabled = true
-//                text = resources.getText(R.string.subscribe)
-//                setBackgroundResource(R.drawable.btn_sub)
-            }
-        } else {
-            groupElement.subscribingProgressBar.show()
-            with (groupElement.item_group__text_sub) {
-                isEnabled = false
-            }
-        }
-    }
 
     override fun showImageUploadingProgress(progress: Float) {
         profileAvatarHolder.showImageUploadingProgress(progress)
@@ -433,8 +317,6 @@ class GroupListFragment @SuppressLint("ValidFragment") constructor(private val p
             drawer.openDrawer()
         }
         presenter.getUserInfo()
-        //findNavController().navigate(R.id.action_navigationActivity2_to_newsFragment2)
-        //drawer.openDrawer()
     }
 
 }

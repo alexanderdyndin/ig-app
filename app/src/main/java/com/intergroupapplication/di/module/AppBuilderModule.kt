@@ -20,6 +20,7 @@ import com.intergroupapplication.presentation.feature.createpost.view.CreatePost
 import com.intergroupapplication.presentation.feature.createuserprofile.di.CreateUserProfileViewModule
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
+import com.intergroupapplication.presentation.feature.grouplist.di.GroupsViewModule
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.login.di.LoginViewModule
@@ -96,7 +97,7 @@ interface AppBuilderModule {
     fun provideGroupListFragmentFactory(): GroupListFragment
 
     @PerFragment
-    @ContributesAndroidInjector(modules = [GroupListViewModule::class])
+    @ContributesAndroidInjector(modules = [GroupsViewModule::class])
     fun provideGroupFragmentFactory(): GroupsFragment
 
     @PerFragment
@@ -110,6 +111,7 @@ interface AppBuilderModule {
     @PerFragment
     @ContributesAndroidInjector(modules = [UserListViewModule::class])
     fun provideUserListFragmentFactory(): UserListFragment
+
 
 
 }

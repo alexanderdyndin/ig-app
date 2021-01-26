@@ -1,11 +1,9 @@
 package com.intergroupapplication.data.mapper
 
-import com.intergroupapplication.data.model.CommentUserModel
-import com.intergroupapplication.data.model.UserModel
-import com.intergroupapplication.data.model.UserProfileModelRequest
-import com.intergroupapplication.data.model.UserProfileModelResponse
+import com.intergroupapplication.data.model.*
 import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.di.qualifier.PointDateFormatter
+import com.intergroupapplication.domain.entity.AdEntity
 import com.intergroupapplication.domain.entity.CommentUserEntity
 import com.intergroupapplication.domain.entity.CreateUserEntity
 import com.intergroupapplication.domain.entity.UserEntity
@@ -68,5 +66,31 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                     isBlocked = from.userModel.isBlocked,
                     isActive = from.userModel.isActive,
                     avatar = from.avatar)
+
+    fun mapToDomainEntity(from: AdModel) =
+            AdEntity(
+                    from.limitOfAdsGroups,
+                    from.firstAdIndexGroups,
+                    from.noOfDataBetweenAdsGroups,
+                    from.limitOfAdsNews,
+                    from.firstAdIndexNews,
+                    from.noOfDataBetweenAdsNews,
+                    from.limitOfAdsComments,
+                    from.firstAdIndexComments,
+                    from.noOfDataBetweenAdsComments
+            )
+
+    fun mapToDataModel(from: AdEntity) =
+            AdModel(
+                    from.limitOfAdsGroups,
+                    from.firstAdIndexGroups,
+                    from.noOfDataBetweenAdsGroups,
+                    from.limitOfAdsNews,
+                    from.firstAdIndexNews,
+                    from.noOfDataBetweenAdsNews,
+                    from.limitOfAdsComments,
+                    from.firstAdIndexComments,
+                    from.noOfDataBetweenAdsComments
+            )
 
 }

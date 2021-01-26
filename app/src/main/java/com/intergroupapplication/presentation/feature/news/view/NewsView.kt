@@ -9,8 +9,7 @@ import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.*
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface NewsView : MvpView, CanShowLoading, PagingView, ImageUploadingView {
-    fun newsLoaded(posts: PagedList<GroupPostEntity>)
+interface NewsView : MvpView, ImageUploadingView {
     fun showMessage(resId: Int)
     fun showUserInfo(userEntity: UserEntity)
     fun avatarChanged(url: String)

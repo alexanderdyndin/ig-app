@@ -20,9 +20,9 @@ class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapp
                 from.activeCommentsCount,
                 from.isActive,
                 from.isOffered,
-                from.images?.map { mapToDto(it) },
-                from.audios?.map { mapToDto(it) },
-                from.videos?.map { mapToDto(it) }
+                from.images.map { mapToDto(it) },
+                from.audios.map { mapToDto(it) },
+                from.videos.map { mapToDto(it) }
         )
     }
 
@@ -37,9 +37,9 @@ class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapp
                 from.activeCommentsCount,
                 from.isActive,
                 from.isOffered,
-                from.images?.map { mapToDomainEntity(it) },
-                from.audios?.map { mapToDomainEntity(it) },
-                from.videos?.map { mapToDomainEntity(it) }
+                from.images.map { mapToDomainEntity(it) },
+                from.audios.map { mapToDomainEntity(it) },
+                from.videos.map { mapToDomainEntity(it) }
         )
     }
 

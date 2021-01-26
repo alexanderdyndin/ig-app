@@ -147,6 +147,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_groupActivity_to_userListFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
                         </option>
                       </LayoutPositions>
@@ -260,6 +265,11 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="action_newsFragment2_to_createUserProfileActivity">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_newsFragment2_to_groupActivity">
                               <value>
                                 <LayoutPositions />
@@ -345,6 +355,18 @@
                               </value>
                             </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="userListFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="12" />
+                            <option name="y" value="12" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>

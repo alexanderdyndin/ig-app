@@ -15,6 +15,10 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44dae379d2bff91b673c5d03be7a391c/jetified-rxpermissions-0.10.2/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44dae379d2bff91b673c5d03be7a391c/jetified-rxpermissions-0.10.2/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44dae379d2bff91b673c5d03be7a391c/jetified-rxpermissions-0.10.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ab99963eba2b62f15d3a0ddc210d5fcf/jetified-rxpermissions-0.10.2/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dba26ac1242cb804399f88788e09159c/jetified-rxpermissions-0.10.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dba26ac1242cb804399f88788e09159c/jetified-rxpermissions-0.10.2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dba26ac1242cb804399f88788e09159c/jetified-rxpermissions-0.10.2/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

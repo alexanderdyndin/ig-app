@@ -2,7 +2,6 @@ package com.intergroupapplication.presentation.feature.news.di
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,12 +11,10 @@ import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.clockbyte.admobadapter.bannerads.BannerAdViewWrappingStrategy
 import com.google.android.gms.ads.AdView
-import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
@@ -28,8 +25,8 @@ import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter3
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -85,21 +82,23 @@ class NewsViewModule {
         override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem == newItem
     }
 
-
     @PerFragment
     @Provides
-    fun provideNewsAdapter(diffUtil: DiffUtil.ItemCallback<GroupPostEntity>,
-                           imageLoadingDelegate: ImageLoadingDelegate): NewsAdapter =
-            NewsAdapter(diffUtil, imageLoadingDelegate)
+    fun provideNewsAdapter3(diffUtil: DiffUtil.ItemCallback<GroupPostEntity>,
+                           imageLoadingDelegate: ImageLoadingDelegate): NewsAdapter3 {
+        val adapter = NewsAdapter3(diffUtil, imageLoadingDelegate)
+        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
+        return adapter
+    }
 
     @PerFragment
     @Provides
     fun provideAdmobBammerAdapter(context: Context,
-                                  newsAdapter: NewsAdapter, activity: NewsFragment,
+                                  newsAdapter: NewsAdapter3, activity: NewsFragment,
                                   userSession: UserSession): AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
                     .setLimitOfAds(userSession.countAd?.limitOfAdsNews ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexNews ?: 10)
+                    .setFirstAdIndex(userSession.countAd?.firstAdIndexNews ?: 10)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup

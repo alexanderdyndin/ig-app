@@ -113,4 +113,8 @@ interface AppApi {
     @POST("complaints/")
     fun complaints(@Body complaintModel: ComplaintModel): Completable
 
+    @GET("admin/advertisement/")
+    fun adCountInfo(): Single<AdModel>
+
+
 }

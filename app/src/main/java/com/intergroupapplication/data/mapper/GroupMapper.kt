@@ -64,6 +64,12 @@ class GroupMapper @Inject constructor() {
             "http://backend-v2:8080/groups/?search=" -> {
                 1
             }
+            "http://backend-v2:8080/groups/?owned=true&search=" -> {
+                1
+            }
+            "http://backend-v2:8080/groups/?followed=true&search=" -> {
+                1
+            }
             null -> {
                 null
             }
