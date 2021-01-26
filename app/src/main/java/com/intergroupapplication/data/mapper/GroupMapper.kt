@@ -1,8 +1,10 @@
 package com.intergroupapplication.data.mapper
 
+import com.intergroupapplication.data.model.GroupFollowModel
 import com.intergroupapplication.data.model.GroupModel
 import com.intergroupapplication.data.model.GroupsDto
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupFollowEntity
 import com.intergroupapplication.domain.entity.GroupListEntity
 import javax.inject.Inject
 
@@ -58,12 +60,16 @@ class GroupMapper @Inject constructor() {
 
     fun mapToDomainEntity(from: GroupsDto): GroupListEntity {
         val regex = Regex(pattern = "=\\d*&")
-        val previous = if (from.previous == "http://backend-v2:8080/groups/?search=") {
-            1
-        } else if (from.previous == null) {
-            null
-        } else {
-            regex.find(from.previous)?.value?.replace("=","")?.replace("&", "")?.toInt()
+        val previous = when (from.previous) {
+            "http://backend-v2:8080/groups/?search=" -> {
+                1
+            }
+            null -> {
+                null
+            }
+            else -> {
+                regex.find(from.previous)?.value?.replace("=","")?.replace("&", "")?.toInt()
+            }
         }
         val next = if (from.next == null) {
             null
@@ -75,5 +81,13 @@ class GroupMapper @Inject constructor() {
                 next,
                 previous,
                 mapListToDomainEntity(from.groups))
+    }
+
+    fun followsToModel(from: GroupFollowEntity): GroupFollowModel {
+        return GroupFollowModel(from.id, from.is_blocked, from.time_blocked, from.user, from.group)
+    }
+
+    fun followsToEntity(from: GroupFollowModel): GroupFollowEntity {
+        return GroupFollowEntity(from.id, from.is_blocked, from.time_blocked, from.user, from.group)
     }
 }

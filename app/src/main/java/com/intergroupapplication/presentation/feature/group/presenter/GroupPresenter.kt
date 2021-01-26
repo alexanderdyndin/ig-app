@@ -3,7 +3,6 @@ package com.intergroupapplication.presentation.feature.group.presenter
 import androidx.paging.RxPagedListBuilder
 import moxy.InjectViewState
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.exception.PageNotFoundException
 import com.intergroupapplication.domain.gateway.ComplaintsGetaway
 import com.intergroupapplication.domain.gateway.GroupGateway
@@ -13,8 +12,6 @@ import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAG
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsScreen
-import com.intergroupapplication.presentation.feature.createpost.view.CreatePostScreen
 import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSourceFactory
 import com.intergroupapplication.presentation.feature.group.view.GroupView
 import com.workable.errorhandler.ErrorHandler
@@ -22,12 +19,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class GroupPresenter @Inject constructor(private val router: Router,
-                                         private val groupGateway: GroupGateway,
+class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
                                          private val postSourceFactory: GroupPostDataSourceFactory,
                                          private val groupUseCase: GroupUseCase,
                                          private val imageUploadingDelegate: ImageUploadingDelegate,
@@ -153,7 +149,7 @@ class GroupPresenter @Inject constructor(private val router: Router,
     }
 
     fun goBack() {
-        router.exit()
+        //router.exit()
     }
 
     fun complaintPost(postId: Int) {

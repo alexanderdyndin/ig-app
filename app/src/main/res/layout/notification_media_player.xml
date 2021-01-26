@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginHorizontal="10dp"
-            app:srcCompat="@drawable/lb_ic_play" />
+            android:src="@drawable/lb_ic_play" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -39,6 +39,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginHorizontal="10dp"
-            app:srcCompat="@drawable/lb_ic_pause" />
+            android:src="@drawable/lb_ic_pause" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

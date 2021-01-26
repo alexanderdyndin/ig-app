@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.commentsdetails.pagingsou
 import androidx.paging.PageKeyedDataSource
 import android.util.Log
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.gateway.CommentGateway
@@ -15,7 +16,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
-@PerActivity
+@PerFragment
 class CommentsDataSource @Inject constructor(private val commentsGateway: CommentGateway,
                                              private val compositeDisposable: CompositeDisposable)
     : PageKeyedDataSource<Int, CommentEntity>() {

@@ -66,21 +66,21 @@ FakeData {
                     CommentEntity("0", "New comment", "2018-03-15.45",
                             CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"))
 
-    fun getGroupPostsList(): List<GroupPostEntity> =
-            Arrays.asList(GroupPostEntity("1", "Простое описание поста",
-                    "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
-                    GroupPostEntity("2", "Простое описание поста",
-                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
-                    GroupPostEntity("3", "Простое описание поста",
-                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
-                    GroupPostEntity("4", "Простое описание поста",
-                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
-                    GroupPostEntity("5", "Простое описание поста",
-                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
-                    GroupPostEntity("6", "Простое описание поста",
-                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
-                    GroupPostEntity("7", "Простое описание поста",
-                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null))
+//    fun getGroupPostsList(): List<GroupPostEntity> =
+//            Arrays.asList(GroupPostEntity("1", "Простое описание поста",
+//                    "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
+//                    GroupPostEntity("2", "Простое описание поста",
+//                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
+//                    GroupPostEntity("3", "Простое описание поста",
+//                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
+//                    GroupPostEntity("4", "Простое описание поста",
+//                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
+//                    GroupPostEntity("5", "Простое описание поста",
+//                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
+//                    GroupPostEntity("6", "Простое описание поста",
+//                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null),
+//                    GroupPostEntity("7", "Простое описание поста",
+//                            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null))
 
     fun getGroupInPostEntity() = GroupInPostEntity("1", "Cloud Nine", null)
 
@@ -105,8 +105,8 @@ FakeData {
             "6",false,null,"no subject","no rules",
             false,"18+")
 
-    fun getGroupPostEntity() = GroupPostEntity("1", "Простое описание поста",
-            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null)
+//    fun getGroupPostEntity() = GroupPostEntity("1", "Простое описание поста",
+//            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null)
 
 
     fun getGroupEntity(): GroupEntity = GroupEntity("1", "15", "2",

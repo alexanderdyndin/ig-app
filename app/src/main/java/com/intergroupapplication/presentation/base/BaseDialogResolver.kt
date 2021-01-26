@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.intergroupapplication.R
@@ -25,10 +24,10 @@ class BaseDialogResolver : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sameDialogs = mutableListOf<BaseDialogResolver>()
-        addDialogToList(fragmentManager, sameDialogs)
+        addDialogToList(parentFragmentManager, sameDialogs)
         dropDialogIfMoreThanOne(sameDialogs)
         val dialogView = prepareView()
-        val builder = AlertDialog.Builder(activity!!)
+        val builder = AlertDialog.Builder(requireActivity())
         setActionsToViews(actionsMap, dialogView)
         builder.setView(dialogView)
         return builder.create().apply {
@@ -50,7 +49,7 @@ class BaseDialogResolver : DialogFragment() {
     private fun prepareView(): View {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(dialogLayout, null)
-        view.findViewById<AppCompatButton>(R.id.cancelButton)?.apply {
+        view.findViewById<Button>(R.id.cancelButton)?.apply {
             setOnClickListener { dismiss() }
         }
         return view

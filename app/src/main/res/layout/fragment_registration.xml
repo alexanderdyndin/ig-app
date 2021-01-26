@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registrationCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_base"
+    tools:context=".presentation.feature.registration.view.RegistrationFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLogin"
+                style="@style/ButtonAuthStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="@dimen/large_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:text="@string/already_registered"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvRegistration"
+                style="@style/TextViewAuthStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:text="@string/registration"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etMail"
+                style="@style/EditTextAuthStyle"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:background="@drawable/background_edit_text"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_email"
+                android:imeOptions="actionNext"
+                android:longClickable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvRegistration" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMailError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_email"
+                android:imeOptions="actionNext"
+                android:textColor="@color/red"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/etMail"
+                app:layout_constraintStart_toStartOf="@+id/etMail"
+                app:layout_constraintTop_toBottomOf="@+id/etMail"
+                tools:text="пример ошибки"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etDoubleMail"
+                style="@style/EditTextAuthStyle"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:background="@drawable/background_edit_text"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_double_email"
+                android:imeOptions="actionNext"
+                android:longClickable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMailError" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDoubleMailError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_email"
+                android:imeOptions="actionNext"
+                android:textColor="@color/red"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/etDoubleMail"
+                app:layout_constraintStart_toStartOf="@+id/etDoubleMail"
+                app:layout_constraintTop_toBottomOf="@+id/etDoubleMail"
+                tools:text="пример ошибки"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etPassword"
+                style="@style/EditTextAuthStyle"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:background="@drawable/background_edit_text"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_password"
+                android:imeOptions="actionNext"
+                android:longClickable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoubleMailError" />
+
+            <TextView
+                android:id="@+id/tvErrorPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_email"
+                android:imeOptions="actionNext"
+                android:textColor="@color/red"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/etPassword"
+                app:layout_constraintStart_toStartOf="@+id/etPassword"
+                app:layout_constraintTop_toBottomOf="@+id/etPassword"
+                tools:text="пример ошибки"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etDoublePassword"
+                style="@style/EditTextAuthStyle"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:background="@drawable/background_edit_text"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_double_password"
+                android:imeOptions="actionNext"
+                android:longClickable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvErrorPassword" />
+
+            <TextView
+                android:id="@+id/tvDoublePasswdError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/your_email"
+                android:imeOptions="actionNext"
+                android:textColor="@color/red"
+                android:visibility="invisible"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                app:layout_constraintEnd_toEndOf="@+id/etDoublePassword"
+                app:layout_constraintStart_toStartOf="@+id/etDoublePassword"
+                app:layout_constraintTop_toBottomOf="@+id/etDoublePassword"
+                app:layout_constraintBottom_toTopOf="@+id/frameLayout2"
+                tools:text="пример ошибки"
+                tools:visibility="visible"/>
+
+            <FrameLayout
+                android:id="@+id/frameLayout2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:layout_marginBottom="@dimen/large_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoublePasswdError">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnSendEmail"
+                    style="@style/ButtonAuthStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send_code" />
+
+                <include layout="@layout/auth_loader" />
+
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

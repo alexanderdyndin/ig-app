@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.intergroupapplication.R
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
@@ -18,6 +19,7 @@ import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
+import dagger.android.support.AndroidSupportInjection
 import moxy.InjectViewState
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -28,6 +30,8 @@ import javax.inject.Named
 class GroupsFragment constructor(
         private val adapter: AdmobBannerRecyclerAdapterWrapper
 ) : Fragment() {
+    @Inject
+    lateinit var userSession: UserSession
 
     private var mPage = 0
     var doOnViewCreated: (View) -> Unit = { }
@@ -56,6 +60,7 @@ class GroupsFragment constructor(
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val view = inflater.inflate(layoutRes(), container, false)
+        AndroidSupportInjection.inject(this)
         return view
     }
 
@@ -69,6 +74,7 @@ class GroupsFragment constructor(
         groupsList.itemAnimator = null
         groupsList.adapter = adapter
         doOnViewCreated.invoke(view)
+        userSession.user
     }
 
 }

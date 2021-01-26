@@ -62,7 +62,7 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
-                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
+                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE, null, it.count)) }
                 .subscribe({
                     callback.onResult(it.groups, it.previous, it.next)
                     retryAction = null
@@ -78,7 +78,7 @@ class GroupListDataSource @Inject constructor(private val groupGateway: GroupGat
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { subject.onNext(BasePagingState(BasePagingState.Type.LOADING)) }
-                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE)) }
+                .doOnSuccess { subject.onNext(BasePagingState(BasePagingState.Type.NONE, null, it.count)) }
                 .subscribe({
                     callback.onResult(it.groups, it.next)
                     retryAction = null

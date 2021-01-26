@@ -35,10 +35,10 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                         it.nonFieldError != null -> {
                             val message = it.nonFieldError.message
                             when (it.nonFieldError.uniqueCode) {
-                                PAGE_ERROR_GROUP -> PageNotFoundException()
-                                PAGE_ERROR_COMMENT_LIST -> PageNotFoundException()
-                                PAGE_ERROR_NEWS -> PageNotFoundException()
-                                PAGE_ERROR_GROUPS_POST_LIST -> PageNotFoundException()
+                                PAGE_ERROR_GROUP -> PageNotFoundException("Не найдено")
+                                PAGE_ERROR_COMMENT_LIST -> PageNotFoundException("Не найдено")
+                                PAGE_ERROR_NEWS -> PageNotFoundException("Не найдено")
+                                PAGE_ERROR_GROUPS_POST_LIST -> PageNotFoundException("Не найдено")
                                 NOT_PROFILE -> UserNotProfileException()
                                 else -> NotFoundException(message)
                             }

@@ -2,10 +2,11 @@
   <library name="Gradle: com.appodeal.ads.sdk.networks:adcolony:2.7.4.8@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c80d5af7ff1183b94b3ca987ebb278d4/jetified-adcolony-2.7.4.8/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be0ad5fcd1f9b0340c9377bf8e39d1db/jetified-adcolony-2.7.4.8/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be0ad5fcd1f9b0340c9377bf8e39d1db/jetified-adcolony-2.7.4.8/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be0ad5fcd1f9b0340c9377bf8e39d1db/jetified-adcolony-2.7.4.8/jars/classes.jar!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be0ad5fcd1f9b0340c9377bf8e39d1db/jetified-adcolony-2.7.4.8/jars/libs/r-classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7fc360ca1f0f7d8ac439189caae061b4/jetified-adcolony-2.7.4.8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7fc360ca1f0f7d8ac439189caae061b4/jetified-adcolony-2.7.4.8/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7fc360ca1f0f7d8ac439189caae061b4/jetified-adcolony-2.7.4.8/jars/libs/r-classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7fc360ca1f0f7d8ac439189caae061b4/jetified-adcolony-2.7.4.8/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             app:show_buffering="when_playing"
-            />
+            android:visibility="gone"/>
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/musicExoPlayerView"
@@ -107,7 +107,7 @@
             android:layout_marginBottom="20dp"
             app:hide_on_touch="false"
             app:show_timeout="0"
-            />
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -119,7 +119,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/postPrescription"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/groupName"
-        app:srcCompat="@drawable/ic_settings" />
+        android:src="@drawable/ic_settings" />
 
     <TextView
         android:id="@+id/commentImageClickArea"
@@ -140,7 +140,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/groupPostAvatar"
         app:layout_constraintTop_toBottomOf="@+id/postBody"
-        app:srcCompat="@drawable/ic_mode_comment" />
+        android:src="@drawable/ic_mode_comment" />
 
 
     <TextView

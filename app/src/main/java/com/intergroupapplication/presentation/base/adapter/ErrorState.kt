@@ -3,7 +3,7 @@ package com.intergroupapplication.presentation.base.adapter
 import androidx.recyclerview.widget.RecyclerView
 
 
-class ErrorState<ENTITY, VIEWHOLDER : RecyclerView.ViewHolder>(private val adapter: BasePagingAdapter<ENTITY, VIEWHOLDER>)
+class ErrorState<ENTITY: Any, VIEWHOLDER : RecyclerView.ViewHolder>(private val adapter: BasePagingAdapter<ENTITY, VIEWHOLDER>)
     : PagingAdapterState {
 
     override fun addLoading() {

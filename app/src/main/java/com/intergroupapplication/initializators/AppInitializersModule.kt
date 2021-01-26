@@ -9,10 +9,12 @@ import com.androidnetworking.gsonparserfactory.GsonParserFactory
 import com.appodeal.ads.Appodeal
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.android.gms.ads.MobileAds
+import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.qualifier.AmazonOkHttpClient
 import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.workable.errorhandler.ErrorHandler
@@ -80,6 +82,7 @@ class AppInitializersModule {
 //            MobileAds.initialize(context, "ca-app-pub-1717383973096668~8939439101")
 //        }
 //    }
+
 
     @Provides
     @IntoSet

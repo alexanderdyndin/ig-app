@@ -4,7 +4,8 @@ package com.intergroupapplication.presentation.base
  * Created by abakarmagomedov on 19/09/2018 at project InterGroupApplication.
  */
 class BasePagingState(val type: Type,
-                      val error: Throwable? = null) {
+                      val error: Throwable? = null,
+                      val count: Int = 0) {
 
     companion object {
         const val PAGINATION_PAGE_SIZE = 20

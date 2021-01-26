@@ -3,42 +3,44 @@ package com.intergroupapplication.presentation.feature.news.presenter
 import androidx.paging.RxPagedListBuilder
 import androidx.fragment.app.FragmentManager
 import android.util.Log
-import androidx.lifecycle.LiveData
 import moxy.InjectViewState
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.InfoForCommentEntity
-import com.intergroupapplication.domain.exception.PageNotFoundException
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.gateway.ComplaintsGetaway
+import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
-import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
 import com.intergroupapplication.presentation.base.BasePresenter
+import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsScreen
-import com.intergroupapplication.presentation.feature.group.view.GroupScreen
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
 import com.intergroupapplication.presentation.feature.news.pagingsource.NewsDataSourceFactory
 import com.intergroupapplication.presentation.feature.news.view.NewsView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import ru.terrakok.cicerone.Router
-import java.lang.Exception
+import timber.log.Timber
+
 import javax.inject.Inject
 
 @InjectViewState
-class NewsPresenter @Inject constructor(private val router: Router,
-                                        private val errorHandler: ErrorHandler,
+class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                         private val newsDataSourceFactory: NewsDataSourceFactory,
                                         private val complaintsGetaway: ComplaintsGetaway,
-                                        private val appStatusUseCase: AppStatusUseCase)
+                                        private val appStatusUseCase: AppStatusUseCase,
+                                        private val userProfileGateway: UserProfileGateway,
+                                        private val imageUploadingDelegate: ImageUploadingDelegate)
     : BasePresenter<NewsView>() {
-    lateinit var liveData: LiveData<String>
+
+    private val newsDisposable = CompositeDisposable()
+
     fun getNews() {
-        compositeDisposable.add(newsDataSourceFactory.source.observeState()
+        newsDisposable.add(newsDataSourceFactory.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
@@ -46,14 +48,14 @@ class NewsPresenter @Inject constructor(private val router: Router,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState(it.type)
+                    viewState.handleState(it.type, it.count)
                 }, {}))
 
-        compositeDisposable.add(RxPagedListBuilder(newsDataSourceFactory, PAGINATION_PAGE_SIZE)
+        newsDisposable.add(RxPagedListBuilder(newsDataSourceFactory, PAGINATION_PAGE_SIZE)
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                //.handleLoading(viewState)
+                .handleLoading(viewState)
                 .subscribe({
                     viewState.newsLoaded(it)
                 }, {
@@ -80,7 +82,7 @@ class NewsPresenter @Inject constructor(private val router: Router,
     }
 
     fun complaintPost(postId: Int) {
-        compositeDisposable.add(complaintsGetaway.complaintPost(postId)
+        newsDisposable.add(complaintsGetaway.complaintPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -88,10 +90,6 @@ class NewsPresenter @Inject constructor(private val router: Router,
                 }, {
                     errorHandler.handle(it)
                 }))
-    }
-
-    fun goToGroupScreen(groupId: String) {
-        router.navigateTo(GroupScreen(groupId))
     }
 
     fun reload() {
@@ -103,12 +101,67 @@ class NewsPresenter @Inject constructor(private val router: Router,
         getNews()
     }
 
-    private fun unsubscribe() {
-        compositeDisposable.clear()
+    fun unsubscribe() {
+        newsDisposable.clear()
     }
+
+    private var uploadingImageDisposable: Disposable? = null
+
+    fun attachFromGallery() {
+        stopImageUploading()
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
+    }
+
+    fun attachFromCamera() {
+        stopImageUploading()
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
+    }
+
+    fun changeUserAvatar() {
+        compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()
+                .flatMap { userProfileGateway.changeUserProfileAvatar(it) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ viewState.avatarChanged(it) }, {
+                    viewState.showImageUploadingError()
+                    errorHandler.handle(it)
+                }))
+    }
+
+    fun showLastUserAvatar() {
+        compositeDisposable.add(userProfileGateway.getUserProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ viewState.showLastAvatar(it.avatar) }, { errorHandler.handle(it) }))
+    }
+
+    fun getUserInfo() {
+        compositeDisposable.add(userProfileGateway.getUserProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    viewState.showUserInfo(it)
+                           }, {
+                    viewState.showImageUploadingError()
+                    errorHandler.handle(it)
+                }))
+    }
+
+
+    private fun stopImageUploading() {
+        uploadingImageDisposable?.dispose()
+    }
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         getNews()
     }
+
+    override fun destroyView(view: NewsView?) {
+        unsubscribe()
+        super.destroyView(view)
+    }
+
+
 }

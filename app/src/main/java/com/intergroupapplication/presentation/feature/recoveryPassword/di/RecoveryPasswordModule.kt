@@ -1,27 +1,27 @@
 package com.intergroupapplication.presentation.feature.recoveryPassword.di
 
 import android.content.Context
-import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordActivity
+import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.mobsandgeeks.saripaar.Validator
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 
 @Module
 class RecoveryPasswordModule {
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideDialogManager(activity: RecoveryPasswordActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+    fun provideDialogManager(fragment: RecoveryPasswordFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
@@ -29,14 +29,9 @@ class RecoveryPasswordModule {
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideSupportAppNavigator(activity: RecoveryPasswordActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
-
-    @PerActivity
-    @Provides
-    fun provideValidator(activity: RecoveryPasswordActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: RecoveryPasswordFragment): Validator =
+            Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
 
 }

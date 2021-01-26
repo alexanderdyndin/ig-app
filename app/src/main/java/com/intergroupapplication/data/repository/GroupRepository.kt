@@ -6,6 +6,7 @@ import com.intergroupapplication.data.model.GroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupFollowEntity
 import com.intergroupapplication.domain.entity.GroupListEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
@@ -68,6 +69,14 @@ class GroupRepository @Inject constructor(private val api: AppApi,
                             Completable.error(it)
                         }
                     }
+
+    override fun followersGroup(groupId: String): Single<GroupFollowEntity> {
+        return api.followersGroup(groupId)
+                .map { groupMapper.followsToEntity(it) }
+                .doOnError {
+                    Single.error<Throwable>(it)
+                }
+    }
 
     override fun getGroupDetailInfo(groupId: String): Single<GroupEntity> {
         return api.getGroupInformation(groupId).map { groupMapper.mapToDomainEntity(it) }

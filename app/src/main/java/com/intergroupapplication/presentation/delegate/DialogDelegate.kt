@@ -25,6 +25,10 @@ class DialogDelegate(private val dialogManager: DialogManager,
 
     var coordinator: ViewGroup? = null
 
+    fun setCoord(coordinator: ViewGroup) {
+        this.coordinator = coordinator
+    }
+
     fun showDialog(dialogLayout: Int, actionsMap: Map<Int, () -> Unit>) {
         dialogProvider.newDialog(dialogLayout, actionsMap).show(dialogManager.getManager(), INTERGROUP_DIALOG)
     }

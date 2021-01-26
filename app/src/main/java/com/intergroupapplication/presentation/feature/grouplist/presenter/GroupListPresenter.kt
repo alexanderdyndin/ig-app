@@ -1,51 +1,54 @@
 package com.intergroupapplication.presentation.feature.grouplist.presenter
 
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.paging.RxPagedListBuilder
-import com.androidnetworking.core.MainThreadExecutor
 import moxy.InjectViewState
 import com.intergroupapplication.BuildConfig
-import com.intergroupapplication.domain.FakeData
-import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.domain.exception.PageNotFoundException
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.gateway.GroupGateway
+import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
-import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
 import com.intergroupapplication.presentation.base.BasePresenter
+import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.group.view.GroupScreen
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.grouplist.pagingsource.*
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.item_group_in_list.view.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import ru.terrakok.cicerone.Router
-import ru.terrakok.cicerone.Screen
+import timber.log.Timber
+
 import javax.inject.Inject
 
 @InjectViewState
-class GroupListPresenter @Inject constructor(private val router: Router,
-                                             private val errorHandler: ErrorHandler,
+class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                              private val appStatusUseCase: AppStatusUseCase,
                                              private val dsAll: GroupListDataSourceFactory,
                                              private val dsSub: GroupListDataSourceFactory,
-                                             private val dsAdm: GroupListDataSourceFactory)
+                                             private val dsAdm: GroupListDataSourceFactory,
+                                             private val userProfileGateway: UserProfileGateway,
+                                             private val imageUploadingDelegate: ImageUploadingDelegate,
+                                             private val sessionStorage: UserSession)
     : BasePresenter<GroupListView>() {
 
 
     private val groupsDisposable = CompositeDisposable()
+    private val groupsSubDisposable = CompositeDisposable()
+    private val groupsAdmDisposable = CompositeDisposable()
 
     @Inject
     lateinit var groupGateway: GroupGateway
-
-    var currentScreen = 1
 
 
     override fun onFirstViewAttach() {
@@ -74,16 +77,10 @@ class GroupListPresenter @Inject constructor(private val router: Router,
     }
 
     fun groupList() {
-//        when (currentScreen) {
-//            1 -> getGroupsList()
-//            2 -> getFollowGroupsList()
-//            3 -> getOwnedGroupsList()
-//            else -> {
-                getGroupsList()
-                getFollowGroupsList()
-                getOwnedGroupsList()
-//            }
-//        }
+        getGroupsList()
+        getFollowGroupsList()
+        getOwnedGroupsList()
+
     }
 
     fun getGroupsList() {
@@ -95,7 +92,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState(it.type)
+                    viewState.handleState(it.type, it.count)
         }, {}))
         groupsDisposable.add(RxPagedListBuilder(dsAll, PAGINATION_PAGE_SIZE)
                 .buildObservable()
@@ -109,8 +106,8 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                 }))
     }
 
-    private fun getFollowGroupsList() {
-        groupsDisposable.add(dsSub.source.observeState()
+    fun getFollowGroupsList() {
+        groupsSubDisposable.add(dsSub.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
@@ -118,10 +115,10 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState1(it.type)
+                    viewState.handleState1(it.type, it.count)
                 }, {}))
 
-        groupsDisposable.add(RxPagedListBuilder(dsSub, PAGINATION_PAGE_SIZE)
+        groupsSubDisposable.add(RxPagedListBuilder(dsSub, PAGINATION_PAGE_SIZE)
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -134,7 +131,7 @@ class GroupListPresenter @Inject constructor(private val router: Router,
     }
 
     private fun getOwnedGroupsList() {
-        groupsDisposable.add(dsAdm.source.observeState()
+        groupsAdmDisposable.add(dsAdm.source.observeState()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
@@ -142,10 +139,10 @@ class GroupListPresenter @Inject constructor(private val router: Router,
                     it.error?.let { throwable ->
                         errorHandler.handle(throwable)
                     }
-                    viewState.handleState2(it.type)
+                    viewState.handleState2(it.type, it.count)
                 }, {}))
 
-        groupsDisposable.add(RxPagedListBuilder(dsAdm, PAGINATION_PAGE_SIZE)
+        groupsAdmDisposable.add(RxPagedListBuilder(dsAdm, PAGINATION_PAGE_SIZE)
                 .buildObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -175,30 +172,47 @@ class GroupListPresenter @Inject constructor(private val router: Router,
         groupList()
     }
 
-    fun goToGroupScreen(groupId: String) {
-        router.navigateTo(GroupScreen(groupId))
+    fun refreshAll() {
+        groupsDisposable.clear()
+        getGroupsList()
     }
 
-    fun sub(groupId: String) {
+    fun refreshFollowed() {
+        groupsSubDisposable.clear()
+        getFollowGroupsList()
+    }
+
+    fun refreshAdmin() {
+        groupsAdmDisposable.clear()
+        getOwnedGroupsList()
+    }
+
+    fun sub(groupId: String, groupElement: View) {
         groupsDisposable.add(groupGateway.followGroup(groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    groupList()
-                    Log.d("123", "Subscribed")
-                }, {
+                .doOnSubscribe { viewState.subscribingProcess(false, groupElement) }
+                .doOnComplete {
+                    viewState.subscribeGroup(groupId)
+                    viewState.subscribingProcess(true, groupElement)
+                }
+                .doOnError { viewState.unsubscribingProcess(true, groupElement) }
+                .subscribe({ }, {
                     errorHandler.handle(it)
                 }))
     }
 
-    fun unsub(groupId: String) {
+    fun unsub(groupId: String, groupElement: View) {
         groupsDisposable.add(groupGateway.unfollowGroup(groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    groupList()
-                    Log.d("123", "UnSubscribed")
-                }, {
+                .doOnSubscribe { viewState.unsubscribingProcess(false, groupElement) }
+                .doOnComplete {
+                    viewState.unsubscribingProcess(true, groupElement)
+                    viewState.subscribeGroup(groupId)
+                }
+                .doOnError { viewState.subscribingProcess(true, groupElement) }
+                .subscribe({ }, {
                     errorHandler.handle(it)
                 }))
     }
@@ -207,10 +221,67 @@ class GroupListPresenter @Inject constructor(private val router: Router,
     override fun onDestroy() {
         super.onDestroy()
         groupsDisposable.clear()
+        groupsSubDisposable.clear()
+        groupsAdmDisposable.clear()
+        stopImageUploading()
     }
 
     private fun unsubscribe() {
         groupsDisposable.clear()
+        groupsSubDisposable.clear()
+        groupsAdmDisposable.clear()
     }
+
+    private var uploadingImageDisposable: Disposable? = null
+
+    fun attachFromGallery() {
+        stopImageUploading()
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
+    }
+
+    fun attachFromCamera() {
+        stopImageUploading()
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
+    }
+
+    fun changeUserAvatar() {
+        compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()
+                .flatMap { userProfileGateway.changeUserProfileAvatar(it) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ viewState.avatarChanged(it) }, {
+                    viewState.showImageUploadingError()
+                    errorHandler.handle(it)
+                }))
+    }
+
+    fun showLastUserAvatar() {
+        compositeDisposable.add(userProfileGateway.getUserProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ viewState.showLastAvatar(it.avatar) }, { errorHandler.handle(it) }))
+    }
+
+    fun getUserInfo() {
+        compositeDisposable.add(userProfileGateway.getUserProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    viewState.showUserInfo(it)
+                           }, {
+                    viewState.showImageUploadingError()
+                    errorHandler.handle(it)
+                }))
+    }
+
+
+    private fun stopImageUploading() {
+        uploadingImageDisposable?.dispose()
+    }
+
+    fun goOutFromProfile() {
+        sessionStorage.logout()
+    }
+
 
 }

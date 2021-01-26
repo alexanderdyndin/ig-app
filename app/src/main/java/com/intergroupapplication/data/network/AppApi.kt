@@ -74,6 +74,9 @@ interface AppApi {
     @DELETE("groups/follows/{group_id}/")
     fun unfollowGroup(@Path("group_id") groupId: String): Completable
 
+    @GET("groups/follows/{group_id}/")
+    fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowModel>
+
     @GET("s3/posts/")
     fun uploadPhoto(@Query("ext") imageExt: String): Single<ImageUploadDto>
 

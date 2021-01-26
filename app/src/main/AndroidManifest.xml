@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.intergroupapplication"
-    tools:ignore="MissingLeanbackLauncher">
+    package="com.intergroupapplication">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -14,34 +14,48 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
     <uses-feature
-        android:name="android.software.leanback"
+        android:name="android.hardware.location.gps"
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <!--appodeal-->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!--optional-->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!--optional-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!--partially optional-->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- appodeal -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- optional -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- optional -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:banner="@layout/activity_splash"
+        android:banner="@layout/fragment_splash"
         android:icon="@mipmap/ic_application_launcher"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup">
+
+        <activity
+            android:name=".presentation.feature.mainActivity.view.MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service android:name=".presentation.feature.mediaPlayer.IGMediaService">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService"/>
+                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
 
@@ -49,42 +63,6 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity
-            android:name=".presentation.feature.login.view.LoginActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".presentation.feature.splash.SplashActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".presentation.feature.web.WebActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ActionBar"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".presentation.feature.registration.view.RegistrationActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".presentation.feature.createuserprofile.view.CreateUserProfileActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".presentation.feature.recoveryPassword.view.RecoveryPasswordActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".presentation.feature.navigation.view.NavigationActivity"
-            android:parentActivityName=".presentation.feature.splash.SplashActivity"
-            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -96,32 +74,7 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
-        <activity
-            android:name=".presentation.feature.confirmationmail.view.ConfirmationMailActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
         <activity android:name=".presentation.feature.ExitActivity" />
-        <activity
-            android:name=".presentation.feature.creategroup.view.CreateGroupActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".presentation.feature.group.view.GroupActivity"
-            android:parentActivityName=".presentation.feature.navigation.view.NavigationActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentation.feature.commentsdetails.view.CommentsDetailsActivity"
-            android:parentActivityName=".presentation.feature.group.view.GroupActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentation.feature.createpost.view.CreatePostActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".presentation.feature.agreements.view.AgreementsActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".device.service.InterGroupPushService"

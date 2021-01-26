@@ -119,7 +119,7 @@ class NewsAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 //postPrescription.text = getDateDescribeByString(item.date)
                 postCommentsCount.text = item.commentsCount
                 item.postText.let { it ->
-                    if (!it.isEmpty()) {
+                    if (it.isNotEmpty()) {
                         postText.text = item.postText
                         postText.show()
                         postText.setOnClickListener {
@@ -181,11 +181,5 @@ class NewsAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
         }
     }
 
-    override fun submitList(pagedList: PagedList<GroupPostEntity>?) {
-        super.submitList(pagedList)
-        if (pagedList?.loadedCount ?:0 > 0) {
-            items = (pagedList?.dataSource as NewsDataSource).list
-        }
-    }
 
 }

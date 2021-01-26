@@ -2,9 +2,10 @@
   <library name="Gradle: com.appodeal.ads:sdk:2.7.4.0@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ab81f52d1b101e25d63eea1cd9ec703/jetified-sdk-2.7.4.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ef86fa220ee630bcb2182a515839bea/jetified-sdk-2.7.4.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ef86fa220ee630bcb2182a515839bea/jetified-sdk-2.7.4.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ef86fa220ee630bcb2182a515839bea/jetified-sdk-2.7.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/856c624490dba6837702f40bf060a6e9/jetified-sdk-2.7.4.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/856c624490dba6837702f40bf060a6e9/jetified-sdk-2.7.4.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/856c624490dba6837702f40bf060a6e9/jetified-sdk-2.7.4.0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

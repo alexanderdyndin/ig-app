@@ -2,28 +2,25 @@ package com.intergroupapplication.presentation.feature.confirmationmail.presente
 
 import moxy.InjectViewState
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.gateway.ConfirmationMailGateway
 import com.intergroupapplication.domain.gateway.ResendCodeGateway
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
 import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailView
-import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileScreen
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class ConfirmationMailPresenter @Inject constructor(private val router: Router,
-                                                    private val confirmationMailGateway: ConfirmationMailGateway,
+class ConfirmationMailPresenter @Inject constructor(private val confirmationMailGateway: ConfirmationMailGateway,
                                                     private val errorHandler: ErrorHandler,
-                                                    private val entity: String?,
                                                     private val resendCodeGateway: ResendCodeGateway)
     : BasePresenter<ConfirmationMailView>() {
 
-    fun start() {
+
+    fun start(entity: String?) {
         entity?.let {
             viewState?.fillData(it)
         }
@@ -46,7 +43,7 @@ class ConfirmationMailPresenter @Inject constructor(private val router: Router,
                         .observeOn(AndroidSchedulers.mainThread())
                         .handleLoading(viewState)
                         .subscribe({
-                            router.newRootScreen(CreateUserProfileScreen())
+                            viewState.completed()
                         }) {
                             viewState.clearViewErrorState()
                             errorHandler.handle(it)

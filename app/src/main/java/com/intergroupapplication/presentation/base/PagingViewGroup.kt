@@ -10,7 +10,7 @@ import moxy.viewstate.strategy.StateStrategyType
 interface PagingViewGroup {
     fun attachPagingView(swipeLayout: ViewGroup)
 
-    fun handleState(type: BasePagingState.Type)
-    fun handleState1(type: BasePagingState.Type)
-    fun handleState2(type: BasePagingState.Type)
+    fun handleState(type: BasePagingState.Type, count: Int = 0)
+    fun handleState1(type: BasePagingState.Type, count: Int = 0)
+    fun handleState2(type: BasePagingState.Type, count: Int = 0)
 }

@@ -9,9 +9,15 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class GroupPostEntity(
         val id: String,
-        val postText: String,
-        var commentsCount: String,
-        val date: String,
         val groupInPost: GroupInPostEntity,
-        val photo: String?
+        val postText: String,
+        val date: String,
+        val photo: String?,
+        var commentsCount: String?,
+        val activeCommentsCount: String? = null,
+        val isActive: Boolean? = null,
+        val isOffered: Boolean? = null,
+        val images: List<FileEntity>? = null,
+        val audios: List<AudioEntity>? = null,
+        val videos: List<FileEntity>? = null
         ) : Parcelable

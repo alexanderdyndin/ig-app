@@ -7,4 +7,5 @@ import com.intergroupapplication.presentation.base.CanShowLoading
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface AgreementsView : MvpView, CanShowLoading {
+    fun toSplash()
 }

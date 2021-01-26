@@ -12,5 +12,5 @@ interface PagingView {
                          swipeLayout: ViewGroup,
                          emptyStateView: View)
 
-    fun handleState(type: BasePagingState.Type)
+    fun handleState(type: BasePagingState.Type, count: Int = 0)
 }

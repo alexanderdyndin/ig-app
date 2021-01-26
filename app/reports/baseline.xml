@@ -5,8 +5,8 @@
     <ID>CommentOverPrivateProperty:ContextExtensions.kt$/** * Created by abakarmagomedov on 01/08/2018 at project InterGroupApplication. */</ID>
     <ID>CommentOverPrivateProperty:TextViewExtensions.kt$/** * @param action The action performed when link clicked */</ID>
     <ID>CommentOverPrivateProperty:ViewExtensions.kt$/** * Created by abakarmagomedov on 09/08/2018 at project InterGroupApplication. */</ID>
-    <ID>ComplexCondition:CreateGroupActivity.kt$CreateGroupActivity$groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR</ID>
-    <ID>ComplexCondition:CreateUserProfileActivity.kt$CreateUserProfileActivity$avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED || avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE || avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR</ID>
+    <ID>ComplexCondition:CreateGroupFragment.kt$CreateGroupActivity$groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR</ID>
+    <ID>ComplexCondition:CreateUserProfileFragment.kt$CreateUserProfileActivity$avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED || avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE || avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR</ID>
     <ID>ComplexCondition:RightDrawableListener.kt$RightDrawableListener$event.action == MotionEvent.ACTION_UP &amp;&amp; view is AppCompatEditText &amp;&amp; view.compoundDrawables[drawableRight] != null</ID>
     <ID>ComplexInterface:AppApi.kt$AppApi</ID>
     <ID>ComplexMethod:BaseErrorAdapter.kt$BaseErrorAdapter$override fun adapt(throwable: Throwable): Throwable</ID>
@@ -55,7 +55,7 @@
     <ID>MagicNumber:BaseErrorAdapter.kt$BaseErrorAdapter$401</ID>
     <ID>MagicNumber:BaseErrorAdapter.kt$BaseErrorAdapter$404</ID>
     <ID>MagicNumber:BaseErrorAdapter.kt$BaseErrorAdapter$409</ID>
-    <ID>MagicNumber:CommentsDetailsActivity.kt$CommentsDetailsActivity$5</ID>
+    <ID>MagicNumber:CommentsDetailsFragment.kt$CommentsDetailsActivity$5</ID>
     <ID>MagicNumber:ContextExtensions.kt$20</ID>
     <ID>MagicNumber:DateFunctions.kt$12</ID>
     <ID>MagicNumber:DateFunctions.kt$14</ID>
@@ -107,11 +107,11 @@
     <ID>MaxLineLength:AppModule.kt$com.intergroupapplication.di.module.AppModule.kt</ID>
     <ID>MaxLineLength:CommentDetailsAdapter.kt$com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter.kt</ID>
     <ID>MaxLineLength:CommentRepository.kt$com.intergroupapplication.data.repository.CommentRepository.kt</ID>
-    <ID>MaxLineLength:CommentsDetailsActivity.kt$com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity.kt</ID>
-    <ID>MaxLineLength:CreatePostActivity.kt$com.intergroupapplication.presentation.feature.createpost.view.CreatePostActivity.kt</ID>
+    <ID>MaxLineLength:CommentsDetailsFragment.kt$com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.kt</ID>
+    <ID>MaxLineLength:CreatePostFragment.kt$com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment.kt</ID>
     <ID>MaxLineLength:DataPageState.kt$com.intergroupapplication.presentation.base.adapter.DataPageState.kt</ID>
     <ID>MaxLineLength:ErrorState.kt$com.intergroupapplication.presentation.base.adapter.ErrorState.kt</ID>
-    <ID>MaxLineLength:GroupActivity.kt$com.intergroupapplication.presentation.feature.group.view.GroupActivity.kt</ID>
+    <ID>MaxLineLength:GroupFragment.kt$com.intergroupapplication.presentation.feature.group.view.GroupFragment.kt</ID>
     <ID>MaxLineLength:GroupListAdapter.kt$com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter.kt</ID>
     <ID>MaxLineLength:GroupPresenter.kt$com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter.kt</ID>
     <ID>MaxLineLength:InterGroupPushService.kt$com.intergroupapplication.device.service.InterGroupPushService.kt</ID>
@@ -126,10 +126,10 @@
     <ID>NestedBlockDepth:CommentDetailsAdapter.kt$CommentDetailsAdapter.CommentViewHolder$private fun getUserNameByCommentId(commentId: String): String</ID>
     <ID>NestedBlockDepth:CommentDividerItemDecorator.kt$CommentDividerItemDecorator$override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State)</ID>
     <ID>NestedBlockDepth:GroupAdapter.kt$GroupAdapter.PostViewHolder$fun bind(item: GroupPostEntity)</ID>
-    <ID>NestedBlockDepth:LoginActivity.kt$LoginActivity$override fun onValidationFailed(errors: MutableList&lt;ValidationError&gt;)</ID>
+    <ID>NestedBlockDepth:LoginFragment.kt$LoginActivity$override fun onValidationFailed(errors: MutableList&lt;ValidationError&gt;)</ID>
     <ID>NestedBlockDepth:NewsAdapter.kt$NewsAdapter.PostViewHolder$fun bind(item: GroupPostEntity)</ID>
     <ID>NestedBlockDepth:PagingDelegate.kt$PagingDelegate$override fun handleState(type: BasePagingState.Type)</ID>
-    <ID>NestedBlockDepth:RegistrationActivity.kt$RegistrationActivity$override fun onValidationFailed(errors: MutableList&lt;ValidationError&gt;)</ID>
+    <ID>NestedBlockDepth:RegistrationFragment.kt$RegistrationActivity$override fun onValidationFailed(errors: MutableList&lt;ValidationError&gt;)</ID>
     <ID>NestedBlockDepth:RightDrawableListener.kt$RightDrawableListener$override fun onTouch(view: View, event: MotionEvent): Boolean</ID>
     <ID>NestedBlockDepth:RxImageUploadingProgressRequestBody.kt$RxImageUploadingProgressRequestBody$override fun writeTo(sink: BufferedSink)</ID>
     <ID>NewLineAtEndOfFile:AbstractNotificationCreator.kt$com.intergroupapplication.device.notification.notificationcreators.AbstractNotificationCreator.kt</ID>
@@ -240,10 +240,10 @@
     <ID>TooGenericExceptionCaught:NetworkModule.kt$NetworkModule$e: Exception</ID>
     <ID>TooManyFunctions:AppApi.kt$AppApi</ID>
     <ID>TooManyFunctions:FakeData.kt$FakeData</ID>
-    <ID>TooManyFunctions:GroupActivity.kt$GroupActivity : BaseActivityGroupViewOnOffsetChangedListenerPagingView</ID>
-    <ID>UnsafeCallOnNullableType:BaseDialogResolver.kt$BaseDialogResolver$activity!!</ID>
+    <ID>TooManyFunctions:GroupFragment.kt$GroupActivity : BaseActivityGroupViewOnOffsetChangedListenerPagingView</ID>
+    <ID>UnsafeCallOnNullableType:BaseDialogResolver.kt$BaseDialogResolver$fragment!!</ID>
     <ID>UnsafeCallOnNullableType:DividerGroupItemDecorator.kt$DividerGroupItemDecorator$divider!!</ID>
-    <ID>UnsafeCallOnNullableType:LoadingDialog.kt$LoadingDialog$activity!!</ID>
+    <ID>UnsafeCallOnNullableType:LoadingDialog.kt$LoadingDialog$fragment!!</ID>
     <ID>UnsafeCallOnNullableType:LoadingDialog.kt$LoadingDialog$context!!</ID>
     <ID>UnsafeCallOnNullableType:LoadingDialog.kt$LoadingDialog$window!!</ID>
     <ID>UnusedImports:AbstractNotificationCreator.kt$import android.app.PendingIntent</ID>
@@ -272,7 +272,7 @@
     <ID>UnusedImports:BaseDialogResolver.kt$import android.widget.Button</ID>
     <ID>UnusedImports:BaseErrorParser.kt$import com.intergroupapplication.data.model.ApiError</ID>
     <ID>UnusedImports:BaseFragment.kt$import javax.inject.Inject</ID>
-    <ID>UnusedImports:BaseFragment.kt$import ru.terrakok.cicerone.NavigatorHolder</ID>
+    <ID>UnusedImports:BaseFragment.kt$</ID>
     <ID>UnusedImports:BaseFragment.kt$import ru.terrakok.cicerone.android.SupportAppNavigator</ID>
     <ID>UnusedImports:BasePagingAdapter.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
     <ID>UnusedImports:CommentDividerItemDecorator.kt$import android.view.View</ID>
@@ -287,25 +287,29 @@
     <ID>UnusedImports:CommentsDataSource.kt$import com.intergroupapplication.domain.gateway.GroupPostGateway</ID>
     <ID>UnusedImports:CommentsDataSourceFactory.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
     <ID>UnusedImports:CommentsDataSourceFactory.kt$import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource</ID>
-    <ID>UnusedImports:CommentsDetailsActivity.kt$import android.view.inputmethod.InputMethodManager</ID>
-    <ID>UnusedImports:CommentsDetailsActivity.kt$import android.widget.TextView</ID>
+    <ID>UnusedImports:CommentsDetailsFragment.kt$import android.view.inputmethod.InputMethodManager</ID>
+    <ID>UnusedImports:CommentsDetailsFragment.kt$import android.widget.TextView</ID>
     <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.R</ID>
     <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
     <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
     <ID>UnusedImports:CommentsDto.kt$import com.intergroupapplication.domain.entity.CommentEntity</ID>
     <ID>UnusedImports:ConfirmationMailPresenter.kt$import com.intergroupapplication.domain.gateway.UserProfileGateway</ID>
     <ID>UnusedImports:ConfirmationMailView.kt$import com.intergroupapplication.presentation.base.CanShowError</ID>
-    <ID>UnusedImports:CreateGroupActivity.kt$import android.net.Uri</ID>
-    <ID>UnusedImports:CreateGroupActivity.kt$import com.intergroupapplication.domain.entity.CreateGroupEntity</ID>
+    <ID>UnusedImports:CreateGroupFragment.kt$import android.net.Uri</ID>
+    <ID>UnusedImports:CreateGroupFragment.kt$import com.intergroupapplication.domain.entity.CreateGroupEntity</ID>
     <ID>UnusedImports:CreateGroupPostEntity.kt$import com.google.gson.annotations.SerializedName</ID>
     <ID>UnusedImports:CreateGroupPresenter.kt$import com.intergroupapplication.domain.gateway.PhotoGateway</ID>
     <ID>UnusedImports:CreateGroupViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
-    <ID>UnusedImports:CreateGroupViewModule.kt$import com.intergroupapplication.presentation.feature.login.view.LoginActivity</ID>
+    <ID>UnusedImports:CreateGroupViewModule.kt$import
+        com.intergroupapplication.presentation.feature.login.view.LoginFragment</ID>
     <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
-    <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity</ID>
-    <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity</ID>
-    <ID>UnusedImports:CreatePostViewModule.kt$import com.intergroupapplication.presentation.feature.group.view.GroupActivity</ID>
-    <ID>UnusedImports:CreateUserProfileActivity.kt$import android.widget.Toast</ID>
+    <ID>UnusedImports:CreatePostViewModule.kt$import
+      com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupFragment</ID>
+    <ID>UnusedImports:CreatePostViewModule.kt$import
+        com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment</ID>
+    <ID>UnusedImports:CreatePostViewModule.kt$import
+        com.intergroupapplication.presentation.feature.group.view.GroupFragment</ID>
+    <ID>UnusedImports:CreateUserProfileFragment.kt$import android.widget.Toast</ID>
     <ID>UnusedImports:CreateUserProfilePresenter.kt$import com.intergroupapplication.domain.gateway.PhotoGateway</ID>
     <ID>UnusedImports:CreateUserProfileViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
     <ID>UnusedImports:DateFunctions.kt$import org.threeten.bp.Instant</ID>
@@ -331,7 +335,7 @@
     <ID>UnusedImports:GatewayModule.kt$import com.intergroupapplication.di.scope.PerApplication</ID>
     <ID>UnusedImports:GatewayModule.kt$import dagger.Provides</ID>
     <ID>UnusedImports:GatewayModule.kt$import java.security.acl.Group</ID>
-    <ID>UnusedImports:GroupActivity.kt$import com.intergroupapplication.device.notification.notificationcreators.NewCommentNotificationCreator</ID>
+    <ID>UnusedImports:GroupFragment.kt$import com.intergroupapplication.device.notification.notificationcreators.NewCommentNotificationCreator</ID>
     <ID>UnusedImports:GroupAdapter.kt$import android.view.ViewTreeObserver</ID>
     <ID>UnusedImports:GroupEntity.kt$import com.google.gson.annotations.SerializedName</ID>
     <ID>UnusedImports:GroupGateway.kt$import com.intergroupapplication.data.model.GroupModel</ID>
@@ -345,7 +349,8 @@
     <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
     <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
     <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment</ID>
-    <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.presentation.feature.login.view.LoginActivity</ID>
+    <ID>UnusedImports:GroupListViewModule.kt$import
+        com.intergroupapplication.presentation.feature.login.view.LoginFragment</ID>
     <ID>UnusedImports:GroupListViewModule.kt$import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter</ID>
     <ID>UnusedImports:GroupPostEntity.kt$import com.google.gson.annotations.SerializedName</ID>
     <ID>UnusedImports:GroupPostRealmModel.kt$import io.realm.RealmObject</ID>
@@ -404,8 +409,10 @@
     <ID>UnusedImports:NewsViewModule.kt$import com.clockbyte.admobadapter.bannerads.AdmobBannerAdapterWrapper</ID>
     <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
     <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.domain.entity.InfoForCommentEntity</ID>
-    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity</ID>
-    <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupActivity</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import
+      com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment</ID>
+    <ID>UnusedImports:NewsViewModule.kt$import
+      com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupFragment</ID>
     <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter</ID>
     <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.group.di.GroupViewModule</ID>
     <ID>UnusedImports:NewsViewModule.kt$import com.intergroupapplication.presentation.feature.news.view.NewsFragment</ID>
@@ -436,7 +443,7 @@
     <ID>UnusedImports:RxErrorCallAdapterFactory.kt$import timber.log.Timber</ID>
     <ID>UnusedImports:RxModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>
     <ID>UnusedImports:RxModule.kt$import com.intergroupapplication.di.scope.PerApplication</ID>
-    <ID>UnusedImports:SplashActivity.kt$import ru.terrakok.cicerone.Router</ID>
+    <ID>UnusedImports:SplashFragment.kt$</ID>
     <ID>UnusedImports:UserEntity.kt$import android.os.Parcelable</ID>
     <ID>UnusedImports:UserEntity.kt$import kotlinx.android.parcel.Parcelize</ID>
     <ID>UnusedImports:UserProfileGateway.kt$import com.intergroupapplication.domain.entity.UserRole</ID>
@@ -456,20 +463,20 @@
     <ID>WildcardImport:BaseActivity.kt$import com.intergroupapplication.domain.exception.*</ID>
     <ID>WildcardImport:BaseErrorAdapter.kt$import com.intergroupapplication.domain.exception.*</ID>
     <ID>WildcardImport:BaseErrorParser.kt$import com.intergroupapplication.domain.exception.*</ID>
-    <ID>WildcardImport:CommentsDetailsActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
-    <ID>WildcardImport:CreateGroupActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
-    <ID>WildcardImport:CreateUserProfileActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:CommentsDetailsFragment.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:CreateGroupFragment.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:CreateUserProfileFragment.kt$import com.intergroupapplication.presentation.exstension.*</ID>
     <ID>WildcardImport:FakeData.kt$import com.intergroupapplication.data.model.*</ID>
     <ID>WildcardImport:FakeData.kt$import com.intergroupapplication.domain.entity.*</ID>
     <ID>WildcardImport:GatewayModule.kt$import com.intergroupapplication.data.repository.*</ID>
     <ID>WildcardImport:GatewayModule.kt$import com.intergroupapplication.domain.gateway.*</ID>
-    <ID>WildcardImport:GroupActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:GroupFragment.kt$import com.intergroupapplication.presentation.exstension.*</ID>
     <ID>WildcardImport:GroupAdapter.kt$import com.intergroupapplication.presentation.exstension.*</ID>
     <ID>WildcardImport:GroupListAdapter.kt$import com.intergroupapplication.presentation.exstension.*</ID>
-    <ID>WildcardImport:LoginActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:LoginFragment.kt$import com.intergroupapplication.presentation.exstension.*</ID>
     <ID>WildcardImport:NetworkModule.kt$import com.intergroupapplication.data.network.*</ID>
     <ID>WildcardImport:NewsAdapter.kt$import com.intergroupapplication.presentation.exstension.*</ID>
-    <ID>WildcardImport:RegistrationActivity.kt$import com.intergroupapplication.presentation.exstension.*</ID>
+    <ID>WildcardImport:RegistrationFragment.kt$import com.intergroupapplication.presentation.exstension.*</ID>
     <ID>WildcardImport:RxErrorCallAdapterFactory.kt$import com.intergroupapplication.domain.exception.*</ID>
     <ID>WildcardImport:UserSession.kt$import com.intergroupapplication.domain.entity.*</ID>
   </Whitelist>

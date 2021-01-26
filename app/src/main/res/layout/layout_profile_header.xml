@@ -4,7 +4,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/profileHeaderColor"
     android:paddingStart="@dimen/big_padding"
     android:paddingTop="@dimen/massive_padding"
@@ -34,6 +34,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/profileAvatarHolder"
-        app:srcCompat="@drawable/ic_arrow_forward" />
+        android:src="@drawable/ic_arrow_forward" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

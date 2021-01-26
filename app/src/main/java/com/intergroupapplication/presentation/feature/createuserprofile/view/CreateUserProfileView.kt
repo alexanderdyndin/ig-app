@@ -7,4 +7,6 @@ import com.intergroupapplication.presentation.base.CanShowLoading
 import com.intergroupapplication.presentation.base.ImageUploadingView
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface CreateUserProfileView : MvpView, CanShowLoading, ImageUploadingView
+interface CreateUserProfileView : MvpView, CanShowLoading, ImageUploadingView {
+    fun completed()
+}

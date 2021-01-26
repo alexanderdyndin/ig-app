@@ -2,8 +2,6 @@
   <library name="Gradle: com.adcolony:sdk:4.3.0@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ffd758f582c06b1a53ba102e93f94189/jetified-sdk-4.3.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/009f536d514ae443fa52c8bd77b03c4a/jetified-sdk-4.3.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/009f536d514ae443fa52c8bd77b03c4a/jetified-sdk-4.3.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/009f536d514ae443fa52c8bd77b03c4a/jetified-sdk-4.3.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f9855b585e4534c9025d45b44a907e85/jetified-sdk-4.3.0/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f9855b585e4534c9025d45b44a907e85/jetified-sdk-4.3.0/jars/classes.jar!/" />
@@ -11,6 +9,13 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2b1263f04de2636e9f3956e7e250260f/jetified-sdk-4.3.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2b1263f04de2636e9f3956e7e250260f/jetified-sdk-4.3.0/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2b1263f04de2636e9f3956e7e250260f/jetified-sdk-4.3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a7ce89c12f39e51a079293050383a993/jetified-sdk-4.3.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/397a049839827e0841d6d2b7f1e9c858/jetified-sdk-4.3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/397a049839827e0841d6d2b7f1e9c858/jetified-sdk-4.3.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/397a049839827e0841d6d2b7f1e9c858/jetified-sdk-4.3.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6c02c0565f772ad87756657c44d41ad6/jetified-sdk-4.3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6c02c0565f772ad87756657c44d41ad6/jetified-sdk-4.3.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6c02c0565f772ad87756657c44d41ad6/jetified-sdk-4.3.0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

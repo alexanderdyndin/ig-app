@@ -119,5 +119,8 @@
     <string name="full_subject_error">Вы не можете добавить больше 5 тематик</string>
     <string name="appodealpolicy">Политика Appodeal</string>
     <string name="offered_posts">Предложенных записей</string>
+    <string name="allUsers">Подписчики</string>
+    <string name="blockedUsers">Заблокированы</string>
+    <string name="admUsers">Администраторы</string>
 
 </resources>

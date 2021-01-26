@@ -5,8 +5,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.domain.entity.GroupPostEntity
 
-abstract class BasePagingAdapter<ENTITY, VIEWHOLDER :
+abstract class BasePagingAdapter<ENTITY: Any, VIEWHOLDER :
 RecyclerView.ViewHolder>(diffCallback: DiffUtil.ItemCallback<ENTITY>) :
         PagedListAdapter<ENTITY, VIEWHOLDER>(diffCallback) {
     abstract fun changeState(state: PagingAdapterState)
 }
+

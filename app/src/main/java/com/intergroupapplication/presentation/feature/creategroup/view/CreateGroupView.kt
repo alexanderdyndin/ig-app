@@ -7,4 +7,6 @@ import com.intergroupapplication.presentation.base.CanShowLoading
 import com.intergroupapplication.presentation.base.ImageUploadingView
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface CreateGroupView : MvpView, CanShowLoading, ImageUploadingView
+interface CreateGroupView : MvpView, CanShowLoading, ImageUploadingView {
+    fun goToGroupScreen(id: String)
+}

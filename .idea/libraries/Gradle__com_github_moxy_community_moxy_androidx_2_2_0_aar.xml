@@ -6,9 +6,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4d36134ec9490ed161860aba5bc220da/jetified-moxy-androidx-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/653a5a356b482b22ce9c618805c6e08c/jetified-moxy-androidx-2.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/665c219d68d8aa7b4f3ed7b6d4a25963/jetified-moxy-androidx-2.2.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/551249de79934609107093b63384d933/jetified-moxy-androidx-2.2.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/551249de79934609107093b63384d933/jetified-moxy-androidx-2.2.0/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/551249de79934609107093b63384d933/jetified-moxy-androidx-2.2.0/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2104eeefd8afc607febaaa7effe40e7d/jetified-moxy-androidx-2.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2104eeefd8afc607febaaa7effe40e7d/jetified-moxy-androidx-2.2.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2104eeefd8afc607febaaa7effe40e7d/jetified-moxy-androidx-2.2.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

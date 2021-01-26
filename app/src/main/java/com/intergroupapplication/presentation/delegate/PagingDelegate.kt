@@ -23,14 +23,14 @@ class PagingDelegate @Inject constructor() : PagingView {
         this.emptyStateView = emptyStateView
     }
 
-    override fun handleState(type: BasePagingState.Type) {
+    override fun handleState(type: BasePagingState.Type, count: Int) {
         when (type) {
             BasePagingState.Type.NONE -> {
                 adapter?.removeLoading()
                 adapter?.removeError()
                 (swipeLayout as? SwipeRefreshLayout)?.isRefreshing = false
                 emptyStateView?.hide()
-                if (adapter?.itemCount() == 0) {
+                if (adapter?.itemCount() == 0 && count == 0) {
                     emptyStateView?.show()
                 }
             }
@@ -39,7 +39,7 @@ class PagingDelegate @Inject constructor() : PagingView {
                 adapter?.removeError()
                 emptyStateView?.hide()
                 adapter?.itemCount()?.let {
-                    if (it  > 0) {
+                    if (it > 0) {
                         adapter?.addLoading()
                     } else {
                         (swipeLayout as? SwipeRefreshLayout)?.isRefreshing = true

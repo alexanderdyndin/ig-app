@@ -8,19 +8,15 @@ import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.PermissionAutorizeGetaway
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.ActionApplicationDetailsScreen
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsView
-import com.intergroupapplication.presentation.feature.splash.SplashScreen
-import com.intergroupapplication.presentation.feature.web.WebScreen
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class AgreementsPresenter @Inject constructor(private val router: Router,
-                                              private val errorHandler: ErrorHandler,
+class AgreementsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                               private val imeiGateway: ImeiGateway,
                                               private val userSession: UserSession,
                                               private val permissionGetaway: PermissionAutorizeGetaway)
@@ -38,6 +34,7 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
         private const val RES_ID_APPODEAL = R.string.appodealpolicy
     }
 
+
     fun next() {
         compositeDisposable.add(imeiGateway.extractDeviceInfo()
                 .subscribeOn(Schedulers.io())
@@ -46,28 +43,12 @@ class AgreementsPresenter @Inject constructor(private val router: Router,
                 .handleLoading(viewState)
                 .subscribe({
                     userSession.acceptTerms = TermsEntity(true)
-                    router.newRootScreen(SplashScreen())
+                    viewState.toSplash()
                 }, { errorHandler.handle(it) }))
     }
 
-    fun openPrivacyPolicy() {
-        router.navigateTo(WebScreen(URL_PRIVACY_POLICY, RES_ID_PRIVACY_POLICY))
-    }
-
-    fun openTermsOfUse() {
-        router.navigateTo(WebScreen(URL_TERMS_OF_USE, RES_ID_TERMS_OF_USE))
-    }
-
-    fun openRightholders() {
-        router.navigateTo(WebScreen(URL_RIGHTHOLDERS, RES_ID_RIGHTHOLDERS))
-    }
-
-    fun openAppodealPolicy() {
-        router.navigateTo(WebScreen(URL_APPODEAL, RES_ID_APPODEAL))
-    }
-
     fun goToSettingsScreen() {
-        router.navigateTo(ActionApplicationDetailsScreen())
+        ////router.navigateTo(ActionApplicationDetailsScreen())
     }
 
 }

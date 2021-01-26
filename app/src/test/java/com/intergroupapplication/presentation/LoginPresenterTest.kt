@@ -6,7 +6,6 @@ import com.intergroupapplication.domain.gateway.LoginGateway
 import com.intergroupapplication.domain.usecase.GetProfileUseCase
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
 import com.intergroupapplication.presentation.feature.login.view.LoginView
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationScreen
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.*
 import com.workable.errorhandler.ErrorHandler
@@ -17,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import ru.terrakok.cicerone.Router
+
 
 /**
  * Created by abakarmagomedov on 20/08/2018 at project InterGroupApplication.

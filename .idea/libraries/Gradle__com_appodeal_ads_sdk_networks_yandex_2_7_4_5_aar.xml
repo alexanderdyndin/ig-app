@@ -2,9 +2,10 @@
   <library name="Gradle: com.appodeal.ads.sdk.networks:yandex:2.7.4.5@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/90247602c9a9132f7d46d93679b2d870/jetified-yandex-2.7.4.5/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/77394455700389d5f7badfd4601e7b46/jetified-yandex-2.7.4.5/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/77394455700389d5f7badfd4601e7b46/jetified-yandex-2.7.4.5/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/77394455700389d5f7badfd4601e7b46/jetified-yandex-2.7.4.5/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b247d68e31072da9f9afd85d8110937d/jetified-yandex-2.7.4.5/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b247d68e31072da9f9afd85d8110937d/jetified-yandex-2.7.4.5/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b247d68e31072da9f9afd85d8110937d/jetified-yandex-2.7.4.5/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

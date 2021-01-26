@@ -3,7 +3,7 @@ package com.intergroupapplication.presentation.feature.createuserprofile.di
 import android.content.Context
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
-import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
@@ -12,52 +12,51 @@ import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileActivity
+import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.mobsandgeeks.saripaar.Validator
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+
 import java.util.*
 
 @Module
 class CreateUserProfileViewModule {
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun providePhotoGateway(activity: CreateUserProfileActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(fragment: CreateUserProfileFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: CreateUserProfileActivity): ImageLoader =
-            FrescoImageLoader(activity)
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideUploadingDelegate(photoGateway: PhotoGateway): ImageUploader =
             ImageUploadingDelegate(photoGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideDialogManager(activity: CreateUserProfileActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+    fun provideDialogManager(fragment: CreateUserProfileFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
@@ -65,19 +64,14 @@ class CreateUserProfileViewModule {
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideCalendar(): Calendar =
             Calendar.getInstance(Locale.getDefault())
 
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideSupportAppNavigator(activity: CreateUserProfileActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
-
-    @PerActivity
-    @Provides
-    fun provideValidator(activity: CreateUserProfileActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: CreateUserProfileFragment): Validator =
+            Validator(fragment).apply { setValidationListener(fragment) }
 }

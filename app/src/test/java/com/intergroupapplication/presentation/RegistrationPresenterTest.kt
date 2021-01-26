@@ -3,7 +3,6 @@ package com.intergroupapplication.presentation
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.RegistrationGateway
-import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailScreen
 import com.intergroupapplication.presentation.feature.registration.presenter.RegistrationPresenter
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationView
 import com.intergroupapplication.testingutils.RxSchedulesRule
@@ -15,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import ru.terrakok.cicerone.Router
+
 
 /**
  * Created by abakarmagomedov on 20/08/2018 at project InterGroupApplication.

@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_settings" />
+        android:src="@drawable/ic_settings" />
 
     <TextView
         android:id="@+id/commentUserId"
@@ -86,7 +86,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/commentText"
-        app:srcCompat="@drawable/ic_reply" />
+        android:src="@drawable/ic_reply" />
 
     <TextView
         android:id="@+id/commentPrescription"
