@@ -54,9 +54,6 @@
         </activity>
 
         <service android:name=".presentation.feature.mediaPlayer.IGMediaService">
-            <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
         </service>
 
         <uses-library

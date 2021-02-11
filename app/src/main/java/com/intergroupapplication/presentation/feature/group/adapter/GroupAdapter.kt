@@ -35,6 +35,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
     var retryClickListener: () -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
+
     private val loadingViewType = 123       //todo Почему это переменная экземпляра? Мб лучше вынести в статик?
     private val errorViewType = 321
     private var isLoading = false
@@ -42,8 +43,8 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     private var compositeDisposable = CompositeDisposable()
 
     companion object {
-        val TEST_VIDEO_URI = "http://92.53.65.93:8888/test/index.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20201213%2Fru-selectel%2Fs3%2Faws4_request&X-Amz-Date=20201213T153938Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=d7b725d82941449b6b2b2fb2250b7ec45116d4356db6e432e69039818be2916f"
-        val TEST_MUSIC_URI = "http://92.53.65.93:8888/test/Children-Of-Bodom-Blooddrunk.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minio%2F20201213%2Fru-selectel%2Fs3%2Faws4_request&X-Amz-Date=20201213T153911Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=a8d09369e9f032bdb592c32aff62448a179e5d9c851df4b8b2f433b6714dacb0"
+        val TEST_VIDEO_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/index2.mp4"
+        val TEST_MUSIC_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/videoplayback.webm"
     }
 
 

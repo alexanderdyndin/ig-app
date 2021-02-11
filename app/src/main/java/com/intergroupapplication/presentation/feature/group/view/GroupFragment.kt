@@ -1,15 +1,8 @@
 package com.intergroupapplication.presentation.feature.group.view
 
 import android.app.Activity
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -30,24 +23,25 @@ import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
-import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.exstension.startAlphaAnimation
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_DETAILS_REQUEST
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
-import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_group.*
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
+import kotlinx.android.synthetic.main.fragment_group.*
 import kotlinx.android.synthetic.main.item_group_header_view.*
 import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
 import kotlinx.android.synthetic.main.layout_user_join_button.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -64,78 +58,85 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
 
-    private lateinit var mMediaBrowserCompat: MediaBrowserCompat                                                                                            // todo сделать более гибкое подключение коллбэков
-    private val connectionCallback: MediaBrowserCompat.ConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
-        override fun onConnected() {
+//    private lateinit var mMediaBrowserCompat: MediaBrowserCompat                                                                                            // todo сделать более гибкое подключение коллбэков
+//    private val connectionCallback: MediaBrowserCompat.ConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
+//        override fun onConnected() {
+//
+//            // The browser connected to the session successfully, use the token to create the controller
+//            super.onConnected()
+//            mMediaBrowserCompat.sessionToken.also { token ->
+//                val mediaController = MediaControllerCompat( this@GroupFragment.requireActivity(), token)
+//                MediaControllerCompat.setMediaController(requireActivity(), mediaController)
+//            }
+//            playPauseBuild()
+//            Log.d("MediaPlayer", "Controller Connected")
+//        }
+//
+//        override fun onConnectionFailed() {
+//            super.onConnectionFailed()
+//            Log.d("MediaPlayer", "Connection Failed")
+//
+//        }
+//    }
+//
+//
+//    private val mControllerCallback = object : MediaControllerCompat.Callback() {
+//    }
+//
+//    fun playPauseBuild() {
+//        val mediaController = MediaControllerCompat.getMediaController(requireActivity())
+//        btn.setOnClickListener {
+//            val state = mediaController.playbackState.state
+//            // if it is not playing then what are you waiting for ? PLAY !
+//            if (state == PlaybackStateCompat.STATE_PAUSED ||
+//                    state == PlaybackStateCompat.STATE_STOPPED ||
+//                    state == PlaybackStateCompat.STATE_NONE
+//            ) {
+//
+//                mediaController.transportControls.playFromUri(Uri.parse(GroupAdapter.TEST_MUSIC_URI), null)
+//                btn.text = "Pause"
+//            }
+//            // you are playing ? knock it off !
+//            else if (state == PlaybackStateCompat.STATE_PLAYING ||
+//                    state == PlaybackStateCompat.STATE_BUFFERING ||
+//                    state == PlaybackStateCompat.STATE_CONNECTING
+//            ) {
+//                mediaController.transportControls.pause()
+//                btn.text = "Play"
+//            }
+//        }
+//        mediaController.registerCallback(mControllerCallback)
+//
+//    }
+//
+//    fun initializeMediaBrowser() {
+//        val componentName = ComponentName(requireContext(), IGMediaService::class.java)
+//        // initialize the browser
+//        mMediaBrowserCompat = MediaBrowserCompat(
+//                requireContext(), componentName, //Identifier for the service
+//                connectionCallback,
+//                null
+//        )
+//    }
+//
+//    fun connectMediaBrowser() {
+//        // connect the controllers again to the session
+//        // without this connect() you won't be able to start the service neither control it with the controller
+//        mMediaBrowserCompat.connect()
+//    }
+//
+//    fun disconnectMediaBrowser() {
+//        // Release the resources
+//        val controllerCompat = MediaControllerCompat.getMediaController(requireActivity())
+//        controllerCompat?.unregisterCallback(mControllerCallback)
+//        mMediaBrowserCompat.disconnect()
+//    }
 
-            // The browser connected to the session successfully, use the token to create the controller
-            super.onConnected()
-            mMediaBrowserCompat.sessionToken.also { token ->
-                val mediaController = MediaControllerCompat( this@GroupFragment.requireActivity().applicationContext, token)
-                MediaControllerCompat.setMediaController(requireActivity(), mediaController)
-            }
-            playPauseBuild()
-            Log.d("MediaPlayer", "Controller Connected")
-        }
-
-        override fun onConnectionFailed() {
-            super.onConnectionFailed()
-            Log.d("MediaPlayer", "Connection Failed")
-
-        }
-
-    }
-    private val mControllerCallback = object : MediaControllerCompat.Callback() {
-    }
-
-    fun playPauseBuild() {
-        val mediaController = MediaControllerCompat.getMediaController(requireActivity())
-        btn.setOnClickListener {
-            val state = mediaController.playbackState.state
-            // if it is not playing then what are you waiting for ? PLAY !
-            if (state == PlaybackStateCompat.STATE_PAUSED ||
-                    state == PlaybackStateCompat.STATE_STOPPED ||
-                    state == PlaybackStateCompat.STATE_NONE
-            ) {
-
-                mediaController.transportControls.playFromUri(Uri.parse(GroupAdapter.TEST_MUSIC_URI), null)
-                btn.text = "Pause"
-            }
-            // you are playing ? knock it off !
-            else if (state == PlaybackStateCompat.STATE_PLAYING ||
-                    state == PlaybackStateCompat.STATE_BUFFERING ||
-                    state == PlaybackStateCompat.STATE_CONNECTING
-            ) {
-                mediaController.transportControls.pause()
-                btn.text = "Play"
-            }
-        }
-        mediaController.registerCallback(mControllerCallback)
-
-    }
-
-    fun initializeMediaBrowser() {
-        val componentName = ComponentName(requireContext(), IGMediaService::class.java)
-        // initialize the browser
-        mMediaBrowserCompat = MediaBrowserCompat(
-                requireContext(), componentName, //Identifier for the service
-                connectionCallback,
-                null
-        )
-    }
-
-    fun connectMediaBrowser() {
-        // connect the controllers again to the session
-        // without this connect() you won't be able to start the service neither control it with the controller
-        mMediaBrowserCompat.connect()
-    }
-
-    fun disconnectMediaBrowser() {
-        // Release the resources
-        val controllerCompat = MediaControllerCompat.getMediaController(requireActivity())
-        controllerCompat?.unregisterCallback(mControllerCallback)
-        mMediaBrowserCompat.disconnect()
-    }
+//    fun setTestMediaClickListeners() {
+//        startService(Intent(this, IGMediaService::class.java).apply {
+//            putExtra(VideoService.PLAY_PAUSE_ACTION, 0)
+//        })
+//    }
 
     constructor() : this(PagingDelegate())
 
@@ -174,7 +175,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString(GROUP_ID)!!
         isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
-        initializeMediaBrowser()
+//        initializeMediaBrowser()
     }
 
     override fun viewCreated() {
@@ -208,7 +209,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
     override fun onStart() {
         super.onStart()
-        connectMediaBrowser()
+//        connectMediaBrowser()
     }
 
     override fun onResume() {
@@ -219,7 +220,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
     override fun onStop() {
         appbar.removeOnOffsetChangedListener(this)
         super.onStop()
-        disconnectMediaBrowser()
+//        disconnectMediaBrowser()
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
