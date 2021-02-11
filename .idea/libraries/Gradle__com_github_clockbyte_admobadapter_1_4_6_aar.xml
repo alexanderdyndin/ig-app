@@ -25,6 +25,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/03cbf0b185c3caedf55fec644af1a402/jetified-admobadapter-1.4.6/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/03cbf0b185c3caedf55fec644af1a402/jetified-admobadapter-1.4.6/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/03cbf0b185c3caedf55fec644af1a402/jetified-admobadapter-1.4.6/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/08f3846fe288d016533a4d23a82c5810/jetified-admobadapter-1.4.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/08f3846fe288d016533a4d23a82c5810/jetified-admobadapter-1.4.6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/08f3846fe288d016533a4d23a82c5810/jetified-admobadapter-1.4.6/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

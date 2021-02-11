@@ -25,6 +25,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1f062f76d2469f69f3cf99aba5c47292/jetified-Toasty-1.3.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1f062f76d2469f69f3cf99aba5c47292/jetified-Toasty-1.3.0/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1f062f76d2469f69f3cf99aba5c47292/jetified-Toasty-1.3.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/94887ce633b64c6be8e740c5f549fc78/jetified-Toasty-1.3.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/94887ce633b64c6be8e740c5f549fc78/jetified-Toasty-1.3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/94887ce633b64c6be8e740c5f549fc78/jetified-Toasty-1.3.0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
