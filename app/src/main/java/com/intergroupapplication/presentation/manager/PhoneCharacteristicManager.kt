@@ -16,6 +16,7 @@ class PhoneCharacteristicManager @Inject constructor(private val telephonyManage
                                                      private val contentResolver: ContentResolver) {
 
 
+    @Suppress("DEPRECATION")
     @SuppressLint("MissingPermission", "HardwareIds")
     fun getImei(): String {
         return (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
