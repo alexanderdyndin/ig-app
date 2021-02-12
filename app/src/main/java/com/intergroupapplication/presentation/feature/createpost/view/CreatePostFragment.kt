@@ -61,7 +61,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
                 dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
             } else {
                 if (postContainer.childCount == 1) {
-                    presenter.createPost(CreateGroupPostEntity(postText.text.toString().trim(), null),
+                    presenter.createPostWithImage(postText.text.toString().trim(),
                             groupId)
                 } else {
                     presenter.createPostWithImage(postText.text.toString().trim(), groupId)
@@ -72,6 +72,14 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         attachPhoto.setOnClickListener {
             dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
                     mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+        }
+
+        attachVideo.setOnClickListener {
+            presenter.attachVideo()
+        }
+
+        attachAudio.setOnClickListener {
+            presenter.attachAudio()
         }
         exitAction.setOnClickListener { onResultCancel() }
         postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {

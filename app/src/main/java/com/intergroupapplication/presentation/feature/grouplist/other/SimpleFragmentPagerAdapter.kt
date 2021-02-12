@@ -1,18 +1,11 @@
 package com.intergroupapplication.presentation.feature.grouplist.other
 
-import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
-
 
 
 class ViewPager2Circular(private val pager: ViewPager2,
-                         private val swipeRefreshLayout: SwipeRefreshLayout) : ViewPager2.OnPageChangeCallback() {
+                         private val swipeRefreshLayout: SwipeRefreshLayout? = null) : ViewPager2.OnPageChangeCallback() {
 
     private var mCurrentPosition = 0
     private var mScrollState = 0
@@ -37,7 +30,7 @@ class ViewPager2Circular(private val pager: ViewPager2,
     }
 
     fun toggleRefreshing(enabled: Boolean) {
-        swipeRefreshLayout.isEnabled = enabled
+        swipeRefreshLayout?.isEnabled = enabled
     }
 
     private fun handleScrollState(state: Int) {

@@ -1,19 +1,19 @@
 package com.intergroupapplication.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
-import com.intergroupapplication.domain.FakeData
+import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
-import com.intergroupapplication.domain.entity.GroupInPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
-import io.reactivex.Maybe
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import io.reactivex.Single
-import java.lang.Exception
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -45,16 +45,16 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
-    override fun getNewsPosts(page: Int): Single<NewsEntity> {
-         return api.getNews(page).map { groupPostMapper.mapNewsListToDomainEntity(it) }
-                .onErrorResumeNext {
-                    if (it is NoMorePage) {
-                        Single.fromCallable {
-                            NewsEntity(0,null,null, mutableListOf<GroupPostEntity>())
-                        }
-                    } else {
-                        Single.error(it)
-                    }
-                }
+    override fun getNewsPosts(): Flowable<PagingData<GroupPostEntity>> {
+        return Pager(
+                config = PagingConfig(
+                        pageSize = 20,
+                        enablePlaceholders = false,
+                        maxSize = 30,
+                        prefetchDistance = 5,
+                        initialLoadSize = 40),
+                pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
+        ).flowable
     }
+
 }

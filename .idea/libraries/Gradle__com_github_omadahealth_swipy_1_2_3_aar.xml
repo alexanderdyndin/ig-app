@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ee86ebc6621fd6b2e125a419c9d09e49/jetified-swipy-1.2.3/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cd24947978b30c985cbebb6cc5be7721/jetified-swipy-1.2.3/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/efb4203ab7c3efbd8e4befe2422a1fe8/jetified-swipy-1.2.3/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44d947c23f3bd96cde075d51305c0bb6/jetified-swipy-1.2.3/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/56d9bffa7367e4c90c0b36811168c4b0/jetified-swipy-1.2.3/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28ecbec2f47a904fc644b053380f4cf1/jetified-swipy-1.2.3/AndroidManifest.xml" />
@@ -19,6 +21,12 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/efb4203ab7c3efbd8e4befe2422a1fe8/jetified-swipy-1.2.3/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/efb4203ab7c3efbd8e4befe2422a1fe8/jetified-swipy-1.2.3/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/efb4203ab7c3efbd8e4befe2422a1fe8/jetified-swipy-1.2.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44d947c23f3bd96cde075d51305c0bb6/jetified-swipy-1.2.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44d947c23f3bd96cde075d51305c0bb6/jetified-swipy-1.2.3/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44d947c23f3bd96cde075d51305c0bb6/jetified-swipy-1.2.3/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/56d9bffa7367e4c90c0b36811168c4b0/jetified-swipy-1.2.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/56d9bffa7367e4c90c0b36811168c4b0/jetified-swipy-1.2.3/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/56d9bffa7367e4c90c0b36811168c4b0/jetified-swipy-1.2.3/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.omadahealth/swipy/1.2.3/97349f2aa2b9b274884ebaaae9e0b7d5d4f5536b/swipy-1.2.3-javadoc.jar!/" />

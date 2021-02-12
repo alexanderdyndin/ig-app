@@ -13,6 +13,12 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72d0fcff92f0aad707fe433e2723a995/jetified-RxPaparazzo-0.6.1-2.x/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72d0fcff92f0aad707fe433e2723a995/jetified-RxPaparazzo-0.6.1-2.x/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72d0fcff92f0aad707fe433e2723a995/jetified-RxPaparazzo-0.6.1-2.x/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a46c3a50b7706da3966e023dbccde0c7/jetified-RxPaparazzo-0.6.1-2.x/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a46c3a50b7706da3966e023dbccde0c7/jetified-RxPaparazzo-0.6.1-2.x/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a46c3a50b7706da3966e023dbccde0c7/jetified-RxPaparazzo-0.6.1-2.x/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd28b852e765a1a6e62c52dcd4de920c/jetified-RxPaparazzo-0.6.1-2.x/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd28b852e765a1a6e62c52dcd4de920c/jetified-RxPaparazzo-0.6.1-2.x/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd28b852e765a1a6e62c52dcd4de920c/jetified-RxPaparazzo-0.6.1-2.x/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.miguelbcr/RxPaparazzo/0.6.1-2.x/d1df7fce182e279394a9fc14458a73bda0fbce66/RxPaparazzo-0.6.1-2.x-javadoc.jar!/" />

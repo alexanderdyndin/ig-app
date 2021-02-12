@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
@@ -21,25 +20,26 @@ import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.base.ImageUploader
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter3
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-
 import javax.inject.Named
 
 const val GROUPS = "Groups"
 
 @Module
 class GroupListViewModule {
+
+
 
     @PerFragment
     @Provides
@@ -84,35 +84,44 @@ class GroupListViewModule {
 
     @PerFragment
     @Provides
-    @Named("AdapterAll")
-    fun provideGroupList1(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
-                          imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter =
-            GroupListAdapter(diffUtil, imageLoadingDelegate)
+    @Named("all")
+    fun provideGroupListNew1(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
+                             imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter3 {
+        val adapter = GroupListAdapter3(diffUtil, imageLoadingDelegate)
+        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
+        return adapter
+    }
 
     @PerFragment
     @Provides
-    @Named("AdapterSub")
-    fun provideGroupList2(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
-                          imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter =
-            GroupListAdapter(diffUtil, imageLoadingDelegate)
+    @Named("subscribed")
+    fun provideGroupListNew2(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
+                             imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter3 {
+        val adapter = GroupListAdapter3(diffUtil, imageLoadingDelegate)
+        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
+        return adapter
+    }
 
     @PerFragment
     @Provides
-    @Named("AdapterAdm")
-    fun provideGroupList3(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
-                          imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter =
-            GroupListAdapter(diffUtil, imageLoadingDelegate)
+    @Named("owned")
+    fun provideGroupListNew3(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
+                             imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter3 {
+        val adapter = GroupListAdapter3(diffUtil, imageLoadingDelegate)
+        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
+        return adapter
+    }
 
     @PerFragment
     @Provides
-    @Named("AdapterAll")
-    fun provideAdmobBammerAdapter(context: Context,
-                                  @Named("AdapterAll") groupsAdapter: GroupListAdapter,
+    @Named("all")
+    fun provideAdmobBammerAdapter1(context: Context,
+                                   @Named("all") groupsAdapter: GroupListAdapter3,
                                   activity: GroupListFragment, userSession: UserSession):
             AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
                     .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexGroups ?: 4)
+                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
@@ -133,17 +142,16 @@ class GroupListViewModule {
                     .setAdapter(groupsAdapter)
                     .build()
 
-
     @PerFragment
     @Provides
-    @Named("AdapterSub")
+    @Named("subscribed")
     fun provideAdmobBammerAdapter2(context: Context,
-                                   @Named("AdapterSub") groupsAdapter: GroupListAdapter,
-                                   activity: GroupListFragment, userSession: UserSession):
+                                   @Named("subscribed") groupsAdapter: GroupListAdapter3,
+                                  activity: GroupListFragment, userSession: UserSession):
             AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
                     .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexGroups ?: 4)
+                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
@@ -164,17 +172,16 @@ class GroupListViewModule {
                     .setAdapter(groupsAdapter)
                     .build()
 
-
     @PerFragment
     @Provides
-    @Named("AdapterAdm")
+    @Named("owned")
     fun provideAdmobBammerAdapter3(context: Context,
-                                   @Named("AdapterAdm") groupsAdapter: GroupListAdapter,
-                                   activity: GroupListFragment, userSession: UserSession):
+                                   @Named("owned") groupsAdapter: GroupListAdapter3,
+                                  activity: GroupListFragment, userSession: UserSession):
             AdmobBannerRecyclerAdapterWrapper =
             AdmobBannerRecyclerAdapterWrapper.builder(context)
                     .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.FirstAdIndexGroups ?: 4)
+                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
                     .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
                         override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
                             val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
@@ -194,15 +201,5 @@ class GroupListViewModule {
                     .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
                     .setAdapter(groupsAdapter)
                     .build()
-
-//    @PerFragment
-//    @Provides
-//    fun provideSupportAppNavigator(activity: NavigationActivity): SupportAppNavigator =
-//            SupportAppNavigator(activity.requireActivity(), 0)
-
-    @PerFragment
-    @Provides
-    fun provideLinearLayoutManager(fragment: GroupListFragment): LinearLayoutManager =
-            LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
 
 }

@@ -20,7 +20,7 @@ class UserSession @Inject constructor(private val sharedPreferences: SharedPrefe
     var firebaseToken: FirebaseTokenEntity? by SharedPrefDelegate(FirebaseTokenEntity::class.java, gson, sharedPreferences)
     var acceptTerms: TermsEntity? by SharedPrefDelegate(TermsEntity::class.java, gson, sharedPreferences)
     var email: EmailEntity? by SharedPrefDelegate(EmailEntity::class.java, gson, sharedPreferences)
-    var countAd: AdEntity? = null
+    var countAd: AdEntity? by SharedPrefDelegate(AdEntity::class.java, gson, sharedPreferences)
     //var countAd: AdEntity? by SharedPrefDelegate(AdEntity::class.java, gson, sharedPreferences)
 
 

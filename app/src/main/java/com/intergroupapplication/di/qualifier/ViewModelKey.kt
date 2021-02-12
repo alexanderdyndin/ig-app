@@ -5,7 +5,7 @@ import dagger.MapKey
 import java.lang.annotation.Documented
 import kotlin.reflect.KClass
 
-@Documented
+@kotlin.annotation.MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey

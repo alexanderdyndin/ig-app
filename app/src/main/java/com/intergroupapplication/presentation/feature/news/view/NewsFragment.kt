@@ -1,20 +1,16 @@
 package com.intergroupapplication.presentation.feature.news.view
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import androidx.paging.PagedList
-import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.zsmb.materialdrawerkt.builders.drawer
@@ -28,19 +24,14 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_COUNT_VALUE
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_DETAILS_REQUEST
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.GROUP_ID_VALUE
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
-import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter3
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
 import com.mikepenz.materialdrawer.Drawer
@@ -48,29 +39,21 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.workable.errorhandler.Action
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
-import kotlinx.android.synthetic.main.fragment_news.emptyText
-import kotlinx.android.synthetic.main.layout_avatar.view.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class NewsFragment @SuppressLint("ValidFragment") constructor(private val pagingDelegate: PagingDelegate)
-    : BaseFragment(), NewsView, PagingView by pagingDelegate {
-
-    constructor() : this(PagingDelegate())
+class NewsFragment(): BaseFragment(), NewsView{
 
     @Inject
     @InjectPresenter
     lateinit var presenter: NewsPresenter
 
-    //lateinit var viewModel: NewsViewModel
-
     @ProvidePresenter
     fun providePresenter(): NewsPresenter = presenter
-
-    @Inject
-    lateinit var adapter: NewsAdapter
-
+    
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
@@ -83,8 +66,13 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     @Inject
     lateinit var adapterWrapper: AdmobBannerRecyclerAdapterWrapper
 
-    @Inject lateinit var modelFactory: ViewModelProvider.Factory
-    private lateinit var model: NewsViewModel
+    @Inject
+    lateinit var adapterNews: NewsAdapter3
+
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: NewsViewModel
 
     override fun layoutRes() = R.layout.fragment_news
 
@@ -98,58 +86,101 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
 
     var clickedPostId: String? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
+        adapterNews.complaintListener = { presenter.complaintPost(it) }
+        adapterNews.commentClickListener = {
+            clickedPostId = it.id
+            openCommentDetails(InfoForCommentEntity(it, true)) }
+        adapterNews.groupClickListener = {
+            val data = bundleOf(GROUP_ID to it)
+            findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+        }
+        compositeDisposable.add(
+                viewModel.getNews()
+                        .subscribe {
+                            adapterNews.submitData(lifecycle, it)
+                        }
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
-        //var commentsCount: String? = null
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
-        pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
+        
+        //paging 3
+        newPaging()
         //crashing app when provide it by dagger
         //newsPosts.layoutManager = layoutManager
         newsPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         newsPosts.itemAnimator = null
-        adapter.retryClickListener = { presenter.reload() }
-        adapter.commentClickListener = {
-            clickedPostId = it.id
-            openCommentDetails(InfoForCommentEntity(it, true)) }
-        adapter.groupClickListener = {
-            val data = bundleOf(GROUP_ID to it)
-            findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+
+    }
+
+    fun newPaging() {
+        newSwipe.setOnRefreshListener {
+            adapterNews.refresh()
         }
-        adapter.complaintListener = { presenter.complaintPost(it) }
         newsPosts.adapter = adapterWrapper
-        newSwipe.setOnRefreshListener { presenter.refresh() }
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(COMMENTS_COUNT_VALUE)?.observe(
-                viewLifecycleOwner) { commentCount ->
-            adapter.itemUpdate(clickedPostId.orEmpty(), commentCount)
+        lifecycleScope.launch {
+            adapterNews.loadStateFlow.collectLatest { loadStates ->
+                when(loadStates.refresh) {
+                    is LoadState.Loading -> {
+                        if (adapterNews.itemCount == 0) {
+                            loading_layout.show()
+                        } else adapterNews.addLoading()
+                        adapterNews.removeError()
+                        emptyText.hide()
+                    }
+                    is LoadState.Error -> {
+                        newSwipe.isRefreshing = false
+                        emptyText.hide()
+                        adapterNews.removeLoading()
+                        loading_layout.gone()
+                        adapterNews.addError()
+                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
+                    }
+                    is LoadState.NotLoading -> {
+                        if (adapterNews.itemCount == 0) {
+                            emptyText.show()
+                        } else {
+                            emptyText.hide()
+                        }
+                        loading_layout.gone()
+                        adapterNews.removeError()
+                        adapterNews.removeLoading()
+                        newSwipe.isRefreshing = false
+                        //if (!job.isCancelled) progress_first_loading.hide()
+                    }
+                    else ->{ newSwipe.isRefreshing = false } //if (!job.isCancelled) progress_first_loading.hide()
+                }
+            }
         }
     }
 
+//    fun oldPaging() {
+//        pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
+//        adapter.retryClickListener = { presenter.reload() }
+//        adapter.commentClickListener = {
+//            clickedPostId = it.id
+//            openCommentDetails(InfoForCommentEntity(it, true)) }
+//        adapter.groupClickListener = {
+//            val data = bundleOf(GROUP_ID to it)
+//            findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+//        }
+//        adapter.complaintListener = { presenter.complaintPost(it) }
+//        newsPosts.adapter = adapterWrapper
+//        newSwipe.setOnRefreshListener { presenter.refresh() }
+//        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(COMMENTS_COUNT_VALUE)?.observe(
+//                viewLifecycleOwner) { commentCount ->
+//            adapter.itemUpdate(clickedPostId.orEmpty(), commentCount)
+//        }
+//    }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.checkNewVersionAvaliable(activity?.supportFragmentManager!!)
-    }
-
-
-    override fun newsLoaded(posts: PagedList<GroupPostEntity>) {
-        adapter.submitList(posts)
-    }
 
     override fun showMessage(resId: Int) {
         Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showLoading(show: Boolean) {
-        //todo пофиксить перескакивание в конец списка или оставить как есть сейчас
-        if (show) {
-            emptyText.hide()
-            adapter.removeError()
-            //adapter.addLoading()
-        } else {
-            newSwipe.isRefreshing = false
-            adapter.removeLoading()
-        }
     }
 
     override fun onDestroy() {
@@ -159,7 +190,6 @@ class NewsFragment @SuppressLint("ValidFragment") constructor(private val paging
     }
 
     fun openCommentDetails(entity: InfoForCommentEntity) {
-        //startActivityForResult(CommentsDetailsActivity.getIntent(context, entity), COMMENTS_DETAILS_REQUEST)
         val data = bundleOf(GroupViewModule.COMMENT_POST_ENTITY to entity)
         findNavController().navigate(R.id.action_newsFragment2_to_commentsDetailsActivity, data)
     }

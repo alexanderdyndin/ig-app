@@ -193,4 +193,5 @@ class NetworkModule {
             .baseUrl(BuildConfig.BASE_URL)
             .build().create(AppApi::class.java)
 
+
 }

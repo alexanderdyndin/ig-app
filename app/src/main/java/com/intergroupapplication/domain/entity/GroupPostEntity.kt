@@ -13,11 +13,11 @@ data class GroupPostEntity(
         val postText: String,
         val date: String,
         val photo: String?,
-        var commentsCount: String?,
-        val activeCommentsCount: String? = null,
-        val isActive: Boolean? = null,
-        val isOffered: Boolean? = null,
-        val images: List<FileEntity>? = null,
-        val audios: List<AudioEntity>? = null,
-        val videos: List<FileEntity>? = null
+        var commentsCount: String,
+        val activeCommentsCount: String,
+        val isActive: Boolean,
+        val isOffered: Boolean,
+        val images: List<FileEntity>,
+        val audios: List<AudioEntity>,
+        val videos: List<FileEntity>
         ) : Parcelable

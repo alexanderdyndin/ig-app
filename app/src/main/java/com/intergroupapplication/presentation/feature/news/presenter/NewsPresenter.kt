@@ -15,7 +15,6 @@ import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
-import com.intergroupapplication.presentation.feature.news.pagingsource.NewsDataSourceFactory
 import com.intergroupapplication.presentation.feature.news.view.NewsView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,7 +29,6 @@ import javax.inject.Inject
 
 @InjectViewState
 class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
-                                        private val newsDataSourceFactory: NewsDataSourceFactory,
                                         private val complaintsGetaway: ComplaintsGetaway,
                                         private val appStatusUseCase: AppStatusUseCase,
                                         private val userProfileGateway: UserProfileGateway,
@@ -38,48 +36,6 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
     : BasePresenter<NewsView>() {
 
     private val newsDisposable = CompositeDisposable()
-
-    fun getNews() {
-        newsDisposable.add(newsDataSourceFactory.source.observeState()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe({
-                    it.error?.let { throwable ->
-                        errorHandler.handle(throwable)
-                    }
-                    viewState.handleState(it.type, it.count)
-                }, {}))
-
-        newsDisposable.add(RxPagedListBuilder(newsDataSourceFactory, PAGINATION_PAGE_SIZE)
-                .buildObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe({
-                    viewState.newsLoaded(it)
-                }, {
-                    errorHandler.handle(it)
-                }))
-    }
-
-    fun checkNewVersionAvaliable(fragmentManager: FragmentManager) {
-
-        GlobalScope.launch {
-            try {
-                val isValid = appStatusUseCase.invoke(BuildConfig.VERSION_NAME).blockingGet()
-                Log.d("MY", "version_check_response = $isValid ")
-                if (isValid == "invalid") {
-                    val myDialogFragment = NewVersionDialog()
-                    val manager = fragmentManager
-                    myDialogFragment.isCancelable = false
-                    myDialogFragment.show(manager, "myDialog")
-                }
-            } catch (e:Throwable) {
-                //errorHandler.handle(e)
-            }
-        }
-    }
 
     fun complaintPost(postId: Int) {
         newsDisposable.add(complaintsGetaway.complaintPost(postId)
@@ -91,14 +47,8 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                     errorHandler.handle(it)
                 }))
     }
-
-    fun reload() {
-        newsDataSourceFactory.source.reload()
-    }
-
     fun refresh() {
         unsubscribe()
-        getNews()
     }
 
     fun unsubscribe() {
@@ -153,10 +103,6 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
     }
 
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        getNews()
-    }
 
     override fun destroyView(view: NewsView?) {
         unsubscribe()

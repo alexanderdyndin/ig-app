@@ -5,6 +5,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b4132c6654f146927e766cecad0ebc48/jetified-inapp-sdk-4.6.1/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/59ba065f9d2fcc115cd92ab22bb3e0b8/jetified-inapp-sdk-4.6.1/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/616b82fbf5849ae47595743b8c99a868/jetified-inapp-sdk-4.6.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e70206a98b276ca632b37de12b66a1b0/jetified-inapp-sdk-4.6.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1bfd4b09df7fcc4f901bd465f7e8099/jetified-inapp-sdk-4.6.1/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/31a7303a2b97273bf3a45b47ed6ec8bf/jetified-inapp-sdk-4.6.1/res" />
@@ -19,6 +21,12 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/616b82fbf5849ae47595743b8c99a868/jetified-inapp-sdk-4.6.1/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/616b82fbf5849ae47595743b8c99a868/jetified-inapp-sdk-4.6.1/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/616b82fbf5849ae47595743b8c99a868/jetified-inapp-sdk-4.6.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e70206a98b276ca632b37de12b66a1b0/jetified-inapp-sdk-4.6.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e70206a98b276ca632b37de12b66a1b0/jetified-inapp-sdk-4.6.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e70206a98b276ca632b37de12b66a1b0/jetified-inapp-sdk-4.6.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1bfd4b09df7fcc4f901bd465f7e8099/jetified-inapp-sdk-4.6.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1bfd4b09df7fcc4f901bd465f7e8099/jetified-inapp-sdk-4.6.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a1bfd4b09df7fcc4f901bd465f7e8099/jetified-inapp-sdk-4.6.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

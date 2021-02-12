@@ -49,4 +49,74 @@ class AwsUploadingService @Inject constructor() : AwsUploadingGateway {
                     }
                 })
     }
+
+    override fun uploadVideoToAws(uploadUrl: String, progressObserver: Observer<Float>,
+                                  fields: PhotoUploadFields,
+                                  uploadingFile: File) {
+        AndroidNetworking.upload(uploadUrl)
+                .addMultipartParameter(
+                        mutableMapOf("policy" to fields.policy,
+                                "acl" to "public-read",
+                                "key" to fields.key,
+                                "x-amz-algorithm" to fields.algorithm,
+                                "x-amz-credential" to fields.credential,
+                                "x-amz-date" to fields.date,
+                                "x-amz-signature" to fields.signature))
+                .addMultipartFile("file", uploadingFile)
+                .setPriority(Priority.HIGH)
+                .setPercentageThresholdForCancelling(50)
+                .setExecutor(Executors.newSingleThreadExecutor())
+                .build()
+                .setUploadProgressListener { bytesUploaded, totalBytes ->
+                    progressObserver.onNext(((100 * bytesUploaded / totalBytes).toFloat()))
+                }
+                .getAsOkHttpResponse(object : OkHttpResponseListener {
+                    override fun onResponse(response: Response) {
+                        if (response.isSuccessful) {
+                            progressObserver.onComplete()
+                        } else {
+                            progressObserver.onError(ImageUploadingException())
+                        }
+                    }
+
+                    override fun onError(anError: ANError) {
+                        progressObserver.onError(anError)
+                    }
+                })
+    }
+
+    override fun uploadAudioToAws(uploadUrl: String, progressObserver: Observer<Float>,
+                                  fields: PhotoUploadFields,
+                                  uploadingFile: File) {
+        AndroidNetworking.upload(uploadUrl)
+                .addMultipartParameter(
+                        mutableMapOf("policy" to fields.policy,
+                                "acl" to "public-read",
+                                "key" to fields.key,
+                                "x-amz-algorithm" to fields.algorithm,
+                                "x-amz-credential" to fields.credential,
+                                "x-amz-date" to fields.date,
+                                "x-amz-signature" to fields.signature))
+                .addMultipartFile("file", uploadingFile)
+                .setPriority(Priority.HIGH)
+                .setPercentageThresholdForCancelling(50)
+                .setExecutor(Executors.newSingleThreadExecutor())
+                .build()
+                .setUploadProgressListener { bytesUploaded, totalBytes ->
+                    progressObserver.onNext(((100 * bytesUploaded / totalBytes).toFloat()))
+                }
+                .getAsOkHttpResponse(object : OkHttpResponseListener {
+                    override fun onResponse(response: Response) {
+                        if (response.isSuccessful) {
+                            progressObserver.onComplete()
+                        } else {
+                            progressObserver.onError(ImageUploadingException())
+                        }
+                    }
+
+                    override fun onError(anError: ANError) {
+                        progressObserver.onError(anError)
+                    }
+                })
+    }
 }

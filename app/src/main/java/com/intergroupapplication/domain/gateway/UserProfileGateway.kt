@@ -1,5 +1,6 @@
 package com.intergroupapplication.domain.gateway
 
+import com.intergroupapplication.domain.entity.AdEntity
 import com.intergroupapplication.domain.entity.CreateUserEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import io.reactivex.Single
@@ -9,6 +10,7 @@ import io.reactivex.Single
  */
 interface UserProfileGateway {
     fun createUserProfile(createUserEntity: CreateUserEntity): Single<UserEntity>
-    fun    getUserProfile(): Single<UserEntity>
+    fun getUserProfile(): Single<UserEntity>
     fun changeUserProfileAvatar(avatar: String): Single<String>
+    fun getAdParameters(): Single<AdEntity>
 }

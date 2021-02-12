@@ -77,7 +77,7 @@ interface AppApi {
     @GET("groups/follows/{group_id}/")
     fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowModel>
 
-    @GET("s3/posts/")
+    @GET("s3/groups/posts/")
     fun uploadPhoto(@Query("ext") imageExt: String): Single<ImageUploadDto>
 
     @GET("s3/users/")
@@ -112,5 +112,9 @@ interface AppApi {
 
     @POST("complaints/")
     fun complaints(@Body complaintModel: ComplaintModel): Completable
+
+    @GET("admin/advertisement/")
+    fun adCountInfo(): Single<AdModel>
+
 
 }

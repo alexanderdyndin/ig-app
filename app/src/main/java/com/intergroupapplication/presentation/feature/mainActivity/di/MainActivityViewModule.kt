@@ -34,42 +34,6 @@ import java.util.*
 @Module
 class MainActivityViewModule {
 
-//    @PerActivity
-//    @Provides
-//    fun provideDialogManager(activity: MainActivity): DialogManager =
-//            DialogManager(activity.supportFragmentManager)
-//
-//
-//    @PerActivity
-//    @Provides
-//    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-//                       context: Context)
-//            : DialogDelegate =
-//            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-//
-//    @PerActivity
-//    @Provides
-//    fun provideFrescoImageLoader(activity: MainActivity): ImageLoader =
-//            FrescoImageLoader(activity)
-//
-//
-//    @PerActivity
-//    @Provides
-//    fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
-//            ImageLoadingDelegate(imageLoader)
-//
-//    @PerActivity
-//    @Provides
-//    fun providePhotoGateway(activity: MainActivity, cropOptions: UCrop.Options,
-//                            api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-//            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
-//
-//    @PerActivity
-//    @Provides
-//    fun provideImageUploader(photoGateway: PhotoGateway): ImageUploader =
-//            ImageUploadingDelegate(photoGateway)
-
-
     @PerActivity
     @Provides
     fun provideAdMobInitializer(userSession: UserSession, activity: MainActivity): InitializerLocal = object : InitializerLocal {
