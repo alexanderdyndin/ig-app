@@ -13,4 +13,10 @@ interface PhotoGateway {
     fun loadFromCamera(): Observable<String>
     fun uploadToAws(): Observable<Float>
     fun getLastPhotoUrl(): Single<String>
+    fun getVideoUrls(): Single<List<String>>
+    fun getAudioUrls(): Single<List<String>>
+    fun loadAudio(): Observable<List<String>>
+    fun loadVideo(): Observable<List<String>>
+    fun uploadAudioToAws(path: String): Observable<Float>
+    fun uploadVideoToAws(path: String): Observable<Float>
 }

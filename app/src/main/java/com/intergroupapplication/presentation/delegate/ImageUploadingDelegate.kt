@@ -15,7 +15,7 @@ import javax.inject.Inject
 class ImageUploadingDelegate @Inject constructor(private val photoGateway: PhotoGateway) : ImageUploader {
 
     companion object {
-        private const val FULL_UPLOADED_PROGRESS = 100F
+        const val FULL_UPLOADED_PROGRESS = 100F
     }
 
     override fun uploadFromCamera(view: ImageUploadingView,
