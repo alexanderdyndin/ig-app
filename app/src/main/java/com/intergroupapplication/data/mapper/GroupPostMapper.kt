@@ -75,15 +75,28 @@ class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapp
     fun mapToDto(from: CreateGroupPostEntity): CreateGroupPostModel {
         return CreateGroupPostModel(
                 postText = from.postText,
-                imageUrl = from.imageUrl
+                imageUrl = from.imageUrl,
+                images = from.images.map { mapFileToDto(it) },
+                audios = from.audios.map { mapAudioToDto(it) },
+                videos = from.videos.map { mapFileToDto(it) }
         )
     }
 
     fun mapToDomainEntity(from: CreateGroupPostModel): CreateGroupPostEntity =
             CreateGroupPostEntity(
                     postText = from.postText,
-                    imageUrl = from.imageUrl)
+                    imageUrl = from.imageUrl,
+                    images = from.images.map { it.file },
+                    audios = from.audios.map { it.file },
+                    videos = from.videos.map { it.file }
+                    )
 
     fun mapListToDomainEntity(from: List<GroupPostModel>): List<GroupPostEntity> =
             from.map { mapToDomainEntity(it) }
+
+    fun mapFileToDto(file: String): FileModel =
+            FileModel(file, "", "", null)
+
+    fun mapAudioToDto(audio: String): AudiosModel =
+            AudiosModel(audio, "", "", "","", null)
 }
