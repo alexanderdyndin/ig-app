@@ -92,12 +92,12 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
 
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-
+                mediaBody.removeAllViews()
                 item.images.forEach {
                     val image = SimpleDraweeView(itemView.context)
                     image.layoutParams = ViewGroup.LayoutParams(80, 80)
                     imageLoadingDelegate.loadImageFromUrl(it.file, image)
-                    postBody.addView(image)
+                    mediaBody.addView(image)
                 }
             }
         }
