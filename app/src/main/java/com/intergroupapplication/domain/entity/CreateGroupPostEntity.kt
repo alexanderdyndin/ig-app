@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class CreateGroupPostEntity(val postText: String,
                                  val imageUrl: String?,
-                                 val images: List<String>,
-                                 val audios: List<String>,
-                                 val videos: List<String>
+                                 val images: List<FilesEntity>,
+                                 val audios: List<AudiosEntity>,
+                                 val videos: List<FilesEntity>
                                  )

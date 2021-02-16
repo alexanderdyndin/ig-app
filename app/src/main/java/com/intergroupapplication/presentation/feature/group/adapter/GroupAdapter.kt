@@ -164,11 +164,13 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
 
                 initializeVideoPlayer()
                 initializeAudioPlayer()
+
+                mediaBody.removeAllViews()
                 item.images.forEach {
                     val image = SimpleDraweeView(itemView.context)
                     image.layoutParams = ViewGroup.LayoutParams(300, 300)
                     imageLoadingDelegate.loadImageFromUrl(it.file, image)
-                    postBody.addView(image)
+                    mediaBody.addView(image)
                 }
             }
         }

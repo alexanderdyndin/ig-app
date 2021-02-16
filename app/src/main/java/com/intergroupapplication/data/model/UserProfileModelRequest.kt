@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
  */
 class UserProfileModelRequest(@SerializedName("first_name") val firstName: String,
                               @SerializedName("second_name") val surName: String,
-                              val birthday: String, val gender: String,
+                              val birthday: String?, val gender: String?,
                               val avatar: String?)

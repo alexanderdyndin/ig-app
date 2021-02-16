@@ -116,6 +116,11 @@
             app:show_timeout="0"
             android:visibility="visible"
             />
+        <LinearLayout
+            android:id="@+id/mediaBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
 
     </LinearLayout>
 

@@ -49,4 +49,8 @@ class GroupsRemoteRXDataSource (private val appApi: AppApi,
                 }
     }
 
+    override fun getRefreshKey(state: PagingState<Int, GroupEntity>): Int? {
+        return null
+    }
+
 }

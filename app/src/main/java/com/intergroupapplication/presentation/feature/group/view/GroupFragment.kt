@@ -273,7 +273,7 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         groupAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
-    override fun showImageUploaded() {
+    override fun showImageUploaded(path: String) {
         presenter.changeGroupAvatar(groupId)
     }
 
@@ -282,13 +282,15 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         groupAvatarHolder.showImageUploaded()
     }
 
-    override fun showImageUploadingProgress(progress: Float) {
+    override fun showImageUploadingProgress(progress: Float, path: String) {
         groupAvatarHolder.showImageUploadingProgress(progress)
     }
 
-    override fun showImageUploadingError() {
+
+    override fun showImageUploadingError(path: String) {
         groupAvatarHolder.clearUploadingState()
     }
+
 
     override fun showLoading(show: Boolean) {
         if (show) {

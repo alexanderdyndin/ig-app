@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class AudioEntity (
         val id: Int,
         val file: String,
+        val isActive: Boolean,
         val description: String,
         val song: String,
         val artist: String,

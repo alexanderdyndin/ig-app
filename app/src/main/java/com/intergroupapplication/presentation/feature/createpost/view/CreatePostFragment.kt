@@ -45,6 +45,8 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_create_post
 
+    private val loadingViews: MutableMap<String, View?> = mutableMapOf()
+
     override fun getSnackBarCoordinator(): CoordinatorLayout = createPostCoordinator
 
     private var uploadingView: View? = null
@@ -53,20 +55,20 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 
     override fun viewCreated() {
         groupId = arguments?.getString(GROUP_ID)!!
+        presenter.groupId = groupId
         createAction.setOnClickListener {
             val post = postText.text.toString().trim()
             if (post.isEmpty() && postContainer.childCount == 1) {
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
-            } else if (uploadingView != null && uploadingView?.darkCard?.isVisible() != false) {
-                dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
-            } else {
-                if (postContainer.childCount == 1) {
-                    presenter.createPostWithImage(postText.text.toString().trim(),
-                            groupId)
-                } else {
-                    presenter.createPostWithImage(postText.text.toString().trim(), groupId)
-                }
             }
+            else if (loadingViews.isNotEmpty()) {
+                var isLoading = false
+                loadingViews.forEach { (_, view) ->
+                    if (view?.darkCard?.isVisible() != false) isLoading = true
+                }
+                if (isLoading) dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
+            }
+            else presenter.createPostWithImage(postText.text.toString().trim(), groupId)
         }
 
         attachPhoto.setOnClickListener {
@@ -110,20 +112,29 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun showImageUploadingStarted(path: String) {
-        detachImage()
-        uploadingView = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
-        uploadingView?.let {
+        //detachImage()
+        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
+        loadingViews[path]?.let {
             it.imagePreview?.let { draweeView ->
                 imageLoadingDelegate.loadImageFromFile(path, draweeView)
             }
         }
-        postContainer.addView(uploadingView)
-        prepareListeners(uploadingView)
-        imageUploadingStarted(uploadingView)
+        postContainer.addView(loadingViews[path])
+        prepareListeners(loadingViews[path])
+        imageUploadingStarted(loadingViews[path])
     }
 
-    override fun showImageUploaded() {
-        uploadingView?.apply {
+//    override fun showImageUploaded() {
+//        uploadingView?.apply {
+//            darkCard?.hide()
+//            stopUploading?.hide()
+//            imageUploadingProgressBar?.hide()
+//            detachImage?.show()
+//        }
+//    }
+
+    override fun showImageUploaded(path: String) {
+        loadingViews[path]?.apply {
             darkCard?.hide()
             stopUploading?.hide()
             imageUploadingProgressBar?.hide()
@@ -131,14 +142,30 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    override fun showImageUploadingProgress(progress: Float) {
-        uploadingView?.apply {
+//    override fun showImageUploadingProgress(progress: Float) {
+//        uploadingView?.apply {
+//            imageUploadingProgressBar?.progress = progress
+//        }
+//    }
+
+    override fun showImageUploadingProgress(progress: Float, path: String) {
+        loadingViews[path]?.apply {
             imageUploadingProgressBar?.progress = progress
         }
     }
 
-    override fun showImageUploadingError() {
-        uploadingView?.apply {
+//    override fun showImageUploadingError() {
+//        uploadingView?.apply {
+//            darkCard?.show()
+//            detachImage?.show()
+//            refreshContainer?.show()
+//            imageUploadingProgressBar?.hide()
+//            stopUploading?.hide()
+//        }
+//    }
+
+    override fun showImageUploadingError(path: String) {
+        loadingViews[path]?.apply {
             darkCard?.show()
             detachImage?.show()
             refreshContainer?.show()
@@ -181,11 +208,11 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         uploadingView?.apply {
             refreshContainer.setOnClickListener {
                 this.imageUploadingProgressBar?.progress = 0f
-                presenter.retryLoadImage()
+                //presenter.retryLoadImage()
                 imageUploadingStarted(uploadingView)
             }
             stopUploading?.setOnClickListener {
-                presenter.stopImageUploading()
+                //presenter.stopImageUploading()
                 detachImage()
             }
             detachImage?.setOnClickListener {

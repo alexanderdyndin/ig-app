@@ -3,10 +3,7 @@ package com.intergroupapplication.data.mapper
 import com.intergroupapplication.data.model.*
 import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.di.qualifier.PointDateFormatter
-import com.intergroupapplication.domain.entity.AdEntity
-import com.intergroupapplication.domain.entity.CommentUserEntity
-import com.intergroupapplication.domain.entity.CreateUserEntity
-import com.intergroupapplication.domain.entity.UserEntity
+import com.intergroupapplication.domain.entity.*
 import java.text.DateFormat
 import javax.inject.Inject
 
@@ -23,6 +20,38 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                     birthday = from.birthday,
                     gender = from.gender,
                     avatar = from.avatar)
+
+    fun mapToDataModel(from: UserProfileEntityRequest) =
+            UserProfileModelRequest(
+                    firstName = from.firstName,
+                    surName = from.surName,
+                    birthday = from.birthday,
+                    gender = from.gender,
+                    avatar = from.avatar)
+
+    fun mapToDomainEntity(from: UserProfileModelRequest) =
+            UserProfileEntityRequest(
+                    firstName = from.firstName,
+                    surName = from.surName,
+                    birthday = from.birthday,
+                    gender = from.gender,
+                    avatar = from.avatar)
+
+    fun mapToDataModel(from: AuthorEntity) =
+            AuthorModel(
+                    from.email,
+                    from.isBlocked,
+                    from.isVerified,
+                    from.timeBlocked,
+                    mapToDataModel(from.profile))
+
+    fun mapToDomainEntity(from: AuthorModel) =
+            AuthorEntity(
+                    from.email,
+                    from.isBlocked,
+                    from.isVerified,
+                    from.timeBlocked,
+                    mapToDomainEntity(from.profile))
 
     fun mapToDataModel(from: CreateUserEntity) =
             UserProfileModelRequest(
@@ -92,5 +121,7 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                     from.firstAdIndexComments,
                     from.noOfDataBetweenAdsComments
             )
+
+
 
 }

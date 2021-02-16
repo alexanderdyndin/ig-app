@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class FileEntity(
         val id: Int,
         val file: String,
+        val isActive: Boolean,
         val description: String,
         val title: String,
         val post: Int,

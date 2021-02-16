@@ -125,15 +125,15 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         avatarHolder.showImageUploadingStarted(path)
     }
 
-    override fun showImageUploaded() {
+    override fun showImageUploaded(path: String) {
         avatarHolder.showImageUploaded()
     }
 
-    override fun showImageUploadingProgress(progress: Float) {
+    override fun showImageUploadingProgress(progress: Float, path: String) {
         avatarHolder.showImageUploadingProgress(progress)
     }
 
-    override fun showImageUploadingError() {
+    override fun showImageUploadingError(path: String) {
         avatarHolder.showImageUploadingError()
     }
 

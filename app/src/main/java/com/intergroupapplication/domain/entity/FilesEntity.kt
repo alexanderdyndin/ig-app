@@ -1,3 +1,3 @@
 package com.intergroupapplication.domain.entity
 
-data class FilesEntity(val file: String, val description: String?, val title: String?, val post: Int?)
+data class FilesEntity(val file: String, val description: String?, val title: String?, val post: Int)

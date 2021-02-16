@@ -6,5 +6,5 @@ data class AudiosEntity (
         val song: String?,
         val artist: String?,
         val genre: String?,
-        val post: Int?
+        val post: Int
 )
