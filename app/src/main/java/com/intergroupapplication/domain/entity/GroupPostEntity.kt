@@ -1,6 +1,7 @@
 package com.intergroupapplication.domain.entity
 
 import android.os.Parcelable
+import com.intergroupapplication.data.model.AuthorModel
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -12,6 +13,10 @@ data class GroupPostEntity(
         val groupInPost: GroupInPostEntity,
         val postText: String,
         val date: String,
+        val updated: String?,
+        val author: AuthorEntity,
+        val unreadComments: Int,
+        val pin: String?,
         val photo: String?,
         var commentsCount: String,
         val activeCommentsCount: String,

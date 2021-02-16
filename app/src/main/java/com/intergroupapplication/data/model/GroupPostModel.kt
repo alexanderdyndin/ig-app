@@ -10,12 +10,16 @@ data class GroupPostModel(
         @SerializedName("group") val groupInPost: GroupInPostModel,
         @SerializedName("text") val postText: String,
         val date: String,
+        val updated: String?,
+        val author: AuthorModel,
+        @SerializedName("unread_comments_count") val unreadComments: Int,
+        @SerializedName("pin_time") val pin: String?,
         @SerializedName("file") val photo: String?,
         @SerializedName("comments_count") val commentsCount: String,
         @SerializedName("active_comments_count") val activeCommentsCount: String,
         @SerializedName("is_active") val isActive: Boolean,
         @SerializedName("is_offered") val isOffered: Boolean,
-        @SerializedName("image_files") val images: List<ImageVideoModel>,
-        @SerializedName("audio_files") val audios: List<AudioModel>,
-        @SerializedName("video_files") val videos: List<ImageVideoModel>
+        val images: List<ImageVideoModel>,
+        val audios: List<AudioModel>,
+        val videos: List<ImageVideoModel>
         )

@@ -48,8 +48,11 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     private var lastAttachedImagePath: String? = null
     private var lastPhotoUrl: String = ""
+
+    private val imagePaths: MutableList<String> = mutableListOf()
     private val videoPaths: MutableList<String> = mutableListOf()
     private val audioPaths: MutableList<String> = mutableListOf()
+    private val imageUrls: MutableList<String> = mutableListOf()
     private val videoUrls: MutableList<String> = mutableListOf()
     private val audioUrls: MutableList<String> = mutableListOf()
     
@@ -80,7 +83,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     
     override fun getVideoUrls(): Single<List<String>> = Single.fromCallable { videoUrls }
 
-    override fun getAudioUrls(): Single<List<String>> = Single.fromCallable { videoUrls }
+    override fun getAudioUrls(): Single<List<String>> = Single.fromCallable { audioUrls }
+
+    override fun getImageUrls(): Single<List<String>> = Single.fromCallable { imageUrls }
 
     override fun loadAudio(): Observable<List<String>> =
         RxPaparazzo.multiple(activity)
@@ -122,10 +127,10 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
     }
 
-    override fun uploadVideoToAws(path: String): Observable<Float> {
+    override fun uploadVideoToAws(path: String, groupId: String): Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
-        return appApi.uploadPhoto(file.extension)
+        return appApi.uploadPhoto(file.extension, groupId)
                 .doAfterSuccess {
                     awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, file)
                 }

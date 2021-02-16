@@ -274,16 +274,20 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
        groupAvatarHolder.showImageUploadingStarted(path)
     }
 
-    override fun showImageUploaded() {
+
+
+    override fun showImageUploaded(path: String) {
         groupAvatarHolder.showImageUploaded()
         groupCreate_line_r.setBackgroundResource(R.drawable.line_addava_act)
     }
 
-    override fun showImageUploadingProgress(progress: Float) {
+
+    override fun showImageUploadingProgress(progress: Float, path: String) {
         groupAvatarHolder.showImageUploadingProgress(progress)
     }
 
-    override fun showImageUploadingError() {
+
+    override fun showImageUploadingError(path: String) {
         groupAvatarHolder.showImageUploadingError()
     }
 

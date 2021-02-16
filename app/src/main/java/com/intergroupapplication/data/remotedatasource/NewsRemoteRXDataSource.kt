@@ -1,5 +1,6 @@
 package com.intergroupapplication.data.remotedatasource
 
+import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
 import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
@@ -19,6 +20,11 @@ class NewsRemoteRXDataSource (private val appApi: AppApi, private val mapper: Gr
                 .onErrorReturn { e ->
                     LoadResult.Error(e)
                 }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, GroupPostEntity>): Int? {
+        //return if (state.anchorPosition != null) state.anchorPosition!! / 20 + 1 else null
+        return null
     }
 
 }

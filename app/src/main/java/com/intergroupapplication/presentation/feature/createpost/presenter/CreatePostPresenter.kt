@@ -1,10 +1,12 @@
 package com.intergroupapplication.presentation.feature.createpost.presenter
 
+import com.intergroupapplication.domain.entity.AudiosEntity
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
 
 import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
+import com.intergroupapplication.domain.entity.FilesEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -30,6 +32,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
 
     private var uploadingDisposable: Disposable? = null
     private var videoDisposable = CompositeDisposable()
+    var groupId: String = ""
 //    private var audioDisposable: Disposable? = null
 
     fun createPost(createGroupPostEntity: CreateGroupPostEntity,
@@ -51,9 +54,9 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                     override fun invoke(photo: String, video: List<String>, audio: List<String>): CreateGroupPostEntity =
                         CreateGroupPostEntity(postText,
                                 if (photo.isEmpty()) null else photo,
-                                if (photo.isNotEmpty()) List(1) { photo } else emptyList(),
-                                audio,
-                                video)
+                                if (photo.isNotEmpty()) List(1) { FilesEntity(file = photo, post = groupId.toInt(), description = null, title = null) } else emptyList(),
+                                audio.map { AudiosEntity(it, null, null, null,null, groupId.toInt()) },
+                                video.map { FilesEntity(file = it, post = groupId.toInt(), description = null, title = null) })
                 }
         )
                 .subscribeOn(Schedulers.io())
@@ -93,24 +96,29 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
     }
 
     fun attachVideo() {
-        var progress = 0f
         compositeDisposable.add(photoGateway.loadVideo()
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .filter { it.isNotEmpty() }
-                .doOnNext { viewState.showImageUploadingStarted(it[0]) }
-                .observeOn(Schedulers.io())
-                .flatMap {
-                    photoGateway.uploadVideoToAws(it[0])
-                }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                .subscribe({ videos ->
+                    videos.forEach { loadVideo(it) }
+                }, { errorHandler.handle(CanNotUploadPhoto())}))
+    }
+
+    private fun loadVideo(file: String) {
+        var progress = 0f
+        compositeDisposable.add(photoGateway.uploadVideoToAws(file, groupId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { viewState.showImageUploadingStarted(file) }
+                .subscribe( {
                     progress = it
-                    viewState.showImageUploadingProgress(it)
+                    viewState.showImageUploadingProgress(it, file)
                 }, {
-                    errorHandler?.handle(CanNotUploadPhoto())
-                    viewState.showImageUploadingError()
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded() }))
+                    errorHandler.handle(CanNotUploadPhoto())
+                    viewState.showImageUploadingError(file)
+                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) }))
+
     }
 
     fun retryLoadImage() {

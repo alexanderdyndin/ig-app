@@ -276,7 +276,7 @@ class NewsFragment(): BaseFragment(), NewsView{
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
-    override fun showImageUploaded() {
+    override fun showImageUploaded(path: String) {
         presenter.changeUserAvatar()
     }
 
@@ -289,11 +289,12 @@ class NewsFragment(): BaseFragment(), NewsView{
         profileAvatarHolder.clearUploadingState(lastAvatar)
     }
 
-    override fun showImageUploadingProgress(progress: Float) {
+    override fun showImageUploadingProgress(progress: Float, path: String) {
         profileAvatarHolder.showImageUploadingProgress(progress)
     }
 
-    override fun showImageUploadingError() {
+
+    override fun showImageUploadingError(path: String) {
         profileAvatarHolder.clearUploadingState()
         presenter.showLastUserAvatar()
     }

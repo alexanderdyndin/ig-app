@@ -78,7 +78,7 @@ interface AppApi {
     fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowModel>
 
     @GET("s3/groups/posts/")
-    fun uploadPhoto(@Query("ext") imageExt: String): Single<ImageUploadDto>
+    fun uploadPhoto(@Query("ext") imageExt: String, @Query("id") groupId: String? = null): Single<ImageUploadDto>
 
     @GET("s3/users/")
     fun uploadUserAvatar(@Query("ext") imageExt: String): Single<ImageUploadDto>

@@ -384,9 +384,10 @@ class GroupListFragment()
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
-    override fun showImageUploaded() {
+    override fun showImageUploaded(path: String) {
         presenter.changeUserAvatar()
     }
+
 
 
     override fun avatarChanged(url: String) {
@@ -399,14 +400,16 @@ class GroupListFragment()
     }
 
 
-    override fun showImageUploadingProgress(progress: Float) {
+    override fun showImageUploadingProgress(progress: Float, path: String) {
         profileAvatarHolder.showImageUploadingProgress(progress)
     }
 
-    override fun showImageUploadingError() {
+
+    override fun showImageUploadingError(path: String) {
         profileAvatarHolder.clearUploadingState()
         presenter.showLastUserAvatar()
     }
+
 
     override fun showUserInfo(userEntity: UserEntity) {
         val userName = userEntity.firstName + " " + userEntity.surName

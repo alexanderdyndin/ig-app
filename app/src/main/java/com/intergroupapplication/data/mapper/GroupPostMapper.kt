@@ -7,56 +7,65 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
-class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapper) {
+class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupInPostMapper,
+                                          private val userProfileMapper: UserProfileMapper) {
 
     fun mapToDto(from: GroupPostEntity): GroupPostModel {
         return GroupPostModel(
-                from.id,
-                groupInPostMapper.mapToDto(from.groupInPost),
-                from.postText,
-                from.date,
-                from.photo,
-                from.commentsCount,
-                from.activeCommentsCount,
-                from.isActive,
-                from.isOffered,
-                from.images.map { mapToDto(it) },
-                from.audios.map { mapToDto(it) },
-                from.videos.map { mapToDto(it) }
+                id = from.id,
+                groupInPost = groupInPostMapper.mapToDto(from.groupInPost),
+                postText = from.postText,
+                date = from.date,
+                updated = from.updated,
+                author = userProfileMapper.mapToDataModel(from.author),
+                unreadComments = from.unreadComments,
+                photo = from.photo,
+                commentsCount = from.commentsCount,
+                activeCommentsCount = from.activeCommentsCount,
+                isActive = from.isActive,
+                isOffered = from.isOffered,
+                pin = from.pin,
+                images = from.images.map { mapToDto(it) },
+                audios = from.audios.map { mapToDto(it) },
+                videos = from.videos.map { mapToDto(it) }
         )
     }
 
     fun mapToDomainEntity(from: GroupPostModel): GroupPostEntity {
         return GroupPostEntity(
-                from.id,
-                groupInPostMapper.mapToDomainEntity(from.groupInPost),
-                from.postText,
-                from.date,
-                from.photo,
-                from.commentsCount,
-                from.activeCommentsCount,
-                from.isActive,
-                from.isOffered,
-                from.images.map { mapToDomainEntity(it) },
-                from.audios.map { mapToDomainEntity(it) },
-                from.videos.map { mapToDomainEntity(it) }
+                id = from.id,
+                groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost),
+                postText = from.postText,
+                date = from.date,
+                updated = from.updated,
+                author = userProfileMapper.mapToDomainEntity(from.author),
+                unreadComments = from.unreadComments,
+                photo = from.photo,
+                commentsCount = from.commentsCount,
+                activeCommentsCount = from.activeCommentsCount,
+                isActive = from.isActive,
+                isOffered = from.isOffered,
+                pin = from.pin,
+                images = from.images.map { mapToDomainEntity(it) },
+                audios = from.audios.map { mapToDomainEntity(it) },
+                videos = from.videos.map { mapToDomainEntity(it) }
         )
     }
 
     fun mapToDto(from: FileEntity): ImageVideoModel {
-        return ImageVideoModel(from.id, from.file, from.description, from.title, from.post, from.owner)
+        return ImageVideoModel(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner)
     }
 
     fun mapToDomainEntity(from: ImageVideoModel): FileEntity {
-        return FileEntity(from.id, from.file, from.description, from.title, from.post, from.owner)
+        return FileEntity(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner)
     }
 
     fun mapToDto(from: AudioEntity): AudioModel {
-        return AudioModel(from.id, from.file, from.description, from.song, from.artist, from.genre, from.post, from.owner)
+        return AudioModel(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner)
     }
 
     fun mapToDomainEntity(from: AudioModel): AudioEntity {
-        return AudioEntity(from.id, from.file, from.description, from.song, from.artist, from.genre, from.post, from.owner)
+        return AudioEntity(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner)
     }
 
     fun mapNewsListToDomainEntity(from: NewsDto): NewsEntity {
@@ -76,9 +85,9 @@ class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapp
         return CreateGroupPostModel(
                 postText = from.postText,
                 imageUrl = from.imageUrl,
-                images = from.images.map { mapFileToDto(it) },
-                audios = from.audios.map { mapAudioToDto(it) },
-                videos = from.videos.map { mapFileToDto(it) }
+                images = from.images.map { mapToDto(it) },
+                audios = from.audios.map { mapToDto(it) },
+                videos = from.videos.map { mapToDto(it) }
         )
     }
 
@@ -86,17 +95,24 @@ class GroupPostMapper @Inject constructor(val groupInPostMapper: GroupInPostMapp
             CreateGroupPostEntity(
                     postText = from.postText,
                     imageUrl = from.imageUrl,
-                    images = from.images.map { it.file },
-                    audios = from.audios.map { it.file },
-                    videos = from.videos.map { it.file }
+                    images = from.images.map { mapToDomainEntity(it) },
+                    audios = from.audios.map { mapToDomainEntity(it) },
+                    videos = from.videos.map { mapToDomainEntity(it) }
                     )
 
     fun mapListToDomainEntity(from: List<GroupPostModel>): List<GroupPostEntity> =
             from.map { mapToDomainEntity(it) }
 
-    fun mapFileToDto(file: String): FileModel =
-            FileModel(file, "", "", null)
+    fun mapToDto(from: FilesEntity): FileModel =
+            FileModel(from.file, from.description.orEmpty(), from.title.orEmpty(), from.post)
 
-    fun mapAudioToDto(audio: String): AudiosModel =
-            AudiosModel(audio, "", "", "","", null)
+    fun mapToDto(from: AudiosEntity): AudiosModel =
+            AudiosModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty(), from.post)
+
+    fun mapToDomainEntity(from: FileModel): FilesEntity =
+            FilesEntity(from.file, from.description.orEmpty(), from.title.orEmpty(), from.post!!)
+
+    fun mapToDomainEntity(from: AudiosModel): AudiosEntity =
+            AudiosEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty(), from.post!!)
+
 }
