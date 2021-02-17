@@ -51,7 +51,7 @@
     <string name="cancel">Закрыть</string>
     <string name="image_still_uploading">Изображение еще загружается</string>
     <string name="can_not_change_avatar">Ошибка при добавлении изображения</string>
-    <string name="add_photo_or_text">Добавьте текст (Введите текст или прекрипите фотографию)</string>
+    <string name="add_photo_or_text">Добавьте текст (Введите текст или прикрепите фотографию)</string>
     <string name="unknown">Неизвестно</string>
     <string name="unknown_user">Неизвестный пользователь</string>
 
@@ -122,5 +122,7 @@
     <string name="allUsers">Подписчики</string>
     <string name="blockedUsers">Заблокированы</string>
     <string name="admUsers">Администраторы</string>
+    <string name="can_not_upload_video">Не могу загрузить видео</string>
+    <string name="can_not_upload_audio">Не могу загрузить аудио</string>
 
 </resources>

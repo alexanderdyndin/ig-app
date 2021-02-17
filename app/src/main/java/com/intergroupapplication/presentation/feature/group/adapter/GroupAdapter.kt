@@ -2,8 +2,11 @@ package com.intergroupapplication.presentation.feature.group.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.marginBottom
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -161,36 +164,51 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-
-                initializeVideoPlayer()
-                initializeAudioPlayer()
-
+                if (item.audios.isNotEmpty())
+                    initializeAudioPlayer(item.audios[0].file)
+                else
+                    initializeAudioPlayer(TEST_MUSIC_URI)
                 mediaBody.removeAllViews()
+                item.videos.forEach {
+                    val player = StyledPlayerView(itemView.context)
+                    player.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800)
+                    val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
+                    player.player = videoPlayer
+                    // Build the media item.
+                    val videoMediaItem: MediaItem = MediaItem.fromUri(it.file)
+                    // Set the media item to be played.
+                    videoPlayer.setMediaItem(videoMediaItem)
+                    // Prepare the player.
+                    videoPlayer.prepare()
+                    player.setShowBuffering(StyledPlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                    mediaBody.addView(player)
+                }
                 item.images.forEach {
                     val image = SimpleDraweeView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(300, 300)
+                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500)
+                    image.scaleType = ImageView.ScaleType.CENTER_CROP
                     imageLoadingDelegate.loadImageFromUrl(it.file, image)
                     mediaBody.addView(image)
                 }
             }
         }
 
-        private fun initializeVideoPlayer() {
+        private fun initializeVideoPlayer(uri: String) {
             val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
             videoPlayerView.player = videoPlayer
             // Build the media item.
-            val videoMediaItem: MediaItem = MediaItem.fromUri(TEST_VIDEO_URI)        //Todo юри видео должно быть в Entity
+            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
             // Set the media item to be played.
             videoPlayer.setMediaItem(videoMediaItem)
             // Prepare the player.
             videoPlayer.prepare()
         }
 
-        private fun initializeAudioPlayer() {
+        private fun initializeAudioPlayer(uri: String) {
             val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
             musicPlayerView.player = musicPlayer
             // Build the media item.
-            val musicMediaItem: MediaItem = MediaItem.fromUri(TEST_MUSIC_URI)        //Todo юри аудио должно быть в Entity
+            val musicMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри аудио должно быть в Entity
             // Set the media item to be played.
             musicPlayer.setMediaItem(musicMediaItem)
             // Prepare the player.

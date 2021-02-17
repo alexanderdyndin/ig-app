@@ -168,6 +168,6 @@ FakeData {
                     "no subject","no rules", false,"12+")
 
     fun getCreateGroupPostEntity(): CreateGroupPostEntity =
-            CreateGroupPostEntity("New post", "", emptyList(), emptyList(), emptyList())
+            CreateGroupPostEntity("New post", emptyList(), emptyList(), emptyList(), false, null)
 }
 

@@ -66,7 +66,10 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
                 loadingViews.forEach { (_, view) ->
                     if (view?.darkCard?.isVisible() != false) isLoading = true
                 }
-                if (isLoading) dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
+                if (isLoading)
+                    dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
+                else
+                    presenter.createPostWithImage(postText.text.toString().trim(), groupId)
             }
             else presenter.createPostWithImage(postText.text.toString().trim(), groupId)
         }
@@ -120,7 +123,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
             }
         }
         postContainer.addView(loadingViews[path])
-        prepareListeners(loadingViews[path])
+        prepareListeners(loadingViews[path], path)
         imageUploadingStarted(loadingViews[path])
     }
 
@@ -188,9 +191,9 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun detachImage() {
+    private fun detachImage(uploadingView: View?) {
         if (postContainer.childCount > 1) {
-            postContainer.removeViewAt(1)
+            postContainer.removeView(uploadingView)
         }
     }
 
@@ -198,25 +201,26 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         uploadingView?.apply {
             darkCard?.show()
             imageUploadingProgressBar?.show()
-            stopUploading?.show()
+            //stopUploading?.show()
             detachImage?.hide()
             refreshContainer?.hide()
         }
     }
 
-    private fun prepareListeners(uploadingView: View?) {
+    private fun prepareListeners(uploadingView: View?, path: String) {
         uploadingView?.apply {
             refreshContainer.setOnClickListener {
                 this.imageUploadingProgressBar?.progress = 0f
-                //presenter.retryLoadImage()
+                presenter.loadVideo(path)
                 imageUploadingStarted(uploadingView)
             }
             stopUploading?.setOnClickListener {
                 //presenter.stopImageUploading()
-                detachImage()
+                detachImage(this)
             }
             detachImage?.setOnClickListener {
-                detachImage()
+                presenter.removeContent(path)
+                detachImage(this)
             }
         }
     }

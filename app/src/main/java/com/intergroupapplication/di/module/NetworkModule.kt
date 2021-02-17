@@ -133,8 +133,8 @@ class NetworkModule {
                             .header(TOKEN, "JWT " + sessionStorage.token?.access)
                             .header(IMEI, imei)
                             .header(SERIAL, serialNumber)
-                            .header(DEVICE_ID, sessionStorage.firebaseToken?.token
-                                    ?: FirebaseMessaging.getInstance().token.result )  //not sure in this command
+                            .header(DEVICE_ID, sessionStorage.firebaseToken?.token!!
+                                    /*?: FirebaseMessaging.getInstance().token.result*/ )  //not sure in this command
                             .build()
                 } else {
                     null

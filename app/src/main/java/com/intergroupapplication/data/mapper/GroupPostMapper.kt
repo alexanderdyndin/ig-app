@@ -84,35 +84,37 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
     fun mapToDto(from: CreateGroupPostEntity): CreateGroupPostModel {
         return CreateGroupPostModel(
                 postText = from.postText,
-                imageUrl = from.imageUrl,
                 images = from.images.map { mapToDto(it) },
                 audios = from.audios.map { mapToDto(it) },
-                videos = from.videos.map { mapToDto(it) }
+                videos = from.videos.map { mapToDto(it) },
+                isPinned = from.isPinned,
+                pinTime = from.pinTime
         )
     }
 
     fun mapToDomainEntity(from: CreateGroupPostModel): CreateGroupPostEntity =
             CreateGroupPostEntity(
                     postText = from.postText,
-                    imageUrl = from.imageUrl,
                     images = from.images.map { mapToDomainEntity(it) },
                     audios = from.audios.map { mapToDomainEntity(it) },
-                    videos = from.videos.map { mapToDomainEntity(it) }
+                    videos = from.videos.map { mapToDomainEntity(it) },
+                    isPinned = from.isPinned,
+                    pinTime = from.pinTime
                     )
 
     fun mapListToDomainEntity(from: List<GroupPostModel>): List<GroupPostEntity> =
             from.map { mapToDomainEntity(it) }
 
     fun mapToDto(from: FilesEntity): FileModel =
-            FileModel(from.file, from.description.orEmpty(), from.title.orEmpty(), from.post)
+            FileModel(from.file, from.description.orEmpty(), from.title.orEmpty())
 
     fun mapToDto(from: AudiosEntity): AudiosModel =
-            AudiosModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty(), from.post)
+            AudiosModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
     fun mapToDomainEntity(from: FileModel): FilesEntity =
-            FilesEntity(from.file, from.description.orEmpty(), from.title.orEmpty(), from.post!!)
+            FilesEntity(from.file, from.description.orEmpty(), from.title.orEmpty())
 
     fun mapToDomainEntity(from: AudiosModel): AudiosEntity =
-            AudiosEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty(), from.post!!)
+            AudiosEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
 }

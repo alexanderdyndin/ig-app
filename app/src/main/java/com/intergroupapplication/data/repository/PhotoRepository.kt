@@ -52,10 +52,12 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     private val imagePaths: MutableList<String> = mutableListOf()
     private val videoPaths: MutableList<String> = mutableListOf()
     private val audioPaths: MutableList<String> = mutableListOf()
+
     private val imageUrls: MutableList<String> = mutableListOf()
     private val videoUrls: MutableList<String> = mutableListOf()
     private val audioUrls: MutableList<String> = mutableListOf()
-    
+
+    private val fileToUrl: MutableMap<String, String> = mutableMapOf()
 
     override fun loadFromGallery(): Observable<String> =
             RxPaparazzo.single(activity)
@@ -76,6 +78,8 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                         val path = it.data()?.file?.path
                         lastAttachedImagePath = path
                         lastPhotoUrl = ""
+                        if (path != null)
+                            imagePaths.add(path)
                         path ?: ""
                     }
 
@@ -113,16 +117,29 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     paths
                 }
 
-    override fun uploadAudioToAws(path: String): Observable<Float> {
+    override fun loadImagesFromGallery(): Observable<List<String>> =
+            RxPaparazzo.multiple(activity)
+                    .crop(cropOptions)
+                    .usingGallery()
+                    .map { response ->
+                        val paths = response.data()?.map { it.file.path } ?: emptyList()
+                        imagePaths.addAll(paths)
+                        paths
+                    }
+
+    override fun uploadAudioToAws(path: String, groupId: String): Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
-        return appApi.uploadPhoto(file.extension)
+        return appApi.uploadPhoto(file.extension, groupId)
                 .doAfterSuccess {
                     awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, file)
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
-                            .doOnComplete { audioUrls.add(it.fields.key) }
+                            .doOnComplete {
+                                audioUrls.add(it.fields.key)
+                                fileToUrl[path] = it.fields.key
+                            }
                             //.doOnError { lastPhotoUrl = "" }
                 }
     }
@@ -136,8 +153,29 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
-                            .doOnComplete { videoUrls.add(it.fields.key) }
+                            .doOnComplete {
+                                videoUrls.add(it.fields.key)
+                                fileToUrl[path] = it.fields.key
+                            }
                             //.doOnError { lastPhotoUrl = "" }
+                }
+    }
+
+    override fun uploadImageToAws(path: String, groupId: String): Observable<Float> {
+        val subject = PublishSubject.create<Float>()
+        val file = File(path)
+        return appApi.uploadPhoto(file.extension, groupId)
+                .doAfterSuccess {
+                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                            Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                }
+                .flatMapObservable { it ->
+                    subject.doOnDispose { AndroidNetworking.cancelAll() }
+                            .doOnComplete {
+                                imageUrls.add(it.fields.key)
+                                fileToUrl[path] = it.fields.key
+                            }
+                    //.doOnError { lastPhotoUrl = "" }
                 }
     }
 
@@ -154,5 +192,11 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                             .doOnComplete { lastPhotoUrl = it.fields.key }
                             .doOnError { lastPhotoUrl = "" }
                 }
+    }
+
+    override fun removeContent(path: String) {
+        imageUrls.remove(fileToUrl[path])
+        videoUrls.remove(fileToUrl[path])
+        audioUrls.remove(fileToUrl[path])
     }
 }
