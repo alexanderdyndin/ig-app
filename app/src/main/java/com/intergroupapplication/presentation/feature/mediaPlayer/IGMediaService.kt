@@ -35,17 +35,15 @@ class IGMediaService : MediaBrowserServiceCompat() {
     }
 
 
-    private lateinit var exoPlayer: SimpleExoPlayer
+    private var exoPlayer: SimpleExoPlayer? = null
 
     /**
      * Will be called by our activity to get information about exo player.
      */
     override fun onBind(intent: Intent?): IBinder {
-        intent?.let {
-            exoPlayer.playWhenReady = false  //Tell exoplayer to start as soon as it's content is loaded.
-            loadExampleMedia(intent.getStringExtra(MEDIA_URL))
+            exoPlayer?.playWhenReady = false  //Tell exoplayer to start as soon as it's content is loaded.
+//            loadExampleMedia(intent.getStringExtra(MEDIA_URL))
 //            displayNotification()
-        }
         return ServiceBinder()
     }
 
@@ -66,13 +64,13 @@ class IGMediaService : MediaBrowserServiceCompat() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let {
-            val action = it.getIntExtra(PLAY_PAUSE_ACTION, -1)
-            when (action) {
-                ACTION_PAUSE -> exoPlayer.playWhenReady = exoPlayer.playWhenReady.let { return@let !it }
-            }
-            displayNotification()
-        }
+//        intent?.let {
+//            val action = it.getIntExtra(PLAY_PAUSE_ACTION, -1)
+//            when (action) {
+//                ACTION_PAUSE -> exoPlayer.playWhenReady = exoPlayer.playWhenReady.let { return@let !it }
+//            }
+//            displayNotification()
+//        }
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -89,6 +87,16 @@ class IGMediaService : MediaBrowserServiceCompat() {
          * things will work correctly.
          */
         fun getExoPlayerInstance() = exoPlayer
+        fun setExoPlayerInstance(player: SimpleExoPlayer) {
+            exoPlayer?.stop()
+            exoPlayer = player
+            displayNotification()
+        }
+
+        fun loadMedia(mediaUrl: String) {
+            loadExampleMedia(mediaUrl)
+            displayNotification()
+        }
     }
 
     /**
@@ -98,12 +106,13 @@ class IGMediaService : MediaBrowserServiceCompat() {
         val mediaItem = MediaItem.fromUri(urlLink)
         val source = ExtractorMediaSource.Factory(DefaultDataSourceFactory(this))
                 .setExtractorsFactory(DefaultExtractorsFactory()).createMediaSource(mediaItem)
-        exoPlayer.setMediaSource(source)
-        exoPlayer.prepare()
+        exoPlayer?.setMediaSource(source)
+        exoPlayer?.playWhenReady = true
+        exoPlayer?.prepare()
     }
 
     private fun displayNotification() {
-        val isPlaying = exoPlayer.playWhenReady
+        val isPlaying = exoPlayer?.playWhenReady == true
         //Lets create our remote view.
 //        val remoteView = RemoteViews(packageName, R.layout.notification_media_player)
 

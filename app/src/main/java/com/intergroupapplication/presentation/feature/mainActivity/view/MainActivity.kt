@@ -95,7 +95,7 @@ class MainActivity : FragmentActivity() {
     }
 
 
-    suspend fun bindMediaService(mediaUrl: String):IGMediaService.ServiceBinder? {
+    suspend fun bindMediaService(): IGMediaService.ServiceBinder? {
         return suspendCoroutine {
             /**
              * Create our connection to the service to be used in our bindService call.
@@ -121,7 +121,7 @@ class MainActivity : FragmentActivity() {
             }
 
             val intent = Intent(this, IGMediaService::class.java)
-            intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
+//            intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
 
@@ -145,4 +145,5 @@ class MainActivity : FragmentActivity() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
 }

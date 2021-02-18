@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
@@ -17,11 +18,15 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -187,14 +192,33 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
         }
 
         private fun initializeAudioPlayer() {
-            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
-            musicPlayerView.player = musicPlayer
-            // Build the media item.
-            val musicMediaItem: MediaItem = MediaItem.fromUri(TEST_MUSIC_URI)        //Todo юри аудио должно быть в Entity
-            // Set the media item to be played.
-            musicPlayer.setMediaItem(musicMediaItem)
-            // Prepare the player.
-            musicPlayer.prepare()
+
+
+            val activity = musicPlayerView.getActivity()
+            if (activity is MainActivity) {
+                CoroutineScope(Main).launch {
+                    val bindedService = activity.bindMediaService()
+
+                    val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
+                    musicPlayerView.player = musicPlayer
+
+                    val listener = object : Player.EventListener {
+                        override fun onIsPlayingChanged(isPlaying: Boolean) {
+                            if (isPlaying) {
+                                bindedService?.setExoPlayerInstance(musicPlayer)
+                            }
+                        }
+                    }
+                    musicPlayer.addListener(listener)
+
+                    // Build the media item.
+                    val musicMediaItem: MediaItem = MediaItem.fromUri(TEST_MUSIC_URI)
+                    // Set the media item to be played.
+                    musicPlayer?.setMediaItem(musicMediaItem)
+                    // Prepare the player.
+                    musicPlayer?.prepare()
+                }
+            }
         }
 
         private fun showPopupMenu(view: View, id: Int) {
