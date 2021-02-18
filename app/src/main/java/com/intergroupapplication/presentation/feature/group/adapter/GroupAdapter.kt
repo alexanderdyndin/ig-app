@@ -185,7 +185,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 }
                 item.images.forEach {
                     val image = SimpleDraweeView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 500)
+                    image.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1000)
                     image.scaleType = ImageView.ScaleType.CENTER_CROP
                     imageLoadingDelegate.loadImageFromUrl(it.file, image)
                     mediaBody.addView(image)

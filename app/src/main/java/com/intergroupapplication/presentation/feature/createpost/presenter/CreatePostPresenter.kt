@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.createpost.presenter
 
+import android.webkit.MimeTypeMap
 import com.intergroupapplication.domain.entity.AudiosEntity
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
@@ -34,6 +35,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
     private var uploadingDisposable: Disposable? = null
     private var videoDisposable = CompositeDisposable()
     var groupId: String = ""
+    private val processes: MutableMap<String, Disposable> = mutableMapOf()
 //    private var audioDisposable: Disposable? = null
 
     fun createPost(createGroupPostEntity: CreateGroupPostEntity,
@@ -112,7 +114,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
 
     fun loadVideo(file: String) {
         var progress = 0f
-        videoDisposable.add(photoGateway.uploadVideoToAws(file, groupId)
+        processes[file] = photoGateway.uploadVideoToAws(file, groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(file) }
@@ -122,13 +124,14 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                 }, {
                     errorHandler.handle(CanNotUploadPhoto())
                     viewState.showImageUploadingError(file)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) }))
+                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
+        videoDisposable.add(processes[file]!!)
 
     }
 
     private fun loadAudio(file: String) {
         var progress = 0f
-        videoDisposable.add(photoGateway.uploadAudioToAws(file, groupId)
+        processes[file] = photoGateway.uploadAudioToAws(file, groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(file) }
@@ -138,13 +141,14 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                 }, {
                     errorHandler.handle(CanNotUploadPhoto())
                     viewState.showImageUploadingError(file)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) }))
+                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
+        videoDisposable.add(processes[file]!!)
 
     }
 
     fun loadImage(file: String) {
         var progress = 0f
-        videoDisposable.add(photoGateway.uploadImageToAws(file, groupId)
+        processes[file] = photoGateway.uploadImageToAws(file, groupId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(file) }
@@ -154,8 +158,8 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                 }, {
                     errorHandler.handle(CanNotUploadPhoto())
                     viewState.showImageUploadingError(file)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) }))
-
+                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
+        videoDisposable.add(processes[file]!!)
     }
 
     fun retryLoadImage() {
@@ -170,12 +174,65 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                         { viewState.showImageUploaded() })
     }
 
+    fun retryLoading(file: String) {
+        var progress = 0f
+        val type = MimeTypeMap.getFileExtensionFromUrl(file)
+        when (MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: "") {
+            in listOf("audio/mpeg", "audio/aac", "audio/wav") -> {
+                processes[file] = photoGateway.uploadAudioToAws(file, groupId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe( {
+                            progress = it
+                            viewState.showImageUploadingProgress(it, file)
+                        }, {
+                            errorHandler.handle(CanNotUploadPhoto())
+                            viewState.showImageUploadingError(file)
+                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
+            }
+            in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> {
+                processes[file] = photoGateway.uploadVideoToAws(file, groupId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe( {
+                            progress = it
+                            viewState.showImageUploadingProgress(it, file)
+                        }, {
+                            errorHandler.handle(CanNotUploadPhoto())
+                            viewState.showImageUploadingError(file)
+                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
+            }
+            else -> {
+                processes[file] = photoGateway.uploadImageToAws(file, groupId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe( {
+                            progress = it
+                            viewState.showImageUploadingProgress(it, file)
+                        }, {
+                            errorHandler.handle(CanNotUploadPhoto())
+                            viewState.showImageUploadingError(file)
+                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
+            }
+        }
+        processes[file]?.let {
+            videoDisposable.add(it)
+        }
+    }
+
     fun stopImageUploading() {
         uploadingDisposable?.dispose()
     }
 
     fun removeContent(path: String) {
         photoGateway.removeContent(path)
+    }
+
+    fun cancelUploading(file: String) {
+        processes[file]?.let {
+            videoDisposable.delete(it)
+        }
+        processes.remove(file)
     }
 
     override fun onDestroy() {

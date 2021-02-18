@@ -3,6 +3,7 @@ package com.intergroupapplication.data.repository
 import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Environment
+import android.webkit.MimeTypeMap
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.androidnetworking.AndroidNetworking
@@ -21,11 +22,15 @@ import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import com.intergroupapplication.data.network.AmazonApi
+import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.ImageUploadingException
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
+import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.nbsp.materialfilepicker.MaterialFilePicker
 import id.zelory.compressor.Compressor
 import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -93,12 +98,11 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     override fun loadAudio(): Observable<List<String>> =
         RxPaparazzo.multiple(activity)
+                .setMultipleMimeType("audio/mpeg", "audio/aac", "audio/wav")
+                .useInternalStorage()
+                .useDocumentPicker()
                 .usingFiles()
                 .map { response ->
-//                    val path = it.data()?.file?.path
-//                    lastAttachedImagePath = path
-//                    lastPhotoUrl = ""
-//                    path ?: ""
                     val paths = response.data()?.map { it.file.path } ?: emptyList()
                     audioPaths.addAll(paths)
                     paths
@@ -106,12 +110,11 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     override fun loadVideo(): Observable<List<String>> =
         RxPaparazzo.multiple(activity)
+                .setMultipleMimeType("video/mpeg", "video/mp4", "video/webm", "video/3gpp")
+                .useInternalStorage()
+                .useDocumentPicker()
                 .usingFiles()
                 .map { response ->
-//                    val path = it.data()?.file?.path
-//                    lastAttachedImagePath = path
-//                    lastPhotoUrl = ""
-//                    path ?: ""
                     val paths = response.data()?.map { it.file.path } ?: emptyList()
                     videoPaths.addAll(paths)
                     paths
@@ -195,8 +198,15 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     }
 
     override fun removeContent(path: String) {
-        imageUrls.remove(fileToUrl[path])
-        videoUrls.remove(fileToUrl[path])
-        audioUrls.remove(fileToUrl[path])
+        val type = MimeTypeMap.getFileExtensionFromUrl(path)
+        when (MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: "") {
+            in listOf("audio/mpeg", "audio/aac", "audio/wav") -> audioUrls.remove(fileToUrl[path])
+            in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> videoUrls.remove(fileToUrl[path])
+            else ->  {
+                imageUrls.remove(fileToUrl[path])
+                audioUrls.remove(fileToUrl[path])
+                videoUrls.remove(fileToUrl[path])
+            }
+        }
     }
 }

@@ -1,16 +1,13 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
-import android.content.Context
-import android.content.Intent
+import android.net.Uri
 import android.view.View
-import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import com.facebook.common.util.UriUtil
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
@@ -26,7 +23,8 @@ import com.intergroupapplication.presentation.feature.group.view.GroupFragment.C
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
-
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 class CreatePostFragment : BaseFragment(), CreatePostView {
@@ -87,15 +85,15 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
             presenter.attachAudio()
         }
         exitAction.setOnClickListener { onResultCancel() }
-        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
-            override fun onChildViewRemoved(parent: View?, child: View?) {
-                manageClipVisibility()
-            }
-
-            override fun onChildViewAdded(parent: View?, child: View?) {
-                manageClipVisibility()
-            }
-        })
+//        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+//            override fun onChildViewRemoved(parent: View?, child: View?) {
+//                manageClipVisibility()
+//            }
+//
+//            override fun onChildViewAdded(parent: View?, child: View?) {
+//                manageClipVisibility()
+//            }
+//        })
         postText.showKeyboard()
         setErrorHandler()
     }
@@ -119,7 +117,14 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
         loadingViews[path]?.let {
             it.imagePreview?.let { draweeView ->
-                imageLoadingDelegate.loadImageFromFile(path, draweeView)
+                val type = MimeTypeMap.getFileExtensionFromUrl(path)
+                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
+                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
+                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
+                    it.nameView?.text = path.substring(path.lastIndexOf("/") + 1)
+                }
+                else
+                    imageLoadingDelegate.loadImageFromFile(path, draweeView)
             }
         }
         postContainer.addView(loadingViews[path])
@@ -191,17 +196,16 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun detachImage(uploadingView: View?) {
-        if (postContainer.childCount > 1) {
-            postContainer.removeView(uploadingView)
-        }
+    private fun detachImage(path: String) {
+        postContainer.removeView(loadingViews[path])
+        loadingViews.remove(path)
     }
 
     private fun imageUploadingStarted(uploadingView: View?) {
         uploadingView?.apply {
             darkCard?.show()
             imageUploadingProgressBar?.show()
-            //stopUploading?.show()
+            stopUploading?.show()
             detachImage?.hide()
             refreshContainer?.hide()
         }
@@ -211,27 +215,27 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         uploadingView?.apply {
             refreshContainer.setOnClickListener {
                 this.imageUploadingProgressBar?.progress = 0f
-                presenter.loadVideo(path)
+                presenter.retryLoading(path)
                 imageUploadingStarted(uploadingView)
             }
             stopUploading?.setOnClickListener {
-                //presenter.stopImageUploading()
-                detachImage(this)
+                presenter.cancelUploading(path)
+                detachImage(path)
             }
             detachImage?.setOnClickListener {
                 presenter.removeContent(path)
-                detachImage(this)
+                detachImage(path)
             }
         }
     }
 
-    private fun manageClipVisibility() {
-        if (postContainer.childCount > 1) {
-            attachPhoto.hide()
-        } else {
-            attachPhoto.show()
-        }
-    }
+//    private fun manageClipVisibility() {
+//        if (postContainer.childCount > 1) {
+//            attachPhoto.hide()
+//        } else {
+//            attachPhoto.show()
+//        }
+//    }
 
     private fun onResultOk(/*groupId: String*/) {
         findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, BasePresenter.POST_CREATED)
