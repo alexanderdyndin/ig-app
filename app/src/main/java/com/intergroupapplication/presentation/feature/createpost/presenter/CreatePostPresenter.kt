@@ -38,15 +38,25 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
     private val processes: MutableMap<String, Disposable> = mutableMapOf()
 //    private var audioDisposable: Disposable? = null
 
-    fun createPost(createGroupPostEntity: CreateGroupPostEntity,
-                   groupId: String) {
-        compositeDisposable.add(groupPostGateway.createPost(createGroupPostEntity, groupId)
+    fun updatePost(postText: String, postId: String) {
+        compositeDisposable.add(Single.zip(photoGateway.getImageUrls(),
+                photoGateway.getVideoUrls(),
+                photoGateway.getAudioUrls(),
+                object : Function3<List<String>, List<String>, List<String>, CreateGroupPostEntity> {
+                    override fun invoke(photo: List<String>, video: List<String>, audio: List<String>): CreateGroupPostEntity =
+                            CreateGroupPostEntity(postText,
+                                    photo.map { FilesEntity(file = it, description = null, title = null) },
+                                    audio.map { AudiosEntity(it, null, null, null,null) },
+                                    video.map { FilesEntity(file = it,  description = null, title = null) },
+                                    false,
+                                    null)
+                }
+        )
                 .subscribeOn(Schedulers.io())
+                .flatMap { groupPostGateway.editPost(it, postId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
-                .subscribe({
-                    viewState.postCreateSuccessfully(it)
-                }, { errorHandler.handle(it) }))
+                .subscribe({ viewState.postCreateSuccessfully(it) }, { errorHandler.handle(it) }))
     }
 
     fun createPostWithImage(postText: String, groupId: String) {
@@ -59,7 +69,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                                 photo.map { FilesEntity(file = it, description = null, title = null) },
                                 audio.map { AudiosEntity(it, null, null, null,null) },
                                 video.map { FilesEntity(file = it,  description = null, title = null) },
-                        false,
+                                false,
                                 null)
                 }
         )

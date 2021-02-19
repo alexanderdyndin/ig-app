@@ -193,6 +193,10 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         adapter.retryClickListener = { presenter.reload() }
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         adapter.complaintListener = { id -> presenter.complaintPost(id) }
+        adapter.imageClickListener = { list: List<FileEntity>, i: Int ->
+            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+            findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
+        }
         groupPosts.adapter = adapter
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)

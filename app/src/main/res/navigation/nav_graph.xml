@@ -129,6 +129,9 @@
             app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_newsFragment2_to_imageFragment"
+            app:destination="@id/imageFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashActivity"
@@ -327,6 +330,9 @@
             app:exitAnim="@anim/fragment_close_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/action_groupActivity_to_imageFragment"
+            app:destination="@id/imageFragment" />
     </fragment>
     <fragment
         android:id="@+id/CreatePostFragment"
@@ -358,5 +364,17 @@
         <argument
             android:name="group_id"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.intergroupapplication.presentation.feature.image.view.ImageFragment"
+        android:label="ImageFragment" >
+        <argument
+            android:name="images"
+            app:argType="com.intergroupapplication.domain.entity.FileEntity[]" />
+        <argument
+            android:name="selectedId"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

@@ -6,16 +6,19 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.children
 import androidx.core.view.marginBottom
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -38,6 +41,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
     var retryClickListener: () -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
+    var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
 
     private val loadingViewType = 123       //todo Почему это переменная экземпляра? Мб лучше вынести в статик?
     private val errorViewType = 321
@@ -70,10 +74,15 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.videoPlayerView.player?.release()
-            holder.videoPlayerView.player?.let {
-                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+            holder.itemView.mediaBody.children.forEach {
+                if (it is StyledPlayerView) {
+                    it.player?.release()
+                }
             }
+//            holder.videoPlayerView.player?.release()
+//            holder.videoPlayerView.player?.let {
+//                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+//            }
         }
 
         super.onViewRecycled(holder)
@@ -183,11 +192,12 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                     player.setShowBuffering(StyledPlayerView.SHOW_BUFFERING_WHEN_PLAYING)
                     mediaBody.addView(player)
                 }
-                item.images.forEach {
-                    val image = SimpleDraweeView(itemView.context)
+                item.images.forEach { file ->
+                    val image = ImageView(itemView.context)
                     image.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1000)
                     image.scaleType = ImageView.ScaleType.CENTER_CROP
-                    imageLoadingDelegate.loadImageFromUrl(it.file, image)
+                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
+                    Glide.with(itemView.context).load(file.file).into(image)
                     mediaBody.addView(image)
                 }
             }
