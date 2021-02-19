@@ -178,6 +178,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 else
                     initializeAudioPlayer(TEST_MUSIC_URI)
                 mediaBody.removeAllViews()
+                imageContainer.removeAllViews()
                 item.videos.forEach {
                     val player = StyledPlayerView(itemView.context)
                     player.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800)
@@ -194,11 +195,11 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 }
                 item.images.forEach { file ->
                     val image = ImageView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1000)
-                    image.scaleType = ImageView.ScaleType.CENTER_CROP
+                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400)
+                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
                     Glide.with(itemView.context).load(file.file).into(image)
-                    mediaBody.addView(image)
+                    imageContainer.addView(image)
                 }
             }
         }

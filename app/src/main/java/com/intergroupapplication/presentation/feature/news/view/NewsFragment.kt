@@ -20,6 +20,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserEntity
@@ -97,6 +98,10 @@ class NewsFragment(): BaseFragment(), NewsView{
             val data = bundleOf(GROUP_ID to it)
             findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
         }
+        adapterNews.imageClickListener = { list: List<FileEntity>, i: Int ->
+            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+            findNavController().navigate(R.id.action_newsFragment2_to_imageFragment, data)
+        }
         compositeDisposable.add(
                 viewModel.getNews()
                         .subscribe {
@@ -115,7 +120,6 @@ class NewsFragment(): BaseFragment(), NewsView{
         //newsPosts.layoutManager = layoutManager
         newsPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         newsPosts.itemAnimator = null
-
     }
 
     fun newPaging() {
@@ -151,9 +155,8 @@ class NewsFragment(): BaseFragment(), NewsView{
                         adapterNews.removeError()
                         adapterNews.removeLoading()
                         newSwipe.isRefreshing = false
-                        //if (!job.isCancelled) progress_first_loading.hide()
                     }
-                    else ->{ newSwipe.isRefreshing = false } //if (!job.isCancelled) progress_first_loading.hide()
+                    else ->{ newSwipe.isRefreshing = false }
                 }
             }
         }

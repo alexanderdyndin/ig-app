@@ -82,7 +82,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         attachAudio.setOnClickListener {
             presenter.attachAudio()
         }
-        exitAction.setOnClickListener { onResultCancel() }
+        exitAction.setOnClickListener { findNavController().popBackStack() }
 //        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
 //            override fun onChildViewRemoved(parent: View?, child: View?) {
 //                manageClipVisibility()
@@ -97,7 +97,8 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity) {
-        onResultOk(/*postEntity.groupInPost.id*/)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(POST_ID, postEntity.id)
+        findNavController().popBackStack()
     }
 
     override fun showLoading(show: Boolean) {
@@ -111,7 +112,6 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun showImageUploadingStarted(path: String) {
-        //detachImage()
         uploadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
         uploadingViews[path]?.let {
             it.imagePreview?.let { draweeView ->
@@ -130,14 +130,6 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         imageUploadingStarted(uploadingViews[path])
     }
 
-//    override fun showImageUploaded() {
-//        uploadingView?.apply {
-//            darkCard?.hide()
-//            stopUploading?.hide()
-//            imageUploadingProgressBar?.hide()
-//            detachImage?.show()
-//        }
-//    }
 
     override fun showImageUploaded(path: String) {
         uploadingViews[path]?.apply {
@@ -148,11 +140,6 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-//    override fun showImageUploadingProgress(progress: Float) {
-//        uploadingView?.apply {
-//            imageUploadingProgressBar?.progress = progress
-//        }
-//    }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
         uploadingViews[path]?.apply {
@@ -160,15 +147,6 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-//    override fun showImageUploadingError() {
-//        uploadingView?.apply {
-//            darkCard?.show()
-//            detachImage?.show()
-//            refreshContainer?.show()
-//            imageUploadingProgressBar?.hide()
-//            stopUploading?.hide()
-//        }
-//    }
 
     override fun showImageUploadingError(path: String) {
         uploadingViews[path]?.apply {
@@ -227,23 +205,5 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-//    private fun manageClipVisibility() {
-//        if (postContainer.childCount > 1) {
-//            attachPhoto.hide()
-//        } else {
-//            attachPhoto.show()
-//        }
-//    }
-
-    private fun onResultOk(/*groupId: String*/) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, BasePresenter.POST_CREATED)
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID_VALUE, groupId)
-        findNavController().popBackStack()
-    }
-
-    private fun onResultCancel() {
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set("fragmentResult", Activity.RESULT_CANCELED)
-        findNavController().popBackStack()
-    }
 
 }

@@ -131,7 +131,9 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_newsFragment2_to_imageFragment"
-            app:destination="@id/imageFragment" />
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit" />
     </fragment>
     <fragment
         android:id="@+id/splashActivity"
@@ -332,7 +334,9 @@
             app:popExitAnim="@anim/fragment_close_exit" />
         <action
             android:id="@+id/action_groupActivity_to_imageFragment"
-            app:destination="@id/imageFragment" />
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit" />
     </fragment>
     <fragment
         android:id="@+id/CreatePostFragment"
