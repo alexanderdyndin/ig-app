@@ -31,6 +31,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     companion object {
         const val GROUP_ID = "group_id"
+        const val POST_ID = "post_id"
     }
 
     /**
@@ -67,6 +68,8 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                         Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as NotFoundException).message.orEmpty()) },
                 UnknownHostException::class.java to createSnackBarAction(R.string.no_network_connection),
                 CanNotUploadPhoto::class.java to createToast(R.string.can_not_change_avatar),
+                CanNotUploadVideo::class.java to createToast(R.string.can_not_upload_video),
+                CanNotUploadAudio::class.java to createToast(R.string.can_not_upload_audio),
                 UserNotProfileException::class.java to openCreateProfile(),
                 GroupBlockedException::class.java to getActionForBlockedGroup(),
                 UserNotVerifiedException::class.java to openConfirmationEmail(),

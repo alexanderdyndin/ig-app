@@ -1,16 +1,13 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
-import android.content.Context
-import android.content.Intent
+import android.net.Uri
 import android.view.View
-import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import com.facebook.common.util.UriUtil
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
@@ -26,7 +23,8 @@ import com.intergroupapplication.presentation.feature.group.view.GroupFragment.C
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
-
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 class CreatePostFragment : BaseFragment(), CreatePostView {
@@ -45,11 +43,9 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_create_post
 
-    private val loadingViews: MutableMap<String, View?> = mutableMapOf()
+    private val uploadingViews: MutableMap<String, View?> = mutableMapOf()
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createPostCoordinator
-
-    private var uploadingView: View? = null
 
     private lateinit var groupId: String
 
@@ -61,12 +57,15 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
             if (post.isEmpty() && postContainer.childCount == 1) {
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
             }
-            else if (loadingViews.isNotEmpty()) {
+            else if (uploadingViews.isNotEmpty()) {
                 var isLoading = false
-                loadingViews.forEach { (_, view) ->
+                uploadingViews.forEach { (_, view) ->
                     if (view?.darkCard?.isVisible() != false) isLoading = true
                 }
-                if (isLoading) dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
+                if (isLoading)
+                    dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
+                else
+                    presenter.createPostWithImage(postText.text.toString().trim(), groupId)
             }
             else presenter.createPostWithImage(postText.text.toString().trim(), groupId)
         }
@@ -83,22 +82,23 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         attachAudio.setOnClickListener {
             presenter.attachAudio()
         }
-        exitAction.setOnClickListener { onResultCancel() }
-        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
-            override fun onChildViewRemoved(parent: View?, child: View?) {
-                manageClipVisibility()
-            }
-
-            override fun onChildViewAdded(parent: View?, child: View?) {
-                manageClipVisibility()
-            }
-        })
+        exitAction.setOnClickListener { findNavController().popBackStack() }
+//        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+//            override fun onChildViewRemoved(parent: View?, child: View?) {
+//                manageClipVisibility()
+//            }
+//
+//            override fun onChildViewAdded(parent: View?, child: View?) {
+//                manageClipVisibility()
+//            }
+//        })
         postText.showKeyboard()
         setErrorHandler()
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity) {
-        onResultOk(/*postEntity.groupInPost.id*/)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(POST_ID, postEntity.id)
+        findNavController().popBackStack()
     }
 
     override fun showLoading(show: Boolean) {
@@ -112,29 +112,27 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun showImageUploadingStarted(path: String) {
-        //detachImage()
-        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
-        loadingViews[path]?.let {
+        uploadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
+        uploadingViews[path]?.let {
             it.imagePreview?.let { draweeView ->
-                imageLoadingDelegate.loadImageFromFile(path, draweeView)
+                val type = MimeTypeMap.getFileExtensionFromUrl(path)
+                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
+                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
+                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
+                    it.nameView?.text = path.substring(path.lastIndexOf("/") + 1)
+                }
+                else
+                    imageLoadingDelegate.loadImageFromFile(path, draweeView)
             }
         }
-        postContainer.addView(loadingViews[path])
-        prepareListeners(loadingViews[path])
-        imageUploadingStarted(loadingViews[path])
+        postContainer.addView(uploadingViews[path])
+        prepareListeners(uploadingViews[path], path)
+        imageUploadingStarted(uploadingViews[path])
     }
 
-//    override fun showImageUploaded() {
-//        uploadingView?.apply {
-//            darkCard?.hide()
-//            stopUploading?.hide()
-//            imageUploadingProgressBar?.hide()
-//            detachImage?.show()
-//        }
-//    }
 
     override fun showImageUploaded(path: String) {
-        loadingViews[path]?.apply {
+        uploadingViews[path]?.apply {
             darkCard?.hide()
             stopUploading?.hide()
             imageUploadingProgressBar?.hide()
@@ -142,30 +140,16 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-//    override fun showImageUploadingProgress(progress: Float) {
-//        uploadingView?.apply {
-//            imageUploadingProgressBar?.progress = progress
-//        }
-//    }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        loadingViews[path]?.apply {
+        uploadingViews[path]?.apply {
             imageUploadingProgressBar?.progress = progress
         }
     }
 
-//    override fun showImageUploadingError() {
-//        uploadingView?.apply {
-//            darkCard?.show()
-//            detachImage?.show()
-//            refreshContainer?.show()
-//            imageUploadingProgressBar?.hide()
-//            stopUploading?.hide()
-//        }
-//    }
 
     override fun showImageUploadingError(path: String) {
-        loadingViews[path]?.apply {
+        uploadingViews[path]?.apply {
             darkCard?.show()
             detachImage?.show()
             refreshContainer?.show()
@@ -188,10 +172,9 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun detachImage() {
-        if (postContainer.childCount > 1) {
-            postContainer.removeViewAt(1)
-        }
+    private fun detachImage(path: String) {
+        postContainer.removeView(uploadingViews[path])
+        uploadingViews.remove(path)
     }
 
     private fun imageUploadingStarted(uploadingView: View?) {
@@ -204,40 +187,23 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun prepareListeners(uploadingView: View?) {
+    private fun prepareListeners(uploadingView: View?, path: String) {
         uploadingView?.apply {
             refreshContainer.setOnClickListener {
                 this.imageUploadingProgressBar?.progress = 0f
-                //presenter.retryLoadImage()
+                presenter.retryLoading(path)
                 imageUploadingStarted(uploadingView)
             }
             stopUploading?.setOnClickListener {
-                //presenter.stopImageUploading()
-                detachImage()
+                presenter.cancelUploading(path)
+                detachImage(path)
             }
             detachImage?.setOnClickListener {
-                detachImage()
+                presenter.removeContent(path)
+                detachImage(path)
             }
         }
     }
 
-    private fun manageClipVisibility() {
-        if (postContainer.childCount > 1) {
-            attachPhoto.hide()
-        } else {
-            attachPhoto.show()
-        }
-    }
-
-    private fun onResultOk(/*groupId: String*/) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, BasePresenter.POST_CREATED)
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID_VALUE, groupId)
-        findNavController().popBackStack()
-    }
-
-    private fun onResultCancel() {
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set("fragmentResult", Activity.RESULT_CANCELED)
-        findNavController().popBackStack()
-    }
 
 }

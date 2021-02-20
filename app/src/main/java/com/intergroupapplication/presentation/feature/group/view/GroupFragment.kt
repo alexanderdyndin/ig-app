@@ -166,6 +166,8 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
     private var mIsTheTitleVisible = false
     private var mIsTheTitleContainerVisible = true
 
+    private var createdPostId: String? = null
+
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_group
 
@@ -179,11 +181,11 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
     }
 
     override fun viewCreated() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(FRAGMENT_RESULT)?.observe(
-                viewLifecycleOwner) { request ->
-            when (request) {
-                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
-                POST_CREATED -> presenter.refresh(groupId)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)?.observe(
+                viewLifecycleOwner) { id ->
+            if (createdPostId != id) {
+                createdPostId = id
+                presenter.refresh(groupId)
             }
         }
         //crashing app when provide it by dagger
@@ -193,6 +195,10 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         adapter.retryClickListener = { presenter.reload() }
         adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         adapter.complaintListener = { id -> presenter.complaintPost(id) }
+        adapter.imageClickListener = { list: List<FileEntity>, i: Int ->
+            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+            findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
+        }
         groupPosts.adapter = adapter
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
@@ -319,16 +325,15 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupId, groupStrength.text.toString(), false))
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        //super.onActivityResult(requestCode, resultCode, data)
-        //todo переписать callback под фрагменты
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
-                POST_CREATED -> presenter.refresh(data?.getStringExtra(GROUP_ID_VALUE).orEmpty())
-            }
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        //super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode == Activity.RESULT_OK) {
+//            when (requestCode) {
+//                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
+//                POST_CREATED -> presenter.refresh(data?.getStringExtra(GROUP_ID_VALUE).orEmpty())
+//            }
+//        }
+//    }
 
     override fun showMessage(res: Int) {
         Toast.makeText(requireContext(), res, Toast.LENGTH_SHORT).show()

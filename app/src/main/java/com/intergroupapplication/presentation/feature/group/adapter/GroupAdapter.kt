@@ -2,11 +2,16 @@ package com.intergroupapplication.presentation.feature.group.adapter
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.children
+import androidx.core.view.marginBottom
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -14,6 +19,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -40,6 +46,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
     var retryClickListener: () -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
+    var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
 
     private val loadingViewType = 123       //todo Почему это переменная экземпляра? Мб лучше вынести в статик?
     private val errorViewType = 321
@@ -72,10 +79,15 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.videoPlayerView.player?.release()
-            holder.videoPlayerView.player?.let {
-                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+            holder.itemView.mediaBody.children.forEach {
+                if (it is StyledPlayerView) {
+                    it.player?.release()
+                }
             }
+//            holder.videoPlayerView.player?.release()
+//            holder.videoPlayerView.player?.let {
+//                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+//            }
         }
 
         super.onViewRecycled(holder)
@@ -166,32 +178,49 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-
-                initializeVideoPlayer()
-                initializeAudioPlayer()
-
+                if (item.audios.isNotEmpty())
+                    initializeAudioPlayer(item.audios[0].file)
+                else
+                    initializeAudioPlayer(TEST_MUSIC_URI)
                 mediaBody.removeAllViews()
-                item.images.forEach {
-                    val image = SimpleDraweeView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(300, 300)
-                    imageLoadingDelegate.loadImageFromUrl(it.file, image)
-                    mediaBody.addView(image)
+                imageContainer.removeAllViews()
+                item.videos.forEach {
+                    val player = StyledPlayerView(itemView.context)
+                    player.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800)
+                    val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
+                    player.player = videoPlayer
+                    // Build the media item.
+                    val videoMediaItem: MediaItem = MediaItem.fromUri(it.file)
+                    // Set the media item to be played.
+                    videoPlayer.setMediaItem(videoMediaItem)
+                    // Prepare the player.
+                    videoPlayer.prepare()
+                    player.setShowBuffering(StyledPlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                    mediaBody.addView(player)
+                }
+                item.images.forEach { file ->
+                    val image = ImageView(itemView.context)
+                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400)
+                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
+                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
+                    Glide.with(itemView.context).load(file.file).into(image)
+                    imageContainer.addView(image)
                 }
             }
         }
 
-        private fun initializeVideoPlayer() {
+        private fun initializeVideoPlayer(uri: String) {
             val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
             videoPlayerView.player = videoPlayer
             // Build the media item.
-            val videoMediaItem: MediaItem = MediaItem.fromUri(TEST_VIDEO_URI)        //Todo юри видео должно быть в Entity
+            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
             // Set the media item to be played.
             videoPlayer.setMediaItem(videoMediaItem)
             // Prepare the player.
             videoPlayer.prepare()
         }
 
-        private fun initializeAudioPlayer() {
+        private fun initializeAudioPlayer(uri: String) {
 
 
             val activity = musicPlayerView.getActivity()
@@ -212,7 +241,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                     musicPlayer.addListener(listener)
 
                     // Build the media item.
-                    val musicMediaItem: MediaItem = MediaItem.fromUri(TEST_MUSIC_URI)
+                    val musicMediaItem: MediaItem = MediaItem.fromUri(uri)
                     // Set the media item to be played.
                     musicPlayer?.setMediaItem(musicMediaItem)
                     // Prepare the player.

@@ -3,12 +3,15 @@ package com.intergroupapplication.presentation.feature.news.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.PopupMenu
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -27,6 +30,8 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
     var groupClickListener: (groupId: String) -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
+    var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
+
     private lateinit var context: Context
     private var compositeDisposable = CompositeDisposable()
     private val loadingViewType = 123
@@ -93,11 +98,13 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
 
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
                 mediaBody.removeAllViews()
-                item.images.forEach {
-                    val image = SimpleDraweeView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(80, 80)
-                    imageLoadingDelegate.loadImageFromUrl(it.file, image)
-                    mediaBody.addView(image)
+                imageContainer.removeAllViews()
+                item.images.forEach { file ->
+                    val image = ImageView(itemView.context)
+                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400)
+                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
+                    Glide.with(itemView.context).load(file.file).into(image)
+                    imageContainer.addView(image)
                 }
             }
         }
