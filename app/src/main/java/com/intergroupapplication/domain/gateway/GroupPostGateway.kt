@@ -16,5 +16,4 @@ interface GroupPostGateway {
     fun createPost(createGroupPostEntity: CreateGroupPostEntity, groupId: String): Single<GroupPostEntity>
     fun getPostById(postId: String): Single<GroupPostEntity>
     fun getNewsPosts(): Flowable<PagingData<GroupPostEntity>>
-    fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity>
 }

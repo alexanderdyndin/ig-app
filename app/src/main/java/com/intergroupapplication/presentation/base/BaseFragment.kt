@@ -31,7 +31,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     companion object {
         const val GROUP_ID = "group_id"
-        const val POST_ID = "post_id"
     }
 
     /**

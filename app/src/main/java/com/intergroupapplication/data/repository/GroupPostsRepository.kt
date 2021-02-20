@@ -57,9 +57,4 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         ).flowable
     }
 
-    override fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity> {
-        return api.editPostById(postId, groupPostMapper.mapToDto(createGroupPostEntity))
-                .map { groupPostMapper.mapToDomainEntity(it) }
-    }
-
 }
