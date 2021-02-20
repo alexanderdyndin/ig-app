@@ -9,7 +9,6 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -97,7 +96,7 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
 
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-                mediaBody.removeAllViews()
+                videoBody.removeAllViews()
                 imageContainer.removeAllViews()
                 item.images.forEach { file ->
                     val image = ImageView(itemView.context)

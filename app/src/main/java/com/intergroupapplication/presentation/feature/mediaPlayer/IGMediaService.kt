@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 
 
@@ -36,6 +37,7 @@ class IGMediaService : MediaBrowserServiceCompat() {
 
 
     private var exoPlayer: SimpleExoPlayer? = null
+    private var currentAudio: AudioEntity? = null
 
     /**
      * Will be called by our activity to get information about exo player.
@@ -64,13 +66,13 @@ class IGMediaService : MediaBrowserServiceCompat() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        intent?.let {
-//            val action = it.getIntExtra(PLAY_PAUSE_ACTION, -1)
-//            when (action) {
-//                ACTION_PAUSE -> exoPlayer.playWhenReady = exoPlayer.playWhenReady.let { return@let !it }
-//            }
-//            displayNotification()
-//        }
+        intent?.let {
+            val action = it.getIntExtra(PLAY_PAUSE_ACTION, -1)
+            when (action) {
+                ACTION_PAUSE -> exoPlayer?.let { exo -> exo.playWhenReady = !exo.playWhenReady }
+            }
+            displayNotification()
+        }
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -87,9 +89,10 @@ class IGMediaService : MediaBrowserServiceCompat() {
          * things will work correctly.
          */
         fun getExoPlayerInstance() = exoPlayer
-        fun setExoPlayerInstance(player: SimpleExoPlayer) {
+        fun setPlayer(player: SimpleExoPlayer, audio: AudioEntity) {
             exoPlayer?.stop()
             exoPlayer = player
+            currentAudio = audio
             displayNotification()
         }
 
@@ -116,6 +119,9 @@ class IGMediaService : MediaBrowserServiceCompat() {
         //Lets create our remote view.
 //        val remoteView = RemoteViews(packageName, R.layout.notification_media_player)
 
+        val audioTitle = currentAudio?.song.let { if (it.isNullOrBlank()) "Unknown song" else it}
+        val audioAuthor = currentAudio?.artist.let { if (it.isNullOrBlank()) "Unknown author" else it}
+
         val playPauseButtonId = if (isPlaying) R.drawable.ic_media_notification_pause else R.drawable.ic_media_notification_play
 
         val intent = Intent(this, IGMediaService::class.java).apply {
@@ -141,8 +147,8 @@ class IGMediaService : MediaBrowserServiceCompat() {
                 // Apply the media style template
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0))
-                .setContentTitle("Wonderful music")
-                .setContentText("My Awesome Band")
+                .setContentTitle(audioTitle)
+                .setContentText(audioAuthor)
 
         //Check for version and create a channel if needed.
         if (Build.VERSION.SDK_INT > 26) {

@@ -100,23 +100,6 @@
             android:visibility="gone"
             />
 
-        <include
-            android:id="@+id/playerPlaceholder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            layout="@layout/layout_music_player"
-            android:visibility="gone"/>
-
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/musicExoPlayerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:controller_layout_id="@layout/layout_music_player"
-            android:layout_marginBottom="20dp"
-            app:hide_on_touch="false"
-            app:show_timeout="0"
-            android:visibility="visible"
-            />
         <HorizontalScrollView
             android:id="@+id/imageScroll"
             android:layout_width="match_parent"
@@ -130,7 +113,13 @@
                 android:orientation="horizontal"/>
         </HorizontalScrollView>
         <LinearLayout
-            android:id="@+id/mediaBody"
+            android:id="@+id/videoBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:id="@+id/audioBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
