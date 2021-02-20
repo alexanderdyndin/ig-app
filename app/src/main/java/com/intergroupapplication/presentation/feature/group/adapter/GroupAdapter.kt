@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.group.adapter
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
@@ -24,6 +22,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import com.intergroupapplication.presentation.feature.mediaPlayer.IGAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -182,7 +181,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
                 videoContainer.removeAllViews()
-                videoContainer.removeAllViews()
+                audioContainer.removeAllViews()
                 imageBody.removeAllViews()
 
 
@@ -193,8 +192,9 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                         bindedService?.let {
                             item.audios.forEach {
                                 val player = makeAudioPlayer(it, bindedService)
-                                val exoPlayer = LayoutInflater.from(audioContainer.context).inflate(R.layout.view_music_player, audioContainer)
-                                exoPlayer.findViewById<PlayerView>(R.id.musicExoPlayerView).player = player
+                                val playerView = IGAudioPlayerView(audioContainer.context)
+                                playerView.exoPlayer.player = player
+                                audioContainer.addView(playerView)
                             }
                         }
                     }
