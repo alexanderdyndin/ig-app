@@ -62,10 +62,6 @@ interface AppApi {
     @GET("groups/posts/{id}/")
     fun getPostById(@Path("id") postId: String): Single<GroupPostModel>
 
-    @PATCH("groups/posts/{id}/")
-    fun editPostById(@Path("id") postId: String,
-                     @Body createGroupPostModel: CreateGroupPostModel): Single<GroupPostModel>
-
     @GET("users/profiles/me/")
     fun getUserProfile(): Single<UserProfileModelResponse>
 
