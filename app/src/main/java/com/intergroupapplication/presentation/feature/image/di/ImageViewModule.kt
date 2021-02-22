@@ -1,6 +1,8 @@
 package com.intergroupapplication.presentation.feature.image.di
 
 import android.content.Context
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.intergroupapplication.data.mapper.CreateGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.network.AppApi
@@ -32,20 +34,13 @@ class ImageViewModule {
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(fragment: CreateGroupFragment, cropOptions: UCrop.Options,
-                            api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
-
+    fun provideGlide(context: Context): Glide =
+            Glide.get(context)
 
     @PerFragment
     @Provides
     fun provideFrescoImageLoader(context: Context): ImageLoader =
             FrescoImageLoader(context)
-
-    @PerFragment
-    @Provides
-    fun provideImageUploadingDelegate(photoGateway: PhotoGateway): ImageUploader =
-            ImageUploadingDelegate(photoGateway)
 
     @PerFragment
     @Provides

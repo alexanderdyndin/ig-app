@@ -7,11 +7,13 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
+import androidx.core.view.forEach
 import androidx.core.view.marginBottom
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -77,6 +79,12 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
             holder.itemView.mediaBody.children.forEach {
                 if (it is StyledPlayerView) {
                     it.player?.release()
+                }
+            }
+            Glide.get(holder.itemView.context).clearMemory()
+            holder.itemView.imageContainer.forEach {
+                if (it is ImageView) {
+                    Glide.with(holder.itemView.context).clear(it)
                 }
             }
 //            holder.videoPlayerView.player?.release()
@@ -163,15 +171,15 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 commentImageClickArea.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-                item.photo.apply {
-                    ifNotNull {
-                        postImage.show()
-                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
-                    }
-                    ifNull { postImage.gone() }
-                }
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
+//                item.photo.apply {
+//                    ifNotNull {
+//                        postImage.show()
+//                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
+//                    }
+//                    ifNull { postImage.gone() }
+//                }
+//                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
+//                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
                 if (item.audios.isNotEmpty())
                     initializeAudioPlayer(item.audios[0].file)
@@ -194,11 +202,18 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                     mediaBody.addView(player)
                 }
                 item.images.forEach { file ->
-                    val image = ImageView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400)
+                    val image = SimpleDraweeView(itemView.context)
+                    imageLoadingDelegate.loadImageFromUrl(file.file, image)
+                    image.layoutParams = ViewGroup.LayoutParams(400, 400)
                     //image.scaleType = ImageView.ScaleType.CENTER_CROP
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-                    Glide.with(itemView.context).load(file.file).into(image)
+//                    Glide.with(itemView.context)
+//                            .load(file.file)
+//                            .thumbnail(0.3f)
+//                            .skipMemoryCache(true)
+//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                            .placeholder(R.drawable.variant_10)
+//                            .into(image)
                     imageContainer.addView(image)
                 }
             }

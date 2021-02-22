@@ -5,10 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.forEach
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
@@ -100,10 +102,18 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 mediaBody.removeAllViews()
                 imageContainer.removeAllViews()
                 item.images.forEach { file ->
-                    val image = ImageView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400)
+                    val image = SimpleDraweeView(itemView.context)
+                    image.layoutParams = ViewGroup.LayoutParams(400, 400)
+                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-                    Glide.with(itemView.context).load(file.file).into(image)
+//                    Glide.with(itemView.context)
+//                            .load(file.file)
+//                            .thumbnail(0.3f)
+//                            .skipMemoryCache(true)
+//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                            .placeholder(R.drawable.variant_10)
+//                            .into(image)
+                    imageLoadingDelegate.loadImageFromUrl(file.file, image)
                     imageContainer.addView(image)
                 }
             }
@@ -185,6 +195,18 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
         fun bindLoading() {
             itemView.error_layout.gone()
             itemView.loading_layout.show()
+        }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        if (holder is PostViewHolder) {
+            Glide.get(holder.itemView.context).clearMemory()
+            holder.itemView.imageContainer.forEach {
+                if (it is ImageView) {
+                    Glide.with(holder.itemView.context).clear(it)
+                }
+            }
         }
     }
 
