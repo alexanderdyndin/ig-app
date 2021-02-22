@@ -44,8 +44,8 @@ class GroupListAdapter3(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
         var lettersToSpan = ""
         var userID: String? = null
         var groupClickListener: (groupId: String) -> Unit = {}
-        var unsubscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
-        var subscribeClickListener: (groupId: String, view: View) -> Unit = {_, _ -> }
+        var unsubscribeClickListener: (group: GroupEntity, view: View) -> Unit = {_, _ -> }
+        var subscribeClickListener: (group: GroupEntity, view: View) -> Unit = {_, _ -> }
     }
 
     private lateinit var context: Context
@@ -115,13 +115,13 @@ class GroupListAdapter3(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
                 with (item_group__text_sub) {
                     if (item.isFollowing) {
                         setOnClickListener {
-                            unsubscribeClickListener.invoke(item.id, view)
+                            unsubscribeClickListener.invoke(item, view)
                         }
                         text = resources.getText(R.string.unsubscribe)
                         setBackgroundResource(R.drawable.btn_unsub)
                     } else {
                         setOnClickListener {
-                            subscribeClickListener.invoke(item.id, view)
+                            subscribeClickListener.invoke(item, view)
                         }
                         text = resources.getText(R.string.subscribe)
                         setBackgroundResource(R.drawable.btn_sub)

@@ -2,10 +2,13 @@ package com.intergroupapplication.presentation.feature.news.view
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -31,7 +34,9 @@ import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter3
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
@@ -75,6 +80,12 @@ class NewsFragment(): BaseFragment(), NewsView{
 
     private lateinit var viewModel: NewsViewModel
 
+    private var exitHandler: Handler? = null
+
+    private var doubleBackToExitPressedOnce = false
+
+    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
+
     override fun layoutRes() = R.layout.fragment_news
 
     override fun getSnackBarCoordinator(): ViewGroup? = newsCoordinator
@@ -108,6 +119,18 @@ class NewsFragment(): BaseFragment(), NewsView{
                             adapterNews.submitData(lifecycle, it)
                         }
         )
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (doubleBackToExitPressedOnce) {
+                    ExitActivity.exitApplication(requireContext())
+                    return
+                }
+                doubleBackToExitPressedOnce = true
+                Toast.makeText(requireContext(), getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+                exitHandler = Handler(Looper.getMainLooper())
+                exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

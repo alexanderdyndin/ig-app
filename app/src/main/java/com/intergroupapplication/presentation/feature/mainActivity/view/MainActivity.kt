@@ -32,7 +32,7 @@ class MainActivity : FragmentActivity() {
     companion object {
         const val MEDIA_CHANNEL_ID = "IGMediaChannel"
         const val MEDIA_FILE_URI = "MediaFileUri"
-        private const val EXIT_DELAY = 2000L
+        const val EXIT_DELAY = 2000L
     }
 
     @Inject
@@ -73,26 +73,26 @@ class MainActivity : FragmentActivity() {
         //viewModel.checkNewVersionAvaliable(supportFragmentManager)
     }
 
-    override fun onBackPressed() {
-        val currentFragment = my_nav_host_fragment.findNavController().currentDestination?.label
-        if (currentFragment == "fragment_news" || currentFragment == "GroupListFragment") {
-            if (doubleBackToExitPressedOnce) {
-                ExitActivity.exitApplication(this)
-                return
-            }
-            this.doubleBackToExitPressedOnce = true
-            Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-            exitHandler = Handler(Looper.getMainLooper())
-            exitHandler?.postDelayed(exitFlag, EXIT_DELAY)
-        } else {
-            super.onBackPressed()
-        }
-    }
+    //override fun onBackPressed() {
+//        val currentFragment = my_nav_host_fragment.findNavController().currentDestination?.label
+//        if (currentFragment == "fragment_news" || currentFragment == "GroupListFragment") {
+//            if (doubleBackToExitPressedOnce) {
+//                ExitActivity.exitApplication(this)
+//                return
+//            }
+//            this.doubleBackToExitPressedOnce = true
+//            Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+//            exitHandler = Handler(Looper.getMainLooper())
+//            exitHandler?.postDelayed(exitFlag, EXIT_DELAY)
+//        } else {
+            //super.onBackPressed()
+        //}
+//    }
 
-    override fun onDestroy() {
-        exitHandler?.removeCallbacks(exitFlag)
-        super.onDestroy()
-    }
+//    override fun onDestroy() {
+//        exitHandler?.removeCallbacks(exitFlag)
+//        super.onDestroy()
+//    }
 
 
     suspend fun bindMediaService(mediaUrl: String):IGMediaService.ServiceBinder? {
