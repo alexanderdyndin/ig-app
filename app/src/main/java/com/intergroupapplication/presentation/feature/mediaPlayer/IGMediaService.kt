@@ -20,7 +20,6 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 
 
@@ -37,7 +36,8 @@ class IGMediaService : MediaBrowserServiceCompat() {
 
 
     private var exoPlayer: SimpleExoPlayer? = null
-    private var currentAudio: AudioEntity? = null
+    private var notificationTitle: String? = null
+    private var notificationSubtitle: String? = null
 
     /**
      * Will be called by our activity to get information about exo player.
@@ -89,10 +89,13 @@ class IGMediaService : MediaBrowserServiceCompat() {
          * things will work correctly.
          */
         fun getExoPlayerInstance() = exoPlayer
-        fun setPlayer(player: SimpleExoPlayer, audio: AudioEntity) {
-            exoPlayer?.stop()
-            exoPlayer = player
-            currentAudio = audio
+        fun setPlayer(player: SimpleExoPlayer, notificationTitle: String?, notificationSubtitle: String?) {
+            if (player != exoPlayer){
+                exoPlayer?.pause()
+                exoPlayer = player
+            }
+            this@IGMediaService.notificationTitle = notificationTitle
+            this@IGMediaService.notificationSubtitle = notificationSubtitle
             displayNotification()
         }
 
@@ -111,7 +114,7 @@ class IGMediaService : MediaBrowserServiceCompat() {
                 .setExtractorsFactory(DefaultExtractorsFactory()).createMediaSource(mediaItem)
         exoPlayer?.setMediaSource(source)
         exoPlayer?.playWhenReady = true
-        exoPlayer?.prepare()
+//        exoPlayer?.prepare()
     }
 
     private fun displayNotification() {
@@ -119,8 +122,8 @@ class IGMediaService : MediaBrowserServiceCompat() {
         //Lets create our remote view.
 //        val remoteView = RemoteViews(packageName, R.layout.notification_media_player)
 
-        val audioTitle = currentAudio?.song.let { if (it.isNullOrBlank()) "Unknown song" else it}
-        val audioAuthor = currentAudio?.artist.let { if (it.isNullOrBlank()) "Unknown author" else it}
+        val audioTitle = notificationTitle.let { if (it.isNullOrBlank()) "Unknown song" else it}
+        val audioAuthor = notificationSubtitle.let { if (it.isNullOrBlank()) "Unknown author" else it}
 
         val playPauseButtonId = if (isPlaying) R.drawable.ic_media_notification_pause else R.drawable.ic_media_notification_play
 

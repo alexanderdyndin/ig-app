@@ -22,8 +22,9 @@ import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.mediaPlayer.IGAudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
+import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -141,7 +142,6 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val videoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.videoExoPlayerView)
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
         val imageBody = itemView.findViewById<LinearLayout>(R.id.imageContainer)
@@ -190,30 +190,31 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                     CoroutineScope(Main).launch {
                         val bindedService = activity.bindMediaService()
                         bindedService?.let {
+
+
+                            /**
+                             *  Add audios to post
+                             */
                             item.audios.forEach {
                                 val player = makeAudioPlayer(it, bindedService)
-                                val playerView = IGAudioPlayerView(audioContainer.context)
+                                val playerView = AudioPlayerView(audioContainer.context)
                                 playerView.exoPlayer.player = player
                                 audioContainer.addView(playerView)
                             }
+
+                            /**
+                             *  Add videos to post
+                             */
+                            item.videos.forEach {
+                                val player = makeVideoPlayer(it, bindedService)
+                                val playerView = VideoPlayerView(audioContainer.context)
+                                playerView.exoPlayer.player = player
+                                videoContainer.addView(playerView)
+                            }
                         }
                     }
-                }
+                } else throw Exception("Activity is not MainActivity")
 
-                item.videos.forEach {
-                    val player = StyledPlayerView(itemView.context)
-                    player.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800) //todo что за хардкод??
-                    val videoPlayer = SimpleExoPlayer.Builder(videoContainer.context).build()
-                    player.player = videoPlayer
-                    // Build the media item.
-                    val videoMediaItem: MediaItem = MediaItem.fromUri(it.file)
-                    // Set the media item to be played.
-                    videoPlayer.setMediaItem(videoMediaItem)
-                    // Prepare the player.
-                    videoPlayer.prepare()
-                    player.setShowBuffering(StyledPlayerView.SHOW_BUFFERING_WHEN_PLAYING)
-                    videoContainer.addView(player)
-                }
                 item.images.forEach { file ->
                     val image = ImageView(itemView.context)
                     image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400)
@@ -226,15 +227,26 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
 
         }
 
-        private fun initializeVideoPlayer(uri: String) {
-            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
-            videoPlayerView.player = videoPlayer
+        private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+            val videoPlayer = SimpleExoPlayer.Builder(audioContainer.context).build()
+
+            val listener = object : Player.EventListener {
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    if (playWhenReady) {
+                        service.setPlayer(videoPlayer, video.title, video.description)
+                    }
+                }
+            }
+            videoPlayer.addListener(listener)
+
             // Build the media item.
-            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
+            val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
             // Set the media item to be played.
             videoPlayer.setMediaItem(videoMediaItem)
             // Prepare the player.
-            videoPlayer.prepare()
+//                    musicPlayer.prepare()
+
+            return videoPlayer
         }
 
         private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
@@ -242,9 +254,9 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                     val musicPlayer = SimpleExoPlayer.Builder(audioContainer.context).build()
 
                     val listener = object : Player.EventListener {
-                        override fun onIsPlayingChanged(isPlaying: Boolean) {
-                            if (isPlaying) {
-                                service.setPlayer(musicPlayer, audio)
+                        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                            if (playWhenReady) {
+                                service.setPlayer(musicPlayer, audio.song, audio.description)
                             }
                         }
                     }
@@ -255,7 +267,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                     // Set the media item to be played.
                     musicPlayer.setMediaItem(musicMediaItem)
                     // Prepare the player.
-                    musicPlayer.prepare()
+//                    musicPlayer.prepare()
 
             return musicPlayer
         }
