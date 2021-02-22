@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.group.adapter
 
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -12,8 +13,8 @@ import androidx.core.view.marginBottom
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -81,12 +82,7 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                     it.player?.release()
                 }
             }
-            Glide.get(holder.itemView.context).clearMemory()
-            holder.itemView.imageContainer.forEach {
-                if (it is ImageView) {
-                    Glide.with(holder.itemView.context).clear(it)
-                }
-            }
+
 //            holder.videoPlayerView.player?.release()
 //            holder.videoPlayerView.player?.let {
 //                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
@@ -203,17 +199,19 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 }
                 item.images.forEach { file ->
                     val image = SimpleDraweeView(itemView.context)
-                    imageLoadingDelegate.loadImageFromUrl(file.file, image)
+                    if (file.file.contains(".gif")) {
+                        val controller = Fresco.newDraweeControllerBuilder()
+                                .setUri(Uri.parse(file.file))
+                                .setAutoPlayAnimations(true)
+                                .build()
+                        image.controller = controller
+                    } else {
+                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
+                    }
                     image.layoutParams = ViewGroup.LayoutParams(400, 400)
                     //image.scaleType = ImageView.ScaleType.CENTER_CROP
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-//                    Glide.with(itemView.context)
-//                            .load(file.file)
-//                            .thumbnail(0.3f)
-//                            .skipMemoryCache(true)
-//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                            .placeholder(R.drawable.variant_10)
-//                            .into(image)
+                    image.controller?.animatable?.start()
                     imageContainer.addView(image)
                 }
             }

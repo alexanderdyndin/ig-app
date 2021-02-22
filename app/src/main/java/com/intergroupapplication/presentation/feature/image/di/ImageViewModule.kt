@@ -1,8 +1,6 @@
 package com.intergroupapplication.presentation.feature.image.di
 
 import android.content.Context
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
 import com.intergroupapplication.data.mapper.CreateGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.network.AppApi
@@ -32,10 +30,6 @@ import dagger.Provides
 @Module
 class ImageViewModule {
 
-    @PerFragment
-    @Provides
-    fun provideGlide(context: Context): Glide =
-            Glide.get(context)
 
     @PerFragment
     @Provides

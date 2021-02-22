@@ -1,10 +1,10 @@
 package com.intergroupapplication.presentation.feature.image.adapter
 
+import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
@@ -15,13 +15,13 @@ class ImageViewHolder(view: View): RecyclerView.ViewHolder(view) {
     val image = itemView.findViewById<SimpleDraweeView>(R.id.image)
 
     fun bind(file: FileEntity) {
-//        Glide.with(itemView.context)
-//                .load(file.file)
-//                .thumbnail(0.7f)
-//                .skipMemoryCache(true)
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .placeholder(R.drawable.variant_10)
-//                .into(image)
-        image.setImageURI(file.file)
+        if (file.file.contains(".gif")) {
+            val controller = Fresco.newDraweeControllerBuilder()
+                    .setUri(Uri.parse(file.file))
+                    .setAutoPlayAnimations(true)
+                    .build()
+            image.controller = controller
+        } else
+            image.setImageURI(file.file)
     }
 }

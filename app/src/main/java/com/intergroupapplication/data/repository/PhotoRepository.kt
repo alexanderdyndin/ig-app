@@ -148,8 +148,12 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         val file = File(path)
         return appApi.uploadPhoto(file.extension, groupId)
                 .doAfterSuccess {
-                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                            Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                    if (path.contains(".gif"))
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                file)
+                    else
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }

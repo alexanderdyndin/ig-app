@@ -85,7 +85,6 @@ ext {
     fabTransformVersion = '1.0.0'
     firebaseVersion = '18.0.2'
     firebaseMessagingVersion = '21.0.1'
-    butterknifVersion = '10.2.3'
     pagingVersion = '1.0.1'
     pagingRuntimeVersion = "1.0.0"
     adsVersion = '19.7.0'
