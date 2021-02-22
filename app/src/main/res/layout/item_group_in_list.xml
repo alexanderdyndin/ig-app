@@ -88,7 +88,7 @@
 
     <TextView
         android:id="@+id/item_group__list_header"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginLeft="8dp"
@@ -96,7 +96,10 @@
         android:textColor="@color/colorAccent"
         android:textSize="16sp"
         app:fontFamily="@font/play"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@+id/group_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item_group__bg_list" />
 
     <LinearLayout
