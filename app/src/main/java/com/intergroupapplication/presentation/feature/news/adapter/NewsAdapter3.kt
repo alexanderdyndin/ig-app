@@ -33,6 +33,8 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var groupClickListener: (groupId: String) -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
     var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
+    var likeClickListener: (postId: String) -> Unit = { }
+    var dislikeClickListener: (postId: String) -> Unit = { }
 
     private lateinit var context: Context
     private var compositeDisposable = CompositeDisposable()
@@ -87,6 +89,12 @@ class NewsAdapter3(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 }
                 goToGroupClickArea.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)
+                }
+                likeClickArea.setOnClickListener {
+                    likeClickListener.invoke(item.id)
+                }
+                dislikeClickArea.setOnClickListener {
+                    dislikeClickListener.invoke(item.id)
                 }
                 item.photo.apply {
                     ifNotNull {

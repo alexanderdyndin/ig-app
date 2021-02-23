@@ -59,6 +59,10 @@ interface AppApi {
     fun createPost(@Body postModel: CreateGroupPostModel,
                    @Path("group_pk") groupId: String): Single<GroupPostModel>
 
+    @POST("groups/posts/{post_pk}/reacts/")
+    fun setReact(@Body data: ReactsModel,
+                 @Path("post_pk") postId: String): Single<ReactsModel>
+
     @GET("groups/posts/{id}/")
     fun getPostById(@Path("id") postId: String): Single<GroupPostModel>
 

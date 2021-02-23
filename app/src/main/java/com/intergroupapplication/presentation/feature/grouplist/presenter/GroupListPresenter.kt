@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.grouplist.presenter
 import moxy.InjectViewState
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.gateway.UserProfileGateway
+import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @InjectViewState
 class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                              private val userProfileGateway: UserProfileGateway,
+                                             private val postsUseCase: PostsUseCase,
                                              private val imageUploadingDelegate: ImageUploadingDelegate,
                                              private val sessionStorage: UserSession)
     : BasePresenter<GroupListView>() {
@@ -68,6 +70,15 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
                 }))
     }
 
+    fun setReact() {
+        compositeDisposable.add(postsUseCase.setReact(true, false, "223")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                }, {
+                    errorHandler.handle(it)
+                }))
+    }
 
     private fun stopImageUploading() {
         uploadingImageDisposable?.dispose()

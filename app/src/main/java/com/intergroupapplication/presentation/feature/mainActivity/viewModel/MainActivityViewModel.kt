@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import com.intergroupapplication.BuildConfig
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
 import com.intergroupapplication.domain.usecase.GetProfileUseCase
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
@@ -17,9 +18,8 @@ import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorHandler,
                                                 private val appStatusUseCase: AppStatusUseCase,
-                                                private val userProfileUseCase: GetProfileUseCase,
-                                                private val compositeDisposable: CompositeDisposable
-                                                ): ViewModel() {
+                                                private val compositeDisposable: CompositeDisposable,
+                                                private val sessionStorage: UserSession): ViewModel() {
 
 
     fun checkNewVersionAvaliable(fragmentManager: FragmentManager) {
@@ -39,13 +39,12 @@ class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorH
         }
     }
 
-    fun setAdCount() {
-        compositeDisposable.add(userProfileUseCase.getAdParameters()
+    fun getAdCount() {
+        compositeDisposable.add(appStatusUseCase.getAdParameters()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ }, {
-                    errorHandler.handle(it)
-                }))
+                .subscribe({ sessionStorage.countAd = it },
+                        { errorHandler.handle(it) }))
     }
 
     override fun onCleared() {

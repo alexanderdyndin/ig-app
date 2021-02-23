@@ -10,6 +10,7 @@ import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
+import com.intergroupapplication.domain.entity.ReactsEntity
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import io.reactivex.Flowable
@@ -50,9 +51,9 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                 config = PagingConfig(
                         pageSize = 20,
                         enablePlaceholders = false,
-                        maxSize = 30,
-                        prefetchDistance = 5,
-                        initialLoadSize = 40),
+                        maxSize = 40,
+                        prefetchDistance = 10,
+                        initialLoadSize = 50),
                 pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
         ).flowable
     }
@@ -61,5 +62,11 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         return api.editPostById(postId, groupPostMapper.mapToDto(createGroupPostEntity))
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
+
+    override fun setReact(reactsEntity: ReactsEntity, postId: String): Single<ReactsEntity> {
+        return api.setReact(groupPostMapper.mapToDto(reactsEntity), postId)
+                .map { groupPostMapper.mapToDomainEntity(it) }
+    }
+
 
 }

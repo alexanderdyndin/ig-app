@@ -12,5 +12,5 @@ interface UserProfileGateway {
     fun createUserProfile(createUserEntity: CreateUserEntity): Single<UserEntity>
     fun getUserProfile(): Single<UserEntity>
     fun changeUserProfileAvatar(avatar: String): Single<String>
-    fun getAdParameters(): Single<AdEntity>
+//    fun getAdParameters(): Single<AdEntity>
 }

@@ -117,4 +117,16 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
     fun mapToDomainEntity(from: AudiosModel): AudiosEntity =
             AudiosEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
+    fun mapToDto(from: ReactsEntity): ReactsModel =
+            ReactsModel(
+                    isLike = from.isLike,
+                    isDislike = from.isDislike
+            )
+
+    fun mapToDomainEntity(from: ReactsModel): ReactsEntity =
+            ReactsEntity(
+                    isLike = from.isLike,
+                    isDislike = from.isDislike
+            )
+
 }

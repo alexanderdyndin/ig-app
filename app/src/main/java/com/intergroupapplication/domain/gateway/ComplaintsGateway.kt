@@ -2,7 +2,7 @@ package com.intergroupapplication.domain.gateway
 
 import io.reactivex.Completable
 
-interface ComplaintsGetaway {
+interface ComplaintsGateway {
 
     fun complaintPost(id: Int): Completable
 

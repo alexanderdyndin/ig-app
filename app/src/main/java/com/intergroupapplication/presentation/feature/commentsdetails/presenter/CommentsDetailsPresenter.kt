@@ -9,7 +9,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.CreateCommentEntity
 import com.intergroupapplication.domain.exception.PageNotFoundException
 import com.intergroupapplication.domain.gateway.CommentGateway
-import com.intergroupapplication.domain.gateway.ComplaintsGetaway
+import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class CommentsDetailsPresenter @Inject constructor(private val commentGateway: CommentGateway,
                                                    private val postGateway: GroupPostGateway,
                                                    private val commentsDataSourceFactory: CommentsDataSourceFactory,
-                                                   private val complaintsGetaway: ComplaintsGetaway,
+                                                   private val complaintsGateway: ComplaintsGateway,
                                                    private val errorHandler: ErrorHandler)
     : BasePresenter<CommentsDetailsView>() {
 
@@ -112,7 +112,7 @@ class CommentsDetailsPresenter @Inject constructor(private val commentGateway: C
     }
 
     fun complaintPost(postId: Int) {
-        commentsDisposable.add(complaintsGetaway.complaintPost(postId)
+        commentsDisposable.add(complaintsGateway.complaintPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -123,7 +123,7 @@ class CommentsDetailsPresenter @Inject constructor(private val commentGateway: C
     }
 
     fun complaintComment(commentId: Int) {
-        commentsDisposable.add(complaintsGetaway.complaintComment(commentId)
+        commentsDisposable.add(complaintsGateway.complaintComment(commentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

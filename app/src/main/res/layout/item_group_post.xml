@@ -166,8 +166,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/groupPostAvatar"
         app:layout_constraintTop_toBottomOf="@+id/postBody"
-        android:src="@drawable/ic_mode_comment" />
-
+        android:src="@drawable/icon_comments" />
 
     <TextView
         android:id="@+id/postCommentsCount"
@@ -180,6 +179,74 @@
         app:layout_constraintStart_toEndOf="@+id/commentImage"
         app:layout_constraintTop_toTopOf="@+id/commentImage"
         tools:text="12" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/likeClickArea"
+        android:layout_width="@dimen/comment_click_area_width"
+        android:layout_height="@dimen/comment_click_area_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/likeImage"
+            android:layout_width="@dimen/post_comment_icon_size"
+            android:layout_height="@dimen/post_comment_icon_size"
+            android:layout_marginTop="@dimen/low_big_margin"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="@dimen/low_big_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/icon_like" />
+
+        <TextView
+            android:id="@+id/likesCount"
+            style="@style/InterGroupGreyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/low_big_margin"
+            android:layout_marginBottom="@dimen/low_big_margin"
+            android:layout_marginStart="@dimen/middle_margin"
+            android:textSize="@dimen/middle_high_size"
+            app:layout_constraintStart_toEndOf="@id/likeImage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="12" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dislikeClickArea"
+        android:layout_width="@dimen/comment_click_area_width"
+        android:layout_height="@dimen/comment_click_area_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/likeClickArea">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/dislikeImage"
+            android:layout_width="@dimen/post_comment_icon_size"
+            android:layout_height="@dimen/post_comment_icon_size"
+            android:layout_marginTop="@dimen/low_big_margin"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="@dimen/low_big_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/icon_dislike" />
+
+        <TextView
+            android:id="@+id/dislikesCount"
+            style="@style/InterGroupGreyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/low_big_margin"
+            android:layout_marginBottom="@dimen/low_big_margin"
+            android:layout_marginStart="@dimen/middle_margin"
+            android:textSize="@dimen/middle_high_size"
+            app:layout_constraintStart_toEndOf="@id/dislikeImage"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="12" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

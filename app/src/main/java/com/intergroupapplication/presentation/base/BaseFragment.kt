@@ -57,7 +57,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     private fun initErrorHandler() {
         errorHandler.clear()
-
         val errorMap = mapOf(
                 BadRequestException::class.java to
                         Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message) },

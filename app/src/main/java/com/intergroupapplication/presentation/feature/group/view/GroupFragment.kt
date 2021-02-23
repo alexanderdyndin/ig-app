@@ -199,6 +199,12 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
             findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
         }
+        adapter.likeClickListener = {
+            presenter.setReact(isLike = true, isDislike = false, postId = it)
+        }
+        adapter.dislikeClickListener = {
+            presenter.setReact(isLike = false, isDislike = true, postId = it)
+        }
         groupPosts.adapter = adapter
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
@@ -337,6 +343,11 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
     override fun showMessage(res: Int) {
         Toast.makeText(requireContext(), res, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showMessage(msg: String) {
+        //showToast(msg)
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
 

@@ -4,9 +4,10 @@ import androidx.paging.RxPagedListBuilder
 import moxy.InjectViewState
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.exception.PageNotFoundException
-import com.intergroupapplication.domain.gateway.ComplaintsGetaway
+import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.usecase.GroupUseCase
+import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
 import com.intergroupapplication.presentation.base.BasePresenter
@@ -26,9 +27,10 @@ import javax.inject.Inject
 class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
                                          private val postSourceFactory: GroupPostDataSourceFactory,
                                          private val groupUseCase: GroupUseCase,
+                                         private val postsUseCase: PostsUseCase,
                                          private val imageUploadingDelegate: ImageUploadingDelegate,
                                          private val errorHandler: ErrorHandler,
-                                         private val complaintsGetaway: ComplaintsGetaway)
+                                         private val complaintsGateway: ComplaintsGateway)
     : BasePresenter<GroupView>() {
 
     private val postsDisposable = CompositeDisposable()
@@ -148,12 +150,33 @@ class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
                 }))
     }
 
-    fun goBack() {
-        //router.exit()
+    fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) {
+        compositeDisposable.add(postsUseCase.setReact(isLike, isDislike, postId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    if (isLike) {
+                        viewState.showMessage("Лайк отправляется")
+                    } else {
+                        viewState.showMessage("Дизлайк отправляется")
+                    }
+                }
+                //.doFinally { viewState.showSubscribeLoading(false) }
+                .subscribe({
+                    if (isLike) {
+                        viewState.showMessage("Лайк поставлен")
+                    } else {
+                        viewState.showMessage("Дизлайк поставлен")
+                    }
+                }, {
+                    viewState.showMessage("Ошибка установки реакции")
+                    errorHandler.handle(it)
+                }))
     }
 
+
     fun complaintPost(postId: Int) {
-        compositeDisposable.add(complaintsGetaway.complaintPost(postId)
+        compositeDisposable.add(complaintsGateway.complaintPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

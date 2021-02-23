@@ -43,11 +43,8 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var initializerAppodeal: InitializerLocal
 
-    private var exitHandler: Handler? = null
-
     private var doubleBackToExitPressedOnce = false
 
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +60,7 @@ class MainActivity : FragmentActivity() {
         } catch (e: IOException) {
             Timber.e(e)
         }
-        viewModel.setAdCount()
+        viewModel.getAdCount()
         createNotificationChannel()
     }
 

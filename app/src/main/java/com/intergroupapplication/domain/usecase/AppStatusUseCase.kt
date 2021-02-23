@@ -11,4 +11,6 @@ class AppStatusUseCase @Inject constructor(private val appStatusRepository: AppS
     operator fun invoke(version: String): Single<String> {
         return appStatusRepository.getAppStatus(version)
     }
+
+    fun getAdParameters() = appStatusRepository.getAdParameters()
 }

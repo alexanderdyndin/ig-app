@@ -27,4 +27,5 @@ interface GroupView : MvpView, CanShowLoading, PagingView, ImageUploadingView {
     fun changeCommentsCount(pair: Pair<String, String>)
     fun avatarChanged(url: String)
     fun showMessage(res:Int)
+    fun showMessage(msg: String)
 }

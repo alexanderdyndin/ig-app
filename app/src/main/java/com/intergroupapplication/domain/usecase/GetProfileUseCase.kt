@@ -7,5 +7,4 @@ class GetProfileUseCase @Inject constructor(private val userProfileGateway: User
 
     fun getUserProfile() = userProfileGateway.getUserProfile()
 
-    fun getAdParameters() = userProfileGateway.getAdParameters()
 }

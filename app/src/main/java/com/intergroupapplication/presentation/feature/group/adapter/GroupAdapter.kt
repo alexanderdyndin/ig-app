@@ -45,6 +45,8 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
     var retryClickListener: () -> Unit = {}
     var complaintListener: (Int) -> Unit = {}
     var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
+    var likeClickListener: (postId: String) -> Unit = { }
+    var dislikeClickListener: (postId: String) -> Unit = { }
 
     private val loadingViewType = 123       //todo Почему это переменная экземпляра? Мб лучше вынести в статик?
     private val errorViewType = 321
@@ -167,15 +169,21 @@ class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
                 commentImageClickArea.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-//                item.photo.apply {
-//                    ifNotNull {
-//                        postImage.show()
-//                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
-//                    }
-//                    ifNull { postImage.gone() }
-//                }
-//                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
-//                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
+                likeClickArea.setOnClickListener {
+                    likeClickListener.invoke(item.id)
+                }
+                dislikeClickArea.setOnClickListener {
+                    dislikeClickListener.invoke(item.id)
+                }
+                item.photo.apply {
+                    ifNotNull {
+                        postImage.show()
+                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
+                    }
+                    ifNull { postImage.gone() }
+                }
+                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
                 if (item.audios.isNotEmpty())
                     initializeAudioPlayer(item.audios[0].file)

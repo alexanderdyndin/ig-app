@@ -113,6 +113,12 @@ class NewsFragment(): BaseFragment(), NewsView{
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
             findNavController().navigate(R.id.action_newsFragment2_to_imageFragment, data)
         }
+        adapterNews.likeClickListener = {
+            presenter.setReact(isLike = true, isDislike = false, postId = it)
+        }
+        adapterNews.dislikeClickListener = {
+            presenter.setReact(isLike = false, isDislike = true, postId = it)
+        }
         compositeDisposable.add(
                 viewModel.getNews()
                         .subscribe {
@@ -126,7 +132,7 @@ class NewsFragment(): BaseFragment(), NewsView{
                     return
                 }
                 doubleBackToExitPressedOnce = true
-                Toast.makeText(requireContext(), getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+                showToast(getString(R.string.press_again_to_exit))
                 exitHandler = Handler(Looper.getMainLooper())
                 exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
             }
@@ -207,6 +213,10 @@ class NewsFragment(): BaseFragment(), NewsView{
 
     override fun showMessage(resId: Int) {
         Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showMessage(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroy() {
