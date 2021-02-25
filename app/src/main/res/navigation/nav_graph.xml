@@ -218,6 +218,12 @@
             app:exitAnim="@anim/fragment_close_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/action_loginActivity_to_confirmationMailActivity"
+            app:destination="@id/confirmationMailActivity" />
+        <action
+            android:id="@+id/action_loginActivity_to_createUserProfileActivity"
+            app:destination="@id/createUserProfileActivity" />
     </fragment>
     <fragment
         android:id="@+id/confirmationMailActivity"
@@ -381,4 +387,5 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+    <action android:id="@+id/action_global_newsFragment2" app:destination="@id/newsFragment2"/>
 </navigation>

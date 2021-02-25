@@ -40,11 +40,13 @@ class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorH
     }
 
     fun getAdCount() {
-        compositeDisposable.add(appStatusUseCase.getAdParameters()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ sessionStorage.countAd = it },
-                        { errorHandler.handle(it) }))
+        if (sessionStorage.user != null) {
+            compositeDisposable.add(appStatusUseCase.getAdParameters()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ sessionStorage.countAd = it },
+                            { errorHandler.handle(it) }))
+        }
     }
 
     override fun onCleared() {

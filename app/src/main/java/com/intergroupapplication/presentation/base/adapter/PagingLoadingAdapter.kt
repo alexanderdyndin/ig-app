@@ -6,7 +6,7 @@ import androidx.paging.LoadStateAdapter
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.exstension.inflate
 
-class PagingLoadingAdapter(private val retry: () -> Unit): LoadStateAdapter<ViewHolderLoadingState>() {
+class PagingLoadingAdapter(var retry: () -> Unit): LoadStateAdapter<ViewHolderLoadingState>() {
 
     override fun onBindViewHolder(holder: ViewHolderLoadingState, loadState: LoadState) {
         holder.bindState(loadState)

@@ -54,5 +54,8 @@ interface GatewayModule {
     @Binds
     fun provideComplaintsRepository(complaintsRepository: ComplaintsRepository): ComplaintsGateway
 
+    @Binds
+    fun provideAppStatusRepository(appStatusRepository: AppStatusRepository): AppStatusGateway
+
 
 }

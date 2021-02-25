@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.zsmb.materialdrawerkt.builders.drawer
@@ -28,6 +29,8 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
+import com.intergroupapplication.presentation.base.adapter.AppodealWrapperAdapter
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
@@ -38,6 +41,7 @@ import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter3
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
 import com.mikepenz.materialdrawer.Drawer
@@ -50,8 +54,13 @@ import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import javax.inject.Named
 
 class NewsFragment(): BaseFragment(), NewsView{
+
+    companion object {
+        const val LABEL = "fragment_news"
+    }
 
     @Inject
     @InjectPresenter
@@ -64,19 +73,17 @@ class NewsFragment(): BaseFragment(), NewsView{
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
-    lateinit var diffUtil: DiffUtil.ItemCallback<GroupPostEntity>
-
-    @Inject
-    lateinit var layoutManager: RecyclerView.LayoutManager
-
-    @Inject
-    lateinit var adapterWrapper: AdmobBannerRecyclerAdapterWrapper
-
-    @Inject
-    lateinit var adapterNews: NewsAdapter3
-
-    @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var adapter: NewsAdapter
+
+    @Inject
+    lateinit var concatAdapter: ConcatAdapter
+
+    @Inject
+    @Named("footer")
+    lateinit var footerAdapter: PagingLoadingAdapter
 
     private lateinit var viewModel: NewsViewModel
 
@@ -101,28 +108,28 @@ class NewsFragment(): BaseFragment(), NewsView{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
-        adapterNews.complaintListener = { presenter.complaintPost(it) }
-        adapterNews.commentClickListener = {
+        NewsAdapter.complaintListener = { presenter.complaintPost(it) }
+        NewsAdapter.commentClickListener = {
             clickedPostId = it.id
             openCommentDetails(InfoForCommentEntity(it, true)) }
-        adapterNews.groupClickListener = {
+        NewsAdapter.groupClickListener = {
             val data = bundleOf(GROUP_ID to it)
             findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
         }
-        adapterNews.imageClickListener = { list: List<FileEntity>, i: Int ->
+        NewsAdapter.imageClickListener = { list: List<FileEntity>, i: Int ->
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
             findNavController().navigate(R.id.action_newsFragment2_to_imageFragment, data)
         }
-        adapterNews.likeClickListener = {
+        NewsAdapter.likeClickListener = {
             presenter.setReact(isLike = true, isDislike = false, postId = it)
         }
-        adapterNews.dislikeClickListener = {
+        NewsAdapter.dislikeClickListener = {
             presenter.setReact(isLike = false, isDislike = true, postId = it)
         }
         compositeDisposable.add(
                 viewModel.getNews()
                         .subscribe {
-                            adapterNews.submitData(lifecycle, it)
+                            adapter.submitData(lifecycle, it)
                         }
         )
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
@@ -132,7 +139,7 @@ class NewsFragment(): BaseFragment(), NewsView{
                     return
                 }
                 doubleBackToExitPressedOnce = true
-                showToast(getString(R.string.press_again_to_exit))
+                Toast.makeText(requireContext(),getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
                 exitHandler = Handler(Looper.getMainLooper())
                 exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
             }
@@ -152,37 +159,72 @@ class NewsFragment(): BaseFragment(), NewsView{
     }
 
     fun newPaging() {
+//        newSwipe.setOnRefreshListener {
+//            adapterNews.refresh()
+//        }
+//        newsPosts.adapter = adapterNews
+//        lifecycleScope.launch {
+//            adapterNews.loadStateFlow.collectLatest { loadStates ->
+//                when(loadStates.refresh) {
+//                    is LoadState.Loading -> {
+//                        if (adapterNews.itemCount == 0) {
+//                            loading_layout.show()
+//                        } else adapterNews.addLoading()
+//                        adapterNews.removeError()
+//                        emptyText.hide()
+//                    }
+//                    is LoadState.Error -> {
+//                        newSwipe.isRefreshing = false
+//                        emptyText.hide()
+//                        adapterNews.removeLoading()
+//                        loading_layout.gone()
+//                        adapterNews.addError()
+//                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
+//                    }
+//                    is LoadState.NotLoading -> {
+//                        if (adapterNews.itemCount == 0) {
+//                            emptyText.show()
+//                        } else {
+//                            emptyText.hide()
+//                        }
+//                        loading_layout.gone()
+//                        adapterNews.removeError()
+//                        adapterNews.removeLoading()
+//                        newSwipe.isRefreshing = false
+//                    }
+//                    else ->{ newSwipe.isRefreshing = false }
+//                }
+//            }
+//        }
         newSwipe.setOnRefreshListener {
-            adapterNews.refresh()
+            adapter.refresh()
         }
-        newsPosts.adapter = adapterWrapper
+        newsPosts.adapter = concatAdapter
         lifecycleScope.launch {
-            adapterNews.loadStateFlow.collectLatest { loadStates ->
+            adapter.loadStateFlow.collectLatest { loadStates ->
                 when(loadStates.refresh) {
                     is LoadState.Loading -> {
-                        if (adapterNews.itemCount == 0) {
+                        if (adapter.itemCount == 0) {
                             loading_layout.show()
-                        } else adapterNews.addLoading()
-                        adapterNews.removeError()
+                        }
                         emptyText.hide()
                     }
                     is LoadState.Error -> {
                         newSwipe.isRefreshing = false
                         emptyText.hide()
-                        adapterNews.removeLoading()
                         loading_layout.gone()
-                        adapterNews.addError()
+                        if (adapter.itemCount == 0) {
+                            footerAdapter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        if (adapterNews.itemCount == 0) {
+                        if (adapter.itemCount == 0) {
                             emptyText.show()
                         } else {
                             emptyText.hide()
                         }
                         loading_layout.gone()
-                        adapterNews.removeError()
-                        adapterNews.removeLoading()
                         newSwipe.isRefreshing = false
                     }
                     else ->{ newSwipe.isRefreshing = false }
@@ -220,7 +262,7 @@ class NewsFragment(): BaseFragment(), NewsView{
     }
 
     override fun onDestroy() {
-        adapterWrapper.release()
+        //adapterWrapper.release()
         presenter.unsubscribe()
         super.onDestroy()
     }
@@ -344,13 +386,16 @@ class NewsFragment(): BaseFragment(), NewsView{
     }
 
     override fun openConfirmationEmail() = Action { _, _ ->
-        val email = userSession.email?.email.orEmpty()
-        val data = bundleOf("entity" to email)
-        findNavController().navigate(R.id.action_newsFragment2_to_confirmationMailActivity, data)
+        if (findNavController().currentDestination?.label == LABEL) {
+            val email = userSession.email?.email.orEmpty()
+            val data = bundleOf("entity" to email)
+            findNavController().navigate(R.id.action_newsFragment2_to_confirmationMailActivity, data)
+        }
     }
 
     override fun openCreateProfile()  = Action { _, _ ->
-        findNavController().navigate(R.id.action_newsFragment2_to_createUserProfileActivity)
+        if (findNavController().currentDestination?.label == LABEL)
+            findNavController().navigate(R.id.action_newsFragment2_to_createUserProfileActivity)
     }
 
 }

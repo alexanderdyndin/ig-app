@@ -10,13 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabDots"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarUpstairs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabBackground="@drawable/tab_selector"
-        app:tabGravity="center"
-        app:tabIndicatorHeight="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/image_toolbar_color"/>
+
+        <FrameLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="@color/image_toolbar_color"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabDots"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"/>
+
+        </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

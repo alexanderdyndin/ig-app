@@ -8,6 +8,11 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
 
 class ImageAdapter(private val items: List<FileEntity>): RecyclerView.Adapter<ImageViewHolder>() {
+
+    companion object {
+        var imageClickListener: () -> Unit = {}
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         return ImageViewHolder(parent.inflate(R.layout.item_image))
     }

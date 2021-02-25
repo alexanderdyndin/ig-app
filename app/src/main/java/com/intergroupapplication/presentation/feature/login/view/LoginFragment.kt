@@ -7,18 +7,18 @@ import android.content.Intent
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.LoginEntity
-import com.intergroupapplication.domain.exception.EMAIL
-import com.intergroupapplication.domain.exception.FieldException
-import com.intergroupapplication.domain.exception.PASSWORD
+import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
+import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -28,6 +28,7 @@ import com.mobsandgeeks.saripaar.annotation.Email
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import com.tbruyelle.rxpermissions2.RxPermissions
+import com.workable.errorhandler.Action
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
@@ -64,7 +65,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     @Inject
     lateinit var validator: Validator
 
-
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
 
@@ -97,7 +97,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     override fun onResume() {
         super.onResume()
-        //setErrorHandler()
+        setErrorHandler()
     }
 
     override fun onPause() {
@@ -197,6 +197,28 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 }
             }
         }
+        //todo почему оно не хандлится обычным методом, но во фрагменте новостей работает нормально?
+        errorHandler.on(UserNotVerifiedException::class.java) { throwable, _ ->
+            val email = mail.text.toString()
+            val data = bundleOf("entity" to email)
+            findNavController().navigate(R.id.action_loginActivity_to_confirmationMailActivity, data)
+        }
+        errorHandler.on(UserNotProfileException::class.java) { throwable, _ ->
+            findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
+        }
+        errorHandler.on(BadRequestException::class.java) { throwable, _ ->
+            dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
+        }
     }
+
+//    override fun openConfirmationEmail() = Action { _, _ ->
+//        val email = mail.text
+//        val data = bundleOf("entity" to email)
+//        findNavController().navigate(R.id.action_loginActivity_to_confirmationMailActivity, data)
+//    }
+//
+//    override fun openCreateProfile()  = Action { _, _ ->
+//        findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
+//    }
 
 }

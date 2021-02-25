@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import co.zsmb.materialdrawerkt.builders.drawer
@@ -33,12 +34,14 @@ import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.GroupType
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.ExitActivity
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter3
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListsAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
@@ -105,27 +108,51 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     @Inject
     @Named("all")
-    lateinit var adapterAll: GroupListAdapter3
+    lateinit var adapterAll: GroupListAdapter
 
     @Inject
     @Named("subscribed")
-    lateinit var adapterSubscribed: GroupListAdapter3
+    lateinit var adapterSubscribed: GroupListAdapter
 
     @Inject
     @Named("owned")
-    lateinit var adapterOwned: GroupListAdapter3
+    lateinit var adapterOwned: GroupListAdapter
 
     @Inject
     @Named("all")
-    lateinit var adapterAllAd: AdmobBannerRecyclerAdapterWrapper
+    lateinit var adapterAllAd: ConcatAdapter
 
     @Inject
     @Named("subscribed")
-    lateinit var adapterSubscribedAd: AdmobBannerRecyclerAdapterWrapper
+    lateinit var adapterSubscribedAd: ConcatAdapter
 
     @Inject
     @Named("owned")
-    lateinit var adapterOwnedAd: AdmobBannerRecyclerAdapterWrapper
+    lateinit var adapterOwnedAd: ConcatAdapter
+
+    @Inject
+    @Named("footerAll")
+    lateinit var adapterFooterAll: PagingLoadingAdapter
+
+    @Inject
+    @Named("footerSub")
+    lateinit var adapterFooterSub: PagingLoadingAdapter
+
+    @Inject
+    @Named("footerAdm")
+    lateinit var adapterFooterAdm: PagingLoadingAdapter
+
+//    @Inject
+//    @Named("all")
+//    lateinit var adapterAllAd: AdmobBannerRecyclerAdapterWrapper
+//
+//    @Inject
+//    @Named("subscribed")
+//    lateinit var adapterSubscribedAd: AdmobBannerRecyclerAdapterWrapper
+//
+//    @Inject
+//    @Named("owned")
+//    lateinit var adapterOwnedAd: AdmobBannerRecyclerAdapterWrapper
 
 
     private val textWatcher = object : TextWatcher {
@@ -165,11 +192,10 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
 
-        val adapterList: MutableList<AdmobBannerRecyclerAdapterWrapper> = mutableListOf()
+        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
         adapterList.add(adapterAllAd)
         adapterList.add(adapterSubscribedAd)
         adapterList.add(adapterOwnedAd)
-
         pager.apply {
             adapter = GroupListsAdapter(adapterList)
             val handler = ViewPager2Circular(this, swipe_groups)
@@ -179,7 +205,6 @@ class GroupListFragment(): BaseFragment(), GroupListView {
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
-
         val tabTitles = arrayOf(resources.getString(R.string.allGroups), resources.getString(R.string.subGroups), resources.getString(R.string.admGroups))
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
@@ -190,7 +215,7 @@ class GroupListFragment(): BaseFragment(), GroupListView {
         }
         createGroup.visibility = View.VISIBLE
         createGroup.setOnClickListener { openCreateGroup() }
-        with (GroupListAdapter3) {
+        with (GroupListAdapter) {
             userID = sessionStorage.user?.id
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)
@@ -274,34 +299,15 @@ class GroupListFragment(): BaseFragment(), GroupListView {
             adapterAll.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
-                        adapterAll.removeError()
-                        //adapterAll.addLoading()
-                        //                    if (adapterGroups.itemCount == 0)
-                        //                        progress_loading.show()
-                        //                    else adapterGroups.addLoading()
-                        //                    adapterGroups.removeError()
-                        //                    emptyText.hide()
                     }
                     is LoadState.Error -> {
                         swipe_groups.isRefreshing = false
-                        adapterAll.addError()
-                        //                    emptyText.hide()
-                        //                    adapterGroups.addError()
-                        //                    adapterGroups.removeLoading()
-                        //                    progress_loading.hide()
+                        if (adapterAll.itemCount == 0) {
+                            adapterFooterAll.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        //                    if (adapterGroups.itemCount == 0) {
-                        //                        emptyText.show()
-                        //                    } else {
-                        //                        emptyText.hide()
-                        //                    }
-                        //                    adapterGroups.removeError()
-                        //                    adapterGroups.removeLoading()
-                        //                    group_swipe.isRefreshing = false
-                        //                    progress_loading.hide()
-                        adapterAll.removeError()
                         swipe_groups.isRefreshing = false
                     }
                 }
@@ -311,15 +317,15 @@ class GroupListFragment(): BaseFragment(), GroupListView {
             adapterSubscribed.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
-                        adapterSubscribed.removeError()
                     }
                     is LoadState.Error -> {
-                        adapterSubscribed.addError()
                         swipe_groups.isRefreshing = false
+                        if (adapterSubscribed.itemCount == 0) {
+                            adapterFooterSub.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        adapterSubscribed.removeError()
                         swipe_groups.isRefreshing = false
                     }
                 }
@@ -329,15 +335,15 @@ class GroupListFragment(): BaseFragment(), GroupListView {
             adapterOwned.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
-                        adapterOwned.removeError()
                     }
                     is LoadState.Error -> {
-                        adapterOwned.addError()
                         swipe_groups.isRefreshing = false
+                        if (adapterOwned.itemCount == 0) {
+                            adapterFooterAdm.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        adapterOwned.removeError()
                         swipe_groups.isRefreshing = false
                     }
                 }

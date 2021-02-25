@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.base
 
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import com.intergroupapplication.App
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.exception.*
@@ -20,6 +22,7 @@ import com.workable.errorhandler.ErrorHandler
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.CompositeDisposable
 import moxy.MvpAppCompatFragment
+import timber.log.Timber
 
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -123,11 +126,11 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     }
 
     protected open fun openCreateProfile() = Action { _, _ ->
-
+        Timber.e("403 catched")
     }
 
     protected open fun openConfirmationEmail() = Action { _, _ ->
-
+        Timber.e("403 catched")
     }
 
     private fun openAutorize() = Action { _, _ ->
@@ -143,8 +146,11 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         compositeDisposable = CompositeDisposable()
-        initErrorHandler()
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -154,6 +160,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewCreated()
+        initErrorHandler()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -166,4 +173,5 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         dialogDelegate.coordinator = null
         super.onPause()
     }
+
 }

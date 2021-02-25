@@ -13,6 +13,7 @@ import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.domain.entity.ReactsEntity
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.Flowable
 import io.reactivex.Single
 import java.util.*
@@ -50,10 +51,7 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         return Pager(
                 config = PagingConfig(
                         pageSize = 20,
-                        enablePlaceholders = false,
-                        maxSize = 40,
-                        prefetchDistance = 10,
-                        initialLoadSize = 50),
+                        prefetchDistance = 5),
                 pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
         ).flowable
     }

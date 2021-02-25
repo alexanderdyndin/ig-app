@@ -63,7 +63,7 @@ class GroupsViewModule {
     fun provideGroupListNew1(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
                           imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter3 {
         val adapter = GroupListAdapter3(diffUtil, imageLoadingDelegate)
-        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
+        //adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
         return adapter
     }
 
