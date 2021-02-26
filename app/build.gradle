@@ -49,12 +49,12 @@ androidExtensions {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.intergroupapplication"
         minSdkVersion 24
-        targetSdkVersion 28
-        versionCode 1000002
+        targetSdkVersion 30
+        versionCode 1000003
 //        androidGitVersion.code()
         versionName "2.0.0.0"
 //        androidGitVersion.name()
@@ -329,4 +329,6 @@ dependencies {
     implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
     implementation 'com.nbsp:materialfilepicker:1.9.1'
+
+    implementation "com.android.billingclient:billing-ktx:3.0.2"
 }
