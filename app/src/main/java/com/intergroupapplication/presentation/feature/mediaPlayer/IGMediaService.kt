@@ -43,7 +43,7 @@ class IGMediaService : MediaBrowserServiceCompat() {
     override fun onBind(intent: Intent?): IBinder {
         intent?.let {
             exoPlayer.playWhenReady = false  //Tell exoplayer to start as soon as it's content is loaded.
-            loadExampleMedia(intent.getStringExtra(MEDIA_URL))
+//            loadExampleMedia(intent.getStringExtra(MEDIA_URL))
 //            displayNotification()
         }
         return ServiceBinder()

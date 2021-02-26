@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.android.billingclient.api.*
 import com.intergroupapplication.R
 import com.intergroupapplication.initializators.InitializerLocal
 import com.intergroupapplication.presentation.feature.ExitActivity
@@ -21,15 +22,23 @@ import com.intergroupapplication.presentation.feature.mainActivity.viewModel.Mai
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
 
+
 class MainActivity : FragmentActivity() {
 
     companion object {
+        const val DISABLE_ADS_ID = "disable_ads"
+
         const val MEDIA_CHANNEL_ID = "IGMediaChannel"
         const val MEDIA_FILE_URI = "MediaFileUri"
         private const val EXIT_DELAY = 2000L
@@ -49,6 +58,15 @@ class MainActivity : FragmentActivity() {
 
     val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
+    /**
+     *  Billing
+     */
+    private val purchasesUpdatedListener =
+            PurchasesUpdatedListener { billingResult, purchases ->
+                // To be implemented in a later section.
+            }
+    private lateinit var billingClient: BillingClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
@@ -65,6 +83,7 @@ class MainActivity : FragmentActivity() {
         }
         viewModel.setAdCount()
         createNotificationChannel()
+        initBilling()
     }
 
     override fun onResume() {
@@ -145,4 +164,38 @@ class MainActivity : FragmentActivity() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+    fun initBilling() {
+        billingClient = BillingClient.newBuilder(applicationContext)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build()
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                }
+            }
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        })
+    }
+
+    fun querySkuDetails() {
+        CoroutineScope(Main).launch {
+            val skuList = ArrayList<String>()
+            skuList.add("premium_upgrade")
+            skuList.add("gas")
+            val params = SkuDetailsParams.newBuilder()
+            params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS)
+            withContext(Dispatchers.IO) {
+                billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
+                    // Process the result.
+                }
+            }
+        }
+    }
+
 }

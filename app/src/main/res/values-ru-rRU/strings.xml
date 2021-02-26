@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InterGroupApplication</string>
+    <string name="app_name">InterGroup</string>
     <string name="application_logo">Application Logo</string>
     <string name="notification_channel_id">notification_chanel_intergroup</string>
     <string name="inter_group">Inter Group</string>
