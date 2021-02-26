@@ -6,6 +6,8 @@ import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import androidx.paging.rxjava2.cachedIn
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.usecase.GroupUseCase
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
@@ -22,6 +24,11 @@ class GroupListViewModel @Inject constructor(
         private val compositeDisposable: CompositeDisposable
 ): ViewModel() {
 
+    private val nativeAdItem: NativeAd?
+        get() {
+            val ads = Appodeal.getNativeAds(1)
+            return if (ads.isNotEmpty()) ads[0] else null
+        }
 
     fun fetchGroups(query: String = ""): Flowable<PagingData<GroupEntityUI>> {
         return useCase.getGroupList(query)
@@ -55,10 +62,11 @@ class GroupListViewModel @Inject constructor(
                                     before == null -> null
                                     after == null -> null
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
-                                        GroupEntityUI.AdEntity(i)
-                                    } else {
-                                        null
-                                    }
+                                        var nativeAd: NativeAd?
+                                        if (nativeAdItem.also { nativeAd = it } != null) {
+                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                        } else null
+                                    } else null
                                 }
                             }
                 }
@@ -97,10 +105,11 @@ class GroupListViewModel @Inject constructor(
                                     before == null -> null
                                     after == null -> null
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
-                                        GroupEntityUI.AdEntity(i)
-                                    } else {
-                                        null
-                                    }
+                                        var nativeAd: NativeAd?
+                                        if (nativeAdItem.also { nativeAd = it } != null) {
+                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                        } else null
+                                    } else null
                                 }
                             }
                 }
@@ -139,10 +148,11 @@ class GroupListViewModel @Inject constructor(
                                     before == null -> null
                                     after == null -> null
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
-                                        GroupEntityUI.AdEntity(i)
-                                    } else {
-                                        null
-                                    }
+                                        var nativeAd: NativeAd?
+                                        if (nativeAdItem.also { nativeAd = it } != null) {
+                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                        } else null
+                                    } else null
                                 }
                             }
                 }

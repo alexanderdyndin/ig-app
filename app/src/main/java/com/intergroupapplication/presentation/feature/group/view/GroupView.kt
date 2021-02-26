@@ -12,10 +12,10 @@ import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.presentation.base.BasePagingState
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.base.PagingView
+import moxy.viewstate.strategy.SkipStrategy
 
-@StateStrategyType(AddToEndSingleStrategy::class)
-interface GroupView : MvpView, CanShowLoading, PagingView, ImageUploadingView {
-    fun postsLoaded(posts: PagedList<GroupPostEntity>)
+@StateStrategyType(SkipStrategy::class)
+interface GroupView : MvpView, ImageUploadingView {
     fun renderViewByRole(userRole: UserRole)
     fun showGroupInfo(groupEntity: GroupEntity)
     fun groupFollowed(followersCount: Int)

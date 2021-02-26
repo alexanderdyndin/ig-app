@@ -67,11 +67,30 @@
                     android:text="@string/here_no_posts_yet"
                     android:visibility="visible" />
 
+                <FrameLayout
+                    android:id="@+id/loading_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="@style/Widget.AppCompat.ProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"/>
+
+                </FrameLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/groupPosts"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true">
+
 
                 </androidx.recyclerview.widget.RecyclerView>
 

@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.news.viewmodel
+package com.intergroupapplication.presentation.feature.group.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,14 +8,13 @@ import androidx.paging.map
 import androidx.paging.rxjava2.cachedIn
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.NativeAd
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import com.intergroupapplication.domain.usecase.PostsUseCase
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
+import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
+import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import io.reactivex.Flowable
 import javax.inject.Inject
 
-class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): ViewModel() {
+class GroupViewModel @Inject constructor(private val useCase: PostsUseCase): ViewModel() {
 
     private val nativeAdItem: NativeAd?
         get() {
@@ -23,11 +22,10 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
-    fun getNews(): Flowable<PagingData<GroupPostEntityUI>> {
-        return useCase
-                .getNews()
+    fun fetchPosts(groupId: String): Flowable<PagingData<GroupPostEntityUI>> {
+        return useCase.getGroupPosts(groupId)
                 .map { pagingData ->
-                    var i = -NewsAdapter.AD_FIRST - 1
+                    var i = -GroupPostsAdapter.AD_FIRST - 1
                     pagingData.map {
                         GroupPostEntityUI.GroupPostEntity(
                                 it.id,
@@ -54,7 +52,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                                 when {
                                     before == null -> null
                                     after == null -> null
-                                    else -> if ( i % NewsAdapter.AD_FREQ == 0 && i >= 0) {
+                                    else -> if ( i % GroupPostsAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
                                         if (nativeAdItem.also { nativeAd = it } != null) {
                                             GroupPostEntityUI.AdEntity(i, nativeAd)
@@ -65,5 +63,4 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                 }
                 .cachedIn(viewModelScope)
     }
-
 }

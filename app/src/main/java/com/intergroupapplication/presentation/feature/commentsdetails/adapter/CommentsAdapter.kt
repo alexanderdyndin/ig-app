@@ -1,81 +1,86 @@
-package com.intergroupapplication.presentation.feature.grouplist.adapter
+package com.intergroupapplication.presentation.feature.commentsdetails.adapter
 
-import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.content.ContextCompat
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.RatingBar
+import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
+import androidx.paging.PagedListAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.appodeal.ads.*
+import com.appodeal.ads.NativeAd
+import com.appodeal.ads.NativeAdView
+import com.appodeal.ads.NativeIconView
+import com.appodeal.ads.NativeMediaView
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.CommentEntity
+import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
+import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.getDateDescribeByString
+import com.intergroupapplication.presentation.exstension.inflate
+import com.intergroupapplication.presentation.feature.commentsdetails.other.CommentEntityUI
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
-import kotlinx.android.synthetic.main.item_group_in_list.view.*
-
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.item_comment.view.*
+import kotlinx.android.synthetic.main.post_item_error.view.*
+import timber.log.Timber
 
 /**
- * Created by abakarmagomedov on 02/08/2018 at project InterGroupApplication.
+ * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
-class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
-    : PagingDataAdapter<GroupEntityUI, RecyclerView.ViewHolder>(diffUtil) {
+class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
+    : PagingDataAdapter<CommentEntityUI, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
-        var lettersToSpan = ""
-        var userID: String? = null
-        var groupClickListener: (groupId: String) -> Unit = {}
-        var unsubscribeClickListener: (item: GroupEntityUI.GroupEntity, view: View) -> Unit = {_, _ -> }
-        var subscribeClickListener: (item: GroupEntityUI.GroupEntity, view: View) -> Unit = {_, _ -> }
         private const val NATIVE_TYPE_NEWS_FEED = 1
         private const val NATIVE_TYPE_APP_WALL = 2
         private const val NATIVE_TYPE_CONTENT_STREAM = 3
         private const val NATIVE_WITHOUT_ICON = 4
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
-        private val diffUtil = object : DiffUtil.ItemCallback<GroupEntityUI>() {
-            override fun areItemsTheSame(oldItem: GroupEntityUI, newItem: GroupEntityUI): Boolean {
-                return if (oldItem is GroupEntityUI.GroupEntity && newItem is GroupEntityUI.GroupEntity) {
+        private val diffUtil = object : DiffUtil.ItemCallback<CommentEntityUI>() {
+            override fun areItemsTheSame(oldItem: CommentEntityUI, newItem: CommentEntityUI): Boolean {
+                return if (oldItem is CommentEntityUI.CommentEntity && newItem is CommentEntityUI.CommentEntity) {
                     oldItem.id == newItem.id
-                } else if (oldItem is GroupEntityUI.AdEntity && newItem is GroupEntityUI.AdEntity) {
+                } else if (oldItem is CommentEntityUI.AdEntity && newItem is CommentEntityUI.AdEntity) {
                     oldItem.position == newItem.position
                 } else {
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: GroupEntityUI, newItem: GroupEntityUI): Boolean {
-                return if (oldItem is GroupEntityUI.GroupEntity && newItem is GroupEntityUI.GroupEntity) {
+            override fun areContentsTheSame(oldItem: CommentEntityUI, newItem: CommentEntityUI): Boolean {
+                return if (oldItem is CommentEntityUI.CommentEntity && newItem is CommentEntityUI.CommentEntity) {
                     oldItem == newItem
-                } else if (oldItem is GroupEntityUI.AdEntity && newItem is GroupEntityUI.AdEntity) {
+                } else if (oldItem is CommentEntityUI.AdEntity && newItem is CommentEntityUI.AdEntity) {
                     oldItem == newItem
                 } else {
                     false
                 }
             }
         }
+        var replyListener: (commentEntity: CommentEntityUI.CommentEntity) -> Unit = {}
+        var retryClickListener: () -> Unit = {}
+        var complaintListener: (Int) -> Unit = {}
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
     }
 
-    private lateinit var context: Context
+
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-       context = parent.context
         val view: View
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
@@ -101,108 +106,97 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 NativeCustomAdViewHolder(view)
             }
             else -> {
-                GroupViewHolder(parent.inflate(R.layout.item_group_in_list))
+                return CommentViewHolder(parent.inflate(R.layout.item_comment))
             }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        if (holder is GroupViewHolder) {
-            holder.bind(item as GroupEntityUI.GroupEntity, position)
-        } else if (holder is NativeAdViewHolder) {
-                holder.fillNative((item as GroupEntityUI.AdEntity).nativeAd)
+        getItem(position)?.let {
+            if (holder is CommentViewHolder)
+                holder.bind(it as CommentEntityUI.CommentEntity)
+            else if (holder is NativeAdViewHolder) {
+                holder.fillNative((it as CommentEntityUI.AdEntity).nativeAd)
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is GroupEntityUI.GroupEntity -> DEFAULT_HOLDER
-            is GroupEntityUI.AdEntity -> AD_TYPE
+            is CommentEntityUI.CommentEntity -> DEFAULT_HOLDER
+            is CommentEntityUI.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
         }
     }
 
-
-    inner class GroupViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-
-        fun bind(item: GroupEntityUI.GroupEntity, position: Int) {
+    inner class CommentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(item: CommentEntityUI.CommentEntity) {
             with(itemView) {
-                spanLetters(item)
-                //item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
-                item_group__subscribers.text = item.followersCount
-                item_group__posts.text = item.postsCount
-                item_group__comments.text = item.CommentsCount
-                item_group__dislike.text = item.postsLikes
-                item_group__like.text = item.postsDislikes
-                item_group__text_age.text = item.ageRestriction
-                when(item.ageRestriction) {
-                    "12+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
-                    }
-                    "16+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age16)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
-                    }
-                    "18+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age18)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.whiteTextColor))
-                    }
-                    else -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
-                    }
+                val name = item.commentOwner
+                        ?.let { "${it.firstName} ${it.secondName}" }
+                        ?: let { itemView.resources.getString(R.string.unknown_user) }
+                commentUserName.text = name
+                commentUserId.text = context.getString(R.string.id,
+                        item.commentOwner?.user ?: "нет id")
+                commentText.text = item.text
+                compositeDisposable.add(getDateDescribeByString(item.date)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            commentPrescription.text = it
+                        }, {
+                            Timber.e(it)
+                        }))
+                commentAvatar.run {
+                    doOrIfNull(item.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
+                            { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
                 }
-                if (item.isClosed) {
-                    item_group__lock.setImageResource(R.drawable.icon_close)
-                    item_group__lock.setBackgroundResource(R.drawable.bg_lock)
-                } else {
-                    item_group__lock.setImageResource(R.drawable.icon_open)
-                    item_group__lock.setBackgroundResource(R.drawable.bg_unlock)
+                reply.setOnClickListener {
+                    replyListener.invoke(item)
                 }
-                groupAvatarHolder.setOnClickListener {
-                    groupClickListener.invoke(item.id)
-                }
-                with (item_group__text_sub) {
-                    if (item.isFollowing) {
-                        setOnClickListener {
-                            unsubscribeClickListener.invoke(item, view)
-                        }
-                        text = resources.getText(R.string.unsubscribe)
-                        setBackgroundResource(R.drawable.btn_unsub)
-                    } else {
-                        setOnClickListener {
-                            subscribeClickListener.invoke(item, view)
-                        }
-                        text = resources.getText(R.string.subscribe)
-                        setBackgroundResource(R.drawable.btn_sub)
-                    }
-                    visibility = if (userID == item.owner) {
-                        View.INVISIBLE
-                    } else {
-                        View.VISIBLE
-                    }
-                }
-                doOrIfNull(item.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
-                })
+                doOrIfNull(item.answerTo, { //todo починить
+                    responseToOtherComment.text = context.getString(R.string.response_to,
+                            getUserNameByCommentId(it))
+                }, { responseToOtherComment.text = "" })
+                settingsComment.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id)) }
+
             }
         }
 
-        private fun spanLetters(item: GroupEntityUI.GroupEntity) {
-                val spanStartPositions = item.name.mapIndexed { index: Int, c: Char -> item.name.indexOf(lettersToSpan, index, true) }.filterNot { it == -1 }.toSet()
-                val wordToSpan: Spannable = SpannableString(item.name)
-                spanStartPositions.forEach{
-                    wordToSpan.setSpan(ForegroundColorSpan(Color.CYAN), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    wordToSpan.setSpan(StyleSpan(Typeface.BOLD), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        private fun getUserNameByCommentId(commentId: String): String {
+            val unknown = view.resources.getString(R.string.unknown)
+            this@CommentsAdapter.snapshot().items.let {
+                for (comment in it) {
+                    if (comment is CommentEntityUI.CommentEntity) {
+                        if (comment.id == commentId) {
+                            return comment.commentOwner?.firstName ?: unknown
+                        }
+                    }
                 }
-                itemView.item_group__list_header.text = wordToSpan
+            }
+            return unknown
         }
+
     }
 
+    override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
+        super.unregisterAdapterDataObserver(observer)
+        compositeDisposable.clear()
+    }
 
+    private fun showPopupMenu(view: View, id: Int) {
+        val popupMenu = PopupMenu(view.context, view)
+        popupMenu.inflate(R.menu.settings_menu)
+
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.complaint -> complaintListener.invoke(id)
+            }
+            return@setOnMenuItemClickListener true
+        }
+
+        popupMenu.show()
+    }
 
     internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
         private val nativeAdView: NativeAdView
@@ -221,7 +215,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 ratingBar.visibility = View.INVISIBLE
             } else {
                 ratingBar.visibility = View.VISIBLE
-                //ratingBar.rating = nativeAd?.rating
+                nativeAd?.rating?.let {
+                    ratingBar.rating = it }
                 ratingBar.stepSize = 0.1f
             }
             ctaButton.text = nativeAd?.callToAction
@@ -294,7 +289,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 ratingBar.visibility = View.INVISIBLE
             } else {
                 ratingBar.visibility = View.VISIBLE
-                //ratingBar.rating = nativeAd?.rating
+                nativeAd?.rating?.let {
+                    ratingBar.rating = it }
                 ratingBar.stepSize = 0.1f
             }
             ctaButton.text = nativeAd?.callToAction
@@ -377,5 +373,4 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         abstract fun fillNative(nativeAd: NativeAd?)
         abstract fun unregisterViewForInteraction()
     }
-
 }

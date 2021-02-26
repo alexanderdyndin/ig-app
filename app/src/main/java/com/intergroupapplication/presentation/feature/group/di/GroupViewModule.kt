@@ -1,22 +1,21 @@
 package com.intergroupapplication.presentation.feature.group.di
 
 import android.content.Context
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ConcatAdapter
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.base.ImageUploader
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter
+import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -24,6 +23,7 @@ import com.intergroupapplication.presentation.manager.ToastManager
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 
 @Module
@@ -67,23 +67,56 @@ class GroupViewModule {
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
+//    @PerFragment
+//    @Provides
+//    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupPostEntity>() {
+//        override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem.id == newItem.id
+//        override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem == newItem
+//    }
+//
+//    @PerFragment
+//    @Provides
+//    fun provideGroupAdapter(diffUtil: DiffUtil.ItemCallback<GroupPostEntity>,
+//                            imageLoadingDelegate: ImageLoadingDelegate): GroupAdapter =
+//            GroupAdapter(diffUtil, imageLoadingDelegate)
+//
+//
+//    @PerFragment
+//    @Provides
+//    fun provideLinearLayoutManager(fragment: GroupFragment): RecyclerView.LayoutManager =
+//            LinearLayoutManager(fragment.requireContext(), LinearLayoutManager.VERTICAL, false)
+
     @PerFragment
     @Provides
-    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupPostEntity>() {
-        override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem == newItem
+    fun provideGroupPostsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
+                           userSession: UserSession): GroupPostsAdapter {
+        GroupPostsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
+        GroupPostsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
+        return GroupPostsAdapter(imageLoadingDelegate)
     }
 
     @PerFragment
     @Provides
-    fun provideGroupAdapter(diffUtil: DiffUtil.ItemCallback<GroupPostEntity>,
-                            imageLoadingDelegate: ImageLoadingDelegate): GroupAdapter =
-            GroupAdapter(diffUtil, imageLoadingDelegate)
-
+    @Named("footer")
+    fun provideFooterAdapter(groupPostsAdapter: GroupPostsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupPostsAdapter.retry() }
+    }
 
     @PerFragment
     @Provides
-    fun provideLinearLayoutManager(fragment: GroupFragment): RecyclerView.LayoutManager =
-            LinearLayoutManager(fragment.requireContext(), LinearLayoutManager.VERTICAL, false)
+    @Named("header")
+    fun provideHeaderAdapter(groupPostsAdapter: GroupPostsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupPostsAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    fun provideConcatAdapter(groupPostsAdapter: GroupPostsAdapter,
+                             @Named("footer") footerAdapter: PagingLoadingAdapter,
+                             @Named("header") headerAdapter: PagingLoadingAdapter
+    ): ConcatAdapter {
+        return groupPostsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
+    }
+
 
 }

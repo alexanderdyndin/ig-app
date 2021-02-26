@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.commentsdetails.view
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import android.text.method.ScrollingMovementMethod
@@ -13,8 +14,12 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.paging.PagedList
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
@@ -29,14 +34,18 @@ import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.PagingView
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
+import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
+import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
+import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -47,12 +56,14 @@ import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_comments_details.*
 import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
-import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 
 class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
@@ -87,11 +98,30 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
 
-    @Inject
-    lateinit var adapter: CommentDetailsAdapter
+//    @Inject
+//    lateinit var adapter: CommentDetailsAdapter
 
     @Inject
     lateinit var layoutManager: RecyclerView.LayoutManager
+
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var adapter: CommentsAdapter
+
+    @Inject
+    lateinit var adapterAd: ConcatAdapter
+
+    @Inject
+    @Named("footer")
+    lateinit var adapterFooter: PagingLoadingAdapter
+
+    lateinit var viewModel: CommentsViewModel
+
+    lateinit var infoForCommentEntity: InfoForCommentEntity
+
+    var commentCreated = false
 
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
@@ -104,6 +134,17 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
 
     override fun getSnackBarCoordinator(): ViewGroup? = coordinator
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
+        infoForCommentEntity = requireArguments().getParcelable(COMMENT_POST_ENTITY)
+        compositeDisposable.add(
+                viewModel.fetchComments(infoForCommentEntity.groupPostEntity.id).subscribe {
+                    adapter.submitData(lifecycle, it)
+                }
+        )
+    }
+
     override fun viewCreated() {
         commentEditText = requireView().findViewById(R.id.commentEditText)
         val decorator = CommentDividerItemDecorator(requireContext())
@@ -114,21 +155,61 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
         commentsList.setHasFixedSize(true)
         commentsList.itemAnimator = null
         commentsList.addItemDecoration(decorator)
-        commentsList.adapter = adapter
         prepareAdapter()
-        val infoForCommentEntity: InfoForCommentEntity? = arguments?.getParcelable(COMMENT_POST_ENTITY)
         manageDataFlow(infoForCommentEntity)
         controlCommentEditTextChanges()
         //setSupportActionBar(toolbar)
         //supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbarAction.setOnClickListener { findNavController().popBackStack() }
-        pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
+        //pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         ViewCompat.setNestedScrollingEnabled(commentsList, false)
         settingsPost.clicks()
                 .subscribe { showPopupMenu(settingsPost) }
                 .also { compositeDisposable.add(it) }
-        adapter.complaintListener = { id -> presenter.complaintComment(id) }
+        CommentsAdapter.complaintListener = { id -> presenter.complaintComment(id) }
+        newpaging()
+    }
 
+    fun newpaging() {
+        swipeLayout.setOnRefreshListener {
+            adapter.refresh()
+        }
+        commentsList.adapter = adapterAd
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                when(loadStates.refresh) {
+                    is LoadState.Loading -> {
+                        if (adapter.itemCount == 0) {
+                            loading_layout.show()
+                        }
+                        emptyText.hide()
+                    }
+                    is LoadState.Error -> {
+                        swipeLayout.isRefreshing = false
+                        emptyText.hide()
+                        loading_layout.gone()
+                        if (adapter.itemCount == 0) {
+                            adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
+                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
+                    }
+                    is LoadState.NotLoading -> {
+                        if (adapter.itemCount == 0) {
+                            emptyText.show()
+                        } else {
+                            emptyText.hide()
+                        }
+                        loading_layout.gone()
+                        swipeLayout.isRefreshing = false
+                        if (commentCreated) {
+                            commentsList.scrollToPosition(adapter.itemCount)
+                            commentCreated = false
+                        }
+                    }
+                    else ->{ swipeLayout.isRefreshing = false }
+                }
+            }
+        }
     }
 
     override fun hideSwipeLayout() {
@@ -175,7 +256,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
             postImage.show()
             imageLoadingDelegate.loadImageFromUrl(it, postImage)
         }
-        presenter.getPostComments(groupPostEntity.id)
+        //presenter.getPostComments(groupPostEntity.id)
         doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                 { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
         swipeLayout.setOnRefreshListener {
@@ -184,13 +265,17 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
     }
 
     override fun commentCreated(commentEntity: CommentEntity) {
-        presenter.refresh(groupPostEntity.id)
+        //presenter.refresh(groupPostEntity.id)
+        adapter.refresh()
+        commentCreated = true
         increaseCommentsCounter()
         commentsList.smoothScrollToPosition(adapter.itemCount)
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        presenter.refresh(groupPostEntity.id)
+        //presenter.refresh(groupPostEntity.id)
+        adapter.refresh()
+        commentCreated = true
         increaseCommentsCounter()
         if (commentHolder.childCount > 1) {
             commentHolder.removeViewAt(0)
@@ -199,9 +284,9 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
     }
 
     override fun commentsLoaded(comments: PagedList<CommentEntity>) {
-        adapter.submitList(comments)
-        adapter.notifyDataSetChanged()
-        commentsList.smoothScrollToPosition(adapter.itemCount - 1)
+        //adapter.submitList(comments)
+        //adapter.notifyDataSetChanged()
+        //commentsList.smoothScrollToPosition(adapter.itemCount - 1)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -224,14 +309,14 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
     override fun showLoading(show: Boolean) {
         if (show) {
             //commentEditText.isEnabled = false
-            swipeLayout.isRefreshing = true
-            emptyText.hide()
-            adapter.removeError()
-            adapter.addLoading()
+            //swipeLayout.isRefreshing = true
+            //emptyText.hide()
+            //adapter.removeError()
+            //adapter.addLoading()
         } else {
             //commentEditText.isEnabled = true
-            swipeLayout.isRefreshing = false
-            adapter.removeLoading()
+            //swipeLayout.isRefreshing = false
+            //adapter.removeLoading()
         }
     }
 
@@ -288,7 +373,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
     }
 
     private fun prepareAdapter() {
-        adapter.replyListener = { comment ->
+        CommentsAdapter.replyListener = { comment ->
             if (!swipeLayout.isRefreshing) {
                 val view = layoutInflater.inflate(R.layout.reply_comment_layout, null)
                 if (commentHolder.childCount > 1) {
@@ -302,7 +387,13 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
                             }
                             text = comment.commentOwner?.firstName
                                     ?: getString(R.string.unknown_user)
-                            lastRepliedComment = comment
+                            lastRepliedComment = CommentEntity(
+                                    comment.id,
+                                    comment.text,
+                                    comment.date,
+                                    comment.commentOwner,
+                                    comment.answerTo
+                            )
                         }
                 commentEditText.showKeyboard()
             }

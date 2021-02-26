@@ -1,21 +1,11 @@
 package com.intergroupapplication.presentation.feature.grouplist.di
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.DiffUtil
-import com.appodeal.ads.Appodeal
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
-import com.clockbyte.admobadapter.bannerads.BannerAdViewWrappingStrategy
-import com.google.android.gms.ads.AdView
-import com.intergroupapplication.R
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
@@ -26,9 +16,7 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter3
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager

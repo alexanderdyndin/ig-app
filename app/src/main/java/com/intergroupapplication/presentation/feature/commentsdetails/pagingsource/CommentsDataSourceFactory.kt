@@ -3,7 +3,6 @@ package com.intergroupapplication.presentation.feature.commentsdetails.pagingsou
 import androidx.paging.DataSource
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource
 import javax.inject.Inject
 
 class CommentsDataSourceFactory @Inject constructor(val source: CommentsDataSource) :

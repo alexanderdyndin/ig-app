@@ -171,6 +171,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     override fun onPause() {
         dialogDelegate.coordinator = null
+        //compositeDisposable.clear()
         super.onPause()
     }
 

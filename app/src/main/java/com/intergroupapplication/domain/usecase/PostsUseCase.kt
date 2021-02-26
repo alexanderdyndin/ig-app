@@ -11,6 +11,8 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
 
     fun getNews() = groupPostGateway.getNewsPosts()
 
+    fun getGroupPosts(groupId: String) = groupPostGateway.getGroupPosts(groupId)
+
     fun createPost(createGroupPostEntity: CreateGroupPostEntity, groupId: String) =
             groupPostGateway.createPost(createGroupPostEntity, groupId)
 

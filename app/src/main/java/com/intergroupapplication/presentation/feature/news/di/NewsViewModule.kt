@@ -1,23 +1,11 @@
 package com.intergroupapplication.presentation.feature.news.di
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.appodeal.ads.Appodeal
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
-import com.clockbyte.admobadapter.bannerads.BannerAdViewWrappingStrategy
-import com.google.android.gms.ads.AdView
-import com.intergroupapplication.R
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
@@ -26,7 +14,6 @@ import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter3
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.view.NewsFragment

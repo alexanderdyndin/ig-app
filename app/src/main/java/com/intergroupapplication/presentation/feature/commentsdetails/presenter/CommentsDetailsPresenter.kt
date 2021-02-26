@@ -33,49 +33,49 @@ class CommentsDetailsPresenter @Inject constructor(private val commentGateway: C
 
     private val commentsDisposable = CompositeDisposable()
 
-    fun getPostComments(postId: String) {
-        commentsDataSourceFactory.source.postId = postId
-        commentsDisposable.add(commentsDataSourceFactory.source.observeState()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe({
-                    it.error?.let { throwable ->
-                        errorHandler.handle(throwable)
-                        viewState.hideSwipeLayout()
-                    }
-                    //todo исправить пагинацию
-                    if (it.error !is PageNotFoundException) {
-                        viewState.handleState(it.type)
-                    } else {
-                        viewState.handleState(BasePagingState.Type.NONE)
-                    }
-                }, {}))
+//    fun getPostComments(postId: String) {
+//        commentsDataSourceFactory.source.postId = postId
+//        commentsDisposable.add(commentsDataSourceFactory.source.observeState()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .handleLoading(viewState)
+//                .subscribe({
+//                    it.error?.let { throwable ->
+//                        errorHandler.handle(throwable)
+//                        viewState.hideSwipeLayout()
+//                    }
+//                    //todo исправить пагинацию
+//                    if (it.error !is PageNotFoundException) {
+//                        viewState.handleState(it.type)
+//                    } else {
+//                        viewState.handleState(BasePagingState.Type.NONE)
+//                    }
+//                }, {}))
+//
+//        commentsDisposable.add(RxPagedListBuilder(commentsDataSourceFactory, PAGINATION_PAGE_SIZE)
+//                .buildObservable()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({ viewState.commentsLoaded(it) },
+//                        {
+//                            errorHandler.handle(it)
+//                            viewState.hideSwipeLayout()
+//                        }))
+ //   }
 
-        commentsDisposable.add(RxPagedListBuilder(commentsDataSourceFactory, PAGINATION_PAGE_SIZE)
-                .buildObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ viewState.commentsLoaded(it) },
-                        {
-                            errorHandler.handle(it)
-                            viewState.hideSwipeLayout()
-                        }))
-    }
+//    fun reload() {
+//        commentsDataSourceFactory.source.reload()
+ //   }
 
-    fun reload() {
-        commentsDataSourceFactory.source.reload()
-    }
-
-    fun refresh(groupId: String) {
-        unsubscribe()
-        getPostComments(groupId)
-    }
-
-    fun refresh(groupId: String, page: Int) {
-        commentsDataSourceFactory.source.currentPage = page
-        this.refresh(groupId)
-    }
+//    fun refresh(groupId: String) {
+//        unsubscribe()
+//        getPostComments(groupId)
+//    }
+//
+//    fun refresh(groupId: String, page: Int) {
+//        commentsDataSourceFactory.source.currentPage = page
+//        this.refresh(groupId)
+//    }
 
     fun createComment(postId: String, createCommentEntity: CreateCommentEntity) {
         compositeDisposable.add(commentGateway.createComment(postId, createCommentEntity)

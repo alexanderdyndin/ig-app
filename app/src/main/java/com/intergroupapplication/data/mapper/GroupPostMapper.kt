@@ -129,4 +129,8 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                     isDislike = from.isDislike
             )
 
+    fun mapToDomainEntity(from: GroupPostsDto): GroupPostsEntity {
+        return GroupPostsEntity(from.count.toInt(), from.next,
+                from.previous, from.results.map { mapToDomainEntity(it) })
+    }
 }

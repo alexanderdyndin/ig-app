@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.news.other
 
+import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.AuthorEntity
 import com.intergroupapplication.domain.entity.FileEntity
@@ -29,5 +30,5 @@ sealed class GroupPostEntityUI {
                 val videos: List<FileEntity>
         ) : GroupPostEntityUI()
 
-        data class AdEntity(val count: Int) : GroupPostEntityUI()
+        data class AdEntity(val position: Int, val nativeAd: NativeAd?) : GroupPostEntityUI()
 }

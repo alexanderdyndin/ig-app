@@ -1,21 +1,26 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.di
 
 import android.content.Context
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter
+import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -23,6 +28,7 @@ import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 
 @Module
@@ -83,5 +89,37 @@ class CommentsDetailsViewModule {
     @Provides
     fun provideLinearLayoutManager(fragment: CommentsDetailsFragment): RecyclerView.LayoutManager =
             LinearLayoutManager(fragment.requireActivity(), LinearLayoutManager.VERTICAL, false)
+
+    @PerFragment
+    @Provides
+    fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
+                           userSession: UserSession): CommentsAdapter {
+        CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
+        CommentsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexComments ?: 3
+        return CommentsAdapter(imageLoadingDelegate)
+    }
+
+    @PerFragment
+    @Provides
+    @Named("footer")
+    fun provideFooterAdapter(commentsAdapter: CommentsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { commentsAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("header")
+    fun provideHeaderAdapter(commentsAdapter: CommentsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { commentsAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    fun provideConcatAdapter(commentsAdapter: CommentsAdapter,
+                             @Named("footer") footerAdapter: PagingLoadingAdapter,
+                             @Named("header") headerAdapter: PagingLoadingAdapter
+    ): ConcatAdapter {
+        return commentsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
+    }
 
 }

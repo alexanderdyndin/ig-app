@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.remotedatasource.GroupNewsRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -53,6 +54,15 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                         pageSize = 20,
                         prefetchDistance = 5),
                 pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
+        ).flowable
+    }
+
+    override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
+        return Pager(
+                config = PagingConfig(
+                        pageSize = 20,
+                        prefetchDistance = 5),
+                pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
         ).flowable
     }
 

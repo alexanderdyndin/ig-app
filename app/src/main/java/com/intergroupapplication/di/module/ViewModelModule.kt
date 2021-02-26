@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.intergroupapplication.di.qualifier.ViewModelKey
 import com.intergroupapplication.presentation.factory.ViewModelFactory
+import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
+import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
 import com.intergroupapplication.presentation.feature.grouplist.viewModel.GroupListViewModel
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
@@ -33,6 +35,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserListViewModel::class)
     internal abstract fun bindUserListViewModel(userListViewModel: UserListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(GroupViewModel::class)
+    internal abstract fun bindGroupViewModel(groupViewModel: GroupViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CommentsViewModel::class)
+    internal abstract fun bindCommentsViewModel(commentsViewModel: CommentsViewModel): ViewModel
 
     @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

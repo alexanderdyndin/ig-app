@@ -47,7 +47,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 return if (oldItem is GroupPostEntityUI.GroupPostEntity && newItem is GroupPostEntityUI.GroupPostEntity) {
                      oldItem.id == newItem.id
                 } else if (oldItem is GroupPostEntityUI.AdEntity && newItem is GroupPostEntityUI.AdEntity) {
-                    oldItem.count == newItem.count
+                    oldItem.position == newItem.position
                 } else {
                     false
                 }
@@ -65,7 +65,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
-        var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
+        var commentClickListener: (groupPostEntity: GroupPostEntityUI) -> Unit = {}
         var groupClickListener: (groupId: String) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
@@ -113,9 +113,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             if (holder is PostViewHolder)
                 holder.bind(it as GroupPostEntityUI.GroupPostEntity)
             else if (holder is NativeAdViewHolder) {
-                val t = Appodeal.getNativeAds(1)
-                if (t.size>0)
-                    holder.fillNative(t[0])
+                holder.fillNative((it as GroupPostEntityUI.AdEntity).nativeAd)
             }
         }
     }
@@ -142,7 +140,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         postText.text = item.postText
                         postText.show()
                         postText.setOnClickListener {
-                            //commentClickListener.invoke(item)
+                            commentClickListener.invoke(item)
                         }
                     } else {
                         postText.gone()
@@ -150,7 +148,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 }
                 groupName.text = item.groupInPost.name
                 commentImageClickArea.setOnClickListener {
-                    //commentClickListener.invoke(item)
+                    commentClickListener.invoke(item)
                 }
                 groupPostAvatar.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)

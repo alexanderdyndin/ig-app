@@ -1,17 +1,16 @@
-package com.intergroupapplication.presentation.feature.grouplist.adapter
+package com.intergroupapplication.presentation.feature.group.adapter
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.content.ContextCompat
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.RatingBar
+import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.children
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -19,48 +18,49 @@ import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
-import kotlinx.android.synthetic.main.item_group_in_list.view.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.item_group_post.view.*
+import kotlinx.android.synthetic.main.item_loading.view.*
+import timber.log.Timber
 
-
-/**
- * Created by abakarmagomedov on 02/08/2018 at project InterGroupApplication.
- */
-class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
-    : PagingDataAdapter<GroupEntityUI, RecyclerView.ViewHolder>(diffUtil) {
+class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
+    : PagingDataAdapter<GroupPostEntityUI, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
-        var lettersToSpan = ""
-        var userID: String? = null
-        var groupClickListener: (groupId: String) -> Unit = {}
-        var unsubscribeClickListener: (item: GroupEntityUI.GroupEntity, view: View) -> Unit = {_, _ -> }
-        var subscribeClickListener: (item: GroupEntityUI.GroupEntity, view: View) -> Unit = {_, _ -> }
         private const val NATIVE_TYPE_NEWS_FEED = 1
         private const val NATIVE_TYPE_APP_WALL = 2
         private const val NATIVE_TYPE_CONTENT_STREAM = 3
         private const val NATIVE_WITHOUT_ICON = 4
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
-        private val diffUtil = object : DiffUtil.ItemCallback<GroupEntityUI>() {
-            override fun areItemsTheSame(oldItem: GroupEntityUI, newItem: GroupEntityUI): Boolean {
-                return if (oldItem is GroupEntityUI.GroupEntity && newItem is GroupEntityUI.GroupEntity) {
-                    oldItem.id == newItem.id
-                } else if (oldItem is GroupEntityUI.AdEntity && newItem is GroupEntityUI.AdEntity) {
+        private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntityUI>() {
+            override fun areItemsTheSame(oldItem: GroupPostEntityUI, newItem: GroupPostEntityUI): Boolean {
+                return if (oldItem is GroupPostEntityUI.GroupPostEntity && newItem is GroupPostEntityUI.GroupPostEntity) {
+                     oldItem.id == newItem.id
+                } else if (oldItem is GroupPostEntityUI.AdEntity && newItem is GroupPostEntityUI.AdEntity) {
                     oldItem.position == newItem.position
                 } else {
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: GroupEntityUI, newItem: GroupEntityUI): Boolean {
-                return if (oldItem is GroupEntityUI.GroupEntity && newItem is GroupEntityUI.GroupEntity) {
+            override fun areContentsTheSame(oldItem: GroupPostEntityUI, newItem: GroupPostEntityUI): Boolean {
+                return if (oldItem is GroupPostEntityUI.GroupPostEntity && newItem is GroupPostEntityUI.GroupPostEntity) {
                     oldItem == newItem
-                } else if (oldItem is GroupEntityUI.AdEntity && newItem is GroupEntityUI.AdEntity) {
+                } else if (oldItem is GroupPostEntityUI.AdEntity && newItem is GroupPostEntityUI.AdEntity) {
                     oldItem == newItem
                 } else {
                     false
@@ -70,12 +70,20 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
+        var commentClickListener: (groupPostEntity: GroupPostEntityUI.GroupPostEntity) -> Unit = {}
+        var complaintListener: (Int) -> Unit = {}
+        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
+        var likeClickListener: (postId: String) -> Unit = { }
+        var dislikeClickListener: (postId: String) -> Unit = { }
+        val TEST_VIDEO_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/index2.mp4"
+        val TEST_MUSIC_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/videoplayback.webm"
     }
 
     private lateinit var context: Context
+    private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-       context = parent.context
+        context = parent.context
         val view: View
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
@@ -101,107 +109,166 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 NativeCustomAdViewHolder(view)
             }
             else -> {
-                GroupViewHolder(parent.inflate(R.layout.item_group_in_list))
+                return PostViewHolder(parent.inflate(R.layout.item_group_post))
             }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        if (holder is GroupViewHolder) {
-            holder.bind(item as GroupEntityUI.GroupEntity, position)
-        } else if (holder is NativeAdViewHolder) {
-                holder.fillNative((item as GroupEntityUI.AdEntity).nativeAd)
+        getItem(position)?.let {
+            if (holder is PostViewHolder)
+                holder.bind(it as GroupPostEntityUI.GroupPostEntity)
+            else if (holder is NativeAdViewHolder) {
+                holder.fillNative((it as GroupPostEntityUI.AdEntity).nativeAd)
+            }
         }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is PostViewHolder) {
+            holder.itemView.mediaBody.children.forEach {
+                if (it is StyledPlayerView) {
+                    it.player?.release()
+                }
+            }
+        }
+
+        super.onViewRecycled(holder)
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is GroupEntityUI.GroupEntity -> DEFAULT_HOLDER
-            is GroupEntityUI.AdEntity -> AD_TYPE
+            is GroupPostEntityUI.GroupPostEntity -> DEFAULT_HOLDER
+            is GroupPostEntityUI.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
         }
     }
 
 
-    inner class GroupViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val videoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.videoExoPlayerView)
+        val musicPlayerView = itemView.findViewById<PlayerView>(R.id.musicExoPlayerView)
 
-        fun bind(item: GroupEntityUI.GroupEntity, position: Int) {
+        fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
-                spanLetters(item)
-                //item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
-                item_group__subscribers.text = item.followersCount
-                item_group__posts.text = item.postsCount
-                item_group__comments.text = item.CommentsCount
-                item_group__dislike.text = item.postsLikes
-                item_group__like.text = item.postsDislikes
-                item_group__text_age.text = item.ageRestriction
-                when(item.ageRestriction) {
-                    "12+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
-                    }
-                    "16+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age16)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
-                    }
-                    "18+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age18)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.whiteTextColor))
-                    }
-                    else -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
-                    }
-                }
-                if (item.isClosed) {
-                    item_group__lock.setImageResource(R.drawable.icon_close)
-                    item_group__lock.setBackgroundResource(R.drawable.bg_lock)
-                } else {
-                    item_group__lock.setImageResource(R.drawable.icon_open)
-                    item_group__lock.setBackgroundResource(R.drawable.bg_unlock)
-                }
-                groupAvatarHolder.setOnClickListener {
-                    groupClickListener.invoke(item.id)
-                }
-                with (item_group__text_sub) {
-                    if (item.isFollowing) {
-                        setOnClickListener {
-                            unsubscribeClickListener.invoke(item, view)
+                compositeDisposable.add(getDateDescribeByString(item.date)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
+                //postPrescription.text = getDateDescribeByString(item.date)
+                postCommentsCount.text = item.commentsCount
+                item.postText.let { it ->
+                    if (!it.isEmpty()) {
+                        postText.text = item.postText
+                        postText.show()
+                        postText.setOnClickListener {
+                            commentClickListener.invoke(item)
                         }
-                        text = resources.getText(R.string.unsubscribe)
-                        setBackgroundResource(R.drawable.btn_unsub)
                     } else {
-                        setOnClickListener {
-                            subscribeClickListener.invoke(item, view)
-                        }
-                        text = resources.getText(R.string.subscribe)
-                        setBackgroundResource(R.drawable.btn_sub)
-                    }
-                    visibility = if (userID == item.owner) {
-                        View.INVISIBLE
-                    } else {
-                        View.VISIBLE
+                        postText.gone()
                     }
                 }
-                doOrIfNull(item.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
-                })
+                groupName.text = item.groupInPost.name
+                commentImageClickArea.setOnClickListener {
+                    commentClickListener.invoke(item)
+                }
+                likeClickArea.setOnClickListener {
+                    likeClickListener.invoke(item.id)
+                }
+                dislikeClickArea.setOnClickListener {
+                    dislikeClickListener.invoke(item.id)
+                }
+                item.photo.apply {
+                    ifNotNull {
+                        postImage.show()
+                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
+                    }
+                    ifNull { postImage.gone() }
+                }
+                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
+                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+                if (item.audios.isNotEmpty())
+                    initializeAudioPlayer(item.audios[0].file)
+                else
+                    initializeAudioPlayer(TEST_MUSIC_URI)
+                mediaBody.removeAllViews()
+                imageContainer.removeAllViews()
+                item.videos.forEach {
+                    val player = StyledPlayerView(itemView.context)
+                    player.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800)
+                    val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
+                    player.player = videoPlayer
+                    // Build the media item.
+                    val videoMediaItem: MediaItem = MediaItem.fromUri(it.file)
+                    // Set the media item to be played.
+                    videoPlayer.setMediaItem(videoMediaItem)
+                    // Prepare the player.
+                    videoPlayer.prepare()
+                    player.setShowBuffering(StyledPlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                    mediaBody.addView(player)
+                }
+                item.images.forEach { file ->
+                    val image = SimpleDraweeView(itemView.context)
+                    if (file.file.contains(".gif")) {
+                        val controller = Fresco.newDraweeControllerBuilder()
+                                .setUri(Uri.parse(file.file))
+                                .setAutoPlayAnimations(true)
+                                .build()
+                        image.controller = controller
+                    } else {
+                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
+                    }
+                    image.layoutParams = ViewGroup.LayoutParams(400, 400)
+                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
+                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
+                    image.controller?.animatable?.start()
+                    imageContainer.addView(image)
+                }
             }
         }
 
-        private fun spanLetters(item: GroupEntityUI.GroupEntity) {
-                val spanStartPositions = item.name.mapIndexed { index: Int, c: Char -> item.name.indexOf(lettersToSpan, index, true) }.filterNot { it == -1 }.toSet()
-                val wordToSpan: Spannable = SpannableString(item.name)
-                spanStartPositions.forEach{
-                    wordToSpan.setSpan(ForegroundColorSpan(Color.CYAN), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    wordToSpan.setSpan(StyleSpan(Typeface.BOLD), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        private fun initializeVideoPlayer(uri: String) {
+            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
+            videoPlayerView.player = videoPlayer
+            // Build the media item.
+            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
+            // Set the media item to be played.
+            videoPlayer.setMediaItem(videoMediaItem)
+            // Prepare the player.
+            videoPlayer.prepare()
+        }
+
+        private fun initializeAudioPlayer(uri: String) {
+            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
+            musicPlayerView.player = musicPlayer
+            // Build the media item.
+            val musicMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри аудио должно быть в Entity
+            // Set the media item to be played.
+            musicPlayer.setMediaItem(musicMediaItem)
+            // Prepare the player.
+            musicPlayer.prepare()
+        }
+
+        private fun showPopupMenu(view: View, id: Int) {
+            val popupMenu = PopupMenu(view.context, view)
+            popupMenu.inflate(R.menu.settings_menu)
+
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.complaint -> complaintListener.invoke(id)
                 }
-                itemView.item_group__list_header.text = wordToSpan
+                return@setOnMenuItemClickListener true
+            }
+
+            popupMenu.show()
         }
     }
 
+    override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
+        super.unregisterAdapterDataObserver(observer)
+        compositeDisposable.clear()
+    }
 
 
     internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
@@ -221,7 +288,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 ratingBar.visibility = View.INVISIBLE
             } else {
                 ratingBar.visibility = View.VISIBLE
-                //ratingBar.rating = nativeAd?.rating
+                nativeAd?.rating?.let {
+                    ratingBar.rating = it }
                 ratingBar.stepSize = 0.1f
             }
             ctaButton.text = nativeAd?.callToAction
@@ -294,7 +362,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 ratingBar.visibility = View.INVISIBLE
             } else {
                 ratingBar.visibility = View.VISIBLE
-                //ratingBar.rating = nativeAd?.rating
+                nativeAd?.rating?.let {
+                    ratingBar.rating = it }
                 ratingBar.stepSize = 0.1f
             }
             ctaButton.text = nativeAd?.callToAction

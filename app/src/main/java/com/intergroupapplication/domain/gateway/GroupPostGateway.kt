@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface GroupPostGateway {
     fun getGroupPosts(groupId: String, page: Int): Single<List<GroupPostEntity>>
+    fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>>
     fun createPost(createGroupPostEntity: CreateGroupPostEntity, groupId: String): Single<GroupPostEntity>
     fun getPostById(postId: String): Single<GroupPostEntity>
     fun getNewsPosts(): Flowable<PagingData<GroupPostEntity>>

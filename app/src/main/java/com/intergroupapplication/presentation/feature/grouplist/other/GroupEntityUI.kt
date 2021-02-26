@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.grouplist.other
 
+import com.appodeal.ads.NativeAd
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -24,6 +25,6 @@ sealed class GroupEntityUI {
                              val isClosed: Boolean,
                              val ageRestriction: String): GroupEntityUI()
 
-    data class AdEntity(val count: Int) : GroupEntityUI()
+    data class AdEntity(val position: Int, val nativeAd: NativeAd?) : GroupEntityUI()
 }
 

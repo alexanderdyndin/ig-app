@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -15,21 +14,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.base.adapter.AppodealWrapperAdapter
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -40,8 +36,8 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter3
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
+import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
 import com.mikepenz.materialdrawer.Drawer
@@ -110,8 +106,28 @@ class NewsFragment(): BaseFragment(), NewsView{
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
         NewsAdapter.complaintListener = { presenter.complaintPost(it) }
         NewsAdapter.commentClickListener = {
-            clickedPostId = it.id
-            openCommentDetails(InfoForCommentEntity(it, true)) }
+            if (it is GroupPostEntityUI.GroupPostEntity) {
+                clickedPostId = it.id
+                openCommentDetails(InfoForCommentEntity(GroupPostEntity(
+                        it.id,
+                        it.groupInPost,
+                        it.postText,
+                        it.date,
+                        it.updated,
+                        it.author,
+                        it.unreadComments,
+                        it.pin,
+                        it.photo,
+                        it.commentsCount,
+                        it.activeCommentsCount,
+                        it.isActive,
+                        it.isOffered,
+                        it.images,
+                        it.audios,
+                        it.videos
+                ), true))
+            }
+        }
         NewsAdapter.groupClickListener = {
             val data = bundleOf(GROUP_ID to it)
             findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
