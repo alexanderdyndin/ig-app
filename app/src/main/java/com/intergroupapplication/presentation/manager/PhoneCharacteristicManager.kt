@@ -2,11 +2,7 @@ package com.intergroupapplication.presentation.manager
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
-import android.os.Build
-import android.provider.Settings;
-import android.provider.Settings.System;
 import android.telephony.TelephonyManager
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -19,14 +15,16 @@ class PhoneCharacteristicManager @Inject constructor(private val telephonyManage
     @Suppress("DEPRECATION")
     @SuppressLint("MissingPermission", "HardwareIds")
     fun getImei(): String {
-        return (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            telephonyManager.imei
-        } else {
-            telephonyManager.deviceId
-        }) ?: System.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        return "sanya_hui_sosi"
+//        return (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            telephonyManager.imei
+//        } else {
+//            telephonyManager.deviceId
+//        }) ?: System.getString(contentResolver, Settings.Secure.ANDROID_ID)
     }
 
 
-    fun getSerialNumber(): String = UUID.randomUUID().toString()
+    fun getSerialNumber(): String = "jopa"
+//            UUID.randomUUID().toString()
 
 }

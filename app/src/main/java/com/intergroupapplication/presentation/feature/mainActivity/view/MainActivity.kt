@@ -66,6 +66,7 @@ class MainActivity : FragmentActivity() {
                 // To be implemented in a later section.
             }
     private lateinit var billingClient: BillingClient
+    private var skuDetails: List<SkuDetails> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +91,8 @@ class MainActivity : FragmentActivity() {
         super.onResume()
         //todo починить проверку новых версий
         //viewModel.checkNewVersionAvaliable(supportFragmentManager)
+
+
     }
 
     override fun onBackPressed() {
@@ -174,6 +177,7 @@ class MainActivity : FragmentActivity() {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
+                    querySkuDetails()
                 }
             }
             override fun onBillingServiceDisconnected() {
@@ -186,16 +190,24 @@ class MainActivity : FragmentActivity() {
     fun querySkuDetails() {
         CoroutineScope(Main).launch {
             val skuList = ArrayList<String>()
-            skuList.add("premium_upgrade")
-            skuList.add("gas")
+            skuList.add("disable_ads")
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS)
             withContext(Dispatchers.IO) {
                 billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
+                    skuDetails = skuDetailsList ?: listOf()
                     // Process the result.
+                    bill()
                 }
             }
         }
+    }
+
+    fun bill() {
+        val flowParams = BillingFlowParams.newBuilder()
+                .setSkuDetails(skuDetails.first())
+                .build()
+        val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
     }
 
 }
