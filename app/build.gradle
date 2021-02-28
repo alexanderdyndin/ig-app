@@ -54,7 +54,7 @@ android {
         applicationId "com.intergroupapplication"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 1000003
+        versionCode 1000004
 //        androidGitVersion.code()
         versionName "2.0.0.0"
 //        androidGitVersion.name()
