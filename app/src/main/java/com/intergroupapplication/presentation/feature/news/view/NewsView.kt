@@ -7,8 +7,9 @@ import moxy.viewstate.strategy.StateStrategyType
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.*
+import moxy.viewstate.strategy.SkipStrategy
 
-@StateStrategyType(AddToEndSingleStrategy::class)
+@StateStrategyType(SkipStrategy::class)
 interface NewsView : MvpView, ImageUploadingView {
     fun showMessage(resId: Int)
     fun showMessage(msg: String)

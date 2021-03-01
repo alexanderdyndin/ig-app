@@ -1,22 +1,15 @@
 package com.intergroupapplication.presentation.feature.userlist.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.base.PagingViewGroup
-import com.intergroupapplication.presentation.delegate.PagingDelegateGroup
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.view.*
 import kotlinx.android.synthetic.main.fragment_user_list.*
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 class UserListFragment(): BaseFragment() {

@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
-import androidx.paging.PagedListAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -20,15 +19,11 @@ import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.CommentEntity
-import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.getDateDescribeByString
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.feature.commentsdetails.other.CommentEntityUI
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

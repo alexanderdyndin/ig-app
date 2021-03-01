@@ -14,6 +14,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorHandler,
@@ -34,18 +35,18 @@ class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorH
                     myDialogFragment.show(manager, "myDialog")
                 }
             } catch (e:Throwable) {
-                errorHandler.handle(e)
+                Timber.e(e)
             }
         }
     }
 
     fun getAdCount() {
-        if (sessionStorage.user != null) {
+        if (sessionStorage.user != null && sessionStorage.isAdEnabled) {
             compositeDisposable.add(appStatusUseCase.getAdParameters()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ sessionStorage.countAd = it },
-                            { errorHandler.handle(it) }))
+                            { Timber.e(it) }))
         }
     }
 

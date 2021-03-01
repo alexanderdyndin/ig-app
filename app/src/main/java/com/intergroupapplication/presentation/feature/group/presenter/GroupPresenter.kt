@@ -2,16 +2,12 @@ package com.intergroupapplication.presentation.feature.group.presenter
 
 import moxy.InjectViewState
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.exception.PageNotFoundException
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.usecase.GroupUseCase
 import com.intergroupapplication.domain.usecase.PostsUseCase
-import com.intergroupapplication.presentation.base.BasePagingState
-import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.exstension.handleLoading
 import com.intergroupapplication.presentation.feature.group.view.GroupView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -1,7 +1,5 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -18,10 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -33,19 +29,14 @@ import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.base.PagingView
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.delegate.PagingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
-import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
-import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -66,10 +57,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 
-class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
-        AppBarLayout.OnOffsetChangedListener, PagingView by pagingDelegate {
-
-    constructor() : this(PagingDelegate())
+class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
+        AppBarLayout.OnOffsetChangedListener{
 
     companion object {
         const val COMMENTS_DETAILS_REQUEST = 0
@@ -101,8 +90,8 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
 //    @Inject
 //    lateinit var adapter: CommentDetailsAdapter
 
-    @Inject
-    lateinit var layoutManager: RecyclerView.LayoutManager
+//    @Inject
+//    lateinit var layoutManager: RecyclerView.LayoutManager
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -137,7 +126,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
-        infoForCommentEntity = requireArguments().getParcelable(COMMENT_POST_ENTITY)
+        infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)!!
         compositeDisposable.add(
                 viewModel.fetchComments(infoForCommentEntity.groupPostEntity.id).subscribe {
                     adapter.submitData(lifecycle, it)
@@ -183,6 +172,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
                             loading_layout.show()
                         }
                         emptyText.hide()
+                        commentEditText.isEnabled = false
                     }
                     is LoadState.Error -> {
                         swipeLayout.isRefreshing = false
@@ -192,6 +182,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
                             adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
+                        commentEditText.isEnabled = true
                     }
                     is LoadState.NotLoading -> {
                         if (adapter.itemCount == 0) {
@@ -205,6 +196,7 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
                             commentsList.scrollToPosition(adapter.itemCount)
                             commentCreated = false
                         }
+                        commentEditText.isEnabled = true
                     }
                     else ->{ swipeLayout.isRefreshing = false }
                 }
@@ -283,11 +275,11 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
         commentsList.smoothScrollToPosition(adapter.itemCount)
     }
 
-    override fun commentsLoaded(comments: PagedList<CommentEntity>) {
+//    override fun commentsLoaded(comments: PagedList<CommentEntity>) {
         //adapter.submitList(comments)
         //adapter.notifyDataSetChanged()
         //commentsList.smoothScrollToPosition(adapter.itemCount - 1)
-    }
+//    }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         for (error in errors) {
@@ -306,19 +298,19 @@ class CommentsDetailsFragment(private val pagingDelegate: PagingDelegate) : Base
         }
     }
 
-    override fun showLoading(show: Boolean) {
-        if (show) {
+//    override fun showLoading(show: Boolean) {
+//        if (show) {
             //commentEditText.isEnabled = false
             //swipeLayout.isRefreshing = true
             //emptyText.hide()
             //adapter.removeError()
             //adapter.addLoading()
-        } else {
+//        } else {
             //commentEditText.isEnabled = true
             //swipeLayout.isRefreshing = false
             //adapter.removeLoading()
-        }
-    }
+//        }
+//    }
 
     override fun showCommentUploading(show: Boolean) {
         if (show) {
