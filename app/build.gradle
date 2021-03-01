@@ -54,9 +54,9 @@ android {
         applicationId "com.intergroupapplication"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 1000004
+        versionCode 1000005
 //        androidGitVersion.code()
-        versionName "2.0.0.0"
+        versionName "1.6.0.0"
 //        androidGitVersion.name()
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
