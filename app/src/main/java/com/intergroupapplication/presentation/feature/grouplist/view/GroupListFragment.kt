@@ -2,44 +2,45 @@ package com.intergroupapplication.presentation.feature.grouplist.view
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
-import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.google.android.material.tabs.TabLayoutMediator
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupInfoEntity
-import com.intergroupapplication.domain.entity.GroupType
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.presentation.base.BaseFragment
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter3
+import com.intergroupapplication.presentation.feature.ExitActivity
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListsAdapter
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupsFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.grouplist.viewModel.GroupListViewModel
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -54,8 +55,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-class GroupListFragment()
-    : BaseFragment(), GroupListView {
+class GroupListFragment(): BaseFragment(), GroupListView {
 
 
     companion object {
@@ -72,7 +72,6 @@ class GroupListFragment()
     @Inject
     lateinit var sessionStorage: UserSession
 
-
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
@@ -81,7 +80,11 @@ class GroupListFragment()
 
     private lateinit var viewModel: GroupListViewModel
 
-    //lateinit var doOnFragmentViewCreated: (View) -> Unit
+    private var exitHandler: Handler? = null
+
+    private var doubleBackToExitPressedOnce = false
+
+    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
     private lateinit var viewDrawer: View
 
@@ -97,27 +100,51 @@ class GroupListFragment()
 
     @Inject
     @Named("all")
-    lateinit var adapterAll: GroupListAdapter3
+    lateinit var adapterAll: GroupListAdapter
 
     @Inject
     @Named("subscribed")
-    lateinit var adapterSubscribed: GroupListAdapter3
+    lateinit var adapterSubscribed: GroupListAdapter
 
     @Inject
     @Named("owned")
-    lateinit var adapterOwned: GroupListAdapter3
+    lateinit var adapterOwned: GroupListAdapter
 
     @Inject
     @Named("all")
-    lateinit var adapterAllAd: AdmobBannerRecyclerAdapterWrapper
+    lateinit var adapterAllAd: ConcatAdapter
 
     @Inject
     @Named("subscribed")
-    lateinit var adapterSubscribedAd: AdmobBannerRecyclerAdapterWrapper
+    lateinit var adapterSubscribedAd: ConcatAdapter
 
     @Inject
     @Named("owned")
-    lateinit var adapterOwnedAd: AdmobBannerRecyclerAdapterWrapper
+    lateinit var adapterOwnedAd: ConcatAdapter
+
+    @Inject
+    @Named("footerAll")
+    lateinit var adapterFooterAll: PagingLoadingAdapter
+
+    @Inject
+    @Named("footerSub")
+    lateinit var adapterFooterSub: PagingLoadingAdapter
+
+    @Inject
+    @Named("footerAdm")
+    lateinit var adapterFooterAdm: PagingLoadingAdapter
+
+//    @Inject
+//    @Named("all")
+//    lateinit var adapterAllAd: AdmobBannerRecyclerAdapterWrapper
+//
+//    @Inject
+//    @Named("subscribed")
+//    lateinit var adapterSubscribedAd: AdmobBannerRecyclerAdapterWrapper
+//
+//    @Inject
+//    @Named("owned")
+//    lateinit var adapterOwnedAd: AdmobBannerRecyclerAdapterWrapper
 
 
     private val textWatcher = object : TextWatcher {
@@ -137,6 +164,18 @@ class GroupListFragment()
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), modelFactory)[GroupListViewModel::class.java]
         fetchGroups()
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (doubleBackToExitPressedOnce) {
+                    ExitActivity.exitApplication(requireContext())
+                    return
+                }
+                doubleBackToExitPressedOnce = true
+                Toast.makeText(requireContext(), getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+                exitHandler = Handler(Looper.getMainLooper())
+                exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
+            }
+        })
     }
 
 
@@ -145,11 +184,10 @@ class GroupListFragment()
 
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
 
-        val adapterList: MutableList<AdmobBannerRecyclerAdapterWrapper> = mutableListOf()
+        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
         adapterList.add(adapterAllAd)
         adapterList.add(adapterSubscribedAd)
         adapterList.add(adapterOwnedAd)
-
         pager.apply {
             adapter = GroupListsAdapter(adapterList)
             val handler = ViewPager2Circular(this, swipe_groups)
@@ -159,7 +197,6 @@ class GroupListFragment()
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
-
         val tabTitles = arrayOf(resources.getString(R.string.allGroups), resources.getString(R.string.subGroups), resources.getString(R.string.admGroups))
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
@@ -170,14 +207,14 @@ class GroupListFragment()
         }
         createGroup.visibility = View.VISIBLE
         createGroup.setOnClickListener { openCreateGroup() }
-        with (GroupListAdapter3) {
+        with (GroupListAdapter) {
             userID = sessionStorage.user?.id
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
-            subscribeClickListener = { id, view ->
-                compositeDisposable.add(viewModel.subscribeGroup(id)
+            subscribeClickListener = { group, view ->
+                compositeDisposable.add(viewModel.subscribeGroup(group.id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe {
@@ -185,20 +222,20 @@ class GroupListFragment()
                             view.item_group__text_sub.isEnabled = false
                         }
                         .doOnComplete {
-                            //adapterGroups.refresh()
-                            //viewModel.query.value = lastQuery ?: ""
                             view.subscribingProgressBar.hide()
+                            group.isFollowing = true
                             with(view.item_group__text_sub){
                                 isEnabled = true
-                                setOnClickListener {
-                                    unsubscribeClickListener.invoke(id, view)
-                                }
-                                text = resources.getText(R.string.unsubscribe)
-                                setBackgroundResource(R.drawable.btn_unsub)
                             }
                             when (currentScreen) {
-                                0 -> adapterSubscribed.refresh()
-                                1 -> adapterAll.refresh()
+                                0 -> {
+                                    adapterSubscribed.refresh()
+                                    adapterAll.notifyDataSetChanged()
+                                }
+                                1 -> {
+                                    adapterAll.refresh()
+                                    adapterSubscribed.notifyDataSetChanged()
+                                }
                             }
                         }
                         .doOnError {
@@ -209,8 +246,8 @@ class GroupListFragment()
                             errorHandler.handle(it)
                         }))
             }
-            unsubscribeClickListener = { id, view ->
-                compositeDisposable.add(viewModel.unsubscribeGroup(id)
+            unsubscribeClickListener = { group, view ->
+                compositeDisposable.add(viewModel.unsubscribeGroup(group.id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe {
@@ -219,17 +256,19 @@ class GroupListFragment()
                         }
                         .doOnComplete {
                             view.subscribingProgressBar.hide()
+                            group.isFollowing = false
                             with(view.item_group__text_sub){
                                 isEnabled = true
-                                setOnClickListener {
-                                    subscribeClickListener.invoke(id, view)
-                                }
-                                text = resources.getText(R.string.subscribe)
-                                setBackgroundResource(R.drawable.btn_sub)
                             }
                             when (currentScreen) {
-                                0 -> adapterSubscribed.refresh()
-                                1 -> adapterAll.refresh()
+                                0 -> {
+                                    adapterSubscribed.refresh()
+                                    adapterAll.notifyDataSetChanged()
+                                }
+                                1 -> {
+                                    adapterAll.refresh()
+                                    adapterSubscribed.notifyDataSetChanged()
+                                }
                             }
                         }
                         .doOnError {
@@ -252,34 +291,15 @@ class GroupListFragment()
             adapterAll.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
-                        adapterAll.removeError()
-                        //adapterAll.addLoading()
-                        //                    if (adapterGroups.itemCount == 0)
-                        //                        progress_loading.show()
-                        //                    else adapterGroups.addLoading()
-                        //                    adapterGroups.removeError()
-                        //                    emptyText.hide()
                     }
                     is LoadState.Error -> {
                         swipe_groups.isRefreshing = false
-                        adapterAll.addError()
-                        //                    emptyText.hide()
-                        //                    adapterGroups.addError()
-                        //                    adapterGroups.removeLoading()
-                        //                    progress_loading.hide()
+                        if (adapterAll.itemCount == 0) {
+                            adapterFooterAll.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        //                    if (adapterGroups.itemCount == 0) {
-                        //                        emptyText.show()
-                        //                    } else {
-                        //                        emptyText.hide()
-                        //                    }
-                        //                    adapterGroups.removeError()
-                        //                    adapterGroups.removeLoading()
-                        //                    group_swipe.isRefreshing = false
-                        //                    progress_loading.hide()
-                        adapterAll.removeError()
                         swipe_groups.isRefreshing = false
                     }
                 }
@@ -289,15 +309,15 @@ class GroupListFragment()
             adapterSubscribed.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
-                        adapterSubscribed.removeError()
                     }
                     is LoadState.Error -> {
-                        adapterSubscribed.addError()
                         swipe_groups.isRefreshing = false
+                        if (adapterSubscribed.itemCount == 0) {
+                            adapterFooterSub.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        adapterSubscribed.removeError()
                         swipe_groups.isRefreshing = false
                     }
                 }
@@ -307,15 +327,15 @@ class GroupListFragment()
             adapterOwned.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
-                        adapterOwned.removeError()
                     }
                     is LoadState.Error -> {
-                        adapterOwned.addError()
                         swipe_groups.isRefreshing = false
+                        if (adapterOwned.itemCount == 0) {
+                            adapterFooterAdm.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        adapterOwned.removeError()
                         swipe_groups.isRefreshing = false
                     }
                 }

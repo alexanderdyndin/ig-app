@@ -3,9 +3,15 @@ package com.intergroupapplication.presentation.feature.grouplist.viewModel
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
+import androidx.paging.map
 import androidx.paging.rxjava2.cachedIn
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.usecase.GroupUseCase
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
+import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -18,17 +24,139 @@ class GroupListViewModel @Inject constructor(
         private val compositeDisposable: CompositeDisposable
 ): ViewModel() {
 
+    private val nativeAdItem: NativeAd?
+        get() {
+            val ads = Appodeal.getNativeAds(1)
+            return if (ads.isNotEmpty()) ads[0] else null
+        }
 
-    fun fetchGroups(query: String = ""): Flowable<PagingData<GroupEntity>> {
-        return useCase.getGroupList(query).cachedIn(viewModelScope)
+    fun fetchGroups(query: String = ""): Flowable<PagingData<GroupEntityUI>> {
+        return useCase.getGroupList(query)
+                .map { pagingData ->
+                    var i = -GroupListAdapter.AD_FIRST - 1
+                    pagingData.map {
+                        GroupEntityUI.GroupEntity (
+                                it.id,
+                                it.followersCount,
+                                it.postsCount,
+                                it.postsLikes,
+                                it.postsDislikes,
+                                it.CommentsCount,
+                                it.timeBlocked,
+                                it.name,
+                                it.description,
+                                it.isBlocked,
+                                it.owner,
+                                it.isFollowing,
+                                it.avatar,
+                                it.subject,
+                                it.rules,
+                                it.isClosed,
+                                it.ageRestriction
+                                )
+                    }
+                            .insertSeparators<GroupEntityUI.GroupEntity, GroupEntityUI>
+                            { before: GroupEntityUI.GroupEntity?, after: GroupEntityUI.GroupEntity? ->
+                                i++
+                                when {
+                                    before == null -> null
+                                    after == null -> null
+                                    else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
+                                        var nativeAd: NativeAd?
+                                        if (nativeAdItem.also { nativeAd = it } != null) {
+                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                        } else null
+                                    } else null
+                                }
+                            }
+                }
+                .cachedIn(viewModelScope)
     }
 
-    fun fetchSubGroups(query: String = ""): Flowable<PagingData<GroupEntity>> {
-        return useCase.getSubscribedGroupList(query).cachedIn(viewModelScope)
+    fun fetchSubGroups(query: String = ""): Flowable<PagingData<GroupEntityUI>> {
+        return useCase.getSubscribedGroupList(query)
+                .map { pagingData ->
+                    var i = -GroupListAdapter.AD_FIRST - 1
+                    pagingData.map {
+                        GroupEntityUI.GroupEntity (
+                                it.id,
+                                it.followersCount,
+                                it.postsCount,
+                                it.postsLikes,
+                                it.postsDislikes,
+                                it.CommentsCount,
+                                it.timeBlocked,
+                                it.name,
+                                it.description,
+                                it.isBlocked,
+                                it.owner,
+                                it.isFollowing,
+                                it.avatar,
+                                it.subject,
+                                it.rules,
+                                it.isClosed,
+                                it.ageRestriction
+                        )
+                    }
+                            .insertSeparators<GroupEntityUI.GroupEntity, GroupEntityUI>
+                            { before: GroupEntityUI.GroupEntity?, after: GroupEntityUI.GroupEntity? ->
+                                i++
+                                when {
+                                    before == null -> null
+                                    after == null -> null
+                                    else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
+                                        var nativeAd: NativeAd?
+                                        if (nativeAdItem.also { nativeAd = it } != null) {
+                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                        } else null
+                                    } else null
+                                }
+                            }
+                }
+                .cachedIn(viewModelScope)
     }
 
-    fun fetchAdmGroups(query: String = "") : Flowable<PagingData<GroupEntity>> {
-        return useCase.getAdminGroupList(query).cachedIn(viewModelScope)
+    fun fetchAdmGroups(query: String = "") : Flowable<PagingData<GroupEntityUI>> {
+        return useCase.getAdminGroupList(query)
+                .map { pagingData ->
+                    var i = -GroupListAdapter.AD_FIRST - 1
+                    pagingData.map {
+                        GroupEntityUI.GroupEntity (
+                                it.id,
+                                it.followersCount,
+                                it.postsCount,
+                                it.postsLikes,
+                                it.postsDislikes,
+                                it.CommentsCount,
+                                it.timeBlocked,
+                                it.name,
+                                it.description,
+                                it.isBlocked,
+                                it.owner,
+                                it.isFollowing,
+                                it.avatar,
+                                it.subject,
+                                it.rules,
+                                it.isClosed,
+                                it.ageRestriction
+                        )
+                    }
+                            .insertSeparators<GroupEntityUI.GroupEntity, GroupEntityUI>
+                            { before: GroupEntityUI.GroupEntity?, after: GroupEntityUI.GroupEntity? ->
+                                i++
+                                when {
+                                    before == null -> null
+                                    after == null -> null
+                                    else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
+                                        var nativeAd: NativeAd?
+                                        if (nativeAdItem.also { nativeAd = it } != null) {
+                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                        } else null
+                                    } else null
+                                }
+                            }
+                }
+                .cachedIn(viewModelScope)
     }
 
     fun subscribeGroup(groupID: String): Completable {

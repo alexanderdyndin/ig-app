@@ -1,20 +1,11 @@
 package com.intergroupapplication.presentation.feature.grouplist.di
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import com.appodeal.ads.Appodeal
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
-import com.clockbyte.admobadapter.bannerads.BannerAdViewWrappingStrategy
-import com.google.android.gms.ads.AdView
-import com.intergroupapplication.R
+import androidx.recyclerview.widget.ConcatAdapter
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
@@ -24,7 +15,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter3
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -75,131 +66,202 @@ class GroupListViewModule {
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
+//    @PerFragment
+//    @Provides
+//    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupEntity>() {
+//        override fun areItemsTheSame(oldItem: GroupEntity, newItem: GroupEntity) = oldItem.id == newItem.id
+//        override fun areContentsTheSame(oldItem: GroupEntity, newItem: GroupEntity) = oldItem == newItem
+//    }
+
     @PerFragment
     @Provides
-    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupEntity>() {
-        override fun areItemsTheSame(oldItem: GroupEntity, newItem: GroupEntity) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: GroupEntity, newItem: GroupEntity) = oldItem == newItem
+    @Named("footerAll")
+    fun provideFooterAdapterAll(@Named("all") groupListAdapter: GroupListAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupListAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("headerAll")
+    fun provideHeaderAdapterAll(@Named("all") groupListAdapter: GroupListAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupListAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("footerSub")
+    fun provideFooterAdapterSub(@Named("subscribed") groupListAdapter: GroupListAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupListAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("headerSub")
+    fun provideHeaderAdapterSub(@Named("subscribed") groupListAdapter: GroupListAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupListAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("footerAdm")
+    fun provideFooterAdapterAdm(@Named("owned") groupListAdapter: GroupListAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupListAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("headerAdm")
+    fun provideHeaderAdapterAdm(@Named("owned") groupListAdapter: GroupListAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
     @Named("all")
-    fun provideGroupListNew1(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
-                             imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter3 {
-        val adapter = GroupListAdapter3(diffUtil, imageLoadingDelegate)
-        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
-        return adapter
+    fun provideGroupListAll(imageLoadingDelegate: ImageLoadingDelegate,
+                            userSession: UserSession
+    ): GroupListAdapter {
+        GroupListAdapter.AD_FIRST = userSession.countAd?.firstAdIndexGroups ?: 5
+        GroupListAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsGroups ?: 5
+        return GroupListAdapter(imageLoadingDelegate)
     }
+
 
     @PerFragment
     @Provides
     @Named("subscribed")
-    fun provideGroupListNew2(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
-                             imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter3 {
-        val adapter = GroupListAdapter3(diffUtil, imageLoadingDelegate)
-        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
-        return adapter
+    fun provideGroupListSub(imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter {
+        return GroupListAdapter(imageLoadingDelegate)
     }
 
     @PerFragment
     @Provides
     @Named("owned")
-    fun provideGroupListNew3(diffUtil: DiffUtil.ItemCallback<GroupEntity>,
-                             imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter3 {
-        val adapter = GroupListAdapter3(diffUtil, imageLoadingDelegate)
-        adapter.withLoadStateFooter(PagingLoadingAdapter{adapter.retry()})
-        return adapter
+    fun provideConcatGroupListAdm(imageLoadingDelegate: ImageLoadingDelegate): GroupListAdapter {
+        return GroupListAdapter(imageLoadingDelegate)
     }
 
     @PerFragment
     @Provides
     @Named("all")
-    fun provideAdmobBammerAdapter1(context: Context,
-                                   @Named("all") groupsAdapter: GroupListAdapter3,
-                                  activity: GroupListFragment, userSession: UserSession):
-            AdmobBannerRecyclerAdapterWrapper =
-            AdmobBannerRecyclerAdapterWrapper.builder(context)
-                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
-                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
-                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
-                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
-                            container.removeAllViews()
-                            //container.addView(ad)
-                            val t = Appodeal.getNativeAds(1)
-                            if (t.size>0) {
-                                val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], GROUPS)
-                                container.addView(nativeAdView)
-                            }
-                        }
-                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
-                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
-                                    parent, false) as ViewGroup
-                        }
-                    })
-                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
-                    .setAdapter(groupsAdapter)
-                    .build()
+    fun provideConcatListAll(@Named("all") groupListAdapter: GroupListAdapter,
+                             @Named("footerAll") pagingFooter: PagingLoadingAdapter,
+                             @Named("headerAll") pagingHeader: PagingLoadingAdapter,
+    ): ConcatAdapter {
+        return groupListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
+    }
+
 
     @PerFragment
     @Provides
     @Named("subscribed")
-    fun provideAdmobBammerAdapter2(context: Context,
-                                   @Named("subscribed") groupsAdapter: GroupListAdapter3,
-                                  activity: GroupListFragment, userSession: UserSession):
-            AdmobBannerRecyclerAdapterWrapper =
-            AdmobBannerRecyclerAdapterWrapper.builder(context)
-                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
-                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
-                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
-                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
-                            container.removeAllViews()
-                            //container.addView(ad)
-                            val t = Appodeal.getNativeAds(1)
-                            if (t.size>0) {
-                                val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], GROUPS)
-                                container.addView(nativeAdView)
-                            }
-                        }
-                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
-                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
-                                    parent, false) as ViewGroup
-                        }
-                    })
-                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
-                    .setAdapter(groupsAdapter)
-                    .build()
+    fun provideConcatListSub(@Named("subscribed") groupListAdapter: GroupListAdapter,
+                             @Named("footerSub") pagingFooter: PagingLoadingAdapter,
+                             @Named("headerSub") pagingHeader: PagingLoadingAdapter,
+    ): ConcatAdapter {
+        return groupListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
+    }
 
     @PerFragment
     @Provides
     @Named("owned")
-    fun provideAdmobBammerAdapter3(context: Context,
-                                   @Named("owned") groupsAdapter: GroupListAdapter3,
-                                  activity: GroupListFragment, userSession: UserSession):
-            AdmobBannerRecyclerAdapterWrapper =
-            AdmobBannerRecyclerAdapterWrapper.builder(context)
-                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
-                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
-                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
-                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
-                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
-                            container.removeAllViews()
-                            //container.addView(ad)
-                            val t = Appodeal.getNativeAds(1)
-                            if (t.size>0) {
-                                val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], GROUPS)
-                                container.addView(nativeAdView)
-                            }
-                        }
-                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
-                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
-                                    parent, false) as ViewGroup
-                        }
-                    })
-                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
-                    .setAdapter(groupsAdapter)
-                    .build()
+    fun provideGroupListAdm(@Named("owned") groupListAdapter: GroupListAdapter,
+                            @Named("footerAdm") pagingFooter: PagingLoadingAdapter,
+                            @Named("headerAdm") pagingHeader: PagingLoadingAdapter,
+    ): ConcatAdapter {
+        return groupListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
+    }
+
+
+
+//    @PerFragment
+//    @Provides
+//    @Named("all")
+//    fun provideAdmobBammerAdapter1(context: Context,
+//                                   @Named("all") groupsAdapter: GroupListAdapter3,
+//                                  activity: GroupListFragment, userSession: UserSession):
+//            AdmobBannerRecyclerAdapterWrapper =
+//            AdmobBannerRecyclerAdapterWrapper.builder(context)
+//                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
+//                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
+//                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
+//                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
+//                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
+//                            container.removeAllViews()
+//                            //container.addView(ad)
+//                            val t = Appodeal.getNativeAds(1)
+//                            if (t.size>0) {
+//                                val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], GROUPS)
+//                                container.addView(nativeAdView)
+//                            }
+//                        }
+//                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
+//                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
+//                                    parent, false) as ViewGroup
+//                        }
+//                    })
+//                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
+//                    .setAdapter(groupsAdapter)
+//                    .build()
+//
+//    @PerFragment
+//    @Provides
+//    @Named("subscribed")
+//    fun provideAdmobBammerAdapter2(context: Context,
+//                                   @Named("subscribed") groupsAdapter: GroupListAdapter3,
+//                                  activity: GroupListFragment, userSession: UserSession):
+//            AdmobBannerRecyclerAdapterWrapper =
+//            AdmobBannerRecyclerAdapterWrapper.builder(context)
+//                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
+//                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
+//                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
+//                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
+//                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
+//                            container.removeAllViews()
+//                            //container.addView(ad)
+//                            val t = Appodeal.getNativeAds(1)
+//                            if (t.size>0) {
+//                                val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], GROUPS)
+//                                container.addView(nativeAdView)
+//                            }
+//                        }
+//                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
+//                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
+//                                    parent, false) as ViewGroup
+//                        }
+//                    })
+//                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
+//                    .setAdapter(groupsAdapter)
+//                    .build()
+//
+//    @PerFragment
+//    @Provides
+//    @Named("owned")
+//    fun provideAdmobBammerAdapter3(context: Context,
+//                                   @Named("owned") groupsAdapter: GroupListAdapter3,
+//                                  activity: GroupListFragment, userSession: UserSession):
+//            AdmobBannerRecyclerAdapterWrapper =
+//            AdmobBannerRecyclerAdapterWrapper.builder(context)
+//                    .setLimitOfAds(userSession.countAd?.limitOfAdsGroups ?: 20)
+//                    .setFirstAdIndex(userSession.countAd?.firstAdIndexGroups ?: 4)
+//                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
+//                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
+//                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
+//                            container.removeAllViews()
+//                            //container.addView(ad)
+//                            val t = Appodeal.getNativeAds(1)
+//                            if (t.size>0) {
+//                                val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], GROUPS)
+//                                container.addView(nativeAdView)
+//                            }
+//                        }
+//                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
+//                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_appodeal_groups,
+//                                    parent, false) as ViewGroup
+//                        }
+//                    })
+//                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsGroups ?: 7)
+//                    .setAdapter(groupsAdapter)
+//                    .build()
 
 }

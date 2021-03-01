@@ -83,6 +83,18 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                 )
             } ?: let { null }
 
+//    fun mapToDataModel(from: CommentUserEntity?): CommentUserModel? =
+//            from?.let {
+//                CommentUserModel(
+//                        user = from.user,
+//                        firstName = from.firstName,
+//                        secondName = from.secondName,
+//                        birthday = from.birthday,
+//                        gender = from.gender,
+//                        avatar = from.avatar
+//                )
+//            } ?: let { null }
+
 
     fun mapToDomainEntity(from: UserProfileModelResponse) =
             UserEntity(

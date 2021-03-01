@@ -1,7 +1,5 @@
 package com.intergroupapplication.presentation.feature.group.view
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -9,45 +7,46 @@ import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagedList
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.base.BasePresenter.Companion.POST_CREATED
 import com.intergroupapplication.presentation.base.ImageUploader
-import com.intergroupapplication.presentation.base.PagingView
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.delegate.PagingDelegate
-import com.intergroupapplication.presentation.exstension.doOrIfNull
-import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.exstension.startAlphaAnimation
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENTS_DETAILS_REQUEST
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.GROUP_ID_VALUE
-import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter
+import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
+import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
+import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.auth_loader.*
+import kotlinx.android.synthetic.main.auth_loader.progressBar
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_group.*
+import kotlinx.android.synthetic.main.fragment_group.emptyText
 import kotlinx.android.synthetic.main.item_group_header_view.*
 import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
 import kotlinx.android.synthetic.main.layout_user_join_button.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
+import javax.inject.Named
 import kotlin.math.abs
 
 
-class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment(), GroupView,
-        AppBarLayout.OnOffsetChangedListener, PagingView by pagingDelegate {
+class GroupFragment() : BaseFragment(), GroupView,
+        AppBarLayout.OnOffsetChangedListener {
 
     companion object {
         private const val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f
@@ -138,8 +137,6 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
 //        })
 //    }
 
-    constructor() : this(PagingDelegate())
-
     @Inject
     @InjectPresenter
     lateinit var presenter: GroupPresenter
@@ -158,10 +155,19 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
     lateinit var imageUploadingDelegate: ImageUploader
 
     @Inject
-    lateinit var adapter: GroupAdapter
+    lateinit var adapter: GroupPostsAdapter
 
     @Inject
-    lateinit var layoutManager: RecyclerView.LayoutManager
+    lateinit var adapterAD: ConcatAdapter
+
+    @Inject
+    @Named("footer")
+    lateinit var footerAdapter: PagingLoadingAdapter
+
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+
+    lateinit var viewModel: GroupViewModel
 
     private var mIsTheTitleVisible = false
     private var mIsTheTitleContainerVisible = true
@@ -175,35 +181,102 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString(GROUP_ID)!!
         isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
+        viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
+        compositeDisposable.add(
+                viewModel.fetchPosts(groupId)
+                        .subscribe {
+                            adapter.submitData(lifecycle, it)
+                        }
+        )
 //        initializeMediaBrowser()
     }
 
     override fun viewCreated() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Int>(FRAGMENT_RESULT)?.observe(
-                viewLifecycleOwner) { request ->
-            when (request) {
-                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
-                POST_CREATED -> presenter.refresh(groupId)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)?.observe(
+                viewLifecycleOwner) { id ->
+            if (createdPostId != id) {
+                createdPostId = id
+                adapter.refresh()
             }
         }
-        //crashing app when provide it by dagger
-        //groupPosts.layoutManager = layoutManager
         groupPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
-        adapter.retryClickListener = { presenter.reload() }
-        adapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
-        adapter.complaintListener = { id -> presenter.complaintPost(id) }
-        groupPosts.adapter = adapter
+        GroupPostsAdapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(
+                GroupPostEntity(
+                        it.id,
+                        it.groupInPost,
+                        it.postText,
+                        it.date,
+                        it.updated,
+                        it.author,
+                        it.unreadComments,
+                        it.pin,
+                        it.photo,
+                        it.commentsCount,
+                        it.activeCommentsCount,
+                        it.isActive,
+                        it.isOffered,
+                        it.images,
+                        it.audios,
+                        it.videos
+                )
+        )) }
+        GroupPostsAdapter.complaintListener = { id -> presenter.complaintPost(id) }
+        GroupPostsAdapter.imageClickListener = { list: List<FileEntity>, i: Int ->
+            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+            findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
+        }
+        GroupPostsAdapter.likeClickListener = {
+            presenter.setReact(isLike = true, isDislike = false, postId = it)
+        }
+        GroupPostsAdapter.dislikeClickListener = {
+            presenter.setReact(isLike = false, isDislike = true, postId = it)
+        }
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
-        pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         presenter.getGroupDetailInfo(groupId)
-        swipeLayout.setOnRefreshListener {
-            presenter.refresh(groupId)
-        }
         groupStrength.setOnClickListener {
             val data = bundleOf(GROUP_ID to groupId)
             findNavController().navigate(R.id.action_groupActivity_to_userListFragment, data)
+        }
+        newPaging()
+    }
+
+    fun newPaging() {
+        swipeLayout.setOnRefreshListener {
+            adapter.refresh()
+        }
+        groupPosts.adapter = adapterAD
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest { loadStates ->
+                when(loadStates.refresh) {
+                    is LoadState.Loading -> {
+                        if (adapter.itemCount == 0) {
+                            loading_layout.show()
+                        }
+                        emptyText.hide()
+                    }
+                    is LoadState.Error -> {
+                        swipeLayout.isRefreshing = false
+                        emptyText.hide()
+                        loading_layout.gone()
+                        if (adapter.itemCount == 0) {
+                            footerAdapter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        }
+                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
+                    }
+                    is LoadState.NotLoading -> {
+                        if (adapter.itemCount == 0) {
+                            emptyText.show()
+                        } else {
+                            emptyText.hide()
+                        }
+                        loading_layout.gone()
+                        swipeLayout.isRefreshing = false
+                    }
+                    else ->{ swipeLayout.isRefreshing = false }
+                }
+            }
         }
     }
 
@@ -257,10 +330,6 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
         }, { groupAvatarHolder.showAvatar(R.drawable.variant_10) })
     }
 
-    override fun postsLoaded(posts: PagedList<GroupPostEntity>) {
-        adapter.submitList(posts)
-    }
-
     override fun showGroupInfoLoading(show: Boolean) {
         if (show) {
             progressBar.show()
@@ -289,18 +358,6 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
     override fun showImageUploadingError(path: String) {
         groupAvatarHolder.clearUploadingState()
-    }
-
-
-    override fun showLoading(show: Boolean) {
-        if (show) {
-            emptyText.hide()
-            adapter.removeError()
-            adapter.addLoading()
-        } else {
-            swipeLayout.isRefreshing = false
-            adapter.removeLoading()
-        }
     }
 
     override fun groupFollowed(followersCount: Int) {
@@ -332,6 +389,11 @@ class GroupFragment(private val pagingDelegate: PagingDelegate) : BaseFragment()
 
     override fun showMessage(res: Int) {
         Toast.makeText(requireContext(), res, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showMessage(msg: String) {
+        //showToast(msg)
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
 

@@ -2,8 +2,10 @@ package com.intergroupapplication.presentation.base.adapter
 
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +15,8 @@ import kotlinx.android.synthetic.main.item_loading.view.*
 class ViewHolderLoadingState(itemView: View, retry: () -> Unit) :
     RecyclerView.ViewHolder(itemView) {
 
-    private val tvErrorMessage: TextView = itemView.tv_error
-    private val progressBar: ProgressBar = itemView.progressBar
+    private val errorLayout: ConstraintLayout = itemView.error_layout
+    private val loadingLayout: FrameLayout = itemView.loading_layout
     private val btnRetry: Button = itemView.buttonRetry
 
     init {
@@ -25,12 +27,10 @@ class ViewHolderLoadingState(itemView: View, retry: () -> Unit) :
 
     fun bindState(loadState: LoadState) {
         if (loadState is LoadState.Error) {
-            tvErrorMessage.show()
+            errorLayout.show()
         }
-        progressBar.isVisible = loadState is LoadState.Loading
-        tvErrorMessage.isVisible = loadState !is LoadState.Loading
-        btnRetry.isVisible = loadState !is LoadState.Loading
-
+        loadingLayout.isVisible = loadState is LoadState.Loading
+        errorLayout.isVisible = loadState !is LoadState.Loading
     }
 
 }

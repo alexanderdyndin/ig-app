@@ -1,36 +1,24 @@
 package com.intergroupapplication.presentation.feature.news.presenter
 
-import androidx.paging.RxPagedListBuilder
-import androidx.fragment.app.FragmentManager
-import android.util.Log
 import moxy.InjectViewState
-import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
-import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.domain.gateway.ComplaintsGetaway
+import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
-import com.intergroupapplication.domain.usecase.AppStatusUseCase
-import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
+import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
 import com.intergroupapplication.presentation.feature.news.view.NewsView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 import javax.inject.Inject
 
 @InjectViewState
 class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
-                                        private val complaintsGetaway: ComplaintsGetaway,
-                                        private val appStatusUseCase: AppStatusUseCase,
+                                        private val postsUseCase: PostsUseCase,
                                         private val userProfileGateway: UserProfileGateway,
                                         private val imageUploadingDelegate: ImageUploadingDelegate)
     : BasePresenter<NewsView>() {
@@ -38,7 +26,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
     private val newsDisposable = CompositeDisposable()
 
     fun complaintPost(postId: Int) {
-        newsDisposable.add(complaintsGetaway.complaintPost(postId)
+        newsDisposable.add(postsUseCase.sendComplaint(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -102,7 +90,29 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
         uploadingImageDisposable?.dispose()
     }
 
-
+    fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) {
+        compositeDisposable.add(postsUseCase.setReact(isLike, isDislike, postId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                if (isLike) {
+                    viewState.showMessage("Лайк отправляется")
+                } else {
+                    viewState.showMessage("Дизлайк отправляется")
+                }
+            }
+            //.doFinally { viewState.showSubscribeLoading(false) }
+            .subscribe({
+                if (isLike) {
+                    viewState.showMessage("Лайк поставлен")
+                } else {
+                    viewState.showMessage("Дизлайк поставлен")
+                }
+            }, {
+                viewState.showMessage("Ошибка установки реакции")
+                errorHandler.handle(it)
+            }))
+    }
 
     override fun destroyView(view: NewsView?) {
         unsubscribe()

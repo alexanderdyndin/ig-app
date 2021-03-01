@@ -65,7 +65,7 @@ ext {
     cryptoLibraryVersion = '1.0.0'
     rxPaparazzoVersion = '0.6.1-2.x'
     deviceInfoVersion = '2.4.1'
-    frescoVersion = '1.10.0'
+    frescoVersion = '2.4.0'
     timberVersion = '4.7.1'
     errorHandlerVersion = '1.1.0'
     saripaarVersion = '2.0.3'
@@ -85,7 +85,6 @@ ext {
     fabTransformVersion = '1.0.0'
     firebaseVersion = '18.0.2'
     firebaseMessagingVersion = '21.0.1'
-    butterknifVersion = '10.2.3'
     pagingVersion = '1.0.1'
     pagingRuntimeVersion = "1.0.0"
     adsVersion = '19.7.0'

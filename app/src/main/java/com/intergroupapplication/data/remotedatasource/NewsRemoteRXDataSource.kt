@@ -8,7 +8,8 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-class NewsRemoteRXDataSource (private val appApi: AppApi, private val mapper: GroupPostMapper): RxPagingSource<Int, GroupPostEntity>() {
+class NewsRemoteRXDataSource (private val appApi: AppApi,
+                              private val mapper: GroupPostMapper): RxPagingSource<Int, GroupPostEntity>() {
 
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, GroupPostEntity>> {
         return appApi.getNews(params.key?: 1)

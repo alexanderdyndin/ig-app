@@ -6,12 +6,15 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.remotedatasource.GroupNewsRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
+import com.intergroupapplication.domain.entity.ReactsEntity
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.Flowable
 import io.reactivex.Single
 import java.util.*
@@ -49,12 +52,29 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         return Pager(
                 config = PagingConfig(
                         pageSize = 20,
-                        enablePlaceholders = false,
-                        maxSize = 30,
-                        prefetchDistance = 5,
-                        initialLoadSize = 40),
+                        prefetchDistance = 5),
                 pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
         ).flowable
     }
+
+    override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
+        return Pager(
+                config = PagingConfig(
+                        pageSize = 20,
+                        prefetchDistance = 5),
+                pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
+        ).flowable
+    }
+
+    override fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity> {
+        return api.editPostById(postId, groupPostMapper.mapToDto(createGroupPostEntity))
+                .map { groupPostMapper.mapToDomainEntity(it) }
+    }
+
+    override fun setReact(reactsEntity: ReactsEntity, postId: String): Single<ReactsEntity> {
+        return api.setReact(groupPostMapper.mapToDto(reactsEntity), postId)
+                .map { groupPostMapper.mapToDomainEntity(it) }
+    }
+
 
 }

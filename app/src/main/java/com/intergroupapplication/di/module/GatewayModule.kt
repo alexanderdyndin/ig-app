@@ -52,7 +52,10 @@ interface GatewayModule {
     fun provideResetPasswordRepository(resendCodeRepository: ResetPasswordRepository): ResetPasswordGetaway
 
     @Binds
-    fun provideComplaintsRepository(complaintsRepository: ComplaintsRepository): ComplaintsGetaway
+    fun provideComplaintsRepository(complaintsRepository: ComplaintsRepository): ComplaintsGateway
+
+    @Binds
+    fun provideAppStatusRepository(appStatusRepository: AppStatusRepository): AppStatusGateway
 
 
 }

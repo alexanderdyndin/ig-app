@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import com.intergroupapplication.BuildConfig
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
 import com.intergroupapplication.domain.usecase.GetProfileUseCase
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
@@ -13,13 +14,13 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorHandler,
                                                 private val appStatusUseCase: AppStatusUseCase,
-                                                private val userProfileUseCase: GetProfileUseCase,
-                                                private val compositeDisposable: CompositeDisposable
-                                                ): ViewModel() {
+                                                private val compositeDisposable: CompositeDisposable,
+                                                private val sessionStorage: UserSession): ViewModel() {
 
 
     fun checkNewVersionAvaliable(fragmentManager: FragmentManager) {
@@ -34,18 +35,19 @@ class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorH
                     myDialogFragment.show(manager, "myDialog")
                 }
             } catch (e:Throwable) {
-                errorHandler.handle(e)
+                Timber.e(e)
             }
         }
     }
 
-    fun setAdCount() {
-        compositeDisposable.add(userProfileUseCase.getAdParameters()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ }, {
-                    errorHandler.handle(it)
-                }))
+    fun getAdCount() {
+        if (sessionStorage.user != null && sessionStorage.isAdEnabled) {
+            compositeDisposable.add(appStatusUseCase.getAdParameters()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ sessionStorage.countAd = it },
+                            { Timber.e(it) }))
+        }
     }
 
     override fun onCleared() {

@@ -33,7 +33,6 @@ class GroupUseCase @Inject constructor(
     }
 
 
-
     fun getGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getGroupList(searchFilter)
 
@@ -50,4 +49,5 @@ class GroupUseCase @Inject constructor(
     fun unsubscribeGroup(groupId: String): Completable {
         return groupGateway.unfollowGroup(groupId)
     }
+
 }

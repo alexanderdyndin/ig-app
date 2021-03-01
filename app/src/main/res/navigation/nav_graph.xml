@@ -129,6 +129,11 @@
             app:popExitAnim="@anim/fragment_close_exit"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_newsFragment2_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit" />
     </fragment>
     <fragment
         android:id="@+id/splashActivity"
@@ -213,6 +218,12 @@
             app:exitAnim="@anim/fragment_close_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/action_loginActivity_to_confirmationMailActivity"
+            app:destination="@id/confirmationMailActivity" />
+        <action
+            android:id="@+id/action_loginActivity_to_createUserProfileActivity"
+            app:destination="@id/createUserProfileActivity" />
     </fragment>
     <fragment
         android:id="@+id/confirmationMailActivity"
@@ -327,6 +338,11 @@
             app:exitAnim="@anim/fragment_close_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/action_groupActivity_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit" />
     </fragment>
     <fragment
         android:id="@+id/CreatePostFragment"
@@ -359,4 +375,17 @@
             android:name="group_id"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.intergroupapplication.presentation.feature.image.view.ImageFragment"
+        android:label="ImageFragment" >
+        <argument
+            android:name="images"
+            app:argType="com.intergroupapplication.domain.entity.FileEntity[]" />
+        <argument
+            android:name="selectedId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <action android:id="@+id/action_global_newsFragment2" app:destination="@id/newsFragment2"/>
 </navigation>
