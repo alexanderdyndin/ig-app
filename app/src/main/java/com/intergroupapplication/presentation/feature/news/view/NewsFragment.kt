@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
@@ -336,9 +337,22 @@ class NewsFragment(): BaseFragment(), NewsView{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                selectable = false
                 onClick { v ->
                     findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
                     toolbarTittle.text = getString(R.string.groups)
+                    false
+                }
+            }
+            primaryItem(getString(R.string.buy_premium)) {
+                icon = R.drawable.icon_like
+                selectedIcon = R.drawable.icon_like
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                onClick { _ ->
+                    (requireActivity() as MainActivity).bill()
                     false
                 }
             }

@@ -23,8 +23,6 @@ import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.google.android.material.tabs.TabLayoutMediator
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupInfoEntity
@@ -55,6 +53,8 @@ import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -417,7 +417,7 @@ class GroupListFragment(): BaseFragment(), GroupListView {
         profileAvatarHolder = viewDrawer.profileAvatarHolder
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
-        drawer = drawer {
+        drawer = drawer {                           //FIXME ЧТО ЗА БЛЯДСКИЙ ГОВНОКОД??
             sliderBackgroundColorRes = R.color.profileTabColor
             headerView = viewDrawer
             actionBarDrawerToggleEnabled = true
@@ -449,6 +449,19 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+            }
+            primaryItem(getString(R.string.buy_premium)) {
+                icon = R.drawable.icon_like
+                selectedIcon = R.drawable.icon_like
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                selectable = false
+                onClick { _ ->
+                    (requireActivity() as MainActivity).bill()
+                    false
+                }
             }
             primaryItem(getString(R.string.logout)) {
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
