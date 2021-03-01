@@ -2,7 +2,6 @@ package com.intergroupapplication.presentation.feature.news.view
 
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -13,11 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -31,6 +29,7 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter3
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
@@ -41,8 +40,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 class NewsFragment(): BaseFragment(), NewsView{
@@ -239,9 +240,22 @@ class NewsFragment(): BaseFragment(), NewsView{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                selectable = false
                 onClick { v ->
                     findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
                     toolbarTittle.text = getString(R.string.groups)
+                    false
+                }
+            }
+            primaryItem(getString(R.string.buy_premium)) {
+                icon = R.drawable.icon_like
+                selectedIcon = R.drawable.icon_like
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                onClick { _ ->
+                    (requireActivity() as MainActivity).bill()
                     false
                 }
             }
