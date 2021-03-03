@@ -25,14 +25,12 @@ import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.auth_loader.progressBar
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_group.*
-import kotlinx.android.synthetic.main.fragment_group.emptyText
 import kotlinx.android.synthetic.main.item_group_header_view.*
 import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
 import kotlinx.android.synthetic.main.layout_user_join_button.*
@@ -53,6 +51,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
         const val GROUP_ID = "group_id"
+        const val POST_ID = "group_id"
         const val FRAGMENT_RESULT = "fragmentResult"
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
@@ -171,6 +170,8 @@ class GroupFragment() : BaseFragment(), GroupView,
 
     private var mIsTheTitleVisible = false
     private var mIsTheTitleContainerVisible = true
+
+    private var createdPostId: String? = null
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_group
@@ -376,16 +377,15 @@ class GroupFragment() : BaseFragment(), GroupView,
         findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupId, groupStrength.text.toString(), false))
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        //super.onActivityResult(requestCode, resultCode, data)
-        //todo переписать callback под фрагменты
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
-                POST_CREATED -> presenter.refresh(data?.getStringExtra(GROUP_ID_VALUE).orEmpty())
-            }
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        //super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode == Activity.RESULT_OK) {
+//            when (requestCode) {
+//                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
+//                POST_CREATED -> presenter.refresh(data?.getStringExtra(GROUP_ID_VALUE).orEmpty())
+//            }
+//        }
+//    }
 
     override fun showMessage(res: Int) {
         Toast.makeText(requireContext(), res, Toast.LENGTH_SHORT).show()
@@ -401,7 +401,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         //todo разобраться с падением приложения при создании поста в только что созданной группе
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
-          openCreatePost(groupId)
+            openCreatePost(groupId)
         }
         groupAvatarHolder.setOnClickListener {
             if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED

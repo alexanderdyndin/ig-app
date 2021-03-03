@@ -18,9 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserEntity
@@ -46,8 +45,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Named
 
