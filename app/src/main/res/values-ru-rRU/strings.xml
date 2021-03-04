@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InterGroupApplication</string>
+    <string name="app_name">InterGroup</string>
     <string name="application_logo">Application Logo</string>
     <string name="notification_channel_id">notification_chanel_intergroup</string>
     <string name="inter_group">Inter Group</string>
@@ -45,6 +45,7 @@
     <string name="news">Новости</string>
     <string name="groups">Группы</string>
     <string name="logout">Выйти</string>
+    <string name="buy_premium">Купить Premium</string>
     <string name="press_again_to_exit">Нажмите еще раз, чтобы выйти</string>
     <string name="advertising">Реклама</string>
     <string name="error">Ошибка</string>
