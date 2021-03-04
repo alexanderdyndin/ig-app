@@ -21,8 +21,6 @@ import com.intergroupapplication.presentation.feature.createuserprofile.di.Creat
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
-import com.intergroupapplication.presentation.feature.image.di.ImageViewModule
-import com.intergroupapplication.presentation.feature.image.view.ImageFragment
 import com.intergroupapplication.presentation.feature.login.di.LoginViewModule
 import com.intergroupapplication.presentation.feature.login.view.LoginFragment
 import com.intergroupapplication.presentation.feature.mainActivity.di.MainActivityViewModule
@@ -107,10 +105,6 @@ interface AppBuilderModule {
     @PerFragment
     @ContributesAndroidInjector(modules = [UserListViewModule::class])
     fun provideUserListFragmentFactory(): UserListFragment
-
-    @PerFragment
-    @ContributesAndroidInjector(modules = [ImageViewModule::class])
-    fun provideImageFragmentFactory(): ImageFragment
 
 
 

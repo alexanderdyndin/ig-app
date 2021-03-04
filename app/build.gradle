@@ -248,7 +248,7 @@ dependencies {
     implementation "co.zsmb:materialdrawer-kt:$materialDrawerVersion"
     implementation "com.budiyev.android:circular-progress-bar:$circleProgressBarVersion"
 
-    //Photo
+    //Fresco
     implementation "com.facebook.fresco:fresco:$frescoVersion"
     implementation "com.facebook.fresco:animated-gif:$frescoVersion"
     implementation "com.facebook.fresco:animated-webp:$frescoVersion"
@@ -267,6 +267,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxBindingVersion"
     implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxBindingVersion"
     implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxBindingVersion"
+    //implementation "com.jakewharton.rxbinding2:rxbinding-leanback-v17:$rxBindingVersion"
     implementation "com.github.miguelbcr:RxPaparazzo:$rxPaparazzoVersion"
 
     //CryptoLibrary
@@ -327,5 +328,5 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
-
+    implementation 'com.nbsp:materialfilepicker:1.9.1'
 }

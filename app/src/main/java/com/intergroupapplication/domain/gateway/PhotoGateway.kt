@@ -23,7 +23,4 @@ interface PhotoGateway {
     fun uploadVideoToAws(path: String, groupId: String): Observable<Float>
     fun uploadImageToAws(path: String, groupId: String): Observable<Float>
     fun removeContent(path: String)
-    fun insertImageUrls(urls: List<String>)
-    fun insertVideoUrls(urls: List<String>)
-    fun insertAudioUrls(urls: List<String>)
 }
