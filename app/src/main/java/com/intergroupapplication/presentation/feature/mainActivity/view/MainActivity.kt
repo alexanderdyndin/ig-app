@@ -16,11 +16,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.android.billingclient.api.*
 import com.intergroupapplication.R
 import com.intergroupapplication.initializators.InitializerLocal
-import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import dagger.android.AndroidInjection

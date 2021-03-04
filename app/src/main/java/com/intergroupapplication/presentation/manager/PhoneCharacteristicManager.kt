@@ -33,7 +33,7 @@ class PhoneCharacteristicManager @Inject constructor(private val telephonyManage
     fun getMac(): String {
         val manager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val info = manager.connectionInfo
-        return info.macAddress.toUpperCase(Locale.getDefault())
+        return info.macAddress.toUpperCase(java.util.Locale.getDefault())
     }
 
 
