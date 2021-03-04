@@ -65,7 +65,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             }
         }
         var replyListener: (commentEntity: CommentEntityUI.CommentEntity) -> Unit = {}
-        var retryClickListener: () -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
         var AD_TYPE = 1
         var AD_FREQ = 3

@@ -1,22 +1,17 @@
 package com.intergroupapplication.presentation.feature.agreements.view
 
 import android.Manifest
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.appodeal.ads.Appodeal
-import com.appodeal.ads.utils.PermissionsHelper
 import com.explorestack.consent.*
-import com.explorestack.consent.exception.ConsentManagerException
-import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
-import com.intergroupapplication.presentation.base.BaseActivity
+import com.intergroupapplication.domain.entity.AudiosEntity
+import com.intergroupapplication.domain.entity.CreateGroupPostEntity
+import com.intergroupapplication.domain.entity.FilesEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
@@ -24,12 +19,15 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.agreements.presenter.AgreementsPresenter
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.fragment_agreements.*
+import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import kotlinx.android.synthetic.main.auth_loader.*
+import kotlinx.android.synthetic.main.fragment_agreements.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -158,34 +156,35 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     private fun next() {
-        Appodeal.requestAndroidMPermissions(requireActivity(), object : PermissionsHelper.AppodealPermissionCallbacks {
-            override fun writeExternalStorageResponse(result: Int) {
-                if (result == PackageManager.PERMISSION_GRANTED) {
-                    showToast("WRITE_EXTERNAL_STORAGE permission was granted")
-                } else {
-                    showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
-                }
-            }
-
-            override fun accessCoarseLocationResponse(result: Int) {
-                if (result == PackageManager.PERMISSION_GRANTED) {
-                    showToast("ACCESS_COARSE_LOCATION permission was granted")
-                } else {
-                    showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
-                }
-            }
-        })
-        compositeDisposable.add(RxPermissions(this).request(Manifest.permission.READ_PHONE_STATE)
-                .subscribe({
-                    if (it) {
-                        presenter.next()
-                    } else {
-                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                                mapOf(R.id.permissionOk to {
-                                    presenter.goToSettingsScreen()
-                                }))
-                    }
-                }, { Timber.e(it) }))
+//        Appodeal.requestAndroidMPermissions(requireActivity(), object : PermissionsHelper.AppodealPermissionCallbacks {
+//            override fun writeExternalStorageResponse(result: Int) {
+//                if (result == PackageManager.PERMISSION_GRANTED) {
+//                    //showToast("WRITE_EXTERNAL_STORAGE permission was granted")
+//                } else {
+//                    //showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
+//                }
+//            }
+//
+//            override fun accessCoarseLocationResponse(result: Int) {
+//                if (result == PackageManager.PERMISSION_GRANTED) {
+//                    //showToast("ACCESS_COARSE_LOCATION permission was granted")
+//                } else {
+//                    //showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
+//                }
+//            }
+//        })
+        compositeDisposable.add(
+                        RxPermissions(this).request(Manifest.permission.READ_PHONE_STATE)
+                        .subscribe({
+                            if (it) {
+                                presenter.next()
+                            } else {
+                                dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
+                                        mapOf(R.id.permissionOk to {
+                                            presenter.goToSettingsScreen()
+                                        }))
+                            }
+                        }, { Timber.e(it) }))
 
     }
 

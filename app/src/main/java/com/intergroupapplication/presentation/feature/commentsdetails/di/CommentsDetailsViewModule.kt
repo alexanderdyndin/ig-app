@@ -88,6 +88,7 @@ class CommentsDetailsViewModule {
     @Provides
     fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                            userSession: UserSession): CommentsAdapter {
+        CommentsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsComments ?: 1
         CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
         CommentsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexComments ?: 3
         return CommentsAdapter(imageLoadingDelegate)

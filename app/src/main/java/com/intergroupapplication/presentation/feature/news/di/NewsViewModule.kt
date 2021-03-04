@@ -76,6 +76,7 @@ class NewsViewModule {
     @Provides
     fun provideNewsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                            userSession: UserSession): NewsAdapter {
+        NewsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsNews ?: 1
         NewsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
         NewsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
         return NewsAdapter(imageLoadingDelegate)
