@@ -29,6 +29,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.workable.errorhandler.Action
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
@@ -38,6 +39,7 @@ import kotlinx.android.synthetic.main.auth_loader.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Named
 
 
 class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
@@ -68,6 +70,10 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
 
+    @Inject
+    @Named("loginHandler")
+    lateinit var errorHandlerLogin: ErrorHandler
+
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_login
 
@@ -77,6 +83,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
+        initErrorHandler(errorHandlerLogin)
         rxPermission = RxPermissions(this)
         mail = requireView().findViewById(R.id.etMail)
         password = requireView().findViewById(R.id.password)
@@ -101,7 +108,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun onPause() {
-        errorHandler.clear()
+        errorHandlerLogin.clear()
         super.onPause()
     }
 
@@ -182,7 +189,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     private fun setErrorHandler() {
-        errorHandler.on(CompositeException::class.java) { throwable, _ ->
+        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -197,16 +204,15 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 }
             }
         }
-        //todo почему оно не хандлится обычным методом, но во фрагменте новостей работает нормально?
-        errorHandler.on(UserNotVerifiedException::class.java) { throwable, _ ->
+        errorHandlerLogin.on(UserNotVerifiedException::class.java) { throwable, _ ->
             val email = mail.text.toString()
             val data = bundleOf("entity" to email)
             findNavController().navigate(R.id.action_loginActivity_to_confirmationMailActivity, data)
         }
-        errorHandler.on(UserNotProfileException::class.java) { throwable, _ ->
+        errorHandlerLogin.on(UserNotProfileException::class.java) { throwable, _ ->
             findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
         }
-        errorHandler.on(BadRequestException::class.java) { throwable, _ ->
+        errorHandlerLogin.on(BadRequestException::class.java) { throwable, _ ->
             dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
         }
     }

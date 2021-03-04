@@ -47,7 +47,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     @Inject
     protected lateinit var userSession: UserSession
 
-    @Inject
     lateinit var errorHandlerInitializer: ErrorHandlerInitializer
 
     @Inject
@@ -57,7 +56,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     protected lateinit var dialogDelegate: DialogDelegate
 
 
-    private fun initErrorHandler() {
+    fun initErrorHandler(errorHandler: ErrorHandler) {
         errorHandler.clear()
         val errorMap = mapOf(
                 BadRequestException::class.java to
@@ -77,8 +76,12 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 ImeiException::class.java to getActionForBlockedImei(),
                 InvalidRefreshException::class.java to openAutorize(),
                 PageNotFoundException::class.java to
-                        Action { _, _ ->
-                /*dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())*/})
+                        Action { throwable, _ ->
+                dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())},
+                UnknowServerException::class.java to Action { _, _ ->
+                    createSnackBarAction(R.string.unknown_error)}
+                )
+        errorHandlerInitializer = ErrorHandlerInitializer(errorHandler)
         errorHandlerInitializer.initializeErrorHandler(errorMap,
                 createSnackBarAction(R.string.unknown_error))
     }
@@ -159,7 +162,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewCreated()
-        initErrorHandler()
+        initErrorHandler(errorHandler)
         super.onViewCreated(view, savedInstanceState)
     }
 

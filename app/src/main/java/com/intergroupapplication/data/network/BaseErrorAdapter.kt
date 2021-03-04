@@ -56,7 +56,10 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                     500 -> ServerException()
                     else -> UnknowServerException()
                 }
-            } ?: throwable
+            } ?: when (throwable.code()) {
+                500 -> ServerException()
+                else -> UnknowServerException()
+            }
         } else {
             throwable
         }

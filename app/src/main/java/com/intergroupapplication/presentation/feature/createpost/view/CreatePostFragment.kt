@@ -19,6 +19,7 @@ import com.intergroupapplication.presentation.exstension.isVisible
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.exstension.showKeyboard
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.fragment_create_post.*
@@ -99,7 +100,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity) {
-        onResultOk(/*postEntity.groupInPost.id*/)
+        onResultOk(postEntity.id)
     }
 
     override fun showLoading(show: Boolean) {
@@ -237,14 +238,12 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 //        }
 //    }
 
-    private fun onResultOk(/*groupId: String*/) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, BasePresenter.POST_CREATED)
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID_VALUE, groupId)
+    private fun onResultOk(postId: String) {
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GroupFragment.POST_ID, postId)
         findNavController().popBackStack()
     }
 
     private fun onResultCancel() {
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set("fragmentResult", Activity.RESULT_CANCELED)
         findNavController().popBackStack()
     }
 
