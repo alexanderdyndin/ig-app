@@ -1,0 +1,303 @@
+package com.intergroupapplication.presentation.feature.group.adapter
+
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.children
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.AudioEntity
+import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.presentation.base.adapter.PagingAdapter
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
+import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.item_group_post.view.*
+import kotlinx.android.synthetic.main.post_item_error.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import timber.log.Timber
+
+
+/**
+ * Created by abakarmagomedov on 27/08/2018 at project InterGroupApplication.
+ */
+class GroupAdapter(diffCallback: DiffUtil.ItemCallback<GroupPostEntity>,
+                   private val imageLoadingDelegate: ImageLoadingDelegate)
+    : PagedListAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffCallback), PagingAdapter {
+
+    var commentClickListener: (groupPostEntity: GroupPostEntity) -> Unit = {}
+    var retryClickListener: () -> Unit = {}
+    var complaintListener: (Int) -> Unit = {}
+    var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
+
+    private val loadingViewType = 123       //todo Почему это переменная экземпляра? Мб лучше вынести в статик?
+    private val errorViewType = 321
+    private var isLoading = false
+    private var isError = false
+    private var compositeDisposable = CompositeDisposable()
+
+    companion object {
+        val TEST_VIDEO_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/index2.mp4"
+        val TEST_MUSIC_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/videoplayback.webm"
+    }
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            loadingViewType -> LoadingViewHolder(parent.inflate(R.layout.post_item_loading))
+            errorViewType -> ErrorViewHolder(parent.inflate(R.layout.post_item_error))
+            else -> PostViewHolder(parent.inflate(R.layout.item_group_post))
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (getItemViewType(position)) {
+            loadingViewType -> {
+            }
+            errorViewType -> (holder as ErrorViewHolder).bind()
+            else -> getItem(position)?.let { (holder as PostViewHolder).bind(it) }
+        }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is PostViewHolder) {
+            holder.videoContainer.children.forEach {
+                if (it is StyledPlayerView) {
+                    it.player?.release()
+                }
+            }
+//            holder.videoPlayerView.player?.release()
+//            holder.videoPlayerView.player?.let {
+//                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
+//            }
+        }
+
+        super.onViewRecycled(holder)
+    }
+
+    override fun getItemCount() = super.getItemCount() + (if (isLoading) 1 else 0) + (if (isError) 1 else 0)
+
+    override fun itemCount() = itemCount
+
+    override fun getItemViewType(position: Int): Int {
+        if (position == itemCount - 1) {
+            if (isLoading) {
+                return loadingViewType
+            }
+            if (isError) {
+                return errorViewType
+            }
+        }
+        return super.getItemViewType(position)
+    }
+
+    override fun addLoading() {
+        if (isLoading) {
+            return
+        }
+        isLoading = true
+        notifyItemInserted(itemCount)
+    }
+
+    override fun removeLoading() {
+        if (!isLoading) {
+            return
+        }
+        isLoading = false
+        notifyItemRemoved(itemCount)
+    }
+
+    override fun addError() {
+        if (isError) {
+            return
+        }
+        isError = true
+        notifyItemInserted(itemCount)
+    }
+
+    override fun removeError() {
+        if (!isError) {
+            return
+        }
+        isError = false
+        notifyItemRemoved(itemCount)
+    }
+
+    inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
+        val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
+        val imageBody = itemView.findViewById<LinearLayout>(R.id.imageContainer)
+
+        fun bind(item: GroupPostEntity) {
+            with(itemView) {
+                compositeDisposable.add(getDateDescribeByString(item.date)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
+                //postPrescription.text = getDateDescribeByString(item.date)
+                postCommentsCount.text = item.commentsCount
+                item.postText.let { it ->
+                    if (!it.isEmpty()) {
+                        postText.text = item.postText
+                        postText.show()
+                        postText.setOnClickListener {
+                            commentClickListener.invoke(item)
+                        }
+                    } else {
+                        postText.gone()
+                    }
+                }
+                groupName.text = item.groupInPost.name
+                commentImageClickArea.setOnClickListener {
+                    commentClickListener.invoke(item)
+                }
+                item.photo.apply {
+                    ifNotNull {
+                        postImage.show()
+                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
+                    }
+                    ifNull { postImage.gone() }
+                }
+                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
+                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+
+                videoContainer.removeAllViews()
+                audioContainer.removeAllViews()
+                imageBody.removeAllViews()
+
+
+                val activity = audioContainer.getActivity()
+                if (activity is MainActivity) {
+                    CoroutineScope(Main).launch {
+                        val bindedService = activity.bindMediaService()
+                        bindedService?.let {
+
+
+                            /**
+                             *  Add audios to post
+                             */
+                            item.audios.forEach {
+                                val player = makeAudioPlayer(it, bindedService)
+                                val playerView = AudioPlayerView(audioContainer.context)
+                                playerView.exoPlayer.player = player
+                                audioContainer.addView(playerView)
+                            }
+
+                            /**
+                             *  Add videos to post
+                             */
+                            item.videos.forEach {
+                                val player = makeVideoPlayer(it, bindedService)
+                                val playerView = VideoPlayerView(audioContainer.context)
+                                playerView.exoPlayer.player = player
+                                videoContainer.addView(playerView)
+                            }
+                        }
+                    }
+                } else throw Exception("Activity is not MainActivity")
+
+                item.images.forEach { file ->
+                    val image = ImageView(itemView.context)
+                    image.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400)
+                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
+                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
+                    Glide.with(itemView.context).load(file.file).into(image)
+                    imageBody.addView(image)
+                }
+            }
+
+        }
+
+        private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+            val videoPlayer = SimpleExoPlayer.Builder(audioContainer.context).build()
+
+            val listener = object : Player.EventListener {
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    if (playWhenReady) {
+                        service.setPlayer(videoPlayer, video.title, video.description)
+                    }
+                }
+            }
+            videoPlayer.addListener(listener)
+
+            // Build the media item.
+            val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
+            // Set the media item to be played.
+            videoPlayer.setMediaItem(videoMediaItem)
+            // Prepare the player.
+//                    musicPlayer.prepare()
+
+            return videoPlayer
+        }
+
+        private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+
+                    val musicPlayer = SimpleExoPlayer.Builder(audioContainer.context).build()
+
+                    val listener = object : Player.EventListener {
+                        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                            if (playWhenReady) {
+                                service.setPlayer(musicPlayer, audio.song, audio.description)
+                            }
+                        }
+                    }
+                    musicPlayer.addListener(listener)
+
+                    // Build the media item.
+                    val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
+                    // Set the media item to be played.
+                    musicPlayer.setMediaItem(musicMediaItem)
+                    // Prepare the player.
+//                    musicPlayer.prepare()
+
+            return musicPlayer
+        }
+
+        private fun showPopupMenu(view: View, id: Int) {
+            val popupMenu = PopupMenu(view.context, view)
+            popupMenu.inflate(R.menu.settings_menu)
+
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.complaint -> complaintListener.invoke(id)
+                }
+                return@setOnMenuItemClickListener true
+            }
+
+            popupMenu.show()
+        }
+    }
+
+    override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
+        super.unregisterAdapterDataObserver(observer)
+        compositeDisposable.clear()
+    }
+
+    inner class LoadingViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+
+    inner class ErrorViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        fun bind() {
+            itemView.buttonRetry.setOnClickListener { retryClickListener.invoke() }
+        }
+    }
+
+}
