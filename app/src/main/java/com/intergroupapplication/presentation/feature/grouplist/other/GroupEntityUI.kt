@@ -23,7 +23,9 @@ sealed class GroupEntityUI {
                              val subject: String,
                              val rules: String,
                              val isClosed: Boolean,
-                             val ageRestriction: String): GroupEntityUI() {
+                             val ageRestriction: String,
+                             var isSubscribing: Boolean = false
+                           ): GroupEntityUI() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false

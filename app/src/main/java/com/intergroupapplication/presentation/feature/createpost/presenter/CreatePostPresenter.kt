@@ -1,19 +1,18 @@
 package com.intergroupapplication.presentation.feature.createpost.presenter
 
 import android.webkit.MimeTypeMap
-import com.intergroupapplication.domain.entity.AudiosEntity
+import com.intergroupapplication.domain.entity.AudioRequestEntity
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
 
 import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
-import com.intergroupapplication.domain.entity.FilesEntity
+import com.intergroupapplication.domain.entity.FileRequestEntity
 import com.intergroupapplication.domain.exception.CanNotUploadAudio
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.CanNotUploadVideo
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
-import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.exstension.handleLoading
 import com.workable.errorhandler.ErrorHandler
@@ -56,9 +55,9 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                 object : Function3<List<String>, List<String>, List<String>, CreateGroupPostEntity> {
                     override fun invoke(photo: List<String>, video: List<String>, audio: List<String>): CreateGroupPostEntity =
                         CreateGroupPostEntity(postText,
-                                photo.map { FilesEntity(file = it, description = null, title = null) },
-                                audio.map { AudiosEntity(it, null, null, null,null) },
-                                video.map { FilesEntity(file = it,  description = null, title = null) },
+                                photo.map { FileRequestEntity(file = it, description = null, title = null) },
+                                audio.map { AudioRequestEntity(it, null, null, null,null) },
+                                video.map { FileRequestEntity(file = it,  description = null, title = null) },
                         false,
                                 null)
                 }
@@ -122,7 +121,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                     progress = it
                     viewState.showImageUploadingProgress(it, file)
                 }, {
-                    errorHandler.handle(CanNotUploadPhoto())
+                    errorHandler.handle(CanNotUploadVideo())
                     viewState.showImageUploadingError(file)
                 }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
         videoDisposable.add(processes[file]!!)
@@ -139,7 +138,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                     progress = it
                     viewState.showImageUploadingProgress(it, file)
                 }, {
-                    errorHandler.handle(CanNotUploadPhoto())
+                    errorHandler.handle(CanNotUploadAudio())
                     viewState.showImageUploadingError(file)
                 }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
         videoDisposable.add(processes[file]!!)

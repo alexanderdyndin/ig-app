@@ -105,17 +105,17 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
     fun mapListToDomainEntity(from: List<GroupPostModel>): List<GroupPostEntity> =
             from.map { mapToDomainEntity(it) }
 
-    fun mapToDto(from: FilesEntity): FileModel =
-            FileModel(from.file, from.description.orEmpty(), from.title.orEmpty())
+    fun mapToDto(from: FileRequestEntity): FileRequestModel =
+            FileRequestModel(from.file, from.description.orEmpty(), from.title.orEmpty())
 
-    fun mapToDto(from: AudiosEntity): AudiosModel =
-            AudiosModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
+    fun mapToDto(from: AudioRequestEntity): AudioRequestModel =
+            AudioRequestModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
-    fun mapToDomainEntity(from: FileModel): FilesEntity =
-            FilesEntity(from.file, from.description.orEmpty(), from.title.orEmpty())
+    fun mapToDomainEntity(from: FileRequestModel): FileRequestEntity =
+            FileRequestEntity(from.file, from.description.orEmpty(), from.title.orEmpty())
 
-    fun mapToDomainEntity(from: AudiosModel): AudiosEntity =
-            AudiosEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
+    fun mapToDomainEntity(from: AudioRequestModel): AudioRequestEntity =
+            AudioRequestEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
     fun mapToDto(from: ReactsEntity): ReactsModel =
             ReactsModel(

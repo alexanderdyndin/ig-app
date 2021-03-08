@@ -13,6 +13,8 @@ class GroupsRemoteRXDataSource (private val appApi: AppApi,
                                 private val mapper: GroupMapper,
                                 private val query: String): RxPagingSource<Int, GroupEntity>() {
 
+    override val jumpingSupported = true
+
     var getGroupList: (Int) -> Single<GroupsDto> = { page: Int ->
         appApi.getGroupList(page, query)
     }
@@ -35,14 +37,17 @@ class GroupsRemoteRXDataSource (private val appApi: AppApi,
         }
     }
 
+    var key: Int = 1
+
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, GroupEntity>> {
+        key = params.key?: 1
         return getGroupList.invoke(params.key?: 1)
                 .subscribeOn(Schedulers.io())
                 .map { mapper.mapToDomainEntity(it) }
                 .map <LoadResult<Int, GroupEntity>> {
                     LoadResult.Page(it.groups,
-                            it.previous,
-                            it.next)
+                            if (it.previous != null) key - 1 else null,
+                            if (it.next != null) key + 1 else null)
                 }
                 .onErrorReturn { e ->
                     LoadResult.Error(e)
@@ -50,7 +55,9 @@ class GroupsRemoteRXDataSource (private val appApi: AppApi,
     }
 
     override fun getRefreshKey(state: PagingState<Int, GroupEntity>): Int? {
-        return null
+        val position = state.anchorPosition ?: 0
+        val page = (position / 20) + 1
+        return page
     }
 
 }

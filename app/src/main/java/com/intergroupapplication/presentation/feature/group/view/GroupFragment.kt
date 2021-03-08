@@ -26,6 +26,8 @@ import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAd
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
 import com.jakewharton.rxbinding2.view.RxView
+import com.workable.errorhandler.Action
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.auth_loader.progressBar

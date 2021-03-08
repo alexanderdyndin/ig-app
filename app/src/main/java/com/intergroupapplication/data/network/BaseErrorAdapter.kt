@@ -24,9 +24,11 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                             when (it.nonFieldError.uniqueCode) {
                                 IMEI_BLOCKED -> ImeiException(message)
                                 USER_BLOCKED -> UserBlockedException(message)
+                                GROUP_IS_BLOCKED -> GroupBlockedException()
                                 else -> BadRequestException(message)
                             }
                         }
+
                         it.fieldError.isNotEmpty() -> getListFieldException(it.fieldError)
                         else -> UnknowServerException()
                     }
@@ -40,6 +42,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                                 PAGE_ERROR_NEWS -> PageNotFoundException("Не найдено")
                                 PAGE_ERROR_GROUPS_POST_LIST -> PageNotFoundException("Не найдено")
                                 NOT_PROFILE -> UserNotProfileException()
+                                ALREADY_NOT_FOLLOWING -> GroupAlreadyFollowingException()
                                 else -> NotFoundException(message)
                             }
                         }
