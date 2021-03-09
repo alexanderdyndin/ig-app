@@ -327,6 +327,11 @@
         <item name="android:textColor">@color/mainBlack</item>
         <item name="android:textSize">@dimen/middle_low_size</item>
     </style>
+    <style name="TextDark12spBold">
+        <item name="fontFamily">@font/play_bold</item>
+        <item name="android:textColor">@color/mainBlack</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
+    </style>
     <style name="TextAccent12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent</item>
