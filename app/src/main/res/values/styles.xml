@@ -210,12 +210,6 @@
         <item name="android:fontFamily">@font/roboto</item>
     </style>
 
-    <style name="TextNoActive10sp">
-        <item name="android:textColor">@color/colorAccent2</item>
-        <item name="android:fontFamily">@font/play</item>
-        <item name="android:textSize">10sp</item>
-    </style>
-
     <style name="EditTextAuthStyle">
         <item name="android:singleLine">true</item>
         <item name="android:textAlignment">center</item>
@@ -272,4 +266,109 @@
         <item name="android:progressTint">@color/colorAccent</item>
     </style>
 
+    <style name="PostSeekBar">
+        <item name="android:progressBackgroundTint">@color/colorAccent</item>
+        <item name="android:thumb">@drawable/selector_post_knob</item>
+        <item name="android:thumbOffset">-0dp</item>
+        <item name="android:progressTint">@color/colorAccent</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+<!-- Редактор постов -->
+    <style name="ScrollBar">
+        <item name="paddingStart">0dp</item>
+        <item name="paddingEnd">4dp</item>
+        <item name="android:fadeScrollbars">false</item>
+        <item name="android:scrollbarThumbVertical">@drawable/bg_scrollbar_thumb</item>
+        <item name="android:scrollbarTrackVertical">@drawable/bg_scrollbar_track</item>
+    </style>
+    <style name="TextPostComment">
+        <item name="android:textColor">@color/textLight</item>
+        <item name="android:fontFamily">@font/play</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="ImageSeparatorLineActive">
+        <item name="android:background">@drawable/line_second_panel</item>
+        <item name="android:layout_marginTop">1dp</item>
+    </style>
+
+    <!-- Текст 10sp -->
+    <style name="TextDark10sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/mainBlack</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
+    <style name="TextAccent10sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
+    <style name="TextAccent10spBold">
+        <item name="fontFamily">@font/play_bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
+    <style name="TextNoActive10sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
+<!-- Текст 12sp -->
+    <style name="TextDark12sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/mainBlack</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
+    </style>
+    <style name="TextAccent12sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
+    </style>
+    <style name="TextAccent12spBold">
+        <item name="fontFamily">@font/play_bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
+    </style>
+    <style name="TextNoActive12sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
+    </style>
+
+<!-- Текст 14sp -->
+    <style name="TextDark14sp">
+    <item name="fontFamily">@font/play</item>
+    <item name="android:textColor">@color/mainBlack</item>
+    <item name="android:textSize">@dimen/middle_high_size</item>
+</style>
+    <style name="TextAccent14sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/middle_high_size</item>
+    </style>
+    <style name="TextAccent14spBold">
+    <item name="fontFamily">@font/play_bold</item>
+    <item name="android:textColor">@color/colorAccent</item>
+    <item name="android:textSize">@dimen/middle_high_size</item>
+    </style>
+    <style name="TextNoActive14sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/middle_high_size</item>
+    </style>
+
+<!-- Текст 16sp -->
+    <style name="TextDislike16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorLightBlue</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
+    <style name="TextLike16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorLightPunk</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
 </resources>
