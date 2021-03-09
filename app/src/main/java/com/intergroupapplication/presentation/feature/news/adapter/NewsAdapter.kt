@@ -131,6 +131,8 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
+                likesCount.text = item.reacts.likesCount.toString()
+                dislikesCount.text = item.reacts.dislikesCount.toString()
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

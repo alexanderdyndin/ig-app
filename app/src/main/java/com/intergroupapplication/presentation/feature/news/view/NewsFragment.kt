@@ -123,6 +123,7 @@ class NewsFragment(): BaseFragment(), NewsView{
                         it.activeCommentsCount,
                         it.isActive,
                         it.isOffered,
+                        it.reacts,
                         it.images,
                         it.audios,
                         it.videos

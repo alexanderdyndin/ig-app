@@ -43,6 +43,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                                 it.activeCommentsCount,
                                 it.isActive,
                                 it.isOffered,
+                                it.reacts,
                                 it.images,
                                 it.audios,
                                 it.videos

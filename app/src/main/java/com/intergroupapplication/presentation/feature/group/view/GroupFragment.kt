@@ -219,6 +219,7 @@ class GroupFragment() : BaseFragment(), GroupView,
                         it.activeCommentsCount,
                         it.isActive,
                         it.isOffered,
+                        it.reacts,
                         it.images,
                         it.audios,
                         it.videos

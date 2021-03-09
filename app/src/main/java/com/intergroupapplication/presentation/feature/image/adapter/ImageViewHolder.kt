@@ -13,7 +13,6 @@ import com.intergroupapplication.presentation.customview.zoomable.ZoomableDrawee
 class ImageViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
     val image = itemView.findViewById<ZoomableDraweeView>(R.id.image)
-    val imageLayout = itemView.findViewById<FrameLayout>(R.id.imageLayout)
 
     fun bind(file: FileEntity) {
         val controller = Fresco.newDraweeControllerBuilder()
@@ -21,7 +20,7 @@ class ImageViewHolder(view: View): RecyclerView.ViewHolder(view) {
                 .setAutoPlayAnimations(true)
                 .build()
         image.controller = controller
-        imageLayout.setOnClickListener {
+        image.setOnClickListener {
             ImageAdapter.imageClickListener.invoke()
         }
         image.setAllowTouchInterceptionWhileZoomed(false)
