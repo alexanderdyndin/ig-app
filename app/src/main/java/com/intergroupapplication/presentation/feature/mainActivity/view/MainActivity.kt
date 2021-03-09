@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.*
 import com.intergroupapplication.R
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.initializators.InitializerLocal
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
@@ -54,6 +55,9 @@ class MainActivity : FragmentActivity() {
 
     @Inject
     lateinit var initializerAppodeal: InitializerLocal
+
+    @Inject
+    lateinit var userSession: UserSession
 
     private var exitHandler: Handler? = null
 

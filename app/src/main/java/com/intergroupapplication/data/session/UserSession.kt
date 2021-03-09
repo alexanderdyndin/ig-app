@@ -25,16 +25,17 @@ class UserSession @Inject constructor(private val sharedPreferences: SharedPrefe
     var acceptTerms: TermsEntity? by SharedPrefDelegate(TermsEntity::class.java, gson, sharedPreferences)
     var email: EmailEntity? by SharedPrefDelegate(EmailEntity::class.java, gson, sharedPreferences)
     var countAd: AdEntity? by SharedPrefDelegate(AdEntity::class.java, gson, sharedPreferences)
+
     var isAdEnabled: Boolean
-    get() = sharedPreferences.getBoolean(IS_AD_ENABLED, true)
-    set(isEnabled) {
-        sharedPreferences.edit().putBoolean(IS_AD_ENABLED, isEnabled).apply()
-        if (!isEnabled) {
-            countAd = AdEntity(0,999,999,
-                    0, 999, 999,
-                    0, 999, 999)
+        get() = sharedPreferences.getBoolean(IS_AD_ENABLED, true)
+        set(isEnabled) {
+            sharedPreferences.edit().putBoolean(IS_AD_ENABLED, isEnabled).apply()
+            if (!isEnabled) {
+                countAd = AdEntity(0,999,999,
+                        0, 999, 999,
+                        0, 999, 999)
+            }
         }
-    }
 
 
     fun clearAllData() {
