@@ -126,11 +126,17 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.itemView.mediaBody.children.forEach {
+            holder.view.mediaBody.children.forEach {
                 if (it is StyledPlayerView) {
                     it.player?.release()
                 }
             }
+            holder.view.imageContainer.children.forEach {
+                if (it is SimpleDraweeView) {
+                    it.controller = null
+                }
+            }
+            holder.view.imageContainer.removeAllViews()
         }
 
         super.onViewRecycled(holder)
@@ -193,7 +199,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 else
                     initializeAudioPlayer(TEST_MUSIC_URI)
                 mediaBody.removeAllViews()
-                imageContainer.removeAllViews()
                 item.videos.forEach {
                     val player = StyledPlayerView(itemView.context)
                     player.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800)
@@ -210,19 +215,14 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 }
                 item.images.forEach { file ->
                     val image = SimpleDraweeView(itemView.context)
-                    if (file.file.contains(".gif")) {
-                        val controller = Fresco.newDraweeControllerBuilder()
-                                .setUri(Uri.parse(file.file))
-                                .setAutoPlayAnimations(true)
-                                .build()
-                        image.controller = controller
-                    } else {
-                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
-                    }
+                    val controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(Uri.parse(file.file))
+                            .setAutoPlayAnimations(true)
+                            .build()
+                    image.controller = controller
                     image.layoutParams = ViewGroup.LayoutParams(400, 400)
-                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
+
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-                    image.controller?.animatable?.start()
                     imageContainer.addView(image)
                 }
             }

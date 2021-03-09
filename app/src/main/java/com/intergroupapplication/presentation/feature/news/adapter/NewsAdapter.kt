@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.children
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -174,21 +175,20 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
                 mediaBody.removeAllViews()
-                imageContainer.removeAllViews()
                 item.images.forEach { file ->
                     val image = SimpleDraweeView(itemView.context)
                     image.layoutParams = ViewGroup.LayoutParams(400, 400)
                     //image.scaleType = ImageView.ScaleType.CENTER_CROP
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-                    if (file.file.contains(".gif")) {
+//                    if (file.file.contains(".gif")) {
                         val controller = Fresco.newDraweeControllerBuilder()
                                 .setUri(Uri.parse(file.file))
                                 .setAutoPlayAnimations(true)
                                 .build()
                         image.controller = controller
-                    } else {
-                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
-                    }
+//                    } else {
+//                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
+//                    }
                     imageContainer.addView(image)
                 }
             }
@@ -388,6 +388,19 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         abstract fun fillNative(nativeAd: NativeAd?)
         abstract fun unregisterViewForInteraction()
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is PostViewHolder) {
+            holder.view.imageContainer.children.forEach {
+                if (it is SimpleDraweeView) {
+                    it.controller = null
+                }
+            }
+            holder.view.imageContainer.removeAllViews()
+        }
+
+        super.onViewRecycled(holder)
     }
 
 }

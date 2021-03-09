@@ -215,10 +215,10 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                             group.isSubscribing = true
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyItemChanged(pos)
+                                    adapterAll.notifyDataSetChanged()
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
+                                    adapterSubscribed.notifyDataSetChanged()
                                 }
                             }
                         }
@@ -227,11 +227,11 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                             group.isSubscribing = false
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyItemChanged(pos)
+                                    adapterAll.notifyDataSetChanged()
                                     adapterSubscribed.refresh()
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
+                                    adapterSubscribed.notifyDataSetChanged()
                                     adapterAll.refresh()
                                 }
                             }
@@ -244,10 +244,10 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                                             group.isSubscribing = false
                                             when (currentScreen) {
                                                 0 -> {
-                                                    adapterAll.notifyItemChanged(pos)
+                                                    adapterAll.notifyDataSetChanged()
                                                 }
                                                 1 -> {
-                                                    adapterSubscribed.notifyItemChanged(pos)
+                                                    adapterSubscribed.notifyDataSetChanged()
                                                 }
                                             }
                                         }
@@ -264,10 +264,10 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                             group.isSubscribing = true
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyItemChanged(pos)
+                                    adapterAll.notifyDataSetChanged()
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
+                                    adapterSubscribed.notifyDataSetChanged()
                                 }
                             }
                         }
@@ -276,11 +276,11 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                             group.isSubscribing = false
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyItemChanged(pos)
+                                    adapterAll.notifyDataSetChanged()
                                     adapterSubscribed.refresh()
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
+                                    adapterSubscribed.notifyDataSetChanged()
                                     adapterAll.refresh()
                                 }
                             }
@@ -290,10 +290,10 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                                 group.isSubscribing = false
                                 when (currentScreen) {
                                     0 -> {
-                                        adapterAll.notifyItemChanged(pos)
+                                        adapterAll.notifyDataSetChanged()
                                     }
                                     1 -> {
-                                        adapterSubscribed.notifyItemChanged(pos)
+                                        adapterSubscribed.notifyDataSetChanged()
                                     }
                                 }
                             } else errorHandler.handle(it)

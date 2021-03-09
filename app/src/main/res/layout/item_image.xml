@@ -6,26 +6,20 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.intergroupapplication.presentation.customview.SimplePhotoView
-        android:id="@+id/image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:placeholderImage="@drawable/variant_10"
-        app:actualImageScaleType="fitCenter"/>
-
-<!--    <com.jsibbold.zoomage.ZoomageView-->
+<!--    <com.intergroupapplication.presentation.customview.SimplePhotoView-->
 <!--        android:id="@+id/image"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent"-->
-<!--        app:zoomage_restrictBounds="false"-->
-<!--        app:zoomage_animateOnReset="true"-->
-<!--        app:zoomage_autoResetMode="UNDER"-->
-<!--        app:zoomage_autoCenter="true"-->
-<!--        app:zoomage_zoomable="true"-->
-<!--        app:zoomage_translatable="true"-->
-<!--        app:zoomage_minScale="0.6"-->
-<!--        app:zoomage_maxScale="8"-->
-<!--        />-->
+<!--        app:placeholderImage="@drawable/variant_10"-->
+<!--        app:actualImageScaleType="fitCenter"/>-->
+
+    <com.intergroupapplication.presentation.customview.zoomable.ZoomableDraweeView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:actualImageScaleType="fitCenter"
+        app:placeholderImage="@drawable/variant_10"
+        />
 <!--    <me.relex.photodraweeview.PhotoDraweeView-->
 <!--        android:id="@+id/image"-->
 <!--        android:layout_width="match_parent"-->
