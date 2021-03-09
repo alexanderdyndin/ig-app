@@ -20,8 +20,6 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
@@ -139,9 +137,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val videoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.videoExoPlayerView)
-        val musicPlayerView = itemView.findViewById<PlayerView>(R.id.musicExoPlayerView)
-
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
         val imageBody = itemView.findViewById<LinearLayout>(R.id.imageContainer)
@@ -192,10 +187,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-                if (item.audios.isNotEmpty())
-                    initializeAudioPlayer(item.audios[0].file)
-                else
-                    initializeAudioPlayer(GroupPostsAdapter.TEST_MUSIC_URI)
+//                if (item.audios.isNotEmpty())
+//                    initializeAudioPlayer(item.audios[0].file)
+//                else
+//                    initializeAudioPlayer(GroupPostsAdapter.TEST_MUSIC_URI)
 
                 videoContainer.removeAllViews()
                 audioContainer.removeAllViews()
@@ -296,27 +291,27 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             return musicPlayer
         }
 
-        private fun initializeVideoPlayer(uri: String) {
-            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
-            videoPlayerView.player = videoPlayer
-            // Build the media item.
-            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
-            // Set the media item to be played.
-            videoPlayer.setMediaItem(videoMediaItem)
-            // Prepare the player.
-            videoPlayer.prepare()
-        }
-
-        private fun initializeAudioPlayer(uri: String) {
-            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
-            musicPlayerView.player = musicPlayer
-            // Build the media item.
-            val musicMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри аудио должно быть в Entity
-            // Set the media item to be played.
-            musicPlayer.setMediaItem(musicMediaItem)
-            // Prepare the player.
-            musicPlayer.prepare()
-        }
+//        private fun initializeVideoPlayer(uri: String) {
+//            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
+//            videoPlayerView.player = videoPlayer
+//            // Build the media item.
+//            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
+//            // Set the media item to be played.
+//            videoPlayer.setMediaItem(videoMediaItem)
+//            // Prepare the player.
+//            videoPlayer.prepare()
+//        }
+//
+//        private fun initializeAudioPlayer(uri: String) {
+//            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
+//            musicPlayerView.player = musicPlayer
+//            // Build the media item.
+//            val musicMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри аудио должно быть в Entity
+//            // Set the media item to be played.
+//            musicPlayer.setMediaItem(musicMediaItem)
+//            // Prepare the player.
+//            musicPlayer.prepare()
+//        }
 
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)
