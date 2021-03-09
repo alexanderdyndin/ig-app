@@ -294,6 +294,11 @@
     </style>
 
     <!-- Текст 10sp -->
+    <style name="TextLight10sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/textLight</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
     <style name="TextDark10sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:gravity">center</item>
@@ -339,6 +344,11 @@
     </style>
 
 <!-- Текст 14sp -->
+    <style name="TextLight14sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/textLight</item>
+        <item name="android:textSize">@dimen/middle_high_size</item>
+    </style>
     <style name="TextDark14sp">
     <item name="fontFamily">@font/play</item>
     <item name="android:textColor">@color/mainBlack</item>
@@ -357,6 +367,16 @@
     <style name="TextNoActive14sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/middle_high_size</item>
+    </style>
+    <style name="TextDislike14sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorLightBlue</item>
+        <item name="android:textSize">@dimen/middle_high_size</item>
+    </style>
+    <style name="TextLike14sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorLightPunk</item>
         <item name="android:textSize">@dimen/middle_high_size</item>
     </style>
 

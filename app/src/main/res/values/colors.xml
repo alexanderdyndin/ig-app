@@ -54,5 +54,6 @@
     <color name="colorBlue">#2972FF</color>
     <color name="colorPink2">#FF5C70</color>
     <color name="image_toolbar_color">#25000000</color>
+    <color name="GreyElement">#2C3444</color>
 
 </resources>
