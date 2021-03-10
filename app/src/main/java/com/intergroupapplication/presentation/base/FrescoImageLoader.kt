@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import com.facebook.common.util.UriUtil
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import java.io.File
@@ -22,15 +23,23 @@ class FrescoImageLoader(private val callerContext: Context) : ImageLoader {
     }
 
     override fun loadImageFromResources(resId: Int, target: SimpleDraweeView) {
+        //todo может все таки лучше через контекст, чем через контроллер? Проверить
         val uri = Uri.Builder()
                 .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
                 .path(resId.toString())
                 .build()
-        target.setImageURI(uri, callerContext)
+        val controller = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .build()
+        target.controller = controller
     }
 
     override fun loadImageFromUrl(url: String, target: SimpleDraweeView) {
-        target.setImageURI(url)
+        val controller = Fresco.newDraweeControllerBuilder()
+                .setUri(Uri.parse(url))
+                .setAutoPlayAnimations(true)
+                .build()
+        target.controller = controller
     }
 
 }

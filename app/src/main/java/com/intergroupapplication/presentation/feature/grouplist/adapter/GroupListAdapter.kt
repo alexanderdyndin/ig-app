@@ -19,6 +19,7 @@ import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -126,6 +127,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     inner class GroupViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        val avatar: SimpleDraweeView = itemView.findViewById(R.id.groupAvatarHolder)
+
         fun bind(item: GroupEntityUI.GroupEntity, position: Int) {
             with(itemView) {
                 spanLetters(item)
@@ -198,8 +201,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 doOrIfNull(item.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
+                    imageLoadingDelegate.loadImageFromUrl(it, avatar)
+                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, avatar)
                 })
             }
         }
@@ -389,6 +392,13 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         abstract fun fillNative(nativeAd: NativeAd?)
         abstract fun unregisterViewForInteraction()
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is GroupViewHolder) {
+            holder.avatar.controller = null
+        }
+        super.onViewRecycled(holder)
     }
 
 }

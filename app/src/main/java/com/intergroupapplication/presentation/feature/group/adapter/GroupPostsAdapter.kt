@@ -80,15 +80,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (postId: String) -> Unit = { }
         var dislikeClickListener: (postId: String) -> Unit = { }
-        val TEST_VIDEO_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/index2.mp4"
-        val TEST_MUSIC_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/videoplayback.webm"
     }
 
-    private lateinit var context: Context
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        context = parent.context
         val view: View
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
@@ -136,12 +132,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     it.player?.release()
                 }
             }
-            holder.view.imageContainer.children.forEach {
+            holder.imageContainer.children.forEach {
                 if (it is SimpleDraweeView) {
                     it.controller = null
                 }
             }
-            holder.view.imageContainer.removeAllViews()
         }
 
         super.onViewRecycled(holder)
@@ -162,7 +157,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
-        val imageBody = itemView.findViewById<LinearLayout>(R.id.imageContainer)
+        val imageContainer = itemView.findViewById<LinearLayout>(R.id.imageContainer)
 
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
@@ -203,14 +198,10 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-//                if (item.audios.isNotEmpty())
-//                    initializeAudioPlayer(item.audios[0].file)
-//                else
-//                    initializeAudioPlayer(TEST_MUSIC_URI)
 
                 videoContainer.removeAllViews()
                 audioContainer.removeAllViews()
-                imageBody.removeAllViews()
+                imageContainer.removeAllViews()
 
 
                 val activity = audioContainer.getActivity()

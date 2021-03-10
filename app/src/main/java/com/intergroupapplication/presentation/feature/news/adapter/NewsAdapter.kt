@@ -20,6 +20,7 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
@@ -82,11 +83,9 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var dislikeClickListener: (postId: String) -> Unit = { }
     }
 
-    private lateinit var context: Context
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        context = parent.context
         val view: View
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
@@ -139,7 +138,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
-        val imageBody = itemView.findViewById<LinearLayout>(R.id.imageContainer)
+        val imageContainer = itemView.findViewById<LinearLayout>(R.id.imageContainer)
 
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
@@ -187,15 +186,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-//                if (item.audios.isNotEmpty())
-//                    initializeAudioPlayer(item.audios[0].file)
-//                else
-//                    initializeAudioPlayer(GroupPostsAdapter.TEST_MUSIC_URI)
 
                 videoContainer.removeAllViews()
                 audioContainer.removeAllViews()
-                imageBody.removeAllViews()
-
+                imageContainer.removeAllViews()
 
                 val activity = audioContainer.getActivity()
                 if (activity is MainActivity) {
@@ -490,14 +484,17 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.view.imageContainer.children.forEach {
+            holder.imageContainer.children.forEach {
                 if (it is SimpleDraweeView) {
                     it.controller = null
                 }
             }
-            holder.view.imageContainer.removeAllViews()
+            holder.videoContainer.children.forEach {
+                if (it is StyledPlayerView) {
+                    it.player?.release()
+                }
+            }
         }
-
         super.onViewRecycled(holder)
     }
 
