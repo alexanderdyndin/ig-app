@@ -291,27 +291,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             return musicPlayer
         }
 
-//        private fun initializeVideoPlayer(uri: String) {
-//            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
-//            videoPlayerView.player = videoPlayer
-//            // Build the media item.
-//            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
-//            // Set the media item to be played.
-//            videoPlayer.setMediaItem(videoMediaItem)
-//            // Prepare the player.
-//            videoPlayer.prepare()
-//        }
-//
-//        private fun initializeAudioPlayer(uri: String) {
-//            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
-//            musicPlayerView.player = musicPlayer
-//            // Build the media item.
-//            val musicMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри аудио должно быть в Entity
-//            // Set the media item to be played.
-//            musicPlayer.setMediaItem(musicMediaItem)
-//            // Prepare the player.
-//            musicPlayer.prepare()
-//        }
 
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)

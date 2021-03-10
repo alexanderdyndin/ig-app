@@ -337,7 +337,6 @@ class NewsFragment(): BaseFragment(), NewsView{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                selectable = false
                 onClick { v ->
                     findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
                     toolbarTittle.text = getString(R.string.groups)
@@ -351,6 +350,7 @@ class NewsFragment(): BaseFragment(), NewsView{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                selectable = false
                 onClick { _ ->
                     (requireActivity() as MainActivity).bill()
                     false

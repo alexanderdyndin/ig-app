@@ -35,7 +35,6 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
 
-
 class MainActivity : FragmentActivity() {
 
     companion object {
@@ -58,12 +57,6 @@ class MainActivity : FragmentActivity() {
 
     @Inject
     lateinit var userSession: UserSession
-
-    private var exitHandler: Handler? = null
-
-    private var doubleBackToExitPressedOnce = false
-
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
     /**
      *  Billing
