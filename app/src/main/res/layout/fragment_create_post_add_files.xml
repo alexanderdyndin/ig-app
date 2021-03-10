@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/createPostCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainBlack"
+        android:orientation="vertical"
+        tools:context=".presentation.feature.createpost.view.CreatePostFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mainBlack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_toolbarback"
+                android:src="@drawable/ic_back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/backToolbarTittle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Создать пост"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:fontFamily="@font/play_bold"
+                app:layout_constraintBottom_toBottomOf="@+id/imageButton"
+                app:layout_constraintEnd_toStartOf="@+id/textView"
+                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintTop_toTopOf="@+id/imageButton" />
+
+            <TextView
+                android:id="@+id/textView"
+                style="@style/TextDark12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_publish"
+                android:drawableRight="@drawable/ic_check_black"
+                android:paddingRight="4dp"
+                android:text="Опубликовать"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!-- Панель редактирование текста -->
+       <ImageView
+            android:id="@+id/bdShadow1"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:src="@drawable/bg_shadow"
+            app:layout_constraintBottom_toBottomOf="@+id/secondPanel"
+            app:layout_constraintEnd_toEndOf="@+id/secondPanel"
+            app:layout_constraintStart_toStartOf="@+id/secondPanel" />
+
+        <ImageView
+            android:id="@+id/lineSecondPanel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ImageSeparatorLineActive"
+            app:layout_constraintBottom_toTopOf="@+id/secondPanel"
+            app:layout_constraintEnd_toEndOf="@+id/secondPanel"
+            app:layout_constraintStart_toStartOf="@+id/secondPanel" />
+
+        <LinearLayout
+            android:id="@+id/secondPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_second_panel"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:layout_marginBottom="3dp"
+            app:layout_constraintBottom_toTopOf="@+id/iconPanel"
+            app:layout_constraintStart_toStartOf="@+id/iconPanel">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_italic" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_strice" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_underline" />
+        </LinearLayout>
+
+<!-- Панель редактирование выравнивания -->
+        <ImageView
+            android:id="@+id/bdShadow2"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:src="@drawable/bg_shadow"
+            app:layout_constraintBottom_toBottomOf="@+id/secondPanel2"
+            app:layout_constraintEnd_toEndOf="@+id/secondPanel2"
+            app:layout_constraintStart_toStartOf="@+id/secondPanel2" />
+
+        <ImageView
+            android:id="@+id/lineSecondPanel2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/ImageSeparatorLineActive"
+            app:layout_constraintBottom_toTopOf="@+id/secondPanel2"
+            app:layout_constraintEnd_toEndOf="@+id/secondPanel2"
+            app:layout_constraintStart_toStartOf="@+id/secondPanel2" />
+
+        <RadioGroup
+            android:id="@+id/secondPanel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/bg_second_panel"
+            app:layout_constraintBottom_toTopOf="@+id/iconPanel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="16dp"
+                android:button="@drawable/selector_ic_edit_align_left" />
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:layout_marginRight="16dp"
+                android:button="@drawable/selector_ic_edit_align_center" />
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/selector_ic_edit_align_right" />
+
+        </RadioGroup>
+
+<!-- Панель запись с микрофона.
+Надо сделать чтобы панелька появлялась над иконкой микрофона -->
+        <ImageView
+            android:id="@+id/bdShadow3"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:src="@drawable/bg_shadow"
+            app:layout_constraintBottom_toBottomOf="@+id/recordMicro"
+            app:layout_constraintEnd_toEndOf="@+id/recordMicro"
+            app:layout_constraintStart_toStartOf="@+id/recordMicro" />
+
+        <ImageView
+            android:id="@+id/lineSecondPanel3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/ImageSeparatorLineActive"
+            app:layout_constraintBottom_toTopOf="@+id/recordMicro"
+            app:layout_constraintEnd_toEndOf="@+id/recordMicro"
+            app:layout_constraintStart_toStartOf="@+id/recordMicro" />
+
+        <LinearLayout
+            android:id="@+id/recordMicro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:gravity="center"
+            android:background="@drawable/bg_second_panel"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/iconPanel"
+            app:layout_constraintEnd_toEndOf="@+id/iconPanel">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/ic_record" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="0:01:32"
+                style="@style/TextNoActive14sp"/>
+
+        </LinearLayout>
+
+    <!-- Основная панель редактирования -->
+        <LinearLayout
+            android:id="@+id/iconPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_post_panel"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/amountFiles"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/icEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_edit_text" />
+
+            <ImageView
+                android:id="@+id/icEditColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_edit_color" />
+
+            <ImageView
+                android:id="@+id/icEditAlign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_edit_align_center" />
+
+            <ImageView
+                android:id="@+id/icMicro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_micro" />
+
+            <ImageView
+                android:id="@+id/icAttach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_attach" />
+        </LinearLayout>
+
+<!-- Добавление файлов -->
+        <TextView
+            android:id="@+id/amountFiles"
+            style="@style/TextAccent14sp"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:background="@drawable/bg_edit_input"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="Выбрано 2 фотографии"
+            app:layout_constraintBottom_toTopOf="@+id/addFiles"
+            tools:layout_editor_absoluteX="-160dp" />
+
+        <TextView
+            android:id="@+id/btnAdd"
+            style="@style/TextAccent12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/selector_btn_add"
+            android:gravity="center"
+            android:text="Добавить"
+            app:layout_constraintBottom_toBottomOf="@+id/amountFiles"
+            app:layout_constraintEnd_toEndOf="@+id/amountFiles"
+            app:layout_constraintTop_toTopOf="@+id/amountFiles" />
+
+<!-- Добавление фото и видео.
+После разделения надо поменять иконку ic_make_photo на ic_make_video
+Панелька id="timeVideo" только для вкладки видео-->
+
+        <ScrollView
+            android:id="@+id/addFiles"
+            style="@style/ScrollBar"
+            android:layout_width="0dp"
+            android:layout_height="280dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@+id/panelAddFile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <GridLayout
+                android:id="@+id/addFoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorInput"
+                android:columnCount="3"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/amountFiles">
+
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery1" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_make_photo" />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery2" />
+
+                    <TextView
+                        android:id="@+id/timeVideo"
+                        style="@style/TextAccent12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_shadow"
+                        android:drawableStart="@drawable/ic_video_play_mini"
+                        android:drawablePadding="4dp"
+                        android:gravity="center"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:text="01:57" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice"
+                        android:text=" " />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery3" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice"
+                        android:text=" " />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery4" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice_act"
+                        android:text="1" />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery5" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice"
+                        android:text=" " />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery6" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice_act"
+                        android:text="2" />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery11" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice"
+                        android:text=" " />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery8"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery10" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice"
+                        android:text=" " />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+                <com.github.florent37.shapeofview.shapes.CutCornerView
+                    android:id="@+id/editPostGallery9"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:shape_cutCorner_bottomLeftSize="8dp"
+                    app:shape_cutCorner_bottomRightSize="8dp"
+                    app:shape_cutCorner_topLeftSize="8dp"
+                    app:shape_cutCorner_topRightSize="8dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/editpostgalery9" />
+
+                    <TextView
+                        style="@style/TextDark12sp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/bg_choice"
+                        android:text=" " />
+
+                </com.github.florent37.shapeofview.shapes.CutCornerView>
+
+            </GridLayout>
+
+        </ScrollView>
+
+<!-- Список для добаваления музыки с телефона и плейлиста
+На вкладки Музыка с телефона вместо Загрузил (ID:1223456) будет название группы, а  trackName название трека-->
+<!--
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/musicList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/amountFiles">
+
+            <ImageView
+                android:id="@+id/icPlayEditPost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/big_margin"
+                android:background="@drawable/ic_play_middle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/trackName"
+                style="@style/TextAccent14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/low_big_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="The Anix - Die With You"
+                app:layout_constraintStart_toEndOf="@+id/icPlayEditPost"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/fromWhom"
+                style="@style/TextNoActive10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Загрузил (ID:1223456)"
+                app:layout_constraintStart_toStartOf="@+id/trackName"
+                app:layout_constraintTop_toBottomOf="@+id/trackName" />
+
+            <TextView
+                android:id="@+id/time"
+                style="@style/TextNoActive10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:text="04:42"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView2"
+                style="@style/TextDark12sp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="8dp"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:background="@drawable/bg_choice"
+                android:text=" "
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/line_input"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+-->
+
+        <LinearLayout
+            android:id="@+id/panelAddFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorInput"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_gallery"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="Галерея" />
+
+            <TextView
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_video"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="Видео" />
+
+            <TextView
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_music"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="Музыка" />
+
+            <TextView
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_playlist"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="Плейлист" />
+
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
