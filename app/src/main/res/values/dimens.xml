@@ -24,6 +24,7 @@
     <dimen name="margin_top_big">88dp</dimen>
 
     <!--paddings-->
+    <dimen name="small_low_padding">4dp</dimen>
     <dimen name="low_padding">6dp</dimen>
     <dimen name="middle_padding">8dp</dimen>
     <dimen name="high_middle_padding">12dp</dimen>

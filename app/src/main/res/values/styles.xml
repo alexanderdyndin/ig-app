@@ -250,6 +250,7 @@
         <item name="android:inputType">textShortMessage</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
+        <item name="android:fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textColorHint">@color/colorAccent2</item>
         <item name="android:textSize">14sp</item>
@@ -321,6 +322,11 @@
         <item name="android:textSize">@dimen/low_size</item>
     </style>
 <!-- Текст 12sp -->
+    <style name="TextLight12sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/textLight</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
+    </style>
     <style name="TextDark12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:gravity">center</item>
@@ -386,6 +392,11 @@
     </style>
 
 <!-- Текст 16sp -->
+    <style name="TextAccent16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
     <style name="TextDislike16sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorLightBlue</item>
