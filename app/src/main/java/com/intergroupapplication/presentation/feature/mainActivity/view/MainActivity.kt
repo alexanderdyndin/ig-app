@@ -75,10 +75,14 @@ class MainActivity : FragmentActivity() {
                             Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_LONG).show()
                         }
                         if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
-                            Toast.makeText(this@MainActivity, "BILLING RESPONCE OK", Toast.LENGTH_LONG).show()
+                            withContext(Main) {
+                                Toast.makeText(this@MainActivity, "BILLING RESPONCE OK", Toast.LENGTH_LONG).show()
+                            }
                         }
                         if (disableAdsPurchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                            Toast.makeText(this@MainActivity, "DISABLE ADS SUBSCRIBED", Toast.LENGTH_LONG).show()
+                            withContext(Main) {
+                                Toast.makeText(this@MainActivity, "DISABLE ADS SUBSCRIBED", Toast.LENGTH_LONG).show()
+                            }
                             userSession.isAdEnabled = false
                         }
                     }
@@ -175,6 +179,7 @@ class MainActivity : FragmentActivity() {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
                     querySkuDetails()
+                    restoreSubscriptions()
                 }
             }
 
@@ -183,6 +188,13 @@ class MainActivity : FragmentActivity() {
                 // Google Play by calling the startConnection() method.
             }
         })
+    }
+
+    private fun restoreSubscriptions() {
+        val purchases = billingClient.queryPurchases(BillingClient.SkuType.SUBS).purchasesList
+        val disableAdsPurchase = purchases?.find { it.sku == DISABLE_ADS_ID }
+        val isDisableAdsActive = disableAdsPurchase?.isAutoRenewing ?: false
+        userSession.isAdEnabled = !isDisableAdsActive
     }
 
     private fun querySkuDetails() {
