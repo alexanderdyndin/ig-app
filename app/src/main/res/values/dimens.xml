@@ -21,6 +21,7 @@
     <dimen name="middle_high_big_margin">24dp</dimen>
     <dimen name="large_margin">32dp</dimen>
     <dimen name="massive_margin">42dp</dimen>
+    <dimen name="very_big_margin">63dp</dimen>
     <dimen name="margin_top_big">88dp</dimen>
 
     <!--paddings-->
