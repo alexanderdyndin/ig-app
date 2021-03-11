@@ -1,10 +1,8 @@
 package com.intergroupapplication.presentation.feature.mainActivity.view
 
 
-import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,7 +10,6 @@ import android.content.ServiceConnection
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.os.*
-import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -78,15 +75,16 @@ class MainActivity : FragmentActivity() {
                             Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_LONG).show()
                         }
                         if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
-                            doRestart(this@MainActivity)
+                            Toast.makeText(this@MainActivity, "BILLING RESPONCE OK", Toast.LENGTH_LONG).show()
                         }
                         if (disableAdsPurchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                             Toast.makeText(this@MainActivity, "DISABLE ADS SUBSCRIBED", Toast.LENGTH_LONG).show()
+                            userSession.isAdEnabled = false
                         }
-
                     }
                 }
             }
+
     private lateinit var billingClient: BillingClient
     private var skuDetails: List<SkuDetails> = listOf()
 
@@ -214,45 +212,6 @@ class MainActivity : FragmentActivity() {
             }
         }
         return null
-    }
-
-    fun doRestart(c: Context?) {
-        try {
-            //check if the context is given
-            if (c != null) {
-                //fetch the packagemanager so we can get the default launch activity
-                // (you can replace this intent with any other activity if you want
-                val pm = c.packageManager
-                //check if we got the PackageManager
-                if (pm != null) {
-                    //create the intent with the default start activity for your application
-                    val mStartActivity = pm.getLaunchIntentForPackage(
-                            c.packageName
-                    )
-                    if (mStartActivity != null) {
-                        mStartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        //create a pending intent so the application is restarted after System.exit(0) was called.
-                        // We use an AlarmManager to call this intent in 100ms
-                        val mPendingIntentId = 223344
-                        val mPendingIntent = PendingIntent
-                                .getActivity(c, mPendingIntentId, mStartActivity,
-                                        PendingIntent.FLAG_CANCEL_CURRENT)
-                        val mgr = c.getSystemService(ALARM_SERVICE) as AlarmManager
-                        mgr[AlarmManager.RTC, System.currentTimeMillis() + 100] = mPendingIntent
-                        //kill the application
-                        System.exit(0)
-                    } else {
-                        Log.e(TAG, "Was not able to restart application, mStartActivity null")
-                    }
-                } else {
-                    Log.e(TAG, "Was not able to restart application, PM null")
-                }
-            } else {
-                Log.e(TAG, "Was not able to restart application, Context null")
-            }
-        } catch (ex: Exception) {
-            Log.e(TAG, "Was not able to restart application")
-        }
     }
 
     fun bill() {
