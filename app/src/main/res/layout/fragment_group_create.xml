@@ -267,6 +267,7 @@
                 android:background="@drawable/ava_group_create"
                 app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate_bg" />
+
             <ImageView
                 android:id="@+id/groupCreate__lineAge"
                 android:layout_width="match_parent"

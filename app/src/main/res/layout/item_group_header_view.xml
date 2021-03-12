@@ -238,22 +238,7 @@
 
     </LinearLayout>
 
-<!--
-    <TextView
-        android:id="@+id/id_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        android:rotation="-45"
-        android:text="@string/idg"
-        android:fontFamily="@font/play"
-        android:textColor="@color/mainBlack"
-        android:ems="7"
-        android:textSize="12sp"
-        app:layout_constraintTop_toTopOf="@+id/avatarBg"
-        app:layout_constraintStart_toStartOf="@+id/avatarBg"/>-->
 
-<!--
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/group_avatar"
         android:layout_width="@dimen/group_header_profile_view_size"
@@ -270,8 +255,8 @@
             android:layout_height="@dimen/group_header_profile_view_size" />
 
     </com.github.florent37.shapeofview.ShapeOfView>
--->
 
+<!--
     <ImageView
         android:id="@+id/avaFill"
         android:layout_width="184dp"
@@ -280,6 +265,7 @@
         android:background="@drawable/avatar_fill"
         app:layout_constraintStart_toStartOf="@+id/avatarBg"
         app:layout_constraintTop_toTopOf="@+id/avatarBg" />
+-->
 
     <ImageButton
         android:id="@+id/settingsBtn"
