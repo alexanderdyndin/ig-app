@@ -1,6 +1,12 @@
 package com.intergroupapplication.domain.entity
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class ReactsEntity(
         val isLike: Boolean,
-        val isDislike: Boolean
-)
+        val isDislike: Boolean,
+        val likesCount: Int,
+        val dislikesCount: Int
+): Parcelable

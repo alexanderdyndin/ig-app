@@ -20,8 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class GroupListViewModel @Inject constructor(
-        private val useCase: GroupUseCase,
-        private val compositeDisposable: CompositeDisposable
+        private val useCase: GroupUseCase
 ): ViewModel() {
 
     private val nativeAdItem: NativeAd?

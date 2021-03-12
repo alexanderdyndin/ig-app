@@ -26,15 +26,15 @@ class ImageFragment(): BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         val images = arguments?.getParcelableArray("images")!!
         val currentItem = arguments?.getInt("selectedId") ?: 0
-//        ImageAdapter.imageClickListener = {
-//            if (toolbarUpstairs.isVisible()) {
-//                toolbarUpstairs.hide()
-//                bottomLayout.hide()
-//            } else {
-//                toolbarUpstairs.show()
-//                bottomLayout.show()
-//            }
-//        }
+        ImageAdapter.imageClickListener = {
+            if (toolbarUpstairs.isVisible()) {
+                toolbarUpstairs.hide()
+                bottomLayout.hide()
+            } else {
+                toolbarUpstairs.show()
+                bottomLayout.show()
+            }
+        }
         pagerImage.apply {
             adapter = ImageAdapter(images.map { it as FileEntity })
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER

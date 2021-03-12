@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.*
 import com.intergroupapplication.R
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.initializators.InitializerLocal
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
@@ -33,7 +34,6 @@ import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
-
 
 class MainActivity : FragmentActivity() {
 
@@ -55,11 +55,8 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var initializerAppodeal: InitializerLocal
 
-    private var exitHandler: Handler? = null
-
-    private var doubleBackToExitPressedOnce = false
-
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
+    @Inject
+    lateinit var userSession: UserSession
 
     /**
      *  Billing
@@ -112,7 +109,7 @@ class MainActivity : FragmentActivity() {
     }
 
 
-    suspend fun bindMediaService(mediaUrl: String):IGMediaService.ServiceBinder? {
+    suspend fun bindMediaService():IGMediaService.ServiceBinder? {
         return suspendCoroutine {
             /**
              * Create our connection to the service to be used in our bindService call.
@@ -138,7 +135,7 @@ class MainActivity : FragmentActivity() {
             }
 
             val intent = Intent(this, IGMediaService::class.java)
-            intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
+            //intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
 
