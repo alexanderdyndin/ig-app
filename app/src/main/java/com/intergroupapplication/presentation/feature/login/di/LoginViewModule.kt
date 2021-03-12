@@ -8,8 +8,10 @@ import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.mobsandgeeks.saripaar.Validator
+import com.workable.errorhandler.ErrorHandler
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 
 @Module
@@ -33,5 +35,10 @@ class LoginViewModule {
                        context: Context)
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+
+    @PerFragment
+    @Provides
+    @Named("loginHandler")
+    fun errorHandler(): ErrorHandler = ErrorHandler.createIsolated()
 
 }

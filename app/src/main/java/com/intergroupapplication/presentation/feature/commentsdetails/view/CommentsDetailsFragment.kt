@@ -12,12 +12,14 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
+import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -67,7 +69,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
         private const val GROUP_ID = "group_id"
         private const val COMMENT_ID = "comment_id"
-        private const val POST_ID = "post_id"
+        const val POST_ID = "post_id"
     }
 
     @Inject
@@ -87,11 +89,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
 
-//    @Inject
-//    lateinit var adapter: CommentDetailsAdapter
-
-//    @Inject
-//    lateinit var layoutManager: RecyclerView.LayoutManager
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -108,7 +105,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     lateinit var viewModel: CommentsViewModel
 
-    lateinit var infoForCommentEntity: InfoForCommentEntity
+    var infoForCommentEntity: InfoForCommentEntity? = null
+
+    var postId: String? = null
 
     var commentCreated = false
 
@@ -126,12 +125,21 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
-        infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)!!
-        compositeDisposable.add(
-                viewModel.fetchComments(infoForCommentEntity.groupPostEntity.id).subscribe {
-                    adapter.submitData(lifecycle, it)
-                }
-        )
+        infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
+        postId = arguments?.getString(POST_ID)
+        if (infoForCommentEntity != null) {
+            compositeDisposable.add(
+                    viewModel.fetchComments(infoForCommentEntity!!.groupPostEntity.id).subscribe {
+                        adapter.submitData(lifecycle, it)
+                    }
+            )
+        } else if (postId != null) {
+            compositeDisposable.add(
+                    viewModel.fetchComments(postId!!).subscribe {
+                        adapter.submitData(lifecycle, it)
+                    }
+            )
+        }
     }
 
     override fun viewCreated() {
@@ -193,7 +201,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                         loading_layout.gone()
                         swipeLayout.isRefreshing = false
                         if (commentCreated) {
-                            commentsList.scrollToPosition(adapter.itemCount)
+                            nestedScrollComments.postDelayed(250) {
+                                nestedScrollComments.smoothScrollTo(0, commentsList.bottom)
+                            }
                             commentCreated = false
                         }
                         commentEditText.isEnabled = true
@@ -216,10 +226,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     override fun onStop() {
         appbar.removeOnOffsetChangedListener(this)
         super.onStop()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 
 
@@ -257,22 +263,18 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     override fun commentCreated(commentEntity: CommentEntity) {
-        //presenter.refresh(groupPostEntity.id)
         adapter.refresh()
         commentCreated = true
         increaseCommentsCounter()
-        commentsList.smoothScrollToPosition(adapter.itemCount)
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        //presenter.refresh(groupPostEntity.id)
         adapter.refresh()
         commentCreated = true
         increaseCommentsCounter()
         if (commentHolder.childCount > 1) {
             commentHolder.removeViewAt(0)
         }
-        commentsList.smoothScrollToPosition(adapter.itemCount)
     }
 
 //    override fun commentsLoaded(comments: PagedList<CommentEntity>) {
@@ -407,13 +409,12 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                 goToGroupClickArea.setOnClickListener {
                     val data = bundleOf(GROUP_ID to groupPostEntity.groupInPost.id)
                     findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, data)
-                    //presenter.goToGroupScreen(groupPostEntity.groupInPost.id)
                 }
             }
         }
-//        else {
-//            presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID)!!)
-//        }
+        else if (postId != null){
+            presenter.getPostDetailsInfo(postId!!)
+        }
 
     }
 

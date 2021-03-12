@@ -59,34 +59,11 @@ class GroupMapper @Inject constructor() {
             from.map { mapToDomainEntity(it) }
 
     fun mapToDomainEntity(from: GroupsDto): GroupListEntity {
-        val regex = Regex(pattern = "=\\d*&")
-        val previous = when (from.previous) {
-            "http://backend-v2:8080/groups/?search=" -> {
-                1
-            }
-            "http://backend-v2:8080/groups/?owned=true&search=" -> {
-                1
-            }
-            "http://backend-v2:8080/groups/?followed=true&search=" -> {
-                1
-            }
-            null -> {
-                null
-            }
-            else -> {
-                regex.find(from.previous)?.value?.replace("=","")?.replace("&", "")?.toInt()
-            }
-        }
-        val next = if (from.next == null) {
-            null
-        } else {
-            regex.find(from.next)?.value?.replace("=","")?.replace("&", "")?.toInt()
-        }
         return GroupListEntity(
                 count = from.count.toInt(),
-                next,
-                previous,
-                mapListToDomainEntity(from.groups))
+                next = from.next,
+                previous = from.previous,
+                groups = mapListToDomainEntity(from.groups))
     }
 
     fun followsToModel(from: GroupFollowEntity): GroupFollowModel {

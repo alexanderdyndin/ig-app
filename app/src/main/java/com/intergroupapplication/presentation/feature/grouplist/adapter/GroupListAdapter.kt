@@ -19,6 +19,7 @@ import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -39,8 +40,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var lettersToSpan = ""
         var userID: String? = null
         var groupClickListener: (groupId: String) -> Unit = {}
-        var unsubscribeClickListener: (item: GroupEntityUI.GroupEntity, view: View) -> Unit = {_, _ -> }
-        var subscribeClickListener: (item: GroupEntityUI.GroupEntity, view: View) -> Unit = {_, _ -> }
+        var unsubscribeClickListener: (item: GroupEntityUI.GroupEntity, position: Int) -> Unit = {_, _ -> }
+        var subscribeClickListener: (item: GroupEntityUI.GroupEntity, position: Int) -> Unit = {_, _ -> }
         private const val NATIVE_TYPE_NEWS_FEED = 1
         private const val NATIVE_TYPE_APP_WALL = 2
         private const val NATIVE_TYPE_CONTENT_STREAM = 3
@@ -126,6 +127,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     inner class GroupViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        val avatar: SimpleDraweeView = itemView.findViewById(R.id.groupAvatarHolder)
+
         fun bind(item: GroupEntityUI.GroupEntity, position: Int) {
             with(itemView) {
                 spanLetters(item)
@@ -164,16 +167,29 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
                 }
+                if (item.isSubscribing) {
+                    itemView.subscribingProgressBar.show()
+                } else {
+                    itemView.subscribingProgressBar.hide()
+                }
                 with (item_group__text_sub) {
                     if (item.isFollowing) {
                         setOnClickListener {
-                            unsubscribeClickListener.invoke(item, view)
+                            if (!item.isSubscribing) {
+//                                item.isSubscribing = true
+//                                itemView.subscribingProgressBar.show()
+                                unsubscribeClickListener.invoke(item, position)
+                            }
                         }
                         text = resources.getText(R.string.unsubscribe)
                         setBackgroundResource(R.drawable.btn_unsub)
                     } else {
                         setOnClickListener {
-                            subscribeClickListener.invoke(item, view)
+                            if (!item.isSubscribing) {
+//                                item.isSubscribing = true
+//                                itemView.subscribingProgressBar.show()
+                                subscribeClickListener.invoke(item, position)
+                            }
                         }
                         text = resources.getText(R.string.subscribe)
                         setBackgroundResource(R.drawable.btn_sub)
@@ -185,8 +201,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 doOrIfNull(item.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
+                    imageLoadingDelegate.loadImageFromUrl(it, avatar)
+                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, avatar)
                 })
             }
         }
@@ -376,6 +392,13 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         abstract fun fillNative(nativeAd: NativeAd?)
         abstract fun unregisterViewForInteraction()
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is GroupViewHolder) {
+            holder.avatar.controller = null
+        }
+        super.onViewRecycled(holder)
     }
 
 }

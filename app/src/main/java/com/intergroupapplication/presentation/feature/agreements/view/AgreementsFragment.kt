@@ -7,11 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.explorestack.consent.*
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.AudiosEntity
-import com.intergroupapplication.domain.entity.CreateGroupPostEntity
-import com.intergroupapplication.domain.entity.FilesEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
@@ -19,11 +15,7 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.agreements.presenter.AgreementsPresenter
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Function3
 import kotlinx.android.synthetic.main.auth_loader.*
 import kotlinx.android.synthetic.main.fragment_agreements.*
 import moxy.presenter.InjectPresenter

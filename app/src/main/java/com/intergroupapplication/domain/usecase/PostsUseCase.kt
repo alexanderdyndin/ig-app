@@ -1,7 +1,7 @@
 package com.intergroupapplication.domain.usecase
 
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
-import com.intergroupapplication.domain.entity.ReactsEntity
+import com.intergroupapplication.domain.entity.ReactsEntityRequest
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
             groupPostGateway.getPostById(postId)
 
     fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
-            groupPostGateway.setReact(ReactsEntity(isLike, isDislike), postId)
+            groupPostGateway.setReact(ReactsEntityRequest(isLike, isDislike), postId)
 
     fun sendComplaint(postId: Int) = complaintsGateway.complaintPost(postId)
 }

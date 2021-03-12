@@ -26,6 +26,8 @@ import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAd
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
 import com.jakewharton.rxbinding2.view.RxView
+import com.workable.errorhandler.Action
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.auth_loader.progressBar
@@ -51,7 +53,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
         const val GROUP_ID = "group_id"
-        const val POST_ID = "group_id"
+        const val POST_ID = "post_id"
         const val FRAGMENT_RESULT = "fragmentResult"
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
@@ -137,6 +139,7 @@ class GroupFragment() : BaseFragment(), GroupView,
                         it.activeCommentsCount,
                         it.isActive,
                         it.isOffered,
+                        it.reacts,
                         it.images,
                         it.audios,
                         it.videos

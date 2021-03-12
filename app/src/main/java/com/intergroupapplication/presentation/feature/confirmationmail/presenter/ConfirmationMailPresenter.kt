@@ -12,10 +12,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
+import javax.inject.Named
 
 @InjectViewState
 class ConfirmationMailPresenter @Inject constructor(private val confirmationMailGateway: ConfirmationMailGateway,
-                                                    private val errorHandler: ErrorHandler,
+                                                    @Named("mailHandler") private val errorHandler: ErrorHandler,
                                                     private val resendCodeGateway: ResendCodeGateway)
     : BasePresenter<ConfirmationMailView>() {
 

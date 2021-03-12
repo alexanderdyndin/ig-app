@@ -32,7 +32,6 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
 
-
 class MainActivity : FragmentActivity() {
 
     companion object {
@@ -55,12 +54,6 @@ class MainActivity : FragmentActivity() {
 
     @Inject
     lateinit var userSession: UserSession
-
-    private var exitHandler: Handler? = null
-
-    private var doubleBackToExitPressedOnce = false
-
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
     /**
      *  Billing
@@ -118,7 +111,7 @@ class MainActivity : FragmentActivity() {
     }
 
 
-    suspend fun bindMediaService(): IGMediaService.ServiceBinder? {
+    suspend fun bindMediaService():IGMediaService.ServiceBinder? {
         return suspendCoroutine {
             /**
              * Create our connection to the service to be used in our bindService call.
@@ -144,7 +137,7 @@ class MainActivity : FragmentActivity() {
             }
 
             val intent = Intent(this, IGMediaService::class.java)
-//            intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
+            //intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
 
@@ -235,5 +228,4 @@ class MainActivity : FragmentActivity() {
             val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
         }
     }
-
 }

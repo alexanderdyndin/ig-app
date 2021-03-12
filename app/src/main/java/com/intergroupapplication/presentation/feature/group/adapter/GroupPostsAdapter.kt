@@ -80,15 +80,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (postId: String) -> Unit = { }
         var dislikeClickListener: (postId: String) -> Unit = { }
-        val TEST_VIDEO_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/index2.mp4"
-        val TEST_MUSIC_URI = "https://intergroupmedia.s3-us-west-2.amazonaws.com/videoplayback.webm"
     }
 
-    private lateinit var context: Context
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        context = parent.context
         val view: View
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
@@ -136,10 +132,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     it.player?.release()
                 }
             }
-//            holder.videoPlayerView.player?.release()
-//            holder.videoPlayerView.player?.let {
-//                Toast.makeText(holder.videoPlayerView.context, "Player released", Toast.LENGTH_SHORT).show()
-//            }
+            holder.imageContainer.children.forEach {
+                if (it is SimpleDraweeView) {
+                    it.controller = null
+                }
+            }
         }
 
         super.onViewRecycled(holder)
@@ -160,7 +157,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
-        val imageBody = itemView.findViewById<LinearLayout>(R.id.imageContainer)
+        val imageContainer = itemView.findViewById<LinearLayout>(R.id.imageContainer)
 
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
@@ -201,14 +198,10 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-//                if (item.audios.isNotEmpty())
-//                    initializeAudioPlayer(item.audios[0].file)
-//                else
-//                    initializeAudioPlayer(TEST_MUSIC_URI)
 
                 videoContainer.removeAllViews()
                 audioContainer.removeAllViews()
-                imageBody.removeAllViews()
+                imageContainer.removeAllViews()
 
 
                 val activity = audioContainer.getActivity()
@@ -243,20 +236,15 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
                 item.images.forEach { file ->
                     val image = SimpleDraweeView(itemView.context)
-                    if (file.file.contains(".gif")) {
-                        val controller = Fresco.newDraweeControllerBuilder()
-                                .setUri(Uri.parse(file.file))
-                                .setAutoPlayAnimations(true)
-                                .build()
-                        image.controller = controller
-                    } else {
-                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
-                    }
+                    val controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(Uri.parse(file.file))
+                            .setAutoPlayAnimations(true)
+                            .build()
+                    image.controller = controller
                     image.layoutParams = ViewGroup.LayoutParams(400, 400)
-                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
+
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-                    image.controller?.animatable?.start()
-                    imageBody.addView(image)
+                    imageContainer.addView(image)
                 }
             }
         }
@@ -305,28 +293,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
             return musicPlayer
         }
-
-//        private fun initializeVideoPlayer(uri: String) {
-//            val videoPlayer = SimpleExoPlayer.Builder(videoPlayerView.context).build()
-//            videoPlayerView.player = videoPlayer
-//            // Build the media item.
-//            val videoMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри видео должно быть в Entity
-//            // Set the media item to be played.
-//            videoPlayer.setMediaItem(videoMediaItem)
-//            // Prepare the player.
-//            videoPlayer.prepare()
-//        }
-//
-//        private fun initializeAudioPlayer(uri: String) {
-//            val musicPlayer = SimpleExoPlayer.Builder(musicPlayerView.context).build()
-//            musicPlayerView.player = musicPlayer
-//            // Build the media item.
-//            val musicMediaItem: MediaItem = MediaItem.fromUri(uri)        //Todo юри аудио должно быть в Entity
-//            // Set the media item to be played.
-//            musicPlayer.setMediaItem(musicMediaItem)
-//            // Prepare the player.
-//            musicPlayer.prepare()
-//        }
 
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)

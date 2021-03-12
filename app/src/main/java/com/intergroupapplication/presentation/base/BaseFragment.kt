@@ -17,6 +17,7 @@ import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.feature.ExitActivity
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import dagger.android.support.AndroidSupportInjection
@@ -47,7 +48,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     @Inject
     protected lateinit var userSession: UserSession
 
-    @Inject
     lateinit var errorHandlerInitializer: ErrorHandlerInitializer
 
     @Inject
@@ -57,7 +57,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     protected lateinit var dialogDelegate: DialogDelegate
 
 
-    private fun initErrorHandler() {
+    fun initErrorHandler(errorHandler: ErrorHandler) {
         errorHandler.clear()
         val errorMap = mapOf(
                 BadRequestException::class.java to
@@ -76,23 +76,26 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 UserNotVerifiedException::class.java to openConfirmationEmail(),
                 ImeiException::class.java to getActionForBlockedImei(),
                 InvalidRefreshException::class.java to openAutorize(),
+                GroupAlreadyFollowingException::class.java to Action { _, _ ->},
                 PageNotFoundException::class.java to
-                        Action { _, _ ->
-                /*dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())*/})
+                        Action { throwable, _ ->
+                dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())},
+                UnknowServerException::class.java to Action { _, _ ->
+                    createSnackBarAction(R.string.unknown_error)}
+                )
+        errorHandlerInitializer = ErrorHandlerInitializer(errorHandler)
         errorHandlerInitializer.initializeErrorHandler(errorMap,
                 createSnackBarAction(R.string.unknown_error))
     }
 
     protected open fun getActionForBlockedImei() = Action { throwable, _ ->
-        //        startActivity(Intent(this, AgreementsFragment::class.java))
-        //dialogDelegate.showErrorSnackBar((throwable as ImeiException).message.orEmpty())
-        //userSession.clearAllData()
-
+        userSession.clearAllData()
+        ExitActivity.exitApplication(requireContext())
     }
 
-    protected open fun getActionForBlockedUser() =
+    private fun getActionForBlockedUser() =
             if (userSession.isLoggedIn()) {
-                actionForBlockedUser
+                actionForBlockedUser()
             } else {
                 createSnackBarAction(R.string.user_blocked)
             }
@@ -101,14 +104,13 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     protected open fun getActionForBlockedGroup() = actionForBlockedGroup
 
     private val actionForBlockedGroup = Action { _, _ ->
-//        startActivity(Intent(this, NavigationActivity::class.java).also
-//        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
+        dialogDelegate.showErrorSnackBar("Группа заблокирована")
+        findNavController().popBackStack()
     }
 
-    private val actionForBlockedUser = Action { _, _ ->
-        userSession.clearAllData()
-//        startActivity(Intent(this, AgreementsFragment::class.java).also
-//        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
+    protected open fun actionForBlockedUser() = Action { _, _ ->
+        userSession.logout()
+        ExitActivity.exitApplication(requireContext())
     }
 
     protected fun createSnackBarAction(message: Int) =
@@ -159,7 +161,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewCreated()
-        initErrorHandler()
+        initErrorHandler(errorHandler)
         super.onViewCreated(view, savedInstanceState)
     }
 
