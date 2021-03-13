@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/createGroupCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,28 +25,7 @@
                 android:id="@+id/navigationToolbar"
                 layout="@layout/creategroup_toolbar_layout" />
 
-
-
-<!--
-            <com.github.florent37.shapeofview.ShapeOfView
-                android:id="@+id/groupCreate_avatar"
-                android:layout_width="@dimen/intergroup_profile_view_size"
-                android:layout_height="@dimen/intergroup_profile_view_size"
-                app:shape_clip_drawable="@drawable/ava_mask"
-                android:foreground="@drawable/ava_shadow"
-                android:layout_marginTop="11dp"
-                app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
-                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
-
-                <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
-                    android:id="@+id/groupAvatarHolder"
-                    android:layout_width="@dimen/intergroup_profile_view_size"
-                    android:layout_height="@dimen/intergroup_profile_view_size">
-                </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
-
-            </com.github.florent37.shapeofview.ShapeOfView>
--->
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <LinearLayout
                 android:id="@+id/groupCreate_title_type_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -116,7 +96,7 @@
                         android:layout_weight="1"/>
 
                 </RadioGroup>
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/groupCreate__addAvatar"
@@ -258,15 +238,23 @@
                 app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
                 android:contentDescription="@string/imagebg" />
 
-            <ImageView
+            <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/groupCreate_avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/intergroup_profile_view_size"
+                android:layout_height="@dimen/intergroup_profile_view_size"
+                app:shape_clip_drawable="@drawable/ava_group_create"
                 android:layout_marginLeft="@dimen/small_margin"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/ava_group_create"
                 app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
-                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg" />
+                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
+
+                <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+                    android:id="@+id/groupAvatarHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
+
+            </com.github.florent37.shapeofview.ShapeOfView>
 
             <ImageView
                 android:id="@+id/groupCreate__lineAge"

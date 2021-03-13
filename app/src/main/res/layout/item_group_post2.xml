@@ -9,23 +9,6 @@
     android:layout_marginBottom="@dimen/middle_margin"
     android:background="@color/mainBlack">
 
-        <EditText
-            android:id="@+id/searchPost"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_search_post"
-            android:fontFamily="@font/play"
-            android:hint="Поиск"
-            android:inputType="textShortMessage"
-            android:paddingLeft="32dp"
-            android:textColor="@color/colorAccent"
-            android:textColorHint="@color/NoActiveText"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/btnFilterPost"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageButton
             android:id="@+id/btnFilterPost"
             android:layout_width="wrap_content"
@@ -45,32 +28,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchPost"/>
 
-        <ImageView
-            android:id="@+id/groupPostAvatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ava_group_post"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="2dp"
-            app:layout_constraintEnd_toEndOf="@+id/bgAvaGroupPost"
-            app:layout_constraintTop_toTopOf="@+id/bgAvaGroupPost"/>
-        <!--
             <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/avaGroupPost"
-                android:layout_width="@dimen/group_post_profile_group_view_size"
-                android:layout_height="@dimen/group_post_profile_group_view_size"
+                android:layout_width="57dp"
+                android:layout_height="57dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
                 app:layout_constraintEnd_toEndOf="@+id/bgAvaGroupPost"
                 app:layout_constraintTop_toTopOf="@+id/bgAvaGroupPost"
                 app:shape_clip_drawable="@drawable/ava_group_post">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/groupAvatarHolder"
-                    android:layout_width="@dimen/group_post_profile_group_view_size"
-                    android:layout_height="@dimen/group_post_profile_group_view_size" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:placeholderImage="@drawable/variant_10"/>
 
             </com.github.florent37.shapeofview.ShapeOfView>
-        -->
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/headerPostFromGroup"
