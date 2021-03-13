@@ -18,6 +18,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
@@ -138,6 +139,9 @@ class GroupListFragment(): BaseFragment(), GroupListView {
     @Inject
     @Named("footerAdm")
     lateinit var adapterFooterAdm: PagingLoadingAdapter
+
+//    @Inject
+//    lateinit var layoutManager: RecyclerView.LayoutManager
 
 
     private val textWatcher = object : TextWatcher {

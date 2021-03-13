@@ -2,6 +2,8 @@ package com.intergroupapplication.presentation.feature.grouplist.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
@@ -66,13 +68,6 @@ class GroupListViewModule {
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-//    @PerFragment
-//    @Provides
-//    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupEntity>() {
-//        override fun areItemsTheSame(oldItem: GroupEntity, newItem: GroupEntity) = oldItem.id == newItem.id
-//        override fun areContentsTheSame(oldItem: GroupEntity, newItem: GroupEntity) = oldItem == newItem
-//    }
-
     @PerFragment
     @Provides
     @Named("footerAll")
@@ -121,9 +116,14 @@ class GroupListViewModule {
     fun provideGroupListAll(imageLoadingDelegate: ImageLoadingDelegate,
                             userSession: UserSession
     ): GroupListAdapter {
-        GroupListAdapter.AD_FIRST = userSession.countAd?.firstAdIndexGroups ?: 5
-        GroupListAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsGroups ?: 5
-        GroupListAdapter.AD_TYPE = userSession.countAd?.limitOfAdsGroups ?: 1
+        if (userSession.isAdEnabled) {
+            GroupListAdapter.AD_FIRST = userSession.countAd?.firstAdIndexGroups ?: 5
+            GroupListAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsGroups ?: 5
+            GroupListAdapter.AD_TYPE = userSession.countAd?.limitOfAdsGroups ?: 1
+        } else {
+            GroupListAdapter.AD_FIRST = 999
+            GroupListAdapter.AD_FREQ = 999
+        }
         return GroupListAdapter(imageLoadingDelegate)
     }
 
@@ -173,6 +173,10 @@ class GroupListViewModule {
         return groupListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
     }
 
+//    @PerFragment
+//    @Provides
+//    fun provideLinearLayoutManager(fragment: GroupListFragment): RecyclerView.LayoutManager =
+//            LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
 
 
 //    @PerFragment

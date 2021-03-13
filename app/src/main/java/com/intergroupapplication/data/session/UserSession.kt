@@ -30,11 +30,6 @@ class UserSession @Inject constructor(private val sharedPreferences: SharedPrefe
         get() = sharedPreferences.getBoolean(IS_AD_ENABLED, true)
         set(isEnabled) {
             sharedPreferences.edit().putBoolean(IS_AD_ENABLED, isEnabled).apply()
-            if (!isEnabled) {
-                countAd = AdEntity(0,999,999,
-                        0, 999, 999,
-                        0, 999, 999)
-            }
         }
 
 
