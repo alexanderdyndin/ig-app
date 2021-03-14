@@ -19,15 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--com.github.florent37.shapeofview.shapes.PolygonView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:shape_polygon_noOfSides="4"
-        >
-
-
-
-    </com.github.florent37.shapeofview.shapes.PolygonView-->
 
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/group_avatar"
@@ -42,23 +33,11 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/groupAvatarHolder"
             android:layout_width="@dimen/group_in_list_profile_view_size"
-            android:layout_height="@dimen/group_in_list_profile_view_size"/>
+            android:layout_height="@dimen/group_in_list_profile_view_size"
+            app:placeholderImage="@drawable/variant_10"/>
 
     </com.github.florent37.shapeofview.ShapeOfView>
 
-<!--
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/groupAvatarHolder"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:foreground="@drawable/ava_foreground_l"
-        app:actualImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/variant_10"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"
-        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list"/>
--->
 
     <TextView
         android:id="@+id/item_group__text_age"

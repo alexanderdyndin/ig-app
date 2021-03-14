@@ -168,12 +168,13 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     groupClickListener.invoke(item.id)
                 }
                 if (item.isSubscribing) {
-                    itemView.subscribingProgressBar.show()
+                    subscribingProgressBar.show()
+                    item_group__text_sub.hide()
                 } else {
-                    itemView.subscribingProgressBar.hide()
+                    subscribingProgressBar.hide()
+                    item_group__text_sub.show()
                 }
                 with (item_group__text_sub) {
-                    isEnabled = !item.isSubscribing
                     if (item.isFollowing) {
                         setOnClickListener {
                             unsubscribeClickListener.invoke(item, layoutPosition)
