@@ -22,10 +22,11 @@ sealed class GroupPostEntityUI {
                 val activeCommentsCount: String,
                 val isActive: Boolean,
                 val isOffered: Boolean,
-                val reacts: ReactsEntity,
+                var reacts: ReactsEntity,
                 val images: List<FileEntity>,
                 val audios: List<AudioEntity>,
-                val videos: List<FileEntity>
+                val videos: List<FileEntity>,
+                var isLoading: Boolean = false
         ) : GroupPostEntityUI() {
                 override fun equals(other: Any?): Boolean {
                         if (this === other) return true

@@ -110,7 +110,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         if (holder is GroupViewHolder) {
-            holder.bind(item as GroupEntityUI.GroupEntity, position)
+            holder.bind(item as GroupEntityUI.GroupEntity)
         } else if (holder is NativeAdViewHolder) {
                 holder.fillNative((item as GroupEntityUI.AdEntity).nativeAd)
         }
@@ -129,7 +129,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         val avatar: SimpleDraweeView = itemView.findViewById(R.id.groupAvatarHolder)
 
-        fun bind(item: GroupEntityUI.GroupEntity, position: Int) {
+        fun bind(item: GroupEntityUI.GroupEntity) {
             with(itemView) {
                 spanLetters(item)
                 //item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
@@ -173,23 +173,16 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     itemView.subscribingProgressBar.hide()
                 }
                 with (item_group__text_sub) {
+                    isEnabled = !item.isSubscribing
                     if (item.isFollowing) {
                         setOnClickListener {
-                            if (!item.isSubscribing) {
-//                                item.isSubscribing = true
-//                                itemView.subscribingProgressBar.show()
-                                unsubscribeClickListener.invoke(item, position)
-                            }
+                            unsubscribeClickListener.invoke(item, layoutPosition)
                         }
                         text = resources.getText(R.string.unsubscribe)
                         setBackgroundResource(R.drawable.btn_unsub)
                     } else {
                         setOnClickListener {
-                            if (!item.isSubscribing) {
-//                                item.isSubscribing = true
-//                                itemView.subscribingProgressBar.show()
-                                subscribeClickListener.invoke(item, position)
-                            }
+                            subscribeClickListener.invoke(item, layoutPosition)
                         }
                         text = resources.getText(R.string.subscribe)
                         setBackgroundResource(R.drawable.btn_sub)

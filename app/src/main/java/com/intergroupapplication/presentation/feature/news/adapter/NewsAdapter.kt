@@ -78,8 +78,8 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var commentClickListener: (groupPostEntity: GroupPostEntityUI) -> Unit = {}
         var groupClickListener: (groupId: String) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
-        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
-        var likeClickListener: (postId: String) -> Unit = { }
+        var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
+        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntityUI.GroupPostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var dislikeClickListener: (postId: String) -> Unit = { }
     }
 
@@ -171,11 +171,16 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     groupClickListener.invoke(item.groupInPost.id)
                 }
                 likeClickArea.setOnClickListener {
-                    likeClickListener.invoke(item.id)
+                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
                 dislikeClickArea.setOnClickListener {
-                    dislikeClickListener.invoke(item.id)
+                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
+                likeClickArea.isEnabled = !item.isLoading
+                dislikeClickArea.isEnabled = !item.isLoading
+                videoContainer.removeAllViews()
+                audioContainer.removeAllViews()
+                imageContainer.removeAllViews()
                 item.photo.apply {
                     ifNotNull {
                         postImage.show()
@@ -186,10 +191,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-
-                videoContainer.removeAllViews()
-                audioContainer.removeAllViews()
-                imageContainer.removeAllViews()
 
                 val activity = audioContainer.getActivity()
                 if (activity is MainActivity) {

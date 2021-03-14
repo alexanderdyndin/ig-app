@@ -219,23 +219,31 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                             group.isSubscribing = true
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyDataSetChanged()
+                                    adapterAll.notifyItemChanged(pos)
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyDataSetChanged()
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
+                            }
+                        }
+                        .doFinally {
+                            group.isSubscribing = false
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
                                 }
                             }
                         }
                         .subscribe({
                             group.isFollowing = true
-                            group.isSubscribing = false
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyDataSetChanged()
                                     adapterSubscribed.refresh()
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyDataSetChanged()
                                     adapterAll.refresh()
                                 }
                             }
@@ -246,18 +254,11 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                                         if (it.field == "group") {
                                             group.isFollowing = !group.isFollowing
                                             group.isSubscribing = false
-                                            when (currentScreen) {
-                                                0 -> {
-                                                    adapterAll.notifyDataSetChanged()
-                                                }
-                                                1 -> {
-                                                    adapterSubscribed.notifyDataSetChanged()
-                                                }
-                                            }
                                         }
                                     }
                                 }
-                            } else errorHandler.handle(exception)
+                            } else
+                                errorHandler.handle(exception)
                         }))
             }
             unsubscribeClickListener = { group, pos ->
@@ -268,23 +269,31 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                             group.isSubscribing = true
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyDataSetChanged()
+                                    adapterAll.notifyItemChanged(pos)
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyDataSetChanged()
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
+                            }
+                        }
+                        .doFinally {
+                            group.isSubscribing = false
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
                                 }
                             }
                         }
                         .subscribe({
                             group.isFollowing = false
-                            group.isSubscribing = false
                             when (currentScreen) {
                                 0 -> {
-                                    adapterAll.notifyDataSetChanged()
                                     adapterSubscribed.refresh()
                                 }
                                 1 -> {
-                                    adapterSubscribed.notifyDataSetChanged()
                                     adapterAll.refresh()
                                 }
                             }
@@ -300,7 +309,8 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                                         adapterSubscribed.notifyDataSetChanged()
                                     }
                                 }
-                            } else errorHandler.handle(it)
+                            } else
+                                errorHandler.handle(it)
                         }))
             }
         }

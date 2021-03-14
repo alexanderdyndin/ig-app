@@ -67,4 +67,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                 .cachedIn(viewModelScope)
     }
 
+    fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
+            useCase.setReact(isLike, isDislike, postId)
+
 }
