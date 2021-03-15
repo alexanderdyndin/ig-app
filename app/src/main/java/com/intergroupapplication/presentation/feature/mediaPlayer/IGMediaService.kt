@@ -36,6 +36,7 @@ class IGMediaService : MediaBrowserService() {
 
 
     private var exoPlayer: SimpleExoPlayer? = null
+    private var mediaFile: MediaFile? = null
     private var notificationTitle: String? = null
     private var notificationSubtitle: String? = null
 
@@ -101,13 +102,15 @@ class IGMediaService : MediaBrowserService() {
          * things will work correctly.
          */
         fun getExoPlayerInstance() = exoPlayer
-        fun setPlayer(player: SimpleExoPlayer, notificationTitle: String?, notificationSubtitle: String?) {
+        fun getMediaFile() = mediaFile
+        fun setPlayer(player: SimpleExoPlayer, mediaFile: MediaFile, notificationTitle: String?, notificationSubtitle: String?) {
             if (player != exoPlayer){
                 exoPlayer?.pause()
                 exoPlayer = player
             }
             this@IGMediaService.notificationTitle = notificationTitle
             this@IGMediaService.notificationSubtitle = notificationSubtitle
+            this@IGMediaService.mediaFile = mediaFile
             displayNotification(true)
         }
 
@@ -116,6 +119,11 @@ class IGMediaService : MediaBrowserService() {
             displayNotification(true)
         }
     }
+
+    data class MediaFile(
+            val isAudio: Boolean,
+            val fileId: Int
+    )
 
     /**
      * When called will load into exo player our sample playback video.
