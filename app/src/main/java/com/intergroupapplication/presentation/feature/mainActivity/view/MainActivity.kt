@@ -133,7 +133,6 @@ class MainActivity : FragmentActivity() {
                         it.resumeWith(Result.success(service))
                     }
                 }
-
             }
 
             val intent = Intent(this, IGMediaService::class.java)

@@ -4,13 +4,13 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.browse.MediaBrowser
 import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.support.v4.media.MediaBrowserCompat
+import android.service.media.MediaBrowserService
 import androidx.core.app.NotificationCompat
-import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -23,15 +23,15 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 
 
-class IGMediaService : MediaBrowserServiceCompat() {
+class IGMediaService : MediaBrowserService() {
 
     companion object {
         const val NOTIFICATION_ID = 1
         const val MEDIA_URL = "mediaUrl"
 
-        const val PLAY_PAUSE_ACTION = "actionPlayPause"
-        const val ACTION_PLAY = 1
-        const val ACTION_PAUSE = 0
+        const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
+        const val ACTION_PLAY = "ACTION_PLAY"
+        const val ACTION_PAUSE = "ACTION_PAUSE"
     }
 
 
@@ -53,10 +53,14 @@ class IGMediaService : MediaBrowserServiceCompat() {
         return null
     }
 
-    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+    override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowser.MediaItem>>) {
 
     }
 
+    private fun stop() {
+//        exoPlayer?.release()
+        stopForeground(true)
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -66,12 +70,20 @@ class IGMediaService : MediaBrowserServiceCompat() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let {
-            val action = it.getIntExtra(PLAY_PAUSE_ACTION, -1)
-            when (action) {
-                ACTION_PAUSE -> exoPlayer?.let { exo -> exo.playWhenReady = !exo.playWhenReady }
+        val action = intent?.action
+        when (action) {
+            ACTION_STOP_FOREGROUND_SERVICE -> {
+                stop()
             }
-            displayNotification()
+            ACTION_PLAY -> {
+                exoPlayer?.let { exo -> exo.playWhenReady = true }
+                displayNotification(true)
+            }
+            ACTION_PAUSE -> {
+                exoPlayer?.let { exo -> exo.playWhenReady = false }
+                displayNotification(false)
+                stopForeground(false)
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -96,12 +108,12 @@ class IGMediaService : MediaBrowserServiceCompat() {
             }
             this@IGMediaService.notificationTitle = notificationTitle
             this@IGMediaService.notificationSubtitle = notificationSubtitle
-            displayNotification()
+            displayNotification(true)
         }
 
         fun loadMedia(mediaUrl: String) {
             loadExampleMedia(mediaUrl)
-            displayNotification()
+            displayNotification(true)
         }
     }
 
@@ -117,7 +129,7 @@ class IGMediaService : MediaBrowserServiceCompat() {
 //        exoPlayer?.prepare()
     }
 
-    private fun displayNotification() {
+    private fun displayNotification(startForeground: Boolean) {
         val isPlaying = exoPlayer?.playWhenReady == true
         //Lets create our remote view.
 //        val remoteView = RemoteViews(packageName, R.layout.notification_media_player)
@@ -127,10 +139,13 @@ class IGMediaService : MediaBrowserServiceCompat() {
 
         val playPauseButtonId = if (isPlaying) R.drawable.ic_media_notification_pause else R.drawable.ic_media_notification_play
 
-        val intent = Intent(this, IGMediaService::class.java).apply {
-            putExtra(PLAY_PAUSE_ACTION, if (isPlaying) ACTION_PAUSE else ACTION_PLAY)
-        }
+        val cancel: Intent = Intent(this, IGMediaService::class.java)
+        cancel.action = ACTION_STOP_FOREGROUND_SERVICE
+        val cancelUploadIntent = PendingIntent.getService(this, 0, cancel, PendingIntent.FLAG_CANCEL_CURRENT)
 
+        val intent = Intent(this, IGMediaService::class.java).apply {
+            action = if (isPlaying) ACTION_PAUSE else ACTION_PLAY
+        }
         val pendingIntent = PendingIntent.getService(this, 0, intent, 0)
 //        remoteView.setOnClickPendingIntent(R.id.playPause, intent)
 
@@ -149,7 +164,9 @@ class IGMediaService : MediaBrowserServiceCompat() {
 //                .addAction(R.drawable.ic_media_notification_next_track, "Next", nextPendingIntent) // #2
                 // Apply the media style template
                 .setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0))
+                        .setShowActionsInCompactView(0)
+                )
+                .setNotificationSilent()
                 .setContentTitle(audioTitle)
                 .setContentText(audioAuthor)
 
@@ -158,7 +175,7 @@ class IGMediaService : MediaBrowserServiceCompat() {
             notificationBuilder.setChannelId(MainActivity.MEDIA_CHANNEL_ID)
         }
         val notification = notificationBuilder.build()
-        startForeground(NOTIFICATION_ID, notification)
+        if(startForeground) startForeground(NOTIFICATION_ID, notification)
         manager.notify(NOTIFICATION_ID, notification)
     }
 }
