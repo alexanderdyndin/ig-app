@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.news.adapter
 
-import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +25,6 @@ import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
@@ -206,6 +204,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                                 val playerView = AudioPlayerView(audioContainer.context)
                                 playerView.exoPlayer.player = player
                                 audioContainer.addView(playerView)
+                                if (player.playWhenReady) {
+                                    player.playWhenReady = false
+                                    player.playWhenReady = true
+                                }
                             }
 
                             /**
@@ -216,6 +218,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                                 val playerView = VideoPlayerView(videoContainer.context)
                                 playerView.exoPlayer.player = player
                                 videoContainer.addView(playerView)
+                                if (player.playWhenReady) {
+                                    player.playWhenReady = false
+                                    player.playWhenReady = true
+                                }
                             }
                         }
                     }
@@ -241,12 +247,17 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         }
 
         private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
-            val videoPlayer = SimpleExoPlayer.Builder(videoContainer.context).build()
+            val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(false, video.id)) {
+                val bindedPlayer = service.getExoPlayerInstance()
+                if (bindedPlayer != null) return bindedPlayer
+                else SimpleExoPlayer.Builder(videoContainer.context).build()
+            }
+            else SimpleExoPlayer.Builder(videoContainer.context).build()
 
             val listener = object : Player.EventListener {
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                     if (playWhenReady) {
-                        service.setPlayer(videoPlayer, video.title, video.description)
+                        service.setPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id), video.title, video.description)
                     }
                 }
             }
@@ -264,12 +275,17 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
 
-            val musicPlayer = SimpleExoPlayer.Builder(audioContainer.context).build()
+            val musicPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
+                val bindedPlayer = service.getExoPlayerInstance()
+                if (bindedPlayer != null) return bindedPlayer
+                else SimpleExoPlayer.Builder(audioContainer.context).build()
+            }
+            else SimpleExoPlayer.Builder(audioContainer.context).build()
 
             val listener = object : Player.EventListener {
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                     if (playWhenReady) {
-                        service.setPlayer(musicPlayer, audio.song, audio.description)
+                        service.setPlayer(musicPlayer, IGMediaService.MediaFile(true, audio.id), audio.song, audio.description)
                     }
                 }
             }

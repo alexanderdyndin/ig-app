@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.group.adapter
 
-import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +19,6 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
@@ -152,9 +150,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val videoPlayerView = itemView.findViewById<StyledPlayerView>(R.id.videoExoPlayerView)
-        val musicPlayerView = itemView.findViewById<PlayerView>(R.id.musicExoPlayerView)
-
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
         val imageContainer = itemView.findViewById<LinearLayout>(R.id.imageContainer)
@@ -219,6 +214,10 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                                 val playerView = AudioPlayerView(audioContainer.context)
                                 playerView.exoPlayer.player = player
                                 audioContainer.addView(playerView)
+                                if (player.playWhenReady) {         //FIXME КОСТЫЛЬ! Исправить бы
+                                    player.playWhenReady = false
+                                    player.playWhenReady = true
+                                }
                             }
 
                             /**
@@ -229,6 +228,10 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                                 val playerView = VideoPlayerView(videoContainer.context)
                                 playerView.exoPlayer.player = player
                                 videoContainer.addView(playerView)
+                                if (player.playWhenReady) {
+                                    player.playWhenReady = false
+                                    player.playWhenReady = true
+                                }
                             }
                         }
                     }
@@ -250,12 +253,18 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         }
 
         private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
-            val videoPlayer = SimpleExoPlayer.Builder(videoContainer.context).build()
+
+            val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(false, video.id)) {
+                val bindedPlayer = service.getExoPlayerInstance()
+                if (bindedPlayer != null) return bindedPlayer
+                else SimpleExoPlayer.Builder(videoContainer.context).build()
+            }
+                else SimpleExoPlayer.Builder(videoContainer.context).build()
 
             val listener = object : Player.EventListener {
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                     if (playWhenReady) {
-                        service.setPlayer(videoPlayer, video.title, video.description)
+                        service.setPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id), video.title, video.description)
                     }
                 }
             }
@@ -273,12 +282,17 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
 
-            val musicPlayer = SimpleExoPlayer.Builder(audioContainer.context).build()
+            val musicPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
+                val bindedPlayer = service.getExoPlayerInstance()
+                if (bindedPlayer != null) return bindedPlayer
+                else SimpleExoPlayer.Builder(audioContainer.context).build()
+            }
+                else SimpleExoPlayer.Builder(audioContainer.context).build()
 
             val listener = object : Player.EventListener {
                 override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                     if (playWhenReady) {
-                        service.setPlayer(musicPlayer, audio.song, audio.description)
+                        service.setPlayer(musicPlayer, IGMediaService.MediaFile(true, audio.id), audio.song, audio.description)
                     }
                 }
             }
