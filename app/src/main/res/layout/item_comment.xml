@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,107 +5,437 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/cardsColor"
-    android:padding="@dimen/big_padding">
+    android:background="@color/mainBlack"
+    android:padding="@dimen/small_low_padding">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/commentAvatar"
-        android:layout_width="@dimen/group_logo_inside_post_size"
-        android:layout_height="@dimen/group_logo_inside_post_size"
-        android:layout_marginEnd="@dimen/middle_margin"
-        app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        fresco:placeholderImage="@drawable/application_logo"
-        fresco:roundAsCircle="true" />
-
-    <TextView
-        android:id="@+id/commentUserName"
-        style="@style/InterGroupBlueTextStyle"
+    <ImageView
+        android:id="@+id/bgHeaderComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/middle_margin"
-        android:ellipsize="end"
-        android:singleLine="false"
-        android:maxWidth="@dimen/max_comment_width"
-        app:layout_constraintStart_toStartOf="@+id/guideline5"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Никнейм пользователя" />
+        android:background="@drawable/bg_header_comments"
+        app:layout_constraintEnd_toStartOf="@+id/headerComments"
+        app:layout_constraintTop_toTopOf="@+id/headerComments"/>
 
-    <TextView
-        android:id="@+id/responseToOtherComment"
-        style="@style/InterGroupResponseToCommentTextStyle"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerComments"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/settingsComment"
-        app:layout_constraintStart_toEndOf="@+id/commentUserName"
-        app:layout_constraintTop_toTopOf="@+id/commentUserName"
-        tools:text="ответ Маше" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/settingsComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="9dp"
+        android:background="@drawable/bg_comment_header"
+        android:minHeight="56dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_settings" />
+        app:layout_constraintStart_toEndOf="@+id/avaUserComment"
+        app:layout_constraintTop_toBottomOf="@+id/navigationToolbar" >
 
-    <TextView
-        android:id="@+id/commentUserId"
-        style="@style/InterGroupGreyTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/commentUserName"
-        app:layout_constraintTop_toBottomOf="@+id/commentUserName"
-        tools:text="ID 4547851" />
+        <TextView
+            android:id="@+id/idcGroupUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingRight="4dp"
+            tools:text="IDC:0001"
+            style="@style/TextNoActive12sp"
+            app:layout_constraintEnd_toStartOf="@+id/timeComment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/commentText"
-        style="@style/InterGroupWhiteTextStyle"
+        <TextView
+            android:id="@+id/timeComment"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="8dp"
+            tools:text="04.12.2020 в 15:28  "
+            android:textAlignment="textEnd"
+            style="@style/TextNoActive10sp"
+            app:layout_constraintEnd_toStartOf="@+id/settingsBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingRight="4dp"
+            tools:text="Владислав Кутузов"
+            style="@style/TextAccent12spBold"
+            app:layout_constraintEnd_toStartOf="@+id/settingsBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/idcGroupUser" />
+
+        <TextView
+            android:id="@+id/idUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingBottom="1dp"
+            tools:text="ID:0018"
+            style="@style/TextNoActive12sp"
+            app:layout_constraintEnd_toStartOf="@+id/settingsBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+
+        <ImageButton
+            android:id="@+id/settingsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_post_settings"
+            android:paddingLeft="6dp"
+            android:paddingTop="6dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="9dp"
+            android:src="@drawable/ic_settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/commentBody"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/middle_margin"
-        android:layout_marginTop="@dimen/middle_margin"
-        android:maxLines="100"
-        android:textSize="@dimen/middle_high_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline5"
-        app:layout_constraintTop_toBottomOf="@+id/commentUserId"
-        tools:text="Текст для поста описание происходящегоподробности и факты, новости прочеепроисходящее в определенном месте или нет" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/reply"
-        android:layout_width="@dimen/post_comment_icon_size"
-        android:layout_height="@dimen/post_comment_icon_size"
-        android:layout_marginTop="@dimen/middle_margin"
-        android:layout_marginEnd="@dimen/middle_margin"
-        android:layout_marginBottom="@dimen/middle_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/commentText"
-        android:src="@drawable/ic_reply" />
-
-    <TextView
-        android:id="@+id/commentPrescription"
-        style="@style/InterGroupGreyTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/middle_margin"
-        android:layout_marginTop="@dimen/middle_margin"
-        android:textSize="@dimen/middle_high_size"
-        app:layout_constraintStart_toStartOf="@+id/guideline5"
-        app:layout_constraintTop_toBottomOf="@+id/commentText"
-        tools:text="сегодня 12:34" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginLeft="36dp"
+        android:background="@color/colorInput"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.15" />
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        app:layout_constraintEnd_toEndOf="@id/headerComments"
+        app:layout_constraintStart_toStartOf="@+id/bgAvaComment"
+        app:layout_constraintTop_toBottomOf="@+id/headerComments">
 
+        <TextView
+            android:id="@+id/postText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextLight12sp"
+            android:paddingLeft="8dp"
+            tools:text="Идейные соображения высшего порядка, а также новая модель организационной деятельности играет важную роль в формировании позиций, занимаемых участниками в отношении поставленных задач. Товар.."/>
+
+        <!--        Есть только когда болеее 4 строк текста.
+        При нажатии должны появляться остальные строчки.        -->
+        <FrameLayout
+            android:id="@+id/btnExpand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                style="@style/TextAccent12sp"
+                android:drawableRight="@drawable/ic_arrow_down_blue"
+                android:drawablePadding="6dp"
+                tools:text="Развернуть"/>
+        </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/postMusic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/bgPostMusic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/middle_margin"
+                android:background="@drawable/bg_post_music"
+                app:layout_constraintEnd_toStartOf="@+id/delMusic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/trackName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/big_margin"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/play"
+                tools:text="The Anix - Die With You"
+                android:textColor="@color/colorAccent"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
+                app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+            <TextView
+                android:id="@+id/fromWhom"
+                style="@style/TextNoActive10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxHeight="12dp"
+                android:paddingStart="@dimen/middle_padding"
+                tools:text="Загрузил (ID:1223456)"
+                app:layout_constraintStart_toStartOf="@+id/trackName"
+                app:layout_constraintTop_toBottomOf="@+id/trackName" />
+
+            <TextView
+                android:id="@+id/duringTrack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="(4:03)"
+                style="@style/TextNoActive12sp"
+                android:layout_marginEnd="@dimen/low_big_margin"
+                app:layout_constraintBottom_toBottomOf="@+id/btnPostPlay"
+                app:layout_constraintEnd_toStartOf="@+id/btnPostPlay"
+                app:layout_constraintTop_toTopOf="@+id/btnPostPlay" />
+
+            <ImageView
+                android:id="@+id/btnPostPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_play_middle"
+                app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+                app:layout_constraintEnd_toEndOf="@+id/bgPostMusic"
+                app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+            <ImageView
+                android:id="@+id/startLineSeekBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/start_line_seek_bar"
+                app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+                app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
+                app:layout_constraintTop_toBottomOf="@+id/fromWhom" />
+
+            <SeekBar
+                android:id="@+id/positionBar"
+                style="@style/PostSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/duringTrack"
+                app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
+                app:layout_constraintTop_toTopOf="@id/startLineSeekBar" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        Есть только когда болеее 2 музыки.
+        При нажатии должны появляться остальные треки.        -->
+
+        <FrameLayout
+            android:id="@+id/btnExpand1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp"
+                android:fontFamily="@font/play"
+                android:drawableRight="@drawable/ic_arrow_down_blue"
+                android:drawablePadding="6dp"
+                tools:text="Развернуть"/>
+        </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/postVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/video"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--    Может кто поймет что не так с ic_play_video. Не правильно отображается. -->
+            <ImageView
+                android:id="@+id/bgPlayVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_play_video"
+                android:elevation="4dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="8dp"
+                android:src="@drawable/ic_play_video"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/bgNameVideo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_name_video"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/nameVideo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                tools:text="Хамелеон любуется своей жертвой из своей засады.."
+                style="@style/TextLight10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/durationVideo"
+                app:layout_constraintStart_toStartOf="@+id/bgNameVideo"
+                app:layout_constraintTop_toTopOf="@+id/bgNameVideo" />
+
+            <TextView
+                android:id="@+id/durationVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_duration_video"
+                android:gravity="center"
+                tools:text="5:07"
+                style="@style/TextAccent14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        Есть только когда болеее 1 видео.
+При нажатии должны появляться остальные видео.        -->
+
+        <FrameLayout
+            android:id="@+id/btnExpand2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                style="@style/TextAccent12sp"
+                android:drawableRight="@drawable/ic_arrow_down_blue"
+                android:drawablePadding="6dp"
+                tools:text="Развернуть"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/bgEndComment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_end_post"
+        app:layout_constraintEnd_toEndOf="@+id/commentBody"
+        app:layout_constraintStart_toStartOf="@+id/commentBody"
+        app:layout_constraintTop_toBottomOf="@+id/commentBody" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bgEndComment"
+        app:layout_constraintStart_toStartOf="@id/bgEndComment"
+        app:layout_constraintTop_toTopOf="@id/bgEndComment"
+        android:visibility="invisible">
+
+        <FrameLayout
+            android:id="@+id/postDislikes"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/item_group__dislike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:drawableLeft="@drawable/icon_dislike"
+                android:drawablePadding="4dp"
+                tools:text="150"
+                style="@style/TextDislike14sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/postLikes"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/postLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:drawableLeft="@drawable/icon_like"
+                android:drawablePadding="4dp"
+                tools:text="999к"
+                style="@style/TextLike14sp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/replyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginRight="8dp"
+        android:paddingTop="5dp"
+        android:background="@drawable/btn_reply"
+        android:text="@string/reply"
+        style="@style/TextDark10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bgEndComment"
+        app:layout_constraintEnd_toEndOf="@+id/bgEndComment"
+        app:layout_constraintTop_toBottomOf="@+id/commentBody" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/line_header_comments"
+        app:layout_constraintStart_toStartOf="@+id/bgHeaderComment"
+        app:layout_constraintTop_toTopOf="@id/bgHeaderComment" />
+
+    <ImageView
+        android:id="@+id/bgAvaComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_ava_comments"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/headerComments" />
+
+    <com.github.florent37.shapeofview.ShapeOfView
+        android:id="@+id/avaUserComment"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:shape_clip_drawable="@drawable/avatar_group_list"
+        android:layout_marginLeft="1dp"
+        app:layout_constraintStart_toStartOf="@+id/bgAvaComment"
+        app:layout_constraintTop_toTopOf="@+id/bgAvaComment">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/userAvatarHolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:placeholderImage="@drawable/variant_10"/>
+
+    </com.github.florent37.shapeofview.ShapeOfView>
+
+    <ImageView
+        android:id="@+id/icOnline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_online_comment"
+        app:layout_constraintBottom_toBottomOf="@+id/avaUserComment"
+        app:layout_constraintEnd_toEndOf="@+id/avaUserComment"
+        app:layout_constraintStart_toStartOf="@+id/avaUserComment"
+        app:layout_constraintTop_toBottomOf="@+id/avaUserComment"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

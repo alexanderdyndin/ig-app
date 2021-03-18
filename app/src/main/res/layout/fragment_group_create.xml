@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/createGroupCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,42 +25,16 @@
                 android:id="@+id/navigationToolbar"
                 layout="@layout/creategroup_toolbar_layout" />
 
-            <ImageView
-                android:id="@+id/groupCreate_bg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/bg_creategroup"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
-                android:contentDescription="@string/imagebg" />
-
-
-            <com.github.florent37.shapeofview.ShapeOfView
-                android:id="@+id/groupCreate_avatar"
-                android:layout_width="@dimen/intergroup_profile_view_size"
-                android:layout_height="@dimen/intergroup_profile_view_size"
-                app:shape_clip_drawable="@drawable/ava_mask"
-                android:foreground="@drawable/ava_shadow"
-                android:layout_marginTop="11dp"
-                app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
-                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
-
-                <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
-                    android:id="@+id/groupAvatarHolder"
-                    android:layout_width="@dimen/intergroup_profile_view_size"
-                    android:layout_height="@dimen/intergroup_profile_view_size">
-                </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
-
-            </com.github.florent37.shapeofview.ShapeOfView>
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <LinearLayout
                 android:id="@+id/groupCreate_title_type_container"
                 android:layout_width="0dp"
-                android:layout_marginTop="9dp"
-                android:layout_marginEnd="12dp"
                 android:layout_height="wrap_content"
+                android:background="@color/colorInput"
+                android:layout_marginTop="2.5dp"
                 android:orientation="vertical"
+                android:paddingTop="6dp"
+                android:paddingBottom="7dp"
+                android:paddingEnd="@dimen/high_middle_padding"
                 app:layout_constraintStart_toEndOf="@+id/groupCreate_avatar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/groupCreate_line_r">
@@ -74,7 +49,6 @@
                     android:hint="@string/group_name"
                     android:inputType="textShortMessage"
                     android:paddingStart="30dp"
-                    android:paddingEnd="0dp"
                     android:textColor="@color/colorAccent"
                     android:textColorHint="@color/colorAccent2"
                     android:textSize="14sp"
@@ -101,12 +75,9 @@
                         android:button="@android:color/transparent"
                         android:drawableLeft="@drawable/ic_open_btn"
                         android:drawablePadding="6dp"
-                        android:fontFamily="@font/play"
                         android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
                         android:text="@string/group_open"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="12sp"
+                        style="@style/TextAccent12sp"
                         android:layout_weight="1" />
 
                     <RadioButton
@@ -119,21 +90,20 @@
                         android:drawablePadding="6dp"
                         android:fontFamily="@font/play"
                         android:paddingLeft="12dp"
-                        android:paddingEnd="12dp"
                         android:text="@string/group_close"
                         android:textColor="@color/colorPink"
                         android:textSize="12sp"
                         android:layout_weight="1"/>
 
                 </RadioGroup>
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/groupCreate__addAvatar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="18dp"
                 android:background="@drawable/selector_add_avatar"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/play"
@@ -149,23 +119,25 @@
 
             <ImageView
                 android:id="@+id/groupCreate_line_r"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/line_addava"
                 android:layout_marginTop="0dp"
-                android:layout_marginStart="0dp"
+                android:layout_marginStart="22dp"
+                app:layout_constraintStart_toStartOf="@+id/groupCreate__addAvatar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/groupCreate__addAvatar"
                 android:contentDescription="@string/separateline"/>
 
             <ImageView
                 android:id="@+id/groupCreate__lineOpenClose"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4.5dp"
+                android:layout_marginTop="1dp"
                 android:background="@drawable/line_openclose"
                 android:contentDescription="@string/separateline"
-                app:layout_constraintEnd_toEndOf="@+id/groupCreate_bg"
+                app:layout_constraintStart_toStartOf="@+id/groupCreate_title_type_container"
+                app:layout_constraintEnd_toEndOf="@+id/groupCreate_title_type_container"
                 app:layout_constraintTop_toBottomOf="@+id/groupCreate_title_type_container" />
 
 
@@ -173,21 +145,22 @@
                 android:id="@+id/ageBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@+id/groupCreate__lineOpenClose"
+                android:layout_marginTop="4dp"
+                android:paddingTop="@dimen/high_middle_padding"
+                android:paddingBottom="@dimen/high_middle_padding"
+                android:background="@color/colorInput"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/groupCreate_title_type_container">
 
                 <TextView
                     android:id="@+id/groupCreate__TextAge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="12dp"
-                    android:fontFamily="@font/play"
                     android:text="@string/group_age"
-                    android:textColor="@color/colorAccent2"
-                    android:textSize="14sp" />
+                    style="@style/TextNoActive14sp" />
 
                 <TextView
                     android:id="@+id/groupCreate__ageHelp"
@@ -256,6 +229,34 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/groupCreate_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_creategroup"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
+                android:contentDescription="@string/imagebg" />
+
+            <com.github.florent37.shapeofview.ShapeOfView
+                android:id="@+id/groupCreate_avatar"
+                android:layout_width="@dimen/intergroup_profile_view_size"
+                android:layout_height="@dimen/intergroup_profile_view_size"
+                app:shape_clip_drawable="@drawable/ava_group_create"
+                android:layout_marginLeft="@dimen/small_margin"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
+                app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
+
+                <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+                    android:id="@+id/groupAvatarHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
+
+            </com.github.florent37.shapeofview.ShapeOfView>
+
+            <ImageView
                 android:id="@+id/groupCreate__lineAge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -263,7 +264,7 @@
                 android:contentDescription="@string/separateline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/groupCreate_bg" />
+                app:layout_constraintTop_toBottomOf="@+id/ageBlock" />
 
             <View
                 android:id="@+id/groupCreate__countryBg"
@@ -439,10 +440,9 @@
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
                     android:text="@string/group_description"
-                    android:textSize="14sp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/colorAccent2"
+                    style="@style/TextNoActive14sp"
                     android:drawableRight="@drawable/ic_write" />
                 <LinearLayout
                     android:id="@+id/groupCreate__descContainer"
@@ -503,10 +503,9 @@
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
                     android:text="@string/group_rules"
-                    android:textSize="14sp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/colorAccent2"
+                    style="@style/TextNoActive14sp"
                     android:drawableRight="@drawable/ic_write" />
                 <LinearLayout
                     android:id="@+id/groupCreate__ruleContainer"
@@ -554,7 +553,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="24dp"
-
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/groupCreate__lineInput6">
@@ -570,9 +568,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/create_group_agreement"
-                    android:textColor="@color/colorAccent2"
                     android:layout_marginStart="18dp"
-                    android:textSize="14sp"/>
+                    style="@style/TextNoActive14sp"/>
 
             </LinearLayout>
 

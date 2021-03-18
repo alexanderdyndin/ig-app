@@ -142,11 +142,15 @@
     <string name="_16" translatable="false">16+</string>
     <string name="appodealpolicy">Appodeal policy</string>
     <string name="offered_posts">Offered posts</string>
-    <string name="idg" translatable="false">IDG:%1$s</string>
+    <string name="idg" translatable="false">IDG: %1$s</string>
+    <string name="idc" translatable="false">IDC: %1$s</string>
+    <string name="idp" translatable="false">IDP: %1$s</string>
     <string name="allUsers">Followers</string>
     <string name="blockedUsers">Blocked</string>
     <string name="admUsers">Administrators</string>
     <string name="can_not_upload_video">Can not upload video</string>
     <string name="can_not_upload_audio">Can not upload audio</string>
     <string name="buy_premium">Buy premium</string>
+    <string name="reply">Reply</string>
+    <string name="expand">Expand</string>
 </resources>

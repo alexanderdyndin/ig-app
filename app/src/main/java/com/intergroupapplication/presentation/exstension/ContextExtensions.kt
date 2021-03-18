@@ -23,6 +23,7 @@ fun Context.dpToPx(dp: Int): Int {
     return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT))
 }
 
+
 fun Context.pxToDp(px: Int): Int {
     val displayMetrics = this.resources.displayMetrics
     return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT))

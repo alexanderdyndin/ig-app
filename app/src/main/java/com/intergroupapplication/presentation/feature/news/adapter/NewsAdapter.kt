@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.customview.PostGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
@@ -138,17 +139,18 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<LinearLayout>(R.id.imageContainer)
+        val imageContainer = itemView.findViewById<PostGalleryView>(R.id.imageBody)
 
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
-                likesCount.text = item.reacts.likesCount.toString()
-                dislikesCount.text = item.reacts.dislikesCount.toString()
+                idpGroupPost.text = context.getString(R.string.idp, item.id)
+                postLike.text = item.reacts.likesCount.toString()
+                postDislike.text = item.reacts.dislikesCount.toString()
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                postCommentsCount.text = item.commentsCount
+                commentBtn.text = item.commentsCount
                 item.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.postText
@@ -161,36 +163,28 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 groupName.text = item.groupInPost.name
-                commentImageClickArea.setOnClickListener {
+                commentBtn.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-                groupPostAvatar.setOnClickListener {
+                postAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)
                 }
-                goToGroupClickArea.setOnClickListener {
+                headerPostFromGroup.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)
                 }
-                likeClickArea.setOnClickListener {
+                postLikesClickArea.setOnClickListener {
                     likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
-                dislikeClickArea.setOnClickListener {
+                postDislikesClickArea.setOnClickListener {
                     likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
-                likeClickArea.isEnabled = !item.isLoading
-                dislikeClickArea.isEnabled = !item.isLoading
+                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
+                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+
                 videoContainer.removeAllViews()
                 audioContainer.removeAllViews()
                 imageContainer.removeAllViews()
-                item.photo.apply {
-                    ifNotNull {
-                        postImage.show()
-                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
-                    }
-                    ifNull { postImage.gone() }
-                }
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
-                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
                 val activity = audioContainer.getActivity()
                 if (activity is MainActivity) {
@@ -228,15 +222,14 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     //image.scaleType = ImageView.ScaleType.CENTER_CROP
                     image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
 //                    if (file.file.contains(".gif")) {
-                        val controller = Fresco.newDraweeControllerBuilder()
-                                .setUri(Uri.parse(file.file))
-                                .setAutoPlayAnimations(true)
-                                .build()
-                        image.controller = controller
-//                    } else {
-//                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
-//                    }
-                    imageContainer.addView(image)
+                    val controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(Uri.parse(file.file))
+                            .setAutoPlayAnimations(true)
+                            .build()
+                    image.controller = controller
+                    imageContainer.setImages(item.images, item.imagesExpanded)
+                    imageContainer.imageClick = imageClickListener
+                    imageContainer.expand = { item.imagesExpanded = it }
                 }
             }
         }
@@ -285,7 +278,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
             return musicPlayer
         }
-
 
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)
@@ -485,11 +477,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.imageContainer.children.forEach {
-                if (it is SimpleDraweeView) {
-                    it.controller = null
-                }
-            }
+            holder.imageContainer.destroy()
             holder.videoContainer.children.forEach {
                 if (it is StyledPlayerView) {
                     it.player?.release()

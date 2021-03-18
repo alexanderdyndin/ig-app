@@ -183,7 +183,6 @@ class NewsFragment(): BaseFragment(), NewsView{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
-        
         //paging 3
         newPaging()
         //crashing app when provide it by dagger

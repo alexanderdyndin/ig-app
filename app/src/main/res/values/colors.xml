@@ -37,13 +37,14 @@
     <color name="manatee">#6F727A</color>
     <color name="whiteAutorize">#fefefe</color>
     <color name="brickRed">#BF283C</color>
-    <color name="mainBlack">#1A1F28</color>
+    <color name="mainBlack">#222834</color>
     <color name="colorAccent2">#048DB9</color>
     <color name="colorAccent">#1ADEF9</color>
     <color name="colorPink">#FF3C5F</color>
     <color name="colorLightBlue">#68B7FF</color>
     <color name="colorLightPunk">#FF8096</color>
     <color name="NoActiveText">#2A5879</color>
+    <color name="textLight">#A9F0FF</color>
     <color name="red">#FF1313</color>
     <color name="colorInput">#12161E</color>
     <color name="colorAge12">#F0C600</color>
@@ -53,5 +54,6 @@
     <color name="colorBlue">#2972FF</color>
     <color name="colorPink2">#FF5C70</color>
     <color name="image_toolbar_color">#25000000</color>
+    <color name="GreyElement">#2C3444</color>
 
 </resources>

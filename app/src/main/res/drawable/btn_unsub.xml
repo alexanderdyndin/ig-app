@@ -1,9 +1,41 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="94dp"
-    android:height="30dp"
+    android:height="33dp"
     android:viewportWidth="94"
-    android:viewportHeight="30">
+    android:viewportHeight="33">
+  <path
+      android:pathData="M88.7071,31.2929L92.2929,27.7071C92.9229,27.0771 94,27.5233 94,28.4142V32C94,32.5523 93.5523,33 93,33H89.4142C88.5233,33 88.0771,31.9229 88.7071,31.2929Z"
+      android:strokeAlpha="0.2"
+      android:fillAlpha="0.2">
+    <aapt:attr name="android:fillColor">
+      <gradient 
+          android:startY="26"
+          android:startX="90.5"
+          android:endY="33"
+          android:endX="90.5"
+          android:type="linear">
+        <item android:offset="0" android:color="#FFFC385B"/>
+        <item android:offset="1" android:color="#FFD72D4B"/>
+      </gradient>
+    </aapt:attr>
+  </path>
+  <path
+      android:pathData="M0.5857,11.4142C0.2106,11.7893 -0.0001,12.298 -0.0001,12.8284V27.1716C-0.0001,27.702 0.2106,28.2107 0.5857,28.5858L4.4141,32.4142C4.7892,32.7893 5.2979,33 5.8283,33H81.7242C82.2232,33 82.7042,32.8134 83.0728,32.477L93.3485,23.0948C93.7635,22.7159 93.9999,22.1798 93.9999,21.6178L94,11.1051L94,6.3942C94,6.1259 93.8921,5.8688 93.7006,5.6807L91.5832,3.6014C91.2094,3.2344 90.7065,3.0286 90.1826,3.0285L9,3L0.5857,11.4142Z"
+      android:strokeAlpha="0.2"
+      android:fillAlpha="0.2">
+    <aapt:attr name="android:fillColor">
+      <gradient 
+          android:startY="3"
+          android:startX="47"
+          android:endY="33"
+          android:endX="47"
+          android:type="linear">
+        <item android:offset="0" android:color="#FFFC385B"/>
+        <item android:offset="1" android:color="#FFD72D4B"/>
+      </gradient>
+    </aapt:attr>
+  </path>
   <path
       android:pathData="M88.7071,28.2929L92.2929,24.7071C92.9229,24.0771 94,24.5233 94,25.4142V29C94,29.5523 93.5523,30 93,30H89.4142C88.5233,30 88.0771,28.9229 88.7071,28.2929Z">
     <aapt:attr name="android:fillColor">
