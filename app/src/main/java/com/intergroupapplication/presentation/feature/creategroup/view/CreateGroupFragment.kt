@@ -76,7 +76,7 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
         val imm: InputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         autoCompleteTextViewCountry.setAdapter(adapter)
         autoCompleteTextViewCountry.threshold = 2
-
+        toolbarTittle.text = getString(R.string.create_group)
         groupCreate__desc.setOnClickListener {
             it.visibility = View.GONE
             groupCreate__descContainer.visibility = View.VISIBLE

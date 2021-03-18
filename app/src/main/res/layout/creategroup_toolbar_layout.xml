@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,7 +29,7 @@
             android:id="@+id/toolbarTittle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/create_group"
+            tools:text="@string/create_group"
             android:textColor="@color/colorAccent"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -36,9 +37,23 @@
             app:fontFamily="@font/play_bold"
             android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/toolbarBackAction"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/publishBtn"
             app:layout_constraintStart_toEndOf="@+id/toolbarBackAction"
             app:layout_constraintTop_toTopOf="@+id/toolbarBackAction" />
+
+        <TextView
+            android:id="@+id/publishBtn"
+            style="@style/TextDark12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_publish"
+            android:drawableRight="@drawable/ic_check_black"
+            android:paddingRight="4dp"
+            android:text="@string/publish"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>
