@@ -157,7 +157,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorInput"
@@ -172,22 +172,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bgLikeDislike">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
-            <ViewStub
-                android:id="@+id/headGroupJoinViewStub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout="@layout/layout_user_join_button" />
-
-        </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="invisible"
+            android:layout_gravity="center">
             <!--            Когда доделают предложку постов-->
             <Button
                 android:id="@+id/proposedPost"
@@ -222,9 +213,17 @@
             android:id="@+id/headGroupCreatePostViewStub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout="@layout/layout_admin_create_post_button"/>
 
-    </LinearLayout>
+        <ViewStub
+            android:id="@+id/headGroupJoinViewStub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout="@layout/layout_user_join_button" />
+
+    </FrameLayout>
 
 
     <com.github.florent37.shapeofview.ShapeOfView

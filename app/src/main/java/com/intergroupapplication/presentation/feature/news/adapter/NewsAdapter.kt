@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.customview.PostGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
@@ -138,17 +139,18 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<LinearLayout>(R.id.imageContainer)
+        val imageContainer = itemView.findViewById<PostGalleryView>(R.id.imageBody)
 
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
-                likesCount.text = item.reacts.likesCount.toString()
-                dislikesCount.text = item.reacts.dislikesCount.toString()
+                idpGroupPost.text = context.getString(R.string.idp, item.id)
+                postLike.text = item.reacts.likesCount.toString()
+                postDislike.text = item.reacts.dislikesCount.toString()
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                postCommentsCount.text = item.commentsCount
+                commentBtn.text = item.commentsCount
                 item.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.postText
@@ -161,82 +163,61 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 groupName.text = item.groupInPost.name
-                commentImageClickArea.setOnClickListener {
+                commentBtn.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-                groupPostAvatar.setOnClickListener {
+                postAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)
                 }
-                goToGroupClickArea.setOnClickListener {
+                headerPostFromGroup.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)
                 }
-                likeClickArea.setOnClickListener {
+                postLikesClickArea.setOnClickListener {
                     likeClickListener.invoke(item.id)
                 }
-                dislikeClickArea.setOnClickListener {
+                postDislikesClickArea.setOnClickListener {
                     dislikeClickListener.invoke(item.id)
                 }
-                item.photo.apply {
-                    ifNotNull {
-                        postImage.show()
-                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
-                    }
-                    ifNull { postImage.gone() }
-                }
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
+                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
                 videoContainer.removeAllViews()
                 audioContainer.removeAllViews()
                 imageContainer.removeAllViews()
 
-                val activity = audioContainer.getActivity()
-                if (activity is MainActivity) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val bindedService = activity.bindMediaService()
-                        bindedService?.let {
-
-
-                            /**
-                             *  Add audios to post
-                             */
-                            item.audios.forEach {
-                                val player = makeAudioPlayer(it, bindedService)
-                                val playerView = AudioPlayerView(audioContainer.context)
-                                playerView.exoPlayer.player = player
-                                audioContainer.addView(playerView)
-                            }
-
-                            /**
-                             *  Add videos to post
-                             */
-                            item.videos.forEach {
-                                val player = makeVideoPlayer(it, bindedService)
-                                val playerView = VideoPlayerView(videoContainer.context)
-                                playerView.exoPlayer.player = player
-                                videoContainer.addView(playerView)
-                            }
-                        }
-                    }
-                } else throw Exception("Activity is not MainActivity")
-
-                item.images.forEach { file ->
-                    val image = SimpleDraweeView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(400, 400)
-                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
-                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-//                    if (file.file.contains(".gif")) {
-                        val controller = Fresco.newDraweeControllerBuilder()
-                                .setUri(Uri.parse(file.file))
-                                .setAutoPlayAnimations(true)
-                                .build()
-                        image.controller = controller
-//                    } else {
-//                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
+//                val activity = audioContainer.getActivity()
+//                if (activity is MainActivity) {
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        val bindedService = activity.bindMediaService()
+//                        bindedService?.let {
+//
+//
+//                            /**
+//                             *  Add audios to post
+//                             */
+//                            item.audios.forEach {
+//                                val player = makeAudioPlayer(it, bindedService)
+//                                val playerView = AudioPlayerView(audioContainer.context)
+//                                playerView.exoPlayer.player = player
+//                                audioContainer.addView(playerView)
+//                            }
+//
+//                            /**
+//                             *  Add videos to post
+//                             */
+//                            item.videos.forEach {
+//                                val player = makeVideoPlayer(it, bindedService)
+//                                val playerView = VideoPlayerView(videoContainer.context)
+//                                playerView.exoPlayer.player = player
+//                                videoContainer.addView(playerView)
+//                            }
+//                        }
 //                    }
-                    imageContainer.addView(image)
-                }
+//                } else throw Exception("Activity is not MainActivity")
+                imageContainer.setImages(item.images, item.imagesExpanded)
+                imageContainer.imageClick = imageClickListener
+                imageContainer.expand = { item.imagesExpanded = it }
             }
         }
 
@@ -284,7 +265,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
             return musicPlayer
         }
-
 
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)
@@ -484,11 +464,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.imageContainer.children.forEach {
-                if (it is SimpleDraweeView) {
-                    it.controller = null
-                }
-            }
+            holder.imageContainer.destroy()
             holder.videoContainer.children.forEach {
                 if (it is StyledPlayerView) {
                     it.player?.release()

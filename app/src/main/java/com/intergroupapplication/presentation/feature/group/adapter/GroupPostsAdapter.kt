@@ -25,12 +25,14 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.customview.PostGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -132,11 +134,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     it.player?.release()
                 }
             }
-            holder.imageContainer.children.forEach {
-                if (it is SimpleDraweeView) {
-                    it.controller = null
-                }
-            }
+            holder.imageContainer.destroy()
         }
 
         super.onViewRecycled(holder)
@@ -157,16 +155,16 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
         val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<LinearLayout>(R.id.imageContainer)
+        val imageContainer = itemView.findViewById<PostGalleryView>(R.id.imageBody)
 
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
+                idpGroupPost.text = context.getString(R.string.idp, item.id)
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                //postPrescription.text = getDateDescribeByString(item.date)
-                postCommentsCount.text = item.commentsCount
+                commentBtn.text = item.commentsCount
                 item.postText.let { it ->
                     if (!it.isEmpty()) {
                         postText.text = item.postText
@@ -179,24 +177,17 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 groupName.text = item.groupInPost.name
-                commentImageClickArea.setOnClickListener {
+                commentBtn.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-                likeClickArea.setOnClickListener {
+                postLikesClickArea.setOnClickListener {
                     likeClickListener.invoke(item.id)
                 }
-                dislikeClickArea.setOnClickListener {
+                postDislikesClickArea.setOnClickListener {
                     dislikeClickListener.invoke(item.id)
                 }
-                item.photo.apply {
-                    ifNotNull {
-                        postImage.show()
-                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
-                    }
-                    ifNull { postImage.gone() }
-                }
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
+                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
                 videoContainer.removeAllViews()
@@ -233,19 +224,9 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         }
                     }
                 } else throw Exception("Activity is not MainActivity")
-
-                item.images.forEach { file ->
-                    val image = SimpleDraweeView(itemView.context)
-                    val controller = Fresco.newDraweeControllerBuilder()
-                            .setUri(Uri.parse(file.file))
-                            .setAutoPlayAnimations(true)
-                            .build()
-                    image.controller = controller
-                    image.layoutParams = ViewGroup.LayoutParams(400, 400)
-
-                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-                    imageContainer.addView(image)
-                }
+                imageContainer.setImages(item.images, item.imagesExpanded)
+                imageContainer.imageClick = imageClickListener
+                imageContainer.expand = { item.imagesExpanded = it }
             }
         }
 

@@ -247,66 +247,6 @@
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
-                    <com.github.florent37.shapeofview.shapes.CutCornerView
-                        android:id="@+id/editPostGallery4"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:shape_cutCorner_bottomLeftSize="8dp"
-                        app:shape_cutCorner_bottomRightSize="8dp"
-                        app:shape_cutCorner_topLeftSize="8dp"
-                        app:shape_cutCorner_topRightSize="8dp">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="1dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/editpostgalery4" />
-
-                    </com.github.florent37.shapeofview.shapes.CutCornerView>
-
-                    <com.github.florent37.shapeofview.shapes.CutCornerView
-                        android:id="@+id/editPostGallery5"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:shape_cutCorner_bottomLeftSize="8dp"
-                        app:shape_cutCorner_bottomRightSize="8dp"
-                        app:shape_cutCorner_topLeftSize="8dp"
-                        app:shape_cutCorner_topRightSize="8dp">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="1dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/editpostgalery5" />
-
-                    </com.github.florent37.shapeofview.shapes.CutCornerView>
-
-                    <com.github.florent37.shapeofview.shapes.CutCornerView
-                        android:id="@+id/editPostGallery6"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        app:shape_cutCorner_bottomLeftSize="8dp"
-                        app:shape_cutCorner_bottomRightSize="8dp"
-                        app:shape_cutCorner_topLeftSize="8dp"
-                        app:shape_cutCorner_topRightSize="8dp">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="1dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/editpostgalery6" />
-
-                    </com.github.florent37.shapeofview.shapes.CutCornerView>
-
                 </GridLayout>
 
 
@@ -332,7 +272,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:columnCount="3"
+                    android:columnCount="2"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toStartOf="@+id/slideImage"
                     app:layout_constraintStart_toStartOf="parent"
@@ -381,7 +321,7 @@
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
                 </GridLayout>
                 <!-- Если 1 картинка 1x1 -->
-                <!--
+
                         <GridLayout
                             android:id="@+id/pic1Gallery"
                             android:layout_width="match_parent"
@@ -416,7 +356,7 @@
 
 
                         </GridLayout>
-                -->
+
 
                 <!-- Если 1 картинка 16x9  -->
                 <!--
@@ -848,7 +788,7 @@
             <TextView
                 android:id="@+id/postLike"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="4dp"
                 android:drawableLeft="@drawable/icon_like"
                 android:drawablePadding="4dp"
