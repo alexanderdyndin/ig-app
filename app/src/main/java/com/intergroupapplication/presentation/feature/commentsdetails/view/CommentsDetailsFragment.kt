@@ -265,83 +265,83 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         swipeLayout.setOnRefreshListener {
             presenter.getPostDetailsInfo(groupPostEntity.id)
         }
-        val activity = requireActivity()
-        if (activity is MainActivity) {
-            CoroutineScope(Dispatchers.Main).launch {
-                val bindedService = activity.bindMediaService()
-                bindedService?.let {
-
-
-                    /**
-                     *  Add audios to post
-                     */
-                    groupPostEntity.audios.forEach {
-                        val player = makeAudioPlayer(it, bindedService)
-                        val playerView = AudioPlayerView(requireContext())
-                        playerView.exoPlayer.player = player
-                        audioBody.addView(playerView)
-                    }
-
-                    /**
-                     *  Add videos to post
-                     */
-                    groupPostEntity.videos.forEach {
-                        val player = makeVideoPlayer(it, bindedService)
-                        val playerView = VideoPlayerView(requireContext())
-                        playerView.exoPlayer.player = player
-                        videoBody.addView(playerView)
-                    }
-                }
-            }
-        } else throw Exception("Activity is not MainActivity")
+//        val activity = requireActivity()
+//        if (activity is MainActivity) {
+//            CoroutineScope(Dispatchers.Main).launch {
+//                val bindedService = activity.bindMediaService()
+//                bindedService?.let {
+//
+//
+//                    /**
+//                     *  Add audios to post
+//                     */
+//                    groupPostEntity.audios.forEach {
+//                        val player = makeAudioPlayer(it, bindedService)
+//                        val playerView = AudioPlayerView(requireContext())
+//                        playerView.exoPlayer.player = player
+//                        audioBody.addView(playerView)
+//                    }
+//
+//                    /**
+//                     *  Add videos to post
+//                     */
+//                    groupPostEntity.videos.forEach {
+//                        val player = makeVideoPlayer(it, bindedService)
+//                        val playerView = VideoPlayerView(requireContext())
+//                        playerView.exoPlayer.player = player
+//                        videoBody.addView(playerView)
+//                    }
+//                }
+//            }
+//        } else throw Exception("Activity is not MainActivity")
         imageBody.setImages(groupPostEntity.images)
         //imageBody.imageClick = imageClickListener
     }
 
-    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
-        val videoPlayer = SimpleExoPlayer.Builder(requireContext()).build()
-
-        val listener = object : Player.EventListener {
-            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                if (playWhenReady) {
-                    service.setPlayer(videoPlayer, video.title, video.description)
-                }
-            }
-        }
-        videoPlayer.addListener(listener)
-
-        // Build the media item.
-        val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
-        // Set the media item to be played.
-        videoPlayer.setMediaItem(videoMediaItem)
-        // Prepare the player.
-//                    musicPlayer.prepare()
-
-        return videoPlayer
-    }
-
-    private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
-
-        val musicPlayer = SimpleExoPlayer.Builder(requireContext()).build()
-
-        val listener = object : Player.EventListener {
-            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                if (playWhenReady) {
-                    service.setPlayer(musicPlayer, audio.song, audio.description)
-                }
-            }
-        }
-        musicPlayer.addListener(listener)
-
-        // Build the media item.
-        val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
-        // Set the media item to be played.
-        musicPlayer.setMediaItem(musicMediaItem)
-        // Prepare the player.
-//                    musicPlayer.prepare()
-
-        return musicPlayer
-    }
+//    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+//        val videoPlayer = SimpleExoPlayer.Builder(requireContext()).build()
+//
+//        val listener = object : Player.EventListener {
+//            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+//                if (playWhenReady) {
+//                    service.setPlayer(videoPlayer, video.title, video.description)
+//                }
+//            }
+//        }
+//        videoPlayer.addListener(listener)
+//
+//        // Build the media item.
+//        val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
+//        // Set the media item to be played.
+//        videoPlayer.setMediaItem(videoMediaItem)
+//        // Prepare the player.
+////                    musicPlayer.prepare()
+//
+//        return videoPlayer
+//    }
+//
+//    private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+//
+//        val musicPlayer = SimpleExoPlayer.Builder(requireContext()).build()
+//
+//        val listener = object : Player.EventListener {
+//            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+//                if (playWhenReady) {
+//                    service.setPlayer(musicPlayer, audio.song, audio.description)
+//                }
+//            }
+//        }
+//        musicPlayer.addListener(listener)
+//
+//        // Build the media item.
+//        val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
+//        // Set the media item to be played.
+//        musicPlayer.setMediaItem(musicMediaItem)
+//        // Prepare the player.
+////                    musicPlayer.prepare()
+//
+//        return musicPlayer
+//    }
 
     override fun commentCreated(commentEntity: CommentEntity) {
         adapter.refresh()
