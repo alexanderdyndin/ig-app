@@ -215,22 +215,9 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         }
                     }
                 } else throw Exception("Activity is not MainActivity")
-
-                item.images.forEach { file ->
-                    val image = SimpleDraweeView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(400, 400)
-                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
-                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-//                    if (file.file.contains(".gif")) {
-                    val controller = Fresco.newDraweeControllerBuilder()
-                            .setUri(Uri.parse(file.file))
-                            .setAutoPlayAnimations(true)
-                            .build()
-                    image.controller = controller
-                    imageContainer.setImages(item.images, item.imagesExpanded)
-                    imageContainer.imageClick = imageClickListener
-                    imageContainer.expand = { item.imagesExpanded = it }
-                }
+                imageContainer.setImages(item.images, item.imagesExpanded)
+                imageContainer.imageClick = imageClickListener
+                imageContainer.expand = { item.imagesExpanded = it }
             }
         }
 
