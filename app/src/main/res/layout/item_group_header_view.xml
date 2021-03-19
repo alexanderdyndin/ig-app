@@ -78,7 +78,7 @@
         android:layout_marginTop="5dp"
         android:background="@color/colorInput"
         android:orientation="horizontal"
-        android:paddingStart="96dp"
+        android:paddingStart="104dp"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatarBg"
@@ -244,8 +244,7 @@
         android:layout_width="@dimen/group_header_profile_view_size"
         android:layout_height="@dimen/group_header_profile_view_size"
         android:layout_marginTop="8dp"
-        android:foreground="@drawable/ava_shadow"
-        app:shape_clip_drawable="@drawable/ava_mask"
+        app:shape_clip_drawable="@drawable/avatar_group_list"
         app:layout_constraintStart_toStartOf="@id/avatarBg"
         app:layout_constraintTop_toTopOf="@id/avatarBg">
 

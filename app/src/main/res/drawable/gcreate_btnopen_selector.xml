@@ -2,12 +2,12 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_checked="true"
-        android:drawable="@drawable/btn_l_angle_blue_act"
+        android:drawable="@drawable/btn_l_top_angle_blue"
         android:color="@color/ActiveText"
         />
     <item
         android:state_checked="false"
-        android:drawable="@drawable/btn_l_angle"
+        android:drawable="@drawable/btn_l_top_angle_dark"
         android:color="@color/colorAccent"
         />
 </selector>

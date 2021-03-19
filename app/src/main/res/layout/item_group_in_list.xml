@@ -8,46 +8,50 @@
     android:background="@color/mainBlack">
 
     <View
-        android:id="@+id/item_group__bg_list"
+        android:id="@+id/bgListResize"
         android:layout_width="match_parent"
         android:layout_height="93dp"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginRight="4dp"
+        android:background="@drawable/bg_colorinput_radius_4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/item_group__bg_list"
+        android:layout_width="193dp"
+        android:layout_height="93dp"
+        android:layout_marginEnd="4dp"
         android:background="@drawable/bg_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/bgListResize" />
 
     <!--com.github.florent37.shapeofview.shapes.PolygonView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:shape_polygon_noOfSides="4"
-        >
-
-
+        app:shape_polygon_noOfSides="4">
 
     </com.github.florent37.shapeofview.shapes.PolygonView-->
 
-<!--
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/group_avatar"
         android:layout_width="@dimen/group_in_list_profile_view_size"
         android:layout_height="@dimen/group_in_list_profile_view_size"
-        app:shape_clip_drawable="@drawable/ava_mask"
-        android:foreground="@drawable/ava_shadow"
-        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list">
+        app:layout_constraintBottom_toBottomOf="@+id/bgListResize"
+        app:layout_constraintStart_toStartOf="@+id/bgListResize"
+        app:layout_constraintTop_toTopOf="@+id/bgListResize"
+        app:shape_clip_drawable="@drawable/avatar_group_list">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/groupAvatarHolder"
             android:layout_width="@dimen/group_in_list_profile_view_size"
-            android:layout_height="@dimen/group_in_list_profile_view_size"/>
+            android:layout_height="@dimen/group_in_list_profile_view_size" />
 
     </com.github.florent37.shapeofview.ShapeOfView>
--->
 
+<!--
     <ImageView
         android:id="@+id/group_avatar"
         android:layout_width="@dimen/group_in_list_profile_view_size"
@@ -57,6 +61,7 @@
         app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"
         app:layout_constraintTop_toTopOf="@+id/item_group__bg_list"
         app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"/>
+-->
 <!--
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/groupAvatarHolder"
@@ -79,8 +84,8 @@
         android:padding="3dp"
         style="@style/TextDark12spBold"
         android:background="@drawable/bg_age12"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list"
-        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"/>
+        app:layout_constraintTop_toTopOf="@+id/bgListResize"
+        app:layout_constraintStart_toStartOf="@+id/bgListResize"/>
 
     <ImageView
         android:id="@+id/item_group__lock"
@@ -92,8 +97,8 @@
         android:paddingBottom="4dp"
         android:paddingLeft="4dp"
         android:background="@drawable/bg_unlock"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"
-        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list" />
+        app:layout_constraintBottom_toBottomOf="@+id/bgListResize"
+        app:layout_constraintStart_toStartOf="@+id/bgListResize" />
 
     <TextView
         android:id="@+id/item_group__list_header"
@@ -107,16 +112,16 @@
         android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@+id/group_avatar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list" />
+        app:layout_constraintTop_toTopOf="@+id/bgListResize" />
 
     <LinearLayout
         android:id="@+id/item_group__sub"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="5dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/item_group__bg_list"
+        app:layout_constraintEnd_toEndOf="@+id/bgListResize"
         app:layout_constraintStart_toStartOf="@+id/item_group__list_header"
         app:layout_constraintTop_toBottomOf="@+id/item_group__list_header">
 
@@ -206,7 +211,7 @@
         android:layout_marginRight="8dp"
         android:text="Подписаться"
         style="@style/TextDark12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"
+        app:layout_constraintBottom_toBottomOf="@+id/bgListResize"
         app:layout_constraintEnd_toEndOf="@+id/item_group__bg_list"
         app:layout_constraintTop_toBottomOf="@+id/item_group__sub" />
 
@@ -218,6 +223,7 @@
         app:layout_constraintTop_toTopOf="@+id/item_group__text_sub"
         app:layout_constraintEnd_toStartOf="@+id/item_group__text_sub"
         android:visibility="invisible"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

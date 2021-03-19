@@ -9,6 +9,16 @@
     android:layout_marginBottom="@dimen/middle_margin"
     android:background="@color/mainBlack">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mainBlack"
+            tools:ignore="RtlHardcoded">
         <EditText
             android:id="@+id/searchPost"
             android:layout_width="0dp"
@@ -30,7 +40,7 @@
             android:id="@+id/btnFilterPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_filter"
+            android:background="@drawable/selector_btn_filter_post"
             android:src="@drawable/ic_filter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/searchPost" />
@@ -178,25 +188,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         </LinearLayout>
-        <ScrollView
-            android:id="@+id/postBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            app:layout_constraintEnd_toEndOf="@id/postHeader"
-            app:layout_constraintStart_toStartOf="@id/postHeader"
-            app:layout_constraintTop_toBottomOf="@+id/postHeader">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/postBody"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="4dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:background="@color/colorInput"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="parent">
+                app:layout_constraintEnd_toEndOf="@id/postHeader"
+                app:layout_constraintStart_toStartOf="@id/postHeader"
+                app:layout_constraintTop_toBottomOf="@+id/postHeader">
 
 
                 <!-- Если картинок больше 3 -->
@@ -405,7 +408,7 @@
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
                 </GridLayout>
-                <!-- Если 1 картинка 1x1 -->
+ <!-- Если 1 картинка 1x1 -->
                 <!--
                         <GridLayout
                             android:id="@+id/pic1Gallery"
@@ -443,7 +446,7 @@
                         </GridLayout>
                 -->
 
-                <!-- Если 1 картинка 16x9  -->
+<!-- Если 1 картинка 16x9  -->
                 <!--
                         <GridLayout
                                 android:id="@+id/pic1Gallery16x9"
@@ -479,8 +482,8 @@
                             </GridLayout>
                 -->
 
-                <!-- Если 1 картинка 9х16 -->
-                <!-- Надо сделать чтобы картинки с 9х16 (т.е. вертикальные) при отображении были 1х1 соотношение.
+<!-- Если 1 картинка 9х16 -->
+<!-- Надо сделать чтобы картинки с 9х16 (т.е. вертикальные) при отображении были 1х1 соотношение.
                  Внизу у таких специально есть иконка говорящая о том, что это обрезанная картинка -->
 
                 <!--
@@ -618,7 +621,7 @@
                         android:id="@+id/btnPostPlay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="2dp"
+                        android:layout_marginEnd="@dimen/middle_high_big_margin"
                         android:background="@drawable/ic_post_play"
                         app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
                         app:layout_constraintEnd_toEndOf="@+id/bgPostMusic"
@@ -705,7 +708,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <!--    Может кто поймет что не так с ic_play_video. Не правильно отображается. -->
+<!-- Может кто поймет что не так с ic_play_video. Не правильно отображается. -->
                     <ImageView
                         android:id="@+id/bgPlayVideo"
                         android:layout_width="wrap_content"
@@ -755,8 +758,8 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <!--        Есть только когда болеее 1 видео.
-        При нажатии должны появляться остальные видео.        -->
+<!-- Есть только когда болеее 1 видео.
+При нажатии должны появляться остальные видео. -->
 
                 <FrameLayout
                     android:id="@+id/btnExpand3"
@@ -776,17 +779,13 @@
 
             </LinearLayout>
 
-    </ScrollView>
-
         <ImageView
             android:id="@+id/endPost"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
             android:background="@drawable/bg_end_post"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/postBody"
+            app:layout_constraintStart_toStartOf="@+id/postBody"
             app:layout_constraintTop_toBottomOf="@+id/postBody" />
 
         <TextView
@@ -882,6 +881,9 @@
                 android:textSize="14sp"
                 app:fontFamily="@font/play" />
         </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

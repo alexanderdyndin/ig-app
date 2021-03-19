@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/createGroupCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mainBlack"
+            tools:ignore="RtlHardcoded">
+
+            <include
+                android:id="@+id/navigationToolbar"
+                layout="@layout/creategroup_toolbar_layout" />
+
+            <ImageView
+                android:id="@+id/maskAvatar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/example"
+                app:layout_constraintEnd_toStartOf="@id/btnUpDown"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar" />
+
+            <ImageButton
+                android:id="@+id/btnUpDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/btn_updown_act"
+                app:layout_constraintBottom_toTopOf="@+id/btnLeftRight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/maskAvatar"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <ImageButton
+                android:id="@+id/btnLeftRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_leftright"
+                app:layout_constraintBottom_toTopOf="@+id/btnExpand"
+                app:layout_constraintEnd_toEndOf="@+id/btnUpDown"
+                app:layout_constraintStart_toStartOf="@+id/btnUpDown"
+                app:layout_constraintTop_toBottomOf="@+id/btnUpDown"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+
+            <ImageButton
+                android:id="@+id/btnExpand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_expand"
+                app:layout_constraintBottom_toTopOf="@+id/btnTurn"
+                app:layout_constraintEnd_toEndOf="@+id/btnLeftRight"
+                app:layout_constraintStart_toStartOf="@+id/btnLeftRight"
+                app:layout_constraintTop_toBottomOf="@+id/btnLeftRight"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <ImageButton
+                android:id="@+id/btnTurn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_turn"
+                app:layout_constraintBottom_toBottomOf="@+id/maskAvatar"
+                app:layout_constraintEnd_toEndOf="@+id/btnExpand"
+                app:layout_constraintStart_toStartOf="@+id/btnExpand"
+                app:layout_constraintTop_toBottomOf="@+id/btnExpand"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintBottom_toTopOf="@+id/btnPreviewSave"
+                app:layout_constraintEnd_toEndOf="@+id/btnTurn"
+                app:layout_constraintStart_toStartOf="@+id/maskAvatar"
+                app:layout_constraintTop_toBottomOf="@+id/maskAvatar">
+
+<!-- Не знаю как сделать так, чтобы градиент уходил в прозрачность на ползунке и была высотой 6dp.
+Тут скорее всего что то другое надо будет делать, но я сделала как должно выглядеть. -->
+
+                <ImageButton
+                    android:id="@+id/btnLeftShift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_left_shift"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <SeekBar
+                    android:id="@+id/seekBar2"
+                    style="@style/SeekBarEditAvatar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:padding="3dp"
+                    android:progress="50"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnRightShift"
+                    app:layout_constraintStart_toEndOf="@+id/btnLeftShift"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    style="@style/TextLight10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_greyelement_radius_2dp"
+                    android:inputType="number"
+                    android:padding="8dp"
+                    android:text="100"
+                    app:layout_constraintEnd_toEndOf="@+id/seekBar2"
+                    app:layout_constraintStart_toStartOf="@+id/seekBar2"
+                    app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    style="@style/TextHelp10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="-100"
+                    app:layout_constraintEnd_toStartOf="@+id/seekBar2"
+                    app:layout_constraintStart_toStartOf="@+id/seekBar2"
+                    app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
+
+
+                <TextView
+                    style="@style/TextHelp10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="100"
+                    app:layout_constraintEnd_toEndOf="@+id/seekBar2"
+                    app:layout_constraintStart_toEndOf="@+id/seekBar2"
+                    app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
+
+                <ImageButton
+                    android:id="@+id/btnRightShift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_right_shift"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/btnPreviewSave"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/maskAvatar">
+
+                <Button
+                    android:id="@+id/btnPreview"
+                    style="@style/TextAccent12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/btn_blue_stroke_big"
+                    android:gravity="center"
+                    android:text="Предпросмотр"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/btnSave"
+                    style="@style/TextDark12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_r_down_blue_big"
+                    android:gravity="center"
+                    android:text="Сохранить"
+                    android:textAllCaps="false" />
+
+
+            </LinearLayout>
+
+<!-- Превью аватарки -->
+<!--
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/blackout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/bgPopUpPreview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="24dp"
+                    android:src="@drawable/bg_preview_avatar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/previewTitle"
+                    style="@style/TextAccent16spBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Предпросмотр"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="@+id/bgPopUpPreview"
+                    app:layout_constraintStart_toStartOf="@+id/bgPopUpPreview"
+                    app:layout_constraintTop_toTopOf="@+id/bgPopUpPreview" />
+
+                <TextView
+                    android:id="@+id/previewTitle1"
+                    style="@style/TextLight10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginStart="24dp"
+                    android:background="@drawable/bg_preview_title"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:text="Мой профиль"
+                    app:layout_constraintStart_toStartOf="@id/bgPopUpPreview"
+                    app:layout_constraintTop_toBottomOf="@+id/previewTitle" />
+
+                <ImageView
+                    android:id="@+id/exampleAvaProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/example_ava_profile"
+                    app:layout_constraintEnd_toEndOf="@+id/previewTitle1"
+                    app:layout_constraintStart_toEndOf="@+id/previewTitle1"
+                    app:layout_constraintTop_toTopOf="@+id/previewTitle1" />
+
+                <TextView
+                    android:id="@+id/previewTitle2"
+                    style="@style/TextLight10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_preview_title"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:text="Список"
+                    app:layout_constraintStart_toStartOf="@+id/previewTitle1"
+                    app:layout_constraintTop_toBottomOf="@+id/exampleAvaProfile" />
+
+                <ImageView
+                    android:id="@+id/exampleAvaPost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/example_ava_post"
+                    app:layout_constraintEnd_toEndOf="@+id/previewTitle2"
+                    app:layout_constraintStart_toEndOf="@+id/previewTitle2"
+                    app:layout_constraintTop_toTopOf="@+id/previewTitle2" />
+
+                <TextView
+                    android:id="@+id/previewTitle3"
+                    style="@style/TextLight10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_preview_title"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:text="Комментарии"
+                    app:layout_constraintStart_toStartOf="@+id/previewTitle2"
+                    app:layout_constraintTop_toBottomOf="@+id/exampleAvaPost" />
+
+                <ImageView
+                    android:id="@+id/exampleAvaComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/example_ava_comment"
+                    app:layout_constraintEnd_toEndOf="@+id/previewTitle3"
+                    app:layout_constraintStart_toEndOf="@+id/previewTitle3"
+                    app:layout_constraintTop_toTopOf="@+id/previewTitle3" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

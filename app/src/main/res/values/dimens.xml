@@ -2,6 +2,7 @@
 <resources>
 
     <!--size-->
+    <dimen name="small_low_size">8sp</dimen>
     <dimen name="low_size">10sp</dimen>
     <dimen name="middle_low_size">12sp</dimen>
     <dimen name="middle_high_size">14sp</dimen>
@@ -43,7 +44,7 @@
 
     <dimen name="group_logo_inside_post_size">40dp</dimen>
     <dimen name="intergroup_logo_view_size">72dp</dimen>
-    <dimen name="intergroup_profile_view_size">125dp</dimen>
+    <dimen name="intergroup_profile_view_size">115dp</dimen>
     <dimen name="group_in_list_profile_view_size">90dp</dimen>
     <dimen name="group_header_profile_view_size">190dp</dimen>
     <dimen name="group_action_button_height">36dp</dimen>
