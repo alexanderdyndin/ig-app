@@ -32,9 +32,7 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
         LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        const val PIC3 = 140
-        const val PIC2 = 200
-        const val PIC1 = LayoutParams.WRAP_CONTENT
+        var pxWidth = 1080
     }
 
     var imageClick: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
@@ -43,6 +41,8 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         orientation = VERTICAL
+        val displayMetrics = resources.displayMetrics
+        pxWidth = displayMetrics.widthPixels
     }
 
     private var uris: List<FileEntity> = emptyList()
@@ -81,7 +81,7 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
     private fun createContainer(urls: List<FileEntity>) {
         if (urls.size > 1) {
             val container = LinearLayout(context, attrs, defStyleAttr)
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, layoutHeight(urls.size))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, pxWidth/urls.size)
             container.orientation = HORIZONTAL
             container.setPadding(dpToPx(4),dpToPx(2),dpToPx(4), dpToPx(2))
             urls.forEach {
@@ -96,15 +96,8 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
             imageCut.topLeftCutSizeDp = 8f
             imageCut.topRightCutSizeDp = 8f
             imageCut.setPadding(1)
-            val image = SimpleDraweeView(context, attrs)
-            image.aspectRatio = 1f
-            //программная установка плейсхолдера вызывает фризы
-//        image.hierarchy.setPlaceholderImage(R.drawable.variant_10)
-            val controller = Fresco.newDraweeControllerBuilder()
-                    .setUri(Uri.parse(urls[0].file))
-                    .setAutoPlayAnimations(true)
-                    .build()
-            image.controller = controller
+            val image = WrapContentDraweeView(context)
+            image.setImageURI(Uri.parse(urls[0].file), context)
             image.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             imageCut.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             image.setOnClickListener { imageClick.invoke(uris, 0) }
@@ -120,7 +113,7 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
         imageCut.topLeftCutSizeDp = 8f
         imageCut.topRightCutSizeDp = 8f
         imageCut.setPadding(1)
-        val image = SimpleDraweeView(context, attrs)
+        val image = SimpleDraweeView(context, attrs, defStyleAttr)
         image.aspectRatio = 1f
         //программная установка плейсхолдера вызывает фризы
 //        image.hierarchy.setPlaceholderImage(R.drawable.variant_10)
@@ -155,12 +148,5 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
 
     private fun dpToPx(dp: Int) = (dp * context.resources.displayMetrics.density).roundToInt()
 
-    private fun layoutHeight(count: Int) =
-        when (count) {
-            1 -> PIC1
-            2 -> dpToPx(PIC2)
-            3 -> dpToPx(PIC3)
-            else -> PIC1
-        }
 
 }

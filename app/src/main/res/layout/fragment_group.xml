@@ -89,10 +89,8 @@
                     android:id="@+id/groupPosts"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fitsSystemWindows="true">
-
-
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:fitsSystemWindows="true"
+                    tools:listitem="@layout/item_group_post"/>
 
             </FrameLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -22,7 +22,8 @@
             android:id="@+id/imagePreview"
             android:layout_width="@dimen/attached_image_width"
             android:layout_height="@dimen/attached_image_height"
-            fresco:roundedCornerRadius="8dp" />
+            fresco:roundedCornerRadius="8dp"
+            app:placeholderImage="@drawable/variant_10"/>
 
         <TextView
             android:id="@+id/darkCard"
