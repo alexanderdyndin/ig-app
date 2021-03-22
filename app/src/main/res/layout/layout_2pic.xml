@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="horizontal">
+    <com.github.florent37.shapeofview.shapes.CutCornerView
+        android:id="@+id/postGalleryShape1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:shape_cutCorner_bottomLeftSize="8dp"
+        app:shape_cutCorner_bottomRightSize="8dp"
+        app:shape_cutCorner_topLeftSize="8dp"
+        app:shape_cutCorner_topRightSize="8dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/pic1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:viewAspectRatio="1.0"
+            android:layout_margin="1dp"/>
+
+    </com.github.florent37.shapeofview.shapes.CutCornerView>
+    <com.github.florent37.shapeofview.shapes.CutCornerView
+        android:id="@+id/postGalleryShape2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:shape_cutCorner_bottomLeftSize="8dp"
+        app:shape_cutCorner_bottomRightSize="8dp"
+        app:shape_cutCorner_topLeftSize="8dp"
+        app:shape_cutCorner_topRightSize="8dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/pic2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:viewAspectRatio="1.0"
+            android:layout_margin="1dp"/>
+
+    </com.github.florent37.shapeofview.shapes.CutCornerView>
+</LinearLayout>

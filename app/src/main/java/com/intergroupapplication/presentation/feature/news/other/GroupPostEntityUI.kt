@@ -27,7 +27,9 @@ sealed class GroupPostEntityUI {
                 val audios: List<AudioEntity>,
                 val videos: List<FileEntity>,
                 var isLoading: Boolean = false,
-                var imagesExpanded: Boolean = false
+                var imagesExpanded: Boolean = false,
+                var audiosExpanded: Boolean = false,
+                var videosExpanded: Boolean = false
         ) : GroupPostEntityUI() {
                 override fun equals(other: Any?): Boolean {
                         if (this === other) return true

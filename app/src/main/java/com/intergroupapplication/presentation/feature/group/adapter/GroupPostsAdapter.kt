@@ -23,7 +23,9 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.customview.AudioGalleryView
 import com.intergroupapplication.presentation.customview.PostGalleryView
+import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
@@ -148,8 +150,8 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
-        val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
+        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
+        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
         val imageContainer = itemView.findViewById<PostGalleryView>(R.id.imageBody)
 
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
@@ -190,43 +192,50 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 imageContainer.removeAllViews()
 
 
-                val activity = audioContainer.getActivity()
-                if (activity is MainActivity) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val bindedService = activity.bindMediaService()
-                        bindedService?.let {
+//                val activity = audioContainer.getActivity()
+//                if (activity is MainActivity) {
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        val bindedService = activity.bindMediaService()
+//                        bindedService?.let {
+//
+//
+//                            /**
+//                             *  Add audios to post
+//                             */
+//                            item.audios.forEach {
+//                                val player = makeAudioPlayer(it, bindedService)
+//                                val playerView = AudioPlayerView(audioContainer.context)
+//                                playerView.exoPlayer.player = player
+//                                audioContainer.addView(playerView)
+//                                if (player.playWhenReady) {         //FIXME КОСТЫЛЬ! Исправить бы
+//                                    player.playWhenReady = false
+//                                    player.playWhenReady = true
+//                                }
+//                            }
+//
+//                            /**
+//                             *  Add videos to post
+//                             */
+//                            item.videos.forEach {
+//                                val player = makeVideoPlayer(it, bindedService)
+//                                val playerView = VideoPlayerView(videoContainer.context)
+//                                playerView.exoPlayer.player = player
+//                                videoContainer.addView(playerView)
+//                                if (player.playWhenReady) {
+//                                    player.playWhenReady = false
+//                                    player.playWhenReady = true
+//                                }
+//                            }
+//                        }
+//                    }
+//                } else throw Exception("Activity is not MainActivity")
 
+                videoContainer.setVideos(item.videos, item.videosExpanded)
+                videoContainer.expand = { item.videosExpanded = it }
 
-                            /**
-                             *  Add audios to post
-                             */
-                            item.audios.forEach {
-                                val player = makeAudioPlayer(it, bindedService)
-                                val playerView = AudioPlayerView(audioContainer.context)
-                                playerView.exoPlayer.player = player
-                                audioContainer.addView(playerView)
-                                if (player.playWhenReady) {         //FIXME КОСТЫЛЬ! Исправить бы
-                                    player.playWhenReady = false
-                                    player.playWhenReady = true
-                                }
-                            }
+                audioContainer.setAudios(item.audios, item.audiosExpanded)
+                audioContainer.expand = { item.audiosExpanded = it }
 
-                            /**
-                             *  Add videos to post
-                             */
-                            item.videos.forEach {
-                                val player = makeVideoPlayer(it, bindedService)
-                                val playerView = VideoPlayerView(videoContainer.context)
-                                playerView.exoPlayer.player = player
-                                videoContainer.addView(playerView)
-                                if (player.playWhenReady) {
-                                    player.playWhenReady = false
-                                    player.playWhenReady = true
-                                }
-                            }
-                        }
-                    }
-                } else throw Exception("Activity is not MainActivity")
                 imageContainer.setImages(item.images, item.imagesExpanded)
                 imageContainer.imageClick = imageClickListener
                 imageContainer.expand = { item.imagesExpanded = it }

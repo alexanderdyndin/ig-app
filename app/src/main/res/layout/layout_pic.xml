@@ -8,15 +8,13 @@
     app:shape_cutCorner_bottomLeftSize="8dp"
     app:shape_cutCorner_bottomRightSize="8dp"
     app:shape_cutCorner_topLeftSize="8dp"
-    app:shape_cutCorner_topRightSize="8dp">
+    app:shape_cutCorner_topRightSize="8dp"
+    android:layout_margin="1dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/pic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:viewAspectRatio="1.0"
-        android:adjustViewBounds="true"
-        android:layout_margin="1dp"
-        app:placeholderImage="@drawable/variant_10"/>
+        app:viewAspectRatio="1.0"/>
 
 </com.github.florent37.shapeofview.shapes.CutCornerView>
