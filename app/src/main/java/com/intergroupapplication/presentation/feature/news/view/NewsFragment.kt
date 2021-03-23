@@ -145,12 +145,12 @@ class NewsFragment(): BaseFragment(), NewsView{
             compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe {
-                        item.isLoading = true
-                        adapter.notifyItemChanged(position)
-                    }
+//                    .doOnSubscribe {
+//                        item.isLoading = true
+//                        adapter.notifyItemChanged(position)
+//                    }
                     .doFinally {
-                        item.isLoading = false
+                        //item.isLoading = false
                         adapter.notifyItemChanged(position)
                     }
                     .subscribe({
@@ -266,26 +266,6 @@ class NewsFragment(): BaseFragment(), NewsView{
             }
         }
     }
-
-//    fun oldPaging() {
-//        pagingDelegate.attachPagingView(adapter, newSwipe, emptyText)
-//        adapter.retryClickListener = { presenter.reload() }
-//        adapter.commentClickListener = {
-//            clickedPostId = it.id
-//            openCommentDetails(InfoForCommentEntity(it, true)) }
-//        adapter.groupClickListener = {
-//            val data = bundleOf(GROUP_ID to it)
-//            findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
-//        }
-//        adapter.complaintListener = { presenter.complaintPost(it) }
-//        newsPosts.adapter = adapterWrapper
-//        newSwipe.setOnRefreshListener { presenter.refresh() }
-//        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(COMMENTS_COUNT_VALUE)?.observe(
-//                viewLifecycleOwner) { commentCount ->
-//            adapter.itemUpdate(clickedPostId.orEmpty(), commentCount)
-//        }
-//    }
-
 
     override fun showMessage(resId: Int) {
         Toast.makeText(context, resId, Toast.LENGTH_SHORT).show()

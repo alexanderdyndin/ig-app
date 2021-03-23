@@ -25,11 +25,13 @@ import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.jakewharton.rxbinding2.view.RxView
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.auth_loader.progressBar
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_group.*
@@ -105,25 +107,6 @@ class GroupFragment() : BaseFragment(), GroupView,
         groupId = arguments?.getString(GROUP_ID)!!
         isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
         viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
-        compositeDisposable.add(
-                viewModel.fetchPosts(groupId)
-                        .subscribe {
-                            adapter.submitData(lifecycle, it)
-                        }
-        )
-//        initializeMediaBrowser()
-    }
-
-    override fun viewCreated() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)?.observe(
-                viewLifecycleOwner) { id ->
-            if (createdPostId != id) {
-                createdPostId = id
-                adapter.refresh()
-            }
-        }
-        groupPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         GroupPostsAdapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(
                 GroupPostEntity(
                         it.id,
@@ -150,12 +133,44 @@ class GroupFragment() : BaseFragment(), GroupView,
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
             findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
         }
-        GroupPostsAdapter.likeClickListener = {
-            presenter.setReact(isLike = true, isDislike = false, postId = it)
+        GroupPostsAdapter.likeClickListener = { like, dislike, item, position ->
+            compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe {
+                        item.isLoading = true
+                        adapter.notifyItemChanged(position)
+                    }
+                    .doFinally {
+                        item.isLoading = false
+                        adapter.notifyItemChanged(position)
+                    }
+                    .subscribe({
+                        item.reacts = it
+                    },
+                            {
+                                errorHandler.handle(it)
+                            }))
         }
-        GroupPostsAdapter.dislikeClickListener = {
-            presenter.setReact(isLike = false, isDislike = true, postId = it)
+        compositeDisposable.add(
+                viewModel.fetchPosts(groupId)
+                        .subscribe {
+                            adapter.submitData(lifecycle, it)
+                        }
+        )
+    }
+
+    override fun viewCreated() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)?.observe(
+                viewLifecycleOwner) { id ->
+            if (createdPostId != id) {
+                createdPostId = id
+                adapter.refresh()
+            }
         }
+        groupPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        groupPosts.itemAnimator = null
+        groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
         presenter.getGroupDetailInfo(groupId)

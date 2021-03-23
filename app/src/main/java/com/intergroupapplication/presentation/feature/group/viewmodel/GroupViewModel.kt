@@ -64,4 +64,7 @@ class GroupViewModel @Inject constructor(private val useCase: PostsUseCase): Vie
                 }
                 .cachedIn(viewModelScope)
     }
+
+    fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
+            useCase.setReact(isLike, isDislike, postId)
 }

@@ -81,7 +81,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntityUI.GroupPostEntity, position: Int) -> Unit = { _, _, _, _ -> }
-        var dislikeClickListener: (postId: String) -> Unit = { }
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -112,7 +111,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 NativeCustomAdViewHolder(view)
             }
             else -> {
-                return PostViewHolder(parent.inflate(R.layout.item_group_post))
+                PostViewHolder(parent.inflate(R.layout.item_group_post))
             }
         }
     }
@@ -214,6 +213,13 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         compositeDisposable.clear()
     }
 
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is PostViewHolder) {
+            holder.imageContainer.destroy()
+        }
+        super.onViewRecycled(holder)
+    }
 
     internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
         private val nativeAdView: NativeAdView
@@ -391,16 +397,5 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         abstract fun unregisterViewForInteraction()
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if (holder is PostViewHolder) {
-            holder.imageContainer.destroy()
-            holder.videoContainer.children.forEach {
-                if (it is StyledPlayerView) {
-                    it.player?.release()
-                }
-            }
-        }
-        super.onViewRecycled(holder)
-    }
 
 }

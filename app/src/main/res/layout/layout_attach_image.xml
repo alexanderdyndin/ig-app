@@ -2,35 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/attached_image_width"
+    android:layout_height="@dimen/attached_image_height"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal">
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        android:padding="@dimen/big_padding"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/imagePreview"
-            android:layout_width="@dimen/attached_image_width"
-            android:layout_height="@dimen/attached_image_height"
-            fresco:roundedCornerRadius="8dp"
-            app:placeholderImage="@drawable/variant_10"/>
+        <com.github.florent37.shapeofview.shapes.CutCornerView
+            android:id="@+id/previewShape"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shape_cutCorner_bottomLeftSize="8dp"
+            app:shape_cutCorner_bottomRightSize="8dp"
+            app:shape_cutCorner_topLeftSize="8dp"
+            app:shape_cutCorner_topRightSize="8dp"
+            android:layout_margin="1dp">
 
-        <TextView
-            android:id="@+id/darkCard"
-            android:layout_width="@dimen/attached_image_width"
-            android:layout_height="@dimen/attached_image_height"
-            android:background="@drawable/uploading_image_foreground_rectangle_shadow_drawable"
-            android:visibility="invisible" />
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/imagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:placeholderImage="@drawable/variant_10"/>
+
+            <TextView
+                android:id="@+id/darkCard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/uploading_image_foreground_rectangle_shadow_drawable"
+                android:visibility="invisible" />
+
+        </com.github.florent37.shapeofview.shapes.CutCornerView>
+
 
         <com.budiyev.android.circularprogressbar.CircularProgressBar
             android:id="@+id/imageUploadingProgressBar"
@@ -83,9 +94,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:visibility="invisible"
-        android:src="@drawable/ic_circle_close"
+        android:src="@drawable/ic_edit_delete"
+        android:layout_margin="5dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
