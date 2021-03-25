@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:controller_layout_id="@layout/layout_music_player"
-    android:layout_marginBottom="20dp"
     app:hide_on_touch="false"
     app:show_timeout="0"
     android:visibility="visible"

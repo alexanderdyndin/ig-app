@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/selector_btn_create"
         android:gravity="bottom|center_horizontal"
+        android:layout_gravity="center_horizontal"
         android:paddingBottom="9dp"
         android:text="@string/join_the_group"
         android:textColor="@color/mainBlack"
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/selector_btn_create"
         android:gravity="bottom|center_horizontal"
+        android:layout_gravity="center_horizontal"
         android:paddingBottom="9dp"
         android:text="@string/go_out_from_group"
         android:textColor="@color/mainBlack"
@@ -32,7 +34,7 @@
 
     <ProgressBar
         android:id="@+id/signingProgress"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:visibility="invisible"

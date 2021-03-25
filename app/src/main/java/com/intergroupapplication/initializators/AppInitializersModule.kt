@@ -59,10 +59,10 @@ class AppInitializersModule {
     @IntoSet
     fun provideFrecoInitializer(): Initializer = object : Initializer {
         override fun initialize(app: Application) {
-            val config: ImagePipelineConfig = ImagePipelineConfig.newBuilder(app)
-                    .setDownsampleEnabled(true)
-                    .build()
-            Fresco.initialize(app, config)
+//            val config: ImagePipelineConfig = ImagePipelineConfig.newBuilder(app)
+//                    .setDownsampleEnabled(true)
+//                    .build()
+            Fresco.initialize(app)
         }
     }
 

@@ -5,7 +5,12 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.view.marginBottom
+import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
@@ -17,6 +22,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.github.florent37.shapeofview.shapes.CutCornerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import kotlinx.android.synthetic.main.layout_2pic.view.*
 import kotlinx.android.synthetic.main.layout_3pic.view.*
 import kotlinx.android.synthetic.main.layout_expand.view.*
@@ -41,7 +47,7 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         orientation = VERTICAL
         val displayMetrics = resources.displayMetrics
-        pxWidth = displayMetrics.widthPixels - 10
+        pxWidth = displayMetrics.widthPixels - 30
     }
 
     private var uris: List<FileEntity> = emptyList()
@@ -86,119 +92,60 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
     }
 
     private fun createContainer(urls: List<FileEntity>) {
-        when (urls.size) {
-            3 -> {
-                val view = LayoutInflater.from(context).inflate(R.layout.layout_3pic, this, false)
-                view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, pxWidth / urls.size)
-//                var controller = Fresco.newDraweeControllerBuilder()
-//                        .setUri(Uri.parse(urls[0].file))
-//                        .setAutoPlayAnimations(true)
-//                        .build()
-//                view.pic11.controller = controller
-//                controller = Fresco.newDraweeControllerBuilder()
-//                        .setUri(Uri.parse(urls[1].file))
-//                        .setAutoPlayAnimations(true)
-//                        .build()
-//                view.pic22.controller = controller
-//                controller = Fresco.newDraweeControllerBuilder()
-//                        .setUri(Uri.parse(urls[2].file))
-//                        .setAutoPlayAnimations(true)
-//                        .build()
-//                view.pic33.controller = controller
-                view.pic11.setImageURI(Uri.parse(urls[0].file), context)
-                view.pic22.setImageURI(Uri.parse(urls[1].file), context)
-                view.pic33.setImageURI(Uri.parse(urls[2].file), context)
-                view.pic11.setOnClickListener { imageClick.invoke(uris, uris.indexOf(urls[0])) }
-                view.pic22.setOnClickListener { imageClick.invoke(uris, uris.indexOf(urls[1])) }
-                view.pic33.setOnClickListener { imageClick.invoke(uris, uris.indexOf(urls[2])) }
-                this@PostGalleryView.addView(view)
-            }
-            2 -> {
-//                val container = LinearLayout(context, attrs, defStyleAttr)
-//                container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, pxWidth / urls.size)
-//                container.orientation = HORIZONTAL
-//                container.setPadding(dpToPx(4), dpToPx(2), dpToPx(4), dpToPx(2))
-//                urls.forEach {
-//                    container.addView(createPic(it))
-//                }
-//                this@PostGalleryView.addView(container)
-                val view = LayoutInflater.from(context).inflate(R.layout.layout_2pic, this, false)
-                view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, pxWidth / urls.size)
-//                var controller = Fresco.newDraweeControllerBuilder()
-//                        .setUri(Uri.parse(urls[0].file))
-//                        .setAutoPlayAnimations(true)
-//                        .build()
-//                view.pic1.controller = controller
-//                controller = Fresco.newDraweeControllerBuilder()
-//                        .setUri(Uri.parse(urls[1].file))
-//                        .setAutoPlayAnimations(true)
-//                        .build()
-//                view.pic2.controller = controller
-                view.pic1.setImageURI(Uri.parse(urls[0].file), context)
-                view.pic2.setImageURI(Uri.parse(urls[1].file), context)
-                view.pic1.setOnClickListener { imageClick.invoke(uris, uris.indexOf(urls[0])) }
-                view.pic2.setOnClickListener { imageClick.invoke(uris, uris.indexOf(urls[1])) }
-                this@PostGalleryView.addView(view)
-            }
-            1 -> { //костыль если фото одно
-//            val imageCut = CutCornerView(context, attrs, defStyleAttr)
-//            imageCut.bottomLeftCutSizeDp = 8f
-//            imageCut.bottomRightCutSizeDp = 8f
-//            imageCut.topLeftCutSizeDp = 8f
-//            imageCut.topRightCutSizeDp = 8f
-//            imageCut.setPadding(1)
-//            val image = WrapContentDraweeView(context)
-//            image.setImageURI(Uri.parse(urls[0].file), context)
-//            image.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-//            imageCut.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-//            image.setOnClickListener { imageClick.invoke(uris, 0) }
-//            imageCut.addView(image)
-                val view = LayoutInflater.from(context).inflate(R.layout.layout_pic, this, false)
-                view.pic.setImageURI(Uri.parse(urls[0].file), context)
-                view.pic.setOnClickListener { imageClick.invoke(uris, uris.indexOf(urls[0])) }
-                this@PostGalleryView.addView(view)
-            }
+        val container = LinearLayout(context, attrs, defStyleAttr)
+        container.orientation = LinearLayout.HORIZONTAL
+        container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        urls.forEach {
+            container.addView(createPic(it, pxWidth/urls.size))
         }
+        this.addView(container)
     }
 
-    private fun createPic(img: FileEntity): View {
-        val imageCut = CutCornerView(context, attrs, defStyleAttr)
-        imageCut.bottomLeftCutSizeDp = 8f
-        imageCut.bottomRightCutSizeDp = 8f
-        imageCut.topLeftCutSizeDp = 8f
-        imageCut.topRightCutSizeDp = 8f
-        imageCut.setPadding(1)
-        val image = SimpleDraweeView(context, attrs, defStyleAttr)
-        image.aspectRatio = 1f
-        //программная установка плейсхолдера вызывает фризы
+    private fun createPic(img: FileEntity, width: Int): View {
+//        val image = SimpleDraweeView(context, attrs, defStyleAttr)
+//        image.aspectRatio = 1f
 //        image.hierarchy.setPlaceholderImage(R.drawable.variant_10)
-        val controller = Fresco.newDraweeControllerBuilder()
-                .setUri(Uri.parse(img.file))
+//        image.foreground = ContextCompat.getDrawable(context, R.drawable.mask_foreground)
+//        val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(img.file))
+//                .setResizeOptions(ResizeOptions(500, 500))
+//                .build()
+//        image.controller = Fresco.newDraweeControllerBuilder()
+//                .setAutoPlayAnimations(true)
+//                .setOldController(image.controller)
+//                .setImageRequest(request)
+//                .build()
+//        val layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
+//        layoutParams.setMargins(dpToPx(1))
+//        image.layoutParams = layoutParams
+//        image.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
+//        return image
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_pic, this, false)
+        image.layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
+        val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(img.file))
+            .setResizeOptions(ResizeOptions(500, 500))
+            .build()
+        image.pic.controller = Fresco.newDraweeControllerBuilder()
                 .setAutoPlayAnimations(true)
+                .setOldController(image.pic.controller)
+                .setImageRequest(request)
                 .build()
-        image.controller = controller
-        image.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-        imageCut.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-        image.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
-        imageCut.addView(image)
-        return imageCut
+        image.pic.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
+        return image
     }
 
     fun destroy() {
-//        this.children.forEach { container ->
-//            if (container is ViewGroup) {
-//                container.children.forEach { cornerView ->
-//                    if (cornerView is ViewGroup) {
-//                        cornerView.children.forEach {
-//                            if (it is SimpleDraweeView)
-//                                it.controller = null
-//                        }
-//                    } else if (cornerView is SimpleDraweeView){
-//                        cornerView.controller = null
-//                    }
-//                }
-//            }
-//        }
+        this.children.forEach { container ->
+            if (container is ViewGroup) {
+                container.children.forEach { cornerView ->
+                    if (cornerView is ViewGroup) {
+                        cornerView.children.forEach {
+                            if (it is SimpleDraweeView)
+                                it.controller = null
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun dpToPx(dp: Int) = (dp * context.resources.displayMetrics.density).roundToInt()

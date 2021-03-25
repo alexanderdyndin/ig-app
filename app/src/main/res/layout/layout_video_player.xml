@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp">
+
+    <!--    Может кто поймет что не так с ic_play_video. Не правильно отображается. -->
+    <ImageButton
+        android:id="@+id/exo_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="9dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/bg_play_video"
+        android:src="@drawable/ic_play_video"
+        android:elevation="4dp"
+        style="@style/ExoMediaButton.Play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/exo_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="9dp"
+        android:paddingBottom="8dp"
+        android:background="@drawable/bg_play_video"
+        android:src="@drawable/ic_pause_video"
+        android:elevation="4dp"
+        style="@style/ExoMediaButton.Pause"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <View android:id="@id/exo_progress_placeholder"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="26dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/nameVideo"/>-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/bgNameVideo"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@drawable/bg_name_video"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/nameVideo"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:maxHeight="16dp"-->
+<!--        android:paddingLeft="16dp"-->
+<!--        style="@style/TextPostComment"-->
+<!--        tools:text="Хамелеон любуется своей жертвой из своей засады"-->
+<!--        android:ellipsize="end"-->
+<!--        android:maxLines="1"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/exo_duration"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/bgNameVideo"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/bgNameVideo" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/exo_duration"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@drawable/bg_duration_video"-->
+<!--        android:gravity="center"-->
+<!--        android:text="5:07"-->
+<!--        style="@style/TextAccent14sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

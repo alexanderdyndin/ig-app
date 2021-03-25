@@ -68,7 +68,7 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         this.removeAllViews()
         container.removeAllViews()
         this.addView(container)
-        if (isExpanded && urls.size > 3) {
+        if (isExpanded && urls.size > 2) {
             createAudios(urls)
             val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
             hider.btnHide.setOnClickListener {
@@ -77,8 +77,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                 expand.invoke(this.isExpanded)
             }
             this.addView(hider)
-        } else if (!isExpanded && urls.size > 3) {
-            createAudios(urls.subList(0, 3))
+        } else if (!isExpanded && urls.size > 2) {
+            createAudios(urls.subList(0, 2))
             val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
             expander.btnExpand.setOnClickListener {
                 this.isExpanded = true
@@ -100,6 +100,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                     urls.forEach {
                         val player = makeAudioPlayer(it, bindedService)
                         val playerView = AudioPlayerView(context)
+                        playerView.trackName = "${it.artist} - ${it.song}"
+                        playerView.trackOwner = "Загрузил (ID:${it.owner})"
                         playerView.exoPlayer.player = player
                         container.addView(playerView)
                         if (player.playWhenReady) {

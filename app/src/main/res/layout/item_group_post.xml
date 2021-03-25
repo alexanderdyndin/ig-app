@@ -77,7 +77,9 @@
             android:maxHeight="16dp"
             android:layout_marginTop="2dp"
             android:layout_marginRight="8dp"
-            tools:text="Моё очень длиннное название группы, ТОЛЬКО о..."
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Моё очень длиннное название группы, ТОЛЬКО оxtym"
             style="@style/TextAccent12spBold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +101,8 @@
             android:background="@drawable/btn_repost"
             app:layout_constraintEnd_toStartOf="@+id/settingsPost"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            tools:visibility="visible"/>
 
         <ImageView
             android:id="@+id/settingsPost"
@@ -134,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="8dp"
-            android:text="05.05.2020 в 15:00"
+            tools:text="05.05.2020 в 15:00"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -150,7 +153,8 @@
             android:src="@drawable/ic_anchor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 
@@ -242,6 +246,8 @@
         android:drawablePadding="5dp"
         tools:text="150"
         style="@style/TextAccent14sp"
+        android:visibility="invisible"
+        tools:visibility="visible"
         android:background="@drawable/btn_sub_comnts"
         app:layout_constraintStart_toEndOf="@id/commentBtn"
         app:layout_constraintBottom_toBottomOf="@+id/endPost"

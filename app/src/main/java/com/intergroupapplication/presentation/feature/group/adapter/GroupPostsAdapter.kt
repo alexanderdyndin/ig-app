@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -168,6 +169,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         postText.gone()
                     }
                 }
+                anchorBtn.isVisible = item.pin?.isNotEmpty() ?: false
                 groupName.text = item.groupInPost.name
                 commentBtn.setOnClickListener {
                     commentClickListener.invoke(item)

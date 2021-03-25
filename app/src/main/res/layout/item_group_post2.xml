@@ -677,15 +677,16 @@
                     android:id="@+id/btnExpand3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
+                        style="@style/TextAccent12sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:padding="8dp"
-                        style="@style/TextAccent12sp"
                         android:drawableRight="@drawable/ic_arrow_down_blue"
                         android:drawablePadding="6dp"
-                        android:text="Развернуть"/>
+                        android:padding="8dp"
+                        android:text="Развернуть" />
                 </FrameLayout>
 
 
