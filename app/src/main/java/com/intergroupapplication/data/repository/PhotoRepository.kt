@@ -167,7 +167,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         val file = File(path)
         return appApi.uploadPhoto(file.extension, groupId)
                 .doAfterSuccess {
-                    if (path.contains(".gif"))
+                    if (file.extension == "gif")
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                 file)
                     else
@@ -189,8 +189,12 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         val file = File(lastAttachedImagePath)
         return appApi.uploadPhoto(file.extension)
                 .doAfterSuccess {
-                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                            Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                    if (file.extension == "gif")
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                file)
+                    else
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }

@@ -181,7 +181,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
                 videoContainer.setVideos(item.videos, item.videosExpanded)

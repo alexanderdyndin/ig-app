@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.grouplist.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -19,7 +20,11 @@ import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.ResizeOptions
+import com.facebook.imagepipeline.request.ImageRequest
+import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -195,9 +200,18 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 doOrIfNull(item.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, avatar)
+                    val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.avatar))
+                            .setResizeOptions(ResizeOptions(100, 100))
+                            .build()
+                    avatar.controller = Fresco.newDraweeControllerBuilder()
+                            .setAutoPlayAnimations(true)
+                            .setOldController(avatar.controller)
+                            .setImageRequest(request)
+                            .build()
                 }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, avatar)
                 })
+
+
             }
         }
 
@@ -212,7 +226,12 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         }
     }
 
-
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is GroupViewHolder) {
+            holder.avatar.controller = null
+        }
+        super.onViewRecycled(holder)
+    }
 
     internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
         private val nativeAdView: NativeAdView
@@ -386,13 +405,6 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         abstract fun fillNative(nativeAd: NativeAd?)
         abstract fun unregisterViewForInteraction()
-    }
-
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if (holder is GroupViewHolder) {
-            holder.avatar.controller = null
-        }
-        super.onViewRecycled(holder)
     }
 
 }
