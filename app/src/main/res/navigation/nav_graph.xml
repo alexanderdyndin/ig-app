@@ -371,6 +371,9 @@
             android:name="post_id"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_commentsDetailsActivity_to_imageFragment"
+            app:destination="@id/imageFragment" />
     </fragment>
     <fragment
         android:id="@+id/userListFragment"

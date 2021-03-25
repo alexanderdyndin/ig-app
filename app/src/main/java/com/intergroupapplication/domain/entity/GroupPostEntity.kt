@@ -22,7 +22,7 @@ data class GroupPostEntity(
         val activeCommentsCount: String,
         val isActive: Boolean,
         val isOffered: Boolean,
-        val reacts: ReactsEntity,
+        var reacts: ReactsEntity,
         val images: List<FileEntity>,
         val audios: List<AudioEntity>,
         val videos: List<FileEntity>

@@ -148,6 +148,8 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                     }
             )
         }
+
+
     }
 
     override fun viewCreated() {
@@ -157,7 +159,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         //crashing app when provide it by dagger
         //commentsList.layoutManager = layoutManager
         commentsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        commentsList.setHasFixedSize(true)
+        //commentsList.setHasFixedSize(true)
         commentsList.itemAnimator = null
         commentsList.addItemDecoration(decorator)
         prepareAdapter()
@@ -173,6 +175,42 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                 .also { compositeDisposable.add(it) }
         CommentsAdapter.complaintListener = { id -> presenter.complaintComment(id) }
         newpaging()
+
+        swipeLayout.setOnRefreshListener {
+            presenter.getPostDetailsInfo(groupPostEntity.id)
+        }
+        postDislikesClickArea.setOnClickListener {
+            compositeDisposable.add(viewModel.setReact(isLike = groupPostEntity.reacts.isLike,
+                    isDislike = !groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        groupPostEntity.reacts = it
+                        postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
+                        postLike.text = groupPostEntity.reacts.likesCount.toString()
+                    },
+                            {
+                                errorHandler.handle(it)
+                            }))
+        }
+        postLikesClickArea.setOnClickListener {
+            compositeDisposable.add(viewModel.setReact(isLike = !groupPostEntity.reacts.isLike,
+                    isDislike = groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        groupPostEntity.reacts = it
+                        postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
+                        postLike.text = groupPostEntity.reacts.likesCount.toString()
+                    },
+                            {
+                                errorHandler.handle(it)
+                            }))
+        }
+        imageBody.imageClick = { list, index ->
+            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
+            findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
+        }
     }
 
     fun newpaging() {
@@ -244,10 +282,12 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     override fun showPostDetailInfo(groupPostEntity: GroupPostEntity) {
         setErrorHandler()
         this.groupPostEntity = groupPostEntity
+
         compositeDisposable.add(getDateDescribeByString(groupPostEntity.date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
+
         groupPostEntity.postText.let {
             if (it.isNotEmpty()) {
                 postText.text = it
@@ -256,15 +296,16 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                 postText.gone()
             }
         }
+
         idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.id)
         commentBtn.text = groupPostEntity.commentsCount
         groupName.text = groupPostEntity.groupInPost.name
-        //presenter.getPostComments(groupPostEntity.id)
+        postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
+        postLike.text = groupPostEntity.reacts.likesCount.toString()
+
         doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
-                { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
-        swipeLayout.setOnRefreshListener {
-            presenter.getPostDetailsInfo(groupPostEntity.id)
-        }
+                { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
+
         imageBody.setImages(groupPostEntity.images)
         videoBody.setVideos(groupPostEntity.videos)
         audioBody.setAudios(groupPostEntity.audios)

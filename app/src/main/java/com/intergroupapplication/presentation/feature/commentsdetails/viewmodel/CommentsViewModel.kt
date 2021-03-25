@@ -9,6 +9,7 @@ import androidx.paging.rxjava2.cachedIn
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.usecase.CommentsUseCase
+import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.other.CommentEntityUI
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
@@ -16,7 +17,8 @@ import com.intergroupapplication.presentation.feature.news.other.GroupPostEntity
 import io.reactivex.Flowable
 import javax.inject.Inject
 
-class CommentsViewModel @Inject constructor(private val useCase: CommentsUseCase): ViewModel() {
+class CommentsViewModel @Inject constructor(private val commentsUseCase: CommentsUseCase,
+                                            private val postsUseCase: PostsUseCase): ViewModel() {
 
     private val nativeAdItem: NativeAd?
         get() {
@@ -25,7 +27,7 @@ class CommentsViewModel @Inject constructor(private val useCase: CommentsUseCase
         }
 
     fun fetchComments(postId: String): Flowable<PagingData<CommentEntityUI>> {
-        return useCase
+        return commentsUseCase
                 .getComments(postId)
                 .map { pagingData ->
                     var i = -CommentsAdapter.AD_FIRST - 1
@@ -55,4 +57,7 @@ class CommentsViewModel @Inject constructor(private val useCase: CommentsUseCase
                 }
                 .cachedIn(viewModelScope)
     }
+
+    fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
+            postsUseCase.setReact(isLike, isDislike, postId)
 }
