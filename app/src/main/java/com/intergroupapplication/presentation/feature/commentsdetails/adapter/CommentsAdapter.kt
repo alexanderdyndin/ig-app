@@ -19,11 +19,11 @@ import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.getDateDescribeByString
 import com.intergroupapplication.presentation.exstension.inflate
-import com.intergroupapplication.presentation.feature.commentsdetails.other.CommentEntityUI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -35,7 +35,7 @@ import timber.log.Timber
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
 class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
-    : PagingDataAdapter<CommentEntityUI, RecyclerView.ViewHolder>(diffUtil) {
+    : PagingDataAdapter<CommentEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
         private const val NATIVE_TYPE_NEWS_FEED = 1
@@ -44,27 +44,27 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private const val NATIVE_WITHOUT_ICON = 4
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
-        private val diffUtil = object : DiffUtil.ItemCallback<CommentEntityUI>() {
-            override fun areItemsTheSame(oldItem: CommentEntityUI, newItem: CommentEntityUI): Boolean {
-                return if (oldItem is CommentEntityUI.CommentEntity && newItem is CommentEntityUI.CommentEntity) {
+        private val diffUtil = object : DiffUtil.ItemCallback<CommentEntity>() {
+            override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
+                return if (oldItem is CommentEntity.Comment && newItem is CommentEntity.Comment) {
                     oldItem.id == newItem.id
-                } else if (oldItem is CommentEntityUI.AdEntity && newItem is CommentEntityUI.AdEntity) {
+                } else if (oldItem is CommentEntity.AdEntity && newItem is CommentEntity.AdEntity) {
                     oldItem.position == newItem.position
                 } else {
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: CommentEntityUI, newItem: CommentEntityUI): Boolean {
-                return if (oldItem is CommentEntityUI.CommentEntity && newItem is CommentEntityUI.CommentEntity) {
+            override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
+                return if (oldItem is CommentEntity.Comment && newItem is CommentEntity.Comment) {
                     oldItem == newItem
-                } else if (oldItem is CommentEntityUI.AdEntity && newItem is CommentEntityUI.AdEntity) {
+                } else if (oldItem is CommentEntity.AdEntity && newItem is CommentEntity.AdEntity) {
                     oldItem == newItem
                 } else {
                     false
                 }
             }
         }
-        var replyListener: (commentEntity: CommentEntityUI.CommentEntity) -> Unit = {}
+        var replyListener: (commentEntity: CommentEntity.Comment) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
         var AD_TYPE = 1
         var AD_FREQ = 3
@@ -108,23 +108,23 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
             if (holder is CommentViewHolder)
-                holder.bind(it as CommentEntityUI.CommentEntity)
+                holder.bind(it as CommentEntity.Comment)
             else if (holder is NativeAdViewHolder) {
-                holder.fillNative((it as CommentEntityUI.AdEntity).nativeAd)
+                holder.fillNative((it as CommentEntity.AdEntity).nativeAd)
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is CommentEntityUI.CommentEntity -> DEFAULT_HOLDER
-            is CommentEntityUI.AdEntity -> AD_TYPE
+            is CommentEntity.Comment -> DEFAULT_HOLDER
+            is CommentEntity.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
         }
     }
 
     inner class CommentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(item: CommentEntityUI.CommentEntity) {
+        fun bind(item: CommentEntity.Comment) {
             with(itemView) {
                 val name = item.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}" }
@@ -162,7 +162,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             val unknown = view.resources.getString(R.string.unknown)
             this@CommentsAdapter.snapshot().items.let {
                 for (comment in it) {
-                    if (comment is CommentEntityUI.CommentEntity) {
+                    if (comment is CommentEntity.Comment) {
                         if (comment.id == commentId) {
                             return comment.commentOwner?.firstName ?: unknown
                         }

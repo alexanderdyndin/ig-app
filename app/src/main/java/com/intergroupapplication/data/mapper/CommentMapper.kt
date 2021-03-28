@@ -13,8 +13,8 @@ import javax.inject.Inject
  */
 class CommentMapper @Inject constructor(private val userProfileMapper: UserProfileMapper) {
 
-    fun mapToDomainEntity(from: CommentModel): CommentEntity =
-            CommentEntity(
+    fun mapToDomainEntity(from: CommentModel): CommentEntity.Comment =
+            CommentEntity.Comment(
                     id = from.id,
                     text = from.text,
                     date = from.date,
@@ -22,7 +22,7 @@ class CommentMapper @Inject constructor(private val userProfileMapper: UserProfi
                     answerTo = from.answerTo
             )
 
-    fun mapToDto(from: CommentEntity): CommentModel =
+    fun mapToDto(from: CommentEntity.Comment): CommentModel =
             CommentModel(
                     id = from.id,
                     text = from.text,

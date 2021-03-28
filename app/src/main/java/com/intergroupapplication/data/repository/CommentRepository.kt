@@ -25,16 +25,6 @@ class CommentRepository @Inject constructor(private val api: AppApi,
                                             private val commentMapper: CommentMapper)
     : CommentGateway {
 
-    override fun getComments(postId: String, page: Int): Single<List<CommentEntity>> =
-            api.getPostComments(postId, page).map { commentMapper.mapListToDomainEntity(it.comments) }
-                    .onErrorResumeNext {
-                        if (it is NoMorePage) {
-                            Single.fromCallable { mutableListOf<CommentEntity>() }
-                        } else {
-                            Single.error(it)
-                        }
-                    }
-
     override fun getComments(postId: String): Flowable<PagingData<CommentEntity>> {
         return Pager(
                 config = PagingConfig(
@@ -45,12 +35,12 @@ class CommentRepository @Inject constructor(private val api: AppApi,
     }
 
 
-    override fun createComment(postId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity> =
+    override fun createComment(postId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment> =
             api.createComment(postId, commentMapper.mapToDto(createCommentEntity))
                     .map { commentMapper.mapToDomainEntity(it) }
 
 
-    override fun createAnswerToComment(answerToCommentId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity> =
+    override fun createAnswerToComment(answerToCommentId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment> =
             api.createAnswerToComment(answerToCommentId, commentMapper.mapToDto(createCommentEntity))
                     .map { commentMapper.mapToDomainEntity(it) }
 

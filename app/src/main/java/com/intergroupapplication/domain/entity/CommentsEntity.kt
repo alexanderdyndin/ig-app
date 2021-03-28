@@ -7,5 +7,5 @@ data class CommentsEntity(
         val count: Int,
         val next: String?,
         val previous: String?,
-        val comments: List<CommentEntity>
+        val comments: List<CommentEntity.Comment>
         )
