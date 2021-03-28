@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
@@ -36,7 +35,6 @@ import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import com.intergroupapplication.presentation.feature.news.presenter.NewsPresenter
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
 import com.mikepenz.materialdrawer.Drawer
@@ -110,28 +108,8 @@ class NewsFragment(): BaseFragment(), NewsView{
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
         NewsAdapter.complaintListener = { presenter.complaintPost(it) }
         NewsAdapter.commentClickListener = {
-            if (it is GroupPostEntityUI.GroupPostEntity) {
                 clickedPostId = it.id
-                openCommentDetails(InfoForCommentEntity(GroupPostEntity(
-                        it.id,
-                        it.groupInPost,
-                        it.postText,
-                        it.date,
-                        it.updated,
-                        it.author,
-                        it.unreadComments,
-                        it.pin,
-                        it.photo,
-                        it.commentsCount,
-                        it.activeCommentsCount,
-                        it.isActive,
-                        it.isOffered,
-                        it.reacts,
-                        it.images,
-                        it.audios,
-                        it.videos
-                ), true))
-            }
+                openCommentDetails(InfoForCommentEntity(it, true))
         }
         NewsAdapter.groupClickListener = {
             val data = bundleOf(GROUP_ID to it)

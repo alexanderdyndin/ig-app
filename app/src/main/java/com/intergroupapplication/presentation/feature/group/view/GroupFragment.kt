@@ -107,27 +107,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         groupId = arguments?.getString(GROUP_ID)!!
         isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
         viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
-        GroupPostsAdapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(
-                GroupPostEntity(
-                        it.id,
-                        it.groupInPost,
-                        it.postText,
-                        it.date,
-                        it.updated,
-                        it.author,
-                        it.unreadComments,
-                        it.pin,
-                        it.photo,
-                        it.commentsCount,
-                        it.activeCommentsCount,
-                        it.isActive,
-                        it.isOffered,
-                        it.reacts,
-                        it.images,
-                        it.audios,
-                        it.videos
-                )
-        )) }
+        GroupPostsAdapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
         GroupPostsAdapter.complaintListener = { id -> presenter.complaintPost(id) }
         GroupPostsAdapter.imageClickListener = { list: List<FileEntity>, i: Int ->
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)

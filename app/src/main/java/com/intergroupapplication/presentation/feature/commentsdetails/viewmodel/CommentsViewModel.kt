@@ -12,8 +12,6 @@ import com.intergroupapplication.domain.usecase.CommentsUseCase
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.other.CommentEntityUI
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import io.reactivex.Flowable
 import javax.inject.Inject
 

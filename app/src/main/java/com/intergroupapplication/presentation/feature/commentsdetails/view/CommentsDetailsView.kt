@@ -10,7 +10,7 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 interface CommentsDetailsView : MvpView {
     fun commentCreated(commentEntity: CommentEntity)
     fun answerToCommentCreated(commentEntity: CommentEntity)
-    fun showPostDetailInfo(groupPostEntity: GroupPostEntity)
+    fun showPostDetailInfo(groupPostEntity: GroupPostEntity.PostEntity)
     fun showCommentUploading(show: Boolean)
     fun hideSwipeLayout()
     fun showMessage(value:Int)

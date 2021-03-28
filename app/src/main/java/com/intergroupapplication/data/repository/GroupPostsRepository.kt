@@ -25,23 +25,13 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                                                private val groupPostMapper: GroupPostMapper)
     : GroupPostGateway {
 
-    override fun getPostById(postId: String): Single<GroupPostEntity> {
+    override fun getPostById(postId: String): Single<GroupPostEntity.PostEntity> {
         return api.getPostById(postId).map { groupPostMapper.mapToDomainEntity(it) }
     }
 
-    override fun getGroupPosts(groupId: String, page: Int): Single<List<GroupPostEntity>> {
-        return api.getGroupPosts(groupId, page).map { groupPostMapper.mapListToDomainEntity(it.results) }
-                .onErrorResumeNext {
-                    if (it is NoMorePage) {
-                        Single.fromCallable { mutableListOf<GroupPostEntity>() }
-                    } else {
-                        Single.error(it)
-                    }
-                }
-    }
 
     override fun createPost(createGroupPostEntity: CreateGroupPostEntity,
-                            groupId: String): Single<GroupPostEntity> {
+                            groupId: String): Single<GroupPostEntity.PostEntity> {
         return api.createPost(groupPostMapper.mapToDto(createGroupPostEntity), groupId)
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
@@ -64,7 +54,7 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         ).flowable
     }
 
-    override fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity> {
+    override fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity.PostEntity> {
         return api.editPostById(postId, groupPostMapper.mapToDto(createGroupPostEntity))
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }

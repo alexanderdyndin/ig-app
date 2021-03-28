@@ -7,5 +7,5 @@ data class NewsEntity(
         val count: Int,
         val next: Int?,
         val previous: Int?,
-        @SerializedName("results") val news: List<GroupPostEntity>
+        @SerializedName("results") val news: List<GroupPostEntity.PostEntity>
 )

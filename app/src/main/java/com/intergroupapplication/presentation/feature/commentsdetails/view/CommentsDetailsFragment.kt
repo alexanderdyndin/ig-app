@@ -122,7 +122,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
 
-    private lateinit var groupPostEntity: GroupPostEntity
+    private lateinit var groupPostEntity: GroupPostEntity.PostEntity
     private var lastRepliedComment: CommentEntity? = null
 
     @LayoutRes
@@ -279,7 +279,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         swipeLayout.isEnabled = (verticalOffset == 0)
     }
 
-    override fun showPostDetailInfo(groupPostEntity: GroupPostEntity) {
+    override fun showPostDetailInfo(groupPostEntity: GroupPostEntity.PostEntity) {
         setErrorHandler()
         this.groupPostEntity = groupPostEntity
 

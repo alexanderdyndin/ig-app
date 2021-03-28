@@ -10,47 +10,48 @@ import javax.inject.Inject
 class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupInPostMapper,
                                           private val userProfileMapper: UserProfileMapper) {
 
-    fun mapToDto(from: GroupPostEntity): GroupPostModel {
+    fun mapToDto(from: GroupPostEntity.PostEntity): GroupPostModel {
         return GroupPostModel(
                 id = from.id,
+                bells = mapToDto(from.bells),
                 groupInPost = groupInPostMapper.mapToDto(from.groupInPost),
                 postText = from.postText,
                 date = from.date,
                 updated = from.updated,
                 author = userProfileMapper.mapToDataModel(from.author),
-                unreadComments = from.unreadComments,
                 photo = from.photo,
                 commentsCount = from.commentsCount,
                 activeCommentsCount = from.activeCommentsCount,
                 isActive = from.isActive,
                 isOffered = from.isOffered,
+                isPinned = from.isPinned,
                 pin = from.pin,
-                isDisliked = from.reacts.isDislike,
-                isLiked = from.reacts.isLike,
-                likesCount = from.reacts.likesCount,
-                dislikesCount = from.reacts.dislikesCount,
+                reacts = mapToDto(from.reacts),
+                idp = from.idp,
                 images = from.images.map { mapToDto(it) },
                 audios = from.audios.map { mapToDto(it) },
                 videos = from.videos.map { mapToDto(it) }
         )
     }
 
-    fun mapToDomainEntity(from: GroupPostModel): GroupPostEntity {
-        return GroupPostEntity(
+    fun mapToDomainEntity(from: GroupPostModel): GroupPostEntity.PostEntity {
+        return GroupPostEntity.PostEntity(
                 id = from.id,
+                bells = mapToDomainEntity(from.bells),
                 groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost),
                 postText = from.postText,
                 date = from.date,
                 updated = from.updated,
                 author = userProfileMapper.mapToDomainEntity(from.author),
-                unreadComments = from.unreadComments,
                 photo = from.photo,
                 commentsCount = from.commentsCount,
                 activeCommentsCount = from.activeCommentsCount,
+                isPinned = from.isPinned,
                 isActive = from.isActive,
                 isOffered = from.isOffered,
                 pin = from.pin,
-                reacts = ReactsEntity(from.isLiked, from.isDisliked, from.likesCount, from.dislikesCount),
+                idp = from.idp,
+                reacts = mapToDomainEntity(from.reacts),
                 images = from.images.map { mapToDomainEntity(it) },
                 audios = from.audios.map { mapToDomainEntity(it) },
                 videos = from.videos.map { mapToDomainEntity(it) }
@@ -153,5 +154,17 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                     isDislike = from.isDislike,
                     likesCount = from.likesCount,
                     dislikesCount = from.dislikesCount
+            )
+
+    fun mapToDto(from: BellsEntity): BellsModel =
+            BellsModel(
+                    count = from.count,
+                    isActive = from.isActive
+            )
+
+    fun mapToDomainEntity(from: BellsModel): BellsEntity =
+            BellsEntity(
+                    count = from.count,
+                    isActive = from.isActive
             )
 }

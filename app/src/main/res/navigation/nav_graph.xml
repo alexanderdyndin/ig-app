@@ -358,7 +358,7 @@
         android:label="CommentsDetailsActivity" >
         <argument
             android:name="comment_post"
-            app:argType="com.intergroupapplication.domain.entity.InfoForCommentEntity"
+            app:argType="com.intergroupapplication.domain.entity.GroupPostEntity$PostEntity"
             app:nullable="true" />
         <action
             android:id="@+id/action_commentsDetailsActivity_to_groupActivity"

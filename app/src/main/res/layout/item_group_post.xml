@@ -246,8 +246,6 @@
         android:drawablePadding="5dp"
         tools:text="150"
         style="@style/TextAccent14sp"
-        android:visibility="invisible"
-        tools:visibility="visible"
         android:background="@drawable/btn_sub_comnts"
         app:layout_constraintStart_toEndOf="@id/commentBtn"
         app:layout_constraintBottom_toBottomOf="@+id/endPost"

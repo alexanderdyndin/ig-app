@@ -26,12 +26,9 @@ import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import kotlinx.android.synthetic.main.item_group_in_list.view.*
 
 

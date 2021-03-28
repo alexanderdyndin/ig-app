@@ -6,12 +6,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
-import androidx.core.view.marginBottom
-import androidx.core.view.setMargins
-import androidx.core.view.setPadding
+import androidx.core.view.*
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
@@ -20,6 +18,9 @@ import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.github.florent37.shapeofview.shapes.CutCornerView
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
@@ -102,23 +103,6 @@ class PostGalleryView @JvmOverloads constructor(context: Context,
     }
 
     private fun createPic(img: FileEntity, width: Int): View {
-//        val image = SimpleDraweeView(context, attrs, defStyleAttr)
-//        image.aspectRatio = 1f
-//        image.hierarchy.setPlaceholderImage(R.drawable.variant_10)
-//        image.foreground = ContextCompat.getDrawable(context, R.drawable.mask_foreground)
-//        val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(img.file))
-//                .setResizeOptions(ResizeOptions(500, 500))
-//                .build()
-//        image.controller = Fresco.newDraweeControllerBuilder()
-//                .setAutoPlayAnimations(true)
-//                .setOldController(image.controller)
-//                .setImageRequest(request)
-//                .build()
-//        val layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
-//        layoutParams.setMargins(dpToPx(1))
-//        image.layoutParams = layoutParams
-//        image.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
-//        return image
         val image = LayoutInflater.from(context).inflate(R.layout.layout_pic, this, false)
         image.layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
         val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(img.file))

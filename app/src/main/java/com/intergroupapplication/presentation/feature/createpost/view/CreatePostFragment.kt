@@ -101,7 +101,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         setErrorHandler()
     }
 
-    override fun postCreateSuccessfully(postEntity: GroupPostEntity) {
+    override fun postCreateSuccessfully(postEntity: GroupPostEntity.PostEntity) {
         onResultOk(postEntity.id)
     }
 

@@ -1,11 +1,11 @@
 package com.intergroupapplication.presentation.feature.news.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,19 +13,14 @@ import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.ResizeOptions
-import com.facebook.imagepipeline.request.ImageRequest
-import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.customview.AudioGalleryView
 import com.intergroupapplication.presentation.customview.PostGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -36,7 +31,7 @@ import timber.log.Timber
 
 
 class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
-    : PagingDataAdapter<GroupPostEntityUI, RecyclerView.ViewHolder>(diffUtil) {
+    : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
         private const val NATIVE_TYPE_NEWS_FEED = 1
@@ -45,20 +40,20 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private const val NATIVE_WITHOUT_ICON = 4
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
-        private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntityUI>() {
-            override fun areItemsTheSame(oldItem: GroupPostEntityUI, newItem: GroupPostEntityUI): Boolean {
-                return if (oldItem is GroupPostEntityUI.GroupPostEntity && newItem is GroupPostEntityUI.GroupPostEntity) {
-                     oldItem.id == newItem.id
-                } else if (oldItem is GroupPostEntityUI.AdEntity && newItem is GroupPostEntityUI.AdEntity) {
+        private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntity>() {
+            override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
+                return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
+                    oldItem.id == newItem.id
+                } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
                     oldItem.position == newItem.position
                 } else {
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: GroupPostEntityUI, newItem: GroupPostEntityUI): Boolean {
-                return if (oldItem is GroupPostEntityUI.GroupPostEntity && newItem is GroupPostEntityUI.GroupPostEntity) {
+            override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
+                return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
                     oldItem == newItem
-                } else if (oldItem is GroupPostEntityUI.AdEntity && newItem is GroupPostEntityUI.AdEntity) {
+                } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
                     oldItem == newItem
                 } else {
                     false
@@ -68,11 +63,11 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
-        var commentClickListener: (groupPostEntity: GroupPostEntityUI) -> Unit = {}
+        var commentClickListener: (groupPostEntity: GroupPostEntity.PostEntity) -> Unit = {}
         var groupClickListener: (groupId: String) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
-        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntityUI.GroupPostEntity, position: Int) -> Unit = { _, _, _, _ -> }
+        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -111,17 +106,17 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
             if (holder is PostViewHolder)
-                holder.bind(it as GroupPostEntityUI.GroupPostEntity)
+                holder.bind(it as GroupPostEntity.PostEntity)
             else if (holder is NativeAdViewHolder) {
-                holder.fillNative((it as GroupPostEntityUI.AdEntity).nativeAd)
+                holder.fillNative((it as GroupPostEntity.AdEntity).nativeAd)
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is GroupPostEntityUI.GroupPostEntity -> DEFAULT_HOLDER
-            is GroupPostEntityUI.AdEntity -> AD_TYPE
+            is GroupPostEntity.PostEntity -> DEFAULT_HOLDER
+            is GroupPostEntity.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
         }
     }
@@ -132,7 +127,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
         val imageContainer = itemView.findViewById<PostGalleryView>(R.id.imageBody)
 
-        fun bind(item: GroupPostEntityUI.GroupPostEntity) {
+        fun bind(item: GroupPostEntity.PostEntity) {
             with(itemView) {
                 idpGroupPost.text = context.getString(R.string.idp, item.id)
                 postLike.text = item.reacts.likesCount.toString()
@@ -154,6 +149,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 groupName.text = item.groupInPost.name
+                subCommentBtn.text = item.bells.count.toString()
+
+                anchorBtn.isVisible = item.isPinned
+
                 commentBtn.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
@@ -169,9 +168,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 postDislikesClickArea.setOnClickListener {
                     likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
+                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
-                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
                 videoContainer.setVideos(item.videos, item.videosExpanded)
                 videoContainer.expand = { item.videosExpanded = it }
