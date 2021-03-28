@@ -2,7 +2,6 @@ package com.intergroupapplication.presentation.feature.grouplist.viewModel
 
 import androidx.lifecycle.*
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import androidx.paging.rxjava2.cachedIn
@@ -11,12 +10,8 @@ import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.usecase.GroupUseCase
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class GroupListViewModel @Inject constructor(
@@ -29,33 +24,15 @@ class GroupListViewModel @Inject constructor(
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
-    fun fetchGroups(query: String = ""): Flowable<PagingData<GroupEntityUI>> {
+    fun fetchGroups(query: String = ""): Flowable<PagingData<GroupEntity>> {
         return useCase.getGroupList(query)
                 .map { pagingData ->
                     var i = -GroupListAdapter.AD_FIRST - 1
                     pagingData.map {
-                        GroupEntityUI.GroupEntity (
-                                it.id,
-                                it.followersCount,
-                                it.postsCount,
-                                it.postsLikes,
-                                it.postsDislikes,
-                                it.CommentsCount,
-                                it.timeBlocked,
-                                it.name,
-                                it.description,
-                                it.isBlocked,
-                                it.owner,
-                                it.isFollowing,
-                                it.avatar,
-                                it.subject,
-                                it.rules,
-                                it.isClosed,
-                                it.ageRestriction
-                                )
+                        it as GroupEntity.Group
                     }
-                            .insertSeparators<GroupEntityUI.GroupEntity, GroupEntityUI>
-                            { before: GroupEntityUI.GroupEntity?, after: GroupEntityUI.GroupEntity? ->
+                            .insertSeparators<GroupEntity.Group, GroupEntity>
+                            { before: GroupEntity.Group?, after: GroupEntity.Group? ->
                                 i++
                                 when {
                                     before == null -> null
@@ -63,7 +40,7 @@ class GroupListViewModel @Inject constructor(
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
                                         if (nativeAdItem.also { nativeAd = it } != null) {
-                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                            GroupEntity.AdEntity(i, nativeAd)
                                         } else null
                                     } else null
                                 }
@@ -72,33 +49,15 @@ class GroupListViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
     }
 
-    fun fetchSubGroups(query: String = ""): Flowable<PagingData<GroupEntityUI>> {
+    fun fetchSubGroups(query: String = ""): Flowable<PagingData<GroupEntity>> {
         return useCase.getSubscribedGroupList(query)
                 .map { pagingData ->
                     var i = -GroupListAdapter.AD_FIRST - 1
                     pagingData.map {
-                        GroupEntityUI.GroupEntity (
-                                it.id,
-                                it.followersCount,
-                                it.postsCount,
-                                it.postsLikes,
-                                it.postsDislikes,
-                                it.CommentsCount,
-                                it.timeBlocked,
-                                it.name,
-                                it.description,
-                                it.isBlocked,
-                                it.owner,
-                                it.isFollowing,
-                                it.avatar,
-                                it.subject,
-                                it.rules,
-                                it.isClosed,
-                                it.ageRestriction
-                        )
+                        it as GroupEntity.Group
                     }
-                            .insertSeparators<GroupEntityUI.GroupEntity, GroupEntityUI>
-                            { before: GroupEntityUI.GroupEntity?, after: GroupEntityUI.GroupEntity? ->
+                            .insertSeparators<GroupEntity.Group, GroupEntity>
+                            { before: GroupEntity.Group?, after: GroupEntity.Group? ->
                                 i++
                                 when {
                                     before == null -> null
@@ -106,7 +65,7 @@ class GroupListViewModel @Inject constructor(
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
                                         if (nativeAdItem.also { nativeAd = it } != null) {
-                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                            GroupEntity.AdEntity(i, nativeAd)
                                         } else null
                                     } else null
                                 }
@@ -115,33 +74,15 @@ class GroupListViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
     }
 
-    fun fetchAdmGroups(query: String = "") : Flowable<PagingData<GroupEntityUI>> {
+    fun fetchAdmGroups(query: String = "") : Flowable<PagingData<GroupEntity>> {
         return useCase.getAdminGroupList(query)
                 .map { pagingData ->
                     var i = -GroupListAdapter.AD_FIRST - 1
                     pagingData.map {
-                        GroupEntityUI.GroupEntity (
-                                it.id,
-                                it.followersCount,
-                                it.postsCount,
-                                it.postsLikes,
-                                it.postsDislikes,
-                                it.CommentsCount,
-                                it.timeBlocked,
-                                it.name,
-                                it.description,
-                                it.isBlocked,
-                                it.owner,
-                                it.isFollowing,
-                                it.avatar,
-                                it.subject,
-                                it.rules,
-                                it.isClosed,
-                                it.ageRestriction
-                        )
+                        it as GroupEntity.Group
                     }
-                            .insertSeparators<GroupEntityUI.GroupEntity, GroupEntityUI>
-                            { before: GroupEntityUI.GroupEntity?, after: GroupEntityUI.GroupEntity? ->
+                            .insertSeparators<GroupEntity.Group, GroupEntity>
+                            { before: GroupEntity.Group?, after: GroupEntity.Group? ->
                                 i++
                                 when {
                                     before == null -> null
@@ -149,7 +90,7 @@ class GroupListViewModel @Inject constructor(
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
                                         if (nativeAdItem.also { nativeAd = it } != null) {
-                                            GroupEntityUI.AdEntity(i, nativeAd)
+                                            GroupEntity.AdEntity(i, nativeAd)
                                         } else null
                                     } else null
                                 }

@@ -235,7 +235,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         }
     }
 
-    override fun showGroupInfo(groupEntity: GroupEntity) {
+    override fun showGroupInfo(groupEntity: GroupEntity.Group) {
         toolbarTittle.text = groupEntity.name
         //groupName.text = groupEntity.name
         id_group.text = getString(R.string.idg, groupEntity.id)

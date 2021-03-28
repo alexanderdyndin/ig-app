@@ -133,7 +133,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         fun bind(item: GroupPostEntity.PostEntity) {
             with(itemView) {
-                idpGroupPost.text = context.getString(R.string.idp, item.id)
+                idpGroupPost.text = context.getString(R.string.idp, item.idp.toString())
                 postLike.text = item.reacts.likesCount.toString()
                 postDislike.text = item.reacts.dislikesCount.toString()
                 compositeDisposable.add(getDateDescribeByString(item.date)
@@ -152,7 +152,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         postText.gone()
                     }
                 }
-                anchorBtn.isVisible = item.pin?.isNotEmpty() ?: false
                 groupName.text = item.groupInPost.name
                 subCommentBtn.text = item.bells.count.toString()
 

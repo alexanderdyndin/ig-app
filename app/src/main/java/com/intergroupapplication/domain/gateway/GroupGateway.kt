@@ -21,9 +21,9 @@ interface GroupGateway {
     fun getGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>>
     fun getSubscribedGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>>
     fun getAdminGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>>
-    fun getGroupDetailInfo(groupId: String): Single<GroupEntity>
+    fun getGroupDetailInfo(groupId: String): Single<GroupEntity.Group>
     fun followGroup(groupId: String): Completable
     fun unfollowGroup(groupId: String): Completable
-    fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity>
+    fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group>
     fun followersGroup(groupId: String): Single<GroupFollowEntity>
 }

@@ -20,33 +20,33 @@ FakeData {
     val groupAlreadyExistsException = GroupAlreadyExistException()
     val ioException = IOException()
 
-    fun getGroupList(): List<GroupEntity> =
-            Arrays.asList(GroupEntity("1", "15", "0",
+    fun getGroupList(): List<GroupEntity.Group> =
+            Arrays.asList(GroupEntity.Group("1", "15", "0",
                     "0", "0", "9", "",
                     "cs go player group","Cloud Nine",false,
                     "1",true,null,"no subject","no rules",
                     false,"12+"),
-                    GroupEntity("1", "15", "1",
+                    GroupEntity.Group("1", "15", "1",
                             "0", "0", "9", "",
                             "cs go player group","Cloud Nine",false,
                             "2",true,null,"no subject","no rules",
                             false,"12+"),
-                    GroupEntity("1", "15", "2",
+                    GroupEntity.Group("1", "15", "2",
                             "1", "1", "9", "",
                             "cs go player group","Cloud Nine",true,
                             "3",false,null,"no subject","no rules",
                             false,"12+"),
-                    GroupEntity("1", "15", "3333",
+                    GroupEntity.Group("1", "15", "3333",
                             "2", "2", "9", "",
                             "cs go player group","Cloud Nine",false,
                             "4",true,null,"no subject","no rules",
                             true,"12+"),
-                    GroupEntity("1", "15", "0",
+                    GroupEntity.Group("1", "15", "0",
                             "3", "3", "9", "",
                             "cs go player group","Cloud Nine",false,
                             "5",true,null,"no subject","no rules",
                             false,"16+"),
-                    GroupEntity("1", "15", "0",
+                    GroupEntity.Group("1", "15", "0",
                             "1110", "44440", "9", "",
                             "cs go player group","Cloud Nine",false,
                             "6",true,null,"no subject","no rules",
@@ -87,19 +87,19 @@ FakeData {
     fun getUserAdminRole() = UserEntity("1", "dude", "duck", "2018-03-03", "male", "cool@mail.ru",
             false, false, null)
 
-    fun getGroupForUserAdmin(): GroupEntity = GroupEntity("1", "15", "0",
+    fun getGroupForUserAdmin(): GroupEntity.Group = GroupEntity.Group("1", "15", "0",
             "1110", "44440", "9", "",
             "cs go player group","Cloud Nine",false,
             "1",true,null,"no subject","no rules",
             false,"18+")
 
-    fun getGroupForUserFollowing(): GroupEntity = GroupEntity("1", "15", "0",
+    fun getGroupForUserFollowing(): GroupEntity.Group = GroupEntity.Group("1", "15", "0",
             "1110", "44440", "9", "",
             "cs go player group","Cloud Nine",false,
             "6",true,null,"no subject","no rules",
             false,"18+")
 
-    fun getGroupForUserNotFollowing(): GroupEntity = GroupEntity("1", "15", "0",
+    fun getGroupForUserNotFollowing(): GroupEntity.Group = GroupEntity.Group("1", "15", "0",
             "1110", "44440", "9", "",
             "cs go player group","Cloud Nine",false,
             "6",false,null,"no subject","no rules",
@@ -109,7 +109,7 @@ FakeData {
 //            "50", "2018-09-11T10:09:31.111435Z", getGroupInPostEntity(), null)
 
 
-    fun getGroupEntity(): GroupEntity = GroupEntity("1", "15", "2",
+    fun getGroupEntity(): GroupEntity.Group = GroupEntity.Group("1", "15", "2",
             "1", "1", "9", "",
             "cs go player group","Cloud Nine",true,
             "3",false,null,"no subject","no rules",

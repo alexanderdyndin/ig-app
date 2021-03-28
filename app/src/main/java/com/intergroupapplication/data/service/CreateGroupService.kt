@@ -17,7 +17,7 @@ class CreateGroupService @Inject constructor(private val api: AppApi,
                                              private val groupMapper: GroupMapper) : CreateGroupGateway {
 
 
-    override fun createGroup(createGroupEntity: CreateGroupEntity): Single<GroupEntity> {
+    override fun createGroup(createGroupEntity: CreateGroupEntity): Single<GroupEntity.Group> {
         return api.createGroup(createGroupMapper.mapToDto(createGroupEntity))
                 .map { groupMapper.mapToDomainEntity(it) }
     }

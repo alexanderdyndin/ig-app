@@ -14,10 +14,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
 import kotlinx.android.synthetic.main.fragment_group_category.view.*
-import kotlinx.android.synthetic.main.fragment_group_list.*
-import kotlinx.coroutines.flow.collectLatest
 
 class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<GroupListsAdapter.GroupListViewHolder>() {
 

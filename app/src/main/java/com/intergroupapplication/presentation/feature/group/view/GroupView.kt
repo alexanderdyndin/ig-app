@@ -10,7 +10,7 @@ import moxy.viewstate.strategy.SkipStrategy
 @StateStrategyType(SkipStrategy::class)
 interface GroupView : MvpView, ImageUploadingView {
     fun renderViewByRole(userRole: UserRole)
-    fun showGroupInfo(groupEntity: GroupEntity)
+    fun showGroupInfo(groupEntity: GroupEntity.Group)
     fun groupFollowed(followersCount: Int)
     fun groupUnfollowed(followersCount: Int)
     fun showSubscribeLoading(show: Boolean)

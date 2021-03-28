@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 class GroupMapper @Inject constructor() {
 
-    fun mapToDto(from: GroupEntity): GroupModel {
+    fun mapToDto(from: GroupEntity.Group): GroupModel {
         return GroupModel(
                 id = from.id,
                 followersCount = from.followersCount,
@@ -34,8 +34,8 @@ class GroupMapper @Inject constructor() {
                 ageRestriction = from.ageRestriction.replace("+","", true))
     }
 
-    fun mapToDomainEntity(from: GroupModel): GroupEntity {
-        return GroupEntity(
+    fun mapToDomainEntity(from: GroupModel): GroupEntity.Group {
+        return GroupEntity.Group(
                 id = from.id,
                 followersCount = from.followersCount,
                 postsCount = from.postsCount,
@@ -55,7 +55,7 @@ class GroupMapper @Inject constructor() {
                 ageRestriction =  "${from.ageRestriction}+" )
     }
 
-    fun mapListToDomainEntity(from: List<GroupModel>): List<GroupEntity> =
+    fun mapListToDomainEntity(from: List<GroupModel>): List<GroupEntity.Group> =
             from.map { mapToDomainEntity(it) }
 
     fun mapToDomainEntity(from: GroupsDto): GroupListEntity {

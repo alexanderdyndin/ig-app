@@ -27,7 +27,7 @@ import javax.inject.Inject
 class GroupRepository @Inject constructor(private val api: AppApi,
                                           private val groupMapper: GroupMapper) : GroupGateway {
 
-    override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity> =
+    override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group> =
             api.changeGroupAvatar(groupId, UpdateAvatarModel(avatar))
                     .map { groupMapper.mapToDomainEntity(it) }
                     .doOnError {
@@ -47,7 +47,7 @@ class GroupRepository @Inject constructor(private val api: AppApi,
     }
 
 
-    override fun getGroupDetailInfo(groupId: String): Single<GroupEntity> {
+    override fun getGroupDetailInfo(groupId: String): Single<GroupEntity.Group> {
         return api.getGroupInformation(groupId).map { groupMapper.mapToDomainEntity(it) }
     }
 

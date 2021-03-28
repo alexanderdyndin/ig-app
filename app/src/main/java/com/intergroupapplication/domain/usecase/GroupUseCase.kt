@@ -18,7 +18,7 @@ class GroupUseCase @Inject constructor(
         private val userProfileGateway: UserProfileGateway,
         private val groupGateway: GroupGateway) {
 
-    fun getUserRole(groupEntity: GroupEntity): Single<UserRole> {
+    fun getUserRole(groupEntity: GroupEntity.Group): Single<UserRole> {
         return userProfileGateway.getUserProfile()
                 .map {
                     if (it.id == groupEntity.owner) {

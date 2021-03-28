@@ -26,9 +26,9 @@ import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.grouplist.other.GroupEntityUI
 import kotlinx.android.synthetic.main.item_group_in_list.view.*
 
 
@@ -36,34 +36,34 @@ import kotlinx.android.synthetic.main.item_group_in_list.view.*
  * Created by abakarmagomedov on 02/08/2018 at project InterGroupApplication.
  */
 class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
-    : PagingDataAdapter<GroupEntityUI, RecyclerView.ViewHolder>(diffUtil) {
+    : PagingDataAdapter<GroupEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
         var lettersToSpan = ""
         var userID: String? = null
         var groupClickListener: (groupId: String) -> Unit = {}
-        var unsubscribeClickListener: (item: GroupEntityUI.GroupEntity, position: Int) -> Unit = {_, _ -> }
-        var subscribeClickListener: (item: GroupEntityUI.GroupEntity, position: Int) -> Unit = {_, _ -> }
+        var unsubscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = { _, _ -> }
+        var subscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = {_, _ -> }
         private const val NATIVE_TYPE_NEWS_FEED = 1
         private const val NATIVE_TYPE_APP_WALL = 2
         private const val NATIVE_TYPE_CONTENT_STREAM = 3
         private const val NATIVE_WITHOUT_ICON = 4
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
-        private val diffUtil = object : DiffUtil.ItemCallback<GroupEntityUI>() {
-            override fun areItemsTheSame(oldItem: GroupEntityUI, newItem: GroupEntityUI): Boolean {
-                return if (oldItem is GroupEntityUI.GroupEntity && newItem is GroupEntityUI.GroupEntity) {
+        private val diffUtil = object : DiffUtil.ItemCallback<GroupEntity>() {
+            override fun areItemsTheSame(oldItem: GroupEntity, newItem: GroupEntity): Boolean {
+                return if (oldItem is GroupEntity.Group && newItem is GroupEntity.Group) {
                     oldItem.id == newItem.id
-                } else if (oldItem is GroupEntityUI.AdEntity && newItem is GroupEntityUI.AdEntity) {
+                } else if (oldItem is GroupEntity.AdEntity && newItem is GroupEntity.AdEntity) {
                     oldItem.position == newItem.position
                 } else {
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: GroupEntityUI, newItem: GroupEntityUI): Boolean {
-                return if (oldItem is GroupEntityUI.GroupEntity && newItem is GroupEntityUI.GroupEntity) {
+            override fun areContentsTheSame(oldItem: GroupEntity, newItem: GroupEntity): Boolean {
+                return if (oldItem is GroupEntity.Group && newItem is GroupEntity.Group) {
                     oldItem == newItem
-                } else if (oldItem is GroupEntityUI.AdEntity && newItem is GroupEntityUI.AdEntity) {
+                } else if (oldItem is GroupEntity.AdEntity && newItem is GroupEntity.AdEntity) {
                     oldItem == newItem
                 } else {
                     false
@@ -112,16 +112,16 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         if (holder is GroupViewHolder) {
-            holder.bind(item as GroupEntityUI.GroupEntity)
+            holder.bind(item as GroupEntity.Group)
         } else if (holder is NativeAdViewHolder) {
-                holder.fillNative((item as GroupEntityUI.AdEntity).nativeAd)
+                holder.fillNative((item as GroupEntity.AdEntity).nativeAd)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is GroupEntityUI.GroupEntity -> DEFAULT_HOLDER
-            is GroupEntityUI.AdEntity -> AD_TYPE
+            is GroupEntity.Group -> DEFAULT_HOLDER
+            is GroupEntity.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
         }
     }
@@ -131,7 +131,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
         val avatar: SimpleDraweeView = itemView.findViewById(R.id.groupAvatarHolder)
 
-        fun bind(item: GroupEntityUI.GroupEntity) {
+        fun bind(item: GroupEntity.Group) {
             with(itemView) {
                 spanLetters(item)
                 //item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
@@ -212,7 +212,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             }
         }
 
-        private fun spanLetters(item: GroupEntityUI.GroupEntity) {
+        private fun spanLetters(item: GroupEntity.Group) {
                 val spanStartPositions = item.name.mapIndexed { index: Int, c: Char -> item.name.indexOf(lettersToSpan, index, true) }.filterNot { it == -1 }.toSet()
                 val wordToSpan: Spannable = SpannableString(item.name)
                 spanStartPositions.forEach{
