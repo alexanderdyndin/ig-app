@@ -7,6 +7,7 @@ import com.intergroupapplication.data.model.GroupsDto
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupFollowEntity
 import com.intergroupapplication.domain.entity.GroupListEntity
+import com.intergroupapplication.domain.entity.UserEntity
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -26,4 +27,5 @@ interface GroupGateway {
     fun unfollowGroup(groupId: String): Completable
     fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group>
     fun followersGroup(groupId: String): Single<GroupFollowEntity>
+    fun getFollowers(groupId: String): Flowable<PagingData<UserEntity>>
 }
