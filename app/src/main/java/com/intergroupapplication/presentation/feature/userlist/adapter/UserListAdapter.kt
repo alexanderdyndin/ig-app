@@ -1,0 +1,44 @@
+package com.intergroupapplication.presentation.feature.userlist.adapter
+
+import android.view.View
+import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.intergroupapplication.R
+import com.intergroupapplication.presentation.exstension.inflate
+import kotlinx.android.synthetic.main.item_user_list.view.*
+
+class UserListAdapter : PagingDataAdapter<UserListEntityUI, UserListAdapter.UserListViewHolder>(diffUtil) {
+
+    companion object {
+        private val diffUtil = object : DiffUtil.ItemCallback<UserListEntityUI>() {
+            override fun areItemsTheSame(oldItem: UserListEntityUI, newItem: UserListEntityUI): Boolean {
+                // todo
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: UserListEntityUI, newItem: UserListEntityUI): Boolean {
+                // todo
+                return oldItem == newItem
+            }
+        }
+    }
+
+    override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
+        holder.bind(getItem(position) ?: UserListEntityUI("name"))
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListViewHolder {
+        return UserListViewHolder(parent.inflate(R.layout.item_user_list))
+    }
+
+    inner class UserListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(item: UserListEntityUI) {
+            itemView.run {
+                nameTxt.text = item.name
+            }
+        }
+    }
+
+}

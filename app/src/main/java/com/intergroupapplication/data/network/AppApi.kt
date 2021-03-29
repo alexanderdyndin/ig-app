@@ -1,6 +1,7 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.model.group_user_followers.GroupUserFollowersDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -124,5 +125,8 @@ interface AppApi {
     @GET("admin/advertisement/")
     fun adCountInfo(): Single<AdModel>
 
+    @GET("groups/{group_id}/followers/")
+    fun getGroupFollowers(
+            @Path("group_id") groupId: String): Single<GroupUserFollowersDto>
 
 }

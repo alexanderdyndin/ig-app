@@ -4,14 +4,17 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
+import com.intergroupapplication.data.mapper.FollowersGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupFollowEntity
 import com.intergroupapplication.domain.entity.GroupListEntity
+import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupGateway
@@ -24,8 +27,10 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
-class GroupRepository @Inject constructor(private val api: AppApi,
-                                          private val groupMapper: GroupMapper) : GroupGateway {
+class GroupRepository @Inject constructor(
+        private val api: AppApi,
+        private val groupMapper: GroupMapper,
+        private val followersGroupMapper: FollowersGroupMapper) : GroupGateway {
 
     override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity> =
             api.changeGroupAvatar(groupId, UpdateAvatarModel(avatar))
@@ -45,7 +50,6 @@ class GroupRepository @Inject constructor(private val api: AppApi,
                     Single.error<Throwable>(it)
                 }
     }
-
 
     override fun getGroupDetailInfo(groupId: String): Single<GroupEntity> {
         return api.getGroupInformation(groupId).map { groupMapper.mapToDomainEntity(it) }
@@ -90,6 +94,7 @@ class GroupRepository @Inject constructor(private val api: AppApi,
                         initialLoadSize = 20,
                         prefetchDistance = 1),
                 pagingSourceFactory = {
+                    // todo
                     val ds = GroupsRemoteRXDataSource(api, groupMapper, searchFilter)
                     ds.applySubscribedGroupList()
                     ds
@@ -97,4 +102,31 @@ class GroupRepository @Inject constructor(private val api: AppApi,
         ).flowable
     }
 
+    override fun getFollowers(groupId: String): Flowable<PagingData<UserEntity>> {
+        return Pager(
+                config = PagingConfig(
+                        pageSize = 20,
+                        initialLoadSize = 20,
+                        prefetchDistance = 1
+                ),
+                pagingSourceFactory = {
+                    val ds = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
+                    ds
+                }
+        ).flowable
+//        return api.getGroupFollowers(groupId)
+//                .map {
+//                    UserEntity(
+//                            id = "",
+//                            firstName = it.results[0].user.profile.firstName,
+//                            surName = "",
+//                            birthday = "",
+//                            gender = "",
+//                            email = "",
+//                            isBlocked = false,
+//                            isActive = false,
+//                            avatar = "")
+//                }
+//                .toFlowable()
+    }
 }
