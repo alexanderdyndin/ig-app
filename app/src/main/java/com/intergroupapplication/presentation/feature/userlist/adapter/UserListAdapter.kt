@@ -14,19 +14,19 @@ class UserListAdapter : PagingDataAdapter<UserListEntityUI, UserListAdapter.User
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<UserListEntityUI>() {
             override fun areItemsTheSame(oldItem: UserListEntityUI, newItem: UserListEntityUI): Boolean {
-                // todo
                 return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: UserListEntityUI, newItem: UserListEntityUI): Boolean {
-                // todo
                 return oldItem == newItem
             }
         }
     }
 
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
-        holder.bind(getItem(position) ?: UserListEntityUI("name"))
+        getItem(position)?.run {
+            holder.bind(this)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListViewHolder {
@@ -36,7 +36,7 @@ class UserListAdapter : PagingDataAdapter<UserListEntityUI, UserListAdapter.User
     inner class UserListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: UserListEntityUI) {
             itemView.run {
-                nameTxt.text = item.name
+                nameTxt.text = item.surName
             }
         }
     }

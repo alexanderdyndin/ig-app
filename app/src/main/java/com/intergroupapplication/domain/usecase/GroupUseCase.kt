@@ -2,6 +2,7 @@ package com.intergroupapplication.domain.usecase
 
 import androidx.paging.PagingData
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
@@ -51,7 +52,7 @@ class GroupUseCase @Inject constructor(
         return groupGateway.unfollowGroup(groupId)
     }
 
-    fun getGroupFollowers(groupId: String): Flowable<PagingData<UserEntity>> =
+    fun getGroupFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>> =
             groupGateway.getFollowers(groupId)
 
 }

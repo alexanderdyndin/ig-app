@@ -12,16 +12,25 @@ import javax.inject.Inject
 
 class UserListViewModel @Inject constructor(
         private val useCase: GroupUseCase
-): ViewModel() {
+) : ViewModel() {
 
     fun getUsers(groupId: String): Flowable<PagingData<UserListEntityUI>> {
         return useCase.getGroupFollowers(groupId)
                 .map { pagingData ->
-                    pagingData.map {
+                    pagingData.map { groupUserEntity ->
                         // todo в маппер
-                        UserListEntityUI(
-                                name = it.firstName
-                        )
+                        groupUserEntity.run {
+                            UserListEntityUI(
+                                    firstName = firstName,
+                                    surName = surName,
+                                    avatar = avatar,
+                                    idProfile = idProfile,
+                                    commentsCount = commentsCount,
+                                    dislikesCount = dislikeCount,
+                                    likesCount = likesCount,
+                                    postsCount = postsCount
+                            )
+                        }
                     }
                 }.cachedIn(viewModelScope)
     }

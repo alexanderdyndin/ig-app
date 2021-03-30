@@ -1,12 +1,12 @@
-package com.intergroupapplication.presentation.feature.userlist.adapter
+package com.intergroupapplication.domain.entity
 
-data class UserListEntityUI(
+data class GroupUserEntity(
         val firstName: String,
         val surName: String,
         val avatar: String,
         val idProfile: String,
         val commentsCount: Int,
-        val dislikesCount: Int,
+        val dislikeCount: Int,
         val likesCount: Int,
         val postsCount: Int
 )
