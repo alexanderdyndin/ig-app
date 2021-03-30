@@ -304,7 +304,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 if (playWhenReady) {
-                    service.setPlayer(videoPlayer, video.title, video.description)
+//                    service.setPlayer(videoPlayer, video.title, video.description)
                 }
             }
         }
@@ -327,7 +327,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 if (playWhenReady) {
-                    service.setPlayer(musicPlayer, audio.song, audio.description)
+//                    service.setPlayer(musicPlayer, audio.song, audio.description)
                 }
             }
         }

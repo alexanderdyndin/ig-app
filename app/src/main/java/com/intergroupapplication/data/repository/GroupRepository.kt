@@ -11,10 +11,7 @@ import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
-import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.domain.entity.GroupFollowEntity
-import com.intergroupapplication.domain.entity.GroupListEntity
-import com.intergroupapplication.domain.entity.UserEntity
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupGateway
@@ -102,7 +99,7 @@ class GroupRepository @Inject constructor(
         ).flowable
     }
 
-    override fun getFollowers(groupId: String): Flowable<PagingData<UserEntity>> {
+    override fun getFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
                 config = PagingConfig(
                         pageSize = 20,
@@ -110,8 +107,7 @@ class GroupRepository @Inject constructor(
                         prefetchDistance = 1
                 ),
                 pagingSourceFactory = {
-                    val ds = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
-                    ds
+                    return@Pager GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
                 }
         ).flowable
 //        return api.getGroupFollowers(groupId)

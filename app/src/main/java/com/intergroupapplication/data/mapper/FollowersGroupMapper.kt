@@ -2,7 +2,7 @@ package com.intergroupapplication.data.mapper
 
 import com.intergroupapplication.data.model.group_user_followers.GroupUserFollowersDto
 import com.intergroupapplication.domain.entity.GroupFollowersListEntity
-import com.intergroupapplication.domain.entity.UserEntity
+import com.intergroupapplication.domain.entity.GroupUserEntity
 import javax.inject.Inject
 
 class FollowersGroupMapper @Inject constructor() {
@@ -12,17 +12,18 @@ class FollowersGroupMapper @Inject constructor() {
                 next = from.next,
                 previous = from.previous,
                 users = from.results.map {
-                    UserEntity(
-                            id = it.user.id.toString(),
-                            firstName = it.user.profile.firstName,
-                            surName = it.user.profile.secondName,
-                            birthday = it.user.profile.birthday,
-                            gender = it.user.profile.gender,
-                            email = it.user.email,
-                            isBlocked = it.user.isBlocked,
-                            isActive = it.user.isVerified,
-                            avatar = it.user.profile.avatar
-                    )
+                    it.user.run {
+                        GroupUserEntity(
+                                firstName = profile.firstName,
+                                surName = profile.secondName,
+                                avatar = profile.avatar,
+                                idProfile = id.toString(),
+                                commentsCount = profile.stats.comments,
+                                likesCount = profile.stats.likes,
+                                dislikeCount = profile.stats.dislikes,
+                                postsCount = profile.stats.posts
+                        )
+                    }
                 }
         )
     }
