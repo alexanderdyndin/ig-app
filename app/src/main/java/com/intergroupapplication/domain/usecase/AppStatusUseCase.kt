@@ -8,9 +8,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class AppStatusUseCase @Inject constructor(private val appStatusRepository: AppStatusRepository) {
-    operator fun invoke(version: String): Single<String> {
-        return appStatusRepository.getAppStatus(version)
-    }
+    fun getAppStatus(version: String) = appStatusRepository.getAppStatus(version)
 
     fun getAdParameters() = appStatusRepository.getAdParameters()
 }

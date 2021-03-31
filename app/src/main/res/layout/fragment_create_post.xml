@@ -45,6 +45,11 @@
                     android:hint="@string/add_photo_or_text"
                     android:padding="@dimen/big_padding" />
 
+                <com.intergroupapplication.presentation.customview.ImagesUploadingView
+                    android:id="@+id/imagesUploadingContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
             </LinearLayout>
 
         </ScrollView>

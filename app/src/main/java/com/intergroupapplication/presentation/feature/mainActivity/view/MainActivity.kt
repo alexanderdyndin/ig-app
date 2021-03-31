@@ -17,7 +17,6 @@ import com.android.billingclient.api.*
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.initializators.InitializerLocal
-import com.intergroupapplication.presentation.customview.PostGalleryView
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import dagger.android.AndroidInjection
@@ -108,7 +107,6 @@ class MainActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        //todo починить проверку новых версий
         //viewModel.checkNewVersionAvaliable(supportFragmentManager)
     }
 

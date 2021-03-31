@@ -181,7 +181,7 @@
             android:textColor="@color/textLight"
             android:textSize="14sp" />
 
-        <com.intergroupapplication.presentation.customview.PostGalleryView
+        <com.intergroupapplication.presentation.customview.ImageGalleryView
             android:id="@+id/imageBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

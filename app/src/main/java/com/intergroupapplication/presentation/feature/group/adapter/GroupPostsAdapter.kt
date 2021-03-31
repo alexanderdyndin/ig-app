@@ -17,7 +17,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.PostGalleryView
+import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
@@ -129,7 +129,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
         val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<PostGalleryView>(R.id.imageBody)
+        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
 
         fun bind(item: GroupPostEntity.PostEntity) {
             with(itemView) {

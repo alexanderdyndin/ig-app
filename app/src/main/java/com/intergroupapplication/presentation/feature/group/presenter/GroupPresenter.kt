@@ -29,14 +29,14 @@ class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
     private val postsDisposable = CompositeDisposable()
     private var uploadingImageDisposable: Disposable? = null
 
-    fun attachFromGallery() {
+    fun attachFromGallery(groupId: String? = null) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, groupId)
     }
 
-    fun attachFromCamera() {
+    fun attachFromCamera(groupId: String?) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, groupId)
     }
 
     fun changeGroupAvatar(groupId: String) {

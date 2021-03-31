@@ -43,8 +43,7 @@
                     <include
                         layout="@layout/item_group_header_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/middle_margin"/>
+                        android:layout_height="wrap_content"/>
 
                     <include layout="@layout/auth_loader" />
 

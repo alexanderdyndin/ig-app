@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.domain.exception.NewVersionException
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
 import com.intergroupapplication.domain.usecase.GetProfileUseCase
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
@@ -19,24 +20,26 @@ import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor(private val appStatusUseCase: AppStatusUseCase,
                                                 private val compositeDisposable: CompositeDisposable,
-                                                private val sessionStorage: UserSession): ViewModel() {
+                                                private val sessionStorage: UserSession,
+                                                private val errorHandler: ErrorHandler
+                                                ): ViewModel() {
 
 
     fun checkNewVersionAvaliable(fragmentManager: FragmentManager) {
-        GlobalScope.launch {
-            try {
-                val isValid = appStatusUseCase.invoke(BuildConfig.VERSION_NAME).blockingGet()
-                Log.d("MY", "version_check_response = $isValid ")
-                if (isValid == "invalid") {
-                    val myDialogFragment = NewVersionDialog()
-                    val manager = fragmentManager
-                    myDialogFragment.isCancelable = false
-                    myDialogFragment.show(manager, "myDialog")
-                }
-            } catch (e:Throwable) {
-                Timber.e(e)
-            }
-        }
+        compositeDisposable.add(appStatusUseCase.getAppStatus(BuildConfig.VERSION_NAME)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({  },
+                        { if (it is NewVersionException) {
+                            Timber.d(it)
+                            val myDialogFragment = NewVersionDialog()
+                            val manager = fragmentManager
+                            myDialogFragment.isCancelable = false
+                            myDialogFragment.show(manager, "myDialog")
+                        } else {
+                            Timber.e(it)
+                        }
+                        }))
     }
 
     fun getAdCount() {

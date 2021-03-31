@@ -12,6 +12,7 @@ const val NOT_PROFILE = "users_profile-me.not_found"
 const val GROUP_BLOCKED = "groups-detail.is_blocked"
 const val INVALID_REFRESH = "refresh.refresh.invalid"
 const val INVALID_LOGIN = "login.invalid"
+const val INVALID_VERSION = "app_status.invalid"
 
 const val PAGE_ERROR_GROUP = "groups-list.not_found"
 const val PAGE_ERROR_COMMENT_LIST = "post-comments-list.not_found"

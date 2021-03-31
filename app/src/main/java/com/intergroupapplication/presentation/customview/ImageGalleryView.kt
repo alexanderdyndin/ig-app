@@ -33,8 +33,8 @@ import kotlin.math.exp
 import kotlin.math.roundToInt
 
 
-class PostGalleryView @JvmOverloads constructor(context: Context,
-                                                private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
+class ImageGalleryView @JvmOverloads constructor(context: Context,
+                                                 private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
         LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {

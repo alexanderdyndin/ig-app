@@ -19,7 +19,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
     }
 
     override fun uploadFromCamera(view: ImageUploadingView,
-                                  errorHandler: ErrorHandler?): Disposable {
+                                  errorHandler: ErrorHandler?, groupId: String?): Disposable {
         var progress = 0f
         var path = ""
         return photoGateway.loadFromCamera()
@@ -31,7 +31,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                     path = it
                 }
                 .observeOn(Schedulers.io())
-                .flatMap { photoGateway.uploadToAws() }
+                .flatMap { photoGateway.uploadToAws(groupId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress = it
@@ -42,7 +42,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 }, { if (progress == FULL_UPLOADED_PROGRESS) view.showImageUploaded(path) })
     }
 
-    override fun uploadFromGallery(view: ImageUploadingView, errorHandler: ErrorHandler?): Disposable {
+    override fun uploadFromGallery(view: ImageUploadingView, errorHandler: ErrorHandler?, groupId: String?): Disposable {
         var progress = 0f
         var path = ""
         return photoGateway.loadFromGallery()
@@ -54,7 +54,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                     path = it
                 }
                 .observeOn(Schedulers.io())
-                .flatMap { photoGateway.uploadToAws() }
+                .flatMap { photoGateway.uploadToAws(groupId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress = it

@@ -229,8 +229,10 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
 
     fun cancelUploading(file: String) {
         processes[file]?.let {
-            videoDisposable.delete(it)
+            it.dispose()
+//            videoDisposable.remove(it)
         }
+        removeContent(file)
         processes.remove(file)
     }
 

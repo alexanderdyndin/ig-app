@@ -25,10 +25,10 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                                 IMEI_BLOCKED -> ImeiException(message)
                                 USER_BLOCKED -> UserBlockedException(message)
                                 GROUP_IS_BLOCKED -> GroupBlockedException()
+                                INVALID_VERSION -> NewVersionException(message)
                                 else -> BadRequestException(message)
                             }
                         }
-
                         it.fieldError.isNotEmpty() -> getListFieldException(it.fieldError)
                         else -> UnknowServerException()
                     }

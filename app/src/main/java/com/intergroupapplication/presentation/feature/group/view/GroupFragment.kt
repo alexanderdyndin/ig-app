@@ -316,7 +316,6 @@ class GroupFragment() : BaseFragment(), GroupView,
 
 
     private fun renderAdminPage() {
-        //todo разобраться с падением приложения при создании поста в только что созданной группе
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
             openCreatePost(groupId)
@@ -325,7 +324,7 @@ class GroupFragment() : BaseFragment(), GroupView,
             if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                     || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
                 dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                        mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+                        mapOf(R.id.fromCamera to { presenter.attachFromCamera(groupId) }, R.id.fromGallery to { presenter.attachFromGallery(groupId) }))
             }
         }
     }
