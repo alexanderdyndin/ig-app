@@ -11,17 +11,18 @@ class FollowersGroupMapper @Inject constructor() {
                 count = from.count,
                 next = from.next,
                 previous = from.previous,
-                users = from.results.map {
-                    it.user.run {
+                users = from.results.map { result ->
+                    result.user.run {
                         GroupUserEntity(
                                 firstName = profile.firstName,
                                 surName = profile.secondName,
-                                avatar = profile.avatar,
+                                avatar = profile.avatar ?: "",
                                 idProfile = id.toString(),
                                 commentsCount = profile.stats.comments,
                                 likesCount = profile.stats.likes,
                                 dislikeCount = profile.stats.dislikes,
-                                postsCount = profile.stats.posts
+                                postsCount = profile.stats.posts,
+                                isAdministrator = result.isAdmin ?: false
                         )
                     }
                 }

@@ -28,7 +28,8 @@ class UserListViewModel @Inject constructor(
                                     commentsCount = commentsCount,
                                     dislikesCount = dislikeCount,
                                     likesCount = likesCount,
-                                    postsCount = postsCount
+                                    postsCount = postsCount,
+                                    isAdministrator = isAdministrator
                             )
                         }
                     }

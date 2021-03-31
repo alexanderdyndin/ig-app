@@ -15,5 +15,5 @@ data class User(
     @SerializedName("profile")
     val profile: Profile,
     @SerializedName("time_blocked")
-    val timeBlocked: Any
+    val timeBlocked: String?
 )

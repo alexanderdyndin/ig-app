@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Profile(
     @SerializedName("avatar")
-    val avatar: String,
+    val avatar: String?,
     @SerializedName("birthday")
     val birthday: String,
     @SerializedName("first_name")
