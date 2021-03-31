@@ -8,5 +8,6 @@ data class UserListEntityUI(
         val commentsCount: Int,
         val dislikesCount: Int,
         val likesCount: Int,
-        val postsCount: Int
+        val postsCount: Int,
+        val isAdministrator: Boolean
 )

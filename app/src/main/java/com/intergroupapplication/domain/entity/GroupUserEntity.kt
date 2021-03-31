@@ -8,5 +8,6 @@ data class GroupUserEntity(
         val commentsCount: Int,
         val dislikeCount: Int,
         val likesCount: Int,
-        val postsCount: Int
+        val postsCount: Int,
+        val isAdministrator: Boolean
 )
