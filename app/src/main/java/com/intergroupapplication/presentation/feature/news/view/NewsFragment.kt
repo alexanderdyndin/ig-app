@@ -315,6 +315,19 @@ class NewsFragment(): BaseFragment(), NewsView{
                     false
                 }
             }
+            primaryItem(getString(R.string.music)) {
+                icon = R.drawable.ic_music
+                selectedIcon = R.drawable.ic_music_act
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                onClick { v ->
+                    findNavController().navigate(R.id.action_newsFragment2_to_audioListFragment)
+                    toolbarTittle.text = getString(R.string.groups)
+                    false
+                }
+            }
             primaryItem(getString(R.string.buy_premium)) {
                 icon = R.drawable.icon_like
                 selectedIcon = R.drawable.icon_like

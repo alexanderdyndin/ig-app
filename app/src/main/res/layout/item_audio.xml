@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.intergroupapplication.presentation.customview.AudioGalleryView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/audio"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
+
+</com.intergroupapplication.presentation.customview.AudioGalleryView>

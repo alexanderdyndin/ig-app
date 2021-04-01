@@ -129,4 +129,7 @@
     <string name="expand">Развернуть</string>
     <string name="publish">Опубликовать</string>
     <string name="hide">Скрыть</string>
+    <string name="my_music">Моя музыка</string>
+    <string name="music">Музыка</string>
+    <string name="delete">Удалить</string>
 </resources>

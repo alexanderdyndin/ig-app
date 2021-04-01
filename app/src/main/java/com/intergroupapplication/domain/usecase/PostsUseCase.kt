@@ -26,4 +26,8 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
             groupPostGateway.setReact(ReactsEntityRequest(isLike, isDislike), postId)
 
     fun sendComplaint(postId: Int) = complaintsGateway.complaintPost(postId)
+
+    fun deleteNewsPost(postId: String) = groupPostGateway.deleteNewsPost(postId)
+
+    fun deleteGroupPost(postId: String) = groupPostGateway.deleteGroupPost(postId)
 }

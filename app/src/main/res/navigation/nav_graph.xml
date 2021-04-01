@@ -65,6 +65,9 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_groupListFragment2_to_audioListFragment"
+            app:destination="@id/audioListFragment" />
     </fragment>
     <fragment
         android:id="@+id/newsFragment2"
@@ -134,6 +137,9 @@
             app:destination="@id/imageFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_newsFragment2_to_audioListFragment"
+            app:destination="@id/audioListFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashActivity"
@@ -396,4 +402,12 @@
             android:defaultValue="0" />
     </fragment>
     <action android:id="@+id/action_global_newsFragment2" app:destination="@id/newsFragment2"/>
+    <fragment
+        android:id="@+id/audioListFragment"
+        android:name="com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment"
+        android:label="AudioListFragment" >
+        <action
+            android:id="@+id/action_audioListFragment_self"
+            app:destination="@id/audioListFragment" />
+    </fragment>
 </navigation>

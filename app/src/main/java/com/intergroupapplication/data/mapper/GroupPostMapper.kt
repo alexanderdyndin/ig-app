@@ -8,7 +8,8 @@ import javax.inject.Inject
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
 class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupInPostMapper,
-                                          private val userProfileMapper: UserProfileMapper) {
+                                          private val userProfileMapper: UserProfileMapper,
+                                          private val mediaMapper: MediaMapper) {
 
     fun mapToDto(from: GroupPostEntity.PostEntity): GroupPostModel {
         return GroupPostModel(
@@ -28,9 +29,9 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                 pin = from.pin,
                 reacts = mapToDto(from.reacts),
                 idp = from.idp,
-                images = from.images.map { mapToDto(it) },
-                audios = from.audios.map { mapToDto(it) },
-                videos = from.videos.map { mapToDto(it) }
+                images = from.images.map { mediaMapper.mapToDto(it) },
+                audios = from.audios.map { mediaMapper.mapToDto(it) },
+                videos = from.videos.map { mediaMapper.mapToDto(it) }
         )
     }
 
@@ -52,27 +53,12 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                 pin = from.pin,
                 idp = from.idp,
                 reacts = mapToDomainEntity(from.reacts),
-                images = from.images.map { mapToDomainEntity(it) },
-                audios = from.audios.map { mapToDomainEntity(it) },
-                videos = from.videos.map { mapToDomainEntity(it) }
+                images = from.images.map { mediaMapper.mapToDomainEntity(it) },
+                audios = from.audios.map { mediaMapper.mapToDomainEntity(it) },
+                videos = from.videos.map { mediaMapper.mapToDomainEntity(it) }
         )
     }
 
-    fun mapToDto(from: FileEntity): ImageVideoModel {
-        return ImageVideoModel(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner)
-    }
-
-    fun mapToDomainEntity(from: ImageVideoModel): FileEntity {
-        return FileEntity(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner)
-    }
-
-    fun mapToDto(from: AudioEntity): AudioModel {
-        return AudioModel(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner)
-    }
-
-    fun mapToDomainEntity(from: AudioModel): AudioEntity {
-        return AudioEntity(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner)
-    }
 
     fun mapNewsListToDomainEntity(from: NewsDto): NewsEntity {
         val regex = Regex(".*page=")
@@ -90,9 +76,9 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
     fun mapToDto(from: CreateGroupPostEntity): CreateGroupPostModel {
         return CreateGroupPostModel(
                 postText = from.postText,
-                images = from.images.map { mapToDto(it) },
-                audios = from.audios.map { mapToDto(it) },
-                videos = from.videos.map { mapToDto(it) },
+                images = from.images.map { mediaMapper.mapToDto(it) },
+                audios = from.audios.map { mediaMapper.mapToDto(it) },
+                videos = from.videos.map { mediaMapper.mapToDto(it) },
                 isPinned = from.isPinned,
                 pinTime = from.pinTime
         )
@@ -101,9 +87,9 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
     fun mapToDomainEntity(from: CreateGroupPostModel): CreateGroupPostEntity =
             CreateGroupPostEntity(
                     postText = from.postText,
-                    images = from.images.map { mapToDomainEntity(it) },
-                    audios = from.audios.map { mapToDomainEntity(it) },
-                    videos = from.videos.map { mapToDomainEntity(it) },
+                    images = from.images.map { mediaMapper.mapToDomainEntity(it) },
+                    audios = from.audios.map { mediaMapper.mapToDomainEntity(it) },
+                    videos = from.videos.map { mediaMapper.mapToDomainEntity(it) },
                     isPinned = from.isPinned,
                     pinTime = from.pinTime
                     )
@@ -111,17 +97,6 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
     fun mapListToDomainEntity(from: List<GroupPostModel>): List<GroupPostEntity> =
             from.map { mapToDomainEntity(it) }
 
-    fun mapToDto(from: FileRequestEntity): FileRequestModel =
-            FileRequestModel(from.file, from.description.orEmpty(), from.title.orEmpty())
-
-    fun mapToDto(from: AudioRequestEntity): AudioRequestModel =
-            AudioRequestModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
-
-    fun mapToDomainEntity(from: FileRequestModel): FileRequestEntity =
-            FileRequestEntity(from.file, from.description.orEmpty(), from.title.orEmpty())
-
-    fun mapToDomainEntity(from: AudioRequestModel): AudioRequestEntity =
-            AudioRequestEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
     fun mapToDto(from: ReactsEntityRequest): ReactsModelRequest =
             ReactsModelRequest(

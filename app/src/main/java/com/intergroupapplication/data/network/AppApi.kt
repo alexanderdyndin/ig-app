@@ -31,6 +31,15 @@ interface AppApi {
     @GET("groups/news/")
     fun getNews(@Query("page") page: Int): Single<NewsDto>
 
+    @GET("groups/audios/")
+    fun getAudios(@Query("page") page: Int): Single<AudiosDto>
+
+    @GET("groups/images/")
+    fun getImages(@Query("page") page: Int): Single<ImagesDto>
+
+    @GET("groups/videos/")
+    fun getVideos(@Query("page") page: Int): Single<VideosDto>
+
     @GET("groups/")
     fun getSubscribedGroupList(@Query("page") page: Int, @Query("search") search:String,
                                @Query("followed") followed:String = "true"): Single<GroupsDto>
@@ -124,5 +133,13 @@ interface AppApi {
     @GET("admin/advertisement/")
     fun adCountInfo(): Single<AdModel>
 
+    @DELETE("groups/posts/{id}/")
+    fun deleteGroupPost(@Path("id") postId: String): Completable
+
+    @DELETE("groups/news/{id}/")
+    fun deleteNewsPost(@Path("id") postId: String): Completable
+
+    @DELETE("groups/comments/{id}/")
+    fun deleteComment(@Path("id") commentId: String): Completable
 
 }

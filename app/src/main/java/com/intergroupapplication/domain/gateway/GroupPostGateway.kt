@@ -5,6 +5,7 @@ import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.ReactsEntity
 import com.intergroupapplication.domain.entity.ReactsEntityRequest
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 
@@ -18,4 +19,6 @@ interface GroupPostGateway {
     fun getNewsPosts(): Flowable<PagingData<GroupPostEntity>>
     fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity.PostEntity>
     fun setReact(reactsEntityRequest: ReactsEntityRequest, postId: String): Single<ReactsEntity>
+    fun deleteGroupPost(postId: String): Completable
+    fun deleteNewsPost(postId: String): Completable
 }

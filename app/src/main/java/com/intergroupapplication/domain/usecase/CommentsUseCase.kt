@@ -17,4 +17,6 @@ class CommentsUseCase @Inject constructor(private val complaintsGateway: Complai
 
     fun createAnswer(commentId: String, comment: String) =
             commentGateway.createAnswerToComment(commentId, CreateCommentEntity(comment))
+
+    fun deleteComment(commentId: String) = commentGateway.deleteComment(commentId)
 }

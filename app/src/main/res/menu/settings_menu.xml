@@ -5,4 +5,8 @@
         android:id="@+id/complaint"
         android:title="@string/complaint" />
 
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete" />
+
 </menu>

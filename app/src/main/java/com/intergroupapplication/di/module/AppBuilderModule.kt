@@ -6,6 +6,8 @@ import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.di.scope.PerService
 import com.intergroupapplication.presentation.feature.agreements.di.AgreementsViewModule
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
+import com.intergroupapplication.presentation.feature.audiolist.di.AudioListViewModule
+import com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.di.CommentsDetailsViewModule
@@ -112,6 +114,8 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [ImageViewModule::class])
     fun provideImageFragmentFactory(): ImageFragment
 
-
+    @PerFragment
+    @ContributesAndroidInjector(modules = [AudioListViewModule::class])
+    fun provideAudioFragmentFactory(): AudioListFragment
 
 }

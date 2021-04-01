@@ -14,8 +14,10 @@ import com.intergroupapplication.domain.entity.CreateCommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.CommentGateway
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 /**
@@ -25,6 +27,7 @@ class CommentRepository @Inject constructor(private val api: AppApi,
                                             private val commentMapper: CommentMapper)
     : CommentGateway {
 
+    @ExperimentalCoroutinesApi
     override fun getComments(postId: String): Flowable<PagingData<CommentEntity>> {
         return Pager(
                 config = PagingConfig(
@@ -34,14 +37,16 @@ class CommentRepository @Inject constructor(private val api: AppApi,
         ).flowable
     }
 
-
     override fun createComment(postId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment> =
             api.createComment(postId, commentMapper.mapToDto(createCommentEntity))
                     .map { commentMapper.mapToDomainEntity(it) }
 
-
     override fun createAnswerToComment(answerToCommentId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment> =
             api.createAnswerToComment(answerToCommentId, commentMapper.mapToDto(createCommentEntity))
                     .map { commentMapper.mapToDomainEntity(it) }
+
+    override fun deleteComment(commentId: String): Completable {
+        return api.deleteComment(commentId)
+    }
 
 }

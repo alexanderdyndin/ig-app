@@ -57,5 +57,8 @@ interface GatewayModule {
     @Binds
     fun provideAppStatusRepository(appStatusRepository: AppStatusRepository): AppStatusGateway
 
+    @Binds
+    fun provideMediaRepository(mediaRepository: MediaRepository): MediaGateway
+
 
 }

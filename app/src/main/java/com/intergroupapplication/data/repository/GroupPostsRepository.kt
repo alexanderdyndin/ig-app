@@ -14,13 +14,16 @@ import com.intergroupapplication.domain.entity.ReactsEntity
 import com.intergroupapplication.domain.entity.ReactsEntityRequest
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 /**
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
+@ExperimentalCoroutinesApi
 class GroupPostsRepository @Inject constructor(private val api: AppApi,
                                                private val groupPostMapper: GroupPostMapper)
     : GroupPostGateway {
@@ -28,7 +31,6 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
     override fun getPostById(postId: String): Single<GroupPostEntity.PostEntity> {
         return api.getPostById(postId).map { groupPostMapper.mapToDomainEntity(it) }
     }
-
 
     override fun createPost(createGroupPostEntity: CreateGroupPostEntity,
                             groupId: String): Single<GroupPostEntity.PostEntity> {
@@ -64,5 +66,12 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
+    override fun deleteGroupPost(postId: String): Completable {
+        return api.deleteGroupPost(postId)
+    }
+
+    override fun deleteNewsPost(postId: String): Completable {
+        return api.deleteNewsPost(postId)
+    }
 
 }

@@ -189,7 +189,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)
