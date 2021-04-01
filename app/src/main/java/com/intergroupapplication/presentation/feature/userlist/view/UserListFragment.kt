@@ -78,7 +78,6 @@ class UserListFragment : BaseFragment(), UserListView {
         viewModel = ViewModelProvider(requireActivity(), modelFactory)[UserListViewModel::class.java]
     }
 
-    @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupId = requireArguments().getString(GROUP_ID)!!
         showToast(groupId)
@@ -94,14 +93,6 @@ class UserListFragment : BaseFragment(), UserListView {
             adapter = UserListsAdapter(adapterList)
         }
 
-        viewModel.getUsers(groupId).subscribe(
-                {
-                    adapterAll.submitData(lifecycle, it)
-                },
-                {
-                    it.printStackTrace()
-                })
-
         val tabTitles = arrayOf("Followers", "Blocked", "Administrators")
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
@@ -110,6 +101,8 @@ class UserListFragment : BaseFragment(), UserListView {
         setAdapter(adapterAll, adapterFooterAll)
         setAdapter(adapterBlocked, adapterFooterBlocked)
         setAdapter(adapterAdministrators, adapterFooterAdministrators)
+
+        getData()
     }
 
     override fun getSnackBarCoordinator(): ViewGroup? = userListCoordinator
@@ -132,4 +125,27 @@ class UserListFragment : BaseFragment(), UserListView {
             }
         }
     }
+
+    @SuppressLint("CheckResult")
+    private fun getData() {
+        viewModel.getFollowers(groupId).subscribe(
+                {
+                    adapterAll.submitData(lifecycle, it)
+                },
+                {
+                    it.printStackTrace()
+                })
+
+        viewModel.getAdministrators(groupId).subscribe(
+                {
+                    adapterAdministrators.submitData(lifecycle, it)
+                },
+                {
+                    it.printStackTrace()
+                }
+        )
+
+
+    }
+
 }

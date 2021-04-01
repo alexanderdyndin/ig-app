@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
 import androidx.paging.rxjava2.cachedIn
+import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.usecase.GroupUseCase
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListEntityUI
 import io.reactivex.Flowable
@@ -14,26 +15,14 @@ class UserListViewModel @Inject constructor(
         private val useCase: GroupUseCase
 ) : ViewModel() {
 
-    fun getUsers(groupId: String): Flowable<PagingData<UserListEntityUI>> {
+    fun getFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>> {
         return useCase.getGroupFollowers(groupId)
-                .map { pagingData ->
-                    pagingData.map { groupUserEntity ->
-                        // todo в маппер
-                        groupUserEntity.run {
-                            UserListEntityUI(
-                                    firstName = firstName,
-                                    surName = surName,
-                                    avatar = avatar,
-                                    idProfile = idProfile,
-                                    commentsCount = commentsCount,
-                                    dislikesCount = dislikeCount,
-                                    likesCount = likesCount,
-                                    postsCount = postsCount,
-                                    isAdministrator = isAdministrator
-                            )
-                        }
-                    }
-                }.cachedIn(viewModelScope)
+                .cachedIn(viewModelScope)
+    }
+
+    fun getAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>> {
+        return useCase.getGroupAdministrators(groupId)
+                .cachedIn(viewModelScope)
     }
 
 }

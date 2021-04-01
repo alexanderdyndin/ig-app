@@ -11,5 +11,5 @@ data class GroupUserFollowersDto(
     @SerializedName("previous")
     val previous: String?,
     @SerializedName("results")
-    val results: List<Result>
+    var results: List<Result>
 )

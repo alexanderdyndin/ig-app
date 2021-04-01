@@ -100,30 +100,29 @@ class GroupRepository @Inject constructor(
         ).flowable
     }
 
+    private val defaultPagingConfig = PagingConfig(
+            pageSize = 20,
+            initialLoadSize = 20,
+            prefetchDistance = 1
+    )
+
     override fun getFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = 20,
-                        initialLoadSize = 20,
-                        prefetchDistance = 1
-                ),
+                config = defaultPagingConfig,
                 pagingSourceFactory = {
-                    return@Pager GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
+                    GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, false)
                 }
         ).flowable
-//        return api.getGroupFollowers(groupId)
-//                .map {
-//                    UserEntity(
-//                            id = "",
-//                            firstName = it.results[0].user.profile.firstName,
-//                            surName = "",
-//                            birthday = "",
-//                            gender = "",
-//                            email = "",
-//                            isBlocked = false,
-//                            isActive = false,
-//                            avatar = "")
-//                }
-//                .toFlowable()
+    }
+
+    override fun getAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>> {
+        return Pager(
+                config = defaultPagingConfig,
+                pagingSourceFactory = {
+                    val followersRemote = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, true)
+                    followersRemote.applyAdministratorsList()
+                    followersRemote
+                }
+        ).flowable
     }
 }

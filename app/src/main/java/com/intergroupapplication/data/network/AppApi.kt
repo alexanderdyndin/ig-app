@@ -141,7 +141,11 @@ interface AppApi {
 
     @GET("groups/{group_id}/followers/")
     fun getGroupFollowers(
-            @Path("group_id") groupId: String): Single<GroupUserFollowersDto>
+            @Path("group_id") groupId: String,
+            @Query("page") page: Int,
+            @Query("search") search: String = ""
+    ): Single<GroupUserFollowersDto>
+
     @DELETE("groups/posts/{id}/")
     fun deleteGroupPost(@Path("id") postId: String): Completable
 
