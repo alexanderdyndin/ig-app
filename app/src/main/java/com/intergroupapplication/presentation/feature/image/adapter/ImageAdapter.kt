@@ -4,8 +4,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
+
 
 class ImageAdapter(private val items: List<FileEntity>): RecyclerView.Adapter<ImageViewHolder>() {
 
@@ -21,7 +21,11 @@ class ImageAdapter(private val items: List<FileEntity>): RecyclerView.Adapter<Im
         holder.bind(items[position])
     }
 
-    override fun getItemCount(): Int = items.count()
 
+    override fun getItemCount(): Int = items.count()
+    override fun onViewRecycled(holder: ImageViewHolder) {
+        holder.image.controller = null
+        super.onViewRecycled(holder)
+    }
 
 }

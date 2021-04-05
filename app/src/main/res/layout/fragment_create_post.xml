@@ -13,67 +13,20 @@
         android:orientation="vertical"
         tools:context=".presentation.feature.createpost.view.CreatePostFragment">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/toolbarColor"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:layout_collapseMode="pin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-            app:popupTheme="@style/ToolbarPopupTheme">
-
-            <ImageView
-                android:id="@+id/exitAction"
-                android:layout_width="@dimen/toolbar_icon_size"
-                android:layout_height="@dimen/toolbar_icon_size"
-                android:layout_gravity="start"
-                android:background="?android:attr/selectableItemBackground"
-                android:src="@drawable/ic_del" />
-
-            <TextView
-                style="@style/InterGroupBigWhiteTextStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginStart="@dimen/large_margin"
-                android:text="@string/create_note" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="@dimen/big_margin">
-
-                <ProgressBar
-                    android:id="@+id/createProgress"
-                    android:layout_width="@dimen/toolbar_icon_size"
-                    android:layout_height="@dimen/toolbar_icon_size"
-                    android:layout_gravity="center"
-                    android:visibility="invisible" />
-
-                <ImageView
-                    android:id="@+id/createAction"
-                    android:layout_width="@dimen/toolbar_icon_size"
-                    android:layout_height="@dimen/toolbar_icon_size"
-                    android:layout_gravity="center"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:src="@drawable/ic_done" />
-            </FrameLayout>
-
-        </androidx.appcompat.widget.Toolbar>
+        <include
+            android:id="@+id/navigationToolbar"
+            layout="@layout/creategroup_toolbar_layout" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@+id/attachPhoto"
+            style="@style/ScrollBar"
+            android:background="@color/colorInput"
+            app:layout_constraintBottom_toTopOf="@+id/panelAddFile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/navigationToolbar">
 
             <LinearLayout
                 android:id="@+id/postContainer"
@@ -91,46 +44,70 @@
                     android:textColorHint="@color/commentEditTextHintColor"
                     android:hint="@string/add_photo_or_text"
                     android:padding="@dimen/big_padding" />
+
             </LinearLayout>
 
         </ScrollView>
 
-        <ImageView
-            android:id="@+id/attachPhoto"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/panelAddFile"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:layout_margin="@dimen/big_margin"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_attach_file_rotated"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:background="@color/colorInput"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/attachVideo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/big_margin"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_baseline_video_call_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/attachPhoto" />
+            <TextView
+                android:id="@+id/attachPhoto"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_gallery"
+                android:drawablePadding="2dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="Галерея" />
 
-        <ImageView
-            android:id="@+id/attachAudio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/big_margin"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/ic_baseline_audiotrack_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/attachVideo" />
+            <TextView
+                android:id="@+id/attachVideo"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_video"
+                android:drawablePadding="2dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="Видео" />
+
+            <TextView
+                android:id="@+id/attachAudio"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_music"
+                android:drawablePadding="2dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="Музыка" />
+
+            <TextView
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_playlist"
+                android:drawablePadding="2dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="Плейлист"
+                android:visibility="gone"/>
+
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

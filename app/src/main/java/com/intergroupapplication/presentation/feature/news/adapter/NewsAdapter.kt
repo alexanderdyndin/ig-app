@@ -1,15 +1,12 @@
 package com.intergroupapplication.presentation.feature.news.adapter
 
-import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.RatingBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.view.children
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -19,17 +16,29 @@ import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
+import com.intergroupapplication.presentation.customview.PostGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
+import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
+import com.intergroupapplication.presentation.feature.news.other.GroupPostEntityUI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.item_loading.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
@@ -68,16 +77,14 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var commentClickListener: (groupPostEntity: GroupPostEntityUI) -> Unit = {}
         var groupClickListener: (groupId: String) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
-        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
-        var likeClickListener: (postId: String) -> Unit = { }
+        var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
+        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntityUI.GroupPostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var dislikeClickListener: (postId: String) -> Unit = { }
     }
 
-    private lateinit var context: Context
     private var compositeDisposable = CompositeDisposable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        context = parent.context
         val view: View
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
@@ -128,13 +135,20 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val audioContainer = itemView.findViewById<LinearLayout>(R.id.audioBody)
+        val videoContainer = itemView.findViewById<LinearLayout>(R.id.videoBody)
+        val imageContainer = itemView.findViewById<PostGalleryView>(R.id.imageBody)
+
         fun bind(item: GroupPostEntityUI.GroupPostEntity) {
             with(itemView) {
+                idpGroupPost.text = context.getString(R.string.idp, item.id)
+                postLike.text = item.reacts.likesCount.toString()
+                postDislike.text = item.reacts.dislikesCount.toString()
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                postCommentsCount.text = item.commentsCount
+                commentBtn.text = item.commentsCount
                 item.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.postText
@@ -147,51 +161,125 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 groupName.text = item.groupInPost.name
-                commentImageClickArea.setOnClickListener {
+                commentBtn.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-                groupPostAvatar.setOnClickListener {
+                postAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)
                 }
-                goToGroupClickArea.setOnClickListener {
+                headerPostFromGroup.setOnClickListener {
                     groupClickListener.invoke(item.groupInPost.id)
                 }
-                likeClickArea.setOnClickListener {
-                    likeClickListener.invoke(item.id)
+                postLikesClickArea.setOnClickListener {
+                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
-                dislikeClickArea.setOnClickListener {
-                    dislikeClickListener.invoke(item.id)
+                postDislikesClickArea.setOnClickListener {
+                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
-                item.photo.apply {
-                    ifNotNull {
-                        postImage.show()
-                        imageLoadingDelegate.loadImageFromUrl(it, postImage)
-                    }
-                    ifNull { postImage.gone() }
-                }
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
-
+                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                        { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
-                mediaBody.removeAllViews()
+
+                videoContainer.removeAllViews()
+                audioContainer.removeAllViews()
                 imageContainer.removeAllViews()
-                item.images.forEach { file ->
-                    val image = SimpleDraweeView(itemView.context)
-                    image.layoutParams = ViewGroup.LayoutParams(400, 400)
-                    //image.scaleType = ImageView.ScaleType.CENTER_CROP
-                    image.setOnClickListener { imageClickListener.invoke(item.images, item.images.indexOf(file)) }
-                    if (file.file.contains(".gif")) {
-                        val controller = Fresco.newDraweeControllerBuilder()
-                                .setUri(Uri.parse(file.file))
-                                .setAutoPlayAnimations(true)
-                                .build()
-                        image.controller = controller
-                    } else {
-                        imageLoadingDelegate.loadImageFromUrl(file.file, image)
+
+                val activity = audioContainer.getActivity()
+                if (activity is MainActivity) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val bindedService = activity.bindMediaService()
+                        bindedService?.let {
+
+
+                            /**
+                             *  Add audios to post
+                             */
+                            item.audios.forEach {
+                                val player = makeAudioPlayer(it, bindedService)
+                                val playerView = AudioPlayerView(audioContainer.context)
+                                playerView.exoPlayer.player = player
+                                audioContainer.addView(playerView)
+                                if (player.playWhenReady) {
+                                    player.playWhenReady = false
+                                    player.playWhenReady = true
+                                }
+                            }
+
+                            /**
+                             *  Add videos to post
+                             */
+                            item.videos.forEach {
+                                val player = makeVideoPlayer(it, bindedService)
+                                val playerView = VideoPlayerView(videoContainer.context)
+                                playerView.exoPlayer.player = player
+                                videoContainer.addView(playerView)
+                                if (player.playWhenReady) {
+                                    player.playWhenReady = false
+                                    player.playWhenReady = true
+                                }
+                            }
+                        }
                     }
-                    imageContainer.addView(image)
+                } else throw Exception("Activity is not MainActivity")
+                imageContainer.setImages(item.images, item.imagesExpanded)
+                imageContainer.imageClick = imageClickListener
+                imageContainer.expand = { item.imagesExpanded = it }
+            }
+        }
+
+        private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+            val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(false, video.id)) {
+                val bindedPlayer = service.getExoPlayerInstance()
+                if (bindedPlayer != null) return bindedPlayer
+                else SimpleExoPlayer.Builder(videoContainer.context).build()
+            }
+            else SimpleExoPlayer.Builder(videoContainer.context).build()
+
+            val listener = object : Player.EventListener {
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    if (playWhenReady) {
+                        service.setPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id), video.title, video.description)
+                    }
                 }
             }
+            videoPlayer.addListener(listener)
+
+            // Build the media item.
+            val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
+            // Set the media item to be played.
+            videoPlayer.setMediaItem(videoMediaItem)
+            // Prepare the player.
+//                    musicPlayer.prepare()
+
+            return videoPlayer
+        }
+
+        private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+
+            val musicPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
+                val bindedPlayer = service.getExoPlayerInstance()
+                if (bindedPlayer != null) return bindedPlayer
+                else SimpleExoPlayer.Builder(audioContainer.context).build()
+            }
+            else SimpleExoPlayer.Builder(audioContainer.context).build()
+
+            val listener = object : Player.EventListener {
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    if (playWhenReady) {
+                        service.setPlayer(musicPlayer, IGMediaService.MediaFile(true, audio.id), audio.song, audio.description)
+                    }
+                }
+            }
+            musicPlayer.addListener(listener)
+
+            // Build the media item.
+            val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
+            // Set the media item to be played.
+            musicPlayer.setMediaItem(musicMediaItem)
+            // Prepare the player.
+//                    musicPlayer.prepare()
+
+            return musicPlayer
         }
 
         private fun showPopupMenu(view: View, id: Int) {
@@ -388,6 +476,18 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         abstract fun fillNative(nativeAd: NativeAd?)
         abstract fun unregisterViewForInteraction()
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is PostViewHolder) {
+            holder.imageContainer.destroy()
+            holder.videoContainer.children.forEach {
+                if (it is StyledPlayerView) {
+                    it.player?.release()
+                }
+            }
+        }
+        super.onViewRecycled(holder)
     }
 
 }

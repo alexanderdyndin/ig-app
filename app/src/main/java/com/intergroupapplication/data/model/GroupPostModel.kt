@@ -19,6 +19,14 @@ data class GroupPostModel(
         @SerializedName("active_comments_count") val activeCommentsCount: String,
         @SerializedName("is_active") val isActive: Boolean,
         @SerializedName("is_offered") val isOffered: Boolean,
+        @SerializedName("is_liked")
+        val isLiked: Boolean,
+        @SerializedName("is_disliked")
+        val isDisliked: Boolean,
+        @SerializedName("likes_count")
+        val likesCount: Int,
+        @SerializedName("dislikes_count")
+        val dislikesCount: Int,
         val images: List<ImageVideoModel>,
         val audios: List<AudioModel>,
         val videos: List<ImageVideoModel>

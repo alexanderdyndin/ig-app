@@ -25,6 +25,10 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                 isActive = from.isActive,
                 isOffered = from.isOffered,
                 pin = from.pin,
+                isDisliked = from.reacts.isDislike,
+                isLiked = from.reacts.isLike,
+                likesCount = from.reacts.likesCount,
+                dislikesCount = from.reacts.dislikesCount,
                 images = from.images.map { mapToDto(it) },
                 audios = from.audios.map { mapToDto(it) },
                 videos = from.videos.map { mapToDto(it) }
@@ -46,6 +50,7 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                 isActive = from.isActive,
                 isOffered = from.isOffered,
                 pin = from.pin,
+                reacts = ReactsEntity(from.isLiked, from.isDisliked, from.likesCount, from.dislikesCount),
                 images = from.images.map { mapToDomainEntity(it) },
                 audios = from.audios.map { mapToDomainEntity(it) },
                 videos = from.videos.map { mapToDomainEntity(it) }
@@ -105,26 +110,26 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
     fun mapListToDomainEntity(from: List<GroupPostModel>): List<GroupPostEntity> =
             from.map { mapToDomainEntity(it) }
 
-    fun mapToDto(from: FilesEntity): FileModel =
-            FileModel(from.file, from.description.orEmpty(), from.title.orEmpty())
+    fun mapToDto(from: FileRequestEntity): FileRequestModel =
+            FileRequestModel(from.file, from.description.orEmpty(), from.title.orEmpty())
 
-    fun mapToDto(from: AudiosEntity): AudiosModel =
-            AudiosModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
+    fun mapToDto(from: AudioRequestEntity): AudioRequestModel =
+            AudioRequestModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
-    fun mapToDomainEntity(from: FileModel): FilesEntity =
-            FilesEntity(from.file, from.description.orEmpty(), from.title.orEmpty())
+    fun mapToDomainEntity(from: FileRequestModel): FileRequestEntity =
+            FileRequestEntity(from.file, from.description.orEmpty(), from.title.orEmpty())
 
-    fun mapToDomainEntity(from: AudiosModel): AudiosEntity =
-            AudiosEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
+    fun mapToDomainEntity(from: AudioRequestModel): AudioRequestEntity =
+            AudioRequestEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
 
-    fun mapToDto(from: ReactsEntity): ReactsModel =
-            ReactsModel(
+    fun mapToDto(from: ReactsEntityRequest): ReactsModelRequest =
+            ReactsModelRequest(
                     isLike = from.isLike,
                     isDislike = from.isDislike
             )
 
-    fun mapToDomainEntity(from: ReactsModel): ReactsEntity =
-            ReactsEntity(
+    fun mapToDomainEntity(from: ReactsModelRequest): ReactsEntityRequest =
+            ReactsEntityRequest(
                     isLike = from.isLike,
                     isDislike = from.isDislike
             )
@@ -133,4 +138,20 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
         return GroupPostsEntity(from.count.toInt(), from.next,
                 from.previous, from.results.map { mapToDomainEntity(it) })
     }
+
+    fun mapToDto(from: ReactsEntity): ReactsModel =
+            ReactsModel(
+                    isLike = from.isLike,
+                    isDislike = from.isDislike,
+                    likesCount = from.likesCount,
+                    dislikesCount = from.dislikesCount
+            )
+
+    fun mapToDomainEntity(from: ReactsModel): ReactsEntity =
+            ReactsEntity(
+                    isLike = from.isLike,
+                    isDislike = from.isDislike,
+                    likesCount = from.likesCount,
+                    dislikesCount = from.dislikesCount
+            )
 }

@@ -90,8 +90,14 @@ class GroupViewModule {
     @Provides
     fun provideGroupPostsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                            userSession: UserSession): GroupPostsAdapter {
-        GroupPostsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
-        GroupPostsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
+        if (userSession.isAdEnabled) {
+            GroupPostsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
+            GroupPostsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
+            GroupPostsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsNews ?: 1
+        } else {
+            GroupPostsAdapter.AD_FREQ = 999
+            GroupPostsAdapter.AD_FIRST = 999
+        }
         return GroupPostsAdapter(imageLoadingDelegate)
     }
 

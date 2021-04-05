@@ -16,11 +16,13 @@ import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.fragment_confirmation_mail.*
 import kotlinx.android.synthetic.main.auth_loader.*
 
 import javax.inject.Inject
+import javax.inject.Named
 
 class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
@@ -38,12 +40,15 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     @ProvidePresenter
     fun providePresenter(): ConfirmationMailPresenter = presenter
 
+    @Inject
+    @Named("mailHandler")
+    lateinit var errorHandlerLogin: ErrorHandler
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = confirmationCoordinator
 
     override fun viewCreated() {
         presenter.start(arguments?.getString("amount"))
-
+        initErrorHandler(errorHandlerLogin)
         setErrorHandler()
 
         btnNext.clicks()
@@ -100,7 +105,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     }
 
     private fun setErrorHandler() {
-        errorHandler.on(CompositeException::class.java) { throwable, _ ->
+        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {

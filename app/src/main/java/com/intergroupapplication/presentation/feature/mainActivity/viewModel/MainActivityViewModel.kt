@@ -17,8 +17,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorHandler,
-                                                private val appStatusUseCase: AppStatusUseCase,
+class MainActivityViewModel @Inject constructor(private val appStatusUseCase: AppStatusUseCase,
                                                 private val compositeDisposable: CompositeDisposable,
                                                 private val sessionStorage: UserSession): ViewModel() {
 
@@ -41,13 +40,11 @@ class MainActivityViewModel @Inject constructor(private val errorHandler: ErrorH
     }
 
     fun getAdCount() {
-        if (sessionStorage.user != null && sessionStorage.isAdEnabled) {
-            compositeDisposable.add(appStatusUseCase.getAdParameters()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ sessionStorage.countAd = it },
-                            { Timber.e(it) }))
-        }
+        compositeDisposable.add(appStatusUseCase.getAdParameters()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ sessionStorage.countAd = it },
+                        { Timber.e(it) }))
     }
 
     override fun onCleared() {

@@ -43,6 +43,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                                 it.activeCommentsCount,
                                 it.isActive,
                                 it.isOffered,
+                                it.reacts,
                                 it.images,
                                 it.audios,
                                 it.videos
@@ -65,5 +66,8 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                 }
                 .cachedIn(viewModelScope)
     }
+
+    fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
+            useCase.setReact(isLike, isDislike, postId)
 
 }

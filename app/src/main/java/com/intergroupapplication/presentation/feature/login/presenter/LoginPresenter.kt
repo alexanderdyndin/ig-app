@@ -13,10 +13,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
+import javax.inject.Named
 
 @InjectViewState
 class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
                                          private val imeiGateway: ImeiGateway,
+                                         @Named("loginHandler")
                                          private val errorHandler: ErrorHandler,
                                          private val getProfileUseCase: GetProfileUseCase)
     : BasePresenter<LoginView>() {

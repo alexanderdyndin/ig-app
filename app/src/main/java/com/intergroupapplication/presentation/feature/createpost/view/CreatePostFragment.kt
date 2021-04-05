@@ -19,8 +19,10 @@ import com.intergroupapplication.presentation.exstension.isVisible
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.exstension.showKeyboard
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
 import io.reactivex.exceptions.CompositeException
+import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import moxy.presenter.InjectPresenter
@@ -54,7 +56,8 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     override fun viewCreated() {
         groupId = arguments?.getString(GROUP_ID)!!
         presenter.groupId = groupId
-        createAction.setOnClickListener {
+        publishBtn.show()
+        publishBtn.setOnClickListener {
             val post = postText.text.toString().trim()
             if (post.isEmpty() && postContainer.childCount == 1) {
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
@@ -84,7 +87,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         attachAudio.setOnClickListener {
             presenter.attachAudio()
         }
-        exitAction.setOnClickListener { onResultCancel() }
+        toolbarBackAction.setOnClickListener { onResultCancel() }
 //        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
 //            override fun onChildViewRemoved(parent: View?, child: View?) {
 //                manageClipVisibility()
@@ -99,16 +102,16 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity) {
-        onResultOk(/*postEntity.groupInPost.id*/)
+        onResultOk(postEntity.id)
     }
 
     override fun showLoading(show: Boolean) {
         if (show) {
-            createAction.hide()
-            createProgress.show()
+            publishBtn.hide()
+           // createProgress.show()
         } else {
-            createProgress.hide()
-            createAction.show()
+            //createProgress.hide()
+            publishBtn.show()
         }
     }
 
@@ -237,14 +240,12 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 //        }
 //    }
 
-    private fun onResultOk(/*groupId: String*/) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(FRAGMENT_RESULT, BasePresenter.POST_CREATED)
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID_VALUE, groupId)
+    private fun onResultOk(postId: String) {
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GroupFragment.POST_ID, postId)
         findNavController().popBackStack()
     }
 
     private fun onResultCancel() {
-        //findNavController().previousBackStackEntry?.savedStateHandle?.set("fragmentResult", Activity.RESULT_CANCELED)
         findNavController().popBackStack()
     }
 

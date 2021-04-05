@@ -7,246 +7,302 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/middle_margin"
-    android:background="@color/cardsColor">
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
+    android:background="@color/mainBlack">
 
-    <TextView
-        android:id="@+id/goToGroupClickArea"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/go_to_group_click_area_height"
-        android:textSize="@dimen/middle_high_size"
-        app:layout_constraintBottom_toTopOf="@+id/postBody"
-        app:layout_constraintEnd_toStartOf="@+id/settingsPost"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/groupPostAvatar"
-        android:layout_width="@dimen/group_logo_inside_post_size"
-        android:layout_height="@dimen/group_logo_inside_post_size"
-        android:layout_marginStart="@dimen/big_margin"
-        android:layout_marginTop="@dimen/big_margin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        fresco:placeholderImage="@drawable/application_logo"
-        fresco:roundAsCircle="true" />
-
-    <TextView
-        android:id="@+id/groupName"
-        style="@style/InterGroupAutoscrollWhiteTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/big_margin"
-        android:layout_marginEnd="@dimen/middle_margin"
-        app:layout_constraintEnd_toStartOf="@+id/settingsPost"
-        app:layout_constraintStart_toEndOf="@+id/groupPostAvatar"
-        app:layout_constraintTop_toTopOf="@+id/groupPostAvatar"
-        tools:text="Имя группы" />
-
-    <TextView
-        android:id="@+id/postPrescription"
-        style="@style/InterGroupGreyTextStyle"
+    <ImageButton
+        android:id="@+id/btnFilterPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/groupName"
-        app:layout_constraintTop_toBottomOf="@+id/groupName"
-        tools:text="Неделю назад" />
+        android:background="@drawable/btn_filter"
+        android:src="@drawable/ic_filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/searchPost" />
+
+    <ImageView
+        android:id="@+id/bgAvaGroupPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_ava_group_post"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchPost"/>
+
+    <com.github.florent37.shapeofview.ShapeOfView
+        android:id="@+id/avaGroupPost"
+        android:layout_width="57dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="2dp"
+        app:layout_constraintEnd_toEndOf="@+id/bgAvaGroupPost"
+        app:layout_constraintTop_toTopOf="@+id/bgAvaGroupPost"
+        app:shape_clip_drawable="@drawable/ava_group_post">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/postAvatarHolder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:placeholderImage="@drawable/variant_10"/>
+
+    </com.github.florent37.shapeofview.ShapeOfView>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerPostFromGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="56dp"
+        android:paddingLeft="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bgAvaGroupPost"
+        app:layout_constraintTop_toTopOf="@+id/bgAvaGroupPost"
+        android:background="@drawable/bg_post_header">
+
+        <TextView
+            android:id="@+id/idpGroupPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="16dp"
+            android:layout_marginTop="8dp"
+            tools:text="IDP:1234789"
+            style="@style/TextNoActive12sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/groupName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="8dp"
+            tools:text="Моё очень длиннное название группы, ТОЛЬКО о..."
+            style="@style/TextAccent12spBold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settingsPost" />
+
+        <TextView
+            android:id="@+id/btnRepost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:gravity="center"
+            android:drawableLeft="@drawable/ic_repost"
+            android:paddingLeft="4dp"
+            android:paddingBottom="4dp"
+            tools:text="999k"
+            android:fontFamily="@font/play"
+            android:textSize="12dp"
+            android:textColor="@color/colorAccent"
+            android:background="@drawable/btn_repost"
+            app:layout_constraintEnd_toStartOf="@+id/settingsPost"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/settingsPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_post_settings"
+            android:paddingLeft="6dp"
+            android:paddingTop="6dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="9dp"
+            android:src="@drawable/ic_settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/postHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="8dp"
+        android:background="@drawable/bg_post_elements"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerPostFromGroup">
+
+        <TextView
+            android:id="@+id/postPrescription"
+            style="@style/TextNoActive14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="05.05.2020 в 15:00"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/anchorBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_anchor"
+            android:paddingLeft="5dp"
+            android:paddingTop="2dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="4dp"
+            android:src="@drawable/ic_anchor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/postBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/low_big_margin"
         android:orientation="vertical"
+        android:padding="4dp"
+        android:background="@color/colorInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/groupPostAvatar">
+        app:layout_constraintTop_toBottomOf="@+id/postHeader">
 
         <TextView
             android:id="@+id/postText"
-            style="@style/InterGroupWhiteTextStyle."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/big_margin"
-            android:layout_marginEnd="@dimen/big_margin"
-            android:textSize="@dimen/middle_high_size"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:text="Текст для поста описание происходящего
-подробности и факты, новости прочее
-происходящее в определенном месте или нет" />
+            android:padding="4dp"
+            android:fontFamily="@font/play"
+            tools:text="Идейные соображения высшего порядка, а также новая модель организационной деятельности
+            играет важную роль в формировании позиций, занимаемых участниками в отношении поставленных задач.
+            Товар.."
+            android:textColor="@color/textLight"
+            android:textSize="14sp" />
 
-        <com.intergroupapplication.presentation.customview.WrapContentDraweeView
-            android:id="@+id/postImage"
+        <com.intergroupapplication.presentation.customview.PostGalleryView
+            android:id="@+id/imageBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/middle_margin"
-            android:layout_marginBottom="@dimen/middle_margin"
-            android:adjustViewBounds="true"
-            android:visibility="gone"
-            tools:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/commentImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/postBody"
-            fresco:actualImageScaleType="centerCrop"
-            fresco:backgroundImage="@color/linkGrayTextColor"
-            fresco:placeholderImage="@drawable/application_logo" />
+            android:orientation="vertical"/>
+<!--        <include-->
+<!--            android:id="@+id/imageExpander"-->
+<!--            layout="@layout/layout_expand"-->
+<!--            android:visibility="gone"-->
+<!--            tools:visibility="visible"/>-->
 
-        <com.google.android.exoplayer2.ui.StyledPlayerView
-            android:id="@+id/videoExoPlayerView"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            app:show_buffering="when_playing"
-            android:visibility="gone"
-            />
-
-        <include
-            android:id="@+id/playerPlaceholder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            layout="@layout/layout_music_player"
-            android:visibility="gone"/>
-
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/musicExoPlayerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:controller_layout_id="@layout/layout_music_player"
-            android:layout_marginBottom="20dp"
-            app:hide_on_touch="false"
-            app:show_timeout="0"
-            android:visibility="visible"
-            />
-        <HorizontalScrollView
-            android:id="@+id/imageScroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:overScrollMode="never">
-            <LinearLayout
-                android:id="@+id/imageContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"/>
-        </HorizontalScrollView>
         <LinearLayout
-            android:id="@+id/mediaBody"
+            android:id="@+id/videoBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:id="@+id/audioBody"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/settingsPost"
-        android:layout_width="wrap_content"
+
+    <ImageView
+        android:id="@+id/endPost"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/big_margin"
-        app:layout_constraintBottom_toBottomOf="@+id/postPrescription"
+        android:background="@drawable/bg_end_post"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/groupName"
-        android:src="@drawable/ic_settings" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postBody" />
 
     <TextView
-        android:id="@+id/commentImageClickArea"
-        android:layout_width="@dimen/comment_click_area_width"
-        android:layout_height="@dimen/comment_click_area_height"
-        android:textSize="@dimen/middle_high_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/postCommentsCount"
-        app:layout_constraintStart_toStartOf="@+id/commentImage" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/commentImage"
-        android:layout_width="@dimen/post_comment_icon_size"
-        android:layout_height="@dimen/post_comment_icon_size"
-        android:layout_marginTop="@dimen/low_big_margin"
-        android:layout_marginEnd="@dimen/middle_margin"
-        android:layout_marginBottom="@dimen/low_big_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/groupPostAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/postBody"
-        android:src="@drawable/icon_comments" />
-
-    <TextView
-        android:id="@+id/postCommentsCount"
-        style="@style/InterGroupGreyTextStyle"
+        android:id="@+id/commentBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/middle_margin"
-        android:textSize="@dimen/middle_high_size"
-        app:layout_constraintBottom_toBottomOf="@+id/commentImage"
-        app:layout_constraintStart_toEndOf="@+id/commentImage"
-        app:layout_constraintTop_toTopOf="@+id/commentImage"
-        tools:text="12" />
+        android:layout_marginLeft="8dp"
+        android:drawableLeft="@drawable/ic_comnts_grey"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingBottom="3dp"
+        tools:text="900/500"
+        style="@style/TextDark12sp"
+        android:background="@drawable/btn_comnts"
+        app:layout_constraintStart_toStartOf="@+id/endPost"
+        app:layout_constraintBottom_toBottomOf="@+id/endPost"
+        app:layout_constraintTop_toTopOf="@+id/endPost" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/likeClickArea"
-        android:layout_width="@dimen/comment_click_area_width"
-        android:layout_height="@dimen/comment_click_area_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <TextView
+        android:id="@+id/subCommentBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingBottom="3dp"
+        android:layout_marginRight="4dp"
+        android:drawableLeft="@drawable/ic_sub_comnts_blue"
+        android:drawablePadding="5dp"
+        tools:text="150"
+        style="@style/TextAccent14sp"
+        android:background="@drawable/btn_sub_comnts"
+        app:layout_constraintStart_toEndOf="@id/commentBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/endPost"
+        app:layout_constraintTop_toTopOf="@+id/endPost" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/likeImage"
-            android:layout_width="@dimen/post_comment_icon_size"
-            android:layout_height="@dimen/post_comment_icon_size"
-            android:layout_marginTop="@dimen/low_big_margin"
-            android:layout_marginStart="30dp"
-            android:layout_marginBottom="@dimen/low_big_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:src="@drawable/icon_like" />
+    <ImageView
+        android:id="@+id/bgEndPost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/bg_likes_end_post"
+        app:layout_constraintEnd_toEndOf="@id/endPost"
+        app:layout_constraintStart_toEndOf="@+id/subCommentBtn"
+        app:layout_constraintTop_toTopOf="@+id/endPost" />
 
-        <TextView
-            android:id="@+id/likesCount"
-            style="@style/InterGroupGreyTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/low_big_margin"
-            android:layout_marginBottom="@dimen/low_big_margin"
-            android:layout_marginStart="@dimen/middle_margin"
-            android:textSize="@dimen/middle_high_size"
-            app:layout_constraintStart_toEndOf="@id/likeImage"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="12" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dislikeClickArea"
-        android:layout_width="@dimen/comment_click_area_width"
-        android:layout_height="@dimen/comment_click_area_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/likeClickArea">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/dislikeImage"
-            android:layout_width="@dimen/post_comment_icon_size"
-            android:layout_height="@dimen/post_comment_icon_size"
-            android:layout_marginTop="@dimen/low_big_margin"
-            android:layout_marginStart="30dp"
-            android:layout_marginBottom="@dimen/low_big_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:src="@drawable/icon_dislike" />
+    <FrameLayout
+        android:id="@+id/postDislikesClickArea"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bgEndPost"
+        app:layout_constraintStart_toStartOf="@+id/bgEndPost"
+        app:layout_constraintTop_toTopOf="@+id/bgEndPost">
 
         <TextView
-            android:id="@+id/dislikesCount"
-            style="@style/InterGroupGreyTextStyle"
-            android:layout_width="wrap_content"
+            android:id="@+id/postDislike"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/low_big_margin"
-            android:layout_marginBottom="@dimen/low_big_margin"
-            android:layout_marginStart="@dimen/middle_margin"
-            android:textSize="@dimen/middle_high_size"
-            app:layout_constraintStart_toEndOf="@id/dislikeImage"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="12" />
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/icon_dislike"
+            android:drawablePadding="4dp"
+            tools:text="150"
+            android:textColor="@color/colorLightBlue"
+            android:textSize="14sp"
+            app:fontFamily="@font/play" />
+    </FrameLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/postLikesClickArea"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bgEndPost"
+        app:layout_constraintEnd_toEndOf="@+id/bgEndPost"
+        app:layout_constraintStart_toEndOf="@+id/postDislikes"
+        app:layout_constraintTop_toTopOf="@+id/bgEndPost">
 
+
+        <TextView
+            android:id="@+id/postLike"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/icon_like"
+            android:drawablePadding="4dp"
+            tools:text="999к"
+            android:textColor="@color/colorLightPunk"
+            android:textSize="14sp"
+            app:fontFamily="@font/play"/>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

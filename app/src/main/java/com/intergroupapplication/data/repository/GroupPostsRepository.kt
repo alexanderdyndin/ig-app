@@ -10,14 +10,12 @@ import com.intergroupapplication.data.remotedatasource.GroupNewsRemoteRXDataSour
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.domain.entity.ReactsEntity
+import com.intergroupapplication.domain.entity.ReactsEntityRequest
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.Flowable
 import io.reactivex.Single
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -71,8 +69,8 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
-    override fun setReact(reactsEntity: ReactsEntity, postId: String): Single<ReactsEntity> {
-        return api.setReact(groupPostMapper.mapToDto(reactsEntity), postId)
+    override fun setReact(reactsEntityRequest: ReactsEntityRequest, postId: String): Single<ReactsEntity> {
+        return api.setReact(groupPostMapper.mapToDto(reactsEntityRequest), postId)
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
 

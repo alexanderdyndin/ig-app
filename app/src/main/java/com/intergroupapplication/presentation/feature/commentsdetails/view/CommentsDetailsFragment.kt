@@ -12,20 +12,22 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
+import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.appbar.AppBarLayout
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.CommentEntity
-import com.intergroupapplication.domain.entity.CreateCommentEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.domain.entity.InfoForCommentEntity
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -37,6 +39,11 @@ import com.intergroupapplication.presentation.feature.commentsdetails.adapter.Co
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
+import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -48,7 +55,10 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_comments_details.*
 import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
 import kotlinx.android.synthetic.main.item_group_post.*
+import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -67,7 +77,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
         private const val GROUP_ID = "group_id"
         private const val COMMENT_ID = "comment_id"
-        private const val POST_ID = "post_id"
+        const val POST_ID = "post_id"
     }
 
     @Inject
@@ -87,11 +97,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
 
-//    @Inject
-//    lateinit var adapter: CommentDetailsAdapter
-
-//    @Inject
-//    lateinit var layoutManager: RecyclerView.LayoutManager
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -108,7 +113,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     lateinit var viewModel: CommentsViewModel
 
-    lateinit var infoForCommentEntity: InfoForCommentEntity
+    var infoForCommentEntity: InfoForCommentEntity? = null
+
+    var postId: String? = null
 
     var commentCreated = false
 
@@ -126,12 +133,21 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
-        infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)!!
-        compositeDisposable.add(
-                viewModel.fetchComments(infoForCommentEntity.groupPostEntity.id).subscribe {
-                    adapter.submitData(lifecycle, it)
-                }
-        )
+        infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
+        postId = arguments?.getString(POST_ID)
+        if (infoForCommentEntity != null) {
+            compositeDisposable.add(
+                    viewModel.fetchComments(infoForCommentEntity!!.groupPostEntity.id).subscribe {
+                        adapter.submitData(lifecycle, it)
+                    }
+            )
+        } else if (postId != null) {
+            compositeDisposable.add(
+                    viewModel.fetchComments(postId!!).subscribe {
+                        adapter.submitData(lifecycle, it)
+                    }
+            )
+        }
     }
 
     override fun viewCreated() {
@@ -193,7 +209,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                         loading_layout.gone()
                         swipeLayout.isRefreshing = false
                         if (commentCreated) {
-                            commentsList.scrollToPosition(adapter.itemCount)
+                            nestedScrollComments.postDelayed(250) {
+                                nestedScrollComments.smoothScrollTo(0, commentsList.bottom)
+                            }
                             commentCreated = false
                         }
                         commentEditText.isEnabled = true
@@ -218,10 +236,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         super.onStop()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
         swipeLayout.isEnabled = (verticalOffset == 0)
@@ -242,37 +256,106 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                 postText.gone()
             }
         }
-        postCommentsCount.text = groupPostEntity.commentsCount
+        idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.id)
+        commentBtn.text = groupPostEntity.commentsCount
         groupName.text = groupPostEntity.groupInPost.name
-        groupPostEntity.photo?.let {
-            postImage.show()
-            imageLoadingDelegate.loadImageFromUrl(it, postImage)
-        }
         //presenter.getPostComments(groupPostEntity.id)
-        doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, groupPostAvatar) },
-                { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, groupPostAvatar) })
+        doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
         swipeLayout.setOnRefreshListener {
             presenter.getPostDetailsInfo(groupPostEntity.id)
         }
+//        val activity = requireActivity()
+//        if (activity is MainActivity) {
+//            CoroutineScope(Dispatchers.Main).launch {
+//                val bindedService = activity.bindMediaService()
+//                bindedService?.let {
+//
+//
+//                    /**
+//                     *  Add audios to post
+//                     */
+//                    groupPostEntity.audios.forEach {
+//                        val player = makeAudioPlayer(it, bindedService)
+//                        val playerView = AudioPlayerView(requireContext())
+//                        playerView.exoPlayer.player = player
+//                        audioBody.addView(playerView)
+//                    }
+//
+//                    /**
+//                     *  Add videos to post
+//                     */
+//                    groupPostEntity.videos.forEach {
+//                        val player = makeVideoPlayer(it, bindedService)
+//                        val playerView = VideoPlayerView(requireContext())
+//                        playerView.exoPlayer.player = player
+//                        videoBody.addView(playerView)
+//                    }
+//                }
+//            }
+//        } else throw Exception("Activity is not MainActivity")
+        imageBody.setImages(groupPostEntity.images)
+        //imageBody.imageClick = imageClickListener
     }
 
+//    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+//        val videoPlayer = SimpleExoPlayer.Builder(requireContext()).build()
+//
+//        val listener = object : Player.EventListener {
+//            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+//                if (playWhenReady) {
+//                    service.setPlayer(videoPlayer, video.title, video.description)
+//                }
+//            }
+//        }
+//        videoPlayer.addListener(listener)
+//
+//        // Build the media item.
+//        val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
+//        // Set the media item to be played.
+//        videoPlayer.setMediaItem(videoMediaItem)
+//        // Prepare the player.
+////                    musicPlayer.prepare()
+//
+//        return videoPlayer
+//    }
+//
+//    private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+//
+//        val musicPlayer = SimpleExoPlayer.Builder(requireContext()).build()
+//
+//        val listener = object : Player.EventListener {
+//            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+//                if (playWhenReady) {
+//                    service.setPlayer(musicPlayer, audio.song, audio.description)
+//                }
+//            }
+//        }
+//        musicPlayer.addListener(listener)
+//
+//        // Build the media item.
+//        val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
+//        // Set the media item to be played.
+//        musicPlayer.setMediaItem(musicMediaItem)
+//        // Prepare the player.
+////                    musicPlayer.prepare()
+//
+//        return musicPlayer
+//    }
+
     override fun commentCreated(commentEntity: CommentEntity) {
-        //presenter.refresh(groupPostEntity.id)
         adapter.refresh()
         commentCreated = true
         increaseCommentsCounter()
-        commentsList.smoothScrollToPosition(adapter.itemCount)
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        //presenter.refresh(groupPostEntity.id)
         adapter.refresh()
         commentCreated = true
         increaseCommentsCounter()
         if (commentHolder.childCount > 1) {
             commentHolder.removeViewAt(0)
         }
-        commentsList.smoothScrollToPosition(adapter.itemCount)
     }
 
 //    override fun commentsLoaded(comments: PagedList<CommentEntity>) {
@@ -341,9 +424,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     private fun increaseCommentsCounter() {
-        var commentsCount = postCommentsCount.text.toString().toInt()
+        var commentsCount = commentBtn.text.toString().toInt()
         commentsCount++
-        postCommentsCount.text = commentsCount.toString()
+        commentBtn.text = commentsCount.toString()
         findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount.toString())
     }
 
@@ -404,16 +487,15 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
             groupPostEntity = infoForCommentEntity.groupPostEntity
             showPostDetailInfo(groupPostEntity)
             if (infoForCommentEntity.isFromNewsScreen) {
-                goToGroupClickArea.setOnClickListener {
+                headerPostFromGroup.setOnClickListener {
                     val data = bundleOf(GROUP_ID to groupPostEntity.groupInPost.id)
                     findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, data)
-                    //presenter.goToGroupScreen(groupPostEntity.groupInPost.id)
                 }
             }
         }
-//        else {
-//            presenter.getPostDetailsInfo(intent.getStringExtra(POST_ID)!!)
-//        }
+        else if (postId != null){
+            presenter.getPostDetailsInfo(postId!!)
+        }
 
     }
 

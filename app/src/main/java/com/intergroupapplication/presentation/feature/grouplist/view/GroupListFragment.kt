@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.LoadStateAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
@@ -25,13 +28,13 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
+import com.intergroupapplication.domain.exception.FieldException
+import com.intergroupapplication.domain.exception.GroupAlreadyFollowingException
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
-import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListsAdapter
@@ -42,10 +45,11 @@ import com.intergroupapplication.presentation.feature.mainActivity.view.MainActi
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
-import kotlinx.android.synthetic.main.item_group_in_list.view.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.coroutines.flow.collectLatest
@@ -98,6 +102,8 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     var currentScreen = 0
 
+    val subscribeDisposable = CompositeDisposable()
+
     @Inject
     @Named("all")
     lateinit var adapterAll: GroupListAdapter
@@ -135,16 +141,7 @@ class GroupListFragment(): BaseFragment(), GroupListView {
     lateinit var adapterFooterAdm: PagingLoadingAdapter
 
 //    @Inject
-//    @Named("all")
-//    lateinit var adapterAllAd: AdmobBannerRecyclerAdapterWrapper
-//
-//    @Inject
-//    @Named("subscribed")
-//    lateinit var adapterSubscribedAd: AdmobBannerRecyclerAdapterWrapper
-//
-//    @Inject
-//    @Named("owned")
-//    lateinit var adapterOwnedAd: AdmobBannerRecyclerAdapterWrapper
+//    lateinit var layoutManager: RecyclerView.LayoutManager
 
 
     private val textWatcher = object : TextWatcher {
@@ -213,70 +210,107 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                 val data = bundleOf(GROUP_ID to it)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
-            subscribeClickListener = { group, view ->
-                compositeDisposable.add(viewModel.subscribeGroup(group.id)
+            //todo не всегда подписка/отписка отображается в UI
+            subscribeClickListener = { group, pos ->
+                subscribeDisposable.add(viewModel.subscribeGroup(group.id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe {
-                            view.subscribingProgressBar.show()
-                            view.item_group__text_sub.isEnabled = false
-                        }
-                        .doOnComplete {
-                            view.subscribingProgressBar.hide()
-                            group.isFollowing = true
-                            with(view.item_group__text_sub){
-                                isEnabled = true
+                            group.isSubscribing = true
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
                             }
+                        }
+                        .doFinally {
+                            group.isSubscribing = false
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
+                            }
+                        }
+                        .subscribe({
+                            group.isFollowing = true
                             when (currentScreen) {
                                 0 -> {
                                     adapterSubscribed.refresh()
-                                    adapterAll.notifyDataSetChanged()
                                 }
                                 1 -> {
                                     adapterAll.refresh()
-                                    adapterSubscribed.notifyDataSetChanged()
                                 }
                             }
-                        }
-                        .doOnError {
-                            view.subscribingProgressBar.hide()
-                            view.item_group__text_sub.isEnabled = true
-                        }
-                        .subscribe({ }, {
-                            errorHandler.handle(it)
+                        }, { exception ->
+                            if (exception is CompositeException) {
+                                exception.exceptions.forEach { ex ->
+                                    (ex as? FieldException)?.let {
+                                        if (it.field == "group") {
+                                            group.isFollowing = !group.isFollowing
+                                            group.isSubscribing = false
+                                        }
+                                    }
+                                }
+                            } else
+                                errorHandler.handle(exception)
                         }))
             }
-            unsubscribeClickListener = { group, view ->
-                compositeDisposable.add(viewModel.unsubscribeGroup(group.id)
+            unsubscribeClickListener = { group, pos ->
+                subscribeDisposable.add(viewModel.unsubscribeGroup(group.id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe {
-                            view.subscribingProgressBar.show()
-                            view.item_group__text_sub.isEnabled = false
-                        }
-                        .doOnComplete {
-                            view.subscribingProgressBar.hide()
-                            group.isFollowing = false
-                            with(view.item_group__text_sub){
-                                isEnabled = true
+                            group.isSubscribing = true
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
                             }
+                        }
+                        .doFinally {
+                            group.isSubscribing = false
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
+                            }
+                        }
+                        .subscribe({
+                            group.isFollowing = false
                             when (currentScreen) {
                                 0 -> {
                                     adapterSubscribed.refresh()
-                                    adapterAll.notifyDataSetChanged()
                                 }
                                 1 -> {
                                     adapterAll.refresh()
-                                    adapterSubscribed.notifyDataSetChanged()
                                 }
                             }
-                        }
-                        .doOnError {
-                            view.subscribingProgressBar.hide()
-                            view.item_group__text_sub.isEnabled = true
-                        }
-                        .subscribe({ }, {
-                            errorHandler.handle(it)
+                        }, {
+                            if (it is GroupAlreadyFollowingException) {
+                                group.isFollowing = !group.isFollowing
+                                group.isSubscribing = false
+                                when (currentScreen) {
+                                    0 -> {
+                                        adapterAll.notifyDataSetChanged()
+                                    }
+                                    1 -> {
+                                        adapterSubscribed.notifyDataSetChanged()
+                                    }
+                                }
+                            } else
+                                errorHandler.handle(it)
                         }))
             }
         }
@@ -287,51 +321,21 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                 2-> adapterOwned.refresh()
             }
         }
+        setAdapter(adapterAll, adapterFooterAll)
+        setAdapter(adapterSubscribed, adapterFooterSub)
+        setAdapter(adapterOwned, adapterFooterAdm)
+    }
+
+    private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
         lifecycleScope.launch {
-            adapterAll.loadStateFlow.collectLatest { loadStates ->
+            adapter.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
                     }
                     is LoadState.Error -> {
                         swipe_groups.isRefreshing = false
-                        if (adapterAll.itemCount == 0) {
-                            adapterFooterAll.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
-                        }
-                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-                    }
-                    is LoadState.NotLoading -> {
-                        swipe_groups.isRefreshing = false
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch {
-            adapterSubscribed.loadStateFlow.collectLatest { loadStates ->
-                when (loadStates.refresh) {
-                    is LoadState.Loading -> {
-                    }
-                    is LoadState.Error -> {
-                        swipe_groups.isRefreshing = false
-                        if (adapterSubscribed.itemCount == 0) {
-                            adapterFooterSub.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
-                        }
-                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-                    }
-                    is LoadState.NotLoading -> {
-                        swipe_groups.isRefreshing = false
-                    }
-                }
-            }
-        }
-        lifecycleScope.launch {
-            adapterOwned.loadStateFlow.collectLatest { loadStates ->
-                when (loadStates.refresh) {
-                    is LoadState.Loading -> {
-                    }
-                    is LoadState.Error -> {
-                        swipe_groups.isRefreshing = false
-                        if (adapterOwned.itemCount == 0) {
-                            adapterFooterAdm.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                        if (adapter.itemCount == 0) {
+                            footer.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
@@ -380,23 +384,6 @@ class GroupListFragment(): BaseFragment(), GroupListView {
         findNavController().navigate(R.id.action_groupListFragment2_to_createGroupActivity)
     }
 
-
-//    private inner class GroupPageAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
-//
-//        private val PAGE_COUNT = 3
-//
-//        override fun getItemCount(): Int = PAGE_COUNT
-//
-//        override fun createFragment(position: Int): Fragment {
-//            return when(position) {
-//                0 -> GroupsFragment(GroupType.ALL)
-//                1 -> GroupsFragment(GroupType.FOLLOWED)
-//                2 -> GroupsFragment(GroupType.OWNED)
-//                else -> GroupsFragment(GroupType.ALL)
-//            }
-//        }
-//
-//    }
 
 
     override fun showImageUploadingStarted(path: String) {

@@ -26,6 +26,8 @@ import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAd
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
 import com.jakewharton.rxbinding2.view.RxView
+import com.workable.errorhandler.Action
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.auth_loader.progressBar
@@ -51,90 +53,10 @@ class GroupFragment() : BaseFragment(), GroupView,
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
         const val GROUP_ID = "group_id"
-        const val POST_ID = "group_id"
+        const val POST_ID = "post_id"
         const val FRAGMENT_RESULT = "fragmentResult"
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
-
-//    private lateinit var mMediaBrowserCompat: MediaBrowserCompat                                                                                            // todo сделать более гибкое подключение коллбэков
-//    private val connectionCallback: MediaBrowserCompat.ConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
-//        override fun onConnected() {
-//
-//            // The browser connected to the session successfully, use the token to create the controller
-//            super.onConnected()
-//            mMediaBrowserCompat.sessionToken.also { token ->
-//                val mediaController = MediaControllerCompat( this@GroupFragment.requireActivity(), token)
-//                MediaControllerCompat.setMediaController(requireActivity(), mediaController)
-//            }
-//            playPauseBuild()
-//            Log.d("MediaPlayer", "Controller Connected")
-//        }
-//
-//        override fun onConnectionFailed() {
-//            super.onConnectionFailed()
-//            Log.d("MediaPlayer", "Connection Failed")
-//
-//        }
-//    }
-//
-//
-//    private val mControllerCallback = object : MediaControllerCompat.Callback() {
-//    }
-//
-//    fun playPauseBuild() {
-//        val mediaController = MediaControllerCompat.getMediaController(requireActivity())
-//        btn.setOnClickListener {
-//            val state = mediaController.playbackState.state
-//            // if it is not playing then what are you waiting for ? PLAY !
-//            if (state == PlaybackStateCompat.STATE_PAUSED ||
-//                    state == PlaybackStateCompat.STATE_STOPPED ||
-//                    state == PlaybackStateCompat.STATE_NONE
-//            ) {
-//
-//                mediaController.transportControls.playFromUri(Uri.parse(GroupAdapter.TEST_MUSIC_URI), null)
-//                btn.text = "Pause"
-//            }
-//            // you are playing ? knock it off !
-//            else if (state == PlaybackStateCompat.STATE_PLAYING ||
-//                    state == PlaybackStateCompat.STATE_BUFFERING ||
-//                    state == PlaybackStateCompat.STATE_CONNECTING
-//            ) {
-//                mediaController.transportControls.pause()
-//                btn.text = "Play"
-//            }
-//        }
-//        mediaController.registerCallback(mControllerCallback)
-//
-//    }
-//
-//    fun initializeMediaBrowser() {
-//        val componentName = ComponentName(requireContext(), IGMediaService::class.java)
-//        // initialize the browser
-//        mMediaBrowserCompat = MediaBrowserCompat(
-//                requireContext(), componentName, //Identifier for the service
-//                connectionCallback,
-//                null
-//        )
-//    }
-//
-//    fun connectMediaBrowser() {
-//        // connect the controllers again to the session
-//        // without this connect() you won't be able to start the service neither control it with the controller
-//        mMediaBrowserCompat.connect()
-//    }
-//
-//    fun disconnectMediaBrowser() {
-//        // Release the resources
-//        val controllerCompat = MediaControllerCompat.getMediaController(requireActivity())
-//        controllerCompat?.unregisterCallback(mControllerCallback)
-//        mMediaBrowserCompat.disconnect()
-//    }
-
-//    fun setTestMediaClickListeners() {
-//        startService(Intent(this, IGMediaService::class.java).apply {
-//            putExtra(VideoService.PLAY_PAUSE_ACTION, 0)
-//        })
-//    }
 
     @Inject
     @InjectPresenter
@@ -217,6 +139,7 @@ class GroupFragment() : BaseFragment(), GroupView,
                         it.activeCommentsCount,
                         it.isActive,
                         it.isOffered,
+                        it.reacts,
                         it.images,
                         it.audios,
                         it.videos

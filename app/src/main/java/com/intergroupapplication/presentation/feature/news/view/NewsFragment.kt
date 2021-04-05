@@ -42,6 +42,8 @@ import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewMod
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.workable.errorhandler.Action
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
@@ -124,6 +126,7 @@ class NewsFragment(): BaseFragment(), NewsView{
                         it.activeCommentsCount,
                         it.isActive,
                         it.isOffered,
+                        it.reacts,
                         it.images,
                         it.audios,
                         it.videos
@@ -138,11 +141,24 @@ class NewsFragment(): BaseFragment(), NewsView{
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
             findNavController().navigate(R.id.action_newsFragment2_to_imageFragment, data)
         }
-        NewsAdapter.likeClickListener = {
-            presenter.setReact(isLike = true, isDislike = false, postId = it)
-        }
-        NewsAdapter.dislikeClickListener = {
-            presenter.setReact(isLike = false, isDislike = true, postId = it)
+        NewsAdapter.likeClickListener = { like, dislike, item, position ->
+            compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe {
+                        item.isLoading = true
+                        adapter.notifyItemChanged(position)
+                    }
+                    .doFinally {
+                        item.isLoading = false
+                        adapter.notifyItemChanged(position)
+                    }
+                    .subscribe({
+                         item.reacts = it
+                    },
+                    {
+                        errorHandler.handle(it)
+                    }))
         }
         compositeDisposable.add(
                 viewModel.getNews()
@@ -167,7 +183,6 @@ class NewsFragment(): BaseFragment(), NewsView{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
-        
         //paging 3
         newPaging()
         //crashing app when provide it by dagger

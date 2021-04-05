@@ -125,4 +125,7 @@
     <string name="admUsers">Администраторы</string>
     <string name="can_not_upload_video">Не могу загрузить видео</string>
     <string name="can_not_upload_audio">Не могу загрузить аудио</string>
+    <string name="reply">Ответить</string>
+    <string name="expand">Развернуть</string>
+    <string name="publish">Опубликовать</string>
 </resources>

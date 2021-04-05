@@ -25,8 +25,6 @@ import com.intergroupapplication.data.network.AmazonApi
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.ImageUploadingException
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
-import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.nbsp.materialfilepicker.MaterialFilePicker
 import id.zelory.compressor.Compressor
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers

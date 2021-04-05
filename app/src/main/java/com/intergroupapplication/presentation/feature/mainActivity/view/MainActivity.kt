@@ -1,10 +1,8 @@
 package com.intergroupapplication.presentation.feature.mainActivity.view
 
 
-import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,12 +10,12 @@ import android.content.ServiceConnection
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.os.*
-import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.*
 import com.intergroupapplication.R
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.initializators.InitializerLocal
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
@@ -33,7 +31,6 @@ import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
-
 
 class MainActivity : FragmentActivity() {
 
@@ -55,11 +52,8 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var initializerAppodeal: InitializerLocal
 
-    private var exitHandler: Handler? = null
-
-    private var doubleBackToExitPressedOnce = false
-
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
+    @Inject
+    lateinit var userSession: UserSession
 
     /**
      *  Billing
@@ -74,15 +68,20 @@ class MainActivity : FragmentActivity() {
                             Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_LONG).show()
                         }
                         if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
-                            doRestart(this@MainActivity)
+                            withContext(Main) {
+                                Toast.makeText(this@MainActivity, "BILLING RESPONCE OK", Toast.LENGTH_LONG).show()
+                            }
                         }
                         if (disableAdsPurchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                            Toast.makeText(this@MainActivity, "DISABLE ADS SUBSCRIBED", Toast.LENGTH_LONG).show()
+                            withContext(Main) {
+                                Toast.makeText(this@MainActivity, "DISABLE ADS SUBSCRIBED", Toast.LENGTH_LONG).show()
+                            }
+                            userSession.isAdEnabled = false
                         }
-
                     }
                 }
             }
+
     private lateinit var billingClient: BillingClient
     private var skuDetails: List<SkuDetails> = listOf()
 
@@ -112,7 +111,7 @@ class MainActivity : FragmentActivity() {
     }
 
 
-    suspend fun bindMediaService(mediaUrl: String):IGMediaService.ServiceBinder? {
+    suspend fun bindMediaService():IGMediaService.ServiceBinder? {
         return suspendCoroutine {
             /**
              * Create our connection to the service to be used in our bindService call.
@@ -134,11 +133,10 @@ class MainActivity : FragmentActivity() {
                         it.resumeWith(Result.success(service))
                     }
                 }
-
             }
 
             val intent = Intent(this, IGMediaService::class.java)
-            intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
+            //intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
 
@@ -173,6 +171,7 @@ class MainActivity : FragmentActivity() {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
                     querySkuDetails()
+                    restoreSubscriptions()
                 }
             }
 
@@ -181,6 +180,13 @@ class MainActivity : FragmentActivity() {
                 // Google Play by calling the startConnection() method.
             }
         })
+    }
+
+    private fun restoreSubscriptions() {
+        val purchases = billingClient.queryPurchases(BillingClient.SkuType.SUBS).purchasesList
+        val disableAdsPurchase = purchases?.find { it.sku == DISABLE_ADS_ID }
+        val isDisableAdsActive = disableAdsPurchase?.isAutoRenewing ?: false
+        userSession.isAdEnabled = !isDisableAdsActive
     }
 
     private fun querySkuDetails() {
@@ -210,45 +216,6 @@ class MainActivity : FragmentActivity() {
             }
         }
         return null
-    }
-
-    fun doRestart(c: Context?) {
-        try {
-            //check if the context is given
-            if (c != null) {
-                //fetch the packagemanager so we can get the default launch activity
-                // (you can replace this intent with any other activity if you want
-                val pm = c.packageManager
-                //check if we got the PackageManager
-                if (pm != null) {
-                    //create the intent with the default start activity for your application
-                    val mStartActivity = pm.getLaunchIntentForPackage(
-                            c.packageName
-                    )
-                    if (mStartActivity != null) {
-                        mStartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        //create a pending intent so the application is restarted after System.exit(0) was called.
-                        // We use an AlarmManager to call this intent in 100ms
-                        val mPendingIntentId = 223344
-                        val mPendingIntent = PendingIntent
-                                .getActivity(c, mPendingIntentId, mStartActivity,
-                                        PendingIntent.FLAG_CANCEL_CURRENT)
-                        val mgr = c.getSystemService(ALARM_SERVICE) as AlarmManager
-                        mgr[AlarmManager.RTC, System.currentTimeMillis() + 100] = mPendingIntent
-                        //kill the application
-                        System.exit(0)
-                    } else {
-                        Log.e(TAG, "Was not able to restart application, mStartActivity null")
-                    }
-                } else {
-                    Log.e(TAG, "Was not able to restart application, PM null")
-                }
-            } else {
-                Log.e(TAG, "Was not able to restart application, Context null")
-            }
-        } catch (ex: Exception) {
-            Log.e(TAG, "Was not able to restart application")
-        }
     }
 
     fun bill() {

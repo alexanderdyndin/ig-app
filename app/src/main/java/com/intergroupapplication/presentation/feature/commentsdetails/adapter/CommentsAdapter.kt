@@ -129,30 +129,31 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 val name = item.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}" }
                         ?: let { itemView.resources.getString(R.string.unknown_user) }
-                commentUserName.text = name
-                commentUserId.text = context.getString(R.string.id,
+                userName.text = name
+                idUser.text = context.getString(R.string.id,
                         item.commentOwner?.user ?: "нет id")
-                commentText.text = item.text
+                postText.text = item.text
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            commentPrescription.text = it
+                            timeComment.text = it
                         }, {
                             Timber.e(it)
                         }))
-                commentAvatar.run {
+                userAvatarHolder.run {
                     doOrIfNull(item.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
                             { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
                 }
-                reply.setOnClickListener {
+                replyButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
-                doOrIfNull(item.answerTo, { //todo починить
-                    responseToOtherComment.text = context.getString(R.string.response_to,
-                            getUserNameByCommentId(it))
-                }, { responseToOtherComment.text = "" })
-                settingsComment.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id)) }
+//                doOrIfNull(item.answerTo, { //todo починить
+//                    responseToOtherComment.text = context.getString(R.string.response_to,
+//                            getUserNameByCommentId(it))
+//                }, { responseToOtherComment.text = "" })
+                idcGroupUser.text = itemView.context.getString(R.string.idc, item.id)
+                settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id)) }
 
             }
         }

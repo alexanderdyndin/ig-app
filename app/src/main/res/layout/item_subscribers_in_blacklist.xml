@@ -66,9 +66,8 @@
         android:id="@+id/settingsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
         android:contentDescription="btn"
-        android:src="@drawable/ic_setting_sub"
+        android:background="@drawable/ic_setting_sub"
         app:layout_constraintEnd_toEndOf="@+id/bgListResize"
         app:layout_constraintTop_toTopOf="@+id/bgListResize" />
 
