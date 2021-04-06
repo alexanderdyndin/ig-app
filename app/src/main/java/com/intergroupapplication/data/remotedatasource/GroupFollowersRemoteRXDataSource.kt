@@ -3,7 +3,7 @@ package com.intergroupapplication.data.remotedatasource
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
 import com.intergroupapplication.data.mapper.FollowersGroupMapper
-import com.intergroupapplication.data.model.group_user_followers.GroupUserFollowersDto
+import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import io.reactivex.Single
@@ -32,7 +32,7 @@ class GroupFollowersRemoteRXDataSource (
                 .invoke(key)
                 .subscribeOn(Schedulers.io())
                 .map { groupUserFollowersDto ->
-                    // todo сделать нормально
+                    // todo сделать нормально: добавить filter = admins в запрос
                     if (isAdministrators) {
                         groupUserFollowersDto.results = groupUserFollowersDto.results.filter { result ->
                             result.isAdmin ?: false

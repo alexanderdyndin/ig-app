@@ -26,7 +26,7 @@
                 layout="@layout/creategroup_toolbar_layout" />
 
             <EditText
-                android:id="@+id/activity_main__search_input"
+                android:id="@+id/searchEditText"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:background="@drawable/bg_search"
@@ -62,7 +62,7 @@
                 app:tabTextColor="@color/NoActiveText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_main__search_input" >
+                app:layout_constraintTop_toBottomOf="@+id/searchEditText" >
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
