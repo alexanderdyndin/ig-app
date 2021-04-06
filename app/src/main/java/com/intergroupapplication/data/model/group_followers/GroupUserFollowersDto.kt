@@ -1,4 +1,4 @@
-package com.intergroupapplication.data.model.group_user_followers
+package com.intergroupapplication.data.model.group_followers
 
 
 data class GroupUserFollowersDto(

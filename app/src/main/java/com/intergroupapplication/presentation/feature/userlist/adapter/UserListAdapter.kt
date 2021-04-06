@@ -15,7 +15,7 @@ class UserListAdapter : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserL
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<GroupUserEntity>() {
             override fun areItemsTheSame(oldItem: GroupUserEntity, newItem: GroupUserEntity): Boolean {
-                return oldItem == newItem
+                return oldItem.idProfile == newItem.idProfile
             }
 
             override fun areContentsTheSame(oldItem: GroupUserEntity, newItem: GroupUserEntity): Boolean {

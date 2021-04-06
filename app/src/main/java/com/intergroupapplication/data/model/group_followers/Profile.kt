@@ -1,4 +1,4 @@
-package com.intergroupapplication.data.model.group_user_followers
+package com.intergroupapplication.data.model.group_followers
 
 
 import com.google.gson.annotations.SerializedName

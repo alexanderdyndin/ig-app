@@ -1,7 +1,7 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
-import com.intergroupapplication.data.model.group_user_followers.GroupUserFollowersDto
+import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -142,8 +142,7 @@ interface AppApi {
     @GET("groups/{group_id}/followers/")
     fun getGroupFollowers(
             @Path("group_id") groupId: String,
-            @Query("page") page: Int,
-            @Query("search") search: String = ""
+            @Query("page") page: Int
     ): Single<GroupUserFollowersDto>
 
     @DELETE("groups/posts/{id}/")
