@@ -44,6 +44,7 @@
     <color name="colorLightBlue">#68B7FF</color>
     <color name="colorLightPunk">#FF8096</color>
     <color name="NoActiveText">#2A5879</color>
+    <color name="NoActiveTextLight">#547B84</color>
     <color name="textLight">#A9F0FF</color>
     <color name="red">#FF1313</color>
     <color name="colorInput">#12161E</color>
@@ -54,6 +55,9 @@
     <color name="colorBlue">#2972FF</color>
     <color name="colorPink2">#FF5C70</color>
     <color name="image_toolbar_color">#25000000</color>
-    <color name="GreyElement">#2C3444</color>
+    <color name="greyElement">#2C3444</color>
+    <color name="darkGreen">#24465B</color>
+    <color name="blackout">#CC12161E</color>
+
 
 </resources>

@@ -13,52 +13,9 @@
         android:orientation="vertical"
         tools:context=".presentation.feature.createpost.view.CreatePostFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mainBlack"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_toolbarback"
-                android:src="@drawable/ic_back"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/backToolbarTittle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Создать пост"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:fontFamily="@font/play_bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-                app:layout_constraintEnd_toStartOf="@+id/textView"
-                app:layout_constraintStart_toEndOf="@+id/imageButton"
-                app:layout_constraintTop_toTopOf="@+id/imageButton" />
-
-            <TextView
-                android:id="@+id/textView"
-                style="@style/TextDark12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_publish"
-                android:drawableRight="@drawable/ic_check_black"
-                android:paddingRight="4dp"
-                android:text="Опубликовать"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            android:id="@+id/navigationToolbar"
+            layout="@layout/createpost_toolbar_layout" />
 
         <LinearLayout
             android:id="@+id/btnLine"
@@ -68,7 +25,7 @@
             android:background="@color/colorInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
+            app:layout_constraintTop_toBottomOf="@id/navigationToolbar">
 
             <TextView
                 android:id="@+id/postFromWhom"
@@ -77,7 +34,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/btn_post_fill"
+                android:background="@drawable/btn_r_down_angle_blue"
                 android:text="От имени группы"
                 style="@style/TextDark12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/bgEndComment"
@@ -91,7 +48,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/btn_post_fill"
+                android:background="@drawable/btn_r_down_angle_blue"
                 android:text="Сейчас"
                 style="@style/TextDark12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/bgEndComment"
@@ -163,12 +120,12 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/editpostgalery1" />
 
-                        <ImageView
+                        <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_margin="8dp"
-                            android:src="@drawable/ic_edit_delete" />
+                            android:background="@drawable/ic_edit_delete" />
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
@@ -190,12 +147,12 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/editpostgalery2" />
 
-                        <ImageView
+                        <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_margin="8dp"
-                            android:src="@drawable/ic_edit_delete" />
+                            android:background="@drawable/ic_edit_delete" />
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
@@ -217,12 +174,12 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/editpostgalery3" />
 
-                        <ImageView
+                        <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_margin="8dp"
-                            android:src="@drawable/ic_edit_delete" />
+                            android:background="@drawable/ic_edit_delete" />
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
@@ -244,12 +201,12 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/editpostgalery4" />
 
-                        <ImageView
+                        <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_margin="8dp"
-                            android:src="@drawable/ic_edit_delete" />
+                            android:background="@drawable/ic_edit_delete" />
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
@@ -271,12 +228,12 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/editpostgalery5" />
 
-                        <ImageView
+                        <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_margin="8dp"
-                            android:src="@drawable/ic_edit_delete" />
+                            android:background="@drawable/ic_edit_delete" />
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
@@ -298,12 +255,12 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/editpostgalery6" />
 
-                        <ImageView
+                        <ImageButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_margin="8dp"
-                            android:src="@drawable/ic_edit_delete" />
+                            android:background="@drawable/ic_edit_delete" />
 
                     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
@@ -488,12 +445,12 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_margin="8dp"
-                        android:src="@drawable/ic_edit_delete"
+                        android:background="@drawable/ic_edit_delete"
                         app:layout_constraintEnd_toEndOf="@+id/video"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -639,13 +596,13 @@
                         app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
                         app:layout_constraintTop_toTopOf="@id/startLineSeekBar" />
 
-                    <ImageView
+                    <ImageButton
                         android:id="@+id/delMusic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginBottom="2dp"
-                        android:src="@drawable/ic_del_post_music"
+                        android:layout_marginTop="@dimen/little_margin"
+                        android:layout_marginBottom="@dimen/little_margin"
+                        android:background="@drawable/ic_del_nobg"
                         app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
@@ -697,7 +654,7 @@
             android:id="@+id/secondPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_second_panel"
+            android:background="@drawable/bg_colorinput_radius_2dp"
             android:orientation="horizontal"
             android:padding="4dp"
             android:layout_marginBottom="3dp"
@@ -762,7 +719,7 @@
             android:orientation="horizontal"
             android:padding="4dp"
             android:layout_marginBottom="3dp"
-            android:background="@drawable/bg_second_panel"
+            android:background="@drawable/bg_colorinput_radius_2dp"
             app:layout_constraintBottom_toTopOf="@+id/iconPanel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -816,7 +773,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:gravity="center"
-            android:background="@drawable/bg_second_panel"
+            android:background="@drawable/bg_colorinput_radius_2dp"
             android:orientation="horizontal"
             android:padding="4dp"
             app:layout_constraintBottom_toTopOf="@+id/iconPanel"

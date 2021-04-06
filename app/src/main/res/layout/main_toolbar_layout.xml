@@ -46,6 +46,20 @@
             app:layout_constraintTop_toTopOf="@+id/groupCreate__headerBg"
             android:drawableLeft="@drawable/icon_menu" />
 
+<!-- Новая кнопка -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Создать группу"
+            style="@style/TextDark12sp"
+            android:paddingBottom="2dp"
+            android:background="@drawable/selector_btn_create_group"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/groupCreate__headerBg" />
+
+<!-- Эту убираем -->
         <TextView
             android:id="@+id/createGroup"
             android:layout_width="wrap_content"

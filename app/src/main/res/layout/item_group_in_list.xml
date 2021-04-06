@@ -14,11 +14,18 @@
         android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginRight="4dp"
-        android:background="@drawable/bg_list"
+        android:background="@drawable/bg_colorinput_radius_4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_list"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/item_group__bg_list"
+        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list" />
 
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/group_avatar"
