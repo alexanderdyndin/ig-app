@@ -53,6 +53,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
         const val GROUP_ID = "group_id"
+        const val IS_ADMIN = "is_admin"
         const val POST_ID = "post_id"
         const val FRAGMENT_RESULT = "fragmentResult"
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
@@ -68,6 +69,7 @@ class GroupFragment() : BaseFragment(), GroupView,
     private lateinit var groupId: String
 
     private var isGroupCreatedNow = false
+    private var isAdmin = false
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
@@ -160,7 +162,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         appbar.addOnOffsetChangedListener(this)
         presenter.getGroupDetailInfo(groupId)
         groupStrength.setOnClickListener {
-            val data = bundleOf(GROUP_ID to groupId)
+            val data = bundleOf(GROUP_ID to groupId, IS_ADMIN to isAdmin)
             findNavController().navigate(R.id.action_groupActivity_to_userListFragment, data)
         }
         newPaging()
@@ -322,6 +324,7 @@ class GroupFragment() : BaseFragment(), GroupView,
 
     private fun renderAdminPage() {
         //todo разобраться с падением приложения при создании поста в только что созданной группе
+        isAdmin = true
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
             openCreatePost(groupId)
