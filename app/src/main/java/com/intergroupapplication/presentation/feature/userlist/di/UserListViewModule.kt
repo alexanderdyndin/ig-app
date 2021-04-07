@@ -3,8 +3,11 @@ package com.intergroupapplication.presentation.feature.userlist.di
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
 import com.intergroupapplication.di.scope.PerFragment
+import com.intergroupapplication.presentation.base.FrescoImageLoader
+import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
@@ -31,23 +34,33 @@ class UserListViewModule {
 
     @PerFragment
     @Provides
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
+
+    @PerFragment
+    @Provides
+    fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
+            ImageLoadingDelegate(imageLoader)
+
+    @PerFragment
+    @Provides
     @Named("all")
-    fun provideUserListAdapterAll(): UserListAdapter {
-        return UserListAdapter()
+    fun provideUserListAdapterAll(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
+        return UserListAdapter(imageLoadingDelegate)
     }
 
     @PerFragment
     @Provides
     @Named("blocked")
-    fun provideUserListAdapterBlocked(): UserListAdapter {
-        return UserListAdapter()
+    fun provideUserListAdapterBlocked(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
+        return UserListAdapter(imageLoadingDelegate)
     }
 
     @PerFragment
     @Provides
     @Named("administrators")
-    fun provideUserListAdapterAdministrators(): UserListAdapter {
-        return UserListAdapter()
+    fun provideUserListAdapterAdministrators(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
+        return UserListAdapter(imageLoadingDelegate)
     }
 
     @PerFragment
