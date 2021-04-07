@@ -20,6 +20,7 @@ import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.CommentEntity
+import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.getDateDescribeByString
@@ -28,6 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_comment.view.*
+import kotlinx.android.synthetic.main.item_comment_answer.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
 import timber.log.Timber
 
@@ -44,6 +46,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private const val NATIVE_WITHOUT_ICON = 4
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
+        private const val ANSWER_HOLDER = 228
         private val diffUtil = object : DiffUtil.ItemCallback<CommentEntity>() {
             override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
                 return if (oldItem is CommentEntity.Comment && newItem is CommentEntity.Comment) {
@@ -66,9 +69,12 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         }
         var replyListener: (commentEntity: CommentEntity.Comment) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
+        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: CommentEntity.Comment, position: Int) -> Unit = { _, _, _, _ -> }
+        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
+        var USER_ID: Int? = null
     }
 
 
@@ -99,25 +105,34 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         .inflate(R.layout.include_native_ads, parent, false)
                 NativeCustomAdViewHolder(view)
             }
+            DEFAULT_HOLDER -> {
+                CommentViewHolder(parent.inflate(R.layout.item_comment))
+            }
             else -> {
-                return CommentViewHolder(parent.inflate(R.layout.item_comment))
+                CommentAnswerViewHolder(parent.inflate(R.layout.item_comment_answer))
             }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
-            if (holder is CommentViewHolder)
-                holder.bind(it as CommentEntity.Comment)
-            else if (holder is NativeAdViewHolder) {
-                holder.fillNative((it as CommentEntity.AdEntity).nativeAd)
+            when (holder) {
+                is CommentViewHolder -> holder.bind(it as CommentEntity.Comment)
+                is CommentAnswerViewHolder -> holder.bind(it as CommentEntity.Comment)
+                is NativeAdViewHolder -> holder.fillNative((it as CommentEntity.AdEntity).nativeAd)
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is CommentEntity.Comment -> DEFAULT_HOLDER
+        val item = getItem(position)
+        return when (item) {
+            is CommentEntity.Comment -> {
+                if (item.answerTo == null)
+                    DEFAULT_HOLDER
+                else
+                    ANSWER_HOLDER
+            }
             is CommentEntity.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
         }
@@ -141,6 +156,8 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         }, {
                             Timber.e(it)
                         }))
+                postDislike.text = item.reacts.dislikesCount.toString()
+                postLike.text = item.reacts.likesCount.toString()
                 userAvatarHolder.run {
                     doOrIfNull(item.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
                             { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
@@ -148,30 +165,94 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 replyButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
-//                doOrIfNull(item.answerTo, { //todo починить
-//                    responseToOtherComment.text = context.getString(R.string.response_to,
-//                            getUserNameByCommentId(it))
-//                }, { responseToOtherComment.text = "" })
-                idcGroupUser.text = itemView.context.getString(R.string.idc, item.id)
-                settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id)) }
-
-            }
-        }
-
-        private fun getUserNameByCommentId(commentId: String): String {
-            val unknown = view.resources.getString(R.string.unknown)
-            this@CommentsAdapter.snapshot().items.let {
-                for (comment in it) {
-                    if (comment is CommentEntity.Comment) {
-                        if (comment.id == commentId) {
-                            return comment.commentOwner?.firstName ?: unknown
-                        }
-                    }
+                postDislikes.setOnClickListener {
+                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
+                postLikes.setOnClickListener {
+                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                }
+                idcGroupUser.text = itemView.context.getString(R.string.idc, item.id)
+                settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
+
             }
-            return unknown
         }
 
+        private fun showPopupMenu(view: View, id: Int, userId: Int?) {
+            val popupMenu = PopupMenu(view.context, view)
+            popupMenu.inflate(R.menu.settings_menu)
+            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.complaint -> complaintListener.invoke(id)
+                    R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
+                }
+                return@setOnMenuItemClickListener true
+            }
+            popupMenu.show()
+        }
+    }
+
+    inner class CommentAnswerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(item: CommentEntity.Comment) {
+            with(itemView) {
+                idcGroupUser2.text = itemView.context.getString(R.string.idc, item.id)
+                compositeDisposable.add(getDateDescribeByString(item.date)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            timeComment2.text = it
+                        }, {
+                            Timber.e(it)
+                        }))
+                userName2.text = item.commentOwner
+                        ?.let { "${it.firstName} ${it.secondName}" }
+                        ?: let { itemView.resources.getString(R.string.unknown_user) }
+                idUser2.text = context.getString(R.string.id,
+                        item.commentOwner?.user ?: "нет id")
+                val replyName =  item.answerTo?.commentOwner
+                        ?.let { "${it.firstName} ${it.secondName}, " }
+                        ?: let { itemView.resources.getString(R.string.unknown_user) }
+                nameUserReply.text = replyName
+                postText2.text = item.text
+                endReply.text = itemView.context.getString(R.string.reply_to, item.answerTo?.idc.toString())
+                postDislike2.text = item.reacts.dislikesCount.toString()
+                postLike2.text = item.reacts.likesCount.toString()
+                userAvatarHolder2.run {
+                    doOrIfNull(item.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
+                            { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
+                }
+                userReplyAvatarHolder.run {
+                    doOrIfNull(item.answerTo?.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
+                            { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
+                }
+                replyAnswerButton.setOnClickListener {
+                    replyListener.invoke(item)
+                }
+                postDislikes2.setOnClickListener {
+                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
+                }
+                postLikes2.setOnClickListener {
+                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                }
+                settingsBtn2.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
+
+            }
+        }
+
+        private fun showPopupMenu(view: View, id: Int, userId: Int?) {
+            val popupMenu = PopupMenu(view.context, view)
+            popupMenu.inflate(R.menu.settings_menu)
+            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.complaint -> complaintListener.invoke(id)
+                    R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
+                }
+                return@setOnMenuItemClickListener true
+            }
+
+            popupMenu.show()
+        }
     }
 
     override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
@@ -179,19 +260,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         compositeDisposable.clear()
     }
 
-    private fun showPopupMenu(view: View, id: Int) {
-        val popupMenu = PopupMenu(view.context, view)
-        popupMenu.inflate(R.menu.settings_menu)
-
-        popupMenu.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.complaint -> complaintListener.invoke(id)
-            }
-            return@setOnMenuItemClickListener true
-        }
-
-        popupMenu.show()
-    }
 
     internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
         private val nativeAdView: NativeAdView

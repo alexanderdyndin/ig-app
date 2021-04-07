@@ -149,7 +149,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
             )
         }
 
-
     }
 
     override fun viewCreated() {
@@ -173,40 +172,13 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         settingsPost.clicks()
                 .subscribe { showPopupMenu(settingsPost) }
                 .also { compositeDisposable.add(it) }
-        CommentsAdapter.complaintListener = { id -> presenter.complaintComment(id) }
+
         newpaging()
 
         swipeLayout.setOnRefreshListener {
             presenter.getPostDetailsInfo(groupPostEntity.id)
         }
-        postDislikesClickArea.setOnClickListener {
-            compositeDisposable.add(viewModel.setReact(isLike = groupPostEntity.reacts.isLike,
-                    isDislike = !groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        groupPostEntity.reacts = it
-                        postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
-                        postLike.text = groupPostEntity.reacts.likesCount.toString()
-                    },
-                            {
-                                errorHandler.handle(it)
-                            }))
-        }
-        postLikesClickArea.setOnClickListener {
-            compositeDisposable.add(viewModel.setReact(isLike = !groupPostEntity.reacts.isLike,
-                    isDislike = groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        groupPostEntity.reacts = it
-                        postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
-                        postLike.text = groupPostEntity.reacts.likesCount.toString()
-                    },
-                            {
-                                errorHandler.handle(it)
-                            }))
-        }
+
         imageBody.imageClick = { list, index ->
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
             findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
@@ -418,30 +390,47 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     private fun prepareAdapter() {
-        CommentsAdapter.replyListener = { comment ->
-            if (!swipeLayout.isRefreshing) {
-                val view = layoutInflater.inflate(R.layout.reply_comment_layout, null)
-                if (commentHolder.childCount > 1) {
-                    commentHolder.removeViewAt(0)
-                }
-                commentHolder.addView(view, 0)
-                view.responseToUser
-                        .apply {
-                            setOnClickListener {
-                                commentHolder.removeView(view)
+        with(CommentsAdapter) {
+            replyListener = { comment ->
+                if (!swipeLayout.isRefreshing) {
+                    val view = layoutInflater.inflate(R.layout.reply_comment_layout, null)
+                    if (commentHolder.childCount > 1) {
+                        commentHolder.removeViewAt(0)
+                    }
+                    commentHolder.addView(view, 0)
+                    view.responseToUser
+                            .apply {
+                                setOnClickListener {
+                                    commentHolder.removeView(view)
+                                }
+                                text = comment.commentOwner?.firstName
+                                        ?: getString(R.string.unknown_user)
+                                lastRepliedComment = comment.copy()
                             }
-                            text = comment.commentOwner?.firstName
-                                    ?: getString(R.string.unknown_user)
-                            lastRepliedComment = CommentEntity.Comment(
-                                    comment.id,
-                                    comment.text,
-                                    comment.date,
-                                    comment.commentOwner,
-                                    comment.answerTo
-                            )
-                        }
-                commentEditText.showKeyboard()
+                    commentEditText.showKeyboard()
+                }
             }
+            complaintListener = { id -> presenter.complaintComment(id) }
+            deleteClickListener = { id, pos ->
+                compositeDisposable.add(viewModel.deleteComment(id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ adapter.notifyItemRemoved(pos) },
+                                { errorHandler.handle(it) })
+                )
+            }
+            likeClickListener = { isLike, isDislike, comment, pos ->
+                compositeDisposable.add(viewModel.setCommentReact(isLike, isDislike, comment.id.toInt())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            comment.reacts = it
+                            adapter.notifyItemChanged(pos)
+                        },
+                                { errorHandler.handle(it) })
+                )
+            }
+            USER_ID = userSession.user?.id?.toInt()
         }
     }
 

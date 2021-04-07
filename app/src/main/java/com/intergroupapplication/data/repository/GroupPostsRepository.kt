@@ -5,13 +5,11 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.GroupPostMapper
+import com.intergroupapplication.data.mapper.ReactsMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.remotedatasource.GroupNewsRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
-import com.intergroupapplication.domain.entity.CreateGroupPostEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.domain.entity.ReactsEntity
-import com.intergroupapplication.domain.entity.ReactsEntityRequest
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import io.reactivex.Completable
@@ -25,8 +23,9 @@ import javax.inject.Inject
  */
 @ExperimentalCoroutinesApi
 class GroupPostsRepository @Inject constructor(private val api: AppApi,
-                                               private val groupPostMapper: GroupPostMapper)
-    : GroupPostGateway {
+                                               private val groupPostMapper: GroupPostMapper,
+                                               private val reactsMapper: ReactsMapper
+                                               ): GroupPostGateway {
 
     override fun getPostById(postId: String): Single<GroupPostEntity.PostEntity> {
         return api.getPostById(postId).map { groupPostMapper.mapToDomainEntity(it) }
@@ -38,7 +37,7 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                 .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
-    override fun getNewsPosts(): Flowable<PagingData<GroupPostEntity>> {
+    override fun getNewsPosts(): Flowable<PagingData<NewsEntity>> {
         return Pager(
                 config = PagingConfig(
                         pageSize = 20,
@@ -62,8 +61,8 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
     }
 
     override fun setReact(reactsEntityRequest: ReactsEntityRequest, postId: String): Single<ReactsEntity> {
-        return api.setReact(groupPostMapper.mapToDto(reactsEntityRequest), postId)
-                .map { groupPostMapper.mapToDomainEntity(it) }
+        return api.setReact(reactsMapper.mapToDto(reactsEntityRequest), postId)
+                .map { reactsMapper.mapToDomainEntity(it) }
     }
 
     override fun deleteGroupPost(postId: String): Completable {

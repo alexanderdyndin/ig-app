@@ -39,6 +39,7 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
 
     fun mapToDataModel(from: AuthorEntity) =
             AuthorModel(
+                    from.id,
                     from.email,
                     from.isBlocked,
                     from.isVerified,
@@ -47,12 +48,14 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
 
     fun mapToDomainEntity(from: AuthorModel) =
             AuthorEntity(
+                    from.id,
                     from.email,
                     from.isBlocked,
                     from.isVerified,
                     from.timeBlocked,
                     mapToDomainEntity(from.profile))
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun mapToDataModel(from: CreateUserEntity) =
             UserProfileModelRequest(
                     firstName = from.firstName,

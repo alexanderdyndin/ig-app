@@ -132,6 +132,15 @@ class GroupFragment() : BaseFragment(), GroupView,
                                 errorHandler.handle(it)
                             }))
         }
+        GroupPostsAdapter.deleteClickListener = { id: Int, pos: Int ->
+            compositeDisposable.add(viewModel.deletePost(id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        adapter.notifyItemRemoved(pos) //todo сделать человеческое удаление
+                    }, { errorHandler.handle(it) })
+            )
+        }
         compositeDisposable.add(
                 viewModel.fetchPosts(groupId)
                         .subscribe {
@@ -247,6 +256,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         doOrIfNull(groupEntity.avatar, {
             groupAvatarHolder.showAvatar(it)
         }, { groupAvatarHolder.showAvatar(R.drawable.variant_10) })
+        GroupPostsAdapter.isOwner = userSession.user?.id == groupEntity.owner
     }
 
     override fun showGroupInfoLoading(show: Boolean) {

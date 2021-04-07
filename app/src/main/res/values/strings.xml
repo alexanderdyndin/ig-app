@@ -158,4 +158,5 @@
     <string name="my_music">My music</string>
     <string name="music">Music</string>
     <string name="delete">Delete</string>
+    <string name="reply_to">Reply to IDC: %1$s</string>
 </resources>

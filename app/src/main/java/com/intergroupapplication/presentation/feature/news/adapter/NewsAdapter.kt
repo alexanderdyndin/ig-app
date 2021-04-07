@@ -16,6 +16,7 @@ import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.presentation.customview.AudioGalleryView
 import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
@@ -31,7 +32,7 @@ import timber.log.Timber
 
 
 class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
-    : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
+    : PagingDataAdapter<NewsEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
         private const val NATIVE_TYPE_NEWS_FEED = 1
@@ -40,20 +41,20 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private const val NATIVE_WITHOUT_ICON = 4
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
-        private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntity>() {
-            override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
-                return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
+        private val diffUtil = object : DiffUtil.ItemCallback<NewsEntity>() {
+            override fun areItemsTheSame(oldItem: NewsEntity, newItem: NewsEntity): Boolean {
+                return if (oldItem is NewsEntity.Post && newItem is NewsEntity.Post) {
                     oldItem.id == newItem.id
-                } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
+                } else if (oldItem is NewsEntity.AdEntity && newItem is NewsEntity.AdEntity) {
                     oldItem.position == newItem.position
                 } else {
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
-                return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
+            override fun areContentsTheSame(oldItem: NewsEntity, newItem: NewsEntity): Boolean {
+                return if (oldItem is NewsEntity.Post && newItem is NewsEntity.Post) {
                     oldItem == newItem
-                } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
+                } else if (oldItem is NewsEntity.AdEntity && newItem is NewsEntity.AdEntity) {
                     oldItem == newItem
                 } else {
                     false
@@ -68,6 +69,8 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
+        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
+        var USER_ID: Int? = null
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -106,17 +109,17 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
             if (holder is PostViewHolder)
-                holder.bind(it as GroupPostEntity.PostEntity)
+                holder.bind(it as NewsEntity.Post)
             else if (holder is NativeAdViewHolder) {
-                holder.fillNative((it as GroupPostEntity.AdEntity).nativeAd)
+                holder.fillNative((it as NewsEntity.AdEntity).nativeAd)
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is GroupPostEntity.PostEntity -> DEFAULT_HOLDER
-            is GroupPostEntity.AdEntity -> AD_TYPE
+            is NewsEntity.Post -> DEFAULT_HOLDER
+            is NewsEntity.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
         }
     }
@@ -127,71 +130,73 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
         val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
 
-        fun bind(item: GroupPostEntity.PostEntity) {
+        fun bind(item: NewsEntity.Post) {
             with(itemView) {
-                idpGroupPost.text = context.getString(R.string.idp, item.idp.toString())
-                postLike.text = item.reacts.likesCount.toString()
-                postDislike.text = item.reacts.dislikesCount.toString()
-                compositeDisposable.add(getDateDescribeByString(item.date)
+                idpGroupPost.text = context.getString(R.string.idp, item.post.idp.toString())
+                postLike.text = item.post.reacts.likesCount.toString()
+                postDislike.text = item.post.reacts.dislikesCount.toString()
+                compositeDisposable.add(getDateDescribeByString(item.post.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = item.commentsCount
-                item.postText.let { it ->
+                commentBtn.text = item.post.commentsCount
+                item.post.postText.let { it ->
                     if (it.isNotEmpty()) {
-                        postText.text = item.postText
+                        postText.text = item.post.postText
                         postText.show()
                         postText.setOnClickListener {
-                            commentClickListener.invoke(item)
+                            commentClickListener.invoke(item.post)
                         }
                     } else {
                         postText.gone()
                     }
                 }
-                groupName.text = item.groupInPost.name
-                subCommentBtn.text = item.bells.count.toString()
+                groupName.text = item.post.groupInPost.name
+                subCommentBtn.text = item.post.bells.count.toString()
 
-                anchorBtn.isVisible = item.isPinned
+                anchorBtn.isVisible = item.post.isPinned
 
                 commentBtn.setOnClickListener {
-                    commentClickListener.invoke(item)
+                    commentClickListener.invoke(item.post)
                 }
                 postAvatarHolder.setOnClickListener {
-                    groupClickListener.invoke(item.groupInPost.id)
+                    groupClickListener.invoke(item.post.groupInPost.id)
                 }
                 headerPostFromGroup.setOnClickListener {
-                    groupClickListener.invoke(item.groupInPost.id)
+                    groupClickListener.invoke(item.post.groupInPost.id)
                 }
                 postLikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(!item.post.reacts.isLike, item.post.reacts.isDislike, item.post, layoutPosition)
                 }
                 postDislikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(item.post.reacts.isLike, !item.post.reacts.isDislike, item.post, layoutPosition)
                 }
-                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }
 
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                doOrIfNull(item.post.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
 
-                videoContainer.setVideos(item.videos, item.videosExpanded)
-                videoContainer.expand = { item.videosExpanded = it }
+                videoContainer.setVideos(item.post.videos, item.post.videosExpanded)
+                videoContainer.expand = { item.post.videosExpanded = it }
 
-                audioContainer.setAudios(item.audios, item.audiosExpanded)
-                audioContainer.expand = { item.audiosExpanded = it }
+                audioContainer.setAudios(item.post.audios, item.post.audiosExpanded)
+                audioContainer.expand = { item.post.audiosExpanded = it }
 
-                imageContainer.setImages(item.images, item.imagesExpanded)
+                imageContainer.setImages(item.post.images, item.post.imagesExpanded)
                 imageContainer.imageClick = imageClickListener
-                imageContainer.expand = { item.imagesExpanded = it }
+                imageContainer.expand = { item.post.imagesExpanded = it }
             }
         }
 
 
-        private fun showPopupMenu(view: View, id: Int) {
+        private fun showPopupMenu(view: View, postId: Int, newsId: Int, userId: Int) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
+            popupMenu.menu.findItem(R.id.delete).isVisible = USER_ID == userId
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.complaint -> complaintListener.invoke(id)
+                    R.id.complaint -> complaintListener.invoke(postId)
+                    R.id.delete -> deleteClickListener.invoke(newsId, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true
             }

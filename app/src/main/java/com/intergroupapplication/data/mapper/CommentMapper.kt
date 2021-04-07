@@ -11,24 +11,42 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 03/09/2018 at project InterGroupApplication.
  */
-class CommentMapper @Inject constructor(private val userProfileMapper: UserProfileMapper) {
+class CommentMapper @Inject constructor(private val userProfileMapper: UserProfileMapper,
+                                        private val reactsMapper: ReactsMapper,
+                                        private val mediaMapper: MediaMapper
+) {
 
     fun mapToDomainEntity(from: CommentModel): CommentEntity.Comment =
             CommentEntity.Comment(
                     id = from.id,
+                    commentOwner = userProfileMapper.mapToDomainEntity(from.commentOwner),
+                    reacts = reactsMapper.mapToDomainEntity(from.reacts),
+                    images = from.images.map { mediaMapper.mapToDomainEntity(it) },
+                    audios = from.audios.map { mediaMapper.mapToDomainEntity(it) },
+                    videos = from.videos.map { mediaMapper.mapToDomainEntity(it) },
                     text = from.text,
                     date = from.date,
-                    commentOwner = userProfileMapper.mapToDomainEntity(from.commentOwner),
-                    answerTo = from.answerTo
+                    isActive = from.isActive,
+                    idc = from.idc,
+                    post = from.post,
+                    answerTo = if (from.answerTo != null) mapToDomainEntity(from.answerTo) else null
             )
 
     fun mapToDto(from: CommentEntity.Comment): CommentModel =
             CommentModel(
                     id = from.id,
+                    commentOwner = if (from.commentOwner != null)
+                        userProfileMapper.mapToDataModel(from.commentOwner) else null,
+                    reacts = reactsMapper.mapToDto(from.reacts),
+                    images = from.images.map { mediaMapper.mapToDto(it) },
+                    audios = from.audios.map { mediaMapper.mapToDto(it) },
+                    videos = from.videos.map { mediaMapper.mapToDto(it) },
                     text = from.text,
                     date = from.date,
-                    commentOwner = userProfileMapper.mapToDataModel(from.commentOwner!!),
-                    answerTo = from.answerTo
+                    isActive = from.isActive,
+                    idc = from.idc,
+                    post = from.post,
+                    answerTo = if (from.answerTo != null) mapToDto(from.answerTo) else null
             )
 
     fun mapToDto(from: CreateCommentEntity): CreateCommentModel =

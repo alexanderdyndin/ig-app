@@ -65,6 +65,8 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
+        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
+        var isOwner = false
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -186,10 +188,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-
+            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)
+                    R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true
             }

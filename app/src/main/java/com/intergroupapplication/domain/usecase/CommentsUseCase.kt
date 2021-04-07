@@ -1,6 +1,7 @@
 package com.intergroupapplication.domain.usecase
 
 import com.intergroupapplication.domain.entity.CreateCommentEntity
+import com.intergroupapplication.domain.entity.ReactsEntityRequest
 import com.intergroupapplication.domain.gateway.CommentGateway
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import javax.inject.Inject
@@ -18,5 +19,8 @@ class CommentsUseCase @Inject constructor(private val complaintsGateway: Complai
     fun createAnswer(commentId: String, comment: String) =
             commentGateway.createAnswerToComment(commentId, CreateCommentEntity(comment))
 
-    fun deleteComment(commentId: String) = commentGateway.deleteComment(commentId)
+    fun deleteComment(commentId: Int) = commentGateway.deleteComment(commentId.toString())
+
+    fun setReact(isLike: Boolean, isDislike: Boolean, commentId: Int) =
+            commentGateway.setCommentReact(commentId.toString(), ReactsEntityRequest(isLike, isDislike))
 }

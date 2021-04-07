@@ -52,19 +52,19 @@ FakeData {
                             "6",true,null,"no subject","no rules",
                             false,"18+"))
 
-    fun getCommentsList(): MutableList<CommentEntity.Comment> =
-            Arrays.asList(CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-                    CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
-                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
-                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
-                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
-                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
-                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"))
+//    fun getCommentsList(): MutableList<CommentEntity.Comment> =
+//            Arrays.asList(CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//                    CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
+//                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
+//                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
+//                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
+//                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"),
+//                    CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//                            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15"))
 
 //    fun getGroupPostsList(): List<GroupPostEntity> =
 //            Arrays.asList(GroupPostEntity("1", "Простое описание поста",
@@ -130,11 +130,11 @@ FakeData {
     fun getLoginEntity(): LoginEntity =
             LoginEntity("temp@mail.ru", "112358")
 
-    fun getAnswerCommentEntity(): CommentEntity.Comment = CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15")
-
-    fun getCommentEntity(): CommentEntity.Comment = CommentEntity.Comment("0", "New comment", "2018-03-15.45",
-            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), null)
+//    fun getAnswerCommentEntity(): CommentEntity.Comment = CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), "15")
+//
+//    fun getCommentEntity(): CommentEntity.Comment = CommentEntity.Comment("0", "New comment", "2018-03-15.45",
+//            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), null)
 
     fun getLoginModel(): LoginModel =
             LoginModel("temp@mail.ru", "112358")

@@ -138,6 +138,16 @@ class NewsFragment(): BaseFragment(), NewsView{
                         errorHandler.handle(it)
                     }))
         }
+        NewsAdapter.deleteClickListener = { id: Int, pos: Int ->
+            compositeDisposable.add(viewModel.deletePost(id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        adapter.notifyItemRemoved(pos) //todo сделать человеческое удаление
+                    }, { errorHandler.handle(it) })
+            )
+        }
+        NewsAdapter.USER_ID = userSession.user?.id?.toInt()
         compositeDisposable.add(
                 viewModel.getNews()
                         .subscribe {

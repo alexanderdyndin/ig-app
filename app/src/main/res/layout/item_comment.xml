@@ -343,7 +343,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/bgEndComment"
         app:layout_constraintStart_toStartOf="@id/bgEndComment"
         app:layout_constraintTop_toTopOf="@id/bgEndComment"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <FrameLayout
             android:id="@+id/postDislikes"
@@ -351,7 +351,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/item_group__dislike"
+                android:id="@+id/postDislike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"

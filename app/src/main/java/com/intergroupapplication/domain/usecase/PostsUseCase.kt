@@ -27,7 +27,7 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
 
     fun sendComplaint(postId: Int) = complaintsGateway.complaintPost(postId)
 
-    fun deleteNewsPost(postId: String) = groupPostGateway.deleteNewsPost(postId)
+    fun deleteNewsPost(postId: Int) = groupPostGateway.deleteNewsPost(postId.toString())
 
-    fun deleteGroupPost(postId: String) = groupPostGateway.deleteGroupPost(postId)
+    fun deleteGroupPost(postId: Int) = groupPostGateway.deleteGroupPost(postId.toString())
 }

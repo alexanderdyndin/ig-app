@@ -13,6 +13,7 @@ import com.intergroupapplication.domain.usecase.CommentsUseCase
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import io.reactivex.Flowable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 class CommentsViewModel @Inject constructor(private val commentsUseCase: CommentsUseCase,
@@ -23,6 +24,7 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
             val ads = Appodeal.getNativeAds(1)
             return if (ads.isNotEmpty()) ads[0] else null
         }
+
 
     fun fetchComments(postId: String): Flowable<PagingData<CommentEntity>> {
         return commentsUseCase
@@ -52,4 +54,9 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
 
     fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
             postsUseCase.setReact(isLike, isDislike, postId)
+
+    fun setCommentReact(isLike: Boolean, isDislike: Boolean, commentId: Int) =
+            commentsUseCase.setReact(isLike, isDislike, commentId)
+
+    fun deleteComment(commentId: Int) = commentsUseCase.deleteComment(commentId)
 }

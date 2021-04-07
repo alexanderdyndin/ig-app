@@ -4,6 +4,8 @@ import androidx.paging.PagingData
 import com.intergroupapplication.data.model.CreateCommentModel
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.CreateCommentEntity
+import com.intergroupapplication.domain.entity.ReactsEntity
+import com.intergroupapplication.domain.entity.ReactsEntityRequest
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -17,4 +19,5 @@ interface CommentGateway {
     fun createAnswerToComment(answerToCommentId: String,
                               createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment>
     fun deleteComment(commentId: String): Completable
+    fun setCommentReact(commentId: String, reactsEntityRequest: ReactsEntityRequest): Single<ReactsEntity>
 }

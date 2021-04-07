@@ -9,6 +9,7 @@ import androidx.paging.rxjava2.cachedIn
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.Flowable
@@ -22,15 +23,15 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
-    fun getNews(): Flowable<PagingData<GroupPostEntity>> {
+    fun getNews(): Flowable<PagingData<NewsEntity>> {
         return useCase.getNews()
                 .map { pagingData ->
                     var i = -NewsAdapter.AD_FIRST - 1
                     pagingData.map {
-                        it as GroupPostEntity.PostEntity
+                        it as NewsEntity.Post
                     }
-                            .insertSeparators<GroupPostEntity.PostEntity, GroupPostEntity>
-                            { before: GroupPostEntity.PostEntity?, after: GroupPostEntity.PostEntity? ->
+                            .insertSeparators<NewsEntity.Post, NewsEntity>
+                            { before: NewsEntity.Post?, after: NewsEntity.Post? ->
                                 i++
                                 when {
                                     before == null -> null
@@ -38,7 +39,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                                     else -> if ( i % NewsAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
                                         if (nativeAdItem.also { nativeAd = it } != null) {
-                                            GroupPostEntity.AdEntity(i, nativeAd)
+                                            NewsEntity.AdEntity(i, nativeAd)
                                         } else null
                                     } else null
                                 }
@@ -49,5 +50,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
 
     fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
             useCase.setReact(isLike, isDislike, postId)
+
+    fun deletePost(postId: Int) = useCase.deleteNewsPost(postId)
 
 }

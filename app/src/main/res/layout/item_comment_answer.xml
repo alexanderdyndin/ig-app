@@ -28,7 +28,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2dp"
             android:paddingRight="4dp"
-            android:text="IDC:0002"
+            tools:text="IDC:0002"
             app:layout_constraintEnd_toStartOf="@+id/timeComment2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginRight="8dp"
-            android:text="04.12.2020 в 17:03  "
+            tools:text="04.12.2020 в 17:03  "
             android:textAlignment="textEnd"
             app:layout_constraintEnd_toStartOf="@+id/settingsBtn2"
             app:layout_constraintTop_toTopOf="parent" />
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:paddingRight="4dp"
-            android:text="Николай Захарович"
+            tools:text="Николай Захарович"
             app:layout_constraintEnd_toStartOf="@+id/settingsBtn2"
             app:layout_constraintStart_toStartOf="@+id/idcGroupUser2"
             app:layout_constraintTop_toBottomOf="@+id/idcGroupUser2" />
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:paddingBottom="1dp"
-            android:text="ID:0452"
+            tools:text="ID:0452"
             app:layout_constraintEnd_toEndOf="@+id/settingsBtn2"
             app:layout_constraintStart_toStartOf="@+id/idcGroupUser2"
             app:layout_constraintTop_toBottomOf="@+id/userName2" />
@@ -117,7 +117,7 @@
                 android:id="@+id/nameUserReply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Владислав Кутузов,"
+                tools:text="Владислав Кутузов,"
                 style="@style/TextAccent14sp"/>
 
             <TextView
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TextLight12sp"
-                android:text="Как твои дела?" />
+                tools:text="Как твои дела?" />
         </LinearLayout>
 
         <ImageView
@@ -133,7 +133,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="8dp"
-            android:background="@drawable/sticker_120x120"/>
+            android:background="@drawable/sticker_120x120"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -148,7 +149,7 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/bgEndComment2"
@@ -158,16 +159,16 @@
                 <FrameLayout
                     android:id="@+id/postDislikes2"
                     android:layout_width="70dp"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/item_group__dislike2"
+                        android:id="@+id/postDislike2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="4dp"
                         android:drawableLeft="@drawable/icon_dislike"
                         android:drawablePadding="4dp"
-                        android:text="150"
+                        tools:text="150"
                         style="@style/TextDislike14sp" />
                 </FrameLayout>
 
@@ -183,19 +184,20 @@
                         android:layout_marginLeft="4dp"
                         android:drawableLeft="@drawable/icon_like"
                         android:drawablePadding="4dp"
-                        android:text="999к"
+                        tools:text="999к"
                         style="@style/TextLike14sp" />
                 </FrameLayout>
             </LinearLayout>
 
             <TextView
+                android:id="@+id/replyAnswerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:layout_marginRight="8dp"
                 android:paddingTop="5dp"
                 android:background="@drawable/btn_reply"
-                android:text="Ответить"
+                android:text="@string/reply"
                 style="@style/TextDark10sp"
                 app:layout_constraintBottom_toBottomOf="@+id/bgEndComment2"
                 app:layout_constraintEnd_toEndOf="@+id/bgEndComment2"
@@ -208,7 +210,7 @@
                 android:gravity="center_vertical"
                 android:background="@drawable/bg_end_reply"
                 android:paddingLeft="8dp"
-                android:text="Ответил на IDC:0001"
+                tools:text="Ответил на IDC:0001"
                 style="@style/TextNoActive10sp"
                 app:layout_constraintTop_toBottomOf="@+id/bgEndComment2"
                 app:layout_constraintStart_toStartOf="@+id/bgEndComment2"
@@ -249,20 +251,29 @@
                 app:layout_constraintEnd_toEndOf="@+id/avaUserReplyComment"
                 app:layout_constraintTop_toTopOf="@+id/icReplyArrowFrom" />
 
-            <ImageView
+            <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/avaUserReplyComment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="47dp"
+                android:layout_height="47dp"
+                app:shape_clip_drawable="@drawable/avatar_group_list"
                 android:layout_marginTop="23dp"
-                android:background="@drawable/ava_user_reply_comments"
                 app:layout_constraintEnd_toEndOf="@+id/icReplyArrowFrom"
-                app:layout_constraintTop_toTopOf="@+id/icReplyArrowFrom"/>
+                app:layout_constraintTop_toTopOf="@+id/icReplyArrowFrom">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/userReplyAvatarHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:placeholderImage="@drawable/variant_10"/>
+
+            </com.github.florent37.shapeofview.ShapeOfView>
 
             <ImageView
                 android:id="@+id/icOnline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_online_reply"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/avaUserReplyComment"
                 app:layout_constraintEnd_toEndOf="@+id/avaUserReplyComment"
                 app:layout_constraintStart_toStartOf="@+id/avaUserReplyComment"
@@ -276,14 +287,24 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/headerReplyComments" />
 
-            <ImageView
+
+
+            <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/avaUserComment2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:shape_clip_drawable="@drawable/avatar_group_list"
                 android:layout_marginRight="1dp"
-                android:background="@drawable/ava_user_comments"
                 app:layout_constraintEnd_toEndOf="@+id/bgAvaComment2"
-                app:layout_constraintTop_toTopOf="@+id/bgAvaComment2" />
+                app:layout_constraintTop_toTopOf="@+id/bgAvaComment2">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/userAvatarHolder2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:placeholderImage="@drawable/variant_10"/>
+
+            </com.github.florent37.shapeofview.ShapeOfView>
 
             <ImageView
                 android:id="@+id/icOnline2"
@@ -293,7 +314,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/avaUserComment2"
                 app:layout_constraintEnd_toEndOf="@+id/avaUserComment2"
                 app:layout_constraintStart_toStartOf="@+id/avaUserComment2"
-                app:layout_constraintTop_toBottomOf="@+id/avaUserComment2" />
+                app:layout_constraintTop_toBottomOf="@+id/avaUserComment2"
+                android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

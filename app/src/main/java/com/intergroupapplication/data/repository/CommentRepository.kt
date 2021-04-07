@@ -5,13 +5,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.CommentMapper
+import com.intergroupapplication.data.mapper.ReactsMapper
 import com.intergroupapplication.data.model.CreateCommentModel
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.remotedatasource.CommentsRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
-import com.intergroupapplication.domain.entity.CommentEntity
-import com.intergroupapplication.domain.entity.CreateCommentEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.CommentGateway
 import io.reactivex.Completable
@@ -24,8 +23,9 @@ import javax.inject.Inject
  * Created by abakarmagomedov on 03/09/2018 at project InterGroupApplication.
  */
 class CommentRepository @Inject constructor(private val api: AppApi,
-                                            private val commentMapper: CommentMapper)
-    : CommentGateway {
+                                            private val commentMapper: CommentMapper,
+                                            private val reactsMapper: ReactsMapper
+                                            ): CommentGateway {
 
     @ExperimentalCoroutinesApi
     override fun getComments(postId: String): Flowable<PagingData<CommentEntity>> {
@@ -47,6 +47,11 @@ class CommentRepository @Inject constructor(private val api: AppApi,
 
     override fun deleteComment(commentId: String): Completable {
         return api.deleteComment(commentId)
+    }
+
+    override fun setCommentReact(commentId: String, reactsEntityRequest: ReactsEntityRequest): Single<ReactsEntity> {
+        return api.setCommentReact(reactsMapper.mapToDto(reactsEntityRequest), commentId)
+                .map { reactsMapper.mapToDomainEntity(it) }
     }
 
 }

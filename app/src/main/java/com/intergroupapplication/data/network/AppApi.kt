@@ -142,4 +142,8 @@ interface AppApi {
     @DELETE("groups/comments/{id}/")
     fun deleteComment(@Path("id") commentId: String): Completable
 
+    @POST("groups/comments/{comment_pk}/reacts/")
+    fun setCommentReact(@Body data: ReactsModelRequest,
+                 @Path("comment_pk") commentId: String): Single<ReactsModel>
+
 }

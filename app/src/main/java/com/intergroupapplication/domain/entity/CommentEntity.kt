@@ -7,10 +7,17 @@ import com.appodeal.ads.NativeAd
  */
 sealed class CommentEntity {
     data class Comment(val id: String,
-                             val text: String,
-                             val date: String,
-                             val commentOwner: CommentUserEntity?,
-                             val answerTo: String?) : CommentEntity() {
+                       val commentOwner: CommentUserEntity?,
+                       var reacts: ReactsEntity,
+                       val images: List<FileEntity>,
+                       val audios: List<AudioEntity>,
+                       val videos: List<FileEntity>,
+                       val text: String,
+                       val date: String,
+                       val isActive: Boolean,
+                       val idc: Int,
+                       val post: Int,
+                       val answerTo: Comment?) : CommentEntity() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
