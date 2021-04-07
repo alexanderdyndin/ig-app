@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupUserEntity
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
 import kotlinx.android.synthetic.main.item_subscribers_in_list.view.*
 
-class UserListAdapter : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserListViewHolder>(diffUtil) {
+class UserListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate) : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserListViewHolder>(diffUtil) {
 
     companion object {
         private val diffUtil = object : DiffUtil.ItemCallback<GroupUserEntity>() {
@@ -36,6 +37,7 @@ class UserListAdapter : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserL
     }
 
     inner class UserListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
         @SuppressLint("SetTextI18n")
         fun bind(item: GroupUserEntity) {
             itemView.run {
@@ -45,8 +47,10 @@ class UserListAdapter : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserL
                 item_group__comments.text = item.commentsCount.toString()
                 item_group__dislike.text = item.dislikeCount.toString()
                 item_group__like.text = item.dislikeCount.toString()
+
+                if (item.avatar.isNotEmpty()) imageLoadingDelegate.loadImageFromUrl(item.avatar, groupAvatarHolder)
+                else imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
             }
         }
     }
-
 }
