@@ -15,6 +15,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
+import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
@@ -28,9 +29,6 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class UserListFragment : BaseFragment(), UserListView {
-
-    private lateinit var groupId: String
-    private var isAdmin = false
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -72,6 +70,10 @@ class UserListFragment : BaseFragment(), UserListView {
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
     private lateinit var viewModel: UserListViewModel
+    private lateinit var groupId: String
+
+    private var isAdmin = false
+    private var currentScreen = 0
 
     override fun layoutRes() = R.layout.fragment_user_list
 
@@ -89,6 +91,14 @@ class UserListFragment : BaseFragment(), UserListView {
         super.onViewCreated(view, savedInstanceState)
 
         initPager()
+
+        followers_refresh.setOnRefreshListener {
+            when(currentScreen) {
+                0 -> adapterAll.refresh()
+                1 -> adapterBlocked.refresh()
+                2 -> adapterAdministrators.refresh()
+            }
+        }
     }
 
     override fun getSnackBarCoordinator(): ViewGroup? = userListCoordinator
@@ -100,6 +110,12 @@ class UserListFragment : BaseFragment(), UserListView {
 
         pager.apply {
             adapter = UserListsAdapter(adapterList)
+            val handler = ViewPager2Circular(this, followers_refresh)
+            handler.pageChanged = {
+                currentScreen = it
+            }
+            registerOnPageChangeCallback(handler)
+            (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
         setAdapter(adapterAll, adapterFooterAll)
         if (isAdmin) {
@@ -128,12 +144,14 @@ class UserListFragment : BaseFragment(), UserListView {
                     is LoadState.Loading -> {
                     }
                     is LoadState.Error -> {
+                        followers_refresh.isRefreshing = false
                         if (adapter.itemCount == 0) {
                             footer.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
+                        followers_refresh.isRefreshing = false
                     }
                 }
             }
