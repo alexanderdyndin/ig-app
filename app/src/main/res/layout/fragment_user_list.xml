@@ -51,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="39dp"
                 android:background="@drawable/bg_tabs"
+                android:visibility="gone"
                 app:tabBackground="@android:color/transparent"
                 app:tabGravity="center"
                 app:tabIndicatorColor="@color/colorAccent"

@@ -142,7 +142,8 @@ interface AppApi {
     @GET("groups/{group_id}/followers/")
     fun getGroupFollowers(
             @Path("group_id") groupId: String,
-            @Query("page") page: Int
+            @Query("page") page: Int,
+            @Query("filter") filter: String = "admins"
     ): Single<GroupUserFollowersDto>
 
     @DELETE("groups/posts/{id}/")

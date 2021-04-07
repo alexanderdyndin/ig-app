@@ -10,6 +10,6 @@ data class Result(
     val id: Int,
     @SerializedName("is_admin")
     val isAdmin: Boolean?,
-    val owner: String?,
+    val owner: Boolean?,
     val user: User
 )

@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
@@ -28,7 +29,8 @@ import javax.inject.Named
 
 class UserListFragment : BaseFragment(), UserListView {
 
-    lateinit var groupId: String
+    private lateinit var groupId: String
+    private var isAdmin = false
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -80,32 +82,44 @@ class UserListFragment : BaseFragment(), UserListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupId = requireArguments().getString(GROUP_ID)!!
+        isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
         showToast(groupId)
         navigationToolbar.toolbarTittle.text = getString(R.string.allUsers)
         navigationToolbar.toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         super.onViewCreated(view, savedInstanceState)
 
-        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
-        adapterList.add(adapterAllAdd)
-        adapterList.add(adapterBlockedAdd)
-        adapterList.add(adapterAdministratorAdd)
-        pager.apply {
-            adapter = UserListsAdapter(adapterList)
-        }
-
-        val tabTitles = arrayOf("Followers", "Blocked", "Administrators")
-        TabLayoutMediator(slidingCategories, pager) { tab, position ->
-            tab.text = tabTitles[position]
-        }.attach()
-
-        setAdapter(adapterAll, adapterFooterAll)
-        setAdapter(adapterBlocked, adapterFooterBlocked)
-        setAdapter(adapterAdministrators, adapterFooterAdministrators)
-
-        getData()
+        initPager()
     }
 
     override fun getSnackBarCoordinator(): ViewGroup? = userListCoordinator
+
+    private fun initPager() {
+
+        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
+        adapterList.add(adapterAllAdd)
+
+        pager.apply {
+            adapter = UserListsAdapter(adapterList)
+        }
+        setAdapter(adapterAll, adapterFooterAll)
+        if (isAdmin) {
+            adapterList.add(adapterBlockedAdd)
+            adapterList.add(adapterAdministratorAdd)
+
+            slidingCategories.visibility = View.VISIBLE
+
+            val tabTitles = arrayOf("Followers", "Blocked", "Administrators")
+            TabLayoutMediator(slidingCategories, pager) { tab, position ->
+                tab.text = tabTitles[position]
+            }.attach()
+
+            setAdapter(adapterBlocked, adapterFooterBlocked)
+            setAdapter(adapterAdministrators, adapterFooterAdministrators)
+            getAllData()
+        } else {
+            getFollowers()
+        }
+    }
 
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
         lifecycleScope.launch {
@@ -127,7 +141,7 @@ class UserListFragment : BaseFragment(), UserListView {
     }
 
     @SuppressLint("CheckResult")
-    private fun getData() {
+    private fun getFollowers() {
         viewModel.getFollowers(groupId).subscribe(
                 {
                     adapterAll.submitData(lifecycle, it)
@@ -135,6 +149,11 @@ class UserListFragment : BaseFragment(), UserListView {
                 {
                     it.printStackTrace()
                 })
+    }
+
+    @SuppressLint("CheckResult")
+    private fun getAllData() {
+        getFollowers()
 
         viewModel.getAdministrators(groupId).subscribe(
                 {
@@ -144,8 +163,6 @@ class UserListFragment : BaseFragment(), UserListView {
                     it.printStackTrace()
                 }
         )
-
-
     }
 
 }

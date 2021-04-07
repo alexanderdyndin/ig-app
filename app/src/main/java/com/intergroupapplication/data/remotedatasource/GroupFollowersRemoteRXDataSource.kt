@@ -35,7 +35,9 @@ class GroupFollowersRemoteRXDataSource (
                     // todo сделать нормально: добавить filter = admins в запрос
                     if (isAdministrators) {
                         groupUserFollowersDto.results = groupUserFollowersDto.results.filter { result ->
-                            result.isAdmin ?: false
+                            val isAdmin = result.isAdmin ?: false
+                            val isOwner = result.owner ?: false
+                            isAdmin || isOwner
                         }
                     }
                     groupUserFollowersDto
