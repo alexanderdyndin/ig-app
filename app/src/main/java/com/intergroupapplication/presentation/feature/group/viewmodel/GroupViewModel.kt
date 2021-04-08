@@ -51,4 +51,8 @@ class GroupViewModel @Inject constructor(private val useCase: PostsUseCase): Vie
             useCase.setReact(isLike, isDislike, postId)
 
     fun deletePost(postId: Int) = useCase.deleteGroupPost(postId)
+
+    fun setBell(postId: String) = useCase.setBell(postId)
+
+    fun deleteBell(postId: String) = useCase.deleteBell(postId)
 }

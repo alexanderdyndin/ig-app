@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.*
+import com.intergroupapplication.domain.exception.FieldException
+import com.intergroupapplication.domain.exception.NotFoundException
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
@@ -31,6 +33,7 @@ import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.auth_loader.progressBar
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
@@ -107,40 +110,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         groupId = arguments?.getString(GROUP_ID)!!
         isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
         viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
-        GroupPostsAdapter.commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
-        GroupPostsAdapter.complaintListener = { id -> presenter.complaintPost(id) }
-        GroupPostsAdapter.imageClickListener = { list: List<FileEntity>, i: Int ->
-            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-            findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
-        }
-        GroupPostsAdapter.likeClickListener = { like, dislike, item, position ->
-            compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe {
-                        item.isLoading = true
-                        adapter.notifyItemChanged(position)
-                    }
-                    .doFinally {
-                        item.isLoading = false
-                        adapter.notifyItemChanged(position)
-                    }
-                    .subscribe({
-                        item.reacts = it
-                    },
-                            {
-                                errorHandler.handle(it)
-                            }))
-        }
-        GroupPostsAdapter.deleteClickListener = { id: Int, pos: Int ->
-            compositeDisposable.add(viewModel.deletePost(id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        adapter.notifyItemRemoved(pos) //todo сделать человеческое удаление
-                    }, { errorHandler.handle(it) })
-            )
-        }
+        prepareAdapter()
         compositeDisposable.add(
                 viewModel.fetchPosts(groupId)
                         .subscribe {
@@ -170,7 +140,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         newPaging()
     }
 
-    fun newPaging() {
+    private fun newPaging() {
         swipeLayout.setOnRefreshListener {
             adapter.refresh()
         }
@@ -208,9 +178,94 @@ class GroupFragment() : BaseFragment(), GroupView,
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-//        connectMediaBrowser()
+    private fun prepareAdapter() {
+        GroupPostsAdapter.apply {
+            commentClickListener = { openCommentDetails(InfoForCommentEntity(it)) }
+            complaintListener = { id -> presenter.complaintPost(id) }
+            imageClickListener = { list: List<FileEntity>, i: Int ->
+                val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+                findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
+            }
+            likeClickListener = { like, dislike, item, position ->
+                if (!item.isLoading) {
+                    compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe {
+                                item.isLoading = true
+                                adapter.notifyItemChanged(position)
+                            }
+                            .doFinally {
+                                item.isLoading = false
+                                adapter.notifyItemChanged(position)
+                            }
+                            .subscribe({
+                                item.reacts = it
+                            },
+                                    {
+                                        errorHandler.handle(it)
+                                    }))
+                }
+            }
+            deleteClickListener = { id: Int, pos: Int ->
+                compositeDisposable.add(viewModel.deletePost(id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            adapter.notifyItemRemoved(pos) //todo сделать человеческое удаление
+                        }, { errorHandler.handle(it) })
+                )
+            }
+            bellClickListener = { item: GroupPostEntity.PostEntity, pos: Int ->
+                if (!item.isLoading) {
+                    if (item.bells.isActive) {
+                        compositeDisposable.add(viewModel.deleteBell(item.id)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe { item.isLoading = true }
+                                .doFinally {
+                                    item.isLoading = false
+                                    adapter.notifyItemChanged(pos)
+                                }
+                                .subscribe({
+                                    item.bells.isActive = false
+                                    item.bells.count--
+                                }, { exception ->
+                                    if (exception is NotFoundException) {
+                                        item.bells.isActive = false
+                                        item.bells.count--
+                                    } else
+                                        errorHandler.handle(exception)
+                                }))
+                    } else {
+                        compositeDisposable.add(viewModel.setBell(item.id)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe { item.isLoading = true }
+                                .doFinally {
+                                    item.isLoading = false
+                                    adapter.notifyItemChanged(pos)
+                                }
+                                .subscribe({
+                                    item.bells.isActive = true
+                                    item.bells.count++
+                                }, { exception ->
+                                    if (exception is CompositeException) {
+                                        exception.exceptions.forEach { ex ->
+                                            (ex as? FieldException)?.let {
+                                                if (it.field == "post") {
+                                                    item.bells.isActive = true
+                                                    item.bells.count++
+                                                }
+                                            }
+                                        }
+                                    } else
+                                        errorHandler.handle(exception)
+                                }))
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -221,7 +276,6 @@ class GroupFragment() : BaseFragment(), GroupView,
     override fun onStop() {
         appbar.removeOnOffsetChangedListener(this)
         super.onStop()
-//        disconnectMediaBrowser()
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {

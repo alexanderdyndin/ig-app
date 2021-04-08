@@ -23,6 +23,8 @@ import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
 import com.intergroupapplication.domain.entity.UserEntity
+import com.intergroupapplication.domain.exception.FieldException
+import com.intergroupapplication.domain.exception.NotFoundException
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
@@ -41,6 +43,7 @@ import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.workable.errorhandler.Action
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
@@ -208,7 +211,7 @@ class NewsFragment(): BaseFragment(), NewsView{
         }
     }
 
-    fun setAdapter() {
+    private fun setAdapter() {
         NewsAdapter.apply {
             complaintListener = { presenter.complaintPost(it) }
             commentClickListener = {
@@ -259,23 +262,45 @@ class NewsFragment(): BaseFragment(), NewsView{
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnSubscribe { item.isLoading = true }
-                                .doFinally { item.isLoading = false }
+                                .doFinally {
+                                    item.isLoading = false
+                                    adapter.notifyItemChanged(pos)
+                                }
                                 .subscribe({
                                     item.bells.isActive = false
                                     item.bells.count--
-                                    adapter.notifyItemChanged(pos)
-                                }, { errorHandler.handle(it) }))
+                                }, { exception ->
+                                    if (exception is NotFoundException) {
+                                        item.bells.isActive = false
+                                        item.bells.count--
+                                    } else
+                                        errorHandler.handle(exception)
+                                }))
                     } else {
                         compositeDisposable.add(viewModel.setBell(item.id)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnSubscribe { item.isLoading = true }
-                                .doFinally { item.isLoading = false }
+                                .doFinally {
+                                    item.isLoading = false
+                                    adapter.notifyItemChanged(pos)
+                                }
                                 .subscribe({
                                     item.bells.isActive = true
                                     item.bells.count++
-                                    adapter.notifyItemChanged(pos)
-                                }, { errorHandler.handle(it) }))
+                                }, { exception ->
+                                    if (exception is CompositeException) {
+                                        exception.exceptions.forEach { ex ->
+                                            (ex as? FieldException)?.let {
+                                                if (it.field == "post") {
+                                                    item.bells.isActive = true
+                                                    item.bells.count++
+                                                }
+                                            }
+                                        }
+                                    } else
+                                        errorHandler.handle(exception)
+                                }))
                     }
                 }
             }

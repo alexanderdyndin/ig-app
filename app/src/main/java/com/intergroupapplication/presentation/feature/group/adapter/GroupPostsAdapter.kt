@@ -21,6 +21,7 @@ import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -66,6 +67,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
+        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var isOwner = false
     }
 
@@ -144,7 +146,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
                 commentBtn.text = item.commentsCount
                 item.postText.let { it ->
-                    if (!it.isEmpty()) {
+                    if (it.isNotEmpty()) {
                         postText.text = item.postText
                         postText.show()
                         postText.setOnClickListener {
@@ -159,6 +161,9 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
                 anchorBtn.isVisible = item.isPinned
 
+                subCommentBtn.setOnClickListener {
+                    bellClickListener.invoke(item, layoutPosition)
+                }
                 commentBtn.setOnClickListener {
                     commentClickListener.invoke(item)
                 }

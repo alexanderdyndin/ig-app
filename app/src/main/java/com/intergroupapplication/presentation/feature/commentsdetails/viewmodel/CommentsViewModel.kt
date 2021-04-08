@@ -59,4 +59,8 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
             commentsUseCase.setReact(isLike, isDislike, commentId)
 
     fun deleteComment(commentId: Int) = commentsUseCase.deleteComment(commentId)
+
+    fun setBell(postId: String) = postsUseCase.setBell(postId)
+
+    fun deleteBell(postId: String) = postsUseCase.deleteBell(postId)
 }

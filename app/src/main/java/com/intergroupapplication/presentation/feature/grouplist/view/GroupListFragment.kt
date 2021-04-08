@@ -74,9 +74,6 @@ class GroupListFragment(): BaseFragment(), GroupListView {
     fun providePresenter(): GroupListPresenter = presenter
 
     @Inject
-    lateinit var sessionStorage: UserSession
-
-    @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
@@ -96,13 +93,9 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     private lateinit var profileAvatarHolder: AvatarImageUploadingView
 
-    var groupInfoEntity: GroupInfoEntity? = null
-
     var groupId: String? = null
 
     var currentScreen = 0
-
-    val subscribeDisposable = CompositeDisposable()
 
     @Inject
     @Named("all")
@@ -115,18 +108,6 @@ class GroupListFragment(): BaseFragment(), GroupListView {
     @Inject
     @Named("owned")
     lateinit var adapterOwned: GroupListAdapter
-
-    @Inject
-    @Named("all")
-    lateinit var adapterAllAd: ConcatAdapter
-
-    @Inject
-    @Named("subscribed")
-    lateinit var adapterSubscribedAd: ConcatAdapter
-
-    @Inject
-    @Named("owned")
-    lateinit var adapterOwnedAd: ConcatAdapter
 
     @Inject
     @Named("footerAll")
@@ -142,9 +123,6 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     @Inject
     lateinit var viewPagerAdapter: GroupListsAdapter
-
-//    @Inject
-//    lateinit var layoutManager: RecyclerView.LayoutManager
 
 
     private val textWatcher = object : TextWatcher {
@@ -162,8 +140,9 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), modelFactory)[GroupListViewModel::class.java]
+        viewModel = ViewModelProvider(this, modelFactory)[GroupListViewModel::class.java]
         fetchGroups()
+        prepareAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (doubleBackToExitPressedOnce) {
@@ -207,8 +186,22 @@ class GroupListFragment(): BaseFragment(), GroupListView {
         }
         createGroup.visibility = View.VISIBLE
         createGroup.setOnClickListener { openCreateGroup() }
+
+        swipe_groups.setOnRefreshListener {
+            when (currentScreen) {
+                0 -> adapterAll.refresh()
+                1 -> adapterSubscribed.refresh()
+                2-> adapterOwned.refresh()
+            }
+        }
+        setAdapter(adapterAll, adapterFooterAll)
+        setAdapter(adapterSubscribed, adapterFooterSub)
+        setAdapter(adapterOwned, adapterFooterAdm)
+    }
+
+    fun prepareAdapter() {
         with (GroupListAdapter) {
-            userID = sessionStorage.user?.id
+            userID = userSession.user?.id
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
@@ -216,7 +209,7 @@ class GroupListFragment(): BaseFragment(), GroupListView {
             //todo не всегда подписка/отписка отображается в UI
             subscribeClickListener = { group, pos ->
                 if (!group.isSubscribing) {
-                    subscribeDisposable.add(viewModel.subscribeGroup(group.id)
+                    compositeDisposable.add(viewModel.subscribeGroup(group.id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnSubscribe {
@@ -267,7 +260,7 @@ class GroupListFragment(): BaseFragment(), GroupListView {
             }
             unsubscribeClickListener = { group, pos ->
                 if (!group.isSubscribing) {
-                    subscribeDisposable.add(viewModel.unsubscribeGroup(group.id)
+                    compositeDisposable.add(viewModel.unsubscribeGroup(group.id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnSubscribe {
@@ -319,16 +312,6 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                 }
             }
         }
-        swipe_groups.setOnRefreshListener {
-            when (currentScreen) {
-                0 -> adapterAll.refresh()
-                1 -> adapterSubscribed.refresh()
-                2-> adapterOwned.refresh()
-            }
-        }
-        setAdapter(adapterAll, adapterFooterAll)
-        setAdapter(adapterSubscribed, adapterFooterSub)
-        setAdapter(adapterOwned, adapterFooterAdm)
     }
 
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {

@@ -41,6 +41,7 @@ sealed class GroupPostEntity {
                         other as PostEntity
 
                         if (id != other.id) return false
+                        if (bells != other.bells) return false
                         if (groupInPost != other.groupInPost) return false
                         if (postText != other.postText) return false
                         if (date != other.date) return false
@@ -52,14 +53,23 @@ sealed class GroupPostEntity {
                         if (activeCommentsCount != other.activeCommentsCount) return false
                         if (isActive != other.isActive) return false
                         if (isOffered != other.isOffered) return false
+                        if (isPinned != other.isPinned) return false
+                        if (reacts != other.reacts) return false
+                        if (idp != other.idp) return false
                         if (images != other.images) return false
                         if (audios != other.audios) return false
                         if (videos != other.videos) return false
+                        if (isLoading != other.isLoading) return false
+                        if (imagesExpanded != other.imagesExpanded) return false
+                        if (audiosExpanded != other.audiosExpanded) return false
+                        if (videosExpanded != other.videosExpanded) return false
+
                         return true
                 }
 
                 override fun hashCode(): Int {
                         var result = id.hashCode()
+                        result = 31 * result + bells.hashCode()
                         result = 31 * result + groupInPost.hashCode()
                         result = 31 * result + postText.hashCode()
                         result = 31 * result + date.hashCode()
@@ -71,11 +81,19 @@ sealed class GroupPostEntity {
                         result = 31 * result + activeCommentsCount.hashCode()
                         result = 31 * result + isActive.hashCode()
                         result = 31 * result + isOffered.hashCode()
+                        result = 31 * result + isPinned.hashCode()
+                        result = 31 * result + reacts.hashCode()
+                        result = 31 * result + idp
                         result = 31 * result + images.hashCode()
                         result = 31 * result + audios.hashCode()
                         result = 31 * result + videos.hashCode()
+                        result = 31 * result + isLoading.hashCode()
+                        result = 31 * result + imagesExpanded.hashCode()
+                        result = 31 * result + audiosExpanded.hashCode()
+                        result = 31 * result + videosExpanded.hashCode()
                         return result
                 }
+
         }
         data class AdEntity(val position: Int, val nativeAd: NativeAd?) : GroupPostEntity() {
                 override fun equals(other: Any?): Boolean {

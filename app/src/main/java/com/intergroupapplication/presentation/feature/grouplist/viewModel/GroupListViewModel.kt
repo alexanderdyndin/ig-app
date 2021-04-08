@@ -9,6 +9,7 @@ import com.appodeal.ads.Appodeal
 import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.usecase.GroupUseCase
+import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -106,8 +107,6 @@ class GroupListViewModel @Inject constructor(
     fun unsubscribeGroup(groupID: String): Completable {
         return useCase.unsubscribeGroup(groupID)
     }
-
-
 
 
 }

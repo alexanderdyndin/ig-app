@@ -29,6 +29,7 @@ import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
+import com.intergroupapplication.domain.exception.NotFoundException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
@@ -38,6 +39,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.adapter.Co
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
+import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
@@ -274,13 +276,108 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         groupName.text = groupPostEntity.groupInPost.name
         postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
         postLike.text = groupPostEntity.reacts.likesCount.toString()
+        subCommentBtn.text = groupPostEntity.bells.count.toString()
 
         doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                 { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
+
         imageBody.setImages(groupPostEntity.images)
         videoBody.setVideos(groupPostEntity.videos)
         audioBody.setAudios(groupPostEntity.audios)
+
+        subCommentBtn.setOnClickListener {
+            if (!groupPostEntity.isLoading) {
+                if (groupPostEntity.bells.isActive) {
+                    compositeDisposable.add(viewModel.deleteBell(groupPostEntity.id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe { groupPostEntity.isLoading = true }
+                            .doFinally {
+                                groupPostEntity.isLoading = false
+                                showPostDetailInfo(groupPostEntity)
+                            }
+                            .subscribe({
+                                groupPostEntity.bells.isActive = false
+                                groupPostEntity.bells.count--
+                            }, { exception ->
+                                if (exception is NotFoundException) {
+                                    groupPostEntity.bells.isActive = false
+                                    groupPostEntity.bells.count--
+                                } else
+                                    errorHandler.handle(exception)
+                            }))
+                } else {
+                    compositeDisposable.add(viewModel.setBell(groupPostEntity.id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe { groupPostEntity.isLoading = true }
+                            .doFinally {
+                                groupPostEntity.isLoading = false
+                                showPostDetailInfo(groupPostEntity)
+                            }
+                            .subscribe({
+                                groupPostEntity.bells.isActive = true
+                                groupPostEntity.bells.count++
+
+                            }, { exception ->
+                                if (exception is CompositeException) {
+                                    exception.exceptions.forEach { ex ->
+                                        (ex as? FieldException)?.let {
+                                            if (it.field == "post") {
+                                                groupPostEntity.bells.isActive = true
+                                                groupPostEntity.bells.count++
+                                            }
+                                        }
+                                    }
+                                } else
+                                    errorHandler.handle(exception)
+                            }))
+                }
+            }
+        }
+        postLikesClickArea.setOnClickListener {
+            if (!groupPostEntity.isLoading) {
+                compositeDisposable.add(viewModel.setReact(isLike = !groupPostEntity.reacts.isLike,
+                        isDislike = groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {
+                            groupPostEntity.isLoading = true
+                        }
+                        .doFinally {
+                            groupPostEntity.isLoading = false
+                            showPostDetailInfo(groupPostEntity)
+                        }
+                        .subscribe({
+                            groupPostEntity.reacts = it
+                        },
+                                {
+                                    errorHandler.handle(it)
+                                }))
+            }
+        }
+        postDislikesClickArea.setOnClickListener {
+            if (!groupPostEntity.isLoading) {
+                compositeDisposable.add(viewModel.setReact(isLike = groupPostEntity.reacts.isLike,
+                        isDislike = !groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {
+                            groupPostEntity.isLoading = true
+                        }
+                        .doFinally {
+                            groupPostEntity.isLoading = false
+                            showPostDetailInfo(groupPostEntity)
+                        }
+                        .subscribe({
+                            groupPostEntity.reacts = it
+                        },
+                                {
+                                    errorHandler.handle(it)
+                                }))
+            }
+        }
     }
 
 
