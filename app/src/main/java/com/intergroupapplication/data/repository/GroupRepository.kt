@@ -4,11 +4,13 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
+import com.intergroupapplication.data.mapper.BansGroupMapper
 import com.intergroupapplication.data.mapper.FollowersGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.remotedatasource.GroupBansRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
 import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
@@ -28,7 +30,9 @@ import javax.inject.Inject
 class GroupRepository @Inject constructor(
         private val api: AppApi,
         private val groupMapper: GroupMapper,
-        private val followersGroupMapper: FollowersGroupMapper) : GroupGateway {
+        private val followersGroupMapper: FollowersGroupMapper,
+        private val bansGroupMapper: BansGroupMapper
+) : GroupGateway {
 
     override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group> =
             api.changeGroupAvatar(groupId, UpdateAvatarModel(avatar))
@@ -122,6 +126,15 @@ class GroupRepository @Inject constructor(
                     val followersRemote = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, true)
                     followersRemote.applyAdministratorsList()
                     followersRemote
+                }
+        ).flowable
+    }
+
+    override fun getBans(groupId: String): Flowable<PagingData<GroupUserEntity>> {
+        return Pager(
+                config = defaultPagingConfig,
+                pagingSourceFactory = {
+                    GroupBansRemoteRXDataSource(api, bansGroupMapper, groupId)
                 }
         ).flowable
     }

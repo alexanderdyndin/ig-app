@@ -7,12 +7,6 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/mainBlack">
 
-    <!--com.github.florent37.shapeofview.shapes.PolygonView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:shape_polygon_noOfSides="4">
-
-    </com.github.florent37.shapeofview.shapes.PolygonView-->
 
     <View
         android:id="@+id/bgListResize"
@@ -186,6 +180,7 @@
             app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
             app:layout_constraintStart_toStartOf="@+id/constraintLayout"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:visibility="gone"

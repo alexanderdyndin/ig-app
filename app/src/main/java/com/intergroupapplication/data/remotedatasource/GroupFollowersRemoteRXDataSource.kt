@@ -49,7 +49,8 @@ class GroupFollowersRemoteRXDataSource (
                     LoadResult.Page(
                             it.users,
                             if (it.previous != null) key - 1 else null,
-                            if (it.previous != null) key + 1 else null)
+                            if (it.previous != null) key + 1 else null
+                    )
                 }
                 .onErrorReturn { e ->
                     LoadResult.Error(e)
