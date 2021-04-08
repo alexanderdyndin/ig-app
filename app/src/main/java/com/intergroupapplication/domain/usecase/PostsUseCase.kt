@@ -1,5 +1,6 @@
 package com.intergroupapplication.domain.usecase
 
+import com.intergroupapplication.domain.entity.BellFollowEntity
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.ReactsEntityRequest
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
@@ -30,4 +31,11 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
     fun deleteNewsPost(postId: Int) = groupPostGateway.deleteNewsPost(postId.toString())
 
     fun deleteGroupPost(postId: Int) = groupPostGateway.deleteGroupPost(postId.toString())
+
+    fun getBell(postId: String) = groupPostGateway.getPostBell(postId)
+
+    fun deleteBell(postId: String) = groupPostGateway.deleteBell(postId)
+
+    fun setBell(postId: String) =
+            groupPostGateway.setPostBell(BellFollowEntity(null, null, postId.toInt()))
 }

@@ -63,7 +63,7 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
 
     fun mapNewsListToDomainEntity(from: NewsDto): NewsPostsEntity {
         val regex = Regex(".*page=")
-        val previous = if (from.previous == "http://backend-v2:8080/groups/news/") { //TODO попросить пофиксить бэкэнд
+        val previous = if (from.previous == "http://backend-v2:8080/groups/news/") {
             1
         } else {
             from.previous?.replace(regex, "")?.toInt()
@@ -130,5 +130,19 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                     id = from.id,
                     post = mapToDomainEntity(from.post),
                     user = from.user
+            )
+
+    fun mapToDto(from: BellFollowEntity): BellFollowModel =
+            BellFollowModel(
+                    from.id,
+                    from.user,
+                    from.post
+            )
+
+    fun mapToDomainEntity(from: BellFollowModel): BellFollowEntity =
+            BellFollowEntity(
+                    from.id,
+                    from.user,
+                    from.post
             )
 }

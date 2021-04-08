@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class BellsEntity(
-        val count: Int,
-        val isActive: Boolean
+        var count: Int,
+        var isActive: Boolean
 ): Parcelable

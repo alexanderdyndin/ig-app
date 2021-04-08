@@ -56,7 +56,7 @@ android {
         targetSdkVersion 30
         versionCode 1000009
 //        androidGitVersion.code()
-        versionName "1.6.0.4"
+        versionName "1.6.0.7"
 //        androidGitVersion.name()
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true

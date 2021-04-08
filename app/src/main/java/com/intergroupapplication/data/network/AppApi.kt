@@ -146,4 +146,13 @@ interface AppApi {
     fun setCommentReact(@Body data: ReactsModelRequest,
                  @Path("comment_pk") commentId: String): Single<ReactsModel>
 
+    @POST("groups/bells/")
+    fun setBell(@Body bellFollowModel: BellFollowModel): Single<BellFollowModel>
+
+    @GET("groups/bells/{post__id}/")
+    fun getBell(@Path("post__id") postId: String): Single<BellFollowModel>
+
+    @DELETE("groups/bells/{post__id}/")
+    fun deleteBell(@Path("post__id") postId: String): Completable
+
 }

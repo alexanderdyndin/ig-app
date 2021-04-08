@@ -125,8 +125,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position)
-        return when (item) {
+        return when (val item = getItem(position)) {
             is CommentEntity.Comment -> {
                 if (item.answerTo == null)
                     DEFAULT_HOLDER

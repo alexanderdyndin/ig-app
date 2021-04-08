@@ -18,6 +18,7 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
+import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListsAdapter
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -172,6 +173,13 @@ class GroupListViewModule {
     ): ConcatAdapter {
         return groupListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
     }
+
+    @PerFragment
+    @Provides
+    fun provideGroupListsAdapter(@Named("all") adapterAll: ConcatAdapter,
+                                 @Named("subscribed") adapterSub: ConcatAdapter,
+                                 @Named("owned") adapterAdm: ConcatAdapter
+    ): GroupListsAdapter = GroupListsAdapter(listOf(adapterAll,adapterSub,adapterAdm))
 
 //    @PerFragment
 //    @Provides

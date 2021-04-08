@@ -70,6 +70,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
+        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var USER_ID: Int? = null
     }
 
@@ -156,6 +157,9 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
                 anchorBtn.isVisible = item.post.isPinned
 
+                subCommentBtn.setOnClickListener {
+                    bellClickListener.invoke(item.post, layoutPosition)
+                }
                 commentBtn.setOnClickListener {
                     commentClickListener.invoke(item.post)
                 }

@@ -73,4 +73,16 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         return api.deleteNewsPost(postId)
     }
 
+    override fun getPostBell(postId: String): Single<BellFollowEntity> {
+        return api.getBell(postId).map { groupPostMapper.mapToDomainEntity(it) }
+    }
+
+    override fun setPostBell(bellFollowEntity: BellFollowEntity): Single<BellFollowEntity> {
+        return api.setBell(groupPostMapper.mapToDto(bellFollowEntity)).map { groupPostMapper.mapToDomainEntity(it) }
+    }
+
+    override fun deleteBell(postId: String): Completable {
+        return api.deleteBell(postId)
+    }
+
 }

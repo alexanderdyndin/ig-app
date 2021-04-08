@@ -140,6 +140,9 @@ class GroupListFragment(): BaseFragment(), GroupListView {
     @Named("footerAdm")
     lateinit var adapterFooterAdm: PagingLoadingAdapter
 
+    @Inject
+    lateinit var viewPagerAdapter: GroupListsAdapter
+
 //    @Inject
 //    lateinit var layoutManager: RecyclerView.LayoutManager
 
@@ -181,12 +184,12 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
 
-        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
-        adapterList.add(adapterAllAd)
-        adapterList.add(adapterSubscribedAd)
-        adapterList.add(adapterOwnedAd)
+//        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
+//        adapterList.add(adapterAllAd)
+//        adapterList.add(adapterSubscribedAd)
+//        adapterList.add(adapterOwnedAd)
         pager.apply {
-            adapter = GroupListsAdapter(adapterList)
+            adapter = viewPagerAdapter
             val handler = ViewPager2Circular(this, swipe_groups)
             handler.pageChanged = {
                 currentScreen = it
@@ -212,106 +215,108 @@ class GroupListFragment(): BaseFragment(), GroupListView {
             }
             //todo не всегда подписка/отписка отображается в UI
             subscribeClickListener = { group, pos ->
-                subscribeDisposable.add(viewModel.subscribeGroup(group.id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {
-                            group.isSubscribing = true
-                            when (currentScreen) {
-                                0 -> {
-                                    adapterAll.notifyItemChanged(pos)
-                                }
-                                1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
-                                }
-                            }
-                        }
-                        .doFinally {
-                            group.isSubscribing = false
-                            when (currentScreen) {
-                                0 -> {
-                                    adapterAll.notifyItemChanged(pos)
-                                }
-                                1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
-                                }
-                            }
-                        }
-                        .subscribe({
-                            group.isFollowing = true
-                            when (currentScreen) {
-                                0 -> {
-                                    adapterSubscribed.refresh()
-                                }
-                                1 -> {
-                                    adapterAll.refresh()
-                                }
-                            }
-                        }, { exception ->
-                            if (exception is CompositeException) {
-                                exception.exceptions.forEach { ex ->
-                                    (ex as? FieldException)?.let {
-                                        if (it.field == "group") {
-                                            group.isFollowing = !group.isFollowing
-                                            group.isSubscribing = false
-                                        }
+                if (!group.isSubscribing) {
+                    subscribeDisposable.add(viewModel.subscribeGroup(group.id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe {
+                                group.isSubscribing = true
+                                when (currentScreen) {
+                                    0 -> {
+                                        adapterAll.notifyItemChanged(pos)
+                                    }
+                                    1 -> {
+                                        adapterSubscribed.notifyItemChanged(pos)
                                     }
                                 }
-                            } else
-                                errorHandler.handle(exception)
-                        }))
-            }
-            unsubscribeClickListener = { group, pos ->
-                subscribeDisposable.add(viewModel.unsubscribeGroup(group.id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {
-                            group.isSubscribing = true
-                            when (currentScreen) {
-                                0 -> {
-                                    adapterAll.notifyItemChanged(pos)
-                                }
-                                1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
-                                }
                             }
-                        }
-                        .doFinally {
-                            group.isSubscribing = false
-                            when (currentScreen) {
-                                0 -> {
-                                    adapterAll.notifyItemChanged(pos)
-                                }
-                                1 -> {
-                                    adapterSubscribed.notifyItemChanged(pos)
-                                }
-                            }
-                        }
-                        .subscribe({
-                            group.isFollowing = false
-                            when (currentScreen) {
-                                0 -> {
-                                    adapterSubscribed.refresh()
-                                }
-                                1 -> {
-                                    adapterAll.refresh()
-                                }
-                            }
-                        }, {
-                            if (it is GroupAlreadyFollowingException) {
-                                group.isFollowing = !group.isFollowing
+                            .doFinally {
                                 group.isSubscribing = false
                                 when (currentScreen) {
                                     0 -> {
-                                        adapterAll.notifyDataSetChanged()
+                                        adapterAll.notifyItemChanged(pos)
                                     }
                                     1 -> {
-                                        adapterSubscribed.notifyDataSetChanged()
+                                        adapterSubscribed.notifyItemChanged(pos)
                                     }
                                 }
-                            } else
+                            }
+                            .subscribe({
+                                group.isFollowing = true
+                                when (currentScreen) {
+                                    0 -> {
+                                        adapterSubscribed.refresh()
+                                    }
+                                    1 -> {
+                                        adapterAll.refresh()
+                                    }
+                                }
+                            }, { exception ->
+                                if (exception is CompositeException) {
+                                    exception.exceptions.forEach { ex ->
+                                        (ex as? FieldException)?.let {
+                                            if (it.field == "group") {
+                                                group.isFollowing = !group.isFollowing
+                                            }
+                                        }
+                                    }
+                                }
+                                errorHandler.handle(exception)
+                            }))
+                }
+            }
+            unsubscribeClickListener = { group, pos ->
+                if (!group.isSubscribing) {
+                    subscribeDisposable.add(viewModel.unsubscribeGroup(group.id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe {
+                                group.isSubscribing = true
+                                when (currentScreen) {
+                                    0 -> {
+                                        adapterAll.notifyItemChanged(pos)
+                                    }
+                                    1 -> {
+                                        adapterSubscribed.notifyItemChanged(pos)
+                                    }
+                                }
+                            }
+                            .doFinally {
+                                group.isSubscribing = false
+                                when (currentScreen) {
+                                    0 -> {
+                                        adapterAll.notifyItemChanged(pos)
+                                    }
+                                    1 -> {
+                                        adapterSubscribed.notifyItemChanged(pos)
+                                    }
+                                }
+                            }
+                            .subscribe({
+                                group.isFollowing = false
+                                when (currentScreen) {
+                                    0 -> {
+                                        adapterSubscribed.refresh()
+                                    }
+                                    1 -> {
+                                        adapterAll.refresh()
+                                    }
+                                }
+                            }, {
+                                if (it is GroupAlreadyFollowingException) {
+                                    group.isFollowing = !group.isFollowing
+                                    when (currentScreen) {
+                                        0 -> {
+                                            adapterAll.notifyDataSetChanged()
+                                        }
+                                        1 -> {
+                                            adapterSubscribed.notifyDataSetChanged()
+                                        }
+                                    }
+                                }
                                 errorHandler.handle(it)
-                        }))
+                            }))
+                }
             }
         }
         swipe_groups.setOnRefreshListener {

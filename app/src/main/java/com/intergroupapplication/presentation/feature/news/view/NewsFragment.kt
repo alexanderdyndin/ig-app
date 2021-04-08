@@ -106,54 +106,7 @@ class NewsFragment(): BaseFragment(), NewsView{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
-        NewsAdapter.complaintListener = { presenter.complaintPost(it) }
-        NewsAdapter.commentClickListener = {
-                clickedPostId = it.id
-                openCommentDetails(InfoForCommentEntity(it, true))
-        }
-        NewsAdapter.groupClickListener = {
-            val data = bundleOf(GROUP_ID to it)
-            findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
-        }
-        NewsAdapter.imageClickListener = { list: List<FileEntity>, i: Int ->
-            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-            findNavController().navigate(R.id.action_newsFragment2_to_imageFragment, data)
-        }
-        NewsAdapter.likeClickListener = { like, dislike, item, position ->
-            compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-//                    .doOnSubscribe {
-//                        item.isLoading = true
-//                        adapter.notifyItemChanged(position)
-//                    }
-                    .doFinally {
-                        //item.isLoading = false
-                        adapter.notifyItemChanged(position)
-                    }
-                    .subscribe({
-                         item.reacts = it
-                    },
-                    {
-                        errorHandler.handle(it)
-                    }))
-        }
-        NewsAdapter.deleteClickListener = { id: Int, pos: Int ->
-            compositeDisposable.add(viewModel.deletePost(id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        adapter.notifyItemRemoved(pos) //todo сделать человеческое удаление
-                    }, { errorHandler.handle(it) })
-            )
-        }
-        NewsAdapter.USER_ID = userSession.user?.id?.toInt()
-        compositeDisposable.add(
-                viewModel.getNews()
-                        .subscribe {
-                            adapter.submitData(lifecycle, it)
-                        }
-        )
+        setAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (doubleBackToExitPressedOnce) {
@@ -252,6 +205,87 @@ class NewsFragment(): BaseFragment(), NewsView{
                     else ->{ newSwipe.isRefreshing = false } //if (!job.isCancelled) progress_first_loading.hide()
                 }
             }
+        }
+    }
+
+    fun setAdapter() {
+        NewsAdapter.apply {
+            complaintListener = { presenter.complaintPost(it) }
+            commentClickListener = {
+                clickedPostId = it.id
+                openCommentDetails(InfoForCommentEntity(it, true))
+            }
+            groupClickListener = {
+                val data = bundleOf(GROUP_ID to it)
+                findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+            }
+            imageClickListener = { list: List<FileEntity>, i: Int ->
+                val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+                findNavController().navigate(R.id.action_newsFragment2_to_imageFragment, data)
+            }
+            likeClickListener = { like, dislike, item, position ->
+                if (!item.isLoading) {
+                    compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe {
+                                item.isLoading = true
+                            }
+                            .doFinally {
+                                item.isLoading = false
+                            }
+                            .subscribe({
+                                item.reacts = it
+                                adapter.notifyItemChanged(position)
+                            },
+                                    {
+                                        errorHandler.handle(it)
+                                    }))
+                }
+            }
+            deleteClickListener = { id: Int, pos: Int ->
+                compositeDisposable.add(viewModel.deletePost(id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            adapter.notifyItemRemoved(pos) //todo сделать человеческое удаление
+                        }, { errorHandler.handle(it) })
+                )
+            }
+            bellClickListener = { item: GroupPostEntity.PostEntity, pos: Int ->
+                if (!item.isLoading) {
+                    if (item.bells.isActive) {
+                        compositeDisposable.add(viewModel.deleteBell(item.id)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe { item.isLoading = true }
+                                .doFinally { item.isLoading = false }
+                                .subscribe({
+                                    item.bells.isActive = false
+                                    item.bells.count--
+                                    adapter.notifyItemChanged(pos)
+                                }, { errorHandler.handle(it) }))
+                    } else {
+                        compositeDisposable.add(viewModel.setBell(item.id)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe { item.isLoading = true }
+                                .doFinally { item.isLoading = false }
+                                .subscribe({
+                                    item.bells.isActive = true
+                                    item.bells.count++
+                                    adapter.notifyItemChanged(pos)
+                                }, { errorHandler.handle(it) }))
+                    }
+                }
+            }
+            USER_ID = userSession.user?.id?.toInt()
+            compositeDisposable.add(
+                    viewModel.getNews()
+                            .subscribe {
+                                adapter.submitData(lifecycle, it)
+                            }
+            )
         }
     }
 

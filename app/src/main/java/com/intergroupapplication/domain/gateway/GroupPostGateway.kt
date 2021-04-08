@@ -18,4 +18,7 @@ interface GroupPostGateway {
     fun setReact(reactsEntityRequest: ReactsEntityRequest, postId: String): Single<ReactsEntity>
     fun deleteGroupPost(postId: String): Completable
     fun deleteNewsPost(postId: String): Completable
+    fun getPostBell(postId: String): Single<BellFollowEntity>
+    fun setPostBell(bellFollowEntity: BellFollowEntity): Single<BellFollowEntity>
+    fun deleteBell(postId: String): Completable
 }
