@@ -177,10 +177,11 @@ class UserListFragment : BaseFragment(), UserListView {
     private fun getAllData() {
         getFollowers()
 
+
         compositeDisposable.add(
-                viewModel.getAdministrators(groupId).subscribe(
+                viewModel.getBans(groupId).subscribe(
                         {
-                            adapterAdministrators.submitData(lifecycle, it)
+                            adapterBlocked.submitData(lifecycle, it)
                         },
                         {
                             it.printStackTrace()
@@ -189,7 +190,7 @@ class UserListFragment : BaseFragment(), UserListView {
         )
 
         compositeDisposable.add(
-                viewModel.getBans(groupId).subscribe(
+                viewModel.getAdministrators(groupId).subscribe(
                         {
                             adapterAdministrators.submitData(lifecycle, it)
                         },

@@ -12,8 +12,7 @@ import io.reactivex.schedulers.Schedulers
 class GroupFollowersRemoteRXDataSource (
         private val appApi: AppApi,
         private val mapper: FollowersGroupMapper,
-        private val groupId: String,
-        private val isAdministrators: Boolean): RxPagingSource<Int, GroupUserEntity>() {
+        private val groupId: String): RxPagingSource<Int, GroupUserEntity>() {
 
     var key: Int = 1
 
@@ -31,17 +30,6 @@ class GroupFollowersRemoteRXDataSource (
         return followersList
                 .invoke(key)
                 .subscribeOn(Schedulers.io())
-                .map { groupUserFollowersDto ->
-                    // todo сделать нормально: добавить filter = admins в запрос
-                    if (isAdministrators) {
-                        groupUserFollowersDto.results = groupUserFollowersDto.results.filter { result ->
-                            val isAdmin = result.isAdmin ?: false
-                            val isOwner = result.owner ?: false
-                            isAdmin || isOwner
-                        }
-                    }
-                    groupUserFollowersDto
-                }
                 .map {
                     mapper.mapToDomainEntity(it)
                 }
@@ -59,7 +47,7 @@ class GroupFollowersRemoteRXDataSource (
 
     fun applyAdministratorsList() {
         followersList = {page: Int ->
-            appApi.getGroupFollowers(groupId, page)
+            appApi.getGroupFollowers(groupId, page, "admins")
         }
     }
 }
