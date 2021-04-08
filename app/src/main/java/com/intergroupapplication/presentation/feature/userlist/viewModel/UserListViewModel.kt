@@ -25,4 +25,9 @@ class UserListViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
     }
 
+    fun getBans(groupId: String): Flowable<PagingData<GroupUserEntity>> {
+        return useCase.getGroupBans(groupId)
+                .cachedIn(viewModelScope)
+    }
+
 }

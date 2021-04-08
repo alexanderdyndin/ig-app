@@ -160,26 +160,43 @@ class UserListFragment : BaseFragment(), UserListView {
 
     @SuppressLint("CheckResult")
     private fun getFollowers() {
-        viewModel.getFollowers(groupId).subscribe(
-                {
-                    adapterAll.submitData(lifecycle, it)
-                },
-                {
-                    it.printStackTrace()
-                })
+        compositeDisposable.clear()
+
+        compositeDisposable.add(
+                viewModel.getFollowers(groupId).subscribe(
+                        {
+                            adapterAll.submitData(lifecycle, it)
+                        },
+                        {
+                            it.printStackTrace()
+                        })
+        )
     }
 
     @SuppressLint("CheckResult")
     private fun getAllData() {
         getFollowers()
 
-        viewModel.getAdministrators(groupId).subscribe(
-                {
-                    adapterAdministrators.submitData(lifecycle, it)
-                },
-                {
-                    it.printStackTrace()
-                }
+        compositeDisposable.add(
+                viewModel.getAdministrators(groupId).subscribe(
+                        {
+                            adapterAdministrators.submitData(lifecycle, it)
+                        },
+                        {
+                            it.printStackTrace()
+                        }
+                )
+        )
+
+        compositeDisposable.add(
+                viewModel.getBans(groupId).subscribe(
+                        {
+                            adapterAdministrators.submitData(lifecycle, it)
+                        },
+                        {
+                            it.printStackTrace()
+                        }
+                )
         )
     }
 

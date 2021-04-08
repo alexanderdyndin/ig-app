@@ -1,6 +1,7 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.model.group_bans.GroupUserBansDto
 import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -131,4 +132,12 @@ interface AppApi {
             @Query("page") page: Int,
             @Query("filter") filter: String = "admins"
     ): Single<GroupUserFollowersDto>
+
+    @GET("groups/{group_id}/bans/")
+    fun getGroupBans(
+            @Path("group_id") groupId: String,
+            @Query("page") page: Int,
+            @Query("projection") projection: String = "full"
+    ): Single<GroupUserBansDto>
+
 }

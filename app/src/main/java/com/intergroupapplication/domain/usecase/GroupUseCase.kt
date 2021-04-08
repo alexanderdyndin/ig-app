@@ -58,4 +58,7 @@ class GroupUseCase @Inject constructor(
     fun getGroupAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>> =
             groupGateway.getAdministrators(groupId)
 
+    fun getGroupBans(groupId: String): Flowable<PagingData<GroupUserEntity>> =
+            groupGateway.getBans(groupId)
+
 }
