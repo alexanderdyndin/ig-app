@@ -114,7 +114,7 @@ class GroupRepository @Inject constructor(
         return Pager(
                 config = defaultPagingConfig,
                 pagingSourceFactory = {
-                    GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, false)
+                    GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
                 }
         ).flowable
     }
@@ -123,7 +123,7 @@ class GroupRepository @Inject constructor(
         return Pager(
                 config = defaultPagingConfig,
                 pagingSourceFactory = {
-                    val followersRemote = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, true)
+                    val followersRemote = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
                     followersRemote.applyAdministratorsList()
                     followersRemote
                 }

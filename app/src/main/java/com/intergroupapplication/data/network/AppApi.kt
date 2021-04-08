@@ -144,14 +144,13 @@ interface AppApi {
     fun getGroupFollowers(
             @Path("group_id") groupId: String,
             @Query("page") page: Int,
-            @Query("filter") filter: String = "admins"
+            @Query("filter") filter: String = ""
     ): Single<GroupUserFollowersDto>
 
     @GET("groups/{group_id}/bans/")
     fun getGroupBans(
             @Path("group_id") groupId: String,
-            @Query("page") page: Int,
-            @Query("projection") projection: String = "full"
+            @Query("page") page: Int
     ): Single<GroupUserBansDto>
 
 
