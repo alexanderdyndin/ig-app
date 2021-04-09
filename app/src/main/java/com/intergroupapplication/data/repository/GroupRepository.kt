@@ -9,14 +9,13 @@ import com.intergroupapplication.data.mapper.FollowersGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
-import com.intergroupapplication.data.model.group_bans.GroupBanBody
+import com.intergroupapplication.data.model.group_followers.GroupBanBody
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.remotedatasource.GroupBansRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
-import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupGateway
 import io.reactivex.Completable
 import io.reactivex.Flowable
