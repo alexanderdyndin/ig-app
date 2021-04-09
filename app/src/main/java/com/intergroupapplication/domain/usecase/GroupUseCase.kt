@@ -61,4 +61,7 @@ class GroupUseCase @Inject constructor(
     fun getGroupBans(groupId: String): Flowable<PagingData<GroupUserEntity>> =
             groupGateway.getBans(groupId)
 
+    fun banUserInGroup(userId: String, reason: String, groupId: String): Completable =
+            groupGateway.banUserInGroup(userId, reason, groupId)
+
 }

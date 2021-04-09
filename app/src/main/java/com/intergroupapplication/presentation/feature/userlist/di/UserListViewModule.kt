@@ -8,6 +8,7 @@ import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import com.intergroupapplication.presentation.feature.userlist.adapter.TypeUserList
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
@@ -46,21 +47,21 @@ class UserListViewModule {
     @Provides
     @Named("all")
     fun provideUserListAdapterAll(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
-        return UserListAdapter(imageLoadingDelegate)
+        return UserListAdapter(imageLoadingDelegate, TypeUserList.ALL)
     }
 
     @PerFragment
     @Provides
     @Named("blocked")
     fun provideUserListAdapterBlocked(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
-        return UserListAdapter(imageLoadingDelegate)
+        return UserListAdapter(imageLoadingDelegate, TypeUserList.BLOCKED)
     }
 
     @PerFragment
     @Provides
     @Named("administrators")
     fun provideUserListAdapterAdministrators(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
-        return UserListAdapter(imageLoadingDelegate)
+        return UserListAdapter(imageLoadingDelegate, TypeUserList.ADMINISTRATORS)
     }
 
     @PerFragment

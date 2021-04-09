@@ -9,6 +9,7 @@ import com.intergroupapplication.data.mapper.FollowersGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
+import com.intergroupapplication.data.model.group_bans.GroupBanBody
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.remotedatasource.GroupBansRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
@@ -20,6 +21,8 @@ import com.intergroupapplication.domain.gateway.GroupGateway
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -136,5 +139,11 @@ class GroupRepository @Inject constructor(
                     GroupBansRemoteRXDataSource(api, bansGroupMapper, groupId)
                 }
         ).flowable
+    }
+
+    override fun banUserInGroup(userId: String, reason: String, groupId: String): Completable {
+        return api.banUserInGroup(groupId, GroupBanBody(reason, userId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 }

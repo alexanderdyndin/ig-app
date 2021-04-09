@@ -85,7 +85,11 @@ class UserListFragment : BaseFragment(), UserListView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupId = requireArguments().getString(GROUP_ID)!!
         isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
-        showToast(groupId)
+
+        adapterAll.setTypeUser(isAdmin)
+        adapterBlocked.setTypeUser(isAdmin)
+        adapterAdministrators.setTypeUser(isAdmin)
+
         navigationToolbar.toolbarTittle.text = getString(R.string.allUsers)
         navigationToolbar.toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         super.onViewCreated(view, savedInstanceState)
@@ -119,6 +123,8 @@ class UserListFragment : BaseFragment(), UserListView {
         }
         setAdapter(adapterAll, adapterFooterAll)
         if (isAdmin) {
+            initActionAdmin()
+
             adapterList.add(adapterBlockedAdd)
             adapterList.add(adapterAdministratorAdd)
 
@@ -134,6 +140,20 @@ class UserListFragment : BaseFragment(), UserListView {
             getAllData()
         } else {
             getFollowers()
+        }
+    }
+
+    private fun initActionAdmin() {
+        UserListAdapter.banUserClickListener = { userId, position ->
+            compositeDisposable.add(
+                    viewModel.setUserBans(userId, "Тест тест", groupId)
+                            .subscribe({
+                                adapterAll.refresh()
+                                adapterBlocked.refresh()
+                            },{
+                                errorHandler.handle(it)
+                            })
+            )
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.paging.rxjava2.cachedIn
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.usecase.GroupUseCase
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListEntityUI
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import javax.inject.Inject
 
@@ -28,6 +29,10 @@ class UserListViewModel @Inject constructor(
     fun getBans(groupId: String): Flowable<PagingData<GroupUserEntity>> {
         return useCase.getGroupBans(groupId)
                 .cachedIn(viewModelScope)
+    }
+
+    fun setUserBans(userId: String, reason: String, groupId: String): Completable {
+        return useCase.banUserInGroup(userId, reason, groupId)
     }
 
 }

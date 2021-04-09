@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/mainBlack">
 
 
@@ -16,9 +15,9 @@
         android:layout_marginTop="4dp"
         android:layout_marginRight="4dp"
         android:background="@drawable/bg_colorinput_radius_4dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/item_group__bg_list"
@@ -33,36 +32,37 @@
         android:id="@+id/group_avatar"
         android:layout_width="@dimen/group_in_list_profile_view_size"
         android:layout_height="@dimen/group_in_list_profile_view_size"
-        app:shape_clip_drawable="@drawable/avatar_group_list"
+        app:layout_constraintBottom_toBottomOf="@+id/bgListResize"
         app:layout_constraintStart_toStartOf="@+id/bgListResize"
         app:layout_constraintTop_toTopOf="@+id/bgListResize"
-        app:layout_constraintBottom_toBottomOf="@+id/bgListResize">
+        app:shape_clip_drawable="@drawable/avatar_group_list">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/groupAvatarHolder"
             android:layout_width="@dimen/group_in_list_profile_view_size"
-            android:layout_height="@dimen/group_in_list_profile_view_size"/>
+            android:layout_height="@dimen/group_in_list_profile_view_size" />
 
     </com.github.florent37.shapeofview.ShapeOfView>
 
-<!-- Уголок означающий что подписчик админ.
-Красный уголок означающий что подписчик заблокирован.
-Без уголка простой подписчик -->
+    <!-- Уголок означающий что подписчик админ.
+    Красный уголок означающий что подписчик заблокирован.
+    Без уголка простой подписчик -->
     <TextView
         android:id="@+id/item_group__text_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_angle_admin"
-        app:layout_constraintTop_toTopOf="@+id/bgListResize"
-        app:layout_constraintStart_toStartOf="@+id/bgListResize"/>
+        app:layout_constraintStart_toStartOf="@+id/bgListResize"
+        app:layout_constraintTop_toTopOf="@+id/bgListResize" />
 
-<!-- Иконка видная только для админов -->
+    <!-- Иконка видная только для админов -->
     <ImageButton
         android:id="@+id/settingsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="btn"
         android:background="@drawable/ic_setting_sub"
+        android:contentDescription="btn"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/bgListResize"
         app:layout_constraintTop_toTopOf="@+id/bgListResize" />
 
@@ -169,93 +169,94 @@
         </FrameLayout>
     </LinearLayout>
 
-<!-- Всплывающее окно по нажатию на настройки, только для админов -->
+    <!-- Всплывающее окно по нажатию на настройки, только для админов -->
 
-         <ImageView
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shadow_setting_sub"
+        app:layout_constraintBottom_toBottomOf="@+id/settingsDialog"
+        app:layout_constraintEnd_toEndOf="@+id/settingsDialog"
+        app:layout_constraintStart_toStartOf="@+id/settingsDialog"
+        app:layout_constraintTop_toBottomOf="@+id/settingsDialog" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/settingsDialog"
+        android:layout_width="240dp"
+        android:elevation="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:background="@drawable/bg_greyelement_radius_4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/settingsBtn"
+        app:layout_constraintTop_toTopOf="@+id/settingsBtn">
+
+        <ImageView
+            android:id="@+id/angleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shadow_setting_sub"
-            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
-            app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+            android:background="@drawable/bg_angle_setting_admin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
-            android:visibility="gone"
-            android:layout_width="240dp"
+        <ImageButton
+            android:id="@+id/delMusic"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:background="@drawable/bg_greyelement_radius_4dp"
-            app:layout_constraintEnd_toEndOf="@+id/settingsBtn"
-            app:layout_constraintTop_toTopOf="@+id/settingsBtn">
+            android:layout_margin="4dp"
+            android:background="@drawable/ic_del_nobg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/angleIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_angle_setting_admin"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/nameSub"
+            style="@style/TextAccent12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="Андрей Петров"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/delMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/ic_del_nobg"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/idSub"
+            style="@style/TextAccent10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ID:120548"
+            app:layout_constraintStart_toStartOf="@+id/nameSub"
+            app:layout_constraintTop_toBottomOf="@+id/nameSub" />
 
-            <TextView
-                android:id="@+id/nameSub"
-                style="@style/TextAccent12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:text="Андрей Петров"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/btnAddAdmin"
+            style="@style/TextAccent14sp"
+            android:layout_width="203dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/middle_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:background="@drawable/bg_darkgreen_radius_2dp"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:text="Разжаловать"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/idSub" />
 
-            <TextView
-                android:id="@+id/idSub"
-                style="@style/TextAccent10sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ID:120548"
-                app:layout_constraintStart_toStartOf="@+id/nameSub"
-                app:layout_constraintTop_toBottomOf="@+id/nameSub" />
-
-            <TextView
-                android:id="@+id/btnAddAdmin"
-                style="@style/TextAccent14sp"
-                android:layout_width="203dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="@dimen/middle_margin"
-                android:layout_marginTop="@dimen/small_margin"
-                android:background="@drawable/bg_darkgreen_radius_2dp"
-                android:paddingStart="16dp"
-                android:paddingTop="12dp"
-                android:text="Разжаловать"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/idSub" />
-
-            <TextView
-                android:id="@+id/btnAddBlock"
-                style="@style/TextNoActive14sp"
-                android:layout_width="203dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="@dimen/middle_margin"
-                android:layout_marginBottom="@dimen/middle_margin"
-                android:paddingStart="16dp"
-                android:paddingTop="12dp"
-                android:text="Заблокировать"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnAddAdmin" />
+        <TextView
+            android:id="@+id/btnAddBlock"
+            style="@style/TextNoActive14sp"
+            android:layout_width="203dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/middle_margin"
+            android:layout_marginBottom="@dimen/middle_margin"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:text="Заблокировать"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnAddAdmin" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
