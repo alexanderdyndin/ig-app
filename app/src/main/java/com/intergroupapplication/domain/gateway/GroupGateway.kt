@@ -27,4 +27,5 @@ interface GroupGateway {
     fun getFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>>
     fun getAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>>
     fun getBans(groupId: String): Flowable<PagingData<GroupUserEntity>>
+    fun banUserInGroup(userId: String, reason: String, groupId: String): Completable
 }

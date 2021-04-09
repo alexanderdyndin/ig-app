@@ -1,6 +1,7 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.model.group_bans.GroupBanBody
 import com.intergroupapplication.data.model.group_bans.GroupUserBansDto
 import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
 import io.reactivex.Completable
@@ -152,6 +153,12 @@ interface AppApi {
             @Path("group_id") groupId: String,
             @Query("page") page: Int
     ): Single<GroupUserBansDto>
+
+    @POST("groups/{group_id}/bans/")
+    fun banUserInGroup(
+            @Path("group_id") groupId: String,
+            @Body groupBanBody: GroupBanBody
+    ): Completable
 
 
     @DELETE("groups/posts/{id}/")
