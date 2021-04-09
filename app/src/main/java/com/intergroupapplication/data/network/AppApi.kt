@@ -1,8 +1,8 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
-import com.intergroupapplication.data.model.group_bans.GroupBanBody
-import com.intergroupapplication.data.model.group_bans.GroupUserBansDto
+import com.intergroupapplication.data.model.group_followers.GroupBanBody
+import com.intergroupapplication.data.model.group_followers.GroupUserBansDto
 import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
 import io.reactivex.Completable
 import io.reactivex.Single
