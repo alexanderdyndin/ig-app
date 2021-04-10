@@ -22,7 +22,7 @@ class OnNewCommentAction(
         val postId = map["post_id"] ?: ""
         val name = map["name"] ?: ""
         val groupId = map["group_id"] ?: ""
-        val commentId = map["comment_id"] ?: ""
+        val commentId = map["comment_id"] ?: "228"
         val message = map["push_message"] ?: context.getString(R.string.intergroup_notification)
         val commentModel = NotificationCommentModel(postId, name, groupId, commentId, message)
         onNewComment(commentModel)
