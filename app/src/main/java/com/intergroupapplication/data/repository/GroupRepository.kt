@@ -8,6 +8,7 @@ import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupFollowEntity
@@ -62,7 +63,7 @@ class GroupRepository @Inject constructor(private val api: AppApi,
     override fun getGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
                 config = PagingConfig(
-                        pageSize = 20,
+                        pageSize = PAGE_SIZE,
                         initialLoadSize = 20,
                         prefetchDistance = 1),
                 pagingSourceFactory = { GroupsRemoteRXDataSource(api, groupMapper, searchFilter) }
@@ -72,7 +73,7 @@ class GroupRepository @Inject constructor(private val api: AppApi,
     override fun getAdminGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
                 config = PagingConfig(
-                        pageSize = 20,
+                        pageSize = PAGE_SIZE,
                         initialLoadSize = 20,
                         prefetchDistance = 1),
                 pagingSourceFactory = {
@@ -86,7 +87,7 @@ class GroupRepository @Inject constructor(private val api: AppApi,
     override fun getSubscribedGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
                 config = PagingConfig(
-                        pageSize = 20,
+                        pageSize = PAGE_SIZE,
                         initialLoadSize = 20,
                         prefetchDistance = 1),
                 pagingSourceFactory = {

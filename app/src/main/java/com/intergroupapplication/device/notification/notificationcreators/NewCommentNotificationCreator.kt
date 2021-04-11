@@ -16,6 +16,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.device.notification.CreatorType
 import com.intergroupapplication.device.notification.NotificationCreatorOptions
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENT_PAGE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.POST_ID
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 
@@ -53,7 +54,7 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
 
     private fun createPendingIntent(type: CreatorType.Comment): PendingIntent? {
 
-        val bundle = bundleOf(POST_ID to type.postId)
+        val bundle = bundleOf(POST_ID to type.postId, COMMENT_PAGE to type.page)
 
         val pendingIntent = NavDeepLinkBuilder(context)
                 .setComponentName(MainActivity::class.java)
@@ -62,12 +63,12 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
                 .setArguments(bundle)
                 .createPendingIntent()
 
-        val stackBuilder = TaskStackBuilder.create(context).apply {
-            addParentStack(MainActivity::class.java)
-            addNextIntent(createNavigationIntent())
+//        val stackBuilder = TaskStackBuilder.create(context).apply {
+//            addParentStack(MainActivity::class.java)
+//            addNextIntent(createNavigationIntent())
 //            addNextIntent(groupIntent)
 //            addNextIntent(commentIntent)
-        }
+//        }
 
         return pendingIntent
         //return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -79,5 +80,5 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
 //    private fun createGroupIntent(type: CreatorType.Comment): Intent =
 //            GroupActivity.getIntent(context, type.groupId)
 //
-    private fun createNavigationIntent(): Intent = Intent(context, MainActivity::class.java)
+//    private fun createNavigationIntent(): Intent = Intent(context, MainActivity::class.java)
 }

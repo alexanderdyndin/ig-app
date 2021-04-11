@@ -5,6 +5,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
 
+const val PAGE_SIZE = 20
+
 interface AppApi {
 
     @POST("auth/registrations/")

@@ -7,6 +7,7 @@ import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.mapper.MediaMapper
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.*
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.NoMorePage
@@ -28,7 +29,7 @@ class MediaRepository @Inject constructor(private val api: AppApi,
     override fun getAudioList(): Flowable<PagingData<AudioEntity>> {
         return Pager(
                 config = PagingConfig(
-                        pageSize = 20,
+                        pageSize = PAGE_SIZE,
                         initialLoadSize = 40,
                         prefetchDistance = 5),
                 pagingSourceFactory = { AudiosRemoteRXDataSource(api, mediaMapper) }
@@ -38,7 +39,7 @@ class MediaRepository @Inject constructor(private val api: AppApi,
     override fun getVideoList(): Flowable<PagingData<FileEntity>> {
         return Pager(
                 config = PagingConfig(
-                        pageSize = 20,
+                        pageSize = PAGE_SIZE,
                         initialLoadSize = 40,
                         prefetchDistance = 5),
                 pagingSourceFactory = { VideosRemoteRXDataSource(api, mediaMapper) }
@@ -48,7 +49,7 @@ class MediaRepository @Inject constructor(private val api: AppApi,
     override fun getImageList(): Flowable<PagingData<FileEntity>> {
         return Pager(
                 config = PagingConfig(
-                        pageSize = 20,
+                        pageSize = PAGE_SIZE,
                         initialLoadSize = 40,
                         prefetchDistance = 5),
                 pagingSourceFactory = { ImagesRemoteRXDataSource(api, mediaMapper) }

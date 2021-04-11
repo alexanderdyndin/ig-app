@@ -26,9 +26,9 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
         }
 
 
-    fun fetchComments(postId: String): Flowable<PagingData<CommentEntity>> {
+    fun fetchComments(postId: String, page: String): Flowable<PagingData<CommentEntity>> {
         return commentsUseCase
-                .getComments(postId)
+                .getComments(postId, page)
                 .map { pagingData ->
                     var i = -CommentsAdapter.AD_FIRST - 1
                     pagingData.map {

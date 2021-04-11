@@ -5,6 +5,7 @@ import androidx.paging.rxjava2.RxPagingSource
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.GroupsDto
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.domain.entity.GroupEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -56,7 +57,7 @@ class GroupsRemoteRXDataSource (private val appApi: AppApi,
 
     override fun getRefreshKey(state: PagingState<Int, GroupEntity>): Int? {
         val position = state.anchorPosition ?: 0
-        val page = (position / 20) + 1
+        val page = (position / PAGE_SIZE) + 1
         return page
     }
 

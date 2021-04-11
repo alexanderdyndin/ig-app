@@ -8,6 +8,7 @@ import com.intergroupapplication.data.mapper.CommentMapper
 import com.intergroupapplication.data.mapper.ReactsMapper
 import com.intergroupapplication.data.model.CreateCommentModel
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.CommentsRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.*
@@ -28,12 +29,12 @@ class CommentRepository @Inject constructor(private val api: AppApi,
                                             ): CommentGateway {
 
     @ExperimentalCoroutinesApi
-    override fun getComments(postId: String): Flowable<PagingData<CommentEntity>> {
+    override fun getComments(postId: String, page: String): Flowable<PagingData<CommentEntity>> {
         return Pager(
                 config = PagingConfig(
-                        pageSize = 20,
+                        pageSize = PAGE_SIZE,
                         prefetchDistance = 5),
-                pagingSourceFactory = { CommentsRemoteRXDataSource(api, commentMapper, postId) }
+                pagingSourceFactory = { CommentsRemoteRXDataSource(api, commentMapper, postId, page.toInt()) }
         ).flowable
     }
 

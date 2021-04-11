@@ -80,6 +80,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         private const val GROUP_ID = "group_id"
         private const val COMMENT_ID = "comment_id"
         const val POST_ID = "post_id"
+        const val COMMENT_PAGE = "page"
     }
 
     @Inject
@@ -119,6 +120,8 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     var postId: String? = null
 
+    var page: String = "1"
+
     var commentCreated = false
 
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
@@ -137,15 +140,16 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
         infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
         postId = arguments?.getString(POST_ID)
+        page = arguments?.getString(COMMENT_PAGE)!!
         if (infoForCommentEntity != null) {
             compositeDisposable.add(
-                    viewModel.fetchComments(infoForCommentEntity!!.groupPostEntity.id).subscribe {
+                    viewModel.fetchComments(infoForCommentEntity!!.groupPostEntity.id, page).subscribe {
                         adapter.submitData(lifecycle, it)
                     }
             )
         } else if (postId != null) {
             compositeDisposable.add(
-                    viewModel.fetchComments(postId!!).subscribe {
+                    viewModel.fetchComments(postId!!, page).subscribe {
                         adapter.submitData(lifecycle, it)
                     }
             )

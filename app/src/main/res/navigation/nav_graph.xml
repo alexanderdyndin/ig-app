@@ -384,6 +384,10 @@
         <action
             android:id="@+id/action_commentsDetailsActivity_to_imageFragment"
             app:destination="@id/imageFragment" />
+        <argument
+            android:name="page"
+            app:argType="string"
+            android:defaultValue="1" />
     </fragment>
     <fragment
         android:id="@+id/userListFragment"

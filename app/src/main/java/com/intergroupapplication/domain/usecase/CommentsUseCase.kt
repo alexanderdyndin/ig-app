@@ -14,7 +14,7 @@ class CommentsUseCase @Inject constructor(private val complaintsGateway: Complai
     fun createComment(postId: String, comment: String) =
             commentGateway.createComment(postId, CreateCommentEntity(comment))
 
-    fun getComments(postId: String) = commentGateway.getComments(postId)
+    fun getComments(postId: String, page: String) = commentGateway.getComments(postId, page)
 
     fun createAnswer(commentId: String, comment: String) =
             commentGateway.createAnswerToComment(commentId, CreateCommentEntity(comment))
