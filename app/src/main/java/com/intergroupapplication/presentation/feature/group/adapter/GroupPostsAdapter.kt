@@ -140,6 +140,16 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 idpGroupPost.text = context.getString(R.string.idp, item.idp.toString())
                 postLike.text = item.reacts.likesCount.toString()
                 postDislike.text = item.reacts.dislikesCount.toString()
+                if (item.reacts.isLike) {
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
+                } else {
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
+                }
+                if (item.reacts.isDislike) {
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
+                } else {
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
+                }
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -157,7 +167,12 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 groupName.text = item.groupInPost.name
-                subCommentBtn.text = item.bells.count.toString()
+                subCommentBtn.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
+                if (item.bells.isActive) {
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_blue, 0, 0, 0)
+                } else {
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
+                }
 
                 anchorBtn.isVisible = item.isPinned
 

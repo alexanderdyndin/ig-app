@@ -159,4 +159,6 @@
     <string name="music">Music</string>
     <string name="delete">Delete</string>
     <string name="reply_to">Reply to IDC: %1$s</string>
+    <string name="forbidden_error">You have no access</string>
+    <string name="comments_count" translatable="false">%1$s / %2$s</string>
 </resources>

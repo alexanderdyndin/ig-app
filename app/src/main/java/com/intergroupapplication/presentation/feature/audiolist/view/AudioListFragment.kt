@@ -69,7 +69,7 @@ class AudioListFragment(): BaseFragment() {
 
     override fun layoutRes() = R.layout.fragment_audios_list
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout? = navigationCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout? = audioListCoordinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, modelFactory)[AudioListViewModel::class.java]

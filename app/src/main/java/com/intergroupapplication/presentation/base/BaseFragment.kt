@@ -74,6 +74,7 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                 UserNotProfileException::class.java to openCreateProfile(),
                 GroupBlockedException::class.java to getActionForBlockedGroup(),
                 UserNotVerifiedException::class.java to openConfirmationEmail(),
+                ForbiddenException::class.java to createSnackBarAction(R.string.forbidden_error),
                 ImeiException::class.java to getActionForBlockedImei(),
                 InvalidRefreshException::class.java to openAutorize(),
                 GroupAlreadyFollowingException::class.java to Action { _, _ ->},

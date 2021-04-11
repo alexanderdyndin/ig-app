@@ -133,4 +133,5 @@
     <string name="music">Музыка</string>
     <string name="delete">Удалить</string>
     <string name="reply_to">Ответил на IDC: %1$s</string>
+    <string name="forbidden_error">У вас нет соответствующих прав доступа</string>
 </resources>

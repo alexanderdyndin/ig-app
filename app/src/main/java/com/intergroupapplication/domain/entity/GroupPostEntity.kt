@@ -30,6 +30,7 @@ sealed class GroupPostEntity {
                 val audios: List<AudioEntity>,
                 val videos: List<FileEntity>,
                 var isLoading: Boolean = false,
+                val unreadComments: String,
                 var imagesExpanded: Boolean = false,
                 var audiosExpanded: Boolean = false,
                 var videosExpanded: Boolean = false
@@ -60,6 +61,7 @@ sealed class GroupPostEntity {
                         if (audios != other.audios) return false
                         if (videos != other.videos) return false
                         if (isLoading != other.isLoading) return false
+                        if (unreadComments != other.unreadComments) return false
                         if (imagesExpanded != other.imagesExpanded) return false
                         if (audiosExpanded != other.audiosExpanded) return false
                         if (videosExpanded != other.videosExpanded) return false
@@ -88,6 +90,7 @@ sealed class GroupPostEntity {
                         result = 31 * result + audios.hashCode()
                         result = 31 * result + videos.hashCode()
                         result = 31 * result + isLoading.hashCode()
+                        result = 31 * result + unreadComments.hashCode()
                         result = 31 * result + imagesExpanded.hashCode()
                         result = 31 * result + audiosExpanded.hashCode()
                         result = 31 * result + videosExpanded.hashCode()

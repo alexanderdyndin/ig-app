@@ -135,12 +135,22 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             with(itemView) {
                 idpGroupPost.text = context.getString(R.string.idp, item.post.idp.toString())
                 postLike.text = item.post.reacts.likesCount.toString()
+                if (item.post.reacts.isLike) {
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
+                } else {
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
+                }
                 postDislike.text = item.post.reacts.dislikesCount.toString()
+                if (item.post.reacts.isDislike) {
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
+                } else {
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
+                }
                 compositeDisposable.add(getDateDescribeByString(item.post.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = item.post.commentsCount
+                commentBtn.text = context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
                 item.post.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.post.postText
@@ -154,6 +164,11 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 }
                 groupName.text = item.post.groupInPost.name
                 subCommentBtn.text = item.post.bells.count.toString()
+                if (item.post.bells.isActive) {
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_blue, 0, 0, 0)
+                } else {
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
+                }
 
                 anchorBtn.isVisible = item.post.isPinned
 

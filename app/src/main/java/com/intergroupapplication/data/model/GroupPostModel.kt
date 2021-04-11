@@ -24,5 +24,6 @@ data class GroupPostModel(
         @SerializedName("unique_index") val idp: Int,
         @SerializedName("is_pinned") val isPinned: Boolean,
         @SerializedName("pin_time") val pin: String?,
-        val author: AuthorModel
+        val author: AuthorModel,
+        @SerializedName("unread_comments_count") val unreadComments: String
         )

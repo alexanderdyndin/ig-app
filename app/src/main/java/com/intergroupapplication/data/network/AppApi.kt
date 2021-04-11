@@ -31,13 +31,13 @@ interface AppApi {
     @GET("groups/news/")
     fun getNews(@Query("page") page: Int): Single<NewsDto>
 
-    @GET("groups/audios/")
+    @GET("multimedia/audios/")
     fun getAudios(@Query("page") page: Int): Single<AudiosDto>
 
-    @GET("groups/images/")
+    @GET("multimedia/images/")
     fun getImages(@Query("page") page: Int): Single<ImagesDto>
 
-    @GET("groups/videos/")
+    @GET("multimedia/videos/")
     fun getVideos(@Query("page") page: Int): Single<VideosDto>
 
     @GET("groups/")

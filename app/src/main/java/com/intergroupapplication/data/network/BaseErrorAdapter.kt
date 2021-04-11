@@ -61,6 +61,10 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                 }
             } ?: when (throwable.code()) {
                 500 -> ServerException()
+                404 -> NotFoundException("Не найдено")
+                403 -> ForbiddenException("Нет доступа")
+                401 -> InvalidRefreshException()
+                400 -> NotFoundException(null)
                 else -> UnknowServerException()
             }
         } else {

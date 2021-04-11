@@ -12,11 +12,11 @@ import io.reactivex.schedulers.Schedulers
 
 class CommentsRemoteRXDataSource (private val appApi: AppApi,
                                   private val mapper: CommentMapper,
-                                  private val postId: String
-                                   ): RxPagingSource<Int, CommentEntity>() {
+                                  private val postId: String,
+                                  private val page: Int = 1): RxPagingSource<Int, CommentEntity>() {
 
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, CommentEntity>> {
-        val key = params.key?: 1
+        val key = params.key?: page
         return appApi.getPostComments(postId, key)
                 .subscribeOn(Schedulers.io())
                 .map { mapper.mapToDomainEntity(it) }
