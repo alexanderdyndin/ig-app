@@ -154,4 +154,13 @@
     <string name="reply">Reply</string>
     <string name="expand">Expand</string>
     <string name="publish">Publish</string>
+
+    <string name="followers">Followers</string>
+    <string name="blocked">Blocked</string>
+    <string name="administrators">Administrators</string>
+
+    <string-array name="listOfActionFromAll">
+        <item>To administrators</item>
+        <item>To black list</item>
+    </string-array>
 </resources>

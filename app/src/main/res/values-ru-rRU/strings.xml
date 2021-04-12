@@ -128,4 +128,13 @@
     <string name="reply">Ответить</string>
     <string name="expand">Развернуть</string>
     <string name="publish">Опубликовать</string>
+
+    <string name="followers">Все</string>
+    <string name="blocked">Черный список</string>
+    <string name="administrators">Админы</string>
+
+    <string-array name="listOfActionFromAll">
+        <item>В администраторы</item>
+        <item>Заблокировать</item>
+    </string-array>
 </resources>
