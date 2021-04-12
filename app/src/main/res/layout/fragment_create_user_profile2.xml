@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/createUserCoordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mainBlack">
+
+            <include
+                android:id="@+id/navigationToolbar"
+                layout="@layout/creategroup_toolbar_layout" />
+
+           <include
+                android:id="@+id/navigationToolbar"
+                layout="@layout/creategroup_toolbar_layout" />
+
+            <LinearLayout
+                android:id="@+id/userCreate_title_type_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorInput"
+                android:layout_marginTop="1.5dp"
+                android:orientation="vertical"
+                android:paddingTop="11dp"
+                android:paddingBottom="11dp"
+                android:paddingEnd="@dimen/high_middle_padding"
+                app:layout_constraintStart_toEndOf="@+id/userCreate_avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userCreate_line_r">
+
+                <EditText
+                    android:id="@+id/userCreate_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_inp_name"
+                    android:ems="14"
+                    android:fontFamily="@font/play"
+                    android:hint="@string/nickname"
+                    android:inputType="textShortMessage"
+                    android:paddingStart="30dp"
+                    android:textColor="@color/colorAccent"
+                    android:textColorHint="@color/colorAccent2"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="@+id/userCreate__titleBg"
+                    app:layout_constraintTop_toTopOf="@+id/userCreate__titleBg"
+                    android:importantForAutofill="no" />
+
+                <RadioGroup
+                    android:id="@+id/genderRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@+id/userCreate__titleBg"
+                    app:layout_constraintTop_toBottomOf="@+id/userCreate__titleBg">
+
+                    <RadioButton
+                        android:id="@+id/man"
+                        android:layout_width="99dp"
+                        android:layout_height="33dp"
+                        android:paddingBottom="@dimen/small_low_padding"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/gcreate_btnopen_selector"
+                        android:button="@android:color/transparent"
+                        android:drawableLeft="@drawable/ic_man"
+                        android:drawablePadding="6dp"
+                        android:paddingStart="12dp"
+                        android:text="@string/men"
+                        style="@style/TextAccent12sp"
+                        android:layout_weight="1" />
+
+                    <RadioButton
+                        android:id="@+id/woman"
+                        android:layout_width="99dp"
+                        android:layout_height="33dp"
+                        android:paddingBottom="@dimen/small_low_padding"
+                        android:background="@drawable/gcreate_btnclose_selector"
+                        android:button="@android:color/transparent"
+                        android:drawableLeft="@drawable/ic_woman"
+                        android:drawablePadding="6dp"
+                        android:fontFamily="@font/play"
+                        android:paddingLeft="12dp"
+                        android:text="@string/women"
+                        android:textColor="@color/colorPink"
+                        android:textSize="12sp"
+                        android:layout_weight="1"/>
+
+                </RadioGroup>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/userCreate__addAvatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginStart="@dimen/very_big_margin"
+                android:background="@drawable/selector_add_avatar"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/play"
+                android:gravity="center_vertical"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/add_photo"
+                android:textColor="@color/selector_addava_color"
+                android:textSize="12sp"
+                android:drawableLeft="@drawable/selector_addava_drawleft"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/userCreate_bg" />
+
+            <ImageView
+                android:id="@+id/userCreate_line_r"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/line_addava"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="87dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userCreate__addAvatar"
+                android:contentDescription="@string/separateline"/>
+
+            <ImageView
+                android:id="@+id/lineGenderRadioGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/line_openclose"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintStart_toStartOf="@+id/userCreate_title_type_container"
+                app:layout_constraintEnd_toEndOf="@+id/userCreate_title_type_container"
+                app:layout_constraintTop_toBottomOf="@+id/userCreate_title_type_container" />
+
+
+            <View
+                android:id="@+id/bgSurName"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightgroupcreateBG"
+                android:layout_marginTop="2dp"
+                android:background="@color/colorInput"
+                app:layout_constraintTop_toBottomOf="@id/lineGenderRadioGroup" />
+
+            <EditText
+                android:id="@+id/surName"
+                style="@style/AutocompleteStyle"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:hint="@string/your_surname"
+                app:layout_constraintBottom_toBottomOf="@+id/bgSurName"
+                app:layout_constraintEnd_toEndOf="@+id/bgSurName"
+                app:layout_constraintStart_toStartOf="@+id/bgSurName"
+                app:layout_constraintTop_toTopOf="@id/bgSurName"/>
+            <ImageView
+                android:id="@+id/userCreate_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_ava_create"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
+                android:contentDescription="@string/imagebg" />
+
+            <com.github.florent37.shapeofview.ShapeOfView
+                android:id="@+id/userCreate_avatar"
+                android:layout_width="@dimen/intergroup_profile_view_size"
+                android:layout_height="@dimen/intergroup_profile_view_size"
+                app:shape_clip_drawable="@drawable/ava_group_create"
+                android:layout_marginLeft="@dimen/small_margin"
+                android:layout_marginTop="@dimen/middle_big_margin"
+                app:layout_constraintStart_toStartOf="@+id/userCreate_bg"
+                app:layout_constraintTop_toTopOf="@+id/userCreate_bg">
+
+                <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+                    android:id="@+id/userAvatarHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
+
+            </com.github.florent37.shapeofview.ShapeOfView>
+
+            <ImageView
+                android:id="@+id/lineSurName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ImageSeparatorLine"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintTop_toBottomOf="@+id/bgSurName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <View
+                android:id="@+id/bgName"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightgroupcreateBG"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
+                android:background="@color/colorInput"
+                app:layout_constraintTop_toBottomOf="@id/lineSurName" />
+
+            <EditText
+                android:id="@+id/name"
+                style="@style/AutocompleteStyle"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:hint="@string/your_name"
+                app:layout_constraintBottom_toBottomOf="@+id/bgName"
+                app:layout_constraintEnd_toEndOf="@+id/bgName"
+                app:layout_constraintStart_toStartOf="@+id/bgName"
+                app:layout_constraintTop_toTopOf="@id/bgName"/>
+
+            <ImageView
+                android:id="@+id/lineName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ImageSeparatorLine"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintTop_toBottomOf="@+id/bgName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/little_margin"
+                android:background="@color/colorInput"
+                android:orientation="vertical"
+                android:padding="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/lineName">
+
+                <TextView
+                    android:id="@+id/textDate"
+                    style="@style/TextNoActive14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_low_padding"
+                    android:text="@string/your_berthday"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/inputDay"
+                    style="@style/EditTextDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/middle_margin"
+                    android:hint="@string/day"
+                    app:layout_constraintEnd_toStartOf="@+id/inputMonth"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textDate" />
+
+                <ImageView
+                    android:id="@+id/lineDay"
+                    style="@style/ImageSeparatorLineMini"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/inputDay"
+                    app:layout_constraintStart_toStartOf="@+id/inputDay"
+                    app:layout_constraintTop_toBottomOf="@+id/inputDay" />
+
+                <EditText
+                    android:id="@+id/inputMonth"
+                    style="@style/EditTextDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/month"
+                    app:layout_constraintEnd_toStartOf="@+id/inputYear"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toEndOf="@+id/inputDay"
+                    app:layout_constraintTop_toTopOf="@+id/inputDay" />
+
+                <ImageView
+                    android:id="@+id/lineMonth"
+                    style="@style/ImageSeparatorLineMini"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/inputMonth"
+                    app:layout_constraintStart_toStartOf="@+id/inputMonth"
+                    app:layout_constraintTop_toBottomOf="@+id/inputMonth" />
+
+                <EditText
+                    android:id="@+id/inputYear"
+                    style="@style/EditTextDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/year"
+                    app:layout_constraintEnd_toStartOf="@+id/checkDate"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toEndOf="@+id/inputMonth"
+                    app:layout_constraintTop_toTopOf="@+id/inputDay" />
+
+                <ImageView
+                    android:id="@+id/lineYear"
+                    style="@style/ImageSeparatorLineMini"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/inputYear"
+                    app:layout_constraintStart_toStartOf="@+id/inputYear"
+                    app:layout_constraintTop_toBottomOf="@+id/inputYear" />
+
+                <ImageButton
+                    android:id="@+id/checkDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/middle_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:background="@drawable/btn_check_mini"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    app:layout_constraintStart_toEndOf="@+id/inputYear"
+                    app:layout_constraintTop_toTopOf="@+id/inputDay" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <View
+                android:id="@+id/countryBg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightgroupcreateBG"
+                android:layout_marginTop="@dimen/little_margin"
+                android:background="@color/colorInput"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewCountry"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                style="@style/AutocompleteStyle"
+                android:hint="@string/country"
+                app:layout_constraintBottom_toBottomOf="@+id/countryBg"
+                app:layout_constraintEnd_toEndOf="@+id/countryBg"
+                app:layout_constraintStart_toStartOf="@+id/countryBg"
+                app:layout_constraintTop_toTopOf="@id/countryBg">
+            </AutoCompleteTextView>
+
+            <ImageView
+                android:id="@+id/lineCountry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ImageSeparatorLine"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintTop_toBottomOf="@+id/countryBg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <View
+                android:id="@+id/cityBg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightgroupcreateBG"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
+                android:background="@color/colorInput"
+                app:layout_constraintTop_toBottomOf="@id/lineCountry"/>
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewCity"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                style="@style/AutocompleteStyle"
+                android:hint="@string/city"
+                app:layout_constraintBottom_toBottomOf="@+id/cityBg"
+                app:layout_constraintEnd_toEndOf="@+id/cityBg"
+                app:layout_constraintStart_toStartOf="@+id/cityBg"
+                app:layout_constraintTop_toTopOf="@id/cityBg">
+            </AutoCompleteTextView>
+
+            <ImageView
+                android:id="@+id/lineCity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ImageSeparatorLine"
+
+                android:contentDescription="@string/separateline"
+                app:layout_constraintTop_toBottomOf="@+id/cityBg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <View
+                android:id="@+id/langBg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightgroupcreateBG"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
+                android:background="@color/colorInput"
+                app:layout_constraintTop_toBottomOf="@id/lineCity"/>
+
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewLang"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:hint="@string/language"
+                style="@style/AutocompleteStyle"
+                app:layout_constraintBottom_toBottomOf="@+id/langBg"
+                app:layout_constraintEnd_toEndOf="@+id/langBg"
+                app:layout_constraintStart_toStartOf="@+id/langBg"
+                app:layout_constraintTop_toTopOf="@id/langBg">
+            </AutoCompleteTextView>
+
+            <ImageView
+                android:id="@+id/lineLang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ImageSeparatorLine"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintTop_toBottomOf="@+id/langBg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <View
+                android:id="@+id/familyBg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightgroupcreateBG"
+                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
+                android:background="@color/colorInput"
+                app:layout_constraintTop_toBottomOf="@id/lineLang"/>
+
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewFamily"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:hint="@string/family_status"
+                style="@style/AutocompleteStyle"
+                app:layout_constraintBottom_toBottomOf="@+id/familyBg"
+                app:layout_constraintEnd_toEndOf="@+id/familyBg"
+                app:layout_constraintStart_toStartOf="@+id/familyBg"
+                app:layout_constraintTop_toTopOf="@id/familyBg">
+            </AutoCompleteTextView>
+
+            <ImageView
+                android:id="@+id/lineFamily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/ImageSeparatorLine"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintTop_toBottomOf="@+id/familyBg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+            <FrameLayout
+                android:id="@+id/frameLayout3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/low_big_margin"
+                android:layout_marginEnd="@dimen/low_big_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lineFamily">
+
+                <include layout="@layout/auth_loader" />
+
+                <Button
+                    android:id="@+id/createGroup"
+                    style="@style/TextGrey16sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_big"
+                    android:enabled="false"
+                    android:paddingTop="@dimen/middle_padding"
+                    android:text="@string/save_settings"
+                    android:textAllCaps="false" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/frameLayout3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

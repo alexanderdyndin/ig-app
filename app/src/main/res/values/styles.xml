@@ -387,12 +387,12 @@
     <style name="TextPink12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorPink</item>
-        <item name="android:textSize">@dimen/low_size</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
     </style>
     <style name="TextNoActive12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent2</item>
-        <item name="android:textSize">@dimen/low_size</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
     </style>
 
 <!-- Текст 14sp -->
@@ -438,6 +438,11 @@
     </style>
 
 <!-- Текст 16sp -->
+    <style name="TextGrey16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorTextBtnNoActive</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
     <style name="TextDark16sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/mainBlack</item>
@@ -451,6 +456,11 @@
     <style name="TextAccent16spBold">
         <item name="fontFamily">@font/play_bold</item>
         <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
+    <style name="TextNoActive16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent2</item>
         <item name="android:textSize">@dimen/big_size</item>
     </style>
     <style name="TextDislike16sp">
@@ -468,5 +478,61 @@
         <item name="fontFamily">@font/play_bold</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/title_size</item>
+    </style>
+    <style name="TextNoActive18sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/title_size</item>
+    </style>
+    <!-- Текс 20sp -->
+    <style name="TextTitleAuth20sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/middle_big_size</item>
+    </style>
+    <!-- Текст 24sp -->
+    <style name="TextAccent24spBold">
+        <item name="fontFamily">@font/play_bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/high_big_size</item>
+    </style>
+
+    <style name="EditTextAuth">
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:padding">@dimen/middle_padding</item>
+        <item name="android:layout_marginStart">@dimen/low_big_margin</item>
+        <item name="android:layout_marginEnd">@dimen/low_big_margin</item>
+        <item name="android:textColorHint">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/big_size</item>
+        <item name="android:background">@drawable/input_dark_336dp</item>
+        <item name="android:fontFamily">@font/play</item>
+    </style>
+    <style name="EditTextError">
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+        <item name="android:padding">@dimen/small_low_padding</item>
+        <item name="android:gravity">center</item>
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorPink</item>
+        <item name="android:textSize">@dimen/low_size</item>
+        <item name="android:background">@color/colorInput</item>
+    </style>
+    <style name="EditTextDate">
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:padding">@dimen/middle_padding</item>
+        <item name="android:layout_marginStart">@dimen/small_margin</item>
+        <item name="android:layout_marginEnd">@dimen/small_margin</item>
+        <item name="android:textColorHint">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/big_size</item>
+        <item name="android:background">@drawable/bg_inpt_mini</item>
+        <item name="android:fontFamily">@font/play</item>
+    </style>
+
+    <style name="ImageSeparatorLineMini">
+        <item name="android:background">@drawable/line_input_mini</item>
+        <item name="android:layout_marginTop">1dp</item>
     </style>
 </resources>

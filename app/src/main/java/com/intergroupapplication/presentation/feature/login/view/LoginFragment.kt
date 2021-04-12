@@ -2,8 +2,6 @@ package com.intergroupapplication.presentation.feature.login.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -18,7 +16,6 @@ import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWO
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
-import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -28,7 +25,6 @@ import com.mobsandgeeks.saripaar.annotation.Email
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import com.tbruyelle.rxpermissions2.RxPermissions
-import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

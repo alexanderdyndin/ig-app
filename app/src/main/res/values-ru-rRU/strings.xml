@@ -58,12 +58,12 @@
 
     <!--New Design-->
     <string name="intergroup">InterGroup</string>
-    <string name="welcome">Добро пожаловать! Наша социальная сеть предоставляет возможность общаться, слушать хорошую музыку, читать интересные новости, а также создавать группы по интересам.</string>
+    <string name="welcome">Добро пожаловать!\nНаша социальная сеть предоставляет возможность общаться, слушать хорошую музыку, читать интересные новости, а также создавать группы по интересам.</string>
     <string name="privacy_police">Политика конфиденциальности</string>
     <string name="terms_accept">Условия принимаю\t\t\t</string>
     <string name="terms_of_use">Пользовательское соглашение</string>
     <string name="rightholders">Правообладателям</string>
-    <string name="hardware_access">Предоставить доступ\nк аппаратным данным</string>
+    <string name="hardware_access">Предоставить доступ к аппаратным данным</string>
     <string name="already_registered">Я уже зарегистрирован в InterGroup</string>
     <string name="your_email">Укажите Ваш E-mail</string>
     <string name="your_pswd">Укажите Ваш пароль</string>
@@ -128,4 +128,10 @@
     <string name="reply">Ответить</string>
     <string name="expand">Развернуть</string>
     <string name="publish">Опубликовать</string>
+    <string name="nickname">Придумайте псевдоним</string>
+    <string name="day">День</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
+    <string name="family_status">Семейное положение</string>
+
 </resources>
