@@ -86,9 +86,7 @@ class UserListFragment : BaseFragment(), UserListView {
         groupId = requireArguments().getString(GROUP_ID)!!
         isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
 
-        adapterAll.setTypeUser(isAdmin)
-        adapterBlocked.setTypeUser(isAdmin)
-        adapterAdministrators.setTypeUser(isAdmin)
+        UserListAdapter.isAdmin = isAdmin
 
         navigationToolbar.toolbarTittle.text = getString(R.string.allUsers)
         navigationToolbar.toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
@@ -130,7 +128,7 @@ class UserListFragment : BaseFragment(), UserListView {
 
             slidingCategories.visibility = View.VISIBLE
 
-            val tabTitles = arrayOf("Followers", "Blocked", "Administrators")
+            val tabTitles = arrayOf(getString(R.string.followers), getString(R.string.blocked), getString(R.string.administrators))
             TabLayoutMediator(slidingCategories, pager) { tab, position ->
                 tab.text = tabTitles[position]
             }.attach()

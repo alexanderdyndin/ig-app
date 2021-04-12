@@ -23,10 +23,9 @@ class UserListAdapter(
         private val typeUserList: TypeUserList
 ) : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserListViewHolder>(diffUtil) {
 
-    private var _isAdmin = false
-
     companion object {
         var banUserClickListener: (userId: String, position: Int) -> Unit = {_, _ -> }
+        var isAdmin = false
         private val diffUtil = object : DiffUtil.ItemCallback<GroupUserEntity>() {
             override fun areItemsTheSame(oldItem: GroupUserEntity, newItem: GroupUserEntity): Boolean {
                 return oldItem.idProfile == newItem.idProfile
@@ -50,27 +49,25 @@ class UserListAdapter(
 
     inner class UserListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        private val listOfAllAction = listOf("В администраторы", "Заблокировать")
-
         @SuppressLint("SetTextI18n")
         fun bind(item: GroupUserEntity) {
             itemView.run {
-                item_group__list_header.text = item.firstName + " " + item.surName
+                itemGroupListHeader.text = item.firstName + " " + item.surName
                 idUser.text = "ID: ${item.idProfile}"
-                item_group__posts.text = item.postsCount.toString()
-                item_group__comments.text = item.commentsCount.toString()
-                item_group__dislike.text = item.dislikeCount.toString()
-                item_group__like.text = item.dislikeCount.toString()
+                itemGroupPosts.text = item.postsCount.toString()
+                itemGroupComments.text = item.commentsCount.toString()
+                itemGroupDislike.text = item.dislikeCount.toString()
+                itemGroupLike.text = item.dislikeCount.toString()
 
                 if (item.avatar.isNotEmpty()) imageLoadingDelegate.loadImageFromUrl(item.avatar, groupAvatarHolder)
                 else imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
 
-                if (_isAdmin) {
+                if (isAdmin) {
                     settingsBtn.visibility = View.VISIBLE
                     settingsBtn.setOnClickListener {
                         settingsBtn.setOnClickListener {
                         when(typeUserList) {
-                            TypeUserList.ALL -> createPopMenu(listOfAllAction, context, it, {}, {
+                            TypeUserList.ALL -> createPopMenu(resources.getStringArray(R.array.listOfActionFromAll).toList(), context, it, {}, {
                                 banUserClickListener.invoke(item.idProfile, layoutPosition)
                             })
                             TypeUserList.BLOCKED -> {}
@@ -107,9 +104,5 @@ class UserListAdapter(
             }
             popupMenu.show()
         }
-    }
-
-    fun setTypeUser(isAdmin: Boolean) {
-        _isAdmin = isAdmin
     }
 }
