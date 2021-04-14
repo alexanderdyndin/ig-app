@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -62,6 +63,16 @@ class UserListAdapter(
 
                 if (item.avatar.isNotEmpty()) imageLoadingDelegate.loadImageFromUrl(item.avatar, groupAvatarHolder)
                 else imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, groupAvatarHolder)
+
+                if (item.isAdministrator) {
+                    bigAngle.visibility = View.VISIBLE
+                    bigAngle.background = ContextCompat.getDrawable(context, R.drawable.bg_angle_admin)
+                }
+
+                if (item.isBlocked) {
+                    bigAngle.visibility = View.VISIBLE
+                    bigAngle.background = ContextCompat.getDrawable(context, R.drawable.bg_angle_blocked)
+                }
 
                 if (isAdmin) {
                     settingsBtn.visibility = View.VISIBLE

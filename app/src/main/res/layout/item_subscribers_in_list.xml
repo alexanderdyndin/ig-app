@@ -48,9 +48,10 @@
     Красный уголок означающий что подписчик заблокирован.
     Без уголка простой подписчик -->
     <TextView
-        android:id="@+id/itemGroupTextAge"
+        android:id="@+id/bigAngle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:background="@drawable/bg_angle_admin"
         app:layout_constraintStart_toStartOf="@+id/bgListResize"
         app:layout_constraintTop_toTopOf="@+id/bgListResize" />
@@ -63,6 +64,7 @@
         android:contentDescription="btn"
         android:paddingStart="6dp"
         android:paddingBottom="6dp"
+        android:visibility="gone"
         android:src="@drawable/ic_setting_sub"
         app:layout_constraintEnd_toEndOf="@+id/bgListResize"
         app:layout_constraintTop_toTopOf="@+id/bgListResize"
