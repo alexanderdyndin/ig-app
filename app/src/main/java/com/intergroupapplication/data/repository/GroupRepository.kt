@@ -146,4 +146,10 @@ class GroupRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
+
+    override fun deleteUserFromBansGroup(userId: String): Completable {
+        return api.deleteUserFromBansGroup(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
 }

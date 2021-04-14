@@ -153,6 +153,18 @@ class UserListFragment : BaseFragment(), UserListView {
                             })
             )
         }
+
+        UserListAdapter.deleteBanUserClickListener = {userId, position ->
+            compositeDisposable.add(
+                    viewModel.deleteUserFromBansGroup(userId)
+                            .subscribe({
+                                adapterAll.refresh()
+                                adapterBlocked.refresh()
+                            }, {
+                                errorHandler.handle(it)
+                            })
+            )
+        }
     }
 
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
