@@ -50,7 +50,7 @@
     <string name="advertising">Реклама</string>
     <string name="error">Ошибка</string>
     <string name="cancel">Закрыть</string>
-    <string name="image_still_uploading">Изображение еще загружается</string>
+    <string name="image_still_uploading">Медиа еще загружается</string>
     <string name="can_not_change_avatar">Ошибка при добавлении изображения</string>
     <string name="add_photo_or_text">Добавьте текст (Введите текст или прикрепите фотографию)</string>
     <string name="unknown">Неизвестно</string>
