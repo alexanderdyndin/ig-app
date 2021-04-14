@@ -184,4 +184,18 @@
             android:text="194к" />
     </LinearLayout>
 
+    <TextView
+        style="@style/TextNoActive12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/high_big_padding"
+        android:paddingEnd="@dimen/big_padding"
+        android:background="@drawable/bg_menu_item"
+        android:drawableEnd="@drawable/ic_menu_news"
+        android:text="Новости"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userCounts" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
