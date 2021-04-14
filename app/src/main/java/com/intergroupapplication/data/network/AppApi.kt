@@ -77,7 +77,7 @@ interface AppApi {
     @GET("groups/posts/{id}/")
     fun getPostById(@Path("id") postId: String): Single<GroupPostModel>
 
-    @PATCH("groups/posts/{id}/")
+    @PUT("groups/posts/{id}/")
     fun editPostById(@Path("id") postId: String,
                      @Body createGroupPostModel: CreateGroupPostModel): Single<GroupPostModel>
 

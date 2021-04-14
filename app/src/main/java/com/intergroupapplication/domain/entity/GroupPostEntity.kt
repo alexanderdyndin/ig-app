@@ -23,7 +23,7 @@ sealed class GroupPostEntity {
                 val activeCommentsCount: String,
                 val isActive: Boolean,
                 val isOffered: Boolean,
-                val isPinned: Boolean,
+                var isPinned: Boolean,
                 var reacts: ReactsEntity,
                 val idp: Int,
                 val images: List<FileEntity>,

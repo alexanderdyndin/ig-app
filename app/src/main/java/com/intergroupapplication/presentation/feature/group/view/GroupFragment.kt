@@ -265,6 +265,18 @@ class GroupFragment() : BaseFragment(), GroupView,
                     }
                 }
             }
+            pinClickListener = { item: GroupPostEntity.PostEntity, pos: Int ->
+                val post = item.copy(isPinned = !item.isPinned)
+                compositeDisposable.add(viewModel.editPost(post)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {  }
+                        .doFinally { adapter.notifyItemChanged(pos) }
+                        .subscribe({ item.isPinned = !item.isPinned }, {
+                            errorHandler.handle(it)
+                        })
+                )
+            }
         }
     }
 

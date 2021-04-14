@@ -55,4 +55,7 @@ class GroupViewModel @Inject constructor(private val useCase: PostsUseCase): Vie
     fun setBell(postId: String) = useCase.setBell(postId)
 
     fun deleteBell(postId: String) = useCase.deleteBell(postId)
+
+    fun editPost(groupPostEntity: GroupPostEntity.PostEntity) =
+            useCase.editPost(groupPostEntity)
 }

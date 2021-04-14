@@ -1,10 +1,9 @@
 package com.intergroupapplication.domain.usecase
 
-import com.intergroupapplication.domain.entity.BellFollowEntity
-import com.intergroupapplication.domain.entity.CreateGroupPostEntity
-import com.intergroupapplication.domain.entity.ReactsEntityRequest
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import io.reactivex.Single
 import javax.inject.Inject
 
 class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGateway,
@@ -17,8 +16,21 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
     fun createPost(createGroupPostEntity: CreateGroupPostEntity, groupId: String) =
             groupPostGateway.createPost(createGroupPostEntity, groupId)
 
-    fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String) =
-            groupPostGateway.editPost(createGroupPostEntity, postId)
+    fun editPost(groupPostEntity: GroupPostEntity.PostEntity): Single<GroupPostEntity.PostEntity> {
+        val createGroupPostEntity = CreateGroupPostEntity(groupPostEntity.postText,
+                groupPostEntity.images.map { FileRequestEntity(it.file, it.description, it.title) },
+                groupPostEntity.audios.map {
+                    AudioRequestEntity(it.file, it.description, it.song, it.artist, it.genre)
+                },
+                groupPostEntity.videos.map { FileRequestEntity(it.file, it.description, it.title) },
+                groupPostEntity.isPinned, groupPostEntity.pin)
+        return groupPostGateway.editPost(createGroupPostEntity, groupPostEntity.id)
+    }
+
+    fun editPost(createGroupPostEntity:CreateGroupPostEntity, postId: String
+    ): Single<GroupPostEntity.PostEntity> {
+        return groupPostGateway.editPost(createGroupPostEntity, postId)
+    }
 
     fun getPost(postId: String) =
             groupPostGateway.getPostById(postId)

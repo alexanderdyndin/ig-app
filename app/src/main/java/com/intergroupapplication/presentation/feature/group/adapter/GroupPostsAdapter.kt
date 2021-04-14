@@ -68,6 +68,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
         var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
+        var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var isOwner = false
     }
 
@@ -174,7 +175,20 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
                 }
 
-                anchorBtn.isVisible = item.isPinned
+                anchorBtn.setOnClickListener { pinClickListener.invoke(item, layoutPosition) }
+
+                if (isOwner) {
+                    anchorBtn.show()
+                    if (item.isPinned) {
+                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor_act)
+                        anchorBtn.setImageResource(R.drawable.ic_anchor_act)
+                    } else {
+                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor)
+                        anchorBtn.setImageResource(R.drawable.ic_anchor)
+                    }
+                } else {
+                    anchorBtn.gone()
+                }
 
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item, layoutPosition)
