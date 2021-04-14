@@ -13,6 +13,7 @@ class FollowersGroupMapper @Inject constructor() {
                 previous = from.previous,
                 users = from.results.map { result ->
                     result.user.run {
+                        val isAdmin = result.isAdmin ?: false || result.owner ?: false
                         GroupUserEntity(
                                 firstName = profile.firstName,
                                 surName = profile.secondName,
@@ -22,7 +23,8 @@ class FollowersGroupMapper @Inject constructor() {
                                 likesCount = profile.stats.likes,
                                 dislikeCount = profile.stats.dislikes,
                                 postsCount = profile.stats.posts,
-                                isAdministrator = result.isAdmin ?: false
+                                isAdministrator = isAdmin,
+                                isBlocked = false
                         )
                     }
                 }
