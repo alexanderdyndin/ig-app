@@ -99,10 +99,10 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 //                manageClipVisibility()
 //            }
 //        })
-        uploadingView = requireView().findViewById<ImagesUploadingView>(R.id.imagesUploadingContainer)
-        uploadingView.detachListener = {presenter.removeContent(it)}
-        uploadingView.retryListener = {presenter.cancelUploading(it)}
-        uploadingView.cancelListener = {presenter.retryLoading(it)}
+//        uploadingView = requireView().findViewById<ImagesUploadingView>(R.id.imagesUploadingContainer)
+//        uploadingView.detachListener = {presenter.removeContent(it)}
+//        uploadingView.retryListener = {presenter.cancelUploading(it)}
+//        uploadingView.cancelListener = {presenter.retryLoading(it)}
         postText.showKeyboard()
         setErrorHandler()
     }
@@ -112,34 +112,34 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     override fun showLoading(show: Boolean) {
-        if (show) {
-            publishBtn.hide()
-           // createProgress.show()
-        } else {
-            //createProgress.hide()
-            publishBtn.show()
-        }
+        publishBtn.isEnabled = show
+//        if (show) {
+//            publishBtn.hide()
+//           // createProgress.show()
+//        } else {
+//            //createProgress.hide()
+//            publishBtn.show()
+//        }
     }
 
     override fun showImageUploadingStarted(path: String) {
-        //detachImage()
-//        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
-//        loadingViews[path]?.let {
-//            it.imagePreview?.let { draweeView ->
-//                val type = MimeTypeMap.getFileExtensionFromUrl(path)
-//                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
-//                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
-//                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
-//                    it.nameView?.text = path.substring(path.lastIndexOf("/") + 1)
-//                }
-//                else
-//                    imageLoadingDelegate.loadImageFromFile(path, draweeView)
-//            }
-//        }
-//        postContainer.addView(loadingViews[path])
-//        prepareListeners(loadingViews[path], path)
-//        imageUploadingStarted(loadingViews[path])
-        uploadingView.showImageUploadingStarted(path)
+        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
+        loadingViews[path]?.let {
+            it.imagePreview?.let { draweeView ->
+                val type = MimeTypeMap.getFileExtensionFromUrl(path)
+                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
+                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
+                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
+                    it.nameView?.text = path.substring(path.lastIndexOf("/") + 1)
+                }
+                else
+                    imageLoadingDelegate.loadImageFromFile(path, draweeView)
+            }
+        }
+        postContainer.addView(loadingViews[path])
+        prepareListeners(loadingViews[path], path)
+        imageUploadingStarted(loadingViews[path])
+        //uploadingView.showImageUploadingStarted(path)
     }
 
 //    override fun showImageUploaded() {
@@ -152,13 +152,13 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 //    }
 
     override fun showImageUploaded(path: String) {
-//        loadingViews[path]?.apply {
-//            darkCard?.hide()
-//            stopUploading?.hide()
-//            imageUploadingProgressBar?.hide()
-//            detachImage?.show()
-//        }
-        uploadingView.showImageUploaded(path)
+        loadingViews[path]?.apply {
+            darkCard?.hide()
+            stopUploading?.hide()
+            imageUploadingProgressBar?.hide()
+            detachImage?.show()
+        }
+        //uploadingView.showImageUploaded(path)
     }
 
 //    override fun showImageUploadingProgress(progress: Float) {
@@ -168,10 +168,10 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 //    }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-//        loadingViews[path]?.apply {
-//            imageUploadingProgressBar?.progress = progress
-//        }
-        uploadingView.showImageUploadingProgress(progress, path)
+        loadingViews[path]?.apply {
+            imageUploadingProgressBar?.progress = progress
+        }
+//        uploadingView.showImageUploadingProgress(progress, path)
     }
 
 //    override fun showImageUploadingError() {
@@ -185,14 +185,14 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 //    }
 
     override fun showImageUploadingError(path: String) {
-//        loadingViews[path]?.apply {
-//            darkCard?.show()
-//            detachImage?.show()
-//            refreshContainer?.show()
-//            imageUploadingProgressBar?.hide()
-//            stopUploading?.hide()
-//        }
-        uploadingView.showImageUploadingError(path)
+        loadingViews[path]?.apply {
+            darkCard?.show()
+            detachImage?.show()
+            refreshContainer?.show()
+            imageUploadingProgressBar?.hide()
+            stopUploading?.hide()
+        }
+//        uploadingView.showImageUploadingError(path)
     }
 
     private fun setErrorHandler() {

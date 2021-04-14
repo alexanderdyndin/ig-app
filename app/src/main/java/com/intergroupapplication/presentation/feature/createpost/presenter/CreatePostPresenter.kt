@@ -55,9 +55,9 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                 object : Function3<List<String>, List<String>, List<String>, CreateGroupPostEntity> {
                     override fun invoke(photo: List<String>, video: List<String>, audio: List<String>): CreateGroupPostEntity =
                         CreateGroupPostEntity(postText,
-                                photo.map { FileRequestEntity(file = it, description = null, title = null) },
-                                audio.map { AudioRequestEntity(it, null, null, null,null) },
-                                video.map { FileRequestEntity(file = it,  description = null, title = null) },
+                                photo.map { FileRequestEntity(file = it, description = null, title = it.substringAfter("/posts/")) },
+                                audio.map { AudioRequestEntity(it, null, it.substringAfter("/posts/"), "Unknown",null) },
+                                video.map { FileRequestEntity(file = it,  description = null, title = it.substringAfter("/posts/")) },
                         false,
                                 null)
                 }
@@ -230,7 +230,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
     fun cancelUploading(file: String) {
         processes[file]?.let {
             it.dispose()
-//            videoDisposable.remove(it)
+            videoDisposable.remove(it)
         }
         removeContent(file)
         processes.remove(file)
