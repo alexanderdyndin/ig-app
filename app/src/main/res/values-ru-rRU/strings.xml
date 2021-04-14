@@ -137,4 +137,6 @@
         <item>В администраторы</item>
         <item>Заблокировать</item>
     </string-array>
+
+    <string name="unblock">Разблокировать</string>
 </resources>

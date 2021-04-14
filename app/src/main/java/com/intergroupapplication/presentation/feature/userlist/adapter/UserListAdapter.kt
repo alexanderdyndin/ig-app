@@ -24,7 +24,8 @@ class UserListAdapter(
 ) : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserListViewHolder>(diffUtil) {
 
     companion object {
-        var banUserClickListener: (userId: String, position: Int) -> Unit = {_, _ -> }
+        var banUserClickListener: (userId: String, position: Int) -> Unit = { _, _ -> }
+        var deleteBanUserClickListener: (userId: String, position: Int) -> Unit = { _, _ -> }
         var isAdmin = false
         private val diffUtil = object : DiffUtil.ItemCallback<GroupUserEntity>() {
             override fun areItemsTheSame(oldItem: GroupUserEntity, newItem: GroupUserEntity): Boolean {
@@ -65,18 +66,17 @@ class UserListAdapter(
                 if (isAdmin) {
                     settingsBtn.visibility = View.VISIBLE
                     settingsBtn.setOnClickListener {
-                        settingsBtn.setOnClickListener {
-                        when(typeUserList) {
+                        when (typeUserList) {
                             TypeUserList.ALL -> createPopMenu(resources.getStringArray(R.array.listOfActionFromAll).toList(), context, it, {}, {
                                 banUserClickListener.invoke(item.idProfile, layoutPosition)
                             })
-                            TypeUserList.BLOCKED -> {}
-                            TypeUserList.ADMINISTRATORS -> {}
+                            TypeUserList.BLOCKED -> createPopMenu(listOf(resources.getString(R.string.unblock)), context, it, {
+                                deleteBanUserClickListener.invoke(item.idProfile, layoutPosition)
+                            }, {})
+                            TypeUserList.ADMINISTRATORS -> {
+                            }
                         }
                     }
-
-                    }
-
                 }
             }
         }
@@ -90,7 +90,7 @@ class UserListAdapter(
             }
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
-                when(menuItem.itemId) {
+                when (menuItem.itemId) {
                     0 -> {
                         action1()
                         true

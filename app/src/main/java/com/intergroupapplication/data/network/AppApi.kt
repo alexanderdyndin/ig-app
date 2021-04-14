@@ -146,4 +146,8 @@ interface AppApi {
             @Body groupBanBody: GroupBanBody
     ): Completable
 
+    @DELETE("groups/bans/{id}/")
+    fun deleteUserFromBansGroup(
+            @Path("id") id: String
+    ): Completable
 }

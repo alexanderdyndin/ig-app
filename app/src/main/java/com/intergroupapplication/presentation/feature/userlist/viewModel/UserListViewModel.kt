@@ -35,4 +35,8 @@ class UserListViewModel @Inject constructor(
         return useCase.banUserInGroup(userId, reason, groupId)
     }
 
+    fun deleteUserFromBansGroup(userId: String): Completable {
+        return useCase.deleteUserFromBansGroup(userId)
+    }
+
 }

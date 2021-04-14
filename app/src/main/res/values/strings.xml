@@ -163,4 +163,6 @@
         <item>To administrators</item>
         <item>To black list</item>
     </string-array>
+    
+    <string name="unblock">Unblock</string>
 </resources>

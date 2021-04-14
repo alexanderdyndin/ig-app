@@ -64,4 +64,7 @@ class GroupUseCase @Inject constructor(
     fun banUserInGroup(userId: String, reason: String, groupId: String): Completable =
             groupGateway.banUserInGroup(userId, reason, groupId)
 
+    fun deleteUserFromBansGroup(userId: String) =
+            groupGateway.deleteUserFromBansGroup(userId)
+
 }
