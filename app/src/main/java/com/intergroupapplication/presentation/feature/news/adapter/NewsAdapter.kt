@@ -13,6 +13,7 @@ import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -31,7 +32,8 @@ import kotlinx.android.synthetic.main.layout_pic.view.*
 import timber.log.Timber
 
 
-class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
+class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
+                  private val cacheServer: HttpProxyCacheServer)
     : PagingDataAdapter<NewsEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
@@ -195,9 +197,11 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 doOrIfNull(item.post.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
 
+                videoContainer.proxy = cacheServer
                 videoContainer.setVideos(item.post.videos, item.post.videosExpanded)
                 videoContainer.expand = { item.post.videosExpanded = it }
 
+                audioContainer.proxy = cacheServer
                 audioContainer.setAudios(item.post.audios, item.post.audiosExpanded)
                 audioContainer.expand = { item.post.audiosExpanded = it }
 

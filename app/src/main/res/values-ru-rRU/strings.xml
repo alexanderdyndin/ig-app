@@ -134,4 +134,6 @@
     <string name="delete">Удалить</string>
     <string name="reply_to">Ответил на IDC: %1$s</string>
     <string name="forbidden_error">У вас нет соответствующих прав доступа</string>
+    <string name="post_pinned">Закреплено</string>
+    <string name="post_unpinned">Откреплено</string>
 </resources>

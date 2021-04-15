@@ -1,44 +1,38 @@
 package com.intergroupapplication.presentation.customview
 
 import android.content.Context
-import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.View.inflate
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.core.view.children
-import androidx.core.view.setPadding
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.view.SimpleDraweeView
-import com.github.florent37.shapeofview.shapes.CutCornerView
+import com.danikula.videocache.CacheListener
+import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
+import com.google.android.exoplayer2.extractor.ExtractorsFactory
+import com.google.android.exoplayer2.source.ExtractorMediaSource
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.exstension.getActivity
-import com.intergroupapplication.presentation.exstension.gone
-import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
 import kotlinx.android.synthetic.main.layout_2pic.view.*
-import kotlinx.android.synthetic.main.layout_2pic.view.pic1
-import kotlinx.android.synthetic.main.layout_2pic.view.pic2
 import kotlinx.android.synthetic.main.layout_3pic.view.*
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
 import kotlinx.android.synthetic.main.layout_pic.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.util.zip.Inflater
-import kotlin.math.roundToInt
+import timber.log.Timber
+
 
 class VideoGalleryView @JvmOverloads constructor(context: Context,
                                                  private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
@@ -56,6 +50,8 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
     private var uris: List<FileEntity> = emptyList()
 
     private var isExpanded: Boolean = false
+
+    var proxy: HttpProxyCacheServer? = null
 
     fun setVideos(uris: List<FileEntity>, isExpanded: Boolean = false) {
         this.uris = uris
@@ -128,16 +124,23 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
             }
         }
         videoPlayer.addListener(listener)
-
-        // Build the media item.
-        val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
-        // Set the media item to be played.
-        videoPlayer.setMediaItem(videoMediaItem)
-        // Prepare the player.
+        proxy?.let {
+            it.registerCacheListener(CacheListener { cacheFile, url, percentsAvailable ->
+                Timber.d(String.format("onCacheAvailable. percents: %d, file: %s, url: %s", percentsAvailable, cacheFile, url));
+            }, video.file)
+            val proxyUrl = it.getProxyUrl(video.file)
+            val videoMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
+            // Set the media item to be played.
+            videoPlayer.setMediaItem(videoMediaItem)
+        } ?: let {
+            // Build the media item.
+            val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
+            // Set the media item to be played.
+            videoPlayer.setMediaItem(videoMediaItem)
+            // Prepare the player.
 //                    musicPlayer.prepare()
-
+        }
         return videoPlayer
     }
-
 
 }

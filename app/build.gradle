@@ -323,6 +323,7 @@ dependencies {
     implementation 'com.explorestack:consent:1.0.2'
     //Video player
     implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
+    implementation 'com.danikula:videocache:2.7.1'
 
     //paging 3
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"

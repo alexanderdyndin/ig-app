@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.group.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
@@ -89,7 +90,7 @@ class GroupViewModule {
     @PerFragment
     @Provides
     fun provideGroupPostsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                           userSession: UserSession): GroupPostsAdapter {
+                           userSession: UserSession, proxyCacheServer: HttpProxyCacheServer): GroupPostsAdapter {
         if (userSession.isAdEnabled) {
             GroupPostsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
             GroupPostsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
@@ -98,7 +99,7 @@ class GroupViewModule {
             GroupPostsAdapter.AD_FREQ = 999
             GroupPostsAdapter.AD_FIRST = 999
         }
-        return GroupPostsAdapter(imageLoadingDelegate)
+        return GroupPostsAdapter(imageLoadingDelegate, proxyCacheServer)
     }
 
     @PerFragment

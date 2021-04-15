@@ -20,6 +20,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -105,6 +106,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     lateinit var modelFactory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var proxyCacheServer: HttpProxyCacheServer
+
+    @Inject
     lateinit var adapter: CommentsAdapter
 
     @Inject
@@ -184,6 +188,8 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         swipeLayout.setOnRefreshListener {
             presenter.getPostDetailsInfo(groupPostEntity.id)
         }
+        audioBody.proxy = proxyCacheServer
+        videoBody.proxy = proxyCacheServer
 
         imageBody.imageClick = { list, index ->
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)

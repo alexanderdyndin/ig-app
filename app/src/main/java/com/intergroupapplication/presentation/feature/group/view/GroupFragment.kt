@@ -272,7 +272,13 @@ class GroupFragment() : BaseFragment(), GroupView,
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe {  }
                         .doFinally { adapter.notifyItemChanged(pos) }
-                        .subscribe({ item.isPinned = !item.isPinned }, {
+                        .subscribe({
+                            item.isPinned = !item.isPinned
+                            if (item.isPinned)
+                                Toast.makeText(requireContext(), R.string.post_pinned, Toast.LENGTH_SHORT).show()
+                            else
+                                Toast.makeText(requireContext(), R.string.post_unpinned, Toast.LENGTH_SHORT).show()
+                                   }, {
                             errorHandler.handle(it)
                         })
                 )

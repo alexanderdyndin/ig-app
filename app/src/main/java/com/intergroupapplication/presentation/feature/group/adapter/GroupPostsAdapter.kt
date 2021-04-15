@@ -13,6 +13,7 @@ import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -29,7 +30,8 @@ import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.item_loading.view.*
 import timber.log.Timber
 
-class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
+class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
+                        private val proxyCacheServer: HttpProxyCacheServer)
     : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
@@ -155,7 +157,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = item.commentsCount
+                commentBtn.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
                 item.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.postText
@@ -168,7 +170,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 groupName.text = item.groupInPost.name
-                subCommentBtn.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
+                subCommentBtn.text = item.bells.count.toString()
                 if (item.bells.isActive) {
                     subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_blue, 0, 0, 0)
                 } else {
@@ -207,9 +209,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
+                videoContainer.proxy = proxyCacheServer
                 videoContainer.setVideos(item.videos, item.videosExpanded)
                 videoContainer.expand = { item.videosExpanded = it }
 
+                audioContainer.proxy = proxyCacheServer
                 audioContainer.setAudios(item.audios, item.audiosExpanded)
                 audioContainer.expand = { item.audiosExpanded = it }
 

@@ -11,6 +11,8 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.view.children
 import androidx.core.view.setPadding
+import com.danikula.videocache.CacheListener
+import com.danikula.videocache.HttpProxyCacheServer
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.github.florent37.shapeofview.shapes.CutCornerView
@@ -38,6 +40,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.File
 import java.util.zip.Inflater
 import kotlin.math.roundToInt
 
@@ -57,6 +61,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
     private var uris: List<AudioEntity> = emptyList()
 
     private var isExpanded: Boolean = false
+
+    var proxy: HttpProxyCacheServer? = null
 
     fun setAudios(uris: List<AudioEntity>, isExpanded: Boolean = false) {
         this.uris = uris
@@ -133,12 +139,20 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         }
         musicPlayer.addListener(listener)
 
-        // Build the media item.
-        val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
-        // Set the media item to be played.
-        musicPlayer.setMediaItem(musicMediaItem)
-        // Prepare the player.
-//                    musicPlayer.prepare()
+        proxy?.let {
+            val proxyUrl = it.getProxyUrl(audio.file)
+            val musicMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
+            // Set the media item to be played.
+            musicPlayer.setMediaItem(musicMediaItem)
+        } ?: let {
+            // Build the media item.
+            val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
+            // Set the media item to be played.
+            musicPlayer.setMediaItem(musicMediaItem)
+            // Prepare the player.
+            //musicPlayer.prepare()
+        }
+
 
         return musicPlayer
     }

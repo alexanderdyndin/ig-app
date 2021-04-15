@@ -9,6 +9,7 @@ import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.androidnetworking.gsonparserfactory.GsonParserFactory
+import com.danikula.videocache.HttpProxyCacheServer
 import com.facebook.common.util.UriUtil
 import com.intergroupapplication.App
 import com.intergroupapplication.R
@@ -60,6 +61,12 @@ class AppModule {
     @Provides
     fun provideContentResolver(context: Context): ContentResolver = context.contentResolver
 
+    @PerApplication
+    @Provides
+    fun provideHttpProxyCacheServer(application: App): HttpProxyCacheServer =
+            HttpProxyCacheServer.Builder(application)
+                    .maxCacheSize(1024*1024*1024)
+                    .build()
 
     @PerApplication
     @Provides

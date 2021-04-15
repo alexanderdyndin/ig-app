@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.news.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
@@ -75,7 +76,7 @@ class NewsViewModule {
     @PerFragment
     @Provides
     fun provideNewsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                           userSession: UserSession): NewsAdapter {
+                           userSession: UserSession, cacheServer: HttpProxyCacheServer): NewsAdapter {
         if (userSession.isAdEnabled) {
             NewsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsNews ?: 1
             NewsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
@@ -85,7 +86,7 @@ class NewsViewModule {
             NewsAdapter.AD_FREQ = 999
             NewsAdapter.AD_FIRST = 999
         }
-        return NewsAdapter(imageLoadingDelegate)
+        return NewsAdapter(imageLoadingDelegate, cacheServer)
     }
 
     @PerFragment
