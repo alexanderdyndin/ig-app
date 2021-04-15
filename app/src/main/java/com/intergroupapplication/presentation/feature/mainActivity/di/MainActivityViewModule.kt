@@ -38,22 +38,22 @@ class MainActivityViewModule {
     @Provides
     fun provideAdMobInitializer(userSession: UserSession, activity: MainActivity): InitializerLocal = object : InitializerLocal {
         override fun initialize() {
-            Appodeal.initialize(activity, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
+            //Appodeal.initialize(activity, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
             //Appodeal.setTesting(true)
-            userSession.user?.let {
-                val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(it.birthday)
-                val c = Calendar.getInstance()
-                val year = c.get(Calendar.YEAR)
-                Appodeal.setUserAge(year - date.year)
-                val gender = when (it.gender) {
-                    "male" -> UserSettings.Gender.MALE
-                    "female" -> UserSettings.Gender.FEMALE
-                    else -> UserSettings.Gender.OTHER
-                }
-                Appodeal.setUserGender(gender)
-                Appodeal.setUserId(it.id)
-            }
-            Appodeal.cache(activity, Appodeal.NATIVE, 1)
+//            userSession.user?.let {
+//                val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(it.birthday)
+//                val c = Calendar.getInstance()
+//                val year = c.get(Calendar.YEAR)
+//                Appodeal.setUserAge(year - date.year)
+//                val gender = when (it.gender) {
+//                    "male" -> UserSettings.Gender.MALE
+//                    "female" -> UserSettings.Gender.FEMALE
+//                    else -> UserSettings.Gender.OTHER
+//                }
+//                Appodeal.setUserGender(gender)
+//                Appodeal.setUserId(it.id)
+//            }
+           // Appodeal.cache(activity, Appodeal.NATIVE, 1)
         }
     }
 }

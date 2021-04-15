@@ -13,6 +13,7 @@ import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.Flowable
+import timber.log.Timber
 import javax.inject.Inject
 
 class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): ViewModel() {
@@ -38,6 +39,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
                                     after == null -> null
                                     else -> if ( i % NewsAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
+                                        Timber.d("trying to get news ad")
                                         if (nativeAdItem.also { nativeAd = it } != null) {
                                             NewsEntity.AdEntity(i, nativeAd)
                                         } else null

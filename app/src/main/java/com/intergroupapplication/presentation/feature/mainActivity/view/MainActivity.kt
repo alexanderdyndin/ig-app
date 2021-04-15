@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.android.billingclient.api.*
+import com.appodeal.ads.Appodeal
+import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.initializators.InitializerLocal
@@ -89,6 +91,8 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
+        Appodeal.initialize(this, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
+        //Appodeal.setTesting(true)
         viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
         initializerAppodeal.initialize()
         setContentView(R.layout.activity_main)
@@ -103,6 +107,7 @@ class MainActivity : FragmentActivity() {
         viewModel.getAdCount()
         createNotificationChannel()
         initBilling()
+        Appodeal.cache(this, Appodeal.NATIVE, 1)
     }
 
     override fun onResume() {
