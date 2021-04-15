@@ -21,12 +21,12 @@ class PhoneCharacteristicManager @Inject constructor(private val telephonyManage
     @Suppress("DEPRECATION")
     @SuppressLint("MissingPermission", "HardwareIds")
     fun getImei(): String {
-        return "sanya_hui_sosi"
-//        return (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            telephonyManager.imei
-//        } else {
-//            telephonyManager.deviceId
-//        }) ?: System.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        val imei = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            telephonyManager.imei
+        } else {
+            telephonyManager.deviceId
+        })
+        return if (imei == null || imei.isEmpty()) "sanya_hui_sosi" else imei
     }
 
     @SuppressLint("HardwareIds")

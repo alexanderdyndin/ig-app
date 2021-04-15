@@ -16,7 +16,7 @@
             android:background="@drawable/btn_filter"
             android:src="@drawable/ic_filter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/searchPost" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/bgAvaGroupPost"
@@ -25,8 +25,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_ava_group_post"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchPost"/>
+            app:layout_constraintStart_toStartOf="parent"/>
 
             <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/avaGroupPost"

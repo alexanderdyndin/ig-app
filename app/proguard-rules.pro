@@ -20,9 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--dontshrink
-
--dontobfuscate
+#-dontshrink
+#
+#-dontobfuscate
 
 # Rxjava rules
 -dontwarn rx.internal.util.**

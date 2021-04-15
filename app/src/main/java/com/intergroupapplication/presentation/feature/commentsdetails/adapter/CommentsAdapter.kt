@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,7 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.getDateDescribeByString
 import com.intergroupapplication.presentation.exstension.inflate
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -85,14 +87,17 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
                 view = NativeAdViewNewsFeed(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_TYPE_APP_WALL -> {
                 view = NativeAdViewAppWall(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_TYPE_CONTENT_STREAM -> {
                 view = NativeAdViewContentStream(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_WITHOUT_ICON -> {
@@ -136,6 +141,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             null -> throw IllegalStateException("Unknown view")
         }
     }
+
 
     inner class CommentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: CommentEntity.Comment) {

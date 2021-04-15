@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.createpost.view
 import android.net.Uri
 import android.view.View
 import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
@@ -78,16 +79,28 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
 
         attachPhoto.setOnClickListener {
-            dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                    mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+            if (loadingViews.count() >= 10) {
+                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
+            } else {
+                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                        mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+            }
         }
 
         attachVideo.setOnClickListener {
-            presenter.attachVideo()
+            if (loadingViews.count() >= 10) {
+                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
+            } else {
+                presenter.attachVideo()
+            }
         }
 
         attachAudio.setOnClickListener {
-            presenter.attachAudio()
+            if (loadingViews.count() >= 10) {
+                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
+            } else {
+                presenter.attachAudio()
+            }
         }
         toolbarBackAction.setOnClickListener { onResultCancel() }
 //        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {

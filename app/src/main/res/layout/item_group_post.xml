@@ -18,7 +18,8 @@
         android:background="@drawable/btn_filter"
         android:src="@drawable/ic_filter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchPost" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/bgAvaGroupPost"
@@ -27,7 +28,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_ava_group_post"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchPost"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/avaGroupPost"
@@ -292,7 +293,6 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/bgEndPost"
         app:layout_constraintEnd_toEndOf="@+id/bgEndPost"
-        app:layout_constraintStart_toEndOf="@+id/postDislikes"
         app:layout_constraintTop_toTopOf="@+id/bgEndPost">
 
 

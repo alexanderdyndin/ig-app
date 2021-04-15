@@ -140,6 +140,7 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         viewModel = ViewModelProvider(this, modelFactory)[GroupListViewModel::class.java]
         fetchGroups()
         prepareAdapter()
@@ -160,8 +161,6 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
 
 //        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
 //        adapterList.add(adapterAllAd)
@@ -452,19 +451,19 @@ class GroupListFragment(): BaseFragment(), GroupListView {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
             }
-            primaryItem(getString(R.string.music)) {
-                icon = R.drawable.ic_music
-                selectedIcon = R.drawable.ic_music_act
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
-                    findNavController().navigate(R.id.action_groupListFragment2_to_audioListFragment)
-                    toolbarTittle.text = getString(R.string.groups)
-                    false
-                }
-            }
+//            primaryItem(getString(R.string.music)) {
+//                icon = R.drawable.ic_music
+//                selectedIcon = R.drawable.ic_music_act
+//                textColorRes = R.color.whiteTextColor
+//                selectedColorRes = R.color.profileTabColor
+//                selectedTextColorRes = R.color.selectedItemTabColor
+//                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+//                onClick { v ->
+//                    findNavController().navigate(R.id.action_groupListFragment2_to_audioListFragment)
+//                    toolbarTittle.text = getString(R.string.groups)
+//                    false
+//                }
+//            }
             primaryItem(getString(R.string.buy_premium)) {
                 icon = R.drawable.icon_like
                 selectedIcon = R.drawable.icon_like

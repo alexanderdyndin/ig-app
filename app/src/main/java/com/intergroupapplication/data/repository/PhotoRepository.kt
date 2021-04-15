@@ -95,37 +95,51 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     override fun getImageUrls(): Single<List<String>> = Single.fromCallable { imageUrls }
 
     override fun loadAudio(): Observable<List<String>> =
-        RxPaparazzo.multiple(activity)
+        RxPaparazzo.single(activity)
                 .setMultipleMimeType("audio/mpeg", "audio/aac", "audio/wav")
                 .useInternalStorage()
                 .useDocumentPicker()
                 .usingFiles()
                 .map { response ->
-                    val paths = response.data()?.map { it.file.path } ?: emptyList()
-                    audioPaths.addAll(paths)
-                    paths
+//                    val paths = response.data()?.map { it.file.path } ?: emptyList()
+//                    audioPaths.addAll(paths)
+//                    paths
+                    val path = response.data()?.file?.path
+                    path?.let {
+                        videoPaths.add(it)
+                        listOf(it)
+                    } ?: emptyList()
                 }
 
     override fun loadVideo(): Observable<List<String>> =
-        RxPaparazzo.multiple(activity)
+        RxPaparazzo.single(activity)
                 .setMultipleMimeType("video/mpeg", "video/mp4", "video/webm", "video/3gpp")
                 .useInternalStorage()
                 .useDocumentPicker()
                 .usingFiles()
                 .map { response ->
-                    val paths = response.data()?.map { it.file.path } ?: emptyList()
-                    videoPaths.addAll(paths)
-                    paths
+//                    val paths = response.data()?.map { it.file.path } ?: emptyList()
+//                    videoPaths.addAll(paths)
+//                    paths
+                    val path = response.data()?.file?.path
+                    path?.let {
+                        videoPaths.add(it)
+                        listOf(it)
+                    } ?: emptyList()
                 }
 
     override fun loadImagesFromGallery(): Observable<List<String>> =
-            RxPaparazzo.multiple(activity)
+            RxPaparazzo.single(activity)
                     .crop(cropOptions)
                     .usingGallery()
                     .map { response ->
-                        val paths = response.data()?.map { it.file.path } ?: emptyList()
-                        imagePaths.addAll(paths)
-                        paths
+                        //val paths = response.data()?.map { it.file.path } ?: emptyList()
+                        //imagePaths.addAll(paths)
+                        val path = response.data()?.file?.path
+                        path?.let {
+                            imagePaths.add(it)
+                            listOf(it)
+                        } ?: emptyList()
                     }
 
     override fun uploadAudioToAws(path: String, groupId: String): Observable<Float> {

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -81,14 +82,17 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
                 view = NativeAdViewNewsFeed(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_TYPE_APP_WALL -> {
                 view = NativeAdViewAppWall(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_TYPE_CONTENT_STREAM -> {
                 view = NativeAdViewContentStream(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_WITHOUT_ICON -> {
@@ -131,7 +135,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             null -> throw IllegalStateException("Unknown view")
         }
     }
-
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)

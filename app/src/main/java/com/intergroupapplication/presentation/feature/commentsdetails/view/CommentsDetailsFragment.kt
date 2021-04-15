@@ -177,7 +177,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         //setSupportActionBar(toolbar)
         //supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbarAction.setOnClickListener { findNavController().popBackStack() }
-        //pagingDelegate.attachPagingView(adapter, swipeLayout, emptyText)
         ViewCompat.setNestedScrollingEnabled(commentsList, false)
         settingsPost.clicks()
                 .subscribe { showPopupMenu(settingsPost) }
@@ -187,6 +186,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
         swipeLayout.setOnRefreshListener {
             presenter.getPostDetailsInfo(groupPostEntity.id)
+            adapter.refresh()
         }
         audioBody.proxy = proxyCacheServer
         videoBody.proxy = proxyCacheServer
@@ -198,9 +198,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     fun newpaging() {
-        swipeLayout.setOnRefreshListener {
-            adapter.refresh()
-        }
         commentsList.adapter = adapterAd
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
@@ -237,6 +234,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                             commentCreated = false
                         }
                         commentEditText.isEnabled = true
+                        swipeLayout.isRefreshing = false
                     }
                     else ->{ swipeLayout.isRefreshing = false }
                 }

@@ -29,6 +29,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import kotlinx.android.synthetic.main.item_group_in_list.view.*
 
 
@@ -83,14 +84,17 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
                 view = NativeAdViewNewsFeed(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_TYPE_APP_WALL -> {
                 view = NativeAdViewAppWall(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_TYPE_CONTENT_STREAM -> {
                 view = NativeAdViewContentStream(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_WITHOUT_ICON -> {

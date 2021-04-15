@@ -39,7 +39,7 @@ class MainActivityViewModule {
     fun provideAdMobInitializer(userSession: UserSession, activity: MainActivity): InitializerLocal = object : InitializerLocal {
         override fun initialize() {
             Appodeal.initialize(activity, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
-            Appodeal.setTesting(true)
+            //Appodeal.setTesting(true)
             userSession.user?.let {
                 val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(it.birthday)
                 val c = Calendar.getInstance()
@@ -53,8 +53,7 @@ class MainActivityViewModule {
                 Appodeal.setUserGender(gender)
                 Appodeal.setUserId(it.id)
             }
-            Appodeal.cache(activity, Appodeal.NATIVE, 5)
-            Appodeal.getNativeAds(1)
+            Appodeal.cache(activity, Appodeal.NATIVE, 1)
         }
     }
 }

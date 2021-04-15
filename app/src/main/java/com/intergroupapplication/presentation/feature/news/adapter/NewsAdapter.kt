@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -83,6 +84,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         return when (viewType) {
             NATIVE_TYPE_NEWS_FEED -> {
                 view = NativeAdViewNewsFeed(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_TYPE_APP_WALL -> {
@@ -91,6 +93,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
             NATIVE_TYPE_CONTENT_STREAM -> {
                 view = NativeAdViewContentStream(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
                 NativeCreatedAdViewHolder(view)
             }
             NATIVE_WITHOUT_ICON -> {

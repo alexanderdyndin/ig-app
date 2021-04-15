@@ -786,7 +786,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/middle_margin"
                     android:background="@drawable/bg_post_music"
-                    app:layout_constraintEnd_toStartOf="@+id/delMusic"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
