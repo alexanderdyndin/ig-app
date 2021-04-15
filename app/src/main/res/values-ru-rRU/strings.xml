@@ -130,8 +130,36 @@
     <string name="publish">Опубликовать</string>
     <string name="nickname">Придумайте псевдоним</string>
     <string name="day">День</string>
+    <string name="week">Неделя</string>
     <string name="month">Месяц</string>
     <string name="year">Год</string>
     <string name="family_status">Семейное положение</string>
+
+    <string name="publications">Публикации</string>
+    <string name="comments">Комментарии</string>
+    <string name="reputation">Репутация</string>
+    
+    <string name="filter_group">Фильтр групп</string>
+    <string name="by_age">По возрасту</string>
+    <string name="by_status">По статусу</string>
+    <string name="by_visit">По посещению</string>
+    <string name="by_amount">По количеству</string>
+    <string name="by_activity">По активности</string>
+    <string name="by_date_create">По дате создания</string>
+    <string-array name="filterVisit">
+        <item>За все время</item>
+        <item>За месяц</item>
+        <item>За неделю</item>
+        <item>За день</item>
+    </string-array>
+    <string-array name="filterAmount">
+        <item>Подписчиков</item>
+        <item>Постов</item>
+        <item>Комментариев</item>
+        <item>Лайков</item>
+        <item>Дизлайков</item>
+    </string-array>
+    <string name="reset_filter">Сбросить</string>
+    <string name="apply_filter">Применить</string>
 
 </resources>

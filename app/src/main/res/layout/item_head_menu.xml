@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/high_middle_padding"
-        android:text="Репутация"
+        android:text="@string/reputation"
         app:layout_constraintBottom_toBottomOf="@+id/bgMenuAva"
         app:layout_constraintEnd_toStartOf="@+id/reputationLikes"
         app:layout_constraintStart_toEndOf="@+id/reputationDislikes" />
@@ -157,7 +157,7 @@
             android:layout_weight="1"
             android:drawableLeft="@drawable/icon_posts"
             android:drawablePadding="4dp"
-            tools:text="Публикации" />
+            tools:text="@string/publications" />
 
         <TextView
             style="@style/TextAccent14sp"
@@ -174,7 +174,7 @@
             android:layout_weight="1"
             android:drawableLeft="@drawable/icon_comments"
             android:drawablePadding="4dp"
-            tools:text="Комментарии" />
+            tools:text="@string/comments" />
 
         <TextView
             style="@style/TextAccent14sp"

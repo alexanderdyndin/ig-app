@@ -158,7 +158,35 @@
     <string name="publish">Publish</string>
     <string name="nickname">Come up with a nickname</string>
     <string name="day">Day</string>
+    <string name="week">Week</string>
     <string name="month">Month</string>
     <string name="year">Year</string>
     <string name="family_status">Family status</string>
+
+    <string name="publications">Publications</string>
+    <string name="comments">Comments</string>
+    <string name="reputation">Reputation</string>
+
+    <string name="filter_group">Filter group</string>
+    <string name="by_age">By age</string>
+    <string name="by_status">By status</string>
+    <string name="by_visit">By visit</string>
+    <string name="by_amount">By amount</string>
+    <string name="by_activity">By activity</string>
+    <string name="by_date_create">By date create</string>
+    <string-array name="filterVisit">
+        <item>For all time</item>
+        <item>For a month</item>
+        <item>For a week</item>
+        <item>For a day</item>
+    </string-array>
+    <string-array name="filterAmount">
+        <item>Followers</item>
+        <item>Posts</item>
+        <item>Comments</item>
+        <item>Likes</item>
+        <item>Dislikes</item>
+    </string-array>
+    <string name="reset_filter">Reset</string>
+    <string name="apply_filter">Apply</string>
 </resources>
