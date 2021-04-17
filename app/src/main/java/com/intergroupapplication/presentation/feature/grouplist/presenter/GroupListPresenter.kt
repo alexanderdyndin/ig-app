@@ -2,12 +2,14 @@ package com.intergroupapplication.presentation.feature.grouplist.presenter
 
 import moxy.InjectViewState
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
 import com.workable.errorhandler.ErrorHandler
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -18,7 +20,9 @@ import javax.inject.Inject
 class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                              private val userProfileGateway: UserProfileGateway,
                                              private val imageUploadingDelegate: ImageUploadingDelegate,
-                                             private val sessionStorage: UserSession)
+                                             private val sessionStorage: UserSession,
+                                             private val photoGateway: PhotoGateway
+                                             )
     : BasePresenter<GroupListView>() {
 
 
@@ -31,13 +35,15 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
 
     fun attachFromGallery() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = ::upload)
     }
 
     fun attachFromCamera() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler,upload = ::upload)
     }
+
+    private fun upload(groupId:String? = null):Observable<Float> = photoGateway.uploadToAws(groupId)
 
     fun changeUserAvatar() {
         compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()

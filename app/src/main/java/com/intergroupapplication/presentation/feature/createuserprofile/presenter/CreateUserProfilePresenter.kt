@@ -2,12 +2,14 @@ package com.intergroupapplication.presentation.feature.createuserprofile.present
 
 import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.CreateUserEntity
+import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.base.ImageUploader
 import com.intergroupapplication.presentation.exstension.handleLoading
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileView
 import com.workable.errorhandler.ErrorHandler
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @InjectViewState
 class CreateUserProfilePresenter @Inject constructor(private val userProfileGateway: UserProfileGateway,
                                                      private val imageUploadingDelegate: ImageUploader,
-                                                     private val errorHandler: ErrorHandler)
+                                                     private val errorHandler: ErrorHandler,
+                                                     private val photoGateway: PhotoGateway)
     : BasePresenter<CreateUserProfileView>() {
 
     private var uploadingDisposable: Disposable? = null
@@ -49,13 +52,17 @@ class CreateUserProfilePresenter @Inject constructor(private val userProfileGate
 
     fun takePhotoFromCamera() {
         stopImageUploading()
-        uploadingDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
+        //uploadingDisposable = imageUploadingDelegate.uploadFromCameraAvatarUser(viewState, errorHandler)
+        uploadingDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, upload = ::upload)
     }
 
     fun takePhotoFromGallery() {
         stopImageUploading()
-        uploadingDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
+        //uploadingDisposable = imageUploadingDelegate.uploadFromGalleryAvatarUser(viewState, errorHandler)
+        uploadingDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = ::upload)
     }
+
+    private fun upload(userId:String? = null):Observable<Float> = photoGateway.uploadAvatarUser(userId)
 
     override fun onDestroy() {
         super.onDestroy()

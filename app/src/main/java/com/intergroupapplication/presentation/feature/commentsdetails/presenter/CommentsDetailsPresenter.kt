@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.presenter
 
+import android.util.Log
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsView
 

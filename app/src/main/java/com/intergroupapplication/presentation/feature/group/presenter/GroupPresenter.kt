@@ -4,16 +4,19 @@ import moxy.InjectViewState
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupGateway
+import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.domain.usecase.GroupUseCase
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.group.view.GroupView
 import com.workable.errorhandler.ErrorHandler
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 import javax.inject.Inject
 
@@ -23,7 +26,8 @@ class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
                                          private val postsUseCase: PostsUseCase,
                                          private val imageUploadingDelegate: ImageUploadingDelegate,
                                          private val errorHandler: ErrorHandler,
-                                         private val complaintsGateway: ComplaintsGateway)
+                                         private val complaintsGateway: ComplaintsGateway,
+                                         private val photoGateway: PhotoGateway )
     : BasePresenter<GroupView>() {
 
     private val postsDisposable = CompositeDisposable()
@@ -31,14 +35,15 @@ class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
 
     fun attachFromGallery(groupId: String? = null) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, groupId)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, groupId,::upload)
     }
 
     fun attachFromCamera(groupId: String?) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, groupId)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, groupId, ::upload)
     }
 
+    private fun upload(groupId: String?):Observable<Float> = photoGateway.uploadAvatarGroup(groupId)
     fun changeGroupAvatar(groupId: String) {
         compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()
                 .flatMap {

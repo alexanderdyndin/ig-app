@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -164,7 +165,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 postDislike.text = item.reacts.dislikesCount.toString()
                 postLike.text = item.reacts.likesCount.toString()
                 userAvatarHolder.run {
-                    doOrIfNull(item.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
+                    Timber.tag("tut_adapter").d(item.commentOwner?.avatar.toString())
+                    doOrIfNull(item.commentOwner?.avatar, {
+                        Timber.tag("tut_adapter_it").d("$it")
+                        imageLoadingDelegate.loadImageFromUrl(it, this) },
                             { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
                 }
                 replyButton.setOnClickListener {

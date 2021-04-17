@@ -33,6 +33,7 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.Response
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
@@ -212,7 +213,48 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
-                            .doOnComplete { lastPhotoUrl = it.fields.key }
+                            .doOnComplete {
+                                lastPhotoUrl = it.fields.key
+                            }
+                            .doOnError { lastPhotoUrl = "" }
+                }
+    }
+    override fun uploadAvatarUser(groupId: String?): Observable<Float> {
+        val subject = PublishSubject.create<Float>()
+        val file = File(lastAttachedImagePath)
+        return appApi.uploadUserAvatar(file.extension, groupId)
+                .doAfterSuccess {
+                    if (file.extension == "gif")
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                file)
+                    else
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                }
+                .flatMapObservable { it ->
+                    subject.doOnDispose { AndroidNetworking.cancelAll() }
+                            .doOnComplete {
+                                lastPhotoUrl = it.fields.key }
+                            .doOnError { lastPhotoUrl = "" }
+                }
+    }
+
+    override fun uploadAvatarGroup(groupId: String?): Observable<Float> {
+        val subject = PublishSubject.create<Float>()
+        val file = File(lastAttachedImagePath)
+        return appApi.uploadGroupAvatar(file.extension, groupId)
+                .doAfterSuccess {
+                    if (file.extension == "gif")
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                file)
+                    else
+                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                }
+                .flatMapObservable { it ->
+                    subject.doOnDispose { AndroidNetworking.cancelAll() }
+                            .doOnComplete {
+                                lastPhotoUrl = it.fields.key }
                             .doOnError { lastPhotoUrl = "" }
                 }
     }

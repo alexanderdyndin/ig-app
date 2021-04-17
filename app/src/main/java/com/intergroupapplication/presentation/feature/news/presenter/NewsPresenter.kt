@@ -2,17 +2,19 @@ package com.intergroupapplication.presentation.feature.news.presenter
 
 import moxy.InjectViewState
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.gateway.ComplaintsGateway
+import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.news.view.NewsView
 import com.workable.errorhandler.ErrorHandler
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 import javax.inject.Inject
 
@@ -20,7 +22,8 @@ import javax.inject.Inject
 class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                         private val postsUseCase: PostsUseCase,
                                         private val userProfileGateway: UserProfileGateway,
-                                        private val imageUploadingDelegate: ImageUploadingDelegate)
+                                        private val imageUploadingDelegate: ImageUploadingDelegate,
+                                        private val photoGateway: PhotoGateway)
     : BasePresenter<NewsView>() {
 
     private val newsDisposable = CompositeDisposable()
@@ -47,17 +50,21 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
 
     fun attachFromGallery() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = ::upload)
     }
-
     fun attachFromCamera() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, upload = ::upload)
+    }
+
+    private fun upload(userId:String? = null): Observable<Float> {
+        return photoGateway.uploadAvatarUser(userId)
     }
 
     fun changeUserAvatar() {
         compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()
-                .flatMap { userProfileGateway.changeUserProfileAvatar(it) }
+                .flatMap {
+                    userProfileGateway.changeUserProfileAvatar(it) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ viewState.avatarChanged(it) }, {
