@@ -122,9 +122,9 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
             when (holder) {
-                is CommentViewHolder -> holder.bind(it as CommentEntity.Comment)
-                is CommentAnswerViewHolder -> holder.bind(it as CommentEntity.Comment)
-                is NativeAdViewHolder -> holder.fillNative((it as CommentEntity.AdEntity).nativeAd)
+                is CommentViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
+                is CommentAnswerViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
+                is NativeAdViewHolder -> if (it is CommentEntity.AdEntity) holder.fillNative(it.nativeAd)
             }
         }
     }

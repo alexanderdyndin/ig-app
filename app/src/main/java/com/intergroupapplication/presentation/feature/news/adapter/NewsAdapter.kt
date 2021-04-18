@@ -114,10 +114,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
-            if (holder is PostViewHolder)
-                holder.bind(it as NewsEntity.Post)
-            else if (holder is NativeAdViewHolder) {
-                holder.fillNative((it as NewsEntity.AdEntity).nativeAd)
+            if (holder is PostViewHolder && it is NewsEntity.Post)
+                holder.bind(it)
+            else if (holder is NativeAdViewHolder && it is NewsEntity.AdEntity) {
+                holder.fillNative((it).nativeAd)
             }
         }
     }

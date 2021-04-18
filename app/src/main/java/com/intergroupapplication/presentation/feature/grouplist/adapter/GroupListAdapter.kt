@@ -115,10 +115,10 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
-        if (holder is GroupViewHolder) {
-            holder.bind(item as GroupEntity.Group)
-        } else if (holder is NativeAdViewHolder) {
-                holder.fillNative((item as GroupEntity.AdEntity).nativeAd)
+        if (holder is GroupViewHolder && item is GroupEntity.Group) {
+            holder.bind(item)
+        } else if (holder is NativeAdViewHolder && item is GroupEntity.AdEntity) {
+            holder.fillNative(item.nativeAd)
         }
     }
 
@@ -142,8 +142,8 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 item_group__subscribers.text = item.followersCount
                 item_group__posts.text = item.postsCount
                 item_group__comments.text = item.CommentsCount
-                item_group__dislike.text = item.postsLikes
-                item_group__like.text = item.postsDislikes
+                item_group__like.text = item.postsLikes
+                item_group__dislike.text = item.postsDislikes
                 item_group__text_age.text = item.ageRestriction
                 when(item.ageRestriction) {
                     "12+" -> {

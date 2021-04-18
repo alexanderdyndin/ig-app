@@ -52,14 +52,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_group_list.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.lang.Runnable
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
 
-class GroupListFragment(): BaseFragment(), GroupListView {
+class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
 
     companion object {
@@ -78,6 +80,11 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    private var job : Job = Job()
 
     private lateinit var viewModel: GroupListViewModel
 
@@ -138,10 +145,12 @@ class GroupListFragment(): BaseFragment(), GroupListView {
 
     override fun getSnackBarCoordinator(): ViewGroup? = groupListCoordinator
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         viewModel = ViewModelProvider(this, modelFactory)[GroupListViewModel::class.java]
+        lifecycleScope.newCoroutineContext(this.coroutineContext)
         fetchGroups()
         prepareAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
@@ -316,6 +325,7 @@ class GroupListFragment(): BaseFragment(), GroupListView {
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
+                if (job.isCancelled) return@collectLatest
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
                     }
@@ -360,11 +370,13 @@ class GroupListFragment(): BaseFragment(), GroupListView {
     override fun onResume() {
         super.onResume()
         activity_main__search_input.addTextChangedListener(textWatcher)
+        job = Job()
     }
 
     override fun onPause() {
         super.onPause()
         activity_main__search_input.removeTextChangedListener(textWatcher)
+        job.cancel()
     }
 
     private fun openCreateGroup() {

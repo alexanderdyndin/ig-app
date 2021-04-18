@@ -49,15 +49,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
 
-class NewsFragment(): BaseFragment(), NewsView{
+class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     companion object {
         const val LABEL = "fragment_news"
@@ -86,6 +86,11 @@ class NewsFragment(): BaseFragment(), NewsView{
     @Named("footer")
     lateinit var footerAdapter: PagingLoadingAdapter
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    private var job : Job = Job()
+
     private lateinit var viewModel: NewsViewModel
 
     private var exitHandler: Handler? = null
@@ -106,9 +111,11 @@ class NewsFragment(): BaseFragment(), NewsView{
 
     var clickedPostId: String? = null
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
+        lifecycleScope.newCoroutineContext(this.coroutineContext)
         setAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -133,6 +140,16 @@ class NewsFragment(): BaseFragment(), NewsView{
         //newsPosts.layoutManager = layoutManager
         newsPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         newsPosts.itemAnimator = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        job = Job()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        job.cancel()
     }
 
     fun newPaging() {
@@ -179,6 +196,7 @@ class NewsFragment(): BaseFragment(), NewsView{
         newsPosts.adapter = concatAdapter
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
+            if (job.isCancelled) return@collectLatest
                 when(loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
@@ -203,9 +221,8 @@ class NewsFragment(): BaseFragment(), NewsView{
                         }
                         loading_layout.gone()
                         newSwipe.isRefreshing = false
-                        //if (!job.isCancelled) progress_first_loading.hide()
                     }
-                    else ->{ newSwipe.isRefreshing = false } //if (!job.isCancelled) progress_first_loading.hide()
+                    else ->{ newSwipe.isRefreshing = false }
                 }
             }
         }

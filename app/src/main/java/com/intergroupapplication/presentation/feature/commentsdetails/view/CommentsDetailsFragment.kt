@@ -60,18 +60,17 @@ import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
 
 
 class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
-        AppBarLayout.OnOffsetChangedListener{
+        AppBarLayout.OnOffsetChangedListener, CoroutineScope{
 
     companion object {
         const val COMMENTS_DETAILS_REQUEST = 0
@@ -83,6 +82,11 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         const val POST_ID = "post_id"
         const val COMMENT_PAGE = "page"
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    private var job : Job = Job()
 
     @Inject
     @InjectPresenter
@@ -131,7 +135,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
 
-    private lateinit var groupPostEntity: GroupPostEntity.PostEntity
+    private var groupPostEntity: GroupPostEntity.PostEntity? = null
     private var lastRepliedComment: CommentEntity.Comment? = null
 
     @LayoutRes
@@ -139,9 +143,11 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     override fun getSnackBarCoordinator(): ViewGroup? = coordinator
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
+        lifecycleScope.newCoroutineContext(this.coroutineContext)
         infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
         postId = arguments?.getString(POST_ID)
         page = arguments?.getString(COMMENT_PAGE)!!
@@ -185,7 +191,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         newpaging()
 
         swipeLayout.setOnRefreshListener {
-            presenter.getPostDetailsInfo(groupPostEntity.id)
+            groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
             adapter.refresh()
         }
         audioBody.proxy = proxyCacheServer
@@ -201,7 +207,8 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         commentsList.adapter = adapterAd
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                when(loadStates.refresh) {
+                if (job.isCancelled) return@collectLatest
+                when (loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
                             loading_layout.show()
@@ -236,7 +243,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                         commentEditText.isEnabled = true
                         swipeLayout.isRefreshing = false
                     }
-                    else ->{ swipeLayout.isRefreshing = false }
+                    else -> {
+                        swipeLayout.isRefreshing = false
+                    }
                 }
             }
         }
@@ -248,7 +257,13 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     override fun onResume() {
         super.onResume()
+        job = Job()
         appbar.addOnOffsetChangedListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        job.cancel()
     }
 
     override fun onStop() {
@@ -279,7 +294,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
             }
         }
 
-        idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.id)
+        idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.idp.toString())
         commentBtn.text = groupPostEntity.commentsCount
         groupName.text = groupPostEntity.groupInPost.name
         postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
@@ -424,7 +439,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                 presenter.createAnswerToComment(it.id, CreateCommentEntity(commentEditText.text.toString().trim()))
             }
         } else {
-            presenter.createComment(groupPostEntity.id, CreateCommentEntity(commentEditText.text.toString().trim()))
+            groupPostEntity?.let { presenter.createComment(it.id, CreateCommentEntity(commentEditText.text.toString().trim())) }
         }
     }
 
@@ -549,10 +564,10 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     private fun manageDataFlow(infoForCommentEntity: InfoForCommentEntity?) {
         if (infoForCommentEntity != null) {
             groupPostEntity = infoForCommentEntity.groupPostEntity
-            showPostDetailInfo(groupPostEntity)
+            showPostDetailInfo(infoForCommentEntity.groupPostEntity)
             if (infoForCommentEntity.isFromNewsScreen) {
                 headerPostFromGroup.setOnClickListener {
-                    val data = bundleOf(GROUP_ID to groupPostEntity.groupInPost.id)
+                    val data = bundleOf(GROUP_ID to infoForCommentEntity.groupPostEntity.groupInPost.id)
                     findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, data)
                 }
             }
@@ -568,10 +583,11 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.inflate(R.menu.settings_menu)
 
-        popupMenu.setOnMenuItemClickListener {
-            when (it.itemId) {
+        popupMenu.setOnMenuItemClickListener { menu ->
+            when (menu.itemId) {
                 R.id.complaint ->
-                    presenter.complaintPost(Integer.parseInt(groupPostEntity.id))
+                    groupPostEntity?.let { presenter.complaintPost(Integer.parseInt(it.id)) }
+
             }
             return@setOnMenuItemClickListener true
         }

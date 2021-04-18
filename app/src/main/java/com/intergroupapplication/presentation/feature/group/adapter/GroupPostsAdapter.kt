@@ -113,10 +113,10 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         getItem(position)?.let {
-            if (holder is PostViewHolder)
-                holder.bind(it as GroupPostEntity.PostEntity)
-            else if (holder is NativeAdViewHolder) {
-                holder.fillNative((it as GroupPostEntity.AdEntity).nativeAd)
+            if (holder is PostViewHolder && it is GroupPostEntity.PostEntity)
+                holder.bind(it)
+            else if (holder is NativeAdViewHolder && it is GroupPostEntity.AdEntity) {
+                holder.fillNative(it.nativeAd)
             }
         }
     }
