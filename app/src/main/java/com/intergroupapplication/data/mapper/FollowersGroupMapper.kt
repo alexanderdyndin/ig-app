@@ -24,7 +24,8 @@ class FollowersGroupMapper @Inject constructor() {
                                 dislikeCount = profile.stats.dislikes,
                                 postsCount = profile.stats.posts,
                                 isAdministrator = isAdmin,
-                                isBlocked = false
+                                isBlocked = false,
+                                subscriptionId = result.id.toString()
                         )
                     }
                 }

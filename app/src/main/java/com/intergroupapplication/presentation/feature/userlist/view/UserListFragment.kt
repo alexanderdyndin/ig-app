@@ -146,7 +146,7 @@ class UserListFragment : BaseFragment(), UserListView {
             compositeDisposable.add(
                     viewModel.setUserBans(userId, "Тест тест", groupId)
                             .subscribe({
-                                adapterAll.refresh()
+                                adapterAll.notifyItemRemoved(position)
                                 adapterBlocked.refresh()
                             },{
                                 errorHandler.handle(it)
@@ -158,8 +158,32 @@ class UserListFragment : BaseFragment(), UserListView {
             compositeDisposable.add(
                     viewModel.deleteUserFromBansGroup(userId)
                             .subscribe({
+                                adapterBlocked.notifyItemRemoved(position)
                                 adapterAll.refresh()
-                                adapterBlocked.refresh()
+                            }, {
+                                errorHandler.handle(it)
+                            })
+            )
+        }
+
+        UserListAdapter.assignToAdminsClickListener = {subscriptionId, position ->
+            compositeDisposable.add(
+                    viewModel.assignToAdmins(subscriptionId)
+                            .subscribe({
+                                adapterAll.notifyItemChanged(position)
+                                adapterAdministrators.refresh()
+                            }, {
+                                errorHandler.handle(it)
+                            })
+            )
+        }
+
+        UserListAdapter.demoteFromAdminsClickListener = {subscriptionId, position ->
+            compositeDisposable.add(
+                    viewModel.demoteFromAdmins(subscriptionId)
+                            .subscribe({
+                                adapterAdministrators.notifyItemRemoved(position)
+                                adapterAll.refresh()
                             }, {
                                 errorHandler.handle(it)
                             })

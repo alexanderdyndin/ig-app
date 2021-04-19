@@ -10,5 +10,7 @@ data class GroupUserEntity(
         val likesCount: Int,
         val postsCount: Int,
         val isAdministrator: Boolean,
-        val isBlocked: Boolean
+        val isBlocked: Boolean,
+        val banId: String = "",
+        val subscriptionId: String = ""
 )

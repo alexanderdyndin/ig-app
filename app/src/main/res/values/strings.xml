@@ -155,6 +155,8 @@
     <string name="expand">Expand</string>
     <string name="publish">Publish</string>
 
+
+<!--    group followers-->
     <string name="followers">Followers</string>
     <string name="blocked">Blocked</string>
     <string name="administrators">Administrators</string>
@@ -163,6 +165,7 @@
         <item>To administrators</item>
         <item>To black list</item>
     </string-array>
-    
+
+    <string name="demote">Demote</string>
     <string name="unblock">Unblock</string>
 </resources>

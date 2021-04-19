@@ -138,5 +138,6 @@
         <item>Заблокировать</item>
     </string-array>
 
+    <string name="demote">Разжаловать</string>
     <string name="unblock">Разблокировать</string>
 </resources>

@@ -26,7 +26,9 @@ class UserListAdapter(
 
     companion object {
         var banUserClickListener: (userId: String, position: Int) -> Unit = { _, _ -> }
-        var deleteBanUserClickListener: (userId: String, position: Int) -> Unit = { _, _ -> }
+        var deleteBanUserClickListener: (subscriptionId: String, position: Int) -> Unit = { _, _ -> }
+        var assignToAdminsClickListener: (subscriptionId: String, position: Int) -> Unit = {_, _ -> }
+        var demoteFromAdminsClickListener: (subscriptionId: String, position: Int) -> Unit = {_, _ -> }
         var isAdmin = false
         private val diffUtil = object : DiffUtil.ItemCallback<GroupUserEntity>() {
             override fun areItemsTheSame(oldItem: GroupUserEntity, newItem: GroupUserEntity): Boolean {
@@ -78,14 +80,24 @@ class UserListAdapter(
                     settingsBtn.visibility = View.VISIBLE
                     settingsBtn.setOnClickListener {
                         when (typeUserList) {
-                            TypeUserList.ALL -> createPopMenu(resources.getStringArray(R.array.listOfActionFromAll).toList(), context, it, {}, {
-                                banUserClickListener.invoke(item.idProfile, layoutPosition)
-                            })
-                            TypeUserList.BLOCKED -> createPopMenu(listOf(resources.getString(R.string.unblock)), context, it, {
-                                deleteBanUserClickListener.invoke(item.idProfile, layoutPosition)
-                            }, {})
-                            TypeUserList.ADMINISTRATORS -> {
+                            TypeUserList.ALL -> {
+                                if (!item.isAdministrator) {
+                                    createPopMenu(resources.getStringArray(R.array.listOfActionFromAll).toList(), context, it,
+                                            {
+                                                assignToAdminsClickListener.invoke(item.subscriptionId, layoutPosition)
+                                            },
+                                            {
+                                                banUserClickListener.invoke(item.idProfile, layoutPosition)
+                                            })
+                                }
                             }
+                            TypeUserList.BLOCKED -> createPopMenu(listOf(resources.getString(R.string.unblock)), context, it, {
+                                deleteBanUserClickListener.invoke(item.banId, layoutPosition)
+                            }, {})
+                            TypeUserList.ADMINISTRATORS ->  createPopMenu(listOf(resources.getString(R.string.demote)).toList(), context, it,
+                                    {
+                                        demoteFromAdminsClickListener.invoke(item.subscriptionId, layoutPosition)
+                                    }, {})
                         }
                     }
                 }

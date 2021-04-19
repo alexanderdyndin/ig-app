@@ -4,6 +4,7 @@ import com.intergroupapplication.data.model.*
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
 import com.intergroupapplication.data.model.group_followers.GroupUserBansDto
 import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
+import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -149,5 +150,11 @@ interface AppApi {
     @DELETE("groups/bans/{id}/")
     fun deleteUserFromBansGroup(
             @Path("id") id: String
+    ): Completable
+
+    @PATCH("groups/followers/{id}/")
+    fun updateGroupAdmin(
+            @Path("id") id: String,
+            @Body updateGroupAdmin: UpdateGroupAdmin
     ): Completable
 }
