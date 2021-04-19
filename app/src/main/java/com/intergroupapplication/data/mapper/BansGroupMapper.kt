@@ -23,7 +23,8 @@ class BansGroupMapper @Inject constructor() {
                                 dislikeCount = profile.stats.dislikes,
                                 postsCount = profile.stats.posts,
                                 isAdministrator = false,
-                                isBlocked = true
+                                isBlocked = true,
+                                banId = result.id.toString()
                         )
                     }
                 }

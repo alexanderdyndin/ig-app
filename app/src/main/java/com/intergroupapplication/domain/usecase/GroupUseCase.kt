@@ -1,16 +1,15 @@
 package com.intergroupapplication.domain.usecase
 
 import androidx.paging.PagingData
+import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
-import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
@@ -67,4 +66,10 @@ class GroupUseCase @Inject constructor(
     fun deleteUserFromBansGroup(userId: String) =
             groupGateway.deleteUserFromBansGroup(userId)
 
+    fun updateGroupAdmin(subscriptionId: String, toAdmin: Boolean): Completable {
+        val updateGroupAdmin = UpdateGroupAdmin(
+                isAdmin = toAdmin
+        )
+        return groupGateway.updateGroupAdmin(subscriptionId, updateGroupAdmin)
+    }
 }

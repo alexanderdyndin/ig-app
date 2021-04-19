@@ -10,6 +10,7 @@ import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
+import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.remotedatasource.GroupBansRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
@@ -149,6 +150,12 @@ class GroupRepository @Inject constructor(
 
     override fun deleteUserFromBansGroup(userId: String): Completable {
         return api.deleteUserFromBansGroup(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun updateGroupAdmin(subscriptionId: String, updateGroupAdmin: UpdateGroupAdmin): Completable {
+        return api.updateGroupAdmin(subscriptionId, updateGroupAdmin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
