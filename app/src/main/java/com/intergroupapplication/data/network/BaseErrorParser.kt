@@ -4,6 +4,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.intergroupapplication.data.model.ApiErrorDto
 import retrofit2.HttpException
+import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -19,6 +21,10 @@ class BaseErrorParser @Inject constructor(private val gson: Gson) : ErrorParser 
             }
             apiError
         } catch (e: JsonSyntaxException) {
+            Timber.e(e)
+            null
+        } catch (e: Exception) {
+            Timber.e(e)
             null
         }
     }

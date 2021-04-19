@@ -9,5 +9,5 @@ import com.intergroupapplication.presentation.base.ImageUploadingView
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface CreatePostView : MvpView, CanShowLoading, ImageUploadingView {
-    fun postCreateSuccessfully(postEntity: GroupPostEntity)
+    fun postCreateSuccessfully(postEntity: GroupPostEntity.PostEntity)
 }

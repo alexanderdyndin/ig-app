@@ -87,7 +87,7 @@ class TimeAgoTest {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, -10)
         calendar.add(Calendar.YEAR, -1)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.almosttwoyears.past")
         Assert.assertEquals(expected, results)
     }
@@ -100,7 +100,7 @@ class TimeAgoTest {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, -4)
         calendar.add(Calendar.YEAR, -1)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.overayear.past")
         Assert.assertEquals(expected, results)
     }
@@ -112,7 +112,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithAlmostOneYear() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, -12)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages,System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.aboutayear.past")
         Assert.assertEquals(expected, results)
     }
@@ -124,7 +124,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithSixMonths() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, -6)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xmonths.past", 6)
         Assert.assertEquals(expected, results)
     }
@@ -136,7 +136,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithAlmostOneMonth() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, -30)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.aboutamonth.past")
         Assert.assertEquals(expected, results)
     }
@@ -148,7 +148,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithTenDays() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, -10)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xdays.past", 10)
         Assert.assertEquals(expected, results)
     }
@@ -160,7 +160,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithOneDay() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, -1)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.oneday.past")
         Assert.assertEquals(expected, results)
     }
@@ -172,7 +172,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithFiveHours() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR, -3)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xhours.past", 3)
         Assert.assertEquals(expected, results)
     }
@@ -184,7 +184,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithFiftyOneMinutes() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, -51)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.aboutanhour.past")
         Assert.assertEquals(expected, results)
     }
@@ -196,7 +196,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithNineMinutes() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, -9)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xminutes.past", 9)
         Assert.assertEquals(expected, results)
     }
@@ -208,7 +208,7 @@ class TimeAgoTest {
     fun shouldShowPastDateTimeWithOneMinute() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, -1)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.oneminute.past")
         Assert.assertEquals(expected, results)
     }
@@ -221,7 +221,7 @@ class TimeAgoTest {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, 10)
         calendar.add(Calendar.YEAR, 1)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.almosttwoyears.future")
         Assert.assertEquals(expected, results)
     }
@@ -234,7 +234,7 @@ class TimeAgoTest {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, 4)
         calendar.add(Calendar.YEAR, 1)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.overayear.future")
         Assert.assertEquals(expected, results)
     }
@@ -246,7 +246,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithAlmostOneYear() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, 12)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.aboutayear.future")
         Assert.assertEquals(expected, results)
     }
@@ -258,7 +258,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithSixMonths() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, 6)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xmonths.future", 6)
         Assert.assertEquals(expected, results)
     }
@@ -270,7 +270,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithAlmostOneMonth() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, 30)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.aboutamonth.future")
         Assert.assertEquals(expected, results)
     }
@@ -282,7 +282,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithTenDays() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, 10)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xdays.future", 10)
         Assert.assertEquals(expected, results)
     }
@@ -294,7 +294,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithOneDay() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_MONTH, 1)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.oneday.future")
         Assert.assertEquals(expected, results)
     }
@@ -306,7 +306,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithFiveHours() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR, 5)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xhours.future", 5)
         Assert.assertEquals(expected, results)
     }
@@ -318,7 +318,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithFiftyOneMinutes() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, 51)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.aboutanhour.future")
         Assert.assertEquals(expected, results)
     }
@@ -330,7 +330,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithNineMinutes() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MINUTE, 9)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.xminutes.future", 9)
         Assert.assertEquals(expected, results)
     }
@@ -342,7 +342,7 @@ class TimeAgoTest {
     fun shouldShowFutureDateTimeWithOneMinute() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.SECOND, 61)
-        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages)
+        val results = TimeAgo.using(calendar.timeInMillis, mTimeAgoMessages, System.currentTimeMillis())
         val expected = getExpectedMessage("ml.timeago.oneminute.future")
         Assert.assertEquals(expected, results)
     }

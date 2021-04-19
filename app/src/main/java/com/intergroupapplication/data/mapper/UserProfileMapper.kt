@@ -1,14 +1,9 @@
 package com.intergroupapplication.data.mapper
 
-import com.intergroupapplication.data.model.CommentUserModel
-import com.intergroupapplication.data.model.UserModel
-import com.intergroupapplication.data.model.UserProfileModelRequest
-import com.intergroupapplication.data.model.UserProfileModelResponse
+import com.intergroupapplication.data.model.*
 import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.di.qualifier.PointDateFormatter
-import com.intergroupapplication.domain.entity.CommentUserEntity
-import com.intergroupapplication.domain.entity.CreateUserEntity
-import com.intergroupapplication.domain.entity.UserEntity
+import com.intergroupapplication.domain.entity.*
 import java.text.DateFormat
 import javax.inject.Inject
 
@@ -26,6 +21,41 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                     gender = from.gender,
                     avatar = from.avatar)
 
+    fun mapToDataModel(from: UserProfileEntityRequest) =
+            UserProfileModelRequest(
+                    firstName = from.firstName,
+                    surName = from.surName,
+                    birthday = from.birthday,
+                    gender = from.gender,
+                    avatar = from.avatar)
+
+    fun mapToDomainEntity(from: UserProfileModelRequest) =
+            UserProfileEntityRequest(
+                    firstName = from.firstName,
+                    surName = from.surName,
+                    birthday = from.birthday,
+                    gender = from.gender,
+                    avatar = from.avatar)
+
+    fun mapToDataModel(from: AuthorEntity) =
+            AuthorModel(
+                    from.id,
+                    from.email,
+                    from.isBlocked,
+                    from.isVerified,
+                    from.timeBlocked,
+                    mapToDataModel(from.profile))
+
+    fun mapToDomainEntity(from: AuthorModel) =
+            AuthorEntity(
+                    from.id,
+                    from.email,
+                    from.isBlocked,
+                    from.isVerified,
+                    from.timeBlocked,
+                    mapToDomainEntity(from.profile))
+
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun mapToDataModel(from: CreateUserEntity) =
             UserProfileModelRequest(
                     firstName = from.firstName,
@@ -56,6 +86,18 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                 )
             } ?: let { null }
 
+//    fun mapToDataModel(from: CommentUserEntity?): CommentUserModel? =
+//            from?.let {
+//                CommentUserModel(
+//                        user = from.user,
+//                        firstName = from.firstName,
+//                        secondName = from.secondName,
+//                        birthday = from.birthday,
+//                        gender = from.gender,
+//                        avatar = from.avatar
+//                )
+//            } ?: let { null }
+
 
     fun mapToDomainEntity(from: UserProfileModelResponse) =
             UserEntity(
@@ -68,5 +110,33 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                     isBlocked = from.userModel.isBlocked,
                     isActive = from.userModel.isActive,
                     avatar = from.avatar)
+
+    fun mapToDomainEntity(from: AdModel) =
+            AdEntity(
+                    from.limitOfAdsGroups,
+                    from.firstAdIndexGroups,
+                    from.noOfDataBetweenAdsGroups,
+                    from.limitOfAdsNews,
+                    from.firstAdIndexNews,
+                    from.noOfDataBetweenAdsNews,
+                    from.limitOfAdsComments,
+                    from.firstAdIndexComments,
+                    from.noOfDataBetweenAdsComments
+            )
+
+    fun mapToDataModel(from: AdEntity) =
+            AdModel(
+                    from.limitOfAdsGroups,
+                    from.firstAdIndexGroups,
+                    from.noOfDataBetweenAdsGroups,
+                    from.limitOfAdsNews,
+                    from.firstAdIndexNews,
+                    from.noOfDataBetweenAdsNews,
+                    from.limitOfAdsComments,
+                    from.firstAdIndexComments,
+                    from.noOfDataBetweenAdsComments
+            )
+
+
 
 }

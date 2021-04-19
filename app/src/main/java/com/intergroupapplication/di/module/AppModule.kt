@@ -1,12 +1,15 @@
 package com.intergroupapplication.di.module
 
+import android.app.Activity
 import android.app.NotificationManager
+import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import android.telephony.TelephonyManager
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.androidnetworking.gsonparserfactory.GsonParserFactory
+import com.danikula.videocache.HttpProxyCacheServer
 import com.facebook.common.util.UriUtil
 import com.intergroupapplication.App
 import com.intergroupapplication.R
@@ -17,14 +20,11 @@ import com.workable.errorhandler.ErrorHandler
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import github.nisrulz.easydeviceinfo.base.EasyDeviceMod
 import id.zelory.compressor.Compressor
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.Router
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @Module
 class AppModule {
@@ -35,23 +35,12 @@ class AppModule {
 
     @PerApplication
     @Provides
-    fun provideCicerone(): Cicerone<Router> = Cicerone.create()
-
-    @PerApplication
-    @Provides
-    fun provideNavigatorHolder(cicerone: Cicerone<Router>): NavigatorHolder = cicerone.navigatorHolder
-
-    @PerApplication
-    @Provides
     fun provideGsonParserFactory(): GsonParserFactory = GsonParserFactory()
 
     @PerApplication
     @Provides
-    fun provideRouter(cicerone: Cicerone<Router>): Router = cicerone.router
-
-    @PerApplication
-    @Provides
-    fun provideEasyDeviceMod(context: Context): EasyDeviceMod = EasyDeviceMod(context)
+    fun provideTelephonyManager(context: Context): TelephonyManager =
+            context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
     @PerApplication
     @Provides
@@ -67,6 +56,17 @@ class AppModule {
     @Provides
     fun provideImageCompressor(context: Context): Compressor =
             Compressor(context)
+
+    @PerApplication
+    @Provides
+    fun provideContentResolver(context: Context): ContentResolver = context.contentResolver
+
+    @PerApplication
+    @Provides
+    fun provideHttpProxyCacheServer(application: App): HttpProxyCacheServer =
+            HttpProxyCacheServer.Builder(application)
+                    .maxCacheSize(1024*1024*1024)
+                    .build()
 
     @PerApplication
     @Provides
@@ -94,12 +94,6 @@ class AppModule {
             .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
             .path(R.drawable.application_logo.toString())
             .build()
-
-
-    @PerApplication
-    @Provides
-    fun provideTelephonyManager(context: Context): TelephonyManager =
-            context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
 
 }

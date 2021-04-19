@@ -1,24 +1,7 @@
 package com.intergroupapplication.presentation.delegate
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Matrix
-import android.net.Uri
-import android.widget.ImageView
-import com.facebook.common.executors.CallerThreadExecutor
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.BaseDataSubscriber
-import com.facebook.datasource.DataSource
-import com.facebook.datasource.DataSources
-import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.Priority
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableBitmap
-import com.facebook.imagepipeline.request.ImageRequest
-import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.presentation.base.ImageLoader
-import com.intergroupapplication.presentation.customview.ShaderSimpleDraweeView
 import javax.inject.Inject
 
 /**

@@ -15,46 +15,54 @@ import javax.inject.Inject
 class ImageUploadingDelegate @Inject constructor(private val photoGateway: PhotoGateway) : ImageUploader {
 
     companion object {
-        private const val FULL_UPLOADED_PROGRESS = 100F
+        const val FULL_UPLOADED_PROGRESS = 100F
     }
 
     override fun uploadFromCamera(view: ImageUploadingView,
-                                  errorHandler: ErrorHandler?): Disposable {
+                                  errorHandler: ErrorHandler?, groupId: String?): Disposable {
         var progress = 0f
+        var path = ""
         return photoGateway.loadFromCamera()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
-                .doOnNext { view.showImageUploadingStarted(it) }
+                .doOnNext {
+                    view.showImageUploadingStarted(it)
+                    path = it
+                }
                 .observeOn(Schedulers.io())
-                .flatMap { photoGateway.uploadToAws() }
+                .flatMap { photoGateway.uploadToAws(groupId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress = it
-                    view.showImageUploadingProgress(it)
+                    view.showImageUploadingProgress(it, path)
                 }, {
                     errorHandler?.handle(CanNotUploadPhoto())
                     view.showImageUploadingError()
-                }, { if (progress == FULL_UPLOADED_PROGRESS) view.showImageUploaded() })
+                }, { if (progress == FULL_UPLOADED_PROGRESS) view.showImageUploaded(path) })
     }
 
-    override fun uploadFromGallery(view: ImageUploadingView, errorHandler: ErrorHandler?): Disposable {
+    override fun uploadFromGallery(view: ImageUploadingView, errorHandler: ErrorHandler?, groupId: String?): Disposable {
         var progress = 0f
+        var path = ""
         return photoGateway.loadFromGallery()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
-                .doOnNext { view.showImageUploadingStarted(it) }
+                .doOnNext {
+                    view.showImageUploadingStarted(it)
+                    path = it
+                }
                 .observeOn(Schedulers.io())
-                .flatMap { photoGateway.uploadToAws() }
+                .flatMap { photoGateway.uploadToAws(groupId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress = it
-                    view.showImageUploadingProgress(it)
+                    view.showImageUploadingProgress(it, path)
                 }, {
                     errorHandler?.handle(CanNotUploadPhoto())
                     view.showImageUploadingError()
-                }, { if (progress >= FULL_UPLOADED_PROGRESS) view.showImageUploaded() })
+                }, { if (progress >= FULL_UPLOADED_PROGRESS) view.showImageUploaded(path) })
     }
 
     override fun getLastPhotoUploadedUrl(): Single<String> =

@@ -11,12 +11,14 @@ import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
+import androidx.navigation.NavDeepLinkBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.device.notification.CreatorType
 import com.intergroupapplication.device.notification.NotificationCreatorOptions
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
-import com.intergroupapplication.presentation.feature.group.view.GroupActivity
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationActivity
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENT_PAGE
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.POST_ID
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 
 /**
  * Created by abakarmagomedov on 27/09/2018 at project InterGroupApplication.
@@ -39,8 +41,8 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
                 .contentIntent(createPendingIntent(type))
                 .priority(NotificationCompat.PRIORITY_MAX)
                 .lights(Color.RED)
-                .smallIcon(R.drawable.application_logo)
-                .largeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.application_logo))
+                .smallIcon(R.drawable.avatar_fill)
+                .largeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.avatar_fill))
                 .color(ContextCompat.getColor(context, R.color.colorPrimary))
                 .vibrationPattern(longArrayOf(500, 500))
                 .build()
@@ -51,25 +53,32 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
     override fun getId(): Int = COMMENTS_NOTIFICATION_ID
 
     private fun createPendingIntent(type: CreatorType.Comment): PendingIntent? {
-        val commentIntent = createCommentIntent(type)
-        val groupIntent = createGroupIntent(type)
-        val navigationIntent = createNavigationIntent()
 
-        val stackBuilder = TaskStackBuilder.create(context).apply {
-            addParentStack(CommentsDetailsActivity::class.java)
-            addNextIntent(navigationIntent)
-            addNextIntent(groupIntent)
-            addNextIntent(commentIntent)
-        }
+        val bundle = bundleOf(POST_ID to type.postId, COMMENT_PAGE to type.page)
 
-        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity::class.java)
+                .setGraph(R.navigation.nav_graph)
+                .setDestination(R.id.commentsDetailsActivity)
+                .setArguments(bundle)
+                .createPendingIntent()
+
+//        val stackBuilder = TaskStackBuilder.create(context).apply {
+//            addParentStack(MainActivity::class.java)
+//            addNextIntent(createNavigationIntent())
+//            addNextIntent(groupIntent)
+//            addNextIntent(commentIntent)
+//        }
+
+        return pendingIntent
+        //return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
-
-    private fun createCommentIntent(type: CreatorType.Comment) =
-            CommentsDetailsActivity.getIntent(context, type.groupId, type.commentId, type.postId)
-
-    private fun createGroupIntent(type: CreatorType.Comment): Intent =
-            GroupActivity.getIntent(context, type.groupId)
-
-    private fun createNavigationIntent(): Intent = NavigationActivity.getIntent(context)
+//
+//    private fun createCommentIntent(type: CreatorType.Comment) =
+//            CommentsDetailsActivity.getIntent(context, type.groupId, type.commentId, type.postId)
+//
+//    private fun createGroupIntent(type: CreatorType.Comment): Intent =
+//            GroupActivity.getIntent(context, type.groupId)
+//
+//    private fun createNavigationIntent(): Intent = Intent(context, MainActivity::class.java)
 }

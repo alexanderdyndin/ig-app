@@ -24,7 +24,7 @@ class CommentDividerItemDecorator(private val context: Context) : RecyclerView.I
             val child = parent.getChildAt(i)
             val position = parent.getChildAdapterPosition(child)
             val viewType = parent.adapter?.getItemViewType(position)
-            if (viewType != CommentDetailsAdapter.loadingViewType && viewType != CommentDetailsAdapter.errorViewType) {
+            if (viewType != CommentsAdapter.AD_TYPE) {
                 val params = child.layoutParams as RecyclerView.LayoutParams
 
                 val top = child.bottom + params.bottomMargin

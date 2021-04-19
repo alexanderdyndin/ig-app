@@ -5,12 +5,15 @@ import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.presentation.base.BasePagingState
-import com.intergroupapplication.presentation.base.CanShowLoading
-import com.intergroupapplication.presentation.base.PagingView
+import com.intergroupapplication.domain.entity.UserEntity
+import com.intergroupapplication.presentation.base.*
+import moxy.viewstate.strategy.SkipStrategy
 
-@StateStrategyType(AddToEndSingleStrategy::class)
-interface NewsView : MvpView, CanShowLoading, PagingView {
-    fun newsLoaded(posts: PagedList<GroupPostEntity>)
+@StateStrategyType(SkipStrategy::class)
+interface NewsView : MvpView, ImageUploadingView {
     fun showMessage(resId: Int)
+    fun showMessage(msg: String)
+    fun showUserInfo(userEntity: UserEntity)
+    fun avatarChanged(url: String)
+    fun showLastAvatar(lastAvatar: String?)
 }

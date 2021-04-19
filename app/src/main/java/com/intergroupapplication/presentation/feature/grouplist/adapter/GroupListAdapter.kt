@@ -1,161 +1,222 @@
 package com.intergroupapplication.presentation.feature.grouplist.adapter
 
+import android.content.Context
 import android.graphics.Color
-import android.graphics.Matrix
 import android.graphics.Typeface
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.ImageView
-import androidx.paging.PagedListAdapter
+import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.common.util.UriUtil
+import com.appodeal.ads.*
+import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
+import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
+import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.ResizeOptions
+import com.facebook.imagepipeline.request.ImageRequest
+import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
-import com.intergroupapplication.presentation.base.adapter.PagingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.doOrIfNull
-import com.intergroupapplication.presentation.exstension.getGroupFollowersCount
-import com.intergroupapplication.presentation.exstension.inflate
+import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import kotlinx.android.synthetic.main.item_group_in_list.view.*
-import kotlinx.android.synthetic.main.post_item_error.view.*
 
 
 /**
  * Created by abakarmagomedov on 02/08/2018 at project InterGroupApplication.
  */
-class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
-                       private val imageLoadingDelegate: ImageLoadingDelegate,
-                       private val userID: String?)
-    : PagedListAdapter<GroupEntity, RecyclerView.ViewHolder>(diffCallback), PagingAdapter {
+class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
+    : PagingDataAdapter<GroupEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
         var lettersToSpan = ""
+        var userID: String? = null
+        var groupClickListener: (groupId: String) -> Unit = {}
+        var unsubscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = { _, _ -> }
+        var subscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = {_, _ -> }
+        private const val NATIVE_TYPE_NEWS_FEED = 1
+        private const val NATIVE_TYPE_APP_WALL = 2
+        private const val NATIVE_TYPE_CONTENT_STREAM = 3
+        private const val NATIVE_WITHOUT_ICON = 4
+        private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
+        private const val DEFAULT_HOLDER = 1488
+        private val diffUtil = object : DiffUtil.ItemCallback<GroupEntity>() {
+            override fun areItemsTheSame(oldItem: GroupEntity, newItem: GroupEntity): Boolean {
+                return if (oldItem is GroupEntity.Group && newItem is GroupEntity.Group) {
+                    oldItem.id == newItem.id
+                } else if (oldItem is GroupEntity.AdEntity && newItem is GroupEntity.AdEntity) {
+                    oldItem.position == newItem.position
+                } else {
+                    false
+                }
+            }
+            override fun areContentsTheSame(oldItem: GroupEntity, newItem: GroupEntity): Boolean {
+                return if (oldItem is GroupEntity.Group && newItem is GroupEntity.Group) {
+                    oldItem == newItem
+                } else if (oldItem is GroupEntity.AdEntity && newItem is GroupEntity.AdEntity) {
+                    oldItem == newItem
+                } else {
+                    false
+                }
+            }
+        }
+        var AD_TYPE = 1
+        var AD_FREQ = 3
+        var AD_FIRST = 3
     }
 
-    var groupClickListener: (groupId: String) -> Unit = {}
-    var retryClickListener: () -> Unit = {}
-    var subscribeClickListener: (groupId: String) -> Unit = {}
-    var unsubscribeClickListener: (groupId: String) -> Unit = {}
-
-    private val loadingViewType = 123
-    private val errorViewType = 321
-    private var isLoading = false
-    private var isError = false
+    private lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+       context = parent.context
+        val view: View
         return when (viewType) {
-            loadingViewType -> LoadingViewHolder(parent.inflate(R.layout.post_item_loading))
-            errorViewType -> ErrorViewHolder(parent.inflate(R.layout.post_item_error))
-            else -> GroupViewHolder(parent.inflate(R.layout.item_group_in_list))
+            NATIVE_TYPE_NEWS_FEED -> {
+                view = NativeAdViewNewsFeed(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
+                NativeCreatedAdViewHolder(view)
+            }
+            NATIVE_TYPE_APP_WALL -> {
+                view = NativeAdViewAppWall(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
+                NativeCreatedAdViewHolder(view)
+            }
+            NATIVE_TYPE_CONTENT_STREAM -> {
+                view = NativeAdViewContentStream(parent.context)
+                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
+                NativeCreatedAdViewHolder(view)
+            }
+            NATIVE_WITHOUT_ICON -> {
+                view = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.native_ads_without_icon, parent, false)
+                NativeWithoutIconHolder(view)
+            }
+            VIEW_HOLDER_NATIVE_AD_TYPE -> {
+                view = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.include_native_ads, parent, false)
+                NativeCustomAdViewHolder(view)
+            }
+            else -> {
+                GroupViewHolder(parent.inflate(R.layout.item_group_in_list))
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (getItemViewType(position)) {
-            loadingViewType -> {
-            }
-            errorViewType -> (holder as ErrorViewHolder).bind()
-            else -> getItem(position)?.let { (holder as GroupViewHolder).bind(it) }
+        val item = getItem(position)
+        if (holder is GroupViewHolder && item is GroupEntity.Group) {
+            holder.bind(item)
+        } else if (holder is NativeAdViewHolder && item is GroupEntity.AdEntity) {
+            holder.fillNative(item.nativeAd)
         }
     }
-
-    override fun getItemCount() = super.getItemCount() + (if (isLoading) 1 else 0) + (if (isError) 1 else 0)
-
-    override fun itemCount() = itemCount
 
     override fun getItemViewType(position: Int): Int {
-        if (position == itemCount - 1) {
-            if (isLoading) {
-                return loadingViewType
-            }
-            if (isError) {
-                return errorViewType
-            }
+        return when (getItem(position)) {
+            is GroupEntity.Group -> DEFAULT_HOLDER
+            is GroupEntity.AdEntity -> AD_TYPE
+            null -> throw IllegalStateException("Unknown view")
         }
-        return super.getItemViewType(position)
     }
 
-    override fun addLoading() {
-        if (isLoading) {
-            return
-        }
-        isLoading = true
-        notifyItemInserted(itemCount)
-    }
-
-    override fun removeLoading() {
-        if (!isLoading) {
-            return
-        }
-        isLoading = false
-        notifyItemRemoved(itemCount)
-    }
-
-    override fun addError() {
-        if (isError) {
-            return
-        }
-        isError = true
-        notifyItemInserted(itemCount)
-    }
-
-    override fun removeError() {
-        if (!isError) {
-            return
-        }
-        isError = false
-        notifyItemRemoved(itemCount)
-    }
 
     inner class GroupViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(item: GroupEntity) {
+        val avatar: SimpleDraweeView = itemView.findViewById(R.id.groupAvatarHolder)
+
+        fun bind(item: GroupEntity.Group) {
             with(itemView) {
                 spanLetters(item)
-                item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
+                //item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
+                item_group__subscribers.text = item.followersCount
                 item_group__posts.text = item.postsCount
                 item_group__comments.text = item.CommentsCount
-                item_group__dislike.text = item.postsLikes
-                item_group__like.text = item.postsDislikes
+                item_group__like.text = item.postsLikes
+                item_group__dislike.text = item.postsDislikes
+                item_group__text_age.text = item.ageRestriction
+                when(item.ageRestriction) {
+                    "12+" -> {
+                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
+                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
+                    }
+                    "16+" -> {
+                        item_group__text_age.setBackgroundResource(R.drawable.bg_age16)
+                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
+                    }
+                    "18+" -> {
+                        item_group__text_age.setBackgroundResource(R.drawable.bg_age18)
+                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.whiteTextColor))
+                    }
+                    else -> {
+                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
+                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
+                    }
+                }
+                if (item.isClosed) {
+                    item_group__lock.setImageResource(R.drawable.icon_close)
+                    item_group__lock.setBackgroundResource(R.drawable.bg_lock)
+                } else {
+                    item_group__lock.setImageResource(R.drawable.icon_open)
+                    item_group__lock.setBackgroundResource(R.drawable.bg_unlock)
+                }
                 groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
                 }
-                with (item_group__btn_group_list) {
+                if (item.isSubscribing) {
+                    subscribingProgressBar.show()
+                    item_group__text_sub.hide()
+                } else {
+                    subscribingProgressBar.hide()
+                    item_group__text_sub.show()
+                }
+                with (item_group__text_sub) {
                     if (item.isFollowing) {
                         setOnClickListener {
-                            unsubscribeClickListener.invoke(item.id)
+                            unsubscribeClickListener.invoke(item, layoutPosition)
                         }
                         text = resources.getText(R.string.unsubscribe)
                         setBackgroundResource(R.drawable.btn_unsub)
                     } else {
                         setOnClickListener {
-                            subscribeClickListener.invoke(item.id)
+                            subscribeClickListener.invoke(item, layoutPosition)
                         }
                         text = resources.getText(R.string.subscribe)
                         setBackgroundResource(R.drawable.btn_sub)
                     }
-                    if (userID == item.owner) {
-                        visibility = View.GONE
+                    visibility = if (userID == item.owner) {
+                        View.INVISIBLE
                     } else {
-                        visibility = View.VISIBLE
+                        View.VISIBLE
                     }
                 }
                 doOrIfNull(item.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, groupAvatarHolder)
-                    //imageview123.setImageBitmap(imageLoadingDelegate.loadBitmapFromUrl(it))
-                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.application_icon, groupAvatarHolder)
+                    val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.avatar))
+                            .setResizeOptions(ResizeOptions(100, 100))
+                            .build()
+                    avatar.controller = Fresco.newDraweeControllerBuilder()
+                            .setAutoPlayAnimations(true)
+                            .setOldController(avatar.controller)
+                            .setImageRequest(request)
+                            .build()
+                }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, avatar)
                 })
+
+
             }
         }
 
-        private fun spanLetters(item: GroupEntity) {
+        private fun spanLetters(item: GroupEntity.Group) {
                 val spanStartPositions = item.name.mapIndexed { index: Int, c: Char -> item.name.indexOf(lettersToSpan, index, true) }.filterNot { it == -1 }.toSet()
                 val wordToSpan: Spannable = SpannableString(item.name)
                 spanStartPositions.forEach{
@@ -166,12 +227,185 @@ class GroupListAdapter(diffCallback: DiffUtil.ItemCallback<GroupEntity>,
         }
     }
 
-    inner class LoadingViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-
-    inner class ErrorViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        fun bind() {
-            itemView.buttonRetry.setOnClickListener { retryClickListener.invoke() }
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is GroupViewHolder) {
+            holder.avatar.controller = null
         }
+        super.onViewRecycled(holder)
+    }
+
+    internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
+        private val nativeAdView: NativeAdView
+        private val tvTitle: TextView
+        private val tvDescription: TextView
+        private val ratingBar: RatingBar
+        private val ctaButton: Button
+        private val nativeIconView: NativeIconView
+        private val tvAgeRestrictions: TextView
+        private val nativeMediaView: NativeMediaView
+        private val providerViewContainer: FrameLayout
+        override fun fillNative(nativeAd: NativeAd?) {
+            tvTitle.text = nativeAd?.title
+            tvDescription.text = nativeAd?.description
+            if (nativeAd?.rating == 0f) {
+                ratingBar.visibility = View.INVISIBLE
+            } else {
+                ratingBar.visibility = View.VISIBLE
+                //ratingBar.rating = nativeAd?.rating
+                ratingBar.stepSize = 0.1f
+            }
+            ctaButton.text = nativeAd?.callToAction
+            val providerView = nativeAd?.getProviderView(nativeAdView.context)
+            if (providerView != null) {
+                if (providerView.parent != null && providerView.parent is ViewGroup) {
+                    (providerView.parent as ViewGroup).removeView(providerView)
+                }
+                providerViewContainer.removeAllViews()
+                val layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                providerViewContainer.addView(providerView, layoutParams)
+            }
+            if (nativeAd?.ageRestrictions != null) {
+                tvAgeRestrictions.text = nativeAd.ageRestrictions
+                tvAgeRestrictions.visibility = View.VISIBLE
+            } else {
+                tvAgeRestrictions.visibility = View.GONE
+            }
+            if (nativeAd?.containsVideo() == true) {
+                nativeAdView.nativeMediaView = nativeMediaView
+                nativeMediaView.visibility = View.VISIBLE
+            } else {
+                nativeMediaView.visibility = View.GONE
+            }
+            nativeAdView.titleView = tvTitle
+            nativeAdView.descriptionView = tvDescription
+            nativeAdView.ratingView = ratingBar
+            nativeAdView.callToActionView = ctaButton
+            nativeAdView.setNativeIconView(nativeIconView)
+            nativeAdView.providerView = providerView
+            nativeAdView.registerView(nativeAd)
+            nativeAdView.visibility = View.VISIBLE
+        }
+
+        override fun unregisterViewForInteraction() {
+            nativeAdView.unregisterViewForInteraction()
+        }
+
+        init {
+            nativeAdView = itemView.findViewById(R.id.native_item)
+            tvTitle = itemView.findViewById(R.id.tv_title)
+            tvDescription = itemView.findViewById(R.id.tv_description)
+            ratingBar = itemView.findViewById(R.id.rb_rating)
+            ctaButton = itemView.findViewById(R.id.b_cta)
+            nativeIconView = itemView.findViewById(R.id.icon)
+            providerViewContainer = itemView.findViewById(R.id.provider_view)
+            tvAgeRestrictions = itemView.findViewById(R.id.tv_age_restriction)
+            nativeMediaView = itemView.findViewById(R.id.appodeal_media_view_content)
+        }
+    }
+
+    /**
+     * View holder for create custom NativeAdView without NativeIconView
+     */
+    internal class NativeWithoutIconHolder(itemView: View) : NativeAdViewHolder(itemView) {
+        private val nativeAdView: NativeAdView
+        private val tvTitle: TextView
+        private val tvDescription: TextView
+        private val ratingBar: RatingBar
+        private val ctaButton: Button
+        private val tvAgeRestrictions: TextView
+        private val nativeMediaView: NativeMediaView
+        private val providerViewContainer: FrameLayout
+        override fun fillNative(nativeAd: NativeAd?) {
+            tvTitle.text = nativeAd?.title
+            tvDescription.text = nativeAd?.description
+            if (nativeAd?.rating == 0f) {
+                ratingBar.visibility = View.INVISIBLE
+            } else {
+                ratingBar.visibility = View.VISIBLE
+                //ratingBar.rating = nativeAd?.rating
+                ratingBar.stepSize = 0.1f
+            }
+            ctaButton.text = nativeAd?.callToAction
+            val providerView = nativeAd?.getProviderView(nativeAdView.context)
+            if (providerView != null) {
+                if (providerView.parent != null && providerView.parent is ViewGroup) {
+                    (providerView.parent as ViewGroup).removeView(providerView)
+                }
+                providerViewContainer.removeAllViews()
+                val layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
+                providerViewContainer.addView(providerView, layoutParams)
+            }
+            if (nativeAd?.ageRestrictions != null) {
+                tvAgeRestrictions.text = nativeAd.ageRestrictions
+                tvAgeRestrictions.visibility = View.VISIBLE
+            } else {
+                tvAgeRestrictions.visibility = View.GONE
+            }
+            if (nativeAd?.containsVideo() == true) {
+                nativeAdView.nativeMediaView = nativeMediaView
+            } else {
+                nativeMediaView.visibility = View.GONE
+            }
+            nativeAdView.titleView = tvTitle
+            nativeAdView.descriptionView = tvDescription
+            nativeAdView.ratingView = ratingBar
+            nativeAdView.callToActionView = ctaButton
+            nativeAdView.providerView = providerView
+            nativeAdView.registerView(nativeAd)
+            nativeAdView.visibility = View.VISIBLE
+        }
+
+        override fun unregisterViewForInteraction() {
+            nativeAdView.unregisterViewForInteraction()
+        }
+
+        init {
+            nativeAdView = itemView.findViewById(R.id.native_item)
+            tvTitle = itemView.findViewById(R.id.tv_title)
+            tvDescription = itemView.findViewById(R.id.tv_description)
+            ratingBar = itemView.findViewById(R.id.rb_rating)
+            ctaButton = itemView.findViewById(R.id.b_cta)
+            providerViewContainer = itemView.findViewById(R.id.provider_view)
+            tvAgeRestrictions = itemView.findViewById(R.id.tv_age_restriction)
+            nativeMediaView = itemView.findViewById(R.id.appodeal_media_view_content)
+        }
+    }
+
+    /**
+     * View holder for create NativeAdView by template
+     */
+    internal class NativeCreatedAdViewHolder(itemView: View?) : NativeAdViewHolder(itemView) {
+        override fun fillNative(nativeAd: NativeAd?) {
+            if (itemView is NativeAdViewNewsFeed) {
+                itemView.setNativeAd(nativeAd)
+            } else if (itemView is NativeAdViewAppWall) {
+                itemView.setNativeAd(nativeAd)
+            } else if (itemView is NativeAdViewContentStream) {
+                itemView.setNativeAd(nativeAd)
+            }
+        }
+
+        override fun unregisterViewForInteraction() {
+            if (itemView is NativeAdViewNewsFeed) {
+                itemView.unregisterViewForInteraction()
+            } else if (itemView is NativeAdViewAppWall) {
+                itemView.unregisterViewForInteraction()
+            } else if (itemView is NativeAdViewContentStream) {
+                itemView.unregisterViewForInteraction()
+            }
+        }
+    }
+
+    /**
+     * Abstract view holders for create NativeAdView
+     */
+    internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
+        abstract fun fillNative(nativeAd: NativeAd?)
+        abstract fun unregisterViewForInteraction()
     }
 
 }

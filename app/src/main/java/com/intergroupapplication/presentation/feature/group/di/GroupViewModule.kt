@@ -1,31 +1,31 @@
 package com.intergroupapplication.presentation.feature.group.di
 
 import android.content.Context
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ConcatAdapter
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
-import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.base.ImageUploader
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.group.adapter.GroupAdapter
-import com.intergroupapplication.presentation.feature.group.view.GroupActivity
+import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import javax.inject.Named
+
 
 @Module
 class GroupViewModule {
@@ -34,62 +34,96 @@ class GroupViewModule {
         const val COMMENT_POST_ENTITY = "comment_post"
     }
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: GroupActivity): ImageLoader =
-            FrescoImageLoader(activity)
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun providePhotoGateway(activity: GroupActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(fragment: GroupFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageUploader(photoGateway: PhotoGateway): ImageUploader =
             ImageUploadingDelegate(photoGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideDialogManager(activity: GroupActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+    fun provideDialogManager(fragment: GroupFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-    @PerActivity
+//    @PerFragment
+//    @Provides
+//    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupPostEntity>() {
+//        override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem.id == newItem.id
+//        override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem == newItem
+//    }
+//
+//    @PerFragment
+//    @Provides
+//    fun provideGroupAdapter(diffUtil: DiffUtil.ItemCallback<GroupPostEntity>,
+//                            imageLoadingDelegate: ImageLoadingDelegate): GroupAdapter =
+//            GroupAdapter(diffUtil, imageLoadingDelegate)
+//
+//
+//    @PerFragment
+//    @Provides
+//    fun provideLinearLayoutManager(fragment: GroupFragment): RecyclerView.LayoutManager =
+//            LinearLayoutManager(fragment.requireContext(), LinearLayoutManager.VERTICAL, false)
+
+    @PerFragment
     @Provides
-    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupPostEntity>() {
-        override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem == newItem
+    fun provideGroupPostsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
+                           userSession: UserSession, proxyCacheServer: HttpProxyCacheServer): GroupPostsAdapter {
+        if (userSession.isAdEnabled) {
+            GroupPostsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
+            GroupPostsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
+            GroupPostsAdapter.AD_TYPE = 1 //userSession.countAd?.limitOfAdsNews ?: 1
+        } else {
+            GroupPostsAdapter.AD_FREQ = 999
+            GroupPostsAdapter.AD_FIRST = 999
+        }
+        return GroupPostsAdapter(imageLoadingDelegate, proxyCacheServer)
     }
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideGroupAdapter(diffUtil: DiffUtil.ItemCallback<GroupPostEntity>,
-                            imageLoadingDelegate: ImageLoadingDelegate): GroupAdapter =
-            GroupAdapter(diffUtil, imageLoadingDelegate)
+    @Named("footer")
+    fun provideFooterAdapter(groupPostsAdapter: GroupPostsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupPostsAdapter.retry() }
+    }
 
-
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideSupportAppNavigator(activity: GroupActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+    @Named("header")
+    fun provideHeaderAdapter(groupPostsAdapter: GroupPostsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { groupPostsAdapter.retry() }
+    }
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideLinearLayoutManager(activity: GroupActivity): RecyclerView.LayoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    fun provideConcatAdapter(groupPostsAdapter: GroupPostsAdapter,
+                             @Named("footer") footerAdapter: PagingLoadingAdapter,
+                             @Named("header") headerAdapter: PagingLoadingAdapter
+    ): ConcatAdapter {
+        return groupPostsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
+    }
+
 
 }

@@ -1,23 +1,20 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.di
 
 import android.content.Context
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ConcatAdapter
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
-import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDetailsAdapter
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsActivity
-import com.intergroupapplication.presentation.feature.news.view.NewsFragment
+import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -25,55 +22,56 @@ import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import javax.inject.Named
+
 
 @Module
 class CommentsDetailsViewModule {
 
-    @PerActivity
-    @Provides
-    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<CommentEntity>() {
-        override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem == newItem
-    }
+//    @PerFragment
+//    @Provides
+//    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<CommentEntity>() {
+//        override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem.id == newItem.id
+//        override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem == newItem
+//    }
 
-    @PerActivity
-    @Provides
-    fun provideCommentDetailsAdapter(diffUtil: DiffUtil.ItemCallback<CommentEntity>,
-                                     imageLoadingDelegate: ImageLoadingDelegate): CommentDetailsAdapter =
-            CommentDetailsAdapter(diffUtil, imageLoadingDelegate)
+//    @PerFragment
+//    @Provides
+//    fun provideCommentDetailsAdapter(diffUtil: DiffUtil.ItemCallback<CommentEntity>,
+//                                     imageLoadingDelegate: ImageLoadingDelegate): CommentDetailsAdapter =
+//            CommentDetailsAdapter(diffUtil, imageLoadingDelegate)
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideValidator(activity: CommentsDetailsActivity): Validator =
-            Validator(activity).apply { setValidationListener(activity) }
+    fun provideValidator(fragment: CommentsDetailsFragment): Validator =
+            Validator(fragment).apply { setValidationListener(fragment) }
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun providePhotoGateway(activity: CommentsDetailsActivity, cropOptions: UCrop.Options,
+    fun providePhotoGateway(fragment: CommentsDetailsFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideFrescoImageLoader(activity: CommentsDetailsActivity): ImageLoader =
-            FrescoImageLoader(activity)
+    fun provideFrescoImageLoader(context: Context): ImageLoader =
+            FrescoImageLoader(context)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideDialogManager(activity: CommentsDetailsActivity): DialogManager =
-            DialogManager(activity.supportFragmentManager)
+    fun provideDialogManager(fragment: CommentsDetailsFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
-    @PerActivity
+    @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
@@ -81,14 +79,47 @@ class CommentsDetailsViewModule {
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
-    @PerActivity
-    @Provides
-    fun provideSupportAppNavigator(activity: CommentsDetailsActivity): SupportAppNavigator =
-            SupportAppNavigator(activity, 0)
+//    @PerFragment
+//    @Provides
+//    fun provideLinearLayoutManager(fragment: CommentsDetailsFragment): RecyclerView.LayoutManager =
+//            LinearLayoutManager(fragment.requireActivity(), LinearLayoutManager.VERTICAL, false)
 
-    @PerActivity
+    @PerFragment
     @Provides
-    fun provideLinearLayoutManager(activity: CommentsDetailsActivity): RecyclerView.LayoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
+                           userSession: UserSession): CommentsAdapter {
+        if (userSession.isAdEnabled) {
+            CommentsAdapter.AD_TYPE = 1 //userSession.countAd?.limitOfAdsComments ?: 1
+            CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
+            CommentsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexComments ?: 3
+        } else {
+            CommentsAdapter.AD_FREQ = 999
+            CommentsAdapter.AD_FIRST = 999
+        }
+        return CommentsAdapter(imageLoadingDelegate)
+    }
+
+    @PerFragment
+    @Provides
+    @Named("footer")
+    fun provideFooterAdapter(commentsAdapter: CommentsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { commentsAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("header")
+    fun provideHeaderAdapter(commentsAdapter: CommentsAdapter): PagingLoadingAdapter {
+        return PagingLoadingAdapter { commentsAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    fun provideConcatAdapter(commentsAdapter: CommentsAdapter,
+                             @Named("footer") footerAdapter: PagingLoadingAdapter,
+                             @Named("header") headerAdapter: PagingLoadingAdapter
+    ): ConcatAdapter {
+        return commentsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
+    }
 
 }

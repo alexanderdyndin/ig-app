@@ -1,49 +1,25 @@
 <resources>
-    <string name="app_name">InterGroupApplication</string>
+    <string name="app_name">InterGroup</string>
     <string name="application_logo">Application Logo</string>
-    <string name="type_message">Type message</string>
-    <string name="type_subject">Type subject</string>
     <string name="notification_channel_id">notification_chanel_intergroup</string>
     <string name="inter_group">Inter Group</string>
-    <string name="mail">Email</string>
-    <string name="password">Password</string>
     <string name="registration">Registration</string>
-    <string name="retry_password">Confirm password</string>
     <string name="enter">Login</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="lost_connection">Internet disappeared</string>
     <string name="unknown_error">Unknown error</string>
-    <string name="profile_empty">Профиль не заполнин</string>
-    <string name="bio">Full name</string>
-    <string name="birth_date">Birthdate</string>
-    <string name="add">Add</string>
     <string name="men"> \t\tMen</string>
     <string name="women">\t\tWomen</string>
-    <string name="change">Change</string>
     <string name="from_gallery">Gallery</string>
     <string name="from_camera">Camera</string>
     <string name="server_error">Server error</string>
     <string name="no_network_connection">No internet connection</string>
     <string name="password_minimum_eight_symbols">Password must be at least 8 characters including a number and letter</string>
     <string name="email_not_valid">Email does not exist</string>
-    <string name="passwords_do_not_match">Password does not match</string>
-    <string name="wrong_password_or_email">Wrong email or password</string>
-    <string name="write_confirmation_code">Enter confirmation code</string>
-    <string name="confirmation_code_is_not_valid"> Confirmation code is not valid</string>
-    <string name="email_already_exists">User with that email already exists</string>
-    <string name="name">First name</string>
-    <string name="surName">Last name</string>
     <string name="next">Continue</string>
-    <string name="bad_request">Something went wrong</string>
     <string name="read_phone_state_permission">This app requires access to a phone</string>
     <string name="ok">OK</string>
     <string name="field_should_not_be_empty">Field can not be empty</string>
-    <string name="can_not_get_photo">Can\'t get photo</string>
-    <string name="user_with_email_already_exist">User with that email already exists</string>
-    <string name="wrong_credentials">Wrong email or password</string>
-    <string name="wrong_confirm_code">Wrong confirmation code</string>
     <string name="group_name">Group name</string>
-    <string name="create">Create</string>
     <string name="create_group">Create group</string>
     <string name="join_the_group">Join the group</string>
     <string name="create_post">Create a post</string>
@@ -56,18 +32,13 @@
     <string name="response_to" formatted="true">response %1$s</string>
     <string name="id" formatted="true">ID %1$s</string>
     <string name="create_note">Create note</string>
-    <string name="groups_list">Group List</string>
     <string name="post_should_contains_text">You can not create post without content</string>
     <string name="go_out_from_group">Leave group</string>
-    <string name="join_to_group">Join group</string>
     <string name="no_comments_yet">There are no comments yet</string>
     <string name="comment_should_contain_text">Comment cannot be empty</string>
     <string name="intergroup_notification">Notification from InterGroup</string>
-    <string name="group_already_exist">Group with that name already exists</string>
-    <string name="group_blocked">This group is blocked</string>
     <string name="here_no_groups_yet">There are no groups yet</string>
     <string name="user_blocked">User blocked</string>
-    <string name="loading">Loading</string>
     <string name="loading_error">Loading error</string>
     <string name="retry">Retry</string>
     <string name="response_to_comment">Response to a comment</string>
@@ -78,8 +49,7 @@
     <string name="error">Error</string>
     <string name="advertising">ad</string>
     <string name="cancel">Cancel</string>
-    <string name="image_still_uploading">Image is still uploading</string>
-    <string name="there_are_no_news_yet">There are no news yet</string>
+    <string name="image_still_uploading">Media is still uploading</string>
     <string name="can_not_change_avatar">You can not add the picture</string>
     <string name="add_photo_or_text">Type the text (enter the text or attach photo)</string>
     <string name="unknown">Unknown</string>
@@ -124,13 +94,73 @@
     <string name="complaint">Report abuse</string>
     <string name="complaint_send">Your complaint was sent</string>
     <string name="change_e_mail">Change E-mail</string>
-    <string name="new_version"> </string>
     <string name="search">Search</string>
     <string name="subscribe">Subscribe</string>
     <string name="unsubscribe">Unsubscribe</string>
-    <string name="searchString">Search</string>
     <string name="allGroups">All groups</string>
     <string name="subGroups">Subscribed</string>
     <string name="admGroups">Management</string>
+    <string name="terms_accept_privacy">Accept privacy policy conditions\t \t\t</string>
+    <string name="terms_accept_agreement">Accept user agreement conditions\t \t\t</string>
 
+    <string-array name="countries">
+        <item>Abkhazia</item>
+        <item>Afghanistan</item>
+        <item>Albania</item>
+        <item>Algeria</item>
+        <item>Argentina</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Armenia</item>
+        <item>Australia</item>
+        <item>Austria</item>
+        <item>Azerbaijan</item>
+    </string-array>
+
+    <string name="question" translatable="false">\?</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="language">Language</string>
+    <string name="subject">Subject</string>
+    <string name="create_group_agreement"><u>I agree with terms</u></string>
+    <string name="group_rules">Rules of the group</string>
+    <string name="group_description">Description</string>
+    <string name="group_open">Opened</string>
+    <string name="group_close">Closed</string>
+    <string name="group_age">Age</string>
+    <string name="group_avatar_add">Add avatar</string>
+    <string name="empty_subject_error">Please enter the keyword!</string>
+    <string name="full_subject_error">There are can be not more then 5 subjects</string>
+    <string name="separateline" translatable="false">SeparateLine</string>
+    <string name="imagebg" translatable="false">ImageBG</string>
+    <string name="_18" translatable="false">18+</string>
+    <string name="_12" translatable="false">12+</string>
+    <string name="_16" translatable="false">16+</string>
+    <string name="appodealpolicy">Appodeal policy</string>
+    <string name="offered_posts">Offered posts</string>
+    <string name="idg" translatable="false">IDG: %1$s</string>
+    <string name="idc" translatable="false">IDC: %1$s</string>
+    <string name="idp" translatable="false">IDP: %1$s</string>
+    <string name="allUsers">Followers</string>
+    <string name="blockedUsers">Blocked</string>
+    <string name="admUsers">Administrators</string>
+    <string name="can_not_upload_video">Can not upload video</string>
+    <string name="can_not_upload_audio">Can not upload audio</string>
+    <string name="buy_premium">Buy premium</string>
+    <string name="reply">Reply</string>
+    <string name="expand">Expand</string>
+    <string name="publish">Publish</string>
+    <string name="hide">Hide</string>
+    <string name="my_music">My music</string>
+    <string name="music">Music</string>
+    <string name="delete">Delete</string>
+    <string name="reply_to">Reply to IDC: %1$s</string>
+    <string name="forbidden_error">You have no access</string>
+    <string name="comments_count" translatable="false">%1$s / %2$s</string>
+    <string name="post_pinned">Pinned</string>
+    <string name="post_unpinned">Unpinned</string>
 </resources>

@@ -4,6 +4,7 @@ import com.intergroupapplication.data.mapper.UserProfileMapper
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.domain.entity.AdEntity
 import com.intergroupapplication.domain.entity.CreateUserEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
@@ -46,6 +47,15 @@ class UserProfileRepository @Inject constructor(private val api: AppApi,
                             sessionStorage.user = newUser
                         }
                     }
+
+//    override fun getAdParameters(): Single<AdEntity> {
+//        return api.adCountInfo()
+//                .map { userProfileMapper.mapToDomainEntity(it) }
+//                .doOnSuccess {
+//                    sessionStorage.countAd = it
+//                }
+//                .doOnError { Completable.error(it) }
+//    }
 
     override fun getUserProfile(): Single<UserEntity> {
         return if (sessionStorage.user != null) {

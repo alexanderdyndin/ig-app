@@ -24,6 +24,8 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                             when (it.nonFieldError.uniqueCode) {
                                 IMEI_BLOCKED -> ImeiException(message)
                                 USER_BLOCKED -> UserBlockedException(message)
+                                GROUP_IS_BLOCKED -> GroupBlockedException()
+                                INVALID_VERSION -> NewVersionException(message)
                                 else -> BadRequestException(message)
                             }
                         }
@@ -35,11 +37,12 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                         it.nonFieldError != null -> {
                             val message = it.nonFieldError.message
                             when (it.nonFieldError.uniqueCode) {
-                                PAGE_ERROR_GROUP -> PageNotFoundException()
-                                PAGE_ERROR_COMMENT_LIST -> PageNotFoundException()
-                                PAGE_ERROR_NEWS -> PageNotFoundException()
-                                PAGE_ERROR_GROUPS_POST_LIST -> PageNotFoundException()
+                                PAGE_ERROR_GROUP -> PageNotFoundException("Не найдено")
+                                PAGE_ERROR_COMMENT_LIST -> PageNotFoundException("Не найдено")
+                                PAGE_ERROR_NEWS -> PageNotFoundException("Не найдено")
+                                PAGE_ERROR_GROUPS_POST_LIST -> PageNotFoundException("Не найдено")
                                 NOT_PROFILE -> UserNotProfileException()
+                                ALREADY_NOT_FOLLOWING -> GroupAlreadyFollowingException()
                                 else -> NotFoundException(message)
                             }
                         }
@@ -56,7 +59,14 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                     500 -> ServerException()
                     else -> UnknowServerException()
                 }
-            } ?: throwable
+            } ?: when (throwable.code()) {
+                500 -> ServerException()
+                404 -> NotFoundException("Не найдено")
+                403 -> ForbiddenException("Нет доступа")
+                401 -> InvalidRefreshException()
+                400 -> NotFoundException(null)
+                else -> UnknowServerException()
+            }
         } else {
             throwable
         }

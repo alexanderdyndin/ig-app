@@ -1,6 +1,6 @@
 package com.intergroupapplication.di.module
 
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intergroupapplication.BuildConfig
@@ -51,17 +51,17 @@ class NetworkModule {
     @TokenInterceptor
     fun provideTokenInterceptor(sessionStorage: UserSession): Interceptor =
             Interceptor { chain ->
-                val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
-                val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: ""
+                val imei = sessionStorage.deviceInfoEntity?.imei ?: IMEI
+                val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: SERIAL
                 val builder = chain.request()
                         .newBuilder()
                         .addHeader(IMEI, imei)
-                    builder.addHeader(SERIAL, if(serialNumber.isNotEmpty()) serialNumber else "maksPidor") //fixme serial number on some devices returns blank
+                    builder.addHeader(SERIAL, serialNumber)
                 if (sessionStorage.isLoggedIn()) {
                     builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
                 } else {
                     builder.addHeader(DEVICE_ID, sessionStorage.firebaseToken?.token
-                            ?: FirebaseInstanceId.getInstance().token!!)
+                            ?: FirebaseMessaging.getInstance().token.result )  //not sure in this command
                 }
                 val newRequest = builder.build()
                 chain.proceed(newRequest)
@@ -123,6 +123,7 @@ class NetworkModule {
                     Timber.e(e)
                     return@Authenticator null
                 }
+
                 if (refreshResult != null) {
                     sessionStorage.token = tokenMapper.mapToDomainEntity(refreshResult)
                     val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
@@ -132,8 +133,7 @@ class NetworkModule {
                             .header(TOKEN, "JWT " + sessionStorage.token?.access)
                             .header(IMEI, imei)
                             .header(SERIAL, serialNumber)
-                            .header(DEVICE_ID, sessionStorage.firebaseToken?.token
-                                    ?: FirebaseInstanceId.getInstance().token!!)
+                            .header(DEVICE_ID, sessionStorage.firebaseToken?.token ?: FirebaseMessaging.getInstance().token.result )
                             .build()
                 } else {
                     null
@@ -191,4 +191,6 @@ class NetworkModule {
             .client(httpClient)
             .baseUrl(BuildConfig.BASE_URL)
             .build().create(AppApi::class.java)
+
+
 }

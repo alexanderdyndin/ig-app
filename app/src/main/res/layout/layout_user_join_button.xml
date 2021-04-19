@@ -1,25 +1,43 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <Button
         android:id="@+id/joinToGroup"
-        style="@style/BlueButton"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/group_action_button_height"
-        android:fontFamily="@font/roboto_medium"
-        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_btn_create"
+        android:gravity="bottom|center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="9dp"
         android:text="@string/join_the_group"
-        android:visibility="invisible" />
+        android:textColor="@color/mainBlack"
+        android:fontFamily="@font/play"
+        android:textAllCaps="false"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
 
-    <TextView
+    <Button
         android:id="@+id/goOutFromGroup"
-        style="@style/DisabledBlueButton"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/group_action_button_height"
-        android:fontFamily="@font/roboto_medium"
-        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_btn_create"
+        android:gravity="bottom|center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="9dp"
         android:text="@string/go_out_from_group"
-        android:visibility="invisible" />
+        android:textColor="@color/mainBlack"
+        android:fontFamily="@font/play"
+        android:textAllCaps="false"
+        android:visibility="invisible"/>
+
+    <ProgressBar
+        android:id="@+id/signingProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:visibility="invisible"
+        android:layout_gravity="center_horizontal"/>
 
 </FrameLayout>

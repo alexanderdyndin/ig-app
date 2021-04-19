@@ -1,51 +1,42 @@
 package com.intergroupapplication.presentation.feature.group.presenter
 
-import androidx.paging.RxPagedListBuilder
 import moxy.InjectViewState
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.InfoForCommentEntity
-import com.intergroupapplication.domain.exception.PageNotFoundException
-import com.intergroupapplication.domain.gateway.ComplaintsGetaway
+import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.usecase.GroupUseCase
-import com.intergroupapplication.presentation.base.BasePagingState
-import com.intergroupapplication.presentation.base.BasePagingState.Companion.PAGINATION_PAGE_SIZE
+import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.exstension.handleLoading
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsScreen
-import com.intergroupapplication.presentation.feature.createpost.view.CreatePostScreen
-import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSourceFactory
 import com.intergroupapplication.presentation.feature.group.view.GroupView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import ru.terrakok.cicerone.Router
+
 import javax.inject.Inject
 
 @InjectViewState
-class GroupPresenter @Inject constructor(private val router: Router,
-                                         private val groupGateway: GroupGateway,
-                                         private val postSourceFactory: GroupPostDataSourceFactory,
+class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
                                          private val groupUseCase: GroupUseCase,
+                                         private val postsUseCase: PostsUseCase,
                                          private val imageUploadingDelegate: ImageUploadingDelegate,
                                          private val errorHandler: ErrorHandler,
-                                         private val complaintsGetaway: ComplaintsGetaway)
+                                         private val complaintsGateway: ComplaintsGateway)
     : BasePresenter<GroupView>() {
 
     private val postsDisposable = CompositeDisposable()
     private var uploadingImageDisposable: Disposable? = null
 
-    fun attachFromGallery() {
+    fun attachFromGallery(groupId: String? = null) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, groupId)
     }
 
-    fun attachFromCamera() {
+    fun attachFromCamera(groupId: String?) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, groupId)
     }
 
     fun changeGroupAvatar(groupId: String) {
@@ -84,49 +75,12 @@ class GroupPresenter @Inject constructor(private val router: Router,
                 .doOnSubscribe { viewState.showGroupInfoLoading(true) }
                 .doFinally { viewState.showGroupInfoLoading(false) }
                 .subscribe({
-                    getGroupPosts(groupId)
+                    //getGroupPosts(groupId)
                 }, {
                     errorHandler.handle(it)
                 }))
     }
 
-    fun getGroupPosts(groupId: String) {
-        postSourceFactory.source.groupId = groupId
-        postsDisposable.add(postSourceFactory.source.observeState()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe({
-                    it.error?.let { throwable ->
-                        errorHandler.handle(throwable)
-                    }
-                    //todo исправить пагинацию
-                    if (it.error !is PageNotFoundException) {
-                        viewState.handleState(it.type)
-                    } else {
-                        viewState.handleState(BasePagingState.Type.NONE)
-                    }
-                }, {}))
-
-        postsDisposable.add(RxPagedListBuilder(postSourceFactory, PAGINATION_PAGE_SIZE)
-                .buildObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    viewState.postsLoaded(it)
-                }, {
-                    errorHandler.handle(it)
-                }))
-    }
-
-    fun reload() {
-        postSourceFactory.source.reload()
-    }
-
-    fun refresh(groupId: String) {
-        unsubscribe()
-        getGroupPosts(groupId)
-    }
 
     fun followGroup(groupId: String, followersCount: Int) {
         compositeDisposable.add(groupGateway.followGroup(groupId)
@@ -152,12 +106,33 @@ class GroupPresenter @Inject constructor(private val router: Router,
                 }))
     }
 
-    fun goBack() {
-        router.exit()
+    fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) {
+        compositeDisposable.add(postsUseCase.setReact(isLike, isDislike, postId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    if (isLike) {
+                        viewState.showMessage("Лайк отправляется")
+                    } else {
+                        viewState.showMessage("Дизлайк отправляется")
+                    }
+                }
+                //.doFinally { viewState.showSubscribeLoading(false) }
+                .subscribe({
+                    if (isLike) {
+                        viewState.showMessage("Лайк поставлен")
+                    } else {
+                        viewState.showMessage("Дизлайк поставлен")
+                    }
+                }, {
+                    viewState.showMessage("Ошибка установки реакции")
+                    errorHandler.handle(it)
+                }))
     }
 
+
     fun complaintPost(postId: Int) {
-        compositeDisposable.add(complaintsGetaway.complaintPost(postId)
+        compositeDisposable.add(complaintsGateway.complaintPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -171,10 +146,6 @@ class GroupPresenter @Inject constructor(private val router: Router,
         super.onDestroy()
         postsDisposable.clear()
         stopImageUploading()
-    }
-
-    private fun unsubscribe() {
-        postsDisposable.clear()
     }
 
     private fun stopImageUploading() {

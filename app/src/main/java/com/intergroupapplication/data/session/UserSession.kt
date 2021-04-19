@@ -13,6 +13,10 @@ import javax.inject.Inject
 @PerApplication
 class UserSession @Inject constructor(private val sharedPreferences: SharedPreferences, gson: Gson) {
 
+    companion object {
+        private const val IS_AD_ENABLED = "is_AD_enabled"
+    }
+
     var user: UserEntity? by SharedPrefDelegate(UserEntity::class.java, gson, sharedPreferences)
     var token: TokenEntity? by SharedPrefDelegate(TokenEntity::class.java, gson, sharedPreferences)
     var deviceInfoEntity: DeviceInfoEntity? by SharedPrefDelegate(DeviceInfoEntity::class.java, gson, sharedPreferences)
@@ -20,6 +24,13 @@ class UserSession @Inject constructor(private val sharedPreferences: SharedPrefe
     var firebaseToken: FirebaseTokenEntity? by SharedPrefDelegate(FirebaseTokenEntity::class.java, gson, sharedPreferences)
     var acceptTerms: TermsEntity? by SharedPrefDelegate(TermsEntity::class.java, gson, sharedPreferences)
     var email: EmailEntity? by SharedPrefDelegate(EmailEntity::class.java, gson, sharedPreferences)
+    var countAd: AdEntity? by SharedPrefDelegate(AdEntity::class.java, gson, sharedPreferences)
+
+    var isAdEnabled: Boolean
+        get() = sharedPreferences.getBoolean(IS_AD_ENABLED, true)
+        set(isEnabled) {
+            sharedPreferences.edit().putBoolean(IS_AD_ENABLED, isEnabled).apply()
+        }
 
 
     fun clearAllData() {
@@ -30,6 +41,8 @@ class UserSession @Inject constructor(private val sharedPreferences: SharedPrefe
     }
 
     fun logout() {
+        user = null
+        token = null
         sharedPreferences.edit()
                 .remove(UserEntity::class.java.name)
                 .remove(TokenEntity::class.java.name)

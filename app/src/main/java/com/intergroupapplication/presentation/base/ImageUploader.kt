@@ -6,7 +6,7 @@ import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 
 interface ImageUploader {
-    fun uploadFromCamera(view: ImageUploadingView, errorHandler: ErrorHandler?): Disposable
-    fun uploadFromGallery(view: ImageUploadingView, errorHandler: ErrorHandler?): Disposable
+    fun uploadFromCamera(view: ImageUploadingView, errorHandler: ErrorHandler?, groupId: String? = null): Disposable
+    fun uploadFromGallery(view: ImageUploadingView, errorHandler: ErrorHandler?, groupId: String? = null): Disposable
     fun getLastPhotoUploadedUrl(): Single<String>
 }

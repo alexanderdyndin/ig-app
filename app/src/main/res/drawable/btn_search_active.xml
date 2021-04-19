@@ -58,7 +58,7 @@
           android:endX="0.819452"
           android:type="linear">
         <item android:offset="0" android:color="#FF02AFCC"/>
-        <item android:offset="1" android:color="#01C6D5"/>
+        <item android:offset="1" android:color="#FF01C6D5"/>
       </gradient>
     </aapt:attr>
   </path>

@@ -13,7 +13,11 @@ class CreateGroupMapper @Inject constructor() {
         return CreateGroupModel(
                 name = from.name,
                 description = from.description,
-                avatar = from.avatar
+                avatar = from.avatar,
+                subject = from.subject,
+                rules = from.rules,
+                isClosed = from.isClosed,
+                ageRestriction = from.ageRestriction
         )
     }
 
@@ -21,7 +25,11 @@ class CreateGroupMapper @Inject constructor() {
         return CreateGroupEntity(
                 name = from.name,
                 description = from.description,
-                avatar = from.avatar
+                avatar = from.avatar,
+                subject = from.subject,
+                rules = from.rules,
+                isClosed = from.isClosed,
+                ageRestriction = from.ageRestriction
         )
     }
 

@@ -5,6 +5,8 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
 
+const val PAGE_SIZE = 20
+
 interface AppApi {
 
     @POST("auth/registrations/")
@@ -31,17 +33,29 @@ interface AppApi {
     @GET("groups/news/")
     fun getNews(@Query("page") page: Int): Single<NewsDto>
 
+    @GET("multimedia/audios/")
+    fun getAudios(@Query("page") page: Int): Single<AudiosDto>
+
+    @GET("multimedia/images/")
+    fun getImages(@Query("page") page: Int): Single<ImagesDto>
+
+    @GET("multimedia/videos/")
+    fun getVideos(@Query("page") page: Int): Single<VideosDto>
+
     @GET("groups/")
     fun getSubscribedGroupList(@Query("page") page: Int, @Query("search") search:String,
-                               @Query("followed") followed:String = "true"): Single<GroupsDto>
+                               @Query("followed") followed:String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/")
     fun getGroupList(@Query("page") page: Int,
-                     @Query("search") search:String): Single<GroupsDto>
+                     @Query("search") search:String/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/")
     fun getAdminGroupList(@Query("page") page: Int, @Query("search") search:String,
-                          @Query("owned") owned:String = "true"): Single<GroupsDto>
+                          @Query("owned") owned:String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/posts/{post_pk}/comments/")
     fun getPostComments(@Path("post_pk") postId: String,
@@ -59,8 +73,16 @@ interface AppApi {
     fun createPost(@Body postModel: CreateGroupPostModel,
                    @Path("group_pk") groupId: String): Single<GroupPostModel>
 
+    @POST("groups/posts/{post_pk}/reacts/")
+    fun setReact(@Body data: ReactsModelRequest,
+                 @Path("post_pk") postId: String): Single<ReactsModel>
+
     @GET("groups/posts/{id}/")
     fun getPostById(@Path("id") postId: String): Single<GroupPostModel>
+
+    @PUT("groups/posts/{id}/")
+    fun editPostById(@Path("id") postId: String,
+                     @Body createGroupPostModel: CreateGroupPostModel): Single<GroupPostModel>
 
     @GET("users/profiles/me/")
     fun getUserProfile(): Single<UserProfileModelResponse>
@@ -74,8 +96,11 @@ interface AppApi {
     @DELETE("groups/follows/{group_id}/")
     fun unfollowGroup(@Path("group_id") groupId: String): Completable
 
-    @GET("s3/posts/")
-    fun uploadPhoto(@Query("ext") imageExt: String): Single<ImageUploadDto>
+    @GET("groups/follows/{group_id}/")
+    fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowModel>
+
+    @GET("s3/groups/posts/")
+    fun uploadPhoto(@Query("ext") imageExt: String, @Query("id") groupId: String? = null): Single<ImageUploadDto>
 
     @GET("s3/users/")
     fun uploadUserAvatar(@Query("ext") imageExt: String): Single<ImageUploadDto>
@@ -109,5 +134,30 @@ interface AppApi {
 
     @POST("complaints/")
     fun complaints(@Body complaintModel: ComplaintModel): Completable
+
+    @GET("admin/advertisement/")
+    fun adCountInfo(): Single<AdModel>
+
+    @DELETE("groups/posts/{id}/")
+    fun deleteGroupPost(@Path("id") postId: String): Completable
+
+    @DELETE("groups/news/{id}/")
+    fun deleteNewsPost(@Path("id") postId: String): Completable
+
+    @DELETE("groups/comments/{id}/")
+    fun deleteComment(@Path("id") commentId: String): Completable
+
+    @POST("groups/comments/{comment_pk}/reacts/")
+    fun setCommentReact(@Body data: ReactsModelRequest,
+                 @Path("comment_pk") commentId: String): Single<ReactsModel>
+
+    @POST("groups/bells/")
+    fun setBell(@Body bellFollowModel: BellFollowModel): Single<BellFollowModel>
+
+    @GET("groups/bells/{post__id}/")
+    fun getBell(@Path("post__id") postId: String): Single<BellFollowModel>
+
+    @DELETE("groups/bells/{post__id}/")
+    fun deleteBell(@Path("post__id") postId: String): Completable
 
 }

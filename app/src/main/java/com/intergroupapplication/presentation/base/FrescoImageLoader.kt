@@ -1,29 +1,19 @@
 package com.intergroupapplication.presentation.base
 
-import android.graphics.drawable.Animatable
+import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import com.facebook.common.util.UriUtil
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import java.io.File
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.ImageView
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.controller.BaseControllerListener
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.imagepipeline.image.ImageInfo
-import com.intergroupapplication.presentation.customview.ShaderSimpleDraweeView
-import kotlinx.android.synthetic.main.item_group_post.view.*
 
 
 /**
  * Created by abakarmagomedov on 06/08/2018 at project InterGroupApplication.
  */
-class FrescoImageLoader(private val callerContext: BaseActivity) : ImageLoader {
+class FrescoImageLoader(private val callerContext: Context) : ImageLoader {
 
     override fun loadImageFromFile(filePath: String, target: SimpleDraweeView) {
         val request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(filePath)))
@@ -33,15 +23,23 @@ class FrescoImageLoader(private val callerContext: BaseActivity) : ImageLoader {
     }
 
     override fun loadImageFromResources(resId: Int, target: SimpleDraweeView) {
+        //todo может все таки лучше через контекст, чем через контроллер? Проверить
         val uri = Uri.Builder()
                 .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
                 .path(resId.toString())
                 .build()
-        target.setImageURI(uri, callerContext)
+        val controller = Fresco.newDraweeControllerBuilder()
+                .setUri(uri)
+                .build()
+        target.controller = controller
     }
 
     override fun loadImageFromUrl(url: String, target: SimpleDraweeView) {
-        target.setImageURI(Uri.parse(url), callerContext)
+        val controller = Fresco.newDraweeControllerBuilder()
+                .setUri(Uri.parse(url))
+                .setAutoPlayAnimations(true)
+                .build()
+        target.controller = controller
     }
 
 }

@@ -68,7 +68,7 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
             ifNull { showAvatar(R.drawable.application_logo) }
             ifNotNull { showAvatar(it) }
         }*/
-        doOrIfNull(lastAvatar, { showAvatar(it) }, { showAvatar(R.drawable.profile_icon) })
+        doOrIfNull(lastAvatar, { showAvatar(it) }, { showAvatar(R.drawable.variant_10) })
         state = AvatarUploadingState.NONE
     }
 
@@ -81,18 +81,20 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
         state = AvatarUploadingState.UPLOADING
     }
 
-    override fun showImageUploaded() {
+    override fun showImageUploaded(path: String) {
         darkCard.hide()
         imageUploadingProgressBar.hide()
         imageUploadingProgressBar.progress = 0f
         state = AvatarUploadingState.UPLOADED
     }
 
-    override fun showImageUploadingProgress(progress: Float) {
+
+    override fun showImageUploadingProgress(progress: Float, path: String) {
         imageUploadingProgressBar.progress = progress
     }
 
-    override fun showImageUploadingError() {
+
+    override fun showImageUploadingError(path: String) {
         darkCard.show()
         errorView.show()
         imageUploadingProgressBar.hide()

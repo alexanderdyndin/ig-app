@@ -11,6 +11,16 @@ import io.reactivex.Single
 interface PhotoGateway {
     fun loadFromGallery(): Observable<String>
     fun loadFromCamera(): Observable<String>
-    fun uploadToAws(): Observable<Float>
+    fun uploadToAws(groupId: String? = null): Observable<Float>
     fun getLastPhotoUrl(): Single<String>
+    fun getVideoUrls(): Single<List<String>>
+    fun getAudioUrls(): Single<List<String>>
+    fun getImageUrls(): Single<List<String>>
+    fun loadAudio(): Observable<List<String>>
+    fun loadVideo(): Observable<List<String>>
+    fun loadImagesFromGallery(): Observable<List<String>>
+    fun uploadAudioToAws(path: String, groupId: String): Observable<Float>
+    fun uploadVideoToAws(path: String, groupId: String): Observable<Float>
+    fun uploadImageToAws(path: String, groupId: String): Observable<Float>
+    fun removeContent(path: String)
 }

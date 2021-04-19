@@ -8,5 +8,5 @@ import io.reactivex.Single
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
 interface CreateGroupGateway {
-    fun createGroup(createGroupEntity: CreateGroupEntity): Single<GroupEntity>
+    fun createGroup(createGroupEntity: CreateGroupEntity): Single<GroupEntity.Group>
 }

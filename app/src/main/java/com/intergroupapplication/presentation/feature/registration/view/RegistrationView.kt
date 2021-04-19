@@ -10,5 +10,6 @@ import com.intergroupapplication.presentation.base.CanShowLoading
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface RegistrationView : MvpView, CanShowLoading, CanClearViewErrorState {
     fun deviceInfoExtracted()
+    fun confirmMail(email: String)
 }
 

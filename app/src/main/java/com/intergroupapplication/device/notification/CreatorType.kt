@@ -5,5 +5,5 @@ package com.intergroupapplication.device.notification
  */
 sealed class CreatorType {
     class Comment(val postId: String, val name: String, val groupId: String, val commentId: String,
-                  val notificationMessage: String) : CreatorType()
+                  val notificationMessage: String, val page: String = "1") : CreatorType()
 }

@@ -14,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import ru.terrakok.cicerone.Router
+
 
 /**
  * Created by abakarmagomedov on 20/08/2018 at project InterGroupApplication.
@@ -44,7 +44,7 @@ class RegistrationPresenterTest {
         registrationPresenter.performRegistration(FakeData.getRegistrationEntity())
         verify(registrationView).showLoading(true)
         verify(registrationView).showLoading(false)
-        verify(router).newRootScreen(Screens.CONFIRMATION_MAIL_SCREEN)
+        verify(router).newRootScreen(ConfirmationMailScreen("cool@mail.ru"))
     }
 
     @Test
@@ -55,7 +55,7 @@ class RegistrationPresenterTest {
         verify(registrationView).showLoading(true)
         verify(registrationView).showLoading(false)
         verify(errorHandler).handle(FakeData.invalidCredentialsException)
-        verify(router, never()).newRootScreen(Screens.CONFIRMATION_MAIL_SCREEN)
+        verify(router, never()).newRootScreen(ConfirmationMailScreen("cool@mail.ru"))
     }
 
 }

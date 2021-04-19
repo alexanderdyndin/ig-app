@@ -37,6 +37,7 @@ class WrapContentDraweeView : SimpleDraweeView {
                 .setCallerContext(callerContext)
                 .setUri(uri)
                 .setOldController(controller)
+                .setAutoPlayAnimations(true)
                 .build()
         setController(controller)
     }
