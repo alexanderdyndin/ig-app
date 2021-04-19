@@ -247,7 +247,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private fun showPopupMenu(view: View, id: Int, userId: Int?) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
+//            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)

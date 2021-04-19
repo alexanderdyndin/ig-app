@@ -182,18 +182,18 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
                 anchorBtn.setOnClickListener { pinClickListener.invoke(item, layoutPosition) }
 
-                if (isOwner) {
-                    anchorBtn.show()
-                    if (item.isPinned) {
-                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor_act)
-                        anchorBtn.setImageResource(R.drawable.ic_anchor_act)
-                    } else {
-                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor)
-                        anchorBtn.setImageResource(R.drawable.ic_anchor)
-                    }
-                } else {
-                    anchorBtn.gone()
-                }
+//                if (isOwner) {
+//                    anchorBtn.show()
+//                    if (item.isPinned) {
+//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor_act)
+//                        anchorBtn.setImageResource(R.drawable.ic_anchor_act)
+//                    } else {
+//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor)
+//                        anchorBtn.setImageResource(R.drawable.ic_anchor)
+//                    }
+//                } else {
+//                    anchorBtn.gone()
+//                }
 
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item, layoutPosition)
@@ -229,7 +229,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         private fun showPopupMenu(view: View, id: Int) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
+//            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)

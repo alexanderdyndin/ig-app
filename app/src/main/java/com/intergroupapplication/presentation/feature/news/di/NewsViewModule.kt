@@ -78,11 +78,11 @@ class NewsViewModule {
     fun provideNewsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                            userSession: UserSession, cacheServer: HttpProxyCacheServer): NewsAdapter {
         if (userSession.isAdEnabled) {
-            NewsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsNews ?: 1
+            NewsAdapter.AD_TYPE = 1 //userSession.countAd?.limitOfAdsNews ?: 1
             NewsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
             NewsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
         } else {
-            NewsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsNews ?: 1
+            NewsAdapter.AD_TYPE = 1 //userSession.countAd?.limitOfAdsNews ?: 1
             NewsAdapter.AD_FREQ = 999
             NewsAdapter.AD_FIRST = 999
         }

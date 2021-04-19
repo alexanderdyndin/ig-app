@@ -115,7 +115,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
-        lifecycleScope.newCoroutineContext(this.coroutineContext)
+        //lifecycleScope.newCoroutineContext(this.coroutineContext)
         setAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

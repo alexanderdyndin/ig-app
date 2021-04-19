@@ -64,14 +64,8 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
 
 
     fun mapNewsListToDomainEntity(from: NewsDto): NewsPostsEntity {
-        val regex = Regex(".*page=")
-        val previous = if (from.previous == "http://backend-v2:8080/groups/news/") {
-            1
-        } else {
-            from.previous?.replace(regex, "")?.toInt()
-        }
-        return NewsPostsEntity(from.count.toInt(), from.next?.replace(regex,"")?.toInt(),
-                previous, from.news.map { mapToDomainEntity(it) })
+        return NewsPostsEntity(from.count.toInt(), from.next,
+                from.previous, from.news.map { mapToDomainEntity(it) })
     }
 
 

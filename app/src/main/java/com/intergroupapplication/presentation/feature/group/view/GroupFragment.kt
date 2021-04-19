@@ -142,8 +142,8 @@ class GroupFragment() : BaseFragment(), GroupView,
         appbar.addOnOffsetChangedListener(this)
         presenter.getGroupDetailInfo(groupId)
         groupStrength.setOnClickListener {
-            val data = bundleOf(GROUP_ID to groupId)
-            findNavController().navigate(R.id.action_groupActivity_to_userListFragment, data)
+            //val data = bundleOf(GROUP_ID to groupId)
+            //findNavController().navigate(R.id.action_groupActivity_to_userListFragment, data)
         }
         newPaging()
     }

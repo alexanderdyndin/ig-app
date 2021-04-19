@@ -44,15 +44,18 @@ interface AppApi {
 
     @GET("groups/")
     fun getSubscribedGroupList(@Query("page") page: Int, @Query("search") search:String,
-                               @Query("followed") followed:String = "true"): Single<GroupsDto>
+                               @Query("followed") followed:String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/")
     fun getGroupList(@Query("page") page: Int,
-                     @Query("search") search:String): Single<GroupsDto>
+                     @Query("search") search:String/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/")
     fun getAdminGroupList(@Query("page") page: Int, @Query("search") search:String,
-                          @Query("owned") owned:String = "true"): Single<GroupsDto>
+                          @Query("owned") owned:String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/posts/{post_pk}/comments/")
     fun getPostComments(@Path("post_pk") postId: String,

@@ -13,11 +13,14 @@ class NewsRemoteRXDataSource (private val appApi: AppApi,
                               private val mapper: GroupPostMapper): RxPagingSource<Int, NewsEntity>() {
 
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, NewsEntity>> {
-        return appApi.getNews(params.key?: 1)
+        val key = params.key?: 1
+        return appApi.getNews(key)
                 .subscribeOn(Schedulers.io())
                 .map { mapper.mapNewsListToDomainEntity(it) }
                 .map <LoadResult<Int, NewsEntity>> {
-                    LoadResult.Page(it.news, it.previous, it.next)
+                    LoadResult.Page(it.news,
+                            if (it.previous != null) key - 1 else null,
+                            if (it.next != null) key + 1 else null)
                 }
                 .onErrorReturn { e ->
                     LoadResult.Error(e)

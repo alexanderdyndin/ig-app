@@ -123,7 +123,8 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
+        val item = getItem(position)
+        return when (item) {
             is NewsEntity.Post -> DEFAULT_HOLDER
             is NewsEntity.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
@@ -175,7 +176,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
                 }
 
-                anchorBtn.isVisible = item.post.isPinned
+//                anchorBtn.isVisible = item.post.isPinned
 
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item.post, layoutPosition)
@@ -218,7 +219,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         private fun showPopupMenu(view: View, postId: Int, newsId: Int, userId: Int) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-            popupMenu.menu.findItem(R.id.delete).isVisible = USER_ID == userId
+//            popupMenu.menu.findItem(R.id.delete).isVisible = USER_ID == userId
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(postId)
