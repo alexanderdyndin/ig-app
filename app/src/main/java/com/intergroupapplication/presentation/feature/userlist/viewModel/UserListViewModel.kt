@@ -14,18 +14,18 @@ class UserListViewModel @Inject constructor(
         private val useCase: GroupUseCase
 ) : ViewModel() {
 
-    fun getFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>> {
-        return useCase.getGroupFollowers(groupId)
+    fun getFollowers(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
+        return useCase.getGroupFollowers(groupId, searchFilter)
                 .cachedIn(viewModelScope)
     }
 
-    fun getAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>> {
-        return useCase.getGroupAdministrators(groupId)
+    fun getAdministrators(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
+        return useCase.getGroupAdministrators(groupId, searchFilter)
                 .cachedIn(viewModelScope)
     }
 
-    fun getBans(groupId: String): Flowable<PagingData<GroupUserEntity>> {
-        return useCase.getGroupBans(groupId)
+    fun getBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
+        return useCase.getGroupBans(groupId, searchFilter)
                 .cachedIn(viewModelScope)
     }
 
