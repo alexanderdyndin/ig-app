@@ -19,9 +19,9 @@ interface GroupGateway {
     fun unfollowGroup(groupId: String): Completable
     fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity>
     fun followersGroup(groupId: String): Single<GroupFollowEntity>
-    fun getFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>>
-    fun getAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>>
-    fun getBans(groupId: String): Flowable<PagingData<GroupUserEntity>>
+    fun getFollowers(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>>
+    fun getAdministrators(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>>
+    fun getBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>>
     fun banUserInGroup(userId: String, reason: String, groupId: String): Completable
     fun deleteUserFromBansGroup(userId: String): Completable
     fun updateGroupAdmin(subscriptionId: String, updateGroupAdmin: UpdateGroupAdmin): Completable

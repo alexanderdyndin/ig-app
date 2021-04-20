@@ -112,31 +112,31 @@ class GroupRepository @Inject constructor(
             prefetchDistance = 1
     )
 
-    override fun getFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>> {
+    override fun getFollowers(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
                 config = defaultPagingConfig,
                 pagingSourceFactory = {
-                    GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
+                    GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, searchFilter)
                 }
         ).flowable
     }
 
-    override fun getAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>> {
+    override fun getAdministrators(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
                 config = defaultPagingConfig,
                 pagingSourceFactory = {
-                    val followersRemote = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId)
+                    val followersRemote = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, searchFilter)
                     followersRemote.applyAdministratorsList()
                     followersRemote
                 }
         ).flowable
     }
 
-    override fun getBans(groupId: String): Flowable<PagingData<GroupUserEntity>> {
+    override fun getBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
                 config = defaultPagingConfig,
                 pagingSourceFactory = {
-                    GroupBansRemoteRXDataSource(api, bansGroupMapper, groupId)
+                    GroupBansRemoteRXDataSource(api, bansGroupMapper, groupId, searchFilter)
                 }
         ).flowable
     }

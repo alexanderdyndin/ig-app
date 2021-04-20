@@ -51,14 +51,14 @@ class GroupUseCase @Inject constructor(
         return groupGateway.unfollowGroup(groupId)
     }
 
-    fun getGroupFollowers(groupId: String): Flowable<PagingData<GroupUserEntity>> =
-            groupGateway.getFollowers(groupId)
+    fun getGroupFollowers(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> =
+            groupGateway.getFollowers(groupId, searchFilter)
 
-    fun getGroupAdministrators(groupId: String): Flowable<PagingData<GroupUserEntity>> =
-            groupGateway.getAdministrators(groupId)
+    fun getGroupAdministrators(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> =
+            groupGateway.getAdministrators(groupId, searchFilter)
 
-    fun getGroupBans(groupId: String): Flowable<PagingData<GroupUserEntity>> =
-            groupGateway.getBans(groupId)
+    fun getGroupBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> =
+            groupGateway.getBans(groupId, searchFilter)
 
     fun banUserInGroup(userId: String, reason: String, groupId: String): Completable =
             groupGateway.banUserInGroup(userId, reason, groupId)

@@ -11,7 +11,8 @@ import io.reactivex.schedulers.Schedulers
 class GroupBansRemoteRXDataSource(
         private val appApi: AppApi,
         private val mapper: BansGroupMapper,
-        private val groupId: String
+        private val groupId: String,
+        private val searchFilter: String
 ) : RxPagingSource<Int, GroupUserEntity>() {
 
     private var key = 1
@@ -23,7 +24,7 @@ class GroupBansRemoteRXDataSource(
 
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, GroupUserEntity>> {
         key = params.key ?: 1
-        return appApi.getGroupBans(groupId, key)
+        return appApi.getGroupBans(groupId, key, searchFilter)
                 .subscribeOn(Schedulers.io())
                 .map {
                     mapper.mapToDomainEntity(it)

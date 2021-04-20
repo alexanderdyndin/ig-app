@@ -12,12 +12,14 @@ import io.reactivex.schedulers.Schedulers
 class GroupFollowersRemoteRXDataSource (
         private val appApi: AppApi,
         private val mapper: FollowersGroupMapper,
-        private val groupId: String): RxPagingSource<Int, GroupUserEntity>() {
+        private val groupId: String,
+        private val searchFilter: String
+): RxPagingSource<Int, GroupUserEntity>() {
 
     var key: Int = 1
 
     private var followersList: (Int) -> Single<GroupUserFollowersDto> = { page: Int ->
-        appApi.getGroupFollowers(groupId, page)
+        appApi.getGroupFollowers(groupId, page, searchFilter, searchFilter)
     }
 
     override fun getRefreshKey(state: PagingState<Int, GroupUserEntity>): Int? {
@@ -47,7 +49,7 @@ class GroupFollowersRemoteRXDataSource (
 
     fun applyAdministratorsList() {
         followersList = {page: Int ->
-            appApi.getGroupFollowers(groupId, page, "admins")
+            appApi.getGroupFollowers(groupId, page, "admins", searchFilter)
         }
     }
 }

@@ -2,6 +2,8 @@ package com.intergroupapplication.presentation.feature.userlist.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
@@ -75,6 +77,14 @@ class UserListFragment : BaseFragment(), UserListView {
     private var isAdmin = false
     private var currentScreen = 0
 
+    private val textWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            getAllData(s.toString())
+        }
+    }
+
     override fun layoutRes() = R.layout.fragment_user_list
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +114,16 @@ class UserListFragment : BaseFragment(), UserListView {
     }
 
     override fun getSnackBarCoordinator(): ViewGroup? = userListCoordinator
+
+    override fun onResume() {
+        super.onResume()
+        searchEditText.addTextChangedListener(textWatcher)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        searchEditText.addTextChangedListener(textWatcher)
+    }
 
     private fun initPager() {
 
@@ -213,11 +233,11 @@ class UserListFragment : BaseFragment(), UserListView {
     }
 
     @SuppressLint("CheckResult")
-    private fun getFollowers() {
+    private fun getFollowers(searchFilter: String = "") {
         compositeDisposable.clear()
 
         compositeDisposable.add(
-                viewModel.getFollowers(groupId).subscribe(
+                viewModel.getFollowers(groupId, searchFilter).subscribe(
                         {
                             adapterAll.submitData(lifecycle, it)
                         },
@@ -228,12 +248,11 @@ class UserListFragment : BaseFragment(), UserListView {
     }
 
     @SuppressLint("CheckResult")
-    private fun getAllData() {
-        getFollowers()
-
+    private fun getAllData(searchFilter: String = "") {
+        getFollowers(searchFilter)
 
         compositeDisposable.add(
-                viewModel.getBans(groupId).subscribe(
+                viewModel.getBans(groupId, searchFilter).subscribe(
                         {
                             adapterBlocked.submitData(lifecycle, it)
                         },
@@ -244,7 +263,7 @@ class UserListFragment : BaseFragment(), UserListView {
         )
 
         compositeDisposable.add(
-                viewModel.getAdministrators(groupId).subscribe(
+                viewModel.getAdministrators(groupId, searchFilter).subscribe(
                         {
                             adapterAdministrators.submitData(lifecycle, it)
                         },
