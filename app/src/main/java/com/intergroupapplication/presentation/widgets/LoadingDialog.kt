@@ -22,8 +22,8 @@ class LoadingDialog : DialogFragment() {
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity!!)
-        val view = activity!!.layoutInflater.inflate(R.layout.fragment_dialog_loading, null)
+        val builder = AlertDialog.Builder(requireActivity())
+        val view = requireActivity().layoutInflater.inflate(R.layout.fragment_dialog_loading, null)
         loader.show()
         builder.setView(view)
         return builder.create()
@@ -34,7 +34,7 @@ class LoadingDialog : DialogFragment() {
         val metrics = DisplayMetrics()
         val window = dialog?.window
         window!!.windowManager.defaultDisplay.getMetrics(metrics)
-        val dialogHeightPx = context!!.dpToPx(DIALOG_HEIGHT)
+        val dialogHeightPx = requireContext().dpToPx(DIALOG_HEIGHT)
         window.setLayout(dialogHeightPx, dialogHeightPx)
         window.setGravity(Gravity.CENTER)
     }

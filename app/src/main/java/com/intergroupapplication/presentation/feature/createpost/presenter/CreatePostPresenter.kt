@@ -1,6 +1,8 @@
 package com.intergroupapplication.presentation.feature.createpost.presenter
 
 import android.webkit.MimeTypeMap
+import com.intergroupapplication.data.model.ImageUploadDto
+import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.AudioRequestEntity
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
@@ -30,7 +32,8 @@ import javax.inject.Inject
 @InjectViewState
 class CreatePostPresenter @Inject constructor(private val groupPostGateway: GroupPostGateway,
                                               private val photoGateway: PhotoGateway,
-                                              private val errorHandler: ErrorHandler)
+                                              private val errorHandler: ErrorHandler,
+                                              private val appApi: AppApi)
     : BasePresenter<CreatePostView>() {
 
     private var uploadingDisposable: Disposable? = null
@@ -89,7 +92,8 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                 .filter { it.isNotEmpty() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ images ->
-                    images.forEach { loadImage(it) }
+                    images.forEach {
+                        loadImage(it) }
                 }, { errorHandler.handle(CanNotUploadPhoto())}))
     }
 
@@ -115,7 +119,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
 
     fun loadVideo(file: String) {
         var progress = 0f
-        processes[file] = photoGateway.uploadVideoToAws(file, groupId)
+        processes[file] = photoGateway.uploadVideoToAws(file, groupId, appApi::uploadPhoto)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(file) }
@@ -132,7 +136,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
 
     private fun loadAudio(file: String) {
         var progress = 0f
-        processes[file] = photoGateway.uploadAudioToAws(file, groupId)
+        processes[file] = photoGateway.uploadAudioToAws(file, groupId,appApi::uploadPhoto)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(file) }
@@ -149,7 +153,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
 
     fun loadImage(file: String) {
         var progress = 0f
-        processes[file] = photoGateway.uploadImageToAws(file, groupId)
+        processes[file] = photoGateway.uploadImageToAws(file, groupId, appApi::uploadPhoto)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(file) }
@@ -180,7 +184,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
         val type = MimeTypeMap.getFileExtensionFromUrl(file)
         when (MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: "") {
             in listOf("audio/mpeg", "audio/aac", "audio/wav") -> {
-                processes[file] = photoGateway.uploadAudioToAws(file, groupId)
+                processes[file] = photoGateway.uploadAudioToAws(file, groupId, appApi::uploadPhoto)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
@@ -192,7 +196,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                         }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
             }
             in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> {
-                processes[file] = photoGateway.uploadVideoToAws(file, groupId)
+                processes[file] = photoGateway.uploadVideoToAws(file, groupId, appApi::uploadPhoto)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
@@ -204,7 +208,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                         }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })
             }
             else -> {
-                processes[file] = photoGateway.uploadImageToAws(file, groupId)
+                processes[file] = photoGateway.uploadImageToAws(file, groupId, appApi::uploadPhoto)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
@@ -220,6 +224,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
             videoDisposable.add(it)
         }
     }
+
 
     fun stopImageUploading() {
         uploadingDisposable?.dispose()

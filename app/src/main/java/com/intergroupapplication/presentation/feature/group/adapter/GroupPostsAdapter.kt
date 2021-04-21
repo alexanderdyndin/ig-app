@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +22,6 @@ import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -160,7 +158,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
+                countComments.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
                 item.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.postText
@@ -198,7 +196,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item, layoutPosition)
                 }
-                commentBtn.setOnClickListener {
+                countComments.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
                 postLikesClickArea.setOnClickListener {
@@ -209,7 +207,8 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 }
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                doOrIfNull(item.groupInPost.avatar, {
+                    imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
                 videoContainer.proxy = proxyCacheServer

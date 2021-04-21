@@ -155,7 +155,7 @@ FakeData {
                     false, false, null)
 
     fun getCreateCommentEntity(): CreateCommentEntity =
-            CreateCommentEntity("My  New Comment")
+            CreateCommentEntity("My  New Comment", listOf(), listOf(), listOf())
 
     fun getTokenEntity(): TokenEntity =
             TokenEntity("gkmfdjksgnsjkgmnfs324234", "fjknguj543gjierjgi9jegomdf")

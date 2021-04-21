@@ -1,18 +1,18 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Scroller
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -20,14 +20,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.danikula.videocache.HttpProxyCacheServer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.appbar.AppBarLayout
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
@@ -41,13 +36,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.adapter.Co
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
-import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
-import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
-import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
-import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -56,19 +45,28 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_comments_details.*
-import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
+import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.item_group_post.*
+import kotlinx.android.synthetic.main.item_group_post.postText
 import kotlinx.android.synthetic.main.item_group_post.view.*
+import kotlinx.android.synthetic.main.item_input_comment.*
+import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.videoButton as videoButton1
+import kotlinx.android.synthetic.main.item_input_comment.galleryButton as galleryButton1
+import kotlinx.android.synthetic.main.item_input_comment.musicButton as musicButton1
+import kotlinx.android.synthetic.main.item_input_comment.panelAddFile as panelAddFile1
+import kotlinx.android.synthetic.main.item_input_comment.playlistButton as playlistButton1
+import kotlinx.android.synthetic.main.item_input_comment.postContainer as postContainer1
 
 
 class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
@@ -129,6 +127,10 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     var commentCreated = false
 
+    private lateinit var bottomSheetBehaviour: BottomSheetBehavior<View>
+
+    private val loadingViews: MutableMap<String, View?> = mutableMapOf()
+
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
 
@@ -163,7 +165,30 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     override fun viewCreated() {
+        //val bottomFragment = BottomSheetFragment(imageLoadingDelegate)
+        //childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet,bottomFragment).addToBackStack(null).commit()
         commentEditText = requireView().findViewById(R.id.commentEditText)
+        /*bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet)
+        bottomSheetBehaviour.skipCollapsed = false
+        bottomSheetBehaviour.isHideable = false
+        bottomSheetBehaviour.addBottomSheetCallback(object:BottomSheetBehavior.BottomSheetCallback(){
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if ((newState == BottomSheetBehavior.STATE_SETTLING ||
+                                newState == BottomSheetBehavior.STATE_DRAGGING) &&
+                        bottomFragment.oldStateBottomSheet == BottomSheetFragment.State.EXPANDED){
+                    bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                }
+                bottomFragment.changeState(newState)
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+
+
+
+        })*/
+        presenter.postId = postId
         val decorator = CommentDividerItemDecorator(requireContext())
         prepareEditText()
         //crashing app when provide it by dagger
@@ -183,7 +208,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                 .subscribe { showPopupMenu(settingsPost) }
                 .also { compositeDisposable.add(it) }
 
-        newpaging()
+        newPaging()
 
         swipeLayout.setOnRefreshListener {
             presenter.getPostDetailsInfo(groupPostEntity.id)
@@ -196,9 +221,53 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
             findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
         }
+
+        icAttach.apply {
+            setOnClickListener {
+                if (isActivated ){
+                    isActivated = false
+                    panelAddFile1.visibility = View.GONE
+                }
+                else {
+                    this.isActivated = true
+                    panelAddFile1.visibility = View.VISIBLE
+                }
+            }
+        }
+            //bottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
+            //item_input_comment.visibility = View.GONE
+           // item_attach_media_in_comment.visibility = View.VISIBLE
+        galleryButton1.setOnClickListener {
+            if (loadingViews.count() >= 10) {
+                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
+            } else {
+                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                        mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+            }
+        }
+
+        videoButton1.setOnClickListener {
+            if (loadingViews.count() >= 10) {
+                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
+            } else {
+                presenter.attachVideo()
+            }
+        }
+
+        musicButton1.setOnClickListener {
+            if (loadingViews.count() >= 10) {
+                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
+            } else {
+                presenter.attachAudio()
+            }
+        }
+
+        playlistButton1.setOnClickListener {
+            Toast.makeText(requireContext(),"Пока недоступно", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    fun newpaging() {
+    fun newPaging() {
         commentsList.adapter = adapterAd
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
@@ -281,7 +350,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         }
 
         idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.id)
-        commentBtn.text = groupPostEntity.commentsCount
+        countComments.text = groupPostEntity.commentsCount
         groupName.text = groupPostEntity.groupInPost.name
         postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
         postLike.text = groupPostEntity.reacts.likesCount.toString()
@@ -422,10 +491,12 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     override fun onValidationSucceeded() {
         if (commentHolder.childCount > 1) {
             lastRepliedComment?.let {
-                presenter.createAnswerToComment(it.id, CreateCommentEntity(commentEditText.text.toString().trim()))
+                //presenter.createAnswerToComment(it.id, CreateCommentEntity(commentEditText.text.toString().trim()))
+                presenter.createAnswerToComment(it.id, commentEditText.text.toString().trim())
             }
         } else {
-            presenter.createComment(groupPostEntity.id, CreateCommentEntity(commentEditText.text.toString().trim()))
+            //presenter.createComment(groupPostEntity.id, CreateCommentEntity(commentEditText.text.toString().trim()))
+              presenter.createComment(groupPostEntity.id, commentEditText.text.toString().trim())
         }
     }
 
@@ -457,6 +528,83 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
     }
 
+    override fun showImageUploadingStarted(path: String) {
+        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer1, false)
+        loadingViews[path]?.let {
+            it.imagePreview?.let { draweeView ->
+                val type = MimeTypeMap.getFileExtensionFromUrl(path)
+                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
+                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
+                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
+                    it.nameView?.text = path.substring(path.lastIndexOf("/") + 1)
+                }
+                else
+                    imageLoadingDelegate.loadImageFromFile(path, draweeView)
+            }
+        }
+        postContainer1.addView(loadingViews[path])
+        prepareListeners(loadingViews[path], path)
+        imageUploadingStarted(loadingViews[path])
+    }
+
+    override fun showImageUploaded(path: String) {
+        loadingViews[path]?.apply {
+            darkCard?.hide()
+            stopUploading?.hide()
+            imageUploadingProgressBar?.hide()
+            detachImage?.show()
+        }
+    }
+
+    override fun showImageUploadingProgress(progress: Float, path: String) {
+        loadingViews[path]?.apply {
+            imageUploadingProgressBar?.progress = progress
+        }
+    }
+
+    override fun showImageUploadingError(path: String) {
+        loadingViews[path]?.apply {
+            darkCard?.show()
+            detachImage?.show()
+            refreshContainer?.show()
+            imageUploadingProgressBar?.hide()
+            stopUploading?.hide()
+        }
+    }
+
+    private fun detachImage(path: String) {
+        postContainer.removeView(loadingViews[path])
+        loadingViews.remove(path)
+    }
+
+    private fun imageUploadingStarted(uploadingView: View?) {
+        uploadingView?.apply {
+            darkCard?.show()
+            imageUploadingProgressBar?.show()
+            stopUploading?.show()
+            detachImage?.hide()
+            refreshContainer?.hide()
+        }
+    }
+
+    private fun prepareListeners(uploadingView: View?, path: String) {
+        uploadingView?.apply {
+            refreshContainer.setOnClickListener {
+                this.imageUploadingProgressBar?.progress = 0f
+                presenter.retryLoading(path)
+                imageUploadingStarted(uploadingView)
+            }
+            stopUploading?.setOnClickListener {
+                presenter.cancelUploading(path)
+                detachImage(path)
+            }
+            detachImage?.setOnClickListener {
+                presenter.removeContent(path)
+                detachImage(path)
+            }
+        }
+    }
+
     private fun setErrorHandler() {
         errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
@@ -472,9 +620,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     private fun increaseCommentsCounter() {
-        var commentsCount = commentBtn.text.toString().toInt()
+        var commentsCount = countComments.text.toString().toInt()
         commentsCount++
-        commentBtn.text = commentsCount.toString()
+        countComments.text = commentsCount.toString()
         findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount.toString())
     }
 
@@ -482,7 +630,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         RxTextView.afterTextChangeEvents(commentEditText)
                 .subscribe {
                     val view = it.view()
-                    if (view.text.trim().isEmpty()) {
+                    if (view.text.trim().isEmpty() && loadingViews.isEmpty()) {
                         view.setCompoundDrawablesWithIntrinsicBounds(null, null,
                                 null, null)
                     } else {
@@ -491,8 +639,18 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                     }
                 }
                 .let(compositeDisposable::add)
-        commentEditText.setOnTouchListener(rightDrawableListener)
-        rightDrawableListener.clickListener = { validator.validate() }
+        setUpRightDrawableListener()
+    }
+
+    private fun setUpRightDrawableListener() {
+            commentEditText.setOnTouchListener(rightDrawableListener)
+            rightDrawableListener.clickListener = {
+                loadingViews.clear()
+                postContainer1.removeAllViews()
+                icAttach.isActivated = false
+                panelAddFile1.visibility = View.GONE
+                validator.validate()
+            }
     }
 
     private fun prepareAdapter() {
@@ -515,6 +673,10 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                             }
                     commentEditText.showKeyboard()
                 }
+            }
+           imageClickListener = { list: List<FileEntity>, i: Int ->
+                val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+                findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
             }
             complaintListener = { id -> presenter.complaintComment(id) }
             deleteClickListener = { id, pos ->

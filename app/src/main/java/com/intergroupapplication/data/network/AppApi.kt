@@ -105,6 +105,9 @@ interface AppApi {
     @GET("s3/groups/avatars/")
     fun uploadGroupAvatar(@Query("ext") imageExt: String,@Query("id")groupId: String? = null): Single<ImageUploadDto>
 
+    @GET("s3/groups/comments/")
+    fun uploadCommentsMedia(@Query("ext") imageExt: String,@Query("id")postId: String? = null): Single<ImageUploadDto>
+
     @PATCH("users/profiles/{user-id}/")
     fun changeUserAvatar(@Path("user-id") userId: String, @Body avatar: UpdateAvatarModel): Single<UserProfileModelResponse>
 

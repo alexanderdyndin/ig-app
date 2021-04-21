@@ -35,15 +35,14 @@ class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
 
     fun attachFromGallery(groupId: String? = null) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, groupId,::upload)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, groupId,photoGateway::uploadAvatarGroup)
     }
 
     fun attachFromCamera(groupId: String?) {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, groupId, ::upload)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, groupId, photoGateway::uploadAvatarGroup)
     }
 
-    private fun upload(groupId: String?):Observable<Float> = photoGateway.uploadAvatarGroup(groupId)
     fun changeGroupAvatar(groupId: String) {
         compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()
                 .flatMap {

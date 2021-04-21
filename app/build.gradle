@@ -57,6 +57,7 @@ android {
         versionCode 1000010
 //        androidGitVersion.code()
         versionName "1.6.0.7"
+        ndkVersion = "21.1.6352462"
 //        androidGitVersion.name()
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true

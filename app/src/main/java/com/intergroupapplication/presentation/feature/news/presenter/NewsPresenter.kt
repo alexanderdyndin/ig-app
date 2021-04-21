@@ -50,15 +50,11 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
 
     fun attachFromGallery() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = ::upload)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = photoGateway::uploadAvatarUser)
     }
     fun attachFromCamera() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, upload = ::upload)
-    }
-
-    private fun upload(userId:String? = null): Observable<Float> {
-        return photoGateway.uploadAvatarUser(userId)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, upload = photoGateway::uploadAvatarUser)
     }
 
     fun changeUserAvatar() {

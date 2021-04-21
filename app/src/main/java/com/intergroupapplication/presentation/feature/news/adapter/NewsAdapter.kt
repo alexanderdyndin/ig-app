@@ -155,7 +155,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
+                countComments.text = context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
                 item.post.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.post.postText
@@ -180,7 +180,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item.post, layoutPosition)
                 }
-                commentBtn.setOnClickListener {
+                countComments.setOnClickListener {
                     commentClickListener.invoke(item.post)
                 }
                 postAvatarHolder.setOnClickListener {
@@ -197,7 +197,9 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 }
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }
 
-                doOrIfNull(item.post.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+
+                doOrIfNull(item.post.groupInPost.avatar, {
+                    imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
 
                 videoContainer.proxy = cacheServer

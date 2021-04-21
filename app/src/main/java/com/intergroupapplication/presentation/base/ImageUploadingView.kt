@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.base
 
-import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.SkipStrategy
 import moxy.viewstate.strategy.StateStrategyType
 

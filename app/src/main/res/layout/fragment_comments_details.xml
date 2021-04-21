@@ -158,19 +158,29 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
+            <!-- <FrameLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content">
+
+                 <androidx.appcompat.widget.AppCompatEditText
+                     android:id="@+id/commentEditText"
+                     style="@style/InterGroupCommentEditTextStyle"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:hint="@string/write_your_comment"
+                     android:inputType="textMultiLine|textCapSentences"
+                     android:minHeight="@dimen/comment_edit_text_height"
+                     android:padding="@dimen/big_padding" />!-->
+
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+               >
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/commentEditText"
-                    style="@style/InterGroupCommentEditTextStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/write_your_comment"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:minHeight="@dimen/comment_edit_text_height"
-                    android:padding="@dimen/big_padding" />
+                <include
+                    android:id="@+id/item_input_comment"
+                    layout="@layout/item_input_comment"
+                    />
 
                 <ProgressBar
                     android:id="@+id/commentLoader"
@@ -182,7 +192,13 @@
             </FrameLayout>
 
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--<FrameLayout
+        android:id="@+id/containerBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />!-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

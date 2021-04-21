@@ -20,14 +20,18 @@ import com.appodeal.ads.NativeMediaView
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.CommentEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.presentation.customview.AudioGalleryView
+import com.intergroupapplication.presentation.customview.ImageGalleryView
+import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.getDateDescribeByString
 import com.intergroupapplication.presentation.exstension.inflate
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -39,7 +43,8 @@ import timber.log.Timber
 /**
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
-class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
+class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
+                      private val proxyCacheServer: HttpProxyCacheServer)
     : PagingDataAdapter<CommentEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
@@ -72,6 +77,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         }
         var replyListener: (commentEntity: CommentEntity.Comment) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
+        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: CommentEntity.Comment, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
         var AD_TYPE = 1
@@ -145,6 +151,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
 
     inner class CommentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
+        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
+        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
+
         fun bind(item: CommentEntity.Comment) {
             with(itemView) {
                 val name = item.commentOwner
@@ -165,11 +175,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 postDislike.text = item.reacts.dislikesCount.toString()
                 postLike.text = item.reacts.likesCount.toString()
                 userAvatarHolder.run {
-                    Timber.tag("tut_adapter").d(item.commentOwner?.avatar.toString())
                     doOrIfNull(item.commentOwner?.avatar, {
-                        Timber.tag("tut_adapter_it").d("$it")
                         imageLoadingDelegate.loadImageFromUrl(it, this) },
-                            { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
+                            {
+                                imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
                 }
                 replyButton.setOnClickListener {
                     replyListener.invoke(item)
@@ -182,6 +191,18 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 }
                 idcGroupUser.text = itemView.context.getString(R.string.idc, item.id)
                 settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
+
+                videoContainer.proxy = proxyCacheServer
+                videoContainer.setVideos(item.videos, false)
+                //videoContainer.expand = { item.videosExpanded = it }
+
+                audioContainer.proxy = proxyCacheServer
+                audioContainer.setAudios(item.audios, false)
+                //audioContainer.expand = { item.audiosExpanded = it }
+
+                imageContainer.setImages(item.images, false)
+                imageContainer.imageClick = imageClickListener
+                //imageContainer.expand = { item.imagesExpanded = it }
 
             }
         }
@@ -202,6 +223,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     }
 
     inner class CommentAnswerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
+        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
+        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
+
         fun bind(item: CommentEntity.Comment) {
             with(itemView) {
                 idcGroupUser2.text = itemView.context.getString(R.string.idc, item.id)
@@ -244,6 +269,18 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
                 settingsBtn2.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
+
+                videoContainer.proxy = proxyCacheServer
+                videoContainer.setVideos(item.videos, false)
+                //videoContainer.expand = { item.videosExpanded = it }
+
+                audioContainer.proxy = proxyCacheServer
+                audioContainer.setAudios(item.audios, false)
+                //audioContainer.expand = { item.audiosExpanded = it }
+
+                imageContainer.setImages(item.images, false)
+                imageContainer.imageClick = imageClickListener
+                //imageContainer.expand = { item.imagesExpanded = it }
 
             }
         }

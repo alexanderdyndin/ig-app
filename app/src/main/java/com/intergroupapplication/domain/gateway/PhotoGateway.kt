@@ -21,8 +21,9 @@ interface PhotoGateway {
     fun loadAudio(): Observable<List<String>>
     fun loadVideo(): Observable<List<String>>
     fun loadImagesFromGallery(): Observable<List<String>>
-    fun uploadAudioToAws(path: String, groupId: String): Observable<Float>
-    fun uploadVideoToAws(path: String, groupId: String): Observable<Float>
-    fun uploadImageToAws(path: String, groupId: String): Observable<Float>
+    fun uploadAudioToAws(path: String, groupId: String? = null, upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
+    fun uploadVideoToAws(path: String, groupId: String? = null,upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
+    fun uploadImageToAws(path: String, groupId: String? = null,upload:(imageExs:String,id:String??)-> Single<ImageUploadDto>): Observable<Float>
     fun removeContent(path: String)
+    fun removeAllContent()
 }

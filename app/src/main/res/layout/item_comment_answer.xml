@@ -136,6 +136,24 @@
             android:background="@drawable/sticker_120x120"
             android:visibility="gone"/>
 
+        <com.intergroupapplication.presentation.customview.ImageGalleryView
+            android:id="@+id/imageBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <com.intergroupapplication.presentation.customview.VideoGalleryView
+            android:id="@+id/videoBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <com.intergroupapplication.presentation.customview.AudioGalleryView
+            android:id="@+id/audioBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
     </LinearLayout>
 
            <ImageView

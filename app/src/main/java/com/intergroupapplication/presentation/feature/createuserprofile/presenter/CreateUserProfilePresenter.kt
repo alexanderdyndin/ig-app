@@ -53,16 +53,15 @@ class CreateUserProfilePresenter @Inject constructor(private val userProfileGate
     fun takePhotoFromCamera() {
         stopImageUploading()
         //uploadingDisposable = imageUploadingDelegate.uploadFromCameraAvatarUser(viewState, errorHandler)
-        uploadingDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, upload = ::upload)
+        uploadingDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler, upload = photoGateway::uploadAvatarUser)
     }
 
     fun takePhotoFromGallery() {
         stopImageUploading()
         //uploadingDisposable = imageUploadingDelegate.uploadFromGalleryAvatarUser(viewState, errorHandler)
-        uploadingDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = ::upload)
+        uploadingDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = photoGateway::uploadAvatarUser)
     }
 
-    private fun upload(userId:String? = null):Observable<Float> = photoGateway.uploadAvatarUser(userId)
 
     override fun onDestroy() {
         super.onDestroy()

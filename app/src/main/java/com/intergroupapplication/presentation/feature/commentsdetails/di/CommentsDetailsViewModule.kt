@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.commentsdetails.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
@@ -14,6 +15,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
+import com.intergroupapplication.presentation.feature.commentsdetails.adapter.MediaAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -87,7 +89,8 @@ class CommentsDetailsViewModule {
     @PerFragment
     @Provides
     fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                           userSession: UserSession): CommentsAdapter {
+                           userSession: UserSession,
+                           proxyCacheServer: HttpProxyCacheServer): CommentsAdapter {
         if (userSession.isAdEnabled) {
             CommentsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsComments ?: 1
             CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
@@ -96,7 +99,7 @@ class CommentsDetailsViewModule {
             CommentsAdapter.AD_FREQ = 999
             CommentsAdapter.AD_FIRST = 999
         }
-        return CommentsAdapter(imageLoadingDelegate)
+        return CommentsAdapter(imageLoadingDelegate,proxyCacheServer)
     }
 
     @PerFragment
@@ -115,7 +118,8 @@ class CommentsDetailsViewModule {
 
     @PerFragment
     @Provides
-    fun provideConcatAdapter(commentsAdapter: CommentsAdapter,
+    fun provideConcatAdapter(
+            commentsAdapter: CommentsAdapter,
                              @Named("footer") footerAdapter: PagingLoadingAdapter,
                              @Named("header") headerAdapter: PagingLoadingAdapter
     ): ConcatAdapter {

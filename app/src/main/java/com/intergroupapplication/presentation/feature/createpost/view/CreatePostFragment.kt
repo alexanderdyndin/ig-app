@@ -1,20 +1,16 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
-import android.net.Uri
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
-import com.facebook.common.util.UriUtil
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.base.BasePresenter
-import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.customview.ImagesUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.hide
@@ -23,7 +19,6 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.exstension.showKeyboard
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
-import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.FRAGMENT_RESULT
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
@@ -72,10 +67,13 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
                 }
                 if (isLoading)
                     dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
-                else
+                else {
                     presenter.createPostWithImage(postText.text.toString().trim(), groupId)
+                }
             }
-            else presenter.createPostWithImage(postText.text.toString().trim(), groupId)
+            else {
+                presenter.createPostWithImage(postText.text.toString().trim(), groupId)
+            }
         }
 
         attachPhoto.setOnClickListener {
@@ -155,15 +153,6 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         //uploadingView.showImageUploadingStarted(path)
     }
 
-//    override fun showImageUploaded() {
-//        uploadingView?.apply {
-//            darkCard?.hide()
-//            stopUploading?.hide()
-//            imageUploadingProgressBar?.hide()
-//            detachImage?.show()
-//        }
-//    }
-
     override fun showImageUploaded(path: String) {
         loadingViews[path]?.apply {
             darkCard?.hide()
@@ -174,28 +163,12 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         //uploadingView.showImageUploaded(path)
     }
 
-//    override fun showImageUploadingProgress(progress: Float) {
-//        uploadingView?.apply {
-//            imageUploadingProgressBar?.progress = progress
-//        }
-//    }
-
     override fun showImageUploadingProgress(progress: Float, path: String) {
         loadingViews[path]?.apply {
             imageUploadingProgressBar?.progress = progress
         }
 //        uploadingView.showImageUploadingProgress(progress, path)
     }
-
-//    override fun showImageUploadingError() {
-//        uploadingView?.apply {
-//            darkCard?.show()
-//            detachImage?.show()
-//            refreshContainer?.show()
-//            imageUploadingProgressBar?.hide()
-//            stopUploading?.hide()
-//        }
-//    }
 
     override fun showImageUploadingError(path: String) {
         loadingViews[path]?.apply {

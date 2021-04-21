@@ -7,6 +7,7 @@ import com.facebook.common.util.UriUtil
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import timber.log.Timber
 import java.io.File
 
 

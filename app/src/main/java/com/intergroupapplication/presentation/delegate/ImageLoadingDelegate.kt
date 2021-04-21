@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.delegate
 
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.presentation.base.ImageLoader
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
