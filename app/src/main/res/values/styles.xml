@@ -31,6 +31,7 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
+
     <style name="InterGroupLogoTextStyle" parent="BaseStyle">
         <item name="android:textSize">@dimen/high_big_size</item>
         <item name="android:textColor">@color/interGroupLogoTextColor</item>
@@ -406,5 +407,16 @@
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorLightPunk</item>
         <item name="android:textSize">@dimen/big_size</item>
+    </style>
+
+    <style name="TransparentBottomSheetStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/SheetStyle</item>
+    </style>
+
+    <style name="SheetStyle" parent="android:Widget">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="behavior_peekHeight">auto</item>
+        <item name="behavior_hideable">true</item>
+        <item name="behavior_skipCollapsed">false</item>
     </style>
 </resources>

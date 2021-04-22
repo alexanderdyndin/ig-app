@@ -2,6 +2,8 @@ package com.intergroupapplication.presentation.feature.commentsdetails.view
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.view.DragEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
@@ -12,6 +14,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.MotionEventCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
@@ -46,6 +50,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_bottom_sheet.commentEditText
 import kotlinx.android.synthetic.main.fragment_comments_details.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.item_group_post.*
@@ -165,29 +170,31 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     override fun viewCreated() {
-        //val bottomFragment = BottomSheetFragment(imageLoadingDelegate)
-        //childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet,bottomFragment).addToBackStack(null).commit()
-        commentEditText = requireView().findViewById(R.id.commentEditText)
-        /*bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet)
-        bottomSheetBehaviour.skipCollapsed = false
-        bottomSheetBehaviour.isHideable = false
-        bottomSheetBehaviour.addBottomSheetCallback(object:BottomSheetBehavior.BottomSheetCallback(){
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if ((newState == BottomSheetBehavior.STATE_SETTLING ||
-                                newState == BottomSheetBehavior.STATE_DRAGGING) &&
-                        bottomFragment.oldStateBottomSheet == BottomSheetFragment.State.EXPANDED){
-                    bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        /*val bottomFragment = BottomSheetFragment(imageLoadingDelegate)
+        //bottomFragment.show(childFragmentManager,null)
+        childFragmentManager.beginTransaction().add(R.id.containerBottomSheet,bottomFragment).commit()
+
+        bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet)
+        bottomSheetBehaviour.run {
+            peekHeight = 350
+            isFitToContents = false
+            addBottomSheetCallback(object : BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                    if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_SETTLING) {
+                        if(!bottomFragment.getRecView().canScrollVertically(1)) {
+                            Timber.tag("tut_if_rec").d("tut")
+                            bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED;
+                        }
+                    }
                 }
-                bottomFragment.changeState(newState)
-            }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
-            }
-
-
-
-        })*/
+                }
+            })
+        }*/
+        commentEditText = requireView().findViewById(R.id.commentEditText)
         presenter.postId = postId
         val decorator = CommentDividerItemDecorator(requireContext())
         prepareEditText()
@@ -234,9 +241,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                 }
             }
         }
-            //bottomSheetBehaviour.setState(BottomSheetBehavior.STATE_HALF_EXPANDED)
-            //item_input_comment.visibility = View.GONE
-           // item_attach_media_in_comment.visibility = View.VISIBLE
+
         galleryButton1.setOnClickListener {
             if (loadingViews.count() >= 10) {
                 Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
@@ -263,7 +268,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         }
 
         playlistButton1.setOnClickListener {
-            Toast.makeText(requireContext(),"Пока недоступно", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Пока недоступно", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -482,6 +487,10 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 //    }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
+        if (loadingViews.isNotEmpty()){
+            createComment()
+            return
+        }
         for (error in errors) {
             val message = error.getCollatedErrorMessage(requireContext())
             dialogDelegate.showErrorSnackBar(message)
@@ -489,14 +498,16 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     override fun onValidationSucceeded() {
+        createComment()
+    }
+
+    private fun createComment() {
         if (commentHolder.childCount > 1) {
             lastRepliedComment?.let {
-                //presenter.createAnswerToComment(it.id, CreateCommentEntity(commentEditText.text.toString().trim()))
                 presenter.createAnswerToComment(it.id, commentEditText.text.toString().trim())
             }
         } else {
-            //presenter.createComment(groupPostEntity.id, CreateCommentEntity(commentEditText.text.toString().trim()))
-              presenter.createComment(groupPostEntity.id, commentEditText.text.toString().trim())
+            presenter.createComment(groupPostEntity.id, commentEditText.text.toString().trim())
         }
     }
 
@@ -542,6 +553,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                     imageLoadingDelegate.loadImageFromFile(path, draweeView)
             }
         }
+
         postContainer1.addView(loadingViews[path])
         prepareListeners(loadingViews[path], path)
         imageUploadingStarted(loadingViews[path])
@@ -553,6 +565,9 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
             stopUploading?.hide()
             imageUploadingProgressBar?.hide()
             detachImage?.show()
+            commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
+            setUpRightDrawableListener()
         }
     }
 
@@ -575,6 +590,10 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     private fun detachImage(path: String) {
         postContainer.removeView(loadingViews[path])
         loadingViews.remove(path)
+        if(loadingViews.isEmpty()){
+            commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    null, null)
+        }
     }
 
     private fun imageUploadingStarted(uploadingView: View?) {
@@ -645,11 +664,13 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     private fun setUpRightDrawableListener() {
             commentEditText.setOnTouchListener(rightDrawableListener)
             rightDrawableListener.clickListener = {
+                validator.validate()
                 loadingViews.clear()
                 postContainer1.removeAllViews()
+                commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                        null, null)
                 icAttach.isActivated = false
                 panelAddFile1.visibility = View.GONE
-                validator.validate()
             }
     }
 

@@ -23,10 +23,10 @@ class RightDrawableListener : View.OnTouchListener {
 
             if (event.rawX >= (view.right - view.compoundDrawables[drawableRight].bounds.width() - CLICK_OFFSET)) {
                 view.text?.let {
-                    if (it.isNotEmpty()) {
+                    //if (it.isNotEmpty()) {
                         clickListener.invoke()
                         it.clear()
-                    }
+                    //}
                 }
                 return true
             } else {

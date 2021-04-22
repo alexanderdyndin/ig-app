@@ -110,6 +110,7 @@
         android:background="@color/colorInput"
         android:orientation="horizontal"
         android:padding="8dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/iconPanel"
         >
 
@@ -160,6 +161,20 @@
 
     </LinearLayout>
 
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/commentEditText"
+        android:background="@drawable/bg_edit_input"
+        android:gravity="center_vertical"
+        style="@style/InterGroupCommentEditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/write_your_comment"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minHeight="@dimen/comment_edit_text_height"
+        android:padding="@dimen/big_padding"
+        app:layout_constraintTop_toBottomOf="@id/panelAddFile"
+        tools:layout_editor_absoluteX="-160dp" />
+
     <!-- Добавление файлов -->
     <TextView
         android:id="@+id/amountFiles"
@@ -170,7 +185,7 @@
         android:gravity="center_vertical"
         android:paddingStart="16dp"
         android:text="Выбрано 2 фотографии"
-       app:layout_constraintTop_toBottomOf="@id/panelAddFile"
+       app:layout_constraintTop_toBottomOf="@id/commentEditText"
         tools:layout_editor_absoluteX="-160dp" />
 
     <TextView
@@ -185,13 +200,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/amountFiles"
         app:layout_constraintEnd_toEndOf="@+id/amountFiles"
         app:layout_constraintTop_toTopOf="@+id/amountFiles" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mediaRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/amountFiles"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

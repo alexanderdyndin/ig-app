@@ -1,5 +1,7 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -7,30 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.MediaAdapter
-import com.intergroupapplication.presentation.feature.commentsdetails.presenter.BottomSheetPresenter
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
-import timber.log.Timber
-import javax.inject.Inject
 
 
-class BottomSheetFragment(val imageLoadingDelegate: ImageLoadingDelegate):Fragment(),BottomSheetView {
-
-    @InjectPresenter
-    lateinit var presenter:BottomSheetPresenter
-
-    var oldStateBottomSheet:State = State.COLLAPSED
-    @ProvidePresenter
-    fun providePresenter(): BottomSheetPresenter = presenter
-
+class BottomSheetFragment(val imageLoadingDelegate: ImageLoadingDelegate): Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_bottom_sheet, container, false)
+        return inflater.inflate(R.layout.fragment_bottom_sheet,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,7 +51,9 @@ class BottomSheetFragment(val imageLoadingDelegate: ImageLoadingDelegate):Fragme
         }
     }
 
-        fun changeState(state: Int){
+    fun getRecView() = mediaRecyclerView
+
+        /*fun changeState(state: Int){
             when(state){
                 BottomSheetBehavior.STATE_EXPANDED -> {
                     panelAddFile.visibility = View.GONE
@@ -87,7 +78,7 @@ class BottomSheetFragment(val imageLoadingDelegate: ImageLoadingDelegate):Fragme
                     Timber.tag("tut_state").d("STATE SETTLING")
                 }
             }
-        }
+        }*/
 
     enum class State{
         EXPANDED,
