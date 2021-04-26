@@ -54,6 +54,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.Writer
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -173,6 +176,7 @@ class NewsFragment(): BaseFragment(), NewsView{
 //                }
 //            }
 //        }
+
         newSwipe.setOnRefreshListener {
             adapter.refresh()
         }
@@ -215,8 +219,16 @@ class NewsFragment(): BaseFragment(), NewsView{
         NewsAdapter.apply {
             complaintListener = { presenter.complaintPost(it) }
             commentClickListener = {
-                clickedPostId = it.id
-                openCommentDetails(InfoForCommentEntity(it, true))
+                try {
+                    clickedPostId = it.id
+                    openCommentDetails(InfoForCommentEntity(it, true))
+                }catch (e:Exception) {
+                    val writer: Writer = StringWriter()
+                    e.printStackTrace(PrintWriter(writer))
+                    text_error.textSize = 12F
+                    text_error.text = writer.toString()
+                    text_error.visibility = View.VISIBLE
+                }
             }
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)

@@ -5,6 +5,7 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat
 import android.view.ViewGroup
 import android.widget.TextView
+import com.androidadvance.topsnackbar.R.*
 import com.androidadvance.topsnackbar.TSnackbar
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.manager.DialogManager
@@ -38,7 +39,7 @@ class DialogDelegate(private val dialogManager: DialogManager,
             TSnackbar.make(it, message, TSnackbar.LENGTH_SHORT)
                     .apply {
                         view.setBackgroundColor(ContextCompat.getColor(context, R.color.errorSnackBarColor))
-                        view.findViewById<TextView>(com.androidadvance.topsnackbar.R.id.snackbar_text)
+                        view.findViewById<TextView>(id.snackbar_text)
                                 .setTextColor(Color.WHITE)
                     }
                     .show()

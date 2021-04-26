@@ -35,7 +35,7 @@ class CreateUserProfilePresenterTest {
 
     @Before
     fun setUp() {
-        createUserProfilePresenter = CreateUserProfilePresenter(userProfileGateway, imageUploader, errorHandler)
+      //  createUserProfilePresenter = CreateUserProfilePresenter(userProfileGateway, imageUploader, errorHandler)
         createUserProfilePresenter.attachView(createUserProfileView)
     }
 

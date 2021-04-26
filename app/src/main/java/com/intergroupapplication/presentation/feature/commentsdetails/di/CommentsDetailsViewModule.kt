@@ -14,8 +14,8 @@ import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
-import com.intergroupapplication.presentation.feature.commentsdetails.adapter.MediaAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -43,10 +43,10 @@ class CommentsDetailsViewModule {
 //                                     imageLoadingDelegate: ImageLoadingDelegate): CommentDetailsAdapter =
 //            CommentDetailsAdapter(diffUtil, imageLoadingDelegate)
 
-    @PerFragment
-    @Provides
-    fun provideValidator(fragment: CommentsDetailsFragment): Validator =
-            Validator(fragment).apply { setValidationListener(fragment) }
+    //@PerFragment
+    //@Provides
+    //fun provideValidator(fragment: CommentsDetailsFragment): Validator =
+  //          Validator(fragment).apply { setValidationListener(fragment) }
 
     @PerFragment
     @Provides
@@ -79,7 +79,6 @@ class CommentsDetailsViewModule {
                        context: Context)
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
 
 //    @PerFragment
 //    @Provides

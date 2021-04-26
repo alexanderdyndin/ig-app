@@ -152,7 +152,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/colorPrimary"
+
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -177,10 +177,10 @@
                 android:layout_height="match_parent"
                 >
 
-               <include
+               <!--<include
                     android:id="@+id/item_input_comment"
                     layout="@layout/item_input_comment"
-                    />
+                    />!-->
 
                 <ProgressBar
                     android:id="@+id/commentLoader"
@@ -190,13 +190,21 @@
                     android:layout_marginEnd="@dimen/big_margin"
                     android:visibility="invisible" />
             </FrameLayout>
-
         </LinearLayout>
+        <TextView
+            android:id="@+id/text_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--<FrameLayout
+    <FrameLayout
         android:id="@+id/containerBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />!-->
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

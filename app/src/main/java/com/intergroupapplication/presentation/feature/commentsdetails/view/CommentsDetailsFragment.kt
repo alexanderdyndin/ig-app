@@ -1,21 +1,14 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
-import android.view.DragEvent
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
-import android.widget.Scroller
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.MotionEventCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.marginTop
 import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -36,22 +29,20 @@ import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
-import com.intergroupapplication.presentation.listeners.RightDrawableListener
-import com.jakewharton.rxbinding2.widget.RxTextView
-import com.mobsandgeeks.saripaar.ValidationError
-import com.mobsandgeeks.saripaar.Validator
-import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.commentEditText
 import kotlinx.android.synthetic.main.fragment_comments_details.*
+import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
+import kotlinx.android.synthetic.main.fragment_comments_details.loading_layout
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.item_group_post.postText
@@ -64,18 +55,15 @@ import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.Writer
 import javax.inject.Inject
 import javax.inject.Named
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.videoButton as videoButton1
-import kotlinx.android.synthetic.main.item_input_comment.galleryButton as galleryButton1
-import kotlinx.android.synthetic.main.item_input_comment.musicButton as musicButton1
-import kotlinx.android.synthetic.main.item_input_comment.panelAddFile as panelAddFile1
-import kotlinx.android.synthetic.main.item_input_comment.playlistButton as playlistButton1
-import kotlinx.android.synthetic.main.item_input_comment.postContainer as postContainer1
 
 
-class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
-        AppBarLayout.OnOffsetChangedListener{
+class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
+        AppBarLayout.OnOffsetChangedListener,BottomSheetFragment.Callback {
 
     companion object {
         const val COMMENTS_DETAILS_REQUEST = 0
@@ -99,11 +87,11 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
-    @Inject
-    lateinit var validator: Validator
+    //@Inject
+    //lateinit var validator: Validator
 
-    @Inject
-    lateinit var rightDrawableListener: RightDrawableListener
+    //@Inject
+    //lateinit var rightDrawableListener: RightDrawableListener
 
 
     @Inject
@@ -134,13 +122,15 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     private lateinit var bottomSheetBehaviour: BottomSheetBehavior<View>
 
-    private val loadingViews: MutableMap<String, View?> = mutableMapOf()
+    //private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
-    @NotEmpty(messageResId = R.string.comment_should_contain_text)
-    lateinit var commentEditText: AppCompatEditText
+    //@NotEmpty(messageResId = R.string.comment_should_contain_text)
+    //lateinit var commentEditText: AppCompatEditText
 
     private lateinit var groupPostEntity: GroupPostEntity.PostEntity
     private var lastRepliedComment: CommentEntity.Comment? = null
+
+    private val bottomFragment by lazy {BottomSheetFragment(this)}
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_comments_details
@@ -170,34 +160,35 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     override fun viewCreated() {
-        /*val bottomFragment = BottomSheetFragment(imageLoadingDelegate)
         //bottomFragment.show(childFragmentManager,null)
-        childFragmentManager.beginTransaction().add(R.id.containerBottomSheet,bottomFragment).commit()
-
-        bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet)
-        bottomSheetBehaviour.run {
-            peekHeight = 350
-            isFitToContents = false
-            addBottomSheetCallback(object : BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                    if (newState == BottomSheetBehavior.STATE_DRAGGING || newState == BottomSheetBehavior.STATE_SETTLING) {
-                        if(!bottomFragment.getRecView().canScrollVertically(1)) {
-                            Timber.tag("tut_if_rec").d("tut")
-                            bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED;
-                        }
+        try {
+            childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet, bottomFragment).commit()
+            bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet)
+            bottomSheetBehaviour.run {
+                peekHeight = 276
+                commentHolder.minimumHeight = peekHeight
+                halfExpandedRatio = 0.6f
+                isFitToContents = false
+                addBottomSheetCallback(object : BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        bottomFragment.changeState(newState)
                     }
-                }
 
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
-                }
-            })
-        }*/
-        commentEditText = requireView().findViewById(R.id.commentEditText)
+                    }
+                })
+            }
+        }catch (e:Exception){
+            val writer: Writer = StringWriter()
+            e.printStackTrace(PrintWriter(writer))
+            text_error.textSize = 12F
+            text_error.text = "CommentsDetailsFragment $writer"
+            text_error.visibility = View.VISIBLE
+        }
         presenter.postId = postId
         val decorator = CommentDividerItemDecorator(requireContext())
-        prepareEditText()
+        //prepareEditText()
         //crashing app when provide it by dagger
         //commentsList.layoutManager = layoutManager
         commentsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -206,7 +197,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         commentsList.addItemDecoration(decorator)
         prepareAdapter()
         manageDataFlow(infoForCommentEntity)
-        controlCommentEditTextChanges()
+        //controlCommentEditTextChanges()
         //setSupportActionBar(toolbar)
         //supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbarAction.setOnClickListener { findNavController().popBackStack() }
@@ -228,48 +219,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
             val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
             findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
         }
-
-        icAttach.apply {
-            setOnClickListener {
-                if (isActivated ){
-                    isActivated = false
-                    panelAddFile1.visibility = View.GONE
-                }
-                else {
-                    this.isActivated = true
-                    panelAddFile1.visibility = View.VISIBLE
-                }
-            }
-        }
-
-        galleryButton1.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                        mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
-            }
-        }
-
-        videoButton1.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                presenter.attachVideo()
-            }
-        }
-
-        musicButton1.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                presenter.attachAudio()
-            }
-        }
-
-        playlistButton1.setOnClickListener {
-            Toast.makeText(requireContext(), "Пока недоступно", Toast.LENGTH_SHORT).show()
-        }
     }
 
     fun newPaging() {
@@ -282,7 +231,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                             loading_layout.show()
                         }
                         emptyText.hide()
-                        commentEditText.isEnabled = false
+                       //bottomFragment.commentEditText.isEnabled = false
                     }
                     is LoadState.Error -> {
                         swipeLayout.isRefreshing = false
@@ -292,7 +241,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                             adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-                        commentEditText.isEnabled = true
+                       // bottomFragment.commentEditText.isEnabled = true
                     }
                     is LoadState.NotLoading -> {
                         if (adapter.itemCount == 0) {
@@ -308,7 +257,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                             }
                             commentCreated = false
                         }
-                        commentEditText.isEnabled = true
+                        //bottomFragment.commentEditText.isEnabled = true
                         swipeLayout.isRefreshing = false
                     }
                     else ->{ swipeLayout.isRefreshing = false }
@@ -480,58 +429,14 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         }
     }
 
-//    override fun commentsLoaded(comments: PagedList<CommentEntity>) {
-        //adapter.submitList(comments)
-        //adapter.notifyDataSetChanged()
-        //commentsList.smoothScrollToPosition(adapter.itemCount - 1)
-//    }
-
-    override fun onValidationFailed(errors: MutableList<ValidationError>) {
-        if (loadingViews.isNotEmpty()){
-            createComment()
-            return
-        }
-        for (error in errors) {
-            val message = error.getCollatedErrorMessage(requireContext())
-            dialogDelegate.showErrorSnackBar(message)
-        }
-    }
-
-    override fun onValidationSucceeded() {
-        createComment()
-    }
-
-    private fun createComment() {
-        if (commentHolder.childCount > 1) {
-            lastRepliedComment?.let {
-                presenter.createAnswerToComment(it.id, commentEditText.text.toString().trim())
-            }
-        } else {
-            presenter.createComment(groupPostEntity.id, commentEditText.text.toString().trim())
-        }
-    }
-
-//    override fun showLoading(show: Boolean) {
-//        if (show) {
-            //commentEditText.isEnabled = false
-            //swipeLayout.isRefreshing = true
-            //emptyText.hide()
-            //adapter.removeError()
-            //adapter.addLoading()
-//        } else {
-            //commentEditText.isEnabled = true
-            //swipeLayout.isRefreshing = false
-            //adapter.removeLoading()
-//        }
-//    }
 
     override fun showCommentUploading(show: Boolean) {
         if (show) {
-            commentEditText.isEnabled = false
+            //bottomFragment.commentEditText.isEnabled = false
             commentLoader.show()
         } else {
             commentLoader.hide()
-            commentEditText.isEnabled = true
+            //bottomFragment.commentEditText.isEnabled = true
         }
     }
 
@@ -540,7 +445,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     override fun showImageUploadingStarted(path: String) {
-        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer1, false)
+        /*loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer1, false)
         loadingViews[path]?.let {
             it.imagePreview?.let { draweeView ->
                 val type = MimeTypeMap.getFileExtensionFromUrl(path)
@@ -556,11 +461,11 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
         postContainer1.addView(loadingViews[path])
         prepareListeners(loadingViews[path], path)
-        imageUploadingStarted(loadingViews[path])
+        imageUploadingStarted(loadingViews[path])*/
     }
 
     override fun showImageUploaded(path: String) {
-        loadingViews[path]?.apply {
+        /*loadingViews[path]?.apply {
             darkCard?.hide()
             stopUploading?.hide()
             imageUploadingProgressBar?.hide()
@@ -568,60 +473,43 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
             commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
             setUpRightDrawableListener()
-        }
+        }*/
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        loadingViews[path]?.apply {
+        /*loadingViews[path]?.apply {
             imageUploadingProgressBar?.progress = progress
-        }
+        }*/
     }
 
     override fun showImageUploadingError(path: String) {
-        loadingViews[path]?.apply {
+        /*loadingViews[path]?.apply {
             darkCard?.show()
             detachImage?.show()
             refreshContainer?.show()
             imageUploadingProgressBar?.hide()
             stopUploading?.hide()
+        }*/
+    }
+
+    override fun createComment(textComment: String, bottomPresenter: BottomSheetPresenter) {
+        if (commentHolder.childCount > 1) {
+            lastRepliedComment?.let {
+                bottomPresenter.createAnswerToComment(it.id, textComment)
+            }
+        } else {
+            bottomPresenter.createComment(groupPostEntity.id, textComment)
         }
     }
 
-    private fun detachImage(path: String) {
-        postContainer.removeView(loadingViews[path])
-        loadingViews.remove(path)
-        if(loadingViews.isEmpty()){
-            commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    null, null)
-        }
+
+    override fun changeStateBottomSheet(newState: Int) {
+        bottomSheetBehaviour.state = newState
     }
 
-    private fun imageUploadingStarted(uploadingView: View?) {
-        uploadingView?.apply {
-            darkCard?.show()
-            imageUploadingProgressBar?.show()
-            stopUploading?.show()
-            detachImage?.hide()
-            refreshContainer?.hide()
-        }
-    }
-
-    private fun prepareListeners(uploadingView: View?, path: String) {
-        uploadingView?.apply {
-            refreshContainer.setOnClickListener {
-                this.imageUploadingProgressBar?.progress = 0f
-                presenter.retryLoading(path)
-                imageUploadingStarted(uploadingView)
-            }
-            stopUploading?.setOnClickListener {
-                presenter.cancelUploading(path)
-                detachImage(path)
-            }
-            detachImage?.setOnClickListener {
-                presenter.removeContent(path)
-                detachImage(path)
-            }
-        }
+    override fun addHeightContainer(height: Int) {
+        bottomSheetBehaviour.peekHeight = height
+        commentHolder.minimumHeight = height
     }
 
     private fun setErrorHandler() {
@@ -645,35 +533,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount.toString())
     }
 
-    private fun controlCommentEditTextChanges() {
-        RxTextView.afterTextChangeEvents(commentEditText)
-                .subscribe {
-                    val view = it.view()
-                    if (view.text.trim().isEmpty() && loadingViews.isEmpty()) {
-                        view.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                null, null)
-                    } else {
-                        view.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
-                    }
-                }
-                .let(compositeDisposable::add)
-        setUpRightDrawableListener()
-    }
-
-    private fun setUpRightDrawableListener() {
-            commentEditText.setOnTouchListener(rightDrawableListener)
-            rightDrawableListener.clickListener = {
-                validator.validate()
-                loadingViews.clear()
-                postContainer1.removeAllViews()
-                commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                        null, null)
-                icAttach.isActivated = false
-                panelAddFile1.visibility = View.GONE
-            }
-    }
-
     private fun prepareAdapter() {
         with(CommentsAdapter) {
             replyListener = { comment ->
@@ -692,7 +551,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                                         ?: getString(R.string.unknown_user)
                                 lastRepliedComment = comment.copy()
                             }
-                    commentEditText.showKeyboard()
+                   // bottomFragment.commentEditText.showKeyboard()
                 }
             }
            imageClickListener = { list: List<FileEntity>, i: Int ->
@@ -723,13 +582,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         }
     }
 
-    private fun prepareEditText() {
-        commentEditText.isVerticalScrollBarEnabled = true
-        commentEditText.maxLines = 5
-        commentEditText.setScroller(Scroller(requireContext()))
-        commentEditText.movementMethod = ScrollingMovementMethod()
-    }
-
     private fun manageDataFlow(infoForCommentEntity: InfoForCommentEntity?) {
         if (infoForCommentEntity != null) {
             groupPostEntity = infoForCommentEntity.groupPostEntity
@@ -746,7 +598,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         }
 
     }
-
 
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)

@@ -6,13 +6,11 @@ import moxy.viewstate.strategy.StateStrategyType
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.ImageUploadingView
+import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface CommentsDetailsView : MvpView,ImageUploadingView {
-    fun commentCreated(commentEntity: CommentEntity)
-    fun answerToCommentCreated(commentEntity: CommentEntity)
+interface CommentsDetailsView : MvpView,ImageUploadingView{
     fun showPostDetailInfo(groupPostEntity: GroupPostEntity.PostEntity)
-    fun showCommentUploading(show: Boolean)
     fun hideSwipeLayout()
     fun showMessage(value:Int)
 }

@@ -8,11 +8,11 @@ import com.intergroupapplication.presentation.feature.agreements.di.AgreementsVi
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.intergroupapplication.presentation.feature.audiolist.di.AudioListViewModule
 import com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment
-import com.intergroupapplication.presentation.feature.commentsdetails.di.BottomSheetViewModule
+import com.intergroupapplication.presentation.feature.bottomsheet.di.BottomSheetViewModule
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.di.CommentsDetailsViewModule
-import com.intergroupapplication.presentation.feature.commentsdetails.view.BottomSheetFragment
+import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.confirmationmail.di.ConfirmationMailViewModule
 import com.intergroupapplication.presentation.feature.confirmationmail.di.ConfirmationUserProfileGatewayModule
@@ -86,7 +86,7 @@ interface AppBuilderModule {
 
     @PerFragment
     @ContributesAndroidInjector(modules = [BottomSheetViewModule::class])
-    fun provideBottomSheetFragment():BottomSheetFragment
+    fun provideBottomSheetFragment(): BottomSheetFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])
