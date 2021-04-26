@@ -41,3 +41,15 @@ fun TextView.showKeyboard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
             .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
+
+fun TextView.changeActivated(thisActivated:Boolean, view1:TextView, view2:TextView, view3:TextView){
+    this.activated(thisActivated)
+    view1.activated(false)
+    view2.activated(false)
+    view3.activated(false)
+    this.setTextColor(if (thisActivated)resources.getColor(R.color.pingForButton, null)
+    else resources.getColor(R.color.colorAccent, null) )
+    view1.setTextColor(resources.getColor(R.color.colorAccent, null))
+    view2.setTextColor(resources.getColor(R.color.colorAccent, null))
+    view3.setTextColor(resources.getColor(R.color.colorAccent, null))
+}

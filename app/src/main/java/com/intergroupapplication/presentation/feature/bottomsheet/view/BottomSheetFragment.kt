@@ -9,22 +9,26 @@ import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Scroller
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.AudioInAddFileModel
+import com.intergroupapplication.data.model.ChooseClass
+import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.bottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
 import com.intergroupapplication.presentation.feature.bottomsheet.viewmodel.BottomViewModel
@@ -34,11 +38,13 @@ import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
+import kotlinx.android.synthetic.main.item_comment.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -84,8 +90,6 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     @ProvidePresenter
     fun providePresenter(): BottomSheetPresenter = presenter
 
-    private val attachImageView by lazy { layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false) }
-
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
     override fun layoutRes() = R.layout.fragment_bottom_sheet
@@ -101,59 +105,67 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         commentEditText = view.findViewById(R.id.commentEditText)
         mediaRecyclerView.apply {
-            layoutManager = GridLayoutManager(context, 3)
-            addItemDecoration(ItemOffsetDecoration(context,R.dimen.lb_page_indicator_arrow_shadow_offset))
+            addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
         }
         prepareEditText()
         controlCommentEditTextChanges()
         setUpAddFilePanel()
     }
-
+    private fun MutableList<out ChooseClass>.cancelChoose(){
+        forEach {
+            it.isChoose = false
+        }
+    }
     private fun setUpAddFilePanel() {
         icAttachFile.apply {
             setOnClickListener {
                 if (isActivated) {
-                    isActivated = false
-                    commentEditText.visibility = View.VISIBLE
-                    panelAddFile.visibility = View.GONE
-                    mediaRecyclerView.visibility = View.GONE
+                    activated(false)
+                    commentEditText.show()
+                    panelAddFile.gone()
+                    btnAdd.gone()
+                    amountFiles.gone()
+                    galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+                    galleryAdapter.photos.cancelChoose()
+                    videoAdapter.videos.cancelChoose()
+                    audioAdapter.audios.cancelChoose()
+                    mediaRecyclerView.gone()
                 } else {
-                    this.isActivated = true
-                    commentEditText.visibility = View.GONE
-                    panelAddFile.visibility = View.VISIBLE
+                    activated(true)
+                    commentEditText.gone()
+                    panelAddFile.show()
                     //callback.changeStateBottomSheet(BottomSheetBehavior.STATE_HALF_EXPANDED)
                 }
             }
         }
 
         galleryButton.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                mediaRecyclerView.adapter = galleryAdapter
-                setVisibilityForAddFiles()
-                //dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                  //      mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+            mediaRecyclerView.apply {
+                adapter = galleryAdapter
+                layoutManager = GridLayoutManager(context,3)
             }
+            setVisibilityForAddFiles()
+            (it as TextView).changeActivated(true, musicButton, videoButton, playlistButton)
+            //dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+            //      mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
         }
 
         musicButton.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                mediaRecyclerView.adapter = audioAdapter
-                setVisibilityForAddFiles()
-              //  presenter.attachAudio()
+            mediaRecyclerView.apply {
+                adapter = audioAdapter
+                layoutManager = LinearLayoutManager(context)
             }
+            setVisibilityForAddFiles()
+            (it as TextView).changeActivated(true, galleryButton, videoButton, playlistButton)
         }
 
         videoButton.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                mediaRecyclerView.adapter = videoAdapter
-                setVisibilityForAddFiles()
+            mediaRecyclerView.apply {
+                adapter = videoAdapter
+                layoutManager = GridLayoutManager(context,3)
             }
+            setVisibilityForAddFiles()
+            (it as TextView).changeActivated(true, galleryButton, musicButton, playlistButton)
         }
 
         amountFiles.setOnClickListener {
@@ -161,7 +173,34 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
         }
 
         btnAdd.setOnClickListener {
-
+            if (loadingViews.count() >= 10) {
+                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT)
+                        .show()
+            } else {
+                when (mediaRecyclerView.adapter) {
+                    is GalleryAdapter -> {//presenter.loadImage("")
+                        galleryAdapter.apply {
+                            presenter.attachMedia(getChoosePhotosFromObservable(), presenter::loadImage)
+                            photos.cancelChoose()
+                            notifyDataSetChanged()
+                        }
+                    }
+                    is VideoAdapter -> {//presenter.loadVideo("")
+                        videoAdapter.apply {
+                            presenter.attachMedia(getChooseVideosFromObservable(), presenter::loadVideo)
+                            videos.cancelChoose()
+                            notifyDataSetChanged()
+                        }
+                    }
+                    is AudioAdapter -> {//presenter.loadAudio("")
+                        audioAdapter.apply {
+                            presenter.attachMedia(getChooseAudiosFromObservable(), presenter::loadAudio)
+                            audios.cancelChoose()
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
         }
 
         playlistButton.setOnClickListener {
@@ -170,28 +209,34 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     }
 
     private fun setVisibilityForAddFiles() {
-        mediaRecyclerView.visibility = View.VISIBLE
-        amountFiles.visibility = View.VISIBLE
-        btnAdd.visibility = View.VISIBLE
+        mediaRecyclerView.show()
+        amountFiles.show()
+        btnAdd.show()
     }
 
     private fun settingAdapter() {
         galleryAdapter.apply {
-            photos.addAll(addGalleryUri(MediaStore.Images.ImageColumns.DATA,uriConstants =  MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
+            photos.addAll(addGalleryUri(MediaStore.Images.ImageColumns.DATA,
+                    uriConstants = MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
             notifyDataSetChanged()
         }
         audioAdapter.apply {
-            audios.addAll(addGalleryUri(MediaStore.Audio.AudioColumns.DATA, uriConstants = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI))
+            audios.addAll(addAudioUri(MediaStore.Audio.AudioColumns.DATA,
+                    MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                    MediaStore.Audio.AudioColumns.DURATION,
+                    uriConstants = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI))
             notifyDataSetChanged()
         }
         videoAdapter.apply {
-            videos.addAll(addVideoUri(MediaStore.Video.VideoColumns.DATA,MediaStore.Video.VideoColumns.DURATION,uriConstants =  MediaStore.Video.Media.EXTERNAL_CONTENT_URI))
+            videos.addAll(addVideoUri(MediaStore.Video.VideoColumns.DATA,
+                    MediaStore.Video.VideoColumns.DURATION,
+                    uriConstants = MediaStore.Video.Media.EXTERNAL_CONTENT_URI))
             notifyDataSetChanged()
         }
     }
 
-    private fun addGalleryUri(mediaConstants: String, uriConstants: Uri):MutableList<String> {
-        val listUrlImage = mutableListOf<String>()
+    private fun addGalleryUri(mediaConstants: String, uriConstants: Uri):MutableList<GalleryModel> {
+        val listUrlImage = mutableListOf<GalleryModel>()
         val cursor = context?.contentResolver?.query(uriConstants,
                 arrayOf(mediaConstants),
                 null,
@@ -202,7 +247,7 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
             while (cursor?.moveToNext() == true) {
                 val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants)
                 val path: String = cursor.getString(fileColumnIndex)
-                listUrlImage.add(path)
+                listUrlImage.add(GalleryModel(path,false))
             }
         }
         listUrlImage.reverse()
@@ -221,18 +266,47 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
             while (cursor?.moveToNext() == true) {
                 val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
                 val path: String = cursor.getString(fileColumnIndex)
-                val path_second = cursor.getInt(cursor.getColumnIndexOrThrow(mediaConstants[1]))
+                val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[1]))
                 val calendar = GregorianCalendar()
-                calendar.time = Date(path_second.toLong())
-                val minute_calendar = calendar.get(GregorianCalendar.MINUTE)
-                val second_calendar = calendar.get(GregorianCalendar.SECOND)
-                val minute = if (minute_calendar<10) "0$minute_calendar" else "$minute_calendar"
-                val second = if (second_calendar<10) "0$second_calendar" else "$second_calendar"
-                listUrlImage.add(VideoModel(path,"$minute:$second"))
+                calendar.time = Date(duration)
+                val seconds = calendar.get(GregorianCalendar.SECOND)
+                val minutes = calendar.get(GregorianCalendar.MINUTE)
+                val minute = if (minutes<10) "0$minutes" else "$minutes"
+                val second = if (seconds<10) "0$seconds" else "$seconds"
+                listUrlImage.add(VideoModel(path, "$minute:$second",false))
             }
         }
         listUrlImage.reverse()
         return listUrlImage
+    }
+
+    private fun addAudioUri(vararg mediaConstants: String, uriConstants: Uri)
+        :MutableList<AudioInAddFileModel>{
+        val listUrlAudio = mutableListOf<AudioInAddFileModel>()
+        val cursor = context?.contentResolver?.query(uriConstants,
+                mediaConstants,
+                null,
+                null,
+                null)
+        val size: Int = cursor?.count ?: 0
+        if (size != 0) {
+            while (cursor?.moveToNext() == true) {
+                val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
+                val nameColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[1])
+                val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[2]))
+                val path: String = cursor.getString(fileColumnIndex)
+                val name = (cursor.getString(nameColumnIndex)?:"").replace(".mp3", "")
+                val calendar = GregorianCalendar()
+                calendar.time = Date(duration)
+                val seconds = calendar.get(GregorianCalendar.SECOND)
+                val minutes = calendar.get(GregorianCalendar.MINUTE)
+                val minute = if (minutes<10) "0$minutes" else "$minutes"
+                val second = if (seconds<10) "0$seconds" else "$seconds"
+                listUrlAudio.add(AudioInAddFileModel(path, name, "$minute:$second",false))
+            }
+        }
+        listUrlAudio.reverse()
+        return listUrlAudio
     }
 
     fun changeState(state: Int){
@@ -261,14 +335,15 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     private fun stateSettling() {
         // panelAddFile.visibility = View.VISIBLE
         // commentEditText.visibility = View.GONE
-        postContainer.visibility = View.GONE
+        postContainer.gone()
         Timber.tag("tut_state").d("SETTING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
     }
 
     private fun stateExpanded() {
         //commentEditText.visibility = View.GONE
-        postContainer.visibility = View.GONE
+        postContainer.gone()
+        //TODO убрать максимальное количество линий или придумать как сделать их нормально
         commentEditText.maxLines = 40
         Timber.tag("tut_state").d("EXPANDED")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
@@ -277,7 +352,8 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     private fun stateHalfExpanded() {
         //panelAddFile.visibility = View.VISIBLE
         //commentEditText.visibility = View.GONE
-        postContainer.visibility = View.GONE
+        postContainer.gone()
+        //TODO убрать максимальное количество линий или придумать как сделать их нормально
         commentEditText.maxLines = 20
         Timber.tag("tut_state").d("HALF_EXPANDED")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
@@ -286,7 +362,7 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     private fun stateDragging() {
         // panelAddFile.visibility = View.VISIBLE
         //commentEditText.visibility = View.GONE
-        postContainer.visibility = View.GONE
+        postContainer.gone()
         Timber.tag("tut_state").d("DRAGGING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
     }
@@ -294,27 +370,35 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     private fun stateHidden() {
         // panelAddFile.visibility = View.VISIBLE
         // commentEditText.visibility = View.GONE
-        postContainer.visibility = View.GONE
+        postContainer.gone()
         Timber.tag("tut_state").d("HIDDEN")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
     }
 
     private fun stateCollapsed() {
         commentEditText.maxLines = 5
+        //TODO придумать как получить размер commentEditText при 5 линиях в нем
         var height = if (commentEditText.lineCount > 5) {
             470
         } else {
             commentEditText.height + iconPanel.height + pushUpDown.height / 2
         }
+        //TODO придумать как получить высоту контейнера вьюхи
         if (loadingViews.isNotEmpty()) {
             height += 300
         }
-        panelAddFile.visibility = View.GONE
-        commentEditText.visibility = View.VISIBLE
-        postContainer.visibility = View.VISIBLE
-        mediaRecyclerView.visibility = View.GONE
+        panelAddFile.gone()
+        commentEditText.show()
+        postContainer.show()
+        mediaRecyclerView.gone()
+        galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+        galleryAdapter.photos.cancelChoose()
+        videoAdapter.videos.cancelChoose()
+        audioAdapter.audios.cancelChoose()
+        btnAdd.gone()
+        amountFiles.gone()
         callback.addHeightContainer(height)
-        icAttachFile.isActivated = false
+        icAttachFile.activated(false)
         Timber.tag("tut_state").d("_COLLAPSED")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
     }
@@ -373,7 +457,7 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     }
 
     override fun showImageUploadingStarted(path: String) {
-        loadingViews[path] = attachImageView
+        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
         loadingViews[path]?.let {
             it.imagePreview?.let { draweeView ->
                 val type = MimeTypeMap.getFileExtensionFromUrl(path)
@@ -452,6 +536,9 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     private fun detachImage(path: String) {
         postContainer.removeView(loadingViews[path])
         loadingViews.remove(path)
+        audioAdapter.chooseAudios.remove(path)
+        galleryAdapter.choosePhotos.remove(path)
+        videoAdapter.chooseVideos.remove(path)
         if(loadingViews.isEmpty()){
             commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     null, null)

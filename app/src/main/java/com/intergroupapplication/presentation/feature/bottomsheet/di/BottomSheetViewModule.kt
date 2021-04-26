@@ -33,8 +33,8 @@ class BottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideAudioAdapter(imageLoadingDelegate: ImageLoadingDelegate): AudioAdapter{
-        return AudioAdapter(imageLoadingDelegate)
+    fun provideAudioAdapter(): AudioAdapter{
+        return AudioAdapter()
     }
 
     @PerFragment
