@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.bottomsheet.presenter
 
+import android.view.View
 import android.webkit.MimeTypeMap
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.AudioRequestEntity
@@ -93,14 +94,17 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                 }))
     }
 
-    fun attachMedia(mediasObservable: Observable<String>, loadMedia:(path:String)->Unit) {
+    fun attachMedia(mediasObservable: Observable<String>, loadMedia:(path:String)->Unit, loadingView:Map<String, View?>) {
         mediaDisposable.add(mediasObservable
                 .subscribeOn(Schedulers.io())
-                .filter { it.isNotEmpty() }
+                .filter { !loadingView.containsKey(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                        Timber.tag("tut_attach").d(it)
                         loadMedia(it)
-                }, { errorHandler.handle(CanNotUploadPhoto())}))
+                }, {
+                    it.printStackTrace()
+                    errorHandler.handle(CanNotUploadPhoto())}))
     }
 
     /*fun attachFromCamera() {

@@ -1,6 +1,10 @@
 package com.intergroupapplication.presentation.feature.bottomsheet.view
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
@@ -11,8 +15,10 @@ import android.webkit.MimeTypeMap
 import android.widget.Scroller
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -48,8 +54,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetView, Validator.ValidationListener {
+class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.ValidationListener {
 
+    lateinit var callback: Callback
 
     @Inject
     lateinit var imageLoadingDelegate:ImageLoadingDelegate
@@ -77,6 +84,7 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
 
    // @Inject
     //lateinit var callback: Callback
+    val PICK_FROM_GALLERY_CODE = 0
 
     @Inject
     @InjectPresenter
@@ -99,7 +107,27 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[BottomViewModel::class.java]
-        settingAdapter()
+        checkPermissions()
+    }
+
+    private val requestMultiplePermissions =
+            activity?.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                if (permissions[READ_EXTERNAL_STORAGE] == true && permissions[WRITE_EXTERNAL_STORAGE] == true) {
+                   settingAdapter()
+                } else {
+                   Toast.makeText(context,"Нехватает разрешений для чтения данных",Toast.LENGTH_SHORT)
+                           .show()
+                }
+            }
+
+    private fun checkPermissions() {
+        if (context?.let {
+                    ContextCompat.checkSelfPermission(it, READ_EXTERNAL_STORAGE)}
+                != PackageManager.PERMISSION_GRANTED) {
+            requestMultiplePermissions?.launch(arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE))
+        } else {
+            settingAdapter()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -173,35 +201,51 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
         }
 
         btnAdd.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT)
-                        .show()
-            } else {
-                when (mediaRecyclerView.adapter) {
-                    is GalleryAdapter -> {//presenter.loadImage("")
-                        galleryAdapter.apply {
-                            presenter.attachMedia(getChoosePhotosFromObservable(), presenter::loadImage)
-                            photos.cancelChoose()
-                            notifyDataSetChanged()
+            //if (loadingViews.count() >= 10) {
+                //Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT)
+              //          .show()
+            //} else {
+            when (mediaRecyclerView.adapter) {
+                is GalleryAdapter -> {
+                    galleryAdapter.apply {
+                        presenter.attachMedia(getChoosePhotosFromObservable(), presenter::loadImage,
+                                loadingViews)
+                        photos.forEachIndexed{index, galleryModel ->
+                            if (galleryModel.isChoose) {
+                                galleryModel.isChoose = false
+                                notifyItemChanged(index)
+                            }
+                        }
+                        //photos.cancelChoose()
+                    }
+                }
+                is VideoAdapter -> {
+                    videoAdapter.apply {
+                        presenter.attachMedia(getChooseVideosFromObservable(), presenter::loadVideo,
+                            loadingViews)
+                        videos.forEachIndexed{ index, videoModel ->
+                            if (videoModel.isChoose) {
+                                videoModel.isChoose = false
+                                notifyItemChanged(index)
+                            }
                         }
                     }
-                    is VideoAdapter -> {//presenter.loadVideo("")
-                        videoAdapter.apply {
-                            presenter.attachMedia(getChooseVideosFromObservable(), presenter::loadVideo)
-                            videos.cancelChoose()
-                            notifyDataSetChanged()
-                        }
-                    }
-                    is AudioAdapter -> {//presenter.loadAudio("")
-                        audioAdapter.apply {
-                            presenter.attachMedia(getChooseAudiosFromObservable(), presenter::loadAudio)
-                            audios.cancelChoose()
-                            notifyDataSetChanged()
+                }
+                is AudioAdapter -> {
+                    audioAdapter.apply {
+                        presenter.attachMedia(getChooseAudiosFromObservable(), presenter::loadAudio,
+                            loadingViews)
+                        audios.forEachIndexed{index, audioInAddFileModel ->
+                            if (audioInAddFileModel.isChoose){
+                                audioInAddFileModel.isChoose = false
+                                notifyItemChanged(index)
+                            }
                         }
                     }
                 }
             }
         }
+       // }
 
         playlistButton.setOnClickListener {
             Toast.makeText(requireContext(), "Пока недоступно", Toast.LENGTH_SHORT).show()
@@ -237,18 +281,22 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
 
     private fun addGalleryUri(mediaConstants: String, uriConstants: Uri):MutableList<GalleryModel> {
         val listUrlImage = mutableListOf<GalleryModel>()
-        val cursor = context?.contentResolver?.query(uriConstants,
-                arrayOf(mediaConstants),
-                null,
-                null,
-                null)
-        val size: Int = cursor?.count ?: 0
-        if (size != 0) {
-            while (cursor?.moveToNext() == true) {
-                val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants)
-                val path: String = cursor.getString(fileColumnIndex)
-                listUrlImage.add(GalleryModel(path,false))
+        try {
+            val cursor = context?.contentResolver?.query(uriConstants,
+                    arrayOf(mediaConstants),
+                    null,
+                    null,
+                    null)
+            val size: Int = cursor?.count ?: 0
+            if (size != 0) {
+                while (cursor?.moveToNext() == true) {
+                    val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants)
+                    val path: String = cursor.getString(fileColumnIndex)
+                    listUrlImage.add(GalleryModel(path, false))
+                }
             }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
         listUrlImage.reverse()
         return listUrlImage
@@ -256,25 +304,29 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
 
     private fun addVideoUri(vararg mediaConstants: String, uriConstants: Uri):MutableList<VideoModel>{
         val listUrlImage = mutableListOf<VideoModel>()
-        val cursor = context?.contentResolver?.query(uriConstants,
-                mediaConstants,
-                null,
-                null,
-                null)
-        val size: Int = cursor?.count ?: 0
-        if (size != 0) {
-            while (cursor?.moveToNext() == true) {
-                val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
-                val path: String = cursor.getString(fileColumnIndex)
-                val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[1]))
-                val calendar = GregorianCalendar()
-                calendar.time = Date(duration)
-                val seconds = calendar.get(GregorianCalendar.SECOND)
-                val minutes = calendar.get(GregorianCalendar.MINUTE)
-                val minute = if (minutes<10) "0$minutes" else "$minutes"
-                val second = if (seconds<10) "0$seconds" else "$seconds"
-                listUrlImage.add(VideoModel(path, "$minute:$second",false))
+        try {
+            val cursor = context?.contentResolver?.query(uriConstants,
+                    mediaConstants,
+                    null,
+                    null,
+                    null)
+            val size: Int = cursor?.count ?: 0
+            if (size != 0) {
+                while (cursor?.moveToNext() == true) {
+                    val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
+                    val path: String = cursor.getString(fileColumnIndex)
+                    val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[1]))
+                    val calendar = GregorianCalendar()
+                    calendar.time = Date(duration)
+                    val seconds = calendar.get(GregorianCalendar.SECOND)
+                    val minutes = calendar.get(GregorianCalendar.MINUTE)
+                    val minute = if (minutes < 10) "0$minutes" else "$minutes"
+                    val second = if (seconds < 10) "0$seconds" else "$seconds"
+                    listUrlImage.add(VideoModel(path, "$minute:$second", false))
+                }
             }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
         listUrlImage.reverse()
         return listUrlImage
@@ -283,27 +335,31 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     private fun addAudioUri(vararg mediaConstants: String, uriConstants: Uri)
         :MutableList<AudioInAddFileModel>{
         val listUrlAudio = mutableListOf<AudioInAddFileModel>()
-        val cursor = context?.contentResolver?.query(uriConstants,
-                mediaConstants,
-                null,
-                null,
-                null)
-        val size: Int = cursor?.count ?: 0
-        if (size != 0) {
-            while (cursor?.moveToNext() == true) {
-                val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
-                val nameColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[1])
-                val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[2]))
-                val path: String = cursor.getString(fileColumnIndex)
-                val name = (cursor.getString(nameColumnIndex)?:"").replace(".mp3", "")
-                val calendar = GregorianCalendar()
-                calendar.time = Date(duration)
-                val seconds = calendar.get(GregorianCalendar.SECOND)
-                val minutes = calendar.get(GregorianCalendar.MINUTE)
-                val minute = if (minutes<10) "0$minutes" else "$minutes"
-                val second = if (seconds<10) "0$seconds" else "$seconds"
-                listUrlAudio.add(AudioInAddFileModel(path, name, "$minute:$second",false))
+        try {
+            val cursor = context?.contentResolver?.query(uriConstants,
+                    mediaConstants,
+                    null,
+                    null,
+                    null)
+            val size: Int = cursor?.count ?: 0
+            if (size != 0) {
+                while (cursor?.moveToNext() == true) {
+                    val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
+                    val nameColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[1])
+                    val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[2]))
+                    val path: String = cursor.getString(fileColumnIndex)
+                    val name = (cursor.getString(nameColumnIndex) ?: "").replace(".mp3", "")
+                    val calendar = GregorianCalendar()
+                    calendar.time = Date(duration)
+                    val seconds = calendar.get(GregorianCalendar.SECOND)
+                    val minutes = calendar.get(GregorianCalendar.MINUTE)
+                    val minute = if (minutes < 10) "0$minutes" else "$minutes"
+                    val second = if (seconds < 10) "0$seconds" else "$seconds"
+                    listUrlAudio.add(AudioInAddFileModel(path, name, "$minute:$second", false))
+                }
             }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
         listUrlAudio.reverse()
         return listUrlAudio
@@ -377,6 +433,7 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
 
     private fun stateCollapsed() {
         commentEditText.maxLines = 5
+        //TODO при стирании текста как-то вовзращать размер панели на место
         //TODO придумать как получить размер commentEditText при 5 линиях в нем
         var height = if (commentEditText.lineCount > 5) {
             470
@@ -392,9 +449,16 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
         postContainer.show()
         mediaRecyclerView.gone()
         galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
-        galleryAdapter.photos.cancelChoose()
-        videoAdapter.videos.cancelChoose()
-        audioAdapter.audios.cancelChoose()
+        galleryAdapter.run {
+            photos.cancelChoose()
+
+        }
+        videoAdapter.run{
+            videos.cancelChoose()
+        }
+        audioAdapter.run {
+            audios.cancelChoose()
+        }
         btnAdd.gone()
         amountFiles.gone()
         callback.addHeightContainer(height)
@@ -434,6 +498,7 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
         rightDrawableListener.clickListener = {
             validator.validate()
             loadingViews.clear()
+            chooseMedia.clear()
             postContainer.removeAllViews()
             commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     null, null)
@@ -536,9 +601,7 @@ class BottomSheetFragment(val callback: Callback): BaseFragment(), BottomSheetVi
     private fun detachImage(path: String) {
         postContainer.removeView(loadingViews[path])
         loadingViews.remove(path)
-        audioAdapter.chooseAudios.remove(path)
-        galleryAdapter.choosePhotos.remove(path)
-        videoAdapter.chooseVideos.remove(path)
+        chooseMedia.remove(path)
         if(loadingViews.isEmpty()){
             commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     null, null)

@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.bottomsheet.view
 
+import android.view.View
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.ImageUploadingView

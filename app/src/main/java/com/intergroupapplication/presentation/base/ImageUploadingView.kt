@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.base
 
+import android.view.View
 import moxy.viewstate.strategy.SkipStrategy
 import moxy.viewstate.strategy.StateStrategyType
 

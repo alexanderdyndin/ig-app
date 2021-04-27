@@ -15,11 +15,13 @@ import com.intergroupapplication.data.model.VideoModel
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
 import io.reactivex.Observable
+import timber.log.Timber
+
+val chooseMedia = mutableSetOf<String>()
 
 class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):RecyclerView.Adapter<BaseHolder<GalleryModel>>(){
 
     val photos = mutableListOf(GalleryModel("photos",false))
-    val choosePhotos = mutableListOf<String>()
 
     companion object {
         private const val PHOTO_HOLDER_KEY = 0
@@ -61,7 +63,10 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Rec
 
     }
 
-    fun getChoosePhotosFromObservable() = Observable.fromIterable(choosePhotos)
+    fun getChoosePhotosFromObservable():Observable<String>{
+        Timber.tag("tut_list").d(chooseMedia.size.toString())
+        return Observable.fromIterable(chooseMedia)
+    }
 
     inner class ImageHolder(private val view: View) : BaseHolder<GalleryModel>(view) {
         override fun onBind(data: GalleryModel) {
@@ -73,12 +78,12 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Rec
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && choosePhotos.size<10){
+                            if(!isChoose && chooseMedia.size<10){
                                 isChoose = true
-                                choosePhotos.add(url)
-                            } else {
+                                chooseMedia.add(url)
+                            } else if (isChoose) {
                                 isChoose = false
-                                choosePhotos.remove(url)
+                                chooseMedia.remove(url)
                             }
                             activated(isChoose)
                         }
@@ -91,7 +96,6 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Rec
 }
 class AudioAdapter:RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
     val audios = mutableListOf<AudioInAddFileModel>()
-    val chooseAudios = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<AudioInAddFileModel> {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_audio_for_add_files_bottom_sheet, parent,false)
@@ -104,7 +108,7 @@ class AudioAdapter:RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
 
     override fun getItemCount() = audios.size
 
-    fun getChooseAudiosFromObservable() = Observable.fromIterable(chooseAudios)
+    fun getChooseAudiosFromObservable() = Observable.fromIterable(chooseMedia)
 
     inner class AudioHolder(private val view: View) : BaseHolder<AudioInAddFileModel>(view){
         override fun onBind(data: AudioInAddFileModel) {
@@ -118,12 +122,12 @@ class AudioAdapter:RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && chooseAudios.size<10){
+                            if(!isChoose && chooseMedia.size<10){
                                 isChoose = true
-                               chooseAudios.add(url)
-                            } else {
+                                chooseMedia.add(url)
+                            } else if (isChoose) {
                                 isChoose = false
-                                chooseAudios.remove(url)
+                                chooseMedia.remove(url)
                             }
                             activated(isChoose)
                         }
@@ -138,7 +142,6 @@ class AudioAdapter:RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
 
 class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):RecyclerView.Adapter<BaseHolder<VideoModel>>(){
     val videos = mutableListOf<VideoModel>()
-    val chooseVideos = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<VideoModel> {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video_for_add_files_bottom_sheet, parent,false)
@@ -151,7 +154,7 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Recyc
 
     override fun getItemCount() = videos.size
 
-    fun getChooseVideosFromObservable() = Observable.fromIterable(chooseVideos)
+    fun getChooseVideosFromObservable() = Observable.fromIterable(chooseMedia)
 
     inner class VideoHolder(private val view: View) : BaseHolder<VideoModel>(view) {
         override fun onBind(data: VideoModel) {
@@ -165,12 +168,12 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Recyc
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && chooseVideos.size<10){
+                            if(!isChoose && chooseMedia.size<10){
                                 isChoose = true
-                                chooseVideos.add(url)
-                            } else {
+                                chooseMedia.add(url)
+                            } else if (isChoose){
                                 isChoose = false
-                                chooseVideos.remove(url)
+                                chooseMedia.remove(url)
                             }
                             activated(isChoose)
                         }

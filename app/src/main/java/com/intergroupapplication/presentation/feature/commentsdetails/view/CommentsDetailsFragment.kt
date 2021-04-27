@@ -130,7 +130,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
     private lateinit var groupPostEntity: GroupPostEntity.PostEntity
     private var lastRepliedComment: CommentEntity.Comment? = null
 
-    private val bottomFragment by lazy {BottomSheetFragment(this)}
+    private val bottomFragment by lazy {BottomSheetFragment()}
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_comments_details
@@ -163,6 +163,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
         //bottomFragment.show(childFragmentManager,null)
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet, bottomFragment).commit()
+            bottomFragment.callback = this
             bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet)
             bottomSheetBehaviour.run {
                 peekHeight = 276

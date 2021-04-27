@@ -94,8 +94,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     override fun getAudioUrls(): Single<List<String>> = Single.fromCallable { audioUrls }
 
     override fun getImageUrls(): Single<List<String>> {
-        Timber.tag("tut_get_urls").d(imageUrls.toString())
-        Timber.tag("tut_get_urls").d(imageUrls.size.toString())
         return Single.fromCallable { imageUrls }
     }
 
