@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -12,14 +13,26 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.AudioInAddFileModel
 import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
+import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
+import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-
+//два сомнительных по архитектуре момента, но лучше пока не придумал
 val chooseMedia = mutableSetOf<String>()
 
-class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):RecyclerView.Adapter<BaseHolder<GalleryModel>>(){
+interface MediaCallback{
+    fun changeCountChooseImage()
+    fun changeCountChooseVideo()
+    fun changeCountChooseAudio()
+}
+
+class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
+     private val presenter: BottomSheetPresenter,
+     private val mediaCallback: MediaCallback
+):RecyclerView.Adapter<BaseHolder<GalleryModel>>(){
 
     val photos = mutableListOf(GalleryModel("photos",false))
 
@@ -58,7 +71,17 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Rec
 
     inner class PhotoHolder(private val view: View) : BaseHolder<GalleryModel>(view){
         override fun onBind(data: GalleryModel) {
-
+            with(view){
+                val makePhoto = findViewById<ImageView>(R.id.make_photo)
+                makePhoto.setOnClickListener {
+                    if (chooseMedia.size<10) {
+                        presenter.attachFromCamera()
+                    }else{
+                        Toast.makeText(context, "Не больше 10 вложений", Toast.LENGTH_SHORT)
+                                .show()
+                    }
+                }
+            }
         }
 
     }
@@ -78,13 +101,15 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Rec
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && chooseMedia.size<10){
+                            Timber.tag("tut_size").d(chooseMedia.size.toString())
+                            if(!isChoose && chooseMedia.size<10 && !chooseMedia.contains(url)){
                                 isChoose = true
                                 chooseMedia.add(url)
                             } else if (isChoose) {
                                 isChoose = false
                                 chooseMedia.remove(url)
                             }
+                            mediaCallback.changeCountChooseImage()
                             activated(isChoose)
                         }
                     }
@@ -94,7 +119,8 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Rec
 
     }
 }
-class AudioAdapter:RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
+class AudioAdapter(private val mediaCallback: MediaCallback)
+    :RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
     val audios = mutableListOf<AudioInAddFileModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<AudioInAddFileModel> {
@@ -122,13 +148,15 @@ class AudioAdapter:RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && chooseMedia.size<10){
+                            Timber.tag("tut_size").d(chooseMedia.size.toString())
+                            if(!isChoose && chooseMedia.size<10 && !chooseMedia.contains(url)){
                                 isChoose = true
                                 chooseMedia.add(url)
                             } else if (isChoose) {
                                 isChoose = false
                                 chooseMedia.remove(url)
                             }
+                            mediaCallback.changeCountChooseAudio()
                             activated(isChoose)
                         }
                     }
@@ -140,7 +168,8 @@ class AudioAdapter:RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
     }
 }
 
-class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):RecyclerView.Adapter<BaseHolder<VideoModel>>(){
+class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
+        private val mediaCallback: MediaCallback):RecyclerView.Adapter<BaseHolder<VideoModel>>(){
     val videos = mutableListOf<VideoModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<VideoModel> {
@@ -168,13 +197,14 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Recyc
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && chooseMedia.size<10){
+                            if(!isChoose && chooseMedia.size<10 && !chooseMedia.contains(url)){
                                 isChoose = true
                                 chooseMedia.add(url)
                             } else if (isChoose){
                                 isChoose = false
                                 chooseMedia.remove(url)
                             }
+                            mediaCallback.changeCountChooseVideo()
                             activated(isChoose)
                         }
                     }

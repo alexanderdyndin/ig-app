@@ -80,6 +80,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     .usingCamera()
                     .map {
                         val path = it.data()?.file?.path
+                        Timber.tag("tut_response").d(path)
                         lastAttachedImagePath = path
                         lastPhotoUrl = ""
                         if (path != null)
@@ -194,7 +195,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
                             .doOnComplete {
-                                Timber.tag("tut_add").d(it.fields.key)
                                 imageUrls.add(it.fields.key)
                                 fileToUrl[path] = it.fields.key
                             }

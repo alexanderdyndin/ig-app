@@ -15,6 +15,7 @@ import com.intergroupapplication.domain.gateway.GroupPostGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
+import com.intergroupapplication.presentation.feature.bottomsheet.adapter.chooseMedia
 import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
@@ -100,60 +101,60 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                 .filter { !loadingView.containsKey(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                        Timber.tag("tut_attach").d(it)
                         loadMedia(it)
                 }, {
                     it.printStackTrace()
                     errorHandler.handle(CanNotUploadPhoto())}))
     }
 
-    /*fun attachFromCamera() {
-        //stopImageUploading()
+    fun attachFromCamera() {
         mediaDisposable.add(photoGateway.loadFromCamera()
                 .subscribeOn(Schedulers.io())
                 .filter { it.isNotEmpty() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    chooseMedia.add(it)
                     loadImage(it)
-                }, { errorHandler.handle(CanNotUploadPhoto())}))
+                }, {
+                    errorHandler.handle(CanNotUploadPhoto())}))
     }
 
-    fun attachFromGallery() {
-        //stopImageUploading()
-        mediaDisposable.add(photoGateway.loadImagesFromGallery()
-                .subscribeOn(Schedulers.io())
-                .filter { it.isNotEmpty() }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ images ->
-                    images.forEach {
-                        Timber.tag("tut_attach_photo").d(it)
-                        loadImage(it) }
-                }, { errorHandler.handle(CanNotUploadPhoto())}))
-    }
+    /* fun attachFromGallery() {
+         //stopImageUploading()
+         mediaDisposable.add(photoGateway.loadImagesFromGallery()
+                 .subscribeOn(Schedulers.io())
+                 .filter { it.isNotEmpty() }
+                 .observeOn(AndroidSchedulers.mainThread())
+                 .subscribe({ images ->
+                     images.forEach {
+                         Timber.tag("tut_attach_photo").d(it)
+                         loadImage(it) }
+                 }, { errorHandler.handle(CanNotUploadPhoto())}))
+     }
 
-    fun attachVideo() {
-        mediaDisposable.add(photoGateway.loadVideo()
-                .subscribeOn(Schedulers.io())
-                .filter { it.isNotEmpty() }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ videos ->
-                    videos.forEach {
-                        Timber.tag("tut_attach_video").d(it)
-                        loadVideo(it) }
-                }, { errorHandler.handle(CanNotUploadVideo())}))
-    }
+     fun attachVideo() {
+         mediaDisposable.add(photoGateway.loadVideo()
+                 .subscribeOn(Schedulers.io())
+                 .filter { it.isNotEmpty() }
+                 .observeOn(AndroidSchedulers.mainThread())
+                 .subscribe({ videos ->
+                     videos.forEach {
+                         Timber.tag("tut_attach_video").d(it)
+                         loadVideo(it) }
+                 }, { errorHandler.handle(CanNotUploadVideo())}))
+     }
 
-    fun attachAudio() {
-        mediaDisposable.add(photoGateway.loadAudio()
-                .subscribeOn(Schedulers.io())
-                .filter { it.isNotEmpty() }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ audios ->
-                    audios.forEach {
-                        Timber.tag("tut_attach_audio").d(it)
-                        loadAudio(it) }
-                }, { errorHandler.handle(CanNotUploadAudio())}))
-    }*/
+     fun attachAudio() {
+         mediaDisposable.add(photoGateway.loadAudio()
+                 .subscribeOn(Schedulers.io())
+                 .filter { it.isNotEmpty() }
+                 .observeOn(AndroidSchedulers.mainThread())
+                 .subscribe({ audios ->
+                     audios.forEach {
+                         Timber.tag("tut_attach_audio").d(it)
+                         loadAudio(it) }
+                 }, { errorHandler.handle(CanNotUploadAudio())}))
+     }*/
 
     fun loadVideo(file: String) {
         var progress = 0f
@@ -194,12 +195,14 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
         processes[file] = photoGateway.uploadImageToAws(file, postId, appApi::uploadCommentsMedia)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { viewState.showImageUploadingStarted(file) }
+                .doOnSubscribe {
+                    Timber.tag("tut_doOnSub").d(file)
+                    viewState.showImageUploadingStarted(file) }
                 .subscribe( {
                     progress = it
                     viewState.showImageUploadingProgress(it, file)
                 }, {
-                    Timber.tag("tut_error").e(it)
+                    Timber.tag("tut_error").d(it)
                     errorHandler.handle(CanNotUploadPhoto())
                     viewState.showImageUploadingError(file)
                 }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })

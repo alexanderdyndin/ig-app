@@ -1,8 +1,8 @@
 package com.intergroupapplication.presentation.feature.bottomsheet.view
 
-import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Rect
@@ -18,7 +18,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -43,18 +42,21 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
-import kotlinx.android.synthetic.main.item_comment.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.ValidationListener {
+class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.ValidationListener,
+            MediaCallback{
 
     lateinit var callback: Callback
 
@@ -82,10 +84,6 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
 
-   // @Inject
-    //lateinit var callback: Callback
-    val PICK_FROM_GALLERY_CODE = 0
-
     @Inject
     @InjectPresenter
     lateinit var presenter: BottomSheetPresenter
@@ -93,7 +91,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: BottomViewModel
+    //private lateinit var viewModel: BottomViewModel
 
     @ProvidePresenter
     fun providePresenter(): BottomSheetPresenter = presenter
@@ -106,7 +104,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, modelFactory)[BottomViewModel::class.java]
+       // viewModel = ViewModelProvider(this, modelFactory)[BottomViewModel::class.java]
         checkPermissions()
     }
 
@@ -144,6 +142,12 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
             it.isChoose = false
         }
     }
+
+    private fun MutableList<out ChooseClass>.countChoose():Int{
+        return this.filter { it.isChoose }.size
+    }
+
+    @SuppressLint("CheckResult")
     private fun setUpAddFilePanel() {
         icAttachFile.apply {
             setOnClickListener {
@@ -174,6 +178,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivated(true, musicButton, videoButton, playlistButton)
+            changeCountChooseImage()
             //dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
             //      mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
         }
@@ -185,6 +190,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivated(true, galleryButton, videoButton, playlistButton)
+            changeCountChooseAudio()
         }
 
         videoButton.setOnClickListener {
@@ -194,6 +200,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivated(true, galleryButton, musicButton, playlistButton)
+            changeCountChooseVideo()
         }
 
         amountFiles.setOnClickListener {
@@ -216,8 +223,8 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                                 notifyItemChanged(index)
                             }
                         }
-                        //photos.cancelChoose()
                     }
+                    changeCountChooseImage()
                 }
                 is VideoAdapter -> {
                     videoAdapter.apply {
@@ -230,6 +237,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                             }
                         }
                     }
+                    changeCountChooseVideo()
                 }
                 is AudioAdapter -> {
                     audioAdapter.apply {
@@ -242,6 +250,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                             }
                         }
                     }
+                    changeCountChooseAudio()
                 }
             }
         }
@@ -259,23 +268,21 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     private fun settingAdapter() {
+        chooseMedia.clear()
         galleryAdapter.apply {
             photos.addAll(addGalleryUri(MediaStore.Images.ImageColumns.DATA,
                     uriConstants = MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
-            notifyDataSetChanged()
         }
         audioAdapter.apply {
             audios.addAll(addAudioUri(MediaStore.Audio.AudioColumns.DATA,
                     MediaStore.Audio.AudioColumns.DISPLAY_NAME,
                     MediaStore.Audio.AudioColumns.DURATION,
                     uriConstants = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI))
-            notifyDataSetChanged()
         }
         videoAdapter.apply {
             videos.addAll(addVideoUri(MediaStore.Video.VideoColumns.DATA,
                     MediaStore.Video.VideoColumns.DURATION,
                     uriConstants = MediaStore.Video.Media.EXTERNAL_CONTENT_URI))
-            notifyDataSetChanged()
         }
     }
 
@@ -333,7 +340,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     private fun addAudioUri(vararg mediaConstants: String, uriConstants: Uri)
-        :MutableList<AudioInAddFileModel>{
+            :MutableList<AudioInAddFileModel>{
         val listUrlAudio = mutableListOf<AudioInAddFileModel>()
         try {
             val cursor = context?.contentResolver?.query(uriConstants,
@@ -389,16 +396,12 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     private fun stateSettling() {
-        // panelAddFile.visibility = View.VISIBLE
-        // commentEditText.visibility = View.GONE
         postContainer.gone()
         Timber.tag("tut_state").d("SETTING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
     }
 
     private fun stateExpanded() {
-        //commentEditText.visibility = View.GONE
-        postContainer.gone()
         //TODO убрать максимальное количество линий или придумать как сделать их нормально
         commentEditText.maxLines = 40
         Timber.tag("tut_state").d("EXPANDED")
@@ -406,9 +409,6 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     private fun stateHalfExpanded() {
-        //panelAddFile.visibility = View.VISIBLE
-        //commentEditText.visibility = View.GONE
-        postContainer.gone()
         //TODO убрать максимальное количество линий или придумать как сделать их нормально
         commentEditText.maxLines = 20
         Timber.tag("tut_state").d("HALF_EXPANDED")
@@ -416,16 +416,12 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     private fun stateDragging() {
-        // panelAddFile.visibility = View.VISIBLE
-        //commentEditText.visibility = View.GONE
         postContainer.gone()
         Timber.tag("tut_state").d("DRAGGING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
     }
 
     private fun stateHidden() {
-        // panelAddFile.visibility = View.VISIBLE
-        // commentEditText.visibility = View.GONE
         postContainer.gone()
         Timber.tag("tut_state").d("HIDDEN")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
@@ -460,11 +456,14 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
             audios.cancelChoose()
         }
         btnAdd.gone()
+        btnAdd.isEnabled=false
         amountFiles.gone()
         callback.addHeightContainer(height)
         icAttachFile.activated(false)
         Timber.tag("tut_state").d("_COLLAPSED")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
+        chooseMedia.clear()
+        chooseMedia.addAll(loadingViews.keys)
     }
 
 
@@ -522,6 +521,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     override fun showImageUploadingStarted(path: String) {
+        Timber.tag("tut_show").d("tut $path")
         loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
         loadingViews[path]?.let {
             it.imagePreview?.let { draweeView ->
@@ -535,7 +535,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                     imageLoadingDelegate.loadImageFromFile(path, draweeView)
             }
         }
-
+        Timber.tag("tut_view").d("view "+loadingViews[path].toString())
         postContainer.addView(loadingViews[path])
         prepareListeners(loadingViews[path], path)
         imageUploadingStarted(loadingViews[path])
@@ -650,6 +650,61 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         fun answerToCommentCreated(commentEntity: CommentEntity)
         fun showCommentUploading(show: Boolean)
         fun hideSwipeLayout()
+    }
+
+    @SuppressLint("CheckResult")
+    override fun changeCountChooseImage() {
+        Single.just(galleryAdapter.photos.countChoose()).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe {count->
+            if (count>0){
+                btnAdd.isEnabled = true
+                val text = when(count) {
+                    1 -> "Выбрано $count фотография"
+                    in 2..4 -> "Выбрано $count фотографии"
+                    else -> "Выбрано $count фотографий"
+                }
+                amountFiles.text =text
+            }
+            else{
+                btnAdd.isEnabled = false
+                amountFiles.text ="Выберите фото"
+            }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    override fun changeCountChooseVideo() {
+        Single.just(videoAdapter.videos.countChoose()).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {count->
+            if (count>0){
+                btnAdd.isEnabled = true
+                val text = "Выбрано $count видео"
+                amountFiles.text =text
+            }
+            else{
+                btnAdd.isEnabled = false
+                amountFiles.text ="Выберите видео"
+            }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    override fun changeCountChooseAudio() {
+        Single.just(audioAdapter.audios.countChoose()).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe {count->
+            if (count>0){
+                btnAdd.isEnabled = true
+                val text = "Выбрано $count аудио"
+                amountFiles.text =text
+            }
+            else{
+                btnAdd.isEnabled = false
+                amountFiles.text ="Выберите аудио"
+            }
+        }
     }
 
 }

@@ -12,6 +12,7 @@ import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.bottomsheet.adapter.*
+import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
 import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
@@ -27,20 +28,22 @@ class BottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate): GalleryAdapter {
-        return GalleryAdapter(imageLoadingDelegate)
+    fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate,
+    presenter: BottomSheetPresenter,callback: BottomSheetFragment): GalleryAdapter {
+        return GalleryAdapter(imageLoadingDelegate,presenter,callback)
     }
 
     @PerFragment
     @Provides
-    fun provideAudioAdapter(): AudioAdapter{
-        return AudioAdapter()
+    fun provideAudioAdapter(callback: BottomSheetFragment): AudioAdapter{
+        return AudioAdapter(callback)
     }
 
     @PerFragment
     @Provides
-    fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate): VideoAdapter {
-        return VideoAdapter(imageLoadingDelegate)
+    fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
+                            callback: BottomSheetFragment): VideoAdapter {
+        return VideoAdapter(imageLoadingDelegate,callback)
     }
 
     @PerFragment
