@@ -12,6 +12,7 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import io.reactivex.Flowable
+import timber.log.Timber
 import javax.inject.Inject
 
 class GroupViewModel @Inject constructor(private val useCase: PostsUseCase): ViewModel() {
@@ -37,6 +38,7 @@ class GroupViewModel @Inject constructor(private val useCase: PostsUseCase): Vie
                                     after == null -> null
                                     else -> if ( i % GroupPostsAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
+                                        Timber.d("trying to get group posts ad, avaible ad:${Appodeal.getAvailableNativeAdsCount()}")
                                         if (nativeAdItem.also { nativeAd = it } != null) {
                                             GroupPostEntity.AdEntity(i, nativeAd)
                                         } else null

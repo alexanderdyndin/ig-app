@@ -176,7 +176,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 postLikes.setOnClickListener {
                     likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
-                idcGroupUser.text = itemView.context.getString(R.string.idc, item.id)
+                idcGroupUser.text = itemView.context.getString(R.string.idc, item.idc.toString())
                 settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
 
             }

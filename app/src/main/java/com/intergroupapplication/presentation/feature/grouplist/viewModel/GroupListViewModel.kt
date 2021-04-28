@@ -13,6 +13,7 @@ import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import timber.log.Timber
 import javax.inject.Inject
 
 class GroupListViewModel @Inject constructor(
@@ -40,6 +41,7 @@ class GroupListViewModel @Inject constructor(
                                     after == null -> null
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
+                                        Timber.d("trying to get all group list ad, avaible ad:${Appodeal.getAvailableNativeAdsCount()}")
                                         if (nativeAdItem.also { nativeAd = it } != null) {
                                             GroupEntity.AdEntity(i, nativeAd)
                                         } else null
@@ -64,10 +66,14 @@ class GroupListViewModel @Inject constructor(
                                     before == null -> null
                                     after == null -> null
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
-                                        var nativeAd: NativeAd?
-                                        if (nativeAdItem.also { nativeAd = it } != null) {
-                                            GroupEntity.AdEntity(i, nativeAd)
-                                        } else null
+//                                        var nativeAd: NativeAd?
+//                                        Timber.d("trying to get subscribed group list ad, avaible ad:${Appodeal.getAvailableNativeAdsCount()}")
+//                                        if (nativeAdItem.also { nativeAd = it } != null) {
+//                                            GroupEntity.AdEntity(i, nativeAd)
+//                                        } else null
+                                        if (Appodeal.getAvailableNativeAdsCount() > 0)
+                                            GroupEntity.AdEntity(i, null)
+                                        else null
                                     } else null
                                 }
                             }
@@ -89,10 +95,14 @@ class GroupListViewModel @Inject constructor(
                                     before == null -> null
                                     after == null -> null
                                     else -> if ( i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
-                                        var nativeAd: NativeAd?
-                                        if (nativeAdItem.also { nativeAd = it } != null) {
-                                            GroupEntity.AdEntity(i, nativeAd)
-                                        } else null
+//                                        var nativeAd: NativeAd?
+//                                        Timber.d("trying to get subscribed group list ad, avaible ad:${Appodeal.getAvailableNativeAdsCount()}")
+//                                        if (nativeAdItem.also { nativeAd = it } != null) {
+//                                            GroupEntity.AdEntity(i, nativeAd)
+//                                        } else null
+                                        if (Appodeal.getAvailableNativeAdsCount() > 0)
+                                            GroupEntity.AdEntity(i, null)
+                                        else null
                                     } else null
                                 }
                             }

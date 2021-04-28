@@ -120,7 +120,7 @@ class GroupListViewModule {
         if (userSession.isAdEnabled) {
             GroupListAdapter.AD_FIRST = userSession.countAd?.firstAdIndexGroups ?: 5
             GroupListAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsGroups ?: 5
-            GroupListAdapter.AD_TYPE = 1 //userSession.countAd?.limitOfAdsGroups ?: 1
+            GroupListAdapter.AD_TYPE = userSession.countAd?.limitOfAdsGroups ?: 1
         } else {
             GroupListAdapter.AD_FIRST = 999
             GroupListAdapter.AD_FREQ = 999

@@ -118,7 +118,12 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         if (holder is GroupViewHolder && item is GroupEntity.Group) {
             holder.bind(item)
         } else if (holder is NativeAdViewHolder && item is GroupEntity.AdEntity) {
-            holder.fillNative(item.nativeAd)
+            item.nativeAd?.let {
+                holder.fillNative(it)
+            } ?: let {
+                item.nativeAd = Appodeal.getNativeAds(1)[0]
+                holder.fillNative(item.nativeAd)
+            }
         }
     }
 
