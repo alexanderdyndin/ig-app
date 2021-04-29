@@ -50,11 +50,13 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                                 audios.map { AudioRequestEntity(it, null, it.substringAfter("/comments/"), "Unknown", null) },
                                 videos.map { FileRequestEntity(file = it, description = null, title = it.substringAfter("/comments/")) },
                         )
+                        Timber.tag("tut_zip").d(create.toString())
                         return create
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .flatMap {commentEntity->
+                    Timber.tag("tut_flatmap").d(commentEntity.toString())
                     commentGateway.createComment(postId,commentEntity)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -66,6 +68,7 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                 }, {
                     errorHandler.handle(it)
                     viewState.hideSwipeLayout()
+                    Timber.tag("tut_error").d(it)
                 }))
     }
 
@@ -97,8 +100,8 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
 
     fun attachMedia(mediasObservable: Observable<String>, loadMedia:(path:String)->Unit, loadingView:Map<String, View?>) {
         mediaDisposable.add(mediasObservable
-                .subscribeOn(Schedulers.io())
                 .filter { !loadingView.containsKey(it) }
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                         loadMedia(it)
@@ -109,8 +112,8 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
 
     fun attachFromCamera() {
         mediaDisposable.add(photoGateway.loadFromCamera()
-                .subscribeOn(Schedulers.io())
                 .filter { it.isNotEmpty() }
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     chooseMedia.add(it)
@@ -118,43 +121,6 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                 }, {
                     errorHandler.handle(CanNotUploadPhoto())}))
     }
-
-    /* fun attachFromGallery() {
-         //stopImageUploading()
-         mediaDisposable.add(photoGateway.loadImagesFromGallery()
-                 .subscribeOn(Schedulers.io())
-                 .filter { it.isNotEmpty() }
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribe({ images ->
-                     images.forEach {
-                         Timber.tag("tut_attach_photo").d(it)
-                         loadImage(it) }
-                 }, { errorHandler.handle(CanNotUploadPhoto())}))
-     }
-
-     fun attachVideo() {
-         mediaDisposable.add(photoGateway.loadVideo()
-                 .subscribeOn(Schedulers.io())
-                 .filter { it.isNotEmpty() }
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribe({ videos ->
-                     videos.forEach {
-                         Timber.tag("tut_attach_video").d(it)
-                         loadVideo(it) }
-                 }, { errorHandler.handle(CanNotUploadVideo())}))
-     }
-
-     fun attachAudio() {
-         mediaDisposable.add(photoGateway.loadAudio()
-                 .subscribeOn(Schedulers.io())
-                 .filter { it.isNotEmpty() }
-                 .observeOn(AndroidSchedulers.mainThread())
-                 .subscribe({ audios ->
-                     audios.forEach {
-                         Timber.tag("tut_attach_audio").d(it)
-                         loadAudio(it) }
-                 }, { errorHandler.handle(CanNotUploadAudio())}))
-     }*/
 
     fun loadVideo(file: String) {
         var progress = 0f
@@ -196,13 +162,11 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
-                    Timber.tag("tut_doOnSub").d(file)
                     viewState.showImageUploadingStarted(file) }
                 .subscribe( {
                     progress = it
                     viewState.showImageUploadingProgress(it, file)
                 }, {
-                    Timber.tag("tut_error").d(it)
                     errorHandler.handle(CanNotUploadPhoto())
                     viewState.showImageUploadingError(file)
                 }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(file) })

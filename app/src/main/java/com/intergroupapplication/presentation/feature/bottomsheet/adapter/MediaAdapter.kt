@@ -69,6 +69,13 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         }
     }
 
+    override fun onViewRecycled(holder: BaseHolder<GalleryModel>) {
+        if (holder is ImageHolder){
+            holder.simpleDraweeView.controller = null
+        }
+        super.onViewRecycled(holder)
+    }
+
     inner class PhotoHolder(private val view: View) : BaseHolder<GalleryModel>(view){
         override fun onBind(data: GalleryModel) {
             with(view){
@@ -92,10 +99,10 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class ImageHolder(private val view: View) : BaseHolder<GalleryModel>(view) {
+        val simpleDraweeView = view.findViewById<SimpleDraweeView>(R.id.imagePreview)
         override fun onBind(data: GalleryModel) {
             with(view){
-                val simpleDraweeView = findViewById<SimpleDraweeView>(R.id.imagePreview)
-                imageLoadingDelegate.loadImageFromFile(data.url,simpleDraweeView)
+                imageLoadingDelegate.loadCompressedImageFromFile(data.url,simpleDraweeView)
                 val addImageFiles = findViewById<Button>(R.id.addImageFiles)
                 addImageFiles.apply {
                     activated(data.isChoose)
@@ -189,7 +196,7 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         override fun onBind(data: VideoModel) {
             with(view){
                 val simpleDraweeView = findViewById<SimpleDraweeView>(R.id.imagePreview)
-                imageLoadingDelegate.loadImageFromFile(data.url,simpleDraweeView)
+                imageLoadingDelegate.loadCompressedImageFromFile(data.url,simpleDraweeView)
                 val textView = findViewById<TextView>(R.id.timeVideo)
                 textView.text = data.duration
                 val addVideoFiles = findViewById<Button>(R.id.addVideoFiles)

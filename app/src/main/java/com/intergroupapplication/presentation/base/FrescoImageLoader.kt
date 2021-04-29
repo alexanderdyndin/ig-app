@@ -6,6 +6,7 @@ import android.net.Uri
 import com.facebook.common.util.UriUtil
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import timber.log.Timber
 import java.io.File
@@ -21,6 +22,16 @@ class FrescoImageLoader(private val callerContext: Context) : ImageLoader {
                 .build()
         target.setImageRequest(request)
         //target.setImageURI(Uri.fromFile(File(filePath)), callerContext)
+    }
+
+    override fun loadCompressedImageFromFile(filePath: String, target: SimpleDraweeView) {
+        val request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(filePath)))
+                .setResizeOptions(ResizeOptions(80, 80))
+                .build()
+        target.controller = Fresco.newDraweeControllerBuilder()
+                .setOldController(target.controller)
+                .setImageRequest(request)
+                .build()
     }
 
     override fun loadImageFromResources(resId: Int, target: SimpleDraweeView) {

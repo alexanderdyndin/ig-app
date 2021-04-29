@@ -1,6 +1,9 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -8,7 +11,6 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
-import androidx.core.view.marginTop
 import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +32,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.feature.bottomsheet.view.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
@@ -41,8 +44,6 @@ import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_comments_details.*
-import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
-import kotlinx.android.synthetic.main.fragment_comments_details.loading_layout
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.item_group_post.postText
@@ -55,11 +56,9 @@ import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
-import java.io.PrintWriter
-import java.io.StringWriter
-import java.io.Writer
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.math.roundToInt
 
 
 class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
@@ -120,7 +119,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
 
     var commentCreated = false
 
-    private lateinit var bottomSheetBehaviour: BottomSheetBehavior<View>
+    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<View>
 
     //private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
@@ -159,14 +158,19 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
 
     }
 
+    private fun convertDpToPixel(dp: Int): Int {
+        val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
+        val px = dp * (metrics.densityDpi / 160f)
+        return px.roundToInt()
+    }
+
     override fun viewCreated() {
-        //bottomFragment.show(childFragmentManager,null)
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet, bottomFragment).commit()
             bottomFragment.callback = this
-            bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet)
+            bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet) as AutoCloseBottomSheetBehavior<View>
             bottomSheetBehaviour.run {
-                peekHeight = 276
+                peekHeight = convertDpToPixel(93)
                 commentHolder.minimumHeight = peekHeight
                 halfExpandedRatio = 0.6f
                 isFitToContents = false
@@ -180,12 +184,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
                     }
                 })
             }
-        }catch (e:Exception){
-            val writer: Writer = StringWriter()
-            e.printStackTrace(PrintWriter(writer))
-            text_error.textSize = 12F
-            text_error.text = "CommentsDetailsFragment $writer"
-            text_error.visibility = View.VISIBLE
+        }catch (e: Exception){
+            e.printStackTrace()
         }
         presenter.postId = postId
         val decorator = CommentDividerItemDecorator(requireContext())
@@ -217,8 +217,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
         videoBody.proxy = proxyCacheServer
 
         imageBody.imageClick = { list, index ->
-            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
-            findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
+                val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
+                findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
         }
     }
 
@@ -232,7 +232,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
                             loading_layout.show()
                         }
                         emptyText.hide()
-                       //bottomFragment.commentEditText.isEnabled = false
+                        //bottomFragment.commentEditText.isEnabled = false
                     }
                     is LoadState.Error -> {
                         swipeLayout.isRefreshing = false
@@ -242,7 +242,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
                             adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-                       // bottomFragment.commentEditText.isEnabled = true
+                        // bottomFragment.commentEditText.isEnabled = true
                     }
                     is LoadState.NotLoading -> {
                         if (adapter.itemCount == 0) {
@@ -508,6 +508,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
         bottomSheetBehaviour.state = newState
     }
 
+    override fun getState() = bottomSheetBehaviour.state
+
     override fun addHeightContainer(height: Int) {
         bottomSheetBehaviour.peekHeight = height
         commentHolder.minimumHeight = height
@@ -614,4 +616,5 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
 
         popupMenu.show()
     }
+
 }
