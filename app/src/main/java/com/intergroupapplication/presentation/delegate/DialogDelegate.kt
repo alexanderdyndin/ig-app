@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.androidadvance.topsnackbar.R.*
 import com.androidadvance.topsnackbar.TSnackbar
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -32,6 +33,10 @@ class DialogDelegate(private val dialogManager: DialogManager,
 
     fun showDialog(dialogLayout: Int, actionsMap: Map<Int, () -> Unit>) {
         dialogProvider.newDialog(dialogLayout, actionsMap).show(dialogManager.getManager(), INTERGROUP_DIALOG)
+    }
+
+    fun showPreviewDialog(isPhoto:Boolean,url: String){
+        dialogProvider.newPreviewDialog(isPhoto,url).show(dialogManager.getManager(),null)
     }
 
     fun showErrorSnackBar(message: String) {

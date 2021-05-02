@@ -50,13 +50,11 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                                 audios.map { AudioRequestEntity(it, null, it.substringAfter("/comments/"), "Unknown", null) },
                                 videos.map { FileRequestEntity(file = it, description = null, title = it.substringAfter("/comments/")) },
                         )
-                        Timber.tag("tut_zip").d(create.toString())
                         return create
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .flatMap {commentEntity->
-                    Timber.tag("tut_flatmap").d(commentEntity.toString())
                     commentGateway.createComment(postId,commentEntity)
                 }
                 .observeOn(AndroidSchedulers.mainThread())

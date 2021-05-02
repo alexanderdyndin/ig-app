@@ -276,34 +276,29 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     private fun settingAdapter() {
         chooseMedia.clear()
         galleryAdapter.apply {
-            photos.addAll(addGalleryUri(MediaStore.Images.ImageColumns.DATA,
-                    uriConstants = MediaStore.Images.Media.EXTERNAL_CONTENT_URI))
+            photos.addAll(addGalleryUri())
         }
         audioAdapter.apply {
-            audios.addAll(addAudioUri(MediaStore.Audio.AudioColumns.DATA,
-                    MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                    MediaStore.Audio.AudioColumns.DURATION,
-                    uriConstants = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI))
+            audios.addAll(addAudioUri())
         }
         videoAdapter.apply {
-            videos.addAll(addVideoUri(MediaStore.Video.VideoColumns.DATA,
-                    MediaStore.Video.VideoColumns.DURATION,
-                    uriConstants = MediaStore.Video.Media.EXTERNAL_CONTENT_URI))
+            videos.addAll(addVideoUri())
         }
     }
 
-    private fun addGalleryUri(mediaConstants: String, uriConstants: Uri):MutableList<GalleryModel> {
+    private fun addGalleryUri():MutableList<GalleryModel> {
         val listUrlImage = mutableListOf<GalleryModel>()
+        val mediaConstants = arrayOf(MediaStore.Images.ImageColumns.DATA)
         try {
-            val cursor = context?.contentResolver?.query(uriConstants,
-                    arrayOf(mediaConstants),
+            val cursor = context?.contentResolver?.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    mediaConstants,
                     null,
                     null,
                     null)
             val size: Int = cursor?.count ?: 0
             if (size != 0) {
                 while (cursor?.moveToNext() == true) {
-                    val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants)
+                    val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
                     val path: String = cursor.getString(fileColumnIndex)
                     listUrlImage.add(GalleryModel(path, false))
                 }
@@ -315,10 +310,13 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         return listUrlImage
     }
 
-    private fun addVideoUri(vararg mediaConstants: String, uriConstants: Uri):MutableList<VideoModel>{
+    private fun addVideoUri():MutableList<VideoModel>{
         val listUrlImage = mutableListOf<VideoModel>()
+        val mediaConstants = arrayOf(MediaStore.Video.VideoColumns.DATA,
+                MediaStore.Video.VideoColumns.DURATION,
+        )
         try {
-            val cursor = context?.contentResolver?.query(uriConstants,
+            val cursor = context?.contentResolver?.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                     mediaConstants,
                     null,
                     null,
@@ -345,11 +343,14 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         return listUrlImage
     }
 
-    private fun addAudioUri(vararg mediaConstants: String, uriConstants: Uri)
+    private fun addAudioUri()
             :MutableList<AudioInAddFileModel>{
         val listUrlAudio = mutableListOf<AudioInAddFileModel>()
+        val mediaConstants = arrayOf(MediaStore.Audio.AudioColumns.DATA,
+                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
+                MediaStore.Audio.AudioColumns.DURATION)
         try {
-            val cursor = context?.contentResolver?.query(uriConstants,
+            val cursor = context?.contentResolver?.query( MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     mediaConstants,
                     null,
                     null,
@@ -368,7 +369,8 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                     val minutes = calendar.get(GregorianCalendar.MINUTE)
                     val minute = if (minutes < 10) "0$minutes" else "$minutes"
                     val second = if (seconds < 10) "0$seconds" else "$seconds"
-                    listUrlAudio.add(AudioInAddFileModel(path, name, "$minute:$second", false))
+                    if (name != "")
+                        listUrlAudio.add(AudioInAddFileModel(path, name, "$minute:$second", false))
                 }
             }
         }catch (e: Exception){
@@ -407,14 +409,20 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     private fun stateExpanded() {
-        //TODO убрать максимальное количество линий или придумать как сделать их нормально
-        commentEditText.maxLines = 40
+        val metrics = Resources.getSystem().displayMetrics
+        var height = metrics.heightPixels-iconPanel.height - pushUpDown.height / 2
+        if (loadingViews.isNotEmpty())
+            height -=heightView
+        commentEditText.maxLines = height/heightLineInEditText - 1
         Timber.tag("tut_state").d("EXPANDED")
     }
 
     private fun stateHalfExpanded() {
-        //TODO убрать максимальное количество линий или придумать как сделать их нормально
-        commentEditText.maxLines = 20
+        val metrics = Resources.getSystem().displayMetrics
+        var height = metrics.heightPixels*0.6-iconPanel.height - pushUpDown.height / 2
+        if (loadingViews.isNotEmpty())
+            height -=heightView
+        commentEditText.maxLines = (height/heightLineInEditText).toInt() - 1
         Timber.tag("tut_state").d("HALF_EXPANDED")
     }
 
@@ -429,6 +437,18 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     }
 
     private fun stateCollapsed() {
+        val height = restoreHeightEditText()
+        restoreAllViewForCollapsedState()
+        galleryAdapter.photos.cancelChoose()
+        videoAdapter.videos.cancelChoose()
+        audioAdapter.audios.cancelChoose()
+        chooseMedia.clear()
+        chooseMedia.addAll(loadingViews.keys)
+        callback.addHeightContainer(height)
+        Timber.tag("tut_state").d("_COLLAPSED")
+    }
+
+    private fun restoreHeightEditText(): Int {
         commentEditText.maxLines = 5
         var height = if (commentEditText.lineCount > 5) {
             heightEditTextWithFiveLine
@@ -438,31 +458,21 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         if (loadingViews.isNotEmpty()) {
             height += heightView
         }
+        return height
+    }
+
+    private fun restoreAllViewForCollapsedState() {
         panelAddFile.gone()
         commentEditText.show()
         postContainer.show()
         mediaRecyclerView.gone()
         galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
-        galleryAdapter.run {
-            photos.cancelChoose()
-        }
-        videoAdapter.run{
-            videos.cancelChoose()
-        }
-        audioAdapter.run {
-            audios.cancelChoose()
-        }
-        btnAdd.gone()
-        btnAdd.isEnabled=false
-        amountFiles.gone()
-        callback.addHeightContainer(height)
         icAttachFile.activated(false)
-        Timber.tag("tut_state").d("_COLLAPSED")
+        btnAdd.gone()
+        btnAdd.isEnabled = false
+        amountFiles.gone()
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
-        chooseMedia.clear()
-        chooseMedia.addAll(loadingViews.keys)
     }
-
 
     private fun controlCommentEditTextChanges() {
         RxTextView.afterTextChangeEvents(commentEditText)
@@ -489,6 +499,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         setUpRightDrawableListener()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setUpRightDrawableListener() {
         commentEditText.setOnTouchListener(rightDrawableListener)
         rightDrawableListener.clickListener = {

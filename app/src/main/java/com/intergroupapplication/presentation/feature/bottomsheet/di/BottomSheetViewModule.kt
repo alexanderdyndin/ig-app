@@ -29,8 +29,9 @@ class BottomSheetViewModule {
     @PerFragment
     @Provides
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-    presenter: BottomSheetPresenter,callback: BottomSheetFragment): GalleryAdapter {
-        return GalleryAdapter(imageLoadingDelegate,presenter,callback)
+    presenter: BottomSheetPresenter,callback: BottomSheetFragment,
+    dialogDelegate: DialogDelegate): GalleryAdapter {
+        return GalleryAdapter(imageLoadingDelegate,presenter,callback,dialogDelegate)
     }
 
     @PerFragment
@@ -42,8 +43,9 @@ class BottomSheetViewModule {
     @PerFragment
     @Provides
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                            callback: BottomSheetFragment): VideoAdapter {
-        return VideoAdapter(imageLoadingDelegate,callback)
+                            callback: BottomSheetFragment,
+                            dialogDelegate: DialogDelegate): VideoAdapter {
+        return VideoAdapter(imageLoadingDelegate,callback,dialogDelegate)
     }
 
     @PerFragment
@@ -63,7 +65,6 @@ class BottomSheetViewModule {
                             cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
             PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
-
 
     @PerFragment
     @Provides

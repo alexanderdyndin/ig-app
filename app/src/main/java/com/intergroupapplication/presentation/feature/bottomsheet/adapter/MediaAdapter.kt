@@ -1,25 +1,30 @@
 package com.intergroupapplication.presentation.feature.bottomsheet.adapter
 
+import android.media.MediaPlayer
+import android.net.Uri
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.AudioInAddFileModel
 import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.gateway.PhotoGateway
+import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
 import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
+
 //два сомнительных по архитектуре момента, но лучше пока не придумал
 val chooseMedia = mutableSetOf<String>()
 
@@ -31,7 +36,8 @@ interface MediaCallback{
 
 class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
      private val presenter: BottomSheetPresenter,
-     private val mediaCallback: MediaCallback
+     private val mediaCallback: MediaCallback,
+     private val dialogDelegate: DialogDelegate
 ):RecyclerView.Adapter<BaseHolder<GalleryModel>>(){
 
     val photos = mutableListOf(GalleryModel("photos",false))
@@ -94,7 +100,6 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     fun getChoosePhotosFromObservable():Observable<String>{
-        Timber.tag("tut_list").d(chooseMedia.size.toString())
         return Observable.fromIterable(chooseMedia)
     }
 
@@ -121,6 +126,10 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         }
                     }
                 }
+                simpleDraweeView.setOnClickListener {
+                    dialogDelegate.showPreviewDialog(true,
+                         data.url)
+                }
             }
         }
 
@@ -129,7 +138,7 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 class AudioAdapter(private val mediaCallback: MediaCallback)
     :RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
     val audios = mutableListOf<AudioInAddFileModel>()
-
+    private var isPlaying = AtomicBoolean(false)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<AudioInAddFileModel> {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_audio_for_add_files_bottom_sheet, parent,false)
         return AudioHolder(view)
@@ -149,13 +158,13 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
                 val trackName = findViewById<TextView>(R.id.trackName)
                 val audioDuration = findViewById<TextView>(R.id.audioDuration)
                 val addAudioButton = findViewById<Button>(R.id.addAudioButton)
+                val audioPlay = findViewById<ImageButton>(R.id.audioPlay)
                 trackName.text = data.name
                 audioDuration.text = data.duration
                 addAudioButton.apply {
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            Timber.tag("tut_size").d(chooseMedia.size.toString())
                             if(!isChoose && chooseMedia.size<10 && !chooseMedia.contains(url)){
                                 isChoose = true
                                 chooseMedia.add(url)
@@ -168,6 +177,18 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
                         }
                     }
                 }
+                audioPlay.setOnClickListener {
+                    if(!isPlaying.get()) {
+                        isPlaying.set(true)
+                        val mediaPlayer = MediaPlayer.create(context, Uri.parse(data.url))
+                        Single.just("1").subscribeOn(Schedulers.io()).subscribe { it ->
+                            mediaPlayer.start()
+                            SystemClock.sleep(4000)
+                            mediaPlayer.stop()
+                            isPlaying.set(false)
+                        }
+                    }
+                }
             }
 
         }
@@ -176,7 +197,8 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
 }
 
 class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-        private val mediaCallback: MediaCallback):RecyclerView.Adapter<BaseHolder<VideoModel>>(){
+        private val mediaCallback: MediaCallback, private val dialogDelegate: DialogDelegate)
+    :RecyclerView.Adapter<BaseHolder<VideoModel>>(){
     val videos = mutableListOf<VideoModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<VideoModel> {
@@ -215,6 +237,10 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                             activated(isChoose)
                         }
                     }
+                }
+                simpleDraweeView.setOnClickListener {
+                    dialogDelegate.showPreviewDialog(false,
+                          data.url)
                 }
             }
         }

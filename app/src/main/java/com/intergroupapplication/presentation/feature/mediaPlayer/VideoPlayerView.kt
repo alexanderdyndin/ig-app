@@ -4,8 +4,20 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import com.danikula.videocache.CacheListener
+import com.danikula.videocache.HttpProxyCacheServer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.exstension.getActivity
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class VideoPlayerView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
