@@ -35,6 +35,7 @@ class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView
 
         fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
             list.adapter = adapter
+            list.itemAnimator = null
             list.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             if (adapter is ConcatAdapter) {
                 adapter.adapters.forEach { currentAdapter ->

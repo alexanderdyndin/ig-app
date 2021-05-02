@@ -25,10 +25,10 @@ class UserListAdapter(
 ) : PagingDataAdapter<GroupUserEntity, UserListAdapter.UserListViewHolder>(diffUtil) {
 
     companion object {
-        var banUserClickListener: (userId: String, position: Int) -> Unit = { _, _ -> }
-        var deleteBanUserClickListener: (subscriptionId: String, position: Int) -> Unit = { _, _ -> }
-        var assignToAdminsClickListener: (subscriptionId: String, position: Int) -> Unit = {_, _ -> }
-        var demoteFromAdminsClickListener: (subscriptionId: String, position: Int) -> Unit = {_, _ -> }
+        var banUserClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
+        var deleteBanUserClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
+        var assignToAdminsClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
+        var demoteFromAdminsClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
         var isAdmin = false
         private val diffUtil = object : DiffUtil.ItemCallback<GroupUserEntity>() {
             override fun areItemsTheSame(oldItem: GroupUserEntity, newItem: GroupUserEntity): Boolean {
@@ -69,6 +69,8 @@ class UserListAdapter(
                 if (item.isAdministrator) {
                     bigAngle.visibility = View.VISIBLE
                     bigAngle.background = ContextCompat.getDrawable(context, R.drawable.bg_angle_admin)
+                } else {
+                    bigAngle.visibility = View.GONE
                 }
 
                 if (item.isBlocked) {
@@ -78,32 +80,41 @@ class UserListAdapter(
 
                 if (isAdmin) {
                     settingsBtn.visibility = View.VISIBLE
-                    settingsBtn.setOnClickListener {
-                        when (typeUserList) {
-                            TypeUserList.ALL -> {
-                                if (!item.isAdministrator) {
+                    when (typeUserList) {
+                        TypeUserList.ALL -> {
+                            if (!item.isAdministrator) {
+                                settingsBtn.setOnClickListener {
                                     createPopMenu(resources.getStringArray(R.array.listOfActionFromAll).toList(), context, it,
                                             {
-                                                assignToAdminsClickListener.invoke(item.subscriptionId, layoutPosition)
+                                                assignToAdminsClickListener.invoke(item, layoutPosition)
                                             },
                                             {
-                                                banUserClickListener.invoke(item.idProfile, layoutPosition)
+                                                banUserClickListener.invoke(item, layoutPosition)
                                             })
                                 }
+                            } else settingsBtn.visibility = View.GONE
+                        }
+                        TypeUserList.BLOCKED -> {
+                            settingsBtn.setOnClickListener {
+                                createPopMenu(listOf(resources.getString(R.string.unblock)), context, it, {
+                                    deleteBanUserClickListener.invoke(item, layoutPosition)
+                                }, {})
                             }
-                            TypeUserList.BLOCKED -> createPopMenu(listOf(resources.getString(R.string.unblock)), context, it, {
-                                deleteBanUserClickListener.invoke(item.banId, layoutPosition)
-                            }, {})
-                            TypeUserList.ADMINISTRATORS ->  createPopMenu(listOf(resources.getString(R.string.demote)).toList(), context, it,
-                                    {
-                                        demoteFromAdminsClickListener.invoke(item.subscriptionId, layoutPosition)
-                                    }, {})
+                        }
+                        TypeUserList.ADMINISTRATORS -> {
+                            if (!item.isOwner) {
+                                settingsBtn.setOnClickListener {
+                                    createPopMenu(listOf(resources.getString(R.string.demote)).toList(), context, it,
+                                            {
+                                                demoteFromAdminsClickListener.invoke(item, layoutPosition)
+                                            }, {})
+                                }
+                            } else settingsBtn.visibility = View.GONE
                         }
                     }
                 }
             }
         }
-
 
         // передвать в качестве параметра дейсвие и значение имен в виде списка
         private fun createPopMenu(listName: List<String>, context: Context, view: View, action1: () -> Unit, action2: () -> Unit = {}) {

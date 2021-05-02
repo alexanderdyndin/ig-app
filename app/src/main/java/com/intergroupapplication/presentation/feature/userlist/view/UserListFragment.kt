@@ -76,6 +76,7 @@ class UserListFragment : BaseFragment(), UserListView {
 
     private var isAdmin = false
     private var currentScreen = 0
+    private val BAN_REASON = "ban reason"
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -162,11 +163,12 @@ class UserListFragment : BaseFragment(), UserListView {
     }
 
     private fun initActionAdmin() {
-        UserListAdapter.banUserClickListener = { userId, position ->
+        UserListAdapter.banUserClickListener = { groupUserEntity, position ->
             compositeDisposable.add(
-                    viewModel.setUserBans(userId, "Тест тест", groupId)
+                    viewModel.setUserBans(groupUserEntity.idProfile, BAN_REASON, groupId)
                             .subscribe({
-                                adapterAll.notifyItemRemoved(position)
+                                groupUserEntity.isBlocked = true
+                                adapterAll.notifyItemChanged(position)
                                 adapterBlocked.refresh()
                             },{
                                 errorHandler.handle(it)
@@ -174,11 +176,12 @@ class UserListFragment : BaseFragment(), UserListView {
             )
         }
 
-        UserListAdapter.deleteBanUserClickListener = {userId, position ->
+        UserListAdapter.deleteBanUserClickListener = { groupUserEntity, position ->
             compositeDisposable.add(
-                    viewModel.deleteUserFromBansGroup(userId)
+                    viewModel.deleteUserFromBansGroup(groupUserEntity.banId)
                             .subscribe({
-                                adapterBlocked.notifyItemRemoved(position)
+                                groupUserEntity.isBlocked = false
+                                adapterBlocked.notifyItemChanged(position)
                                 adapterAll.refresh()
                             }, {
                                 errorHandler.handle(it)
@@ -186,10 +189,11 @@ class UserListFragment : BaseFragment(), UserListView {
             )
         }
 
-        UserListAdapter.assignToAdminsClickListener = {subscriptionId, position ->
+        UserListAdapter.assignToAdminsClickListener = { groupUserEntity, position ->
             compositeDisposable.add(
-                    viewModel.assignToAdmins(subscriptionId)
+                    viewModel.assignToAdmins(groupUserEntity.subscriptionId)
                             .subscribe({
+                                groupUserEntity.isAdministrator = true
                                 adapterAll.notifyItemChanged(position)
                                 adapterAdministrators.refresh()
                             }, {
@@ -198,11 +202,12 @@ class UserListFragment : BaseFragment(), UserListView {
             )
         }
 
-        UserListAdapter.demoteFromAdminsClickListener = {subscriptionId, position ->
+        UserListAdapter.demoteFromAdminsClickListener = { groupUserEntity, position ->
             compositeDisposable.add(
-                    viewModel.demoteFromAdmins(subscriptionId)
+                    viewModel.demoteFromAdmins(groupUserEntity.subscriptionId)
                             .subscribe({
-                                adapterAdministrators.notifyItemRemoved(position)
+                                groupUserEntity.isAdministrator = false
+                                adapterAdministrators.notifyItemChanged(position)
                                 adapterAll.refresh()
                             }, {
                                 errorHandler.handle(it)
