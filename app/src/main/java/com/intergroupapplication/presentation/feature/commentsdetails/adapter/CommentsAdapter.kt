@@ -200,7 +200,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     inner class CommentAnswerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: CommentEntity.Comment) {
             with(itemView) {
-                idcGroupUser2.text = itemView.context.getString(R.string.idc, item.id)
+                idcGroupUser2.text = itemView.context.getString(R.string.idc, item.idc.toString())
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
