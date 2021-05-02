@@ -396,22 +396,33 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
      */
     internal class NativeCreatedAdViewHolder(itemView: View?) : NativeAdViewHolder(itemView) {
         override fun fillNative(nativeAd: NativeAd?) {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.setNativeAd(nativeAd)
+            when (itemView) {
+                is NativeAdViewNewsFeed -> {
+                    itemView.setPlacement("group_feed")
+                    itemView.setNativeAd(nativeAd)
+                }
+                is NativeAdViewAppWall -> {
+                    itemView.setPlacement("group_feed")
+                    itemView.setNativeAd(nativeAd)
+                }
+                is NativeAdViewContentStream -> {
+                    itemView.setPlacement("group_feed")
+                    itemView.setNativeAd(nativeAd)
+                }
             }
         }
 
         override fun unregisterViewForInteraction() {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.unregisterViewForInteraction()
+            when (itemView) {
+                is NativeAdViewNewsFeed -> {
+                    itemView.unregisterViewForInteraction()
+                }
+                is NativeAdViewAppWall -> {
+                    itemView.unregisterViewForInteraction()
+                }
+                is NativeAdViewContentStream -> {
+                    itemView.unregisterViewForInteraction()
+                }
             }
         }
     }

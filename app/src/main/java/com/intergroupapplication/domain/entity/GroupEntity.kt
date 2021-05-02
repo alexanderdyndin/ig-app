@@ -76,7 +76,8 @@ sealed class GroupEntity {
         }
     }
 
-    data class AdEntity(val position: Int, var nativeAd: NativeAd?) : GroupEntity() {
+    data class AdEntity(val position: Int, var nativeAd: NativeAd?,
+                        var placement: String = "default") : GroupEntity() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false

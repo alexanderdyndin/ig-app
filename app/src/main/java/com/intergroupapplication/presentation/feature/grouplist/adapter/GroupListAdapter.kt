@@ -119,10 +119,13 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             holder.bind(item)
         } else if (holder is NativeAdViewHolder && item is GroupEntity.AdEntity) {
             item.nativeAd?.let {
-                holder.fillNative(it)
+                holder.fillNative(it, item.placement)
             } ?: let {
-                item.nativeAd = Appodeal.getNativeAds(1)[0]
-                holder.fillNative(item.nativeAd)
+                val ad = Appodeal.getNativeAds(1)
+                if (ad.size > 0) {
+                    item.nativeAd = ad[0]
+                }
+                holder.fillNative(item.nativeAd, item.placement)
             }
         }
     }
@@ -249,7 +252,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private val tvAgeRestrictions: TextView
         private val nativeMediaView: NativeMediaView
         private val providerViewContainer: FrameLayout
-        override fun fillNative(nativeAd: NativeAd?) {
+        override fun fillNative(nativeAd: NativeAd?, placement: String) {
             tvTitle.text = nativeAd?.title
             tvDescription.text = nativeAd?.description
             if (nativeAd?.rating == 0f) {
@@ -322,14 +325,14 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         private val tvAgeRestrictions: TextView
         private val nativeMediaView: NativeMediaView
         private val providerViewContainer: FrameLayout
-        override fun fillNative(nativeAd: NativeAd?) {
+        override fun fillNative(nativeAd: NativeAd?, placement: String) {
             tvTitle.text = nativeAd?.title
             tvDescription.text = nativeAd?.description
             if (nativeAd?.rating == 0f) {
                 ratingBar.visibility = View.INVISIBLE
             } else {
                 ratingBar.visibility = View.VISIBLE
-                //ratingBar.rating = nativeAd?.rating
+                nativeAd?.rating?.let { ratingBar.rating = it }
                 ratingBar.stepSize = 0.1f
             }
             ctaButton.text = nativeAd?.callToAction
@@ -384,23 +387,34 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
      * View holder for create NativeAdView by template
      */
     internal class NativeCreatedAdViewHolder(itemView: View?) : NativeAdViewHolder(itemView) {
-        override fun fillNative(nativeAd: NativeAd?) {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.setNativeAd(nativeAd)
+        override fun fillNative(nativeAd: NativeAd?, placement: String) {
+            when (itemView) {
+                is NativeAdViewNewsFeed -> {
+                    itemView.setPlacement(placement)
+                    itemView.setNativeAd(nativeAd)
+                }
+                is NativeAdViewAppWall -> {
+                    itemView.setPlacement(placement)
+                    itemView.setNativeAd(nativeAd)
+                }
+                is NativeAdViewContentStream -> {
+                    itemView.setPlacement(placement)
+                    itemView.setNativeAd(nativeAd)
+                }
             }
         }
 
         override fun unregisterViewForInteraction() {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.unregisterViewForInteraction()
+            when (itemView) {
+                is NativeAdViewNewsFeed -> {
+                    itemView.unregisterViewForInteraction()
+                }
+                is NativeAdViewAppWall -> {
+                    itemView.unregisterViewForInteraction()
+                }
+                is NativeAdViewContentStream -> {
+                    itemView.unregisterViewForInteraction()
+                }
             }
         }
     }
@@ -409,7 +423,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
      * Abstract view holders for create NativeAdView
      */
     internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        abstract fun fillNative(nativeAd: NativeAd?)
+        abstract fun fillNative(nativeAd: NativeAd?, placement: String)
         abstract fun unregisterViewForInteraction()
     }
 

@@ -2,23 +2,26 @@ package com.intergroupapplication.presentation.feature.login.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.exstension.clicks
+import com.intergroupapplication.presentation.exstension.gone
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
-import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -28,14 +31,14 @@ import com.mobsandgeeks.saripaar.annotation.Email
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import com.tbruyelle.rxpermissions2.RxPermissions
-import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.auth_loader.*
-
+import kotlinx.android.synthetic.main.fragment_login.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -46,6 +49,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
+        const val RC_SIGN_IN = 123
     }
 
     @Inject
@@ -83,6 +87,10 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build()
+        val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
         initErrorHandler(errorHandlerLogin)
         rxPermission = RxPermissions(this)
         mail = requireView().findViewById(R.id.etMail)
@@ -100,6 +108,10 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         btnRecoveryPassword.clicks()
                 .subscribe { findNavController().navigate(R.id.action_loginActivity_to_recoveryPasswordActivity) }
                 .also { compositeDisposable.add(it) }
+        sign_in_button.setOnClickListener {
+            val intent = mGoogleSignInClient!!.signInIntent
+            startActivityForResult(intent, RC_SIGN_IN)
+        }
     }
 
     override fun onResume() {

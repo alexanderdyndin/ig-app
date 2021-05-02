@@ -6,8 +6,7 @@
     android:id="@+id/loginCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_auth"
-    android:fitsSystemWindows="true">
+    android:background="@drawable/background_auth">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -173,6 +172,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/flLogin" />
 
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginTop="@dimen/middle_high_big_margin"
+                android:layout_marginEnd="@dimen/large_margin"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnRecoveryPassword"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -42,6 +42,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         private const val NATIVE_TYPE_APP_WALL = 2
         private const val NATIVE_TYPE_CONTENT_STREAM = 3
         private const val NATIVE_WITHOUT_ICON = 4
+        private const val BANNER_TYPE = 5
         private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
         private val diffUtil = object : DiffUtil.ItemCallback<NewsEntity>() {
@@ -106,6 +107,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .inflate(R.layout.include_native_ads, parent, false)
                 NativeCustomAdViewHolder(view)
             }
+            BANNER_TYPE -> {
+                BannerViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.banner_ads, parent, false))
+            }
             else -> {
                 PostViewHolder(parent.inflate(R.layout.item_group_post))
             }
@@ -119,12 +124,14 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             else if (holder is NativeAdViewHolder && it is NewsEntity.AdEntity) {
                 holder.fillNative((it).nativeAd)
             }
+            else if (holder is BannerViewHolder) {
+                holder.bind()
+            }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position)
-        return when (item) {
+        return when (getItem(position)) {
             is NewsEntity.Post -> DEFAULT_HOLDER
             is NewsEntity.AdEntity -> AD_TYPE
             null -> throw IllegalStateException("Unknown view")
@@ -228,6 +235,19 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 return@setOnMenuItemClickListener true
             }
             popupMenu.show()
+        }
+    }
+
+    internal class BannerViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        val bannerView = itemView.findViewById<BannerView>(R.id.banner_item)
+
+        fun bind() {
+            itemView.getActivity()?.let {
+                Appodeal.getBannerView(it)
+                Toast.makeText(itemView.context, Appodeal.show(it, Appodeal.BANNER_VIEW).toString(), Toast.LENGTH_SHORT).show()
+            }
+
         }
     }
 
@@ -392,22 +412,33 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
      */
     internal class NativeCreatedAdViewHolder(itemView: View?) : NativeAdViewHolder(itemView) {
         override fun fillNative(nativeAd: NativeAd?) {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.setNativeAd(nativeAd)
+            when (itemView) {
+                is NativeAdViewNewsFeed -> {
+                    itemView.setPlacement("news_feed")
+                    itemView.setNativeAd(nativeAd)
+                }
+                is NativeAdViewAppWall -> {
+                    itemView.setPlacement("news_feed")
+                    itemView.setNativeAd(nativeAd)
+                }
+                is NativeAdViewContentStream -> {
+                    itemView.setPlacement("news_feed")
+                    itemView.setNativeAd(nativeAd)
+                }
             }
         }
 
         override fun unregisterViewForInteraction() {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.unregisterViewForInteraction()
+            when (itemView) {
+                is NativeAdViewNewsFeed -> {
+                    itemView.unregisterViewForInteraction()
+                }
+                is NativeAdViewAppWall -> {
+                    itemView.unregisterViewForInteraction()
+                }
+                is NativeAdViewContentStream -> {
+                    itemView.unregisterViewForInteraction()
+                }
             }
         }
     }

@@ -43,7 +43,7 @@ class GroupListViewModel @Inject constructor(
                                         var nativeAd: NativeAd?
                                         Timber.d("trying to get all group list ad, avaible ad:${Appodeal.getAvailableNativeAdsCount()}")
                                         if (nativeAdItem.also { nativeAd = it } != null) {
-                                            GroupEntity.AdEntity(i, nativeAd)
+                                            GroupEntity.AdEntity(i, nativeAd, "all_groups")
                                         } else null
                                     } else null
                                 }
@@ -72,7 +72,7 @@ class GroupListViewModel @Inject constructor(
 //                                            GroupEntity.AdEntity(i, nativeAd)
 //                                        } else null
                                         if (Appodeal.getAvailableNativeAdsCount() > 0)
-                                            GroupEntity.AdEntity(i, null)
+                                            GroupEntity.AdEntity(i, null, "subscribed_groups")
                                         else null
                                     } else null
                                 }
@@ -101,7 +101,7 @@ class GroupListViewModel @Inject constructor(
 //                                            GroupEntity.AdEntity(i, nativeAd)
 //                                        } else null
                                         if (Appodeal.getAvailableNativeAdsCount() > 0)
-                                            GroupEntity.AdEntity(i, null)
+                                            GroupEntity.AdEntity(i, null, "admin_groups")
                                         else null
                                     } else null
                                 }
