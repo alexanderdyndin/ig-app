@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.bottomsheet.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Rect
 import android.net.Uri
@@ -40,6 +41,7 @@ import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.tbruyelle.rxpermissions2.RxPermissions
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -113,7 +115,33 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         prepareEditText()
         controlCommentEditTextChanges()
         setUpAddFilePanel()
+        childFragmentManager.setFragmentResultListener(PreviewDialog.ADD_REQUEST_CODE,this) { _, bundle ->
+            val isPhoto = bundle.getBoolean(PreviewDialog.IS_PHOTO_KEY)
+            val result = bundle.getString(PreviewDialog.ADD_URI_KEY)
+            val isChoose = bundle.getBoolean(PreviewDialog.IS_CHOOSE_KEY)
+            result?.let {result->
+               if (isPhoto){
+                   galleryAdapter.photos.mapIndexed { index, galleryModel ->
+                       if (galleryModel.url == result){
+                           galleryModel.isChoose = isChoose
+                           galleryAdapter.notifyItemChanged(index)
+                       }
+                   }
+                   changeCountChooseImage()
+               }
+                else{
+                    videoAdapter.videos.mapIndexed {index,videoGallery->
+                        if (videoGallery.url == result){
+                            videoGallery.isChoose = isChoose
+                            videoAdapter.notifyItemChanged(index)
+                        }
+                    }
+                   changeCountChooseVideo()
+                }
+            }
+        }
     }
+
 
     private fun convertDpToPixel(dp: Int): Int {
         val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
@@ -153,6 +181,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                     commentEditText.gone()
                     panelAddFile.show()
                 }
+
             }
         }
 
@@ -514,6 +543,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
 
     override fun commentCreated(commentEntity: CommentEntity) {
         callback.commentCreated(commentEntity)
+        callback.addHeightContainer(heightEditText+iconPanel.height + pushUpDown.height / 2)
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {

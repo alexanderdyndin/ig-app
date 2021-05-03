@@ -31,7 +31,8 @@ class BottomSheetViewModule {
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate,
     presenter: BottomSheetPresenter,callback: BottomSheetFragment,
     dialogDelegate: DialogDelegate): GalleryAdapter {
-        return GalleryAdapter(imageLoadingDelegate,presenter,callback,dialogDelegate)
+        return GalleryAdapter(imageLoadingDelegate,presenter,callback,dialogDelegate,
+                callback.childFragmentManager)
     }
 
     @PerFragment
@@ -45,7 +46,8 @@ class BottomSheetViewModule {
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                             callback: BottomSheetFragment,
                             dialogDelegate: DialogDelegate): VideoAdapter {
-        return VideoAdapter(imageLoadingDelegate,callback,dialogDelegate)
+        return VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
+                callback.childFragmentManager)
     }
 
     @PerFragment

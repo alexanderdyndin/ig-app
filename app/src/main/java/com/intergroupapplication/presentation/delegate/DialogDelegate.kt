@@ -5,9 +5,12 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import com.androidadvance.topsnackbar.R.*
 import com.androidadvance.topsnackbar.TSnackbar
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.GalleryModel
+import com.intergroupapplication.data.model.VideoModel
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -35,8 +38,8 @@ class DialogDelegate(private val dialogManager: DialogManager,
         dialogProvider.newDialog(dialogLayout, actionsMap).show(dialogManager.getManager(), INTERGROUP_DIALOG)
     }
 
-    fun showPreviewDialog(isPhoto:Boolean,url: String){
-        dialogProvider.newPreviewDialog(isPhoto,url).show(dialogManager.getManager(),null)
+    fun showPreviewDialog(isPhoto:Boolean, url:String,isChoose:Boolean, manager:FragmentManager){
+        dialogProvider.newPreviewDialog(isPhoto,url,isChoose).show(manager,null)
     }
 
     fun showErrorSnackBar(message: String) {

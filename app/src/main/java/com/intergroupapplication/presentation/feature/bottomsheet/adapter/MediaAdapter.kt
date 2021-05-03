@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
@@ -19,9 +21,11 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
 import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_create_user_profile.view.*
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -37,7 +41,8 @@ interface MediaCallback{
 class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
      private val presenter: BottomSheetPresenter,
      private val mediaCallback: MediaCallback,
-     private val dialogDelegate: DialogDelegate
+     private val dialogDelegate: DialogDelegate,
+     private val manager:FragmentManager
 ):RecyclerView.Adapter<BaseHolder<GalleryModel>>(){
 
     val photos = mutableListOf(GalleryModel("photos",false))
@@ -52,11 +57,13 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         val view: View
         return when (viewType) {
             IMAGE_HOLDER_KEY -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.item_image_for_add_files_bottom_sheet, parent, false)
+                view = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_image_for_add_files_bottom_sheet, parent, false)
                 ImageHolder(view)
             }
             else->{
-                view = LayoutInflater.from(parent.context).inflate(R.layout.item_photo_for_add_files_bottom_sheet, parent, false)
+                view = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_photo_for_add_files_bottom_sheet, parent, false)
                 PhotoHolder(view)
             }
         }
@@ -127,8 +134,7 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     }
                 }
                 simpleDraweeView.setOnClickListener {
-                    dialogDelegate.showPreviewDialog(true,
-                         data.url)
+                    dialogDelegate.showPreviewDialog(true, data.url, data.isChoose,manager)
                 }
             }
         }
@@ -140,7 +146,8 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
     val audios = mutableListOf<AudioInAddFileModel>()
     private var isPlaying = AtomicBoolean(false)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<AudioInAddFileModel> {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_audio_for_add_files_bottom_sheet, parent,false)
+        val view = LayoutInflater.from(parent.context).
+        inflate(R.layout.item_audio_for_add_files_bottom_sheet, parent,false)
         return AudioHolder(view)
     }
 
@@ -197,7 +204,8 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
 }
 
 class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-        private val mediaCallback: MediaCallback, private val dialogDelegate: DialogDelegate)
+        private val mediaCallback: MediaCallback, private val dialogDelegate: DialogDelegate,
+        private val manager: FragmentManager)
     :RecyclerView.Adapter<BaseHolder<VideoModel>>(){
     val videos = mutableListOf<VideoModel>()
 
@@ -239,8 +247,7 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     }
                 }
                 simpleDraweeView.setOnClickListener {
-                    dialogDelegate.showPreviewDialog(false,
-                          data.url)
+                    dialogDelegate.showPreviewDialog(false, data.url,data.isChoose,manager)
                 }
             }
         }
