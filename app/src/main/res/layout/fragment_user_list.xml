@@ -63,12 +63,13 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/blockedUsers" />
+                    android:text="@string/admUsers" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/admUsers" />
+                    android:text="@string/blockedUsers" />
+
             </com.google.android.material.tabs.TabLayout>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

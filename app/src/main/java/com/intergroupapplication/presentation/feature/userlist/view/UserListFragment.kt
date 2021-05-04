@@ -108,8 +108,8 @@ class UserListFragment : BaseFragment(), UserListView {
         followers_refresh.setOnRefreshListener {
             when(currentScreen) {
                 0 -> adapterAll.refresh()
-                1 -> adapterBlocked.refresh()
-                2 -> adapterAdministrators.refresh()
+                1 -> adapterAdministrators.refresh()
+                2 -> adapterBlocked.refresh()
             }
         }
     }
@@ -149,13 +149,13 @@ class UserListFragment : BaseFragment(), UserListView {
 
             slidingCategories.visibility = View.VISIBLE
 
-            val tabTitles = arrayOf(getString(R.string.followers), getString(R.string.blocked), getString(R.string.administrators))
+            val tabTitles = arrayOf(getString(R.string.followers), getString(R.string.administrators), getString(R.string.blocked))
             TabLayoutMediator(slidingCategories, pager) { tab, position ->
                 tab.text = tabTitles[position]
             }.attach()
 
-            setAdapter(adapterBlocked, adapterFooterBlocked)
             setAdapter(adapterAdministrators, adapterFooterAdministrators)
+            setAdapter(adapterBlocked, adapterFooterBlocked)
             getAllData()
         } else {
             getFollowers()
