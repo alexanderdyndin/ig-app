@@ -56,16 +56,16 @@
             android:id="@+id/buttonRaisePosition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_weight="0"
+            android:background="@drawable/btn_red_mini"
+            android:contentDescription="btn"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:paddingBottom="4dp"
             android:src="@drawable/ic_arrow_up"
-            android:background="@drawable/btn_red_mini"
-            android:contentDescription="btn"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -85,7 +85,7 @@
         <Button
             android:id="@+id/groupStrength"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="41dp"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
@@ -127,10 +127,10 @@
         android:layout_marginTop="5dp"
         android:background="@color/colorInput"
         android:orientation="horizontal"
-        android:paddingStart="90dp"
-        android:paddingTop="11dp"
-        android:paddingBottom="11dp"
-        android:paddingEnd="8dp"
+        android:paddingStart="82dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
         app:layout_constraintStart_toEndOf="@id/avatarBg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/groupCounts">
