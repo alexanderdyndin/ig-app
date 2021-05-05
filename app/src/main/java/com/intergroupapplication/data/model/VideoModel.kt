@@ -1,4 +1,4 @@
 package com.intergroupapplication.data.model
 
-data class VideoModel(val url:String, val duration:String, override var isChoose:Boolean)
+data class VideoModel(val url:String, val duration:String,val date:Long, override var isChoose:Boolean)
     :ChooseClass(isChoose)

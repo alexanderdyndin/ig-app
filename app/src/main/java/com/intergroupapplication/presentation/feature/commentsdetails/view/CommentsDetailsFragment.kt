@@ -546,15 +546,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
                         commentHolder.removeViewAt(0)
                     }
                     commentHolder.addView(view, 0)
-                    view.responseToUser
-                            .apply {
-                                setOnClickListener {
-                                    commentHolder.removeView(view)
-                                }
-                                text = comment.commentOwner?.firstName
-                                        ?: getString(R.string.unknown_user)
-                                lastRepliedComment = comment.copy()
-                            }
+                    bottomFragment.answerComment(comment)
+                    lastRepliedComment = comment.copy()
                    // bottomFragment.commentEditText.showKeyboard()
                 }
             }

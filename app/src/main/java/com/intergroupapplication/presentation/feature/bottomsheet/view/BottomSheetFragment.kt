@@ -3,22 +3,24 @@ package com.intergroupapplication.presentation.feature.bottomsheet.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.method.ScrollingMovementMethod
+import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.MimeTypeMap
-import android.widget.Scroller
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,16 +43,18 @@ import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_comments_details.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
+import kotlinx.android.synthetic.main.reply_comment_layout.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
+import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -85,16 +89,18 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     @InjectPresenter
     lateinit var presenter: BottomSheetPresenter
 
+    lateinit var holder:LinearLayout
    // @Inject
    // lateinit var modelFactory: ViewModelProvider.Factory
 
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
-    lateinit var commentEditText: AppCompatEditText
+    lateinit var commentEditText:AppCompatEditText
 
     private val heightView by lazy {convertDpToPixel(100)}
     private val heightEditTextWithFiveLine by lazy {convertDpToPixel(156)}
     private val heightEditText by lazy { convertDpToPixel(53) }
     private val heightLineInEditText by lazy { convertDpToPixel(16) }
+    private val heightAnswerPanel by lazy { convertDpToPixel(35) }
 
     private val permissions by lazy { RxPermissions(this) }
 
@@ -109,17 +115,19 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         commentEditText = view.findViewById(R.id.commentEditText)
+
         mediaRecyclerView.apply {
             addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
         }
+        commentEditText.setTextIsSelectable(true)
         prepareEditText()
         controlCommentEditTextChanges()
         setUpAddFilePanel()
-        childFragmentManager.setFragmentResultListener(PreviewDialog.ADD_REQUEST_CODE,this) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(PreviewDialog.ADD_REQUEST_CODE, this) { _, bundle ->
             val isPhoto = bundle.getBoolean(PreviewDialog.IS_PHOTO_KEY)
             val result = bundle.getString(PreviewDialog.ADD_URI_KEY)
             val isChoose = bundle.getBoolean(PreviewDialog.IS_CHOOSE_KEY)
-            result?.let {result->
+            result?.let { result->
                if (isPhoto){
                    galleryAdapter.photos.mapIndexed { index, galleryModel ->
                        if (galleryModel.url == result){
@@ -130,7 +138,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                    changeCountChooseImage()
                }
                 else{
-                    videoAdapter.videos.mapIndexed {index,videoGallery->
+                    videoAdapter.videos.mapIndexed { index, videoGallery->
                         if (videoGallery.url == result){
                             videoGallery.isChoose = isChoose
                             videoAdapter.notifyItemChanged(index)
@@ -175,10 +183,14 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                     videoAdapter.videos.cancelChoose()
                     audioAdapter.audios.cancelChoose()
                     mediaRecyclerView.gone()
+                    if (answer_layout.isActivated){
+                        answer_layout.show()
+                    }
                 } else {
                     activated(true)
                     postContainer.gone()
                     commentEditText.gone()
+                    answer_layout.gone()
                     panelAddFile.show()
                 }
 
@@ -261,18 +273,22 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                     changeCountChooseAudio()
                 }
             }
-            mediaRecyclerView.gone()
-            icAttachFile.activated(false)
-            panelAddFile.gone()
-            postContainer.show()
-            amountFiles.gone()
-            it.gone()
-            commentEditText.show()
+            changeStateViewAfterAddMedia()
         }
 
         playlistButton.setOnClickListener {
             Toast.makeText(requireContext(), "Пока недоступно", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun changeStateViewAfterAddMedia() {
+        mediaRecyclerView.gone()
+        icAttachFile.activated(false)
+        panelAddFile.gone()
+        postContainer.show()
+        amountFiles.gone()
+        btnAdd.gone()
+        commentEditText.show()
     }
 
     private fun closeKeyboard() {
@@ -317,7 +333,8 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
 
     private fun addGalleryUri():MutableList<GalleryModel> {
         val listUrlImage = mutableListOf<GalleryModel>()
-        val mediaConstants = arrayOf(MediaStore.Images.ImageColumns.DATA)
+        val mediaConstants = arrayOf(MediaStore.Images.Media.DATA,
+                if(Build.VERSION.SDK_INT > 28) MediaStore.Images.Media.DATE_MODIFIED else MediaStore.Images.Media.DATE_TAKEN)
         try {
             val cursor = context?.contentResolver?.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     mediaConstants,
@@ -328,21 +345,25 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
             if (size != 0) {
                 while (cursor?.moveToNext() == true) {
                     val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
+                    val dateIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[1])
                     val path: String = cursor.getString(fileColumnIndex)
-                    listUrlImage.add(GalleryModel(path, false))
+                    val date = cursor.getLong(dateIndex)
+                    listUrlImage.add(GalleryModel(path,date, false))
                 }
             }
         }catch (e: Exception){
             e.printStackTrace()
         }
-        listUrlImage.reverse()
+        listUrlImage.sortByDescending { it.date }
         return listUrlImage
     }
 
     private fun addVideoUri():MutableList<VideoModel>{
         val listUrlImage = mutableListOf<VideoModel>()
-        val mediaConstants = arrayOf(MediaStore.Video.VideoColumns.DATA,
-                MediaStore.Video.VideoColumns.DURATION,
+        val mediaConstants = arrayOf(
+                MediaStore.Video.Media.DATA,
+                MediaStore.Video.Media.DURATION,
+                if(Build.VERSION.SDK_INT > 28) MediaStore.Video.Media.DATE_MODIFIED else MediaStore.Video.Media.DATE_TAKEN
         )
         try {
             val cursor = context?.contentResolver?.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -356,37 +377,42 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                     val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
                     val path: String = cursor.getString(fileColumnIndex)
                     val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[1]))
+                    val dateIndex =  cursor.getColumnIndex(mediaConstants[2])
                     val calendar = GregorianCalendar()
                     calendar.time = Date(duration)
                     val seconds = calendar.get(GregorianCalendar.SECOND)
                     val minutes = calendar.get(GregorianCalendar.MINUTE)
                     val minute = if (minutes < 10) "0$minutes" else "$minutes"
                     val second = if (seconds < 10) "0$seconds" else "$seconds"
-                    listUrlImage.add(VideoModel(path, "$minute:$second", false))
+                    val date = cursor.getLong(dateIndex)
+                    listUrlImage.add(VideoModel(path, "$minute:$second", date,false))
                 }
             }
         }catch (e: Exception){
             e.printStackTrace()
         }
-        listUrlImage.reverse()
+        listUrlImage.sortByDescending { it.date }
+
         return listUrlImage
     }
 
-    private fun addAudioUri()
-            :MutableList<AudioInAddFileModel>{
+    private fun addAudioUri():MutableList<AudioInAddFileModel>{
         val listUrlAudio = mutableListOf<AudioInAddFileModel>()
         val mediaConstants = arrayOf(MediaStore.Audio.AudioColumns.DATA,
-                MediaStore.Audio.AudioColumns.DISPLAY_NAME,
-                MediaStore.Audio.AudioColumns.DURATION)
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.DURATION,
+                )
         try {
-            val cursor = context?.contentResolver?.query( MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            val cursor = context?.contentResolver?.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     mediaConstants,
                     null,
                     null,
                     null)
             val size: Int = cursor?.count ?: 0
             if (size != 0) {
+                Timber.tag("tut_if").d("if")
                 while (cursor?.moveToNext() == true) {
+                    Timber.tag("tut_if").d("while")
                     val fileColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[0])
                     val nameColumnIndex: Int = cursor.getColumnIndexOrThrow(mediaConstants[1])
                     val duration = cursor.getLong(cursor.getColumnIndexOrThrow(mediaConstants[2]))
@@ -398,6 +424,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                     val minutes = calendar.get(GregorianCalendar.MINUTE)
                     val minute = if (minutes < 10) "0$minutes" else "$minutes"
                     val second = if (seconds < 10) "0$seconds" else "$seconds"
+                    Timber.tag("tut_url").d("path: $path")
                     if (name != "")
                         listUrlAudio.add(AudioInAddFileModel(path, name, "$minute:$second", false))
                 }
@@ -405,6 +432,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         }catch (e: Exception){
             e.printStackTrace()
         }
+        Timber.tag("tut_audio").d(listUrlAudio.toString())
         listUrlAudio.reverse()
         return listUrlAudio
     }
@@ -435,6 +463,7 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
     private fun stateSettling() {
         Timber.tag("tut_state").d("SETTING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
+        changeBottomConstraitForRecyclerView(horizontal_guide_end.id)
     }
 
     private fun stateExpanded() {
@@ -442,6 +471,8 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         var height = metrics.heightPixels-iconPanel.height - pushUpDown.height / 2
         if (loadingViews.isNotEmpty())
             height -=heightView
+        if (answer_layout.isVisible())
+            height -= heightAnswerPanel
         commentEditText.maxLines = height/heightLineInEditText - 1
         Timber.tag("tut_state").d("EXPANDED")
     }
@@ -451,13 +482,23 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         var height = metrics.heightPixels*0.6-iconPanel.height - pushUpDown.height / 2
         if (loadingViews.isNotEmpty())
             height -=heightView
+        if (answer_layout.isVisible())
+            height -= heightAnswerPanel
         commentEditText.maxLines = (height/heightLineInEditText).toInt() - 1
+        changeBottomConstraitForRecyclerView(horizontal_guide_center.id)
         Timber.tag("tut_state").d("HALF_EXPANDED")
     }
 
     private fun stateDragging() {
         Timber.tag("tut_state").d("DRAGGING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
+        changeBottomConstraitForRecyclerView(horizontal_guide_end.id)
+    }
+
+    private fun changeBottomConstraitForRecyclerView(id:Int) {
+        val params = mediaRecyclerView.layoutParams as ConstraintLayout.LayoutParams
+        params.bottomToTop = id
+        mediaRecyclerView.layoutParams = params
     }
 
     private fun stateHidden() {
@@ -486,6 +527,9 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         }
         if (loadingViews.isNotEmpty()) {
             height += heightView
+        }
+        if(answer_layout.isVisible()){
+            height += heightAnswerPanel
         }
         return height
     }
@@ -521,6 +565,8 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                         if (loadingViews.isNotEmpty()) {
                             height += heightView
                         }
+                        if (answer_layout.isVisible())
+                            height += heightAnswerPanel
                         callback.addHeightContainer(height)
                     }
                 }
@@ -541,13 +587,31 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
         }
     }
 
+    fun answerComment(comment:CommentEntity.Comment){
+        answer_layout.show()
+        answer_layout.activated(true)
+        responseToUser
+                .apply {
+                    text = comment.commentOwner?.firstName
+                            ?: getString(R.string.unknown_user)
+                }
+        val height = commentEditText.height + iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
+        callback.addHeightContainer(height)
+        //commentEditText.showKeyboard()
+    }
+
     override fun commentCreated(commentEntity: CommentEntity) {
         callback.commentCreated(commentEntity)
-        callback.addHeightContainer(heightEditText+iconPanel.height + pushUpDown.height / 2)
+        callback.addHeightContainer(heightEditText + iconPanel.height + pushUpDown.height / 2)
+        callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-       callback.answerToCommentCreated(commentEntity)
+        callback.answerToCommentCreated(commentEntity)
+        callback.addHeightContainer(heightEditText + iconPanel.height + pushUpDown.height / 2)
+        callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        answer_layout.gone()
+        answer_layout.activated(false)
     }
 
     override fun showCommentUploading(show: Boolean) {
@@ -743,6 +807,11 @@ class BottomSheetFragment: BaseFragment(), BottomSheetView, Validator.Validation
                 amountFiles.text ="Выберите аудио"
             }
         }
+    }
+
+    override fun attachPhoto() {
+        presenter.attachFromCamera()
+        changeStateViewAfterAddMedia()
     }
 
 }

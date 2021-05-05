@@ -176,18 +176,50 @@
             android:orientation="horizontal"/>
     </HorizontalScrollView>
 
+    <LinearLayout
+        android:id="@+id/answer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="true"
+        android:paddingBottom="@dimen/middle_padding"
+        android:paddingEnd="@dimen/big_padding"
+        android:paddingStart="@dimen/big_padding"
+        android:paddingTop="@dimen/middle_padding"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/scroll_view"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+        <TextView
+            style="@style/InterGroupGreyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/big_margin"
+            android:text="@string/comment_response" />
+
+        <TextView
+            android:id="@+id/responseToUser"
+            style="@style/InterGroupBlueTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/middle_high_size"
+            tools:text="Маше" />
+
+    </LinearLayout>
+
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/commentEditText"
         android:background="@color/colorInput"
         android:gravity="center_vertical"
         style="@style/InterGroupCommentEditTextStyle"
+        android:inputType="textMultiLine|textCapSentences"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/write_your_comment"
-        android:inputType="textMultiLine|textCapSentences"
         android:minHeight="@dimen/comment_edit_text_height"
         android:padding="@dimen/big_padding"
-        app:layout_constraintTop_toBottomOf="@id/scroll_view"
+        app:layout_constraintTop_toBottomOf="@id/answer_layout"
        />
 
     <!-- Добавление файлов -->
@@ -225,10 +257,28 @@
         app:layout_constraintTop_toBottomOf="@id/amountFiles"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/horizontal_guide_end"
         />
 
+    <LinearLayout
+        android:id="@+id/horizontal_guide_center"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal" />
 
+    <LinearLayout
+        android:id="@+id/horizontal_guide_end"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

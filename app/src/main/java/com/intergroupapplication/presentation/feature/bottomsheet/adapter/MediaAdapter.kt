@@ -36,16 +36,16 @@ interface MediaCallback{
     fun changeCountChooseImage()
     fun changeCountChooseVideo()
     fun changeCountChooseAudio()
+    fun attachPhoto()
 }
 
 class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-     private val presenter: BottomSheetPresenter,
      private val mediaCallback: MediaCallback,
      private val dialogDelegate: DialogDelegate,
      private val manager:FragmentManager
 ):RecyclerView.Adapter<BaseHolder<GalleryModel>>(){
 
-    val photos = mutableListOf(GalleryModel("photos",false))
+    val photos = mutableListOf(GalleryModel("photos",0,false))
 
     companion object {
         private const val PHOTO_HOLDER_KEY = 0
@@ -95,7 +95,7 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 val makePhoto = findViewById<ImageView>(R.id.make_photo)
                 makePhoto.setOnClickListener {
                     if (chooseMedia.size<10) {
-                        presenter.attachFromCamera()
+                        mediaCallback.attachPhoto()
                     }else{
                         Toast.makeText(context, "Не больше 10 вложений", Toast.LENGTH_SHORT)
                                 .show()

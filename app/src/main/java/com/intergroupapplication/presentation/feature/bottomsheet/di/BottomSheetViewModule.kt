@@ -28,10 +28,10 @@ class BottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-    presenter: BottomSheetPresenter,callback: BottomSheetFragment,
+    fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate
+                              ,callback: BottomSheetFragment,
     dialogDelegate: DialogDelegate): GalleryAdapter {
-        return GalleryAdapter(imageLoadingDelegate,presenter,callback,dialogDelegate,
+        return GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
     }
 
