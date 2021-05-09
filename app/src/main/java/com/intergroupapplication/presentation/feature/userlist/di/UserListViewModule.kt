@@ -10,6 +10,7 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.userlist.adapter.TypeUserList
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddUserBlackListAdapter
 import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -137,6 +138,41 @@ class UserListViewModule {
             @Named("footerAdministrators") pagingFooter: PagingLoadingAdapter
     ): ConcatAdapter {
         return userListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
+    }
+
+    @PerFragment
+    @Provides
+    fun provideAddUserBlackListAdapter(): AddUserBlackListAdapter {
+        return AddUserBlackListAdapter()
+    }
+
+    @PerFragment
+    @Provides
+    @Named("headerBanList")
+    fun provideHeaderAddUserBlackListAdapter(
+            userBlackListAdapter: AddUserBlackListAdapter
+    ): PagingLoadingAdapter{
+        return PagingLoadingAdapter { userBlackListAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("footerBanList")
+    fun provideFooterAddUserBlackListAdapter(
+            userBlackListAdapter: AddUserBlackListAdapter
+    ): PagingLoadingAdapter{
+        return PagingLoadingAdapter { userBlackListAdapter.retry() }
+    }
+
+    @PerFragment
+    @Provides
+    @Named("blackListDialog")
+    fun provideConcatAddUserBlackListAdapter(
+            userBlackListAdapter: AddUserBlackListAdapter,
+            @Named("headerBanList") pagingHeader: PagingLoadingAdapter,
+            @Named("footerBanList") pagingFooter: PagingLoadingAdapter
+    ): ConcatAdapter {
+        return userBlackListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
     }
 
 }

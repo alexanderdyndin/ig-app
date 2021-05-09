@@ -20,10 +20,10 @@ import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdFragment
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.view.*
+import kotlinx.android.synthetic.main.blacklist_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_user_list.*
-import kotlinx.android.synthetic.main.fragment_user_list.navigationToolbar
 import kotlinx.android.synthetic.main.fragment_user_list.pager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -71,6 +71,9 @@ class UserListFragment : BaseFragment(), UserListView {
     @Named("administrators")
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
+    @Inject
+    lateinit var addBlackListDialog: AddBlackListByIdFragment
+
     private lateinit var viewModel: UserListViewModel
     private lateinit var groupId: String
 
@@ -99,8 +102,15 @@ class UserListFragment : BaseFragment(), UserListView {
 
         UserListAdapter.isAdmin = isAdmin
 
-        navigationToolbar.toolbarTittle.text = getString(R.string.allUsers)
-        navigationToolbar.toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
+        toolbarTittle.text = getString(R.string.allUsers)
+        toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
+        btnAddId.setOnClickListener {
+            val args = Bundle()
+            args.putString(GROUP_ID, groupId)
+            addBlackListDialog.arguments = args
+            addBlackListDialog.show(childFragmentManager, "TAG")
+        }
+
         super.onViewCreated(view, savedInstanceState)
 
         initPager()
@@ -123,7 +133,7 @@ class UserListFragment : BaseFragment(), UserListView {
 
     override fun onPause() {
         super.onPause()
-        searchEditText.addTextChangedListener(textWatcher)
+        searchEditText.removeTextChangedListener(textWatcher)
     }
 
     private fun initPager() {
@@ -144,8 +154,8 @@ class UserListFragment : BaseFragment(), UserListView {
         if (isAdmin) {
             initActionAdmin()
 
-            adapterList.add(adapterBlockedAdd)
             adapterList.add(adapterAdministratorAdd)
+            adapterList.add(adapterBlockedAdd)
 
             slidingCategories.visibility = View.VISIBLE
 

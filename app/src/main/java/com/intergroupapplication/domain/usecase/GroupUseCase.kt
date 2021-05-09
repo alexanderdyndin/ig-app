@@ -1,12 +1,14 @@
 package com.intergroupapplication.domain.usecase
 
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListUserItem
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -71,5 +73,23 @@ class GroupUseCase @Inject constructor(
                 isAdmin = toAdmin
         )
         return groupGateway.updateGroupAdmin(subscriptionId, updateGroupAdmin)
+    }
+
+    fun getFollowersBanIds(groupId: String, searchFilter: String): Flowable<PagingData<AddBlackListUserItem>> {
+        return getGroupFollowers(groupId, searchFilter).map { pagingData ->
+            pagingData.map { groupEntity ->
+                groupEntity.run {
+                    return@run AddBlackListUserItem(
+                            fullName = "$firstName $surName",
+                            avatar = avatar,
+                            idProfile = idProfile,
+                            isAdministrator = isAdministrator,
+                            isOwner = isOwner,
+                            isBlocked = isBlocked,
+                            subscriptionId = subscriptionId
+                    )
+                }
+            }
+        }
     }
 }

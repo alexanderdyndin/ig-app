@@ -9,6 +9,7 @@ import com.intergroupapplication.data.mapper.FollowersGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
+import com.intergroupapplication.data.model.UserProfileModelResponse
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.data.network.AppApi

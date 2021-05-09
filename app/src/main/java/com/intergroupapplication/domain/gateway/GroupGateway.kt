@@ -1,6 +1,7 @@
 package com.intergroupapplication.domain.gateway
 
 import androidx.paging.PagingData
+import com.intergroupapplication.data.model.UserProfileModelResponse
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.*
 import io.reactivex.Completable
