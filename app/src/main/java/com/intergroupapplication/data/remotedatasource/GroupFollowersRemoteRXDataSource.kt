@@ -19,7 +19,7 @@ class GroupFollowersRemoteRXDataSource (
     var key: Int = 1
 
     private var followersList: (Int) -> Single<GroupUserFollowersDto> = { page: Int ->
-        appApi.getGroupFollowers(groupId, page, searchFilter, searchFilter)
+        appApi.getGroupFollowers(groupId, page, "", searchFilter)
     }
 
     override fun getRefreshKey(state: PagingState<Int, GroupUserEntity>): Int? {

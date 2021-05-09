@@ -26,4 +26,5 @@ interface GroupGateway {
     fun banUserInGroup(userId: String, reason: String, groupId: String): Completable
     fun deleteUserFromBansGroup(userId: String): Completable
     fun updateGroupAdmin(subscriptionId: String, updateGroupAdmin: UpdateGroupAdmin): Completable
+    fun getAllGroupAdmins(groupId: String): Single<List<String>>
 }

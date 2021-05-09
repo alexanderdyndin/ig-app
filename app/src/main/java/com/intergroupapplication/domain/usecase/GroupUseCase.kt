@@ -92,4 +92,8 @@ class GroupUseCase @Inject constructor(
             }
         }
     }
+
+    fun getAllGroupAdmins(groupId: String): Single<List<String>> {
+        return groupGateway.getAllGroupAdmins(groupId)
+    }
 }

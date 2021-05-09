@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.userlist.addBlackListById
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher

@@ -43,4 +43,14 @@ class UserListViewModel @Inject constructor(
     fun demoteFromAdmins(subscriptionId: String) =
             useCase.updateGroupAdmin(subscriptionId, false)
 
+    fun checkIsAdmin(groupId: String, userId: String): Flowable<Boolean> {
+        return useCase.getAllGroupAdmins(groupId)
+                .map { list ->
+                    list.forEach {
+                        if (it == userId) return@map true
+                    }
+                    false
+                }.toFlowable()
+    }
+
 }

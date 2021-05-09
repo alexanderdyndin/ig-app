@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-class UserListFragment : BaseFragment(), UserListView {
+class UserListFragment : BaseFragment() {
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -100,6 +100,19 @@ class UserListFragment : BaseFragment(), UserListView {
         groupId = requireArguments().getString(GROUP_ID)!!
         isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
 
+        userSession.user?.id?.run {
+            viewModel.checkIsAdmin(groupId, this)
+                    .subscribe(
+                            {
+                                isAdmin = it
+                                initPager()
+                            },
+                            {
+                                errorHandler.handle(it)
+                            }
+                    )
+        }
+
         UserListAdapter.isAdmin = isAdmin
 
         toolbarTittle.text = getString(R.string.allUsers)
@@ -112,8 +125,6 @@ class UserListFragment : BaseFragment(), UserListView {
         }
 
         super.onViewCreated(view, savedInstanceState)
-
-        initPager()
 
         followers_refresh.setOnRefreshListener {
             when(currentScreen) {
@@ -257,7 +268,7 @@ class UserListFragment : BaseFragment(), UserListView {
                             adapterAll.submitData(lifecycle, it)
                         },
                         {
-                            it.printStackTrace()
+                            errorHandler.handle(it)
                         })
         )
     }
@@ -272,7 +283,7 @@ class UserListFragment : BaseFragment(), UserListView {
                             adapterBlocked.submitData(lifecycle, it)
                         },
                         {
-                            it.printStackTrace()
+                            errorHandler.handle(it)
                         }
                 )
         )
@@ -283,7 +294,7 @@ class UserListFragment : BaseFragment(), UserListView {
                             adapterAdministrators.submitData(lifecycle, it)
                         },
                         {
-                            it.printStackTrace()
+                            errorHandler.handle(it)
                         }
                 )
         )

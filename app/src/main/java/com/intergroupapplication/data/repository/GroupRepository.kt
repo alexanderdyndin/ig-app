@@ -160,4 +160,16 @@ class GroupRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
+
+    override fun getAllGroupAdmins(groupId: String): Single<List<String>> {
+        // только первые 20
+        return api.getGroupFollowers(groupId, 1, "admins", "")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { groupUserFollowersDto ->
+                    groupUserFollowersDto.results.map {
+                        return@map it.user.id.toString()
+                    }
+                }
+    }
 }
