@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.userlist.addBlackListById
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -46,7 +47,9 @@ class AddBlackListByIdFragment @Inject constructor(
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {
-            getData(s.toString())
+            val str = s.toString()
+            addBlackListBtn.isEnabled = str.isNotEmpty()
+            getData(str)
         }
     }
 
@@ -73,16 +76,8 @@ class AddBlackListByIdFragment @Inject constructor(
         initAdapterItemClick()
         addBlackListBtn.setOnClickListener {
             lastSelectedUser?.run {
-                viewModel.banUserInGroup(idProfile, "ban", groupId)
-                        .subscribe(
-                                {
-                                    Toast.makeText(requireContext(), "ID: $idProfile", Toast.LENGTH_SHORT).show()
-                                },
-                                {
-                                    it.printStackTrace()
-                                }
-                        )
-            }
+                banUser(idProfile)
+            } ?: banUser(inputBlackListAddId.text.toString())
         }
     }
 
@@ -133,6 +128,21 @@ class AddBlackListByIdFragment @Inject constructor(
             }
             adapter.notifyItemChanged(position)
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun banUser(userId: String) {
+        viewModel.banUserInGroup(userId, "ban", groupId)
+                .subscribe(
+                        {
+                            textNoFoundId.visibility = View.INVISIBLE
+                            Toast.makeText(requireContext(), "ID: $userId", Toast.LENGTH_SHORT).show()
+                        },
+                        {
+                            textNoFoundId.visibility = View.VISIBLE
+                            it.printStackTrace()
+                        }
+                )
     }
 
 }
