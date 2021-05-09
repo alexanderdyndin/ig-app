@@ -22,6 +22,7 @@ import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.exstension.getDateDescribeByString
@@ -42,11 +43,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     : PagingDataAdapter<CommentEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
-        private const val NATIVE_TYPE_NEWS_FEED = 1
-        private const val NATIVE_TYPE_APP_WALL = 2
-        private const val NATIVE_TYPE_CONTENT_STREAM = 3
-        private const val NATIVE_WITHOUT_ICON = 4
-        private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
         private const val ANSWER_HOLDER = 228
         private val diffUtil = object : DiffUtil.ItemCallback<CommentEntity>() {
@@ -85,30 +81,9 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
         return when (viewType) {
-            NATIVE_TYPE_NEWS_FEED -> {
-                view = NativeAdViewNewsFeed(parent.context)
-                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
-                NativeCreatedAdViewHolder(view)
-            }
-            NATIVE_TYPE_APP_WALL -> {
-                view = NativeAdViewAppWall(parent.context)
-                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
-                NativeCreatedAdViewHolder(view)
-            }
-            NATIVE_TYPE_CONTENT_STREAM -> {
-                view = NativeAdViewContentStream(parent.context)
-                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
-                NativeCreatedAdViewHolder(view)
-            }
-            NATIVE_WITHOUT_ICON -> {
-                view = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.native_ads_without_icon, parent, false)
-                NativeWithoutIconHolder(view)
-            }
-            VIEW_HOLDER_NATIVE_AD_TYPE -> {
-                view = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.include_native_ads, parent, false)
-                NativeCustomAdViewHolder(view)
+            AdViewHolder.NATIVE_AD -> {
+                view = parent.inflate(R.layout.layout_admob_news)
+                AdViewHolder(view)
             }
             DEFAULT_HOLDER -> {
                 CommentViewHolder(parent.inflate(R.layout.item_comment))
@@ -124,7 +99,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
             when (holder) {
                 is CommentViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
                 is CommentAnswerViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
-                is NativeAdViewHolder -> if (it is CommentEntity.AdEntity) holder.fillNative(it.nativeAd)
+                is AdViewHolder -> if (it is CommentEntity.AdEntity) holder.bind(it.nativeAd, AD_TYPE, "comments")
             }
         }
     }
@@ -137,7 +112,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 else
                     ANSWER_HOLDER
             }
-            is CommentEntity.AdEntity -> AD_TYPE
+            is CommentEntity.AdEntity -> AdViewHolder.NATIVE_AD
             null -> throw IllegalStateException("Unknown view")
         }
     }
@@ -265,191 +240,11 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         compositeDisposable.clear()
     }
 
-
-    internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
-        private val nativeAdView: NativeAdView
-        private val tvTitle: TextView
-        private val tvDescription: TextView
-        private val ratingBar: RatingBar
-        private val ctaButton: Button
-        private val nativeIconView: NativeIconView
-        private val tvAgeRestrictions: TextView
-        private val nativeMediaView: NativeMediaView
-        private val providerViewContainer: FrameLayout
-        override fun fillNative(nativeAd: NativeAd?) {
-            tvTitle.text = nativeAd?.title
-            tvDescription.text = nativeAd?.description
-            if (nativeAd?.rating == 0f) {
-                ratingBar.visibility = View.INVISIBLE
-            } else {
-                ratingBar.visibility = View.VISIBLE
-                nativeAd?.rating?.let {
-                    ratingBar.rating = it }
-                ratingBar.stepSize = 0.1f
-            }
-            ctaButton.text = nativeAd?.callToAction
-            val providerView = nativeAd?.getProviderView(nativeAdView.context)
-            if (providerView != null) {
-                if (providerView.parent != null && providerView.parent is ViewGroup) {
-                    (providerView.parent as ViewGroup).removeView(providerView)
-                }
-                providerViewContainer.removeAllViews()
-                val layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT)
-                providerViewContainer.addView(providerView, layoutParams)
-            }
-            if (nativeAd?.ageRestrictions != null) {
-                tvAgeRestrictions.text = nativeAd.ageRestrictions
-                tvAgeRestrictions.visibility = View.VISIBLE
-            } else {
-                tvAgeRestrictions.visibility = View.GONE
-            }
-            if (nativeAd?.containsVideo() == true) {
-                nativeAdView.nativeMediaView = nativeMediaView
-                nativeMediaView.visibility = View.VISIBLE
-            } else {
-                nativeMediaView.visibility = View.GONE
-            }
-            nativeAdView.titleView = tvTitle
-            nativeAdView.descriptionView = tvDescription
-            nativeAdView.ratingView = ratingBar
-            nativeAdView.callToActionView = ctaButton
-            nativeAdView.setNativeIconView(nativeIconView)
-            nativeAdView.providerView = providerView
-            nativeAdView.registerView(nativeAd)
-            nativeAdView.visibility = View.VISIBLE
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        if (holder is AdViewHolder) {
+            holder.clear()
         }
-
-        override fun unregisterViewForInteraction() {
-            nativeAdView.unregisterViewForInteraction()
-        }
-
-        init {
-            nativeAdView = itemView.findViewById(R.id.native_item)
-            tvTitle = itemView.findViewById(R.id.tv_title)
-            tvDescription = itemView.findViewById(R.id.tv_description)
-            ratingBar = itemView.findViewById(R.id.rb_rating)
-            ctaButton = itemView.findViewById(R.id.b_cta)
-            nativeIconView = itemView.findViewById(R.id.icon)
-            providerViewContainer = itemView.findViewById(R.id.provider_view)
-            tvAgeRestrictions = itemView.findViewById(R.id.tv_age_restriction)
-            nativeMediaView = itemView.findViewById(R.id.appodeal_media_view_content)
-        }
+        super.onViewRecycled(holder)
     }
 
-    /**
-     * View holder for create custom NativeAdView without NativeIconView
-     */
-    internal class NativeWithoutIconHolder(itemView: View) : NativeAdViewHolder(itemView) {
-        private val nativeAdView: NativeAdView
-        private val tvTitle: TextView
-        private val tvDescription: TextView
-        private val ratingBar: RatingBar
-        private val ctaButton: Button
-        private val tvAgeRestrictions: TextView
-        private val nativeMediaView: NativeMediaView
-        private val providerViewContainer: FrameLayout
-        override fun fillNative(nativeAd: NativeAd?) {
-            tvTitle.text = nativeAd?.title
-            tvDescription.text = nativeAd?.description
-            if (nativeAd?.rating == 0f) {
-                ratingBar.visibility = View.INVISIBLE
-            } else {
-                ratingBar.visibility = View.VISIBLE
-                nativeAd?.rating?.let {
-                    ratingBar.rating = it }
-                ratingBar.stepSize = 0.1f
-            }
-            ctaButton.text = nativeAd?.callToAction
-            val providerView = nativeAd?.getProviderView(nativeAdView.context)
-            if (providerView != null) {
-                if (providerView.parent != null && providerView.parent is ViewGroup) {
-                    (providerView.parent as ViewGroup).removeView(providerView)
-                }
-                providerViewContainer.removeAllViews()
-                val layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT)
-                providerViewContainer.addView(providerView, layoutParams)
-            }
-            if (nativeAd?.ageRestrictions != null) {
-                tvAgeRestrictions.text = nativeAd.ageRestrictions
-                tvAgeRestrictions.visibility = View.VISIBLE
-            } else {
-                tvAgeRestrictions.visibility = View.GONE
-            }
-            if (nativeAd?.containsVideo() == true) {
-                nativeAdView.nativeMediaView = nativeMediaView
-            } else {
-                nativeMediaView.visibility = View.GONE
-            }
-            nativeAdView.titleView = tvTitle
-            nativeAdView.descriptionView = tvDescription
-            nativeAdView.ratingView = ratingBar
-            nativeAdView.callToActionView = ctaButton
-            nativeAdView.providerView = providerView
-            nativeAdView.registerView(nativeAd)
-            nativeAdView.visibility = View.VISIBLE
-        }
-
-        override fun unregisterViewForInteraction() {
-            nativeAdView.unregisterViewForInteraction()
-        }
-
-        init {
-            nativeAdView = itemView.findViewById(R.id.native_item)
-            tvTitle = itemView.findViewById(R.id.tv_title)
-            tvDescription = itemView.findViewById(R.id.tv_description)
-            ratingBar = itemView.findViewById(R.id.rb_rating)
-            ctaButton = itemView.findViewById(R.id.b_cta)
-            providerViewContainer = itemView.findViewById(R.id.provider_view)
-            tvAgeRestrictions = itemView.findViewById(R.id.tv_age_restriction)
-            nativeMediaView = itemView.findViewById(R.id.appodeal_media_view_content)
-        }
-    }
-
-    /**
-     * View holder for create NativeAdView by template
-     */
-    internal class NativeCreatedAdViewHolder(itemView: View?) : NativeAdViewHolder(itemView) {
-        override fun fillNative(nativeAd: NativeAd?) {
-            when (itemView) {
-                is NativeAdViewNewsFeed -> {
-                    itemView.setPlacement("comments")
-                    itemView.setNativeAd(nativeAd)
-                }
-                is NativeAdViewAppWall -> {
-                    itemView.setPlacement("comments")
-                    itemView.setNativeAd(nativeAd)
-                }
-                is NativeAdViewContentStream -> {
-                    itemView.setPlacement("comments")
-                    itemView.setNativeAd(nativeAd)
-                }
-            }
-        }
-
-        override fun unregisterViewForInteraction() {
-            when (itemView) {
-                is NativeAdViewNewsFeed -> {
-                    itemView.unregisterViewForInteraction()
-                }
-                is NativeAdViewAppWall -> {
-                    itemView.unregisterViewForInteraction()
-                }
-                is NativeAdViewContentStream -> {
-                    itemView.unregisterViewForInteraction()
-                }
-            }
-        }
-    }
-
-    /**
-     * Abstract view holders for create NativeAdView
-     */
-    internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        abstract fun fillNative(nativeAd: NativeAd?)
-        abstract fun unregisterViewForInteraction()
-    }
 }
