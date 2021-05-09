@@ -26,7 +26,7 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 
 allprojects {
     repositories {
-        jcenter()
+        mavenCentral()
         maven { url "https://jitpack.io" }
         maven {
             url "https://artifactory.appodeal.com/appodeal"
@@ -285,7 +285,7 @@ dependencies {
 
     // Crashlitycs
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
 
     // Declare the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -332,4 +332,5 @@ dependencies {
 
     implementation "com.android.billingclient:billing-ktx:3.0.2"
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.firebase:firebase-auth'
 }

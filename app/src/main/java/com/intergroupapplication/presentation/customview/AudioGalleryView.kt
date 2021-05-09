@@ -73,6 +73,7 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
 
     private fun parseUrl(urls: List<AudioEntity>, isExpanded: Boolean) {
         this.removeAllViews()
+        container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         container.removeAllViews()
         this.addView(container)
         if (isExpanded && urls.size > 2) {

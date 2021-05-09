@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.exception.*
@@ -146,7 +147,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
-                .requestIdToken("516160578944-db13me0rk3ts6qmobd439oacv279gfnc.apps.googleusercontent.com")
+                .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
                 .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
     }

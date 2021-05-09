@@ -2,16 +2,27 @@ package com.intergroupapplication.presentation.feature.registration.view
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.Scopes
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.intergroupapplication.BuildConfig
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
@@ -23,6 +34,7 @@ import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.feature.login.view.LoginFragment
 import com.intergroupapplication.presentation.feature.registration.presenter.RegistrationPresenter
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -73,12 +85,25 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     lateinit var validator: Validator
 
     private lateinit var rxPermission: RxPermissions
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var auth: FirebaseAuth
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_registration
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = registrationCoordinator
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestProfile()
+            .requestId()
+            .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
+            .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        //auth = Firebase.
+    }
 
     override fun viewCreated() {
         mail = requireView().findViewById(R.id.etMail)
@@ -94,7 +119,32 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
          btnLogin.clicks().subscribe { findNavController().navigate(R.id.action_registrationActivity_to_loginActivity2) }.also { compositeDisposable.add(it) }
         initValidator()
         initEditText()
+        sign_in_button.setOnClickListener {
+            val intent = mGoogleSignInClient.signInIntent
+            startActivityForResult(intent, LoginFragment.RC_SIGN_IN)
+        }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == LoginFragment.RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)
+                Toast.makeText(requireContext(), account.displayName, Toast.LENGTH_SHORT).show()
+                //firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+                Timber.w("signInResult:failed code=%s", e.statusCode)
+                Toast.makeText(requireContext(), GoogleSignInStatusCodes.getStatusCodeString(e.statusCode), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    }
+
 
     override fun onResume() {
         super.onResume()

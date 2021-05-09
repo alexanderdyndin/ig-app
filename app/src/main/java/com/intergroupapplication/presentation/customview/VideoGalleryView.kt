@@ -63,6 +63,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
 
     private fun parseUrl(urls: List<FileEntity>, isExpanded: Boolean) {
         container.removeAllViews()
+        container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         this.removeAllViews()
         this.addView(container)
         if (isExpanded && urls.size > 1) {
