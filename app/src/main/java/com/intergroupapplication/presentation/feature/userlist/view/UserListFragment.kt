@@ -98,31 +98,26 @@ class UserListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupId = requireArguments().getString(GROUP_ID)!!
-        isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
 
         userSession.user?.id?.run {
+            UserListAdapter.currentUserId = this
             viewModel.checkIsAdmin(groupId, this)
                     .subscribe(
                             {
                                 isAdmin = it
+                                UserListAdapter.isAdmin = isAdmin
                                 initPager()
                             },
                             {
-                                errorHandler.handle(it)
+                                isAdmin = false
+                                UserListAdapter.isAdmin = isAdmin
+                                initPager()
                             }
                     )
         }
 
-        UserListAdapter.isAdmin = isAdmin
-
         toolbarTittle.text = getString(R.string.allUsers)
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
-        btnAddId.setOnClickListener {
-            val args = Bundle()
-            args.putString(GROUP_ID, groupId)
-            addBlackListDialog.arguments = args
-            addBlackListDialog.show(childFragmentManager, "TAG")
-        }
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -178,6 +173,14 @@ class UserListFragment : BaseFragment() {
             setAdapter(adapterAdministrators, adapterFooterAdministrators)
             setAdapter(adapterBlocked, adapterFooterBlocked)
             getAllData()
+
+            btnAddId.visibility = View.VISIBLE
+            btnAddId.setOnClickListener {
+                val args = Bundle()
+                args.putString(GROUP_ID, groupId)
+                addBlackListDialog.arguments = args
+                addBlackListDialog.show(childFragmentManager, "TAG")
+            }
         } else {
             getFollowers()
         }
@@ -191,7 +194,7 @@ class UserListFragment : BaseFragment() {
                                 groupUserEntity.isBlocked = true
                                 adapterAll.notifyItemChanged(position)
                                 adapterBlocked.refresh()
-                            },{
+                            }, {
                                 errorHandler.handle(it)
                             })
             )
@@ -229,6 +232,21 @@ class UserListFragment : BaseFragment() {
                             .subscribe({
                                 groupUserEntity.isAdministrator = false
                                 adapterAdministrators.notifyItemChanged(position)
+                                adapterAll.refresh()
+                            }, {
+                                errorHandler.handle(it)
+                            })
+            )
+        }
+
+        UserListAdapter.banAdminFromAdminsClickListener = { groupUserEntity, position ->
+            compositeDisposable.add(
+                    viewModel.setUserBans(groupUserEntity.idProfile, BAN_REASON, groupId)
+                            .subscribe({
+                                groupUserEntity.isBlocked = true
+                                groupUserEntity.isAdministrator = false
+                                adapterAdministrators.notifyItemChanged(position)
+                                adapterBlocked.refresh()
                                 adapterAll.refresh()
                             }, {
                                 errorHandler.handle(it)

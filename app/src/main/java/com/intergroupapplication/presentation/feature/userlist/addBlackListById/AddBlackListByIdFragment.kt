@@ -118,15 +118,19 @@ class AddBlackListByIdFragment @Inject constructor(
             addBlackListUserItem.isSelected = !addBlackListUserItem.isSelected
             addBlackListBtn.isEnabled = addBlackListUserItem.isSelected
             if (addBlackListUserItem.isSelected) {
-                lastSelectedUser?.isSelected = false
-                adapter.notifyItemChanged(lastPosition)
+                addBlackListBtn.setTextAppearance(R.style.TextDark12sp)
+                lastSelectedUser?.run {
+                    isSelected = false
+                    adapter.notifyItemChanged(lastPosition)
+                }
                 lastSelectedUser = addBlackListUserItem
                 lastPosition = position
             } else {
+                addBlackListBtn.setTextAppearance(R.style.TextHelp12sp)
                 lastSelectedUser = null
                 addBlackListUserItem.isSelected = false
             }
-            adapter.notifyItemChanged(position)
+            adapter.notifyItemChanged(lastPosition)
         }
     }
 

@@ -27,10 +27,7 @@ import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.jakewharton.rxbinding2.view.RxView
-import com.workable.errorhandler.Action
-import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
@@ -59,7 +56,6 @@ class GroupFragment() : BaseFragment(), GroupView,
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
         const val GROUP_ID = "group_id"
-        const val IS_ADMIN = "is_admin"
         const val POST_ID = "post_id"
         const val FRAGMENT_RESULT = "fragmentResult"
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
@@ -75,7 +71,6 @@ class GroupFragment() : BaseFragment(), GroupView,
     private lateinit var groupId: String
 
     private var isGroupCreatedNow = false
-    private var isAdmin = false
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
@@ -144,7 +139,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         appbar.addOnOffsetChangedListener(this)
         presenter.getGroupDetailInfo(groupId)
         groupStrength.setOnClickListener {
-            val data = bundleOf(GROUP_ID to groupId, IS_ADMIN to isAdmin)
+            val data = bundleOf(GROUP_ID to groupId)
             findNavController().navigate(R.id.action_groupActivity_to_userListFragment, data)
         }
         newPaging()
@@ -415,7 +410,6 @@ class GroupFragment() : BaseFragment(), GroupView,
 
 
     private fun renderAdminPage() {
-        isAdmin = true
         headGroupCreatePostViewStub.inflate()
         createPost.setOnClickListener {
             openCreatePost(groupId)

@@ -46,15 +46,15 @@ class AddUserBlackListAdapter : PagingDataAdapter<AddBlackListUserItem, AddUserB
                 else userAvatarHolder.showAvatar(R.drawable.variant_10)
 
                 if (userEntity.isSelected) {
-                    nameUsersAddBlackList.background = ContextCompat.getDrawable(context, R.drawable.bg_greyelement_radius_2dp)
+                    nameUsersAddBlackList.background = ContextCompat.getDrawable(context, R.drawable.bg_dark_element_radius_2dp)
                     icCheckUser.setBackgroundResource(R.drawable.ic_check_red)
                 } else {
-                    nameUsersAddBlackList.background = ContextCompat.getDrawable(context, R.drawable.bg_dark_element_radius_2dp)
+                    nameUsersAddBlackList.background = ContextCompat.getDrawable(context, R.drawable.bg_greyelement_radius_2dp)
                     icCheckUser.setBackgroundResource(R.drawable.ic_check_black)
                 }
 
                 setOnClickListener {
-                    selectItem.invoke(userEntity, layoutPosition)
+                    selectItem(userEntity, layoutPosition)
                 }
             }
         }

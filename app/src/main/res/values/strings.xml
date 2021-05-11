@@ -175,6 +175,12 @@
         <item>To black list</item>
     </string-array>
 
+    <string-array name="listOfActionFromAdministrators">
+        <item>Demote</item>
+        <item>To black list</item>
+    </string-array>
+
+    <string name="toBlackList">To black list</string>
     <string name="demote">Demote</string>
     <string name="unblock">Unblock</string>
 </resources>

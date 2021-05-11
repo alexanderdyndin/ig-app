@@ -146,6 +146,12 @@
         <item>Заблокировать</item>
     </string-array>
 
+    <string-array name="listOfActionFromAdministrators">
+        <item>Разжаловать</item>
+        <item>Заблокировать</item>
+    </string-array>
+
+    <string name="toBlackList">Заблокировать</string>
     <string name="demote">Разжаловать</string>
     <string name="unblock">Разблокировать</string>
 </resources>
