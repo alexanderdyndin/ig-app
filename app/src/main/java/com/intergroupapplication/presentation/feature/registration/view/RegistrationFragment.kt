@@ -134,7 +134,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
-                Toast.makeText(requireContext(), account.displayName, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), account.givenName, Toast.LENGTH_SHORT).show()
                 //firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately

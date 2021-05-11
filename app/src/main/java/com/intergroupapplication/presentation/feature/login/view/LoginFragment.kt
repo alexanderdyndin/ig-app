@@ -196,16 +196,17 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(rxPermission.request(Manifest.permission.READ_PHONE_STATE)
+        compositeDisposable.add(rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe({
-                    if (it) {
-                        presenter.extractDeviceInfo()
-                    } else {
-                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                                mapOf(R.id.permissionOk to {
-                                    presenter.goToSettingsScreen()
-                                }))
-                    }
+//                    if (it) {
+//                        presenter.extractDeviceInfo()
+//                    } else {
+//                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
+//                                mapOf(R.id.permissionOk to {
+//                                    presenter.goToSettingsScreen()
+//                                }))
+//                    }
+                    presenter.extractDeviceInfo()
                 }, { Timber.e(it) }))
     }
 
