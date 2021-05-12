@@ -4,32 +4,20 @@ import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.exstension.inflate
 import kotlinx.android.synthetic.main.item_add_user_black_list.view.*
 
-class AddUserBlackListAdapter : PagingDataAdapter<AddBlackListUserItem, AddUserBlackListAdapter.AddUserBlackListViewHolder>(diffUtils) {
+class AddUserBlackListAdapter : RecyclerView.Adapter<AddUserBlackListAdapter.AddUserBlackListViewHolder>() {
     companion object {
         var selectItem: (userItem: AddBlackListUserItem, position: Int) -> Unit = { _, _ -> }
-        private val diffUtils = object : DiffUtil.ItemCallback<AddBlackListUserItem>() {
-            override fun areItemsTheSame(oldItem: AddBlackListUserItem, newItem: AddBlackListUserItem): Boolean {
-                return oldItem.idProfile == newItem.idProfile
-            }
-
-            override fun areContentsTheSame(oldItem: AddBlackListUserItem, newItem: AddBlackListUserItem): Boolean {
-                return oldItem == newItem
-            }
-
-        }
     }
 
+    private val data = mutableListOf<AddBlackListUserItem>()
+
     override fun onBindViewHolder(holder: AddUserBlackListViewHolder, position: Int) {
-        getItem(position)?.run {
-            holder.bind(this)
-        }
+        holder.bind(data[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddUserBlackListViewHolder {
@@ -58,5 +46,13 @@ class AddUserBlackListAdapter : PagingDataAdapter<AddBlackListUserItem, AddUserB
                 }
             }
         }
+    }
+
+    override fun getItemCount(): Int = data.size
+
+    fun setData(newData: List<AddBlackListUserItem>) {
+        data.clear()
+        data.addAll(newData)
+        notifyDataSetChanged()
     }
 }

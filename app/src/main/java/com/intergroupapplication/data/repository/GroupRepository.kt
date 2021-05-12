@@ -162,14 +162,25 @@ class GroupRepository @Inject constructor(
     }
 
     override fun getAllGroupAdmins(groupId: String): Single<List<String>> {
-        // только первые 20
         return api.getGroupFollowers(groupId, 1, "admins", "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { groupUserFollowersDto ->
                     groupUserFollowersDto.results.map {
-                        return@map it.user.id.toString()
+                        it.user.id.toString()
                     }
+                }
+    }
+
+    override fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<GroupUserEntity>> {
+        return api.getGroupFollowers(
+                groupId = groupId,
+                page = 1,
+                search = searchFilter
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map {
+                    followersGroupMapper.mapToListDomainEntity(it)
                 }
     }
 }

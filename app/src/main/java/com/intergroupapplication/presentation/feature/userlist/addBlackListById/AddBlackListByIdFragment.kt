@@ -5,50 +5,36 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment.Companion.GROUP_ID
-import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_dialog_add_black_list_by_id.*
 import javax.inject.Inject
-import javax.inject.Named
 
 class AddBlackListByIdFragment @Inject constructor(
         private val modelFactory: ViewModelProvider.Factory
 ) : DialogFragment(R.layout.fragment_dialog_add_black_list_by_id) {
 
     @Inject
-    lateinit var adapter: AddUserBlackListAdapter
-
-    @Inject
-    @Named("headerBanList")
-    lateinit var headerAdapter: PagingLoadingAdapter
-
-    @Inject
-    @Named("footerBanList")
-    lateinit var footerAdapter: PagingLoadingAdapter
-
-    @Inject
-    @Named("blackListDialog")
-    lateinit var concatAdapter: ConcatAdapter
-
+    lateinit var userAdapter: AddUserBlackListAdapter
     lateinit var viewModel: AddBlackListByIdViewModel
     private var groupId = ""
     private var compositeDisposable = CompositeDisposable()
     private var lastPosition = 0
     private var lastSelectedUser: AddBlackListUserItem? = null
+    private val BAN_REASON = "ban reason"
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun afterTextChanged(s: Editable?) {
             val str = s.toString()
-            addBlackListBtn.isEnabled = str.isNotEmpty()
+            addBlackListBtn.changeStateAddBlackList(str.isNotEmpty())
             getData(str)
         }
     }
@@ -65,7 +51,7 @@ class AddBlackListByIdFragment @Inject constructor(
         listUsers.run {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             itemAnimator = null
-            adapter = concatAdapter
+            adapter = userAdapter
         }
 
         btnClose.setOnClickListener {
@@ -98,14 +84,12 @@ class AddBlackListByIdFragment @Inject constructor(
                 viewModel.getUsers(groupId, searchFilter)
                         .subscribe(
                                 {
-                                    adapter.addLoadStateListener {
-                                        if (adapter.itemCount < 1) {
-                                            listUsers.visibility = View.GONE
-                                        } else {
-                                            listUsers.visibility = View.VISIBLE
-                                        }
+                                    if (it.isEmpty()) {
+                                        listUsers.visibility = View.GONE
+                                    } else {
+                                        listUsers.visibility = View.VISIBLE
                                     }
-                                    adapter.submitData(lifecycle, it)
+                                    userAdapter.setData(it)
                                 },
                                 {
                                     it.printStackTrace()
@@ -116,37 +100,44 @@ class AddBlackListByIdFragment @Inject constructor(
     private fun initAdapterItemClick() {
         AddUserBlackListAdapter.selectItem = { addBlackListUserItem: AddBlackListUserItem, position: Int ->
             addBlackListUserItem.isSelected = !addBlackListUserItem.isSelected
-            addBlackListBtn.isEnabled = addBlackListUserItem.isSelected
+            addBlackListBtn.changeStateAddBlackList(addBlackListUserItem.isSelected)
             if (addBlackListUserItem.isSelected) {
-                addBlackListBtn.setTextAppearance(R.style.TextDark12sp)
                 lastSelectedUser?.run {
                     isSelected = false
-                    adapter.notifyItemChanged(lastPosition)
+                    userAdapter.notifyItemChanged(lastPosition)
                 }
                 lastSelectedUser = addBlackListUserItem
                 lastPosition = position
             } else {
-                addBlackListBtn.setTextAppearance(R.style.TextHelp12sp)
                 lastSelectedUser = null
                 addBlackListUserItem.isSelected = false
             }
-            adapter.notifyItemChanged(lastPosition)
+            userAdapter.notifyItemChanged(lastPosition)
         }
     }
 
     @SuppressLint("CheckResult")
     private fun banUser(userId: String) {
-        viewModel.banUserInGroup(userId, "ban", groupId)
-                .subscribe(
-                        {
-                            textNoFoundId.visibility = View.INVISIBLE
-                            Toast.makeText(requireContext(), "ID: $userId", Toast.LENGTH_SHORT).show()
-                        },
-                        {
-                            textNoFoundId.visibility = View.VISIBLE
-                            it.printStackTrace()
-                        }
-                )
+        compositeDisposable.add(
+                viewModel.banUserInGroup(userId, BAN_REASON, groupId)
+                        .subscribe(
+                                {
+                                    textNoFoundId.visibility = View.INVISIBLE
+                                    getData(inputBlackListAddId.text.toString())
+                                    Toast.makeText(requireContext(), "ID: $userId", Toast.LENGTH_SHORT).show()
+                                },
+                                {
+                                    textNoFoundId.visibility = View.VISIBLE
+                                    it.printStackTrace()
+                                }
+                        )
+        )
+    }
+
+    private fun TextView.changeStateAddBlackList(enable: Boolean) {
+        isEnabled = enable
+        if (enable) setTextAppearance(R.style.TextDark12sp)
+        else setTextAppearance(R.style.TextHelp12sp)
     }
 
 }

@@ -146,33 +146,4 @@ class UserListViewModule {
         return AddUserBlackListAdapter()
     }
 
-    @PerFragment
-    @Provides
-    @Named("headerBanList")
-    fun provideHeaderAddUserBlackListAdapter(
-            userBlackListAdapter: AddUserBlackListAdapter
-    ): PagingLoadingAdapter{
-        return PagingLoadingAdapter { userBlackListAdapter.retry() }
-    }
-
-    @PerFragment
-    @Provides
-    @Named("footerBanList")
-    fun provideFooterAddUserBlackListAdapter(
-            userBlackListAdapter: AddUserBlackListAdapter
-    ): PagingLoadingAdapter{
-        return PagingLoadingAdapter { userBlackListAdapter.retry() }
-    }
-
-    @PerFragment
-    @Provides
-    @Named("blackListDialog")
-    fun provideConcatAddUserBlackListAdapter(
-            userBlackListAdapter: AddUserBlackListAdapter,
-            @Named("headerBanList") pagingHeader: PagingLoadingAdapter,
-            @Named("footerBanList") pagingFooter: PagingLoadingAdapter
-    ): ConcatAdapter {
-        return userBlackListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
-    }
-
 }

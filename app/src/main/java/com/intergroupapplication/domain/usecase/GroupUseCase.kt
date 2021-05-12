@@ -36,13 +36,13 @@ class GroupUseCase @Inject constructor(
     }
 
 
-    fun getGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>> =
+    fun getGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getGroupList(searchFilter)
 
-    fun getSubscribedGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>> =
+    fun getSubscribedGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getSubscribedGroupList(searchFilter)
 
-    fun getAdminGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>> =
+    fun getAdminGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getAdminGroupList(searchFilter)
 
     fun subscribeGroup(groupId: String): Completable {
@@ -95,5 +95,23 @@ class GroupUseCase @Inject constructor(
 
     fun getAllGroupAdmins(groupId: String): Single<List<String>> {
         return groupGateway.getAllGroupAdmins(groupId)
+    }
+
+    fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<AddBlackListUserItem>> {
+        return groupGateway.getGroupFollowersForSearch(groupId, searchFilter)
+                .map { listUsers ->
+                    listUsers.map { groupUserEntity ->
+                        AddBlackListUserItem(
+                                fullName = "${groupUserEntity.firstName} ${groupUserEntity.surName}",
+                                avatar = groupUserEntity.avatar,
+                                idProfile = groupUserEntity.idProfile,
+                                isAdministrator = groupUserEntity.isAdministrator,
+                                isOwner = groupUserEntity.isOwner,
+                                isBlocked = groupUserEntity.isBlocked,
+                                subscriptionId = groupUserEntity.subscriptionId
+                        )
+
+                    }
+                }
     }
 }
