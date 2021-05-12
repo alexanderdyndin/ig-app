@@ -190,6 +190,7 @@
                 android:id="@+id/btnPostPlay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/middle_high_big_margin"
                 android:background="@drawable/ic_play_middle"
                 app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
                 app:layout_constraintEnd_toEndOf="@+id/bgPostMusic"

@@ -5,6 +5,7 @@ import android.content.Context
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.UserSettings
 import com.intergroupapplication.BuildConfig
+import com.intergroupapplication.R
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
@@ -38,8 +39,8 @@ class MainActivityViewModule {
     @Provides
     fun provideAdMobInitializer(userSession: UserSession, activity: MainActivity): InitializerLocal = object : InitializerLocal {
         override fun initialize() {
-            //Appodeal.initialize(activity, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
-            //Appodeal.setTesting(true)
+//            Appodeal.initialize(activity, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE, userSession.isAcceptTerms())
+//            Appodeal.setTesting(true)
 //            userSession.user?.let {
 //                val date = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).parse(it.birthday)
 //                val c = Calendar.getInstance()
@@ -53,7 +54,11 @@ class MainActivityViewModule {
 //                Appodeal.setUserGender(gender)
 //                Appodeal.setUserId(it.id)
 //            }
-           // Appodeal.cache(activity, Appodeal.NATIVE, 1)
+//            Appodeal.cache(activity, Appodeal.NATIVE, 1)
+            Appodeal.initialize(activity, BuildConfig.APPODEAL_APP_KEY, Appodeal.NATIVE or Appodeal.BANNER, userSession.isAcceptTerms())
+            Appodeal.cache(activity, Appodeal.NATIVE, 6)
+            Appodeal.cache(activity, Appodeal.BANNER)
+            Appodeal.setSmartBanners(true)
         }
     }
 }

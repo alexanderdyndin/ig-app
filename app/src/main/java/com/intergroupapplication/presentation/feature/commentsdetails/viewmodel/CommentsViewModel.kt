@@ -14,6 +14,7 @@ import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import io.reactivex.Flowable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 import javax.inject.Inject
 
 class CommentsViewModel @Inject constructor(private val commentsUseCase: CommentsUseCase,
@@ -42,6 +43,7 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
                                     after == null -> null
                                     else -> if ( i % CommentsAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?
+                                        Timber.d("trying to get comments ad, avaible ad:${Appodeal.getAvailableNativeAdsCount()}")
                                         if (nativeAdItem.also { nativeAd = it } != null) {
                                             CommentEntity.AdEntity(i, nativeAd)
                                         } else null

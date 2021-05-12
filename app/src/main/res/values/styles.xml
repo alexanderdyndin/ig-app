@@ -277,6 +277,27 @@
         <item name="android:paddingEnd">0dp</item>
     </style>
 
+    <style name="SeekBarEditAvatar">
+        <item name="android:progressBackgroundTint">@color/colorAccent</item>
+        <item name="android:thumb">@drawable/knob_press</item>
+        <item name="android:thumbOffset">-0dp</item>
+        <item name="android:progressDrawable">@drawable/bg_seekbar_edit_avatar</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+<!-- Поле ввода  -->
+
+    <style name="InputDark">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorAccent2</item>
+        <item name="android:fontFamily">@font/play</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/input_dark_296dp</item>
+        <item name="android:inputType">textShortMessage</item>
+    </style>
+
 <!-- Редактор постов -->
     <style name="ScrollBar">
         <item name="paddingStart">0dp</item>
@@ -296,6 +317,11 @@
     </style>
 
     <!-- Текст 10sp -->
+    <style name="TextHelp10sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/NoActiveTextLight</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
     <style name="TextLight10sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/textLight</item>
@@ -317,12 +343,22 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/low_size</item>
     </style>
+    <style name="TextPink10sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorPink</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
     <style name="TextNoActive10sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent2</item>
         <item name="android:textSize">@dimen/low_size</item>
     </style>
 <!-- Текст 12sp -->
+    <style name="TextHelp12sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/NoActiveTextLight</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
+    </style>
     <style name="TextLight12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/textLight</item>
@@ -349,10 +385,15 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/middle_low_size</item>
     </style>
+    <style name="TextPink12sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorPink</item>
+        <item name="android:textSize">@dimen/low_size</item>
+    </style>
     <style name="TextNoActive12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent2</item>
-        <item name="android:textSize">@dimen/middle_low_size</item>
+        <item name="android:textSize">@dimen/low_size</item>
     </style>
 
 <!-- Текст 14sp -->
@@ -376,6 +417,11 @@
     <item name="android:textColor">@color/colorAccent</item>
     <item name="android:textSize">@dimen/middle_high_size</item>
     </style>
+    <style name="TextPink14sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorPink</item>
+        <item name="android:textSize">@dimen/middle_high_size</item>
+    </style>
     <style name="TextNoActive14sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent2</item>
@@ -393,8 +439,18 @@
     </style>
 
 <!-- Текст 16sp -->
+    <style name="TextDark16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/mainBlack</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
     <style name="TextAccent16sp">
         <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
+    <style name="TextAccent16spBold">
+        <item name="fontFamily">@font/play_bold</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/big_size</item>
     </style>
@@ -407,6 +463,12 @@
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorLightPunk</item>
         <item name="android:textSize">@dimen/big_size</item>
+    </style>
+    <!-- Текст 18sp -->
+    <style name="TextAccent18spBold">
+        <item name="fontFamily">@font/play_bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/title_size</item>
     </style>
 
     <style name="TransparentBottomSheetStyle" parent="Theme.Design.Light.BottomSheetDialog">

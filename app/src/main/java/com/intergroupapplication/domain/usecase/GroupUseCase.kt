@@ -1,14 +1,15 @@
 package com.intergroupapplication.domain.usecase
 
 import androidx.paging.PagingData
+import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
@@ -50,4 +51,25 @@ class GroupUseCase @Inject constructor(
         return groupGateway.unfollowGroup(groupId)
     }
 
+    fun getGroupFollowers(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> =
+            groupGateway.getFollowers(groupId, searchFilter)
+
+    fun getGroupAdministrators(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> =
+            groupGateway.getAdministrators(groupId, searchFilter)
+
+    fun getGroupBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> =
+            groupGateway.getBans(groupId, searchFilter)
+
+    fun banUserInGroup(userId: String, reason: String, groupId: String): Completable =
+            groupGateway.banUserInGroup(userId, reason, groupId)
+
+    fun deleteUserFromBansGroup(userId: String) =
+            groupGateway.deleteUserFromBansGroup(userId)
+
+    fun updateGroupAdmin(subscriptionId: String, toAdmin: Boolean): Completable {
+        val updateGroupAdmin = UpdateGroupAdmin(
+                isAdmin = toAdmin
+        )
+        return groupGateway.updateGroupAdmin(subscriptionId, updateGroupAdmin)
+    }
 }

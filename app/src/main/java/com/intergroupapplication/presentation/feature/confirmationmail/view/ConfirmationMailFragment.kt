@@ -47,7 +47,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     override fun getSnackBarCoordinator(): CoordinatorLayout = confirmationCoordinator
 
     override fun viewCreated() {
-        presenter.start(arguments?.getString("amount"))
+        presenter.start(arguments?.getString("entity"))
         initErrorHandler(errorHandlerLogin)
         setErrorHandler()
 

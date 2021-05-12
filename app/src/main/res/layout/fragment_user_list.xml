@@ -5,16 +5,6 @@
     android:id="@+id/userListCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeLayout"
-        android:layout_width="match_parent"
-        android:background="@color/groupListItemColor"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_main__bg_tabs_shadow"
-        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -26,7 +16,7 @@
                 layout="@layout/creategroup_toolbar_layout" />
 
             <EditText
-                android:id="@+id/activity_main__search_input"
+                android:id="@+id/searchEditText"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:background="@drawable/bg_search"
@@ -51,6 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="39dp"
                 android:background="@drawable/bg_tabs"
+                android:visibility="gone"
                 app:tabBackground="@android:color/transparent"
                 app:tabGravity="center"
                 app:tabIndicatorColor="@color/colorAccent"
@@ -62,7 +53,7 @@
                 app:tabTextColor="@color/NoActiveText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_main__search_input" >
+                app:layout_constraintTop_toBottomOf="@+id/searchEditText" >
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
@@ -80,15 +71,26 @@
                     android:text="@string/admUsers" />
             </com.google.android.material.tabs.TabLayout>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/followers_refresh"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/slidingCategories" />
+                app:layout_constraintTop_toBottomOf="@+id/slidingCategories">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/slidingCategories" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

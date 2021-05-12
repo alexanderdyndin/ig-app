@@ -22,6 +22,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.exstension.dpToPx
 import com.intergroupapplication.presentation.exstension.getActivity
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.show
@@ -72,10 +73,12 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
 
     private fun parseUrl(urls: List<AudioEntity>, isExpanded: Boolean) {
         this.removeAllViews()
+        container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         container.removeAllViews()
         this.addView(container)
         if (isExpanded && urls.size > 2) {
             createAudios(urls)
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
             val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
             hider.btnHide.setOnClickListener {
                 this.isExpanded = false
@@ -85,6 +88,7 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
             this.addView(hider)
         } else if (!isExpanded && urls.size > 2) {
             createAudios(urls.subList(0, 2))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * 2))
             val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
             expander.btnExpand.setOnClickListener {
                 this.isExpanded = true
@@ -94,6 +98,7 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
             this.addView(expander)
         } else if (urls.isNotEmpty()) {
             createAudios(urls)
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
         }
     }
 

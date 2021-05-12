@@ -166,16 +166,17 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 //            }
 //        })
         compositeDisposable.add(
-                        RxPermissions(this).request(Manifest.permission.READ_PHONE_STATE)
+                        RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe({
-                            if (it) {
-                                presenter.next()
-                            } else {
-                                dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                                        mapOf(R.id.permissionOk to {
-                                            presenter.goToSettingsScreen()
-                                        }))
-                            }
+//                            if (it) {
+//                                presenter.next()
+//                            } else {
+//                                dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
+//                                        mapOf(R.id.permissionOk to {
+//                                            presenter.goToSettingsScreen()
+//                                        }))
+//                            }
+                            presenter.next()
                         }, { Timber.e(it) }))
 
     }

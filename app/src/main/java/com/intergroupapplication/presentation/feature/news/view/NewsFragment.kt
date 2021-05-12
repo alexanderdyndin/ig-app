@@ -49,9 +49,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.android.synthetic.main.layout_profile_header.view.*
 import kotlinx.android.synthetic.main.main_toolbar_layout.*
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import java.io.PrintWriter
@@ -59,8 +58,9 @@ import java.io.StringWriter
 import java.io.Writer
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
 
-class NewsFragment(): BaseFragment(), NewsView{
+class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     companion object {
         const val LABEL = "fragment_news"
@@ -89,6 +89,11 @@ class NewsFragment(): BaseFragment(), NewsView{
     @Named("footer")
     lateinit var footerAdapter: PagingLoadingAdapter
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
+    private var job : Job = Job()
+
     private lateinit var viewModel: NewsViewModel
 
     private var exitHandler: Handler? = null
@@ -109,9 +114,11 @@ class NewsFragment(): BaseFragment(), NewsView{
 
     var clickedPostId: String? = null
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
+        lifecycleScope.newCoroutineContext(this.coroutineContext)
         setAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -129,7 +136,7 @@ class NewsFragment(): BaseFragment(), NewsView{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
+        //Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         //paging 3
         newPaging()
         //crashing app when provide it by dagger
@@ -138,51 +145,24 @@ class NewsFragment(): BaseFragment(), NewsView{
         newsPosts.itemAnimator = null
     }
 
-    fun newPaging() {
-//        newSwipe.setOnRefreshListener {
-//            adapterNews.refresh()
-//        }
-//        newsPosts.adapter = adapterNews
-//        lifecycleScope.launch {
-//            adapterNews.loadStateFlow.collectLatest { loadStates ->
-//                when(loadStates.refresh) {
-//                    is LoadState.Loading -> {
-//                        if (adapterNews.itemCount == 0) {
-//                            loading_layout.show()
-//                        } else adapterNews.addLoading()
-//                        adapterNews.removeError()
-//                        emptyText.hide()
-//                    }
-//                    is LoadState.Error -> {
-//                        newSwipe.isRefreshing = false
-//                        emptyText.hide()
-//                        adapterNews.removeLoading()
-//                        loading_layout.gone()
-//                        adapterNews.addError()
-//                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-//                    }
-//                    is LoadState.NotLoading -> {
-//                        if (adapterNews.itemCount == 0) {
-//                            emptyText.show()
-//                        } else {
-//                            emptyText.hide()
-//                        }
-//                        loading_layout.gone()
-//                        adapterNews.removeError()
-//                        adapterNews.removeLoading()
-//                        newSwipe.isRefreshing = false
-//                    }
-//                    else ->{ newSwipe.isRefreshing = false }
-//                }
-//            }
-//        }
+    override fun onResume() {
+        super.onResume()
+        job = Job()
+    }
 
+    override fun onPause() {
+        super.onPause()
+        job.cancel()
+    }
+
+    fun newPaging() {
         newSwipe.setOnRefreshListener {
             adapter.refresh()
         }
         newsPosts.adapter = concatAdapter
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
+            if (job.isCancelled) return@collectLatest
                 when(loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
@@ -207,9 +187,8 @@ class NewsFragment(): BaseFragment(), NewsView{
                         }
                         loading_layout.gone()
                         newSwipe.isRefreshing = false
-                        //if (!job.isCancelled) progress_first_loading.hide()
                     }
-                    else ->{ newSwipe.isRefreshing = false } //if (!job.isCancelled) progress_first_loading.hide()
+                    else ->{ newSwipe.isRefreshing = false }
                 }
             }
         }
@@ -219,16 +198,8 @@ class NewsFragment(): BaseFragment(), NewsView{
         NewsAdapter.apply {
             complaintListener = { presenter.complaintPost(it) }
             commentClickListener = {
-                try {
-                    clickedPostId = it.id
-                    openCommentDetails(InfoForCommentEntity(it, true))
-                }catch (e:Exception) {
-                    val writer: Writer = StringWriter()
-                    e.printStackTrace(PrintWriter(writer))
-                    text_error.textSize = 12F
-                    text_error.text = writer.toString()
-                    text_error.visibility = View.VISIBLE
-                }
+                clickedPostId = it.id
+                openCommentDetails(InfoForCommentEntity(it, true))
             }
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)

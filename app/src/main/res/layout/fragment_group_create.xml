@@ -7,7 +7,6 @@
     android:id="@+id/createGroupCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".presentation.feature.creategroup.view.CreateGroupFragment">
 
     <ScrollView
@@ -63,6 +62,7 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="@+id/groupCreate__titleBg"
                     app:layout_constraintTop_toBottomOf="@+id/groupCreate__titleBg">
 

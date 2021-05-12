@@ -2,6 +2,7 @@
 <resources>
 
     <!--size-->
+    <dimen name="small_low_size">8sp</dimen>
     <dimen name="low_size">10sp</dimen>
     <dimen name="middle_low_size">12sp</dimen>
     <dimen name="middle_high_size">14sp</dimen>

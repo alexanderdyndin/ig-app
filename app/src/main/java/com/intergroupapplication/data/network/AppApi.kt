@@ -1,6 +1,10 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.model.group_followers.GroupBanBody
+import com.intergroupapplication.data.model.group_followers.GroupUserBansDto
+import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
+import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -44,15 +48,18 @@ interface AppApi {
 
     @GET("groups/")
     fun getSubscribedGroupList(@Query("page") page: Int, @Query("search") search:String,
-                               @Query("followed") followed:String = "true"): Single<GroupsDto>
+                               @Query("followed") followed:String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/")
     fun getGroupList(@Query("page") page: Int,
-                     @Query("search") search:String): Single<GroupsDto>
+                     @Query("search") search:String/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/")
     fun getAdminGroupList(@Query("page") page: Int, @Query("search") search:String,
-                          @Query("owned") owned:String = "true"): Single<GroupsDto>
+                          @Query("owned") owned:String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
 
     @GET("groups/posts/{post_pk}/comments/")
     fun getPostComments(@Path("post_pk") postId: String,
@@ -137,6 +144,38 @@ interface AppApi {
 
     @GET("admin/advertisement/")
     fun adCountInfo(): Single<AdModel>
+
+    @GET("groups/{group_id}/followers/")
+    fun getGroupFollowers(
+            @Path("group_id") groupId: String,
+            @Query("page") page: Int,
+            @Query("filter") filter: String = "",
+            @Query("search") search: String
+    ): Single<GroupUserFollowersDto>
+
+    @GET("groups/{group_id}/bans/")
+    fun getGroupBans(
+            @Path("group_id") groupId: String,
+            @Query("page") page: Int,
+            @Query("search") search: String
+    ): Single<GroupUserBansDto>
+
+    @POST("groups/{group_id}/bans/")
+    fun banUserInGroup(
+            @Path("group_id") groupId: String,
+            @Body groupBanBody: GroupBanBody
+    ): Completable
+
+    @DELETE("groups/bans/{id}/")
+    fun deleteUserFromBansGroup(
+            @Path("id") id: String
+    ): Completable
+
+    @PATCH("groups/followers/{id}/")
+    fun updateGroupAdmin(
+            @Path("id") id: String,
+            @Body updateGroupAdmin: UpdateGroupAdmin
+    ): Completable
 
     @DELETE("groups/posts/{id}/")
     fun deleteGroupPost(@Path("id") postId: String): Completable
