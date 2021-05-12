@@ -27,30 +27,30 @@
                 layout="@layout/main_toolbar_layout" />
 
             <EditText
-                android:id="@+id/activity_main__search_input"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:background="@drawable/bg_search"
-                android:paddingLeft="20dp"
-                android:drawableLeft="@drawable/icon_search"
-                android:drawablePadding="40dp"
-                android:ems="15"
-                android:fontFamily="@font/play"
-                android:hint="@string/search"
-                android:inputType="textShortMessage"
-                android:textColor="@color/colorAccent"
-                android:textColorHint="@color/NoActiveText"
-                android:textSize="14sp"
-                app:layout_constraintEnd_toStartOf="@+id/activity_main__btn_filter"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"/>
+            android:id="@+id/activity_main__search_input"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:background="@drawable/bg_search"
+            android:paddingLeft="20dp"
+            android:drawableLeft="@drawable/icon_search"
+            android:drawablePadding="45dp"
+            android:ems="15"
+            android:fontFamily="@font/play"
+            android:hint="@string/search"
+            android:inputType="textShortMessage"
+            android:textColor="@color/colorAccent"
+            android:textColorHint="@color/NoActiveText"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/activity_main__btn_filter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"/>
 
 
             <ImageButton
                 android:id="@+id/activity_main__btn_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_filter"
+                android:background="@drawable/selector_btn_filter"
                 android:src="@drawable/icon_filter"
                 app:layout_constraintTop_toTopOf="@+id/activity_main__search_input"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -65,7 +65,7 @@
                 app:tabIndicatorColor="@color/colorAccent"
                 app:tabIndicatorFullWidth="true"
                 app:tabIndicatorHeight="2dp"
-                app:tabPaddingBottom="6dp"
+                app:tabPaddingBottom="8dp"
                 app:tabSelectedTextColor="@color/mainBlack"
                 app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
                 app:tabTextColor="@color/NoActiveText"
@@ -97,10 +97,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/slidingCategories">
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

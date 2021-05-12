@@ -136,4 +136,16 @@
     <string name="forbidden_error">У вас нет соответствующих прав доступа</string>
     <string name="post_pinned">Закреплено</string>
     <string name="post_unpinned">Откреплено</string>
+
+    <string name="followers">Все</string>
+    <string name="blocked">Черный список</string>
+    <string name="administrators">Админы</string>
+
+    <string-array name="listOfActionFromAll">
+        <item>В администраторы</item>
+        <item>Заблокировать</item>
+    </string-array>
+
+    <string name="demote">Разжаловать</string>
+    <string name="unblock">Разблокировать</string>
 </resources>

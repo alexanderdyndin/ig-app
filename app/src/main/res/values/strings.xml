@@ -163,4 +163,18 @@
     <string name="comments_count" translatable="false">%1$s / %2$s</string>
     <string name="post_pinned">Pinned</string>
     <string name="post_unpinned">Unpinned</string>
+
+
+<!--    group followers-->
+    <string name="followers">Followers</string>
+    <string name="blocked">Blocked</string>
+    <string name="administrators">Administrators</string>
+
+    <string-array name="listOfActionFromAll">
+        <item>To administrators</item>
+        <item>To black list</item>
+    </string-array>
+
+    <string name="demote">Demote</string>
+    <string name="unblock">Unblock</string>
 </resources>
