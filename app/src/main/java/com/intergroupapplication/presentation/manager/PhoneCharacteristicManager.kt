@@ -20,18 +20,19 @@ class PhoneCharacteristicManager @Inject constructor(private val telephonyManage
 
     @Suppress("DEPRECATION")
     @SuppressLint("MissingPermission", "HardwareIds")
-    fun getImei(): String {
-        try {
-            val imei = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                telephonyManager.imei
-            } else {
-                telephonyManager.deviceId
-            })
-            return if (imei == null || imei.isEmpty()) "sanya_hui_sosi" else imei
-        } catch (exception: Throwable) {
-            return "sanya_hui_sosi"
-        }
-    }
+    fun getImei(): String = "sanya_hui_sosi"
+//    {
+//        try {
+//            val imei = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                telephonyManager.imei
+//            } else {
+//                telephonyManager.deviceId
+//            })
+//            return if (imei == null || imei.isEmpty()) "sanya_hui_sosi" else imei
+//        } catch (exception: Throwable) {
+//            return "sanya_hui_sosi"
+//        }
+//    }
 
     @SuppressLint("HardwareIds")
     fun getMac(): String {

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.intergroupapplication.R
+import kotlin.math.roundToInt
 
 
 /**
@@ -20,13 +21,13 @@ private const val SWIPE_OFFSET = 200
 
 fun Context.dpToPx(dp: Int): Int {
     val displayMetrics = this.resources.displayMetrics
-    return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT))
+    return (dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
 
 fun Context.pxToDp(px: Int): Int {
     val displayMetrics = this.resources.displayMetrics
-    return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT))
+    return (px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
 fun AppCompatActivity.swipeLayoutUnderToolbar(swipeLayout: SwipeRefreshLayout) {

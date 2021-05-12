@@ -89,7 +89,7 @@ class CommentsDetailsViewModule {
     fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                            userSession: UserSession): CommentsAdapter {
         if (userSession.isAdEnabled) {
-            CommentsAdapter.AD_TYPE = 1 //userSession.countAd?.limitOfAdsComments ?: 1
+            CommentsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsComments ?: 1
             CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
             CommentsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexComments ?: 3
         } else {
