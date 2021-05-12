@@ -1,21 +1,13 @@
 package com.intergroupapplication.presentation.customview
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.View.inflate
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.core.view.children
-import androidx.core.view.setPadding
-import com.danikula.videocache.CacheListener
 import com.danikula.videocache.HttpProxyCacheServer
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.view.SimpleDraweeView
-import com.github.florent37.shapeofview.shapes.CutCornerView
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -24,27 +16,17 @@ import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.exstension.dpToPx
 import com.intergroupapplication.presentation.exstension.getActivity
-import com.intergroupapplication.presentation.exstension.gone
-import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
-import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
-import kotlinx.android.synthetic.main.layout_2pic.view.*
-import kotlinx.android.synthetic.main.layout_2pic.view.pic1
-import kotlinx.android.synthetic.main.layout_2pic.view.pic2
-import kotlinx.android.synthetic.main.layout_3pic.view.*
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
 import kotlinx.android.synthetic.main.layout_pic.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
-import java.util.zip.Inflater
-import kotlin.math.roundToInt
+
 
 class AudioGalleryView @JvmOverloads constructor(context: Context,
                                                  private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
@@ -111,7 +93,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                     urls.forEach {
                         val player = makeAudioPlayer(it, bindedService)
                         val playerView = AudioPlayerView(context)
-                        playerView.trackName = "${it.artist} - ${it.song}"
+                        val trackName = if (it.artist == "") it.song else "${it.artist} - ${it.song}"
+                        playerView.trackName = trackName
                         playerView.trackOwner = "Загрузил (ID:${it.owner})"
                         playerView.exoPlayer.player = player
                         container.addView(playerView)
@@ -141,9 +124,19 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                     service.setPlayer(musicPlayer, IGMediaService.MediaFile(true, audio.id), audio.song, audio.description)
                 }
             }
-        }
-        musicPlayer.addListener(listener)
 
+            override fun onPlayerError(error: ExoPlaybackException) {
+                when (error.type) {
+                    ExoPlaybackException.TYPE_SOURCE -> {
+                        Timber.tag("tut_error_music").d("TYPE_SOURCE: " + error.sourceException)
+                    }
+                    ExoPlaybackException.TYPE_RENDERER -> Timber.tag("tut_error_music").d("TYPE_RENDERER: " + error.rendererException)
+                    ExoPlaybackException.TYPE_UNEXPECTED -> Timber.tag("tut_error_music").d("TYPE_UNEXPECTED: " + error.unexpectedException)
+                }
+            }
+        }
+        Timber.tag("tut_audio").d(audio.file)
+        musicPlayer.addListener(listener)
         proxy?.let {
             val proxyUrl = it.getProxyUrl(audio.file)
             val musicMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
@@ -157,8 +150,6 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
             // Prepare the player.
             //musicPlayer.prepare()
         }
-
-
         return musicPlayer
     }
 

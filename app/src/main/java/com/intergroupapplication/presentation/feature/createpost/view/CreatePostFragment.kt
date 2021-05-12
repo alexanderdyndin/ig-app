@@ -1,34 +1,55 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.View
-import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
+import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.customview.ImagesUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.hide
-import com.intergroupapplication.presentation.exstension.isVisible
-import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.exstension.showKeyboard
+import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.removeChooseMedia
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
+import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
+import kotlinx.android.synthetic.main.fragment_create_post.postContainer
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
+import kotlinx.android.synthetic.main.layout_attach_image.view.detachImage
+import kotlinx.android.synthetic.main.layout_attach_image.view.imageUploadingProgressBar
+import kotlinx.android.synthetic.main.layout_attach_image.view.refreshContainer
+import kotlinx.android.synthetic.main.layout_attach_image.view.stopUploading
+import kotlinx.android.synthetic.main.layout_attach_image.view.darkCard
+import kotlinx.android.synthetic.main.layout_audio_in_create_post.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
-class CreatePostFragment : BaseFragment(), CreatePostView {
+class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFragment.Callback {
 
+    companion object{
+        const val MEDIA_INTERACTION_REQUEST_CODE = "media_interaction_request_code"
+        const val METHOD_KEY = "method_key"
+        const val CHOOSE_MEDIA_KEY = "choose_media_key"
+        const val RETRY_LOADING_METHOD_CODE = 0
+        const val CANCEL_LOADING_METHOD_CODE = 1
+        const val REMOVE_CONTENT_METHOD_CODE = 2
+    }
 
     @Inject
     @InjectPresenter
@@ -39,6 +60,10 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
+
+    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<View>
+
+    private val bottomFragment by lazy { EditPostBottomSheetFragment() }
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_create_post
@@ -51,70 +76,73 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 
     private lateinit var groupId: String
 
+    private fun convertDpToPixel(dp: Int): Int {
+        val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
+        val px = dp * (metrics.densityDpi / 160f)
+        return px.roundToInt()
+    }
+
     override fun viewCreated() {
         groupId = arguments?.getString(GROUP_ID)!!
         presenter.groupId = groupId
         publishBtn.show()
         publishBtn.setOnClickListener {
             val post = postText.text.toString().trim()
-            if (post.isEmpty() && postContainer.childCount == 1) {
+            if (post.isEmpty() && postContainer.childCount == 1 && audioContainer.childCount == 1) {
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
             }
             else if (loadingViews.isNotEmpty()) {
                 var isLoading = false
-                loadingViews.forEach { (_, view) ->
-                    if (view?.darkCard?.isVisible() != false) isLoading = true
+                loadingViews.forEach { (key, view) ->
+                    if (view?.darkCard?.isVisible() != false) {
+                        isLoading = true
+                        Timber.tag("tut_view").d(key)
+                    }
                 }
                 if (isLoading)
                     dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
                 else {
-                    presenter.createPostWithImage(postText.text.toString().trim(), groupId)
+                    presenter.createPostWithImage(postText.text.toString().trim(), groupId,
+                            bottomFragment.getPhotosUrl(),bottomFragment.getVideosUrl(),
+                            bottomFragment.getAudiosUrl())
                 }
             }
             else {
-                presenter.createPostWithImage(postText.text.toString().trim(), groupId)
+                presenter.createPostWithImage(postText.text.toString().trim(), groupId,
+                        bottomFragment.getPhotosUrl(),bottomFragment.getVideosUrl(),
+                        bottomFragment.getAudiosUrl())
             }
         }
 
-        attachPhoto.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                        mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
-            }
-        }
+        try {
+            childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet, bottomFragment).commit()
+            bottomFragment.callback = this
+            bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet) as AutoCloseBottomSheetBehavior<View>
+            bottomSheetBehaviour.run {
+                peekHeight = convertDpToPixel(35)
+                halfExpandedRatio = 0.6f
+                isFitToContents = false
+                addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if(newState == BottomSheetBehavior.STATE_COLLAPSED){
+                            chooseMedias.clear()
+                            chooseMedias.addAll(loadingViews.keys.map {
+                                ChooseMedia(it)
+                            })
+                        }
+                        bottomFragment.changeState(newState)
+                    }
 
-        attachVideo.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                presenter.attachVideo()
-            }
-        }
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
-        attachAudio.setOnClickListener {
-            if (loadingViews.count() >= 10) {
-                Toast.makeText(requireContext(), "Не больше 10 вложений", Toast.LENGTH_SHORT).show()
-            } else {
-                presenter.attachAudio()
+                    }
+                })
             }
+        }catch (e: Exception){
+            e.printStackTrace()
         }
         toolbarBackAction.setOnClickListener { onResultCancel() }
-//        postContainer.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
-//            override fun onChildViewRemoved(parent: View?, child: View?) {
-//                manageClipVisibility()
-//            }
-//
-//            override fun onChildViewAdded(parent: View?, child: View?) {
-//                manageClipVisibility()
-//            }
-//        })
-//        uploadingView = requireView().findViewById<ImagesUploadingView>(R.id.imagesUploadingContainer)
-//        uploadingView.detachListener = {presenter.removeContent(it)}
-//        uploadingView.retryListener = {presenter.cancelUploading(it)}
-//        uploadingView.cancelListener = {presenter.retryLoading(it)}
-        postText.showKeyboard()
+        //postText.showKeyboard()
         setErrorHandler()
     }
 
@@ -124,32 +152,27 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 
     override fun showLoading(show: Boolean) {
         publishBtn.isEnabled = show
-//        if (show) {
-//            publishBtn.hide()
-//           // createProgress.show()
-//        } else {
-//            //createProgress.hide()
-//            publishBtn.show()
-//        }
     }
 
-    override fun showImageUploadingStarted(path: String) {
-        loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
-        loadingViews[path]?.let {
-            it.imagePreview?.let { draweeView ->
-                val type = MimeTypeMap.getFileExtensionFromUrl(path)
-                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
-                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
-                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
-                    it.nameView?.text = path.substring(path.lastIndexOf("/") + 1)
-                }
-                else
-                    imageLoadingDelegate.loadImageFromFile(path, draweeView)
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg") || chooseMedia.url.contains(".wav")){
+            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,audioContainer, false)
+            loadingViews[chooseMedia.url]?.let {
+                it.trackName?.text = chooseMedia.trackName
             }
+            audioContainer.addView(loadingViews[chooseMedia.url])
         }
-        postContainer.addView(loadingViews[path])
-        prepareListeners(loadingViews[path], path)
-        imageUploadingStarted(loadingViews[path])
+        else {
+            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
+            loadingViews[chooseMedia.url]?.let {
+                it.imagePreview?.let { draweeView ->
+                    imageLoadingDelegate.loadImageFromFile(chooseMedia.url, draweeView)
+                }
+            }
+            postContainer.addView(loadingViews[chooseMedia.url])
+        }
+        prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
+        imageUploadingStarted(loadingViews[chooseMedia.url])
         //uploadingView.showImageUploadingStarted(path)
     }
 
@@ -160,14 +183,12 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
             imageUploadingProgressBar?.hide()
             detachImage?.show()
         }
-        //uploadingView.showImageUploaded(path)
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
         loadingViews[path]?.apply {
             imageUploadingProgressBar?.progress = progress
         }
-//        uploadingView.showImageUploadingProgress(progress, path)
     }
 
     override fun showImageUploadingError(path: String) {
@@ -178,7 +199,6 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
             imageUploadingProgressBar?.hide()
             stopUploading?.hide()
         }
-//        uploadingView.showImageUploadingError(path)
     }
 
     private fun setErrorHandler() {
@@ -197,7 +217,9 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 
     private fun detachImage(path: String) {
         postContainer.removeView(loadingViews[path])
+        audioContainer.removeView(loadingViews[path])
         loadingViews.remove(path)
+        chooseMedias.removeChooseMedia(path)
     }
 
     private fun imageUploadingStarted(uploadingView: View?) {
@@ -210,20 +232,26 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun prepareListeners(uploadingView: View?, path: String) {
+    private fun prepareListeners(uploadingView: View?, chooseMedia: ChooseMedia) {
         uploadingView?.apply {
             refreshContainer.setOnClickListener {
                 this.imageUploadingProgressBar?.progress = 0f
-                presenter.retryLoading(path)
+                childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
+                        bundleOf(METHOD_KEY to RETRY_LOADING_METHOD_CODE,
+                        CHOOSE_MEDIA_KEY to chooseMedia))
                 imageUploadingStarted(uploadingView)
             }
             stopUploading?.setOnClickListener {
-                presenter.cancelUploading(path)
-                detachImage(path)
+                childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
+                        bundleOf(METHOD_KEY to  CANCEL_LOADING_METHOD_CODE,
+                        CHOOSE_MEDIA_KEY to chooseMedia))
+                detachImage(chooseMedia.url)
             }
             detachImage?.setOnClickListener {
-                presenter.removeContent(path)
-                detachImage(path)
+                childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
+                        bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
+                        CHOOSE_MEDIA_KEY to chooseMedia))
+                detachImage(chooseMedia.url)
             }
         }
     }
@@ -243,6 +271,21 @@ class CreatePostFragment : BaseFragment(), CreatePostView {
 
     private fun onResultCancel() {
         findNavController().popBackStack()
+    }
+
+    override fun getState() = bottomSheetBehaviour.state
+
+    override fun changeStateBottomSheet(newState: Int) {
+        bottomSheetBehaviour.state = newState
+    }
+
+    override fun getLoadingView() = loadingViews
+    override fun closeKeyboard() {
+        try {
+            postText.dismissKeyboard()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
 }

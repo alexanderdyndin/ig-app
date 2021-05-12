@@ -32,6 +32,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_group_post.view.*
+import kotlinx.android.synthetic.main.item_image.view.*
 import kotlinx.android.synthetic.main.item_loading.view.*
 import kotlinx.android.synthetic.main.layout_pic.view.*
 import timber.log.Timber
@@ -181,6 +182,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
 
                 videoContainer.proxy = cacheServer
+                videoContainer.imageLoadingDelegate = imageLoadingDelegate
                 videoContainer.setVideos(item.post.videos, item.post.videosExpanded)
                 videoContainer.expand = { item.post.videosExpanded = it }
 

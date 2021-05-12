@@ -18,6 +18,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -270,8 +271,8 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
         groupCreate__btnAge12.isChecked = true
     }
 
-    override fun showImageUploadingStarted(path: String) {
-       groupAvatarHolder.showImageUploadingStarted(path)
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+       groupAvatarHolder.showImageUploadingStarted(chooseMedia)
     }
 
 

@@ -11,6 +11,7 @@ import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.OkHttpResponseListener
 import com.androidnetworking.interfaces.UploadProgressListener
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ImageUploadDto
 import com.intergroupapplication.data.model.PhotoUploadFields
 import com.intergroupapplication.data.network.AppApi
@@ -35,6 +36,7 @@ import okhttp3.RequestBody
 import okhttp3.Response
 import timber.log.Timber
 import java.io.File
+import java.net.URLEncoder
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
 
@@ -58,8 +60,8 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     private val audioPaths: MutableList<String> = mutableListOf()
 
     private val imageUrls: MutableList<String> = mutableListOf()
-    private val videoUrls: MutableList<String> = mutableListOf()
-    private val audioUrls: MutableList<String> = mutableListOf()
+    private val videoUrls: MutableList<ChooseMedia> = mutableListOf()
+    private val audioUrls: MutableList<ChooseMedia> = mutableListOf()
 
     private val fileToUrl: MutableMap<String, String> = mutableMapOf()
 
@@ -90,9 +92,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     override fun getLastPhotoUrl(): Single<String> = Single.fromCallable { lastPhotoUrl }
     
-    override fun getVideoUrls(): Single<List<String>> = Single.fromCallable { videoUrls }
+    override fun getVideoUrls(): Single<List<ChooseMedia>> = Single.fromCallable { videoUrls }
 
-    override fun getAudioUrls(): Single<List<String>> = Single.fromCallable { audioUrls }
+    override fun getAudioUrls(): Single<List<ChooseMedia>> = Single.fromCallable { audioUrls }
 
     override fun getImageUrls(): Single<List<String>> {
         return Single.fromCallable { imageUrls }
@@ -146,24 +148,33 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                         } ?: emptyList()
                     }
 
-    override fun uploadAudioToAws(path: String, groupId: String?, upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>): Observable<Float> {
+    override fun uploadAudioToAws(path: String,trackName:String,author:String, groupId: String?,
+                                  upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>)
+                                : Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
-        return upload(file.extension, groupId)
+        val myFile = File(activity.externalCacheDir,"temporary_file_with_music.${file.extension}")
+        myFile.createNewFile()
+        val byteArray = file.readBytes()
+        myFile.writeBytes(byteArray)
+        Timber.tag("tut_path").d(myFile.absolutePath)
+        return upload(myFile.extension, groupId)
                 .doAfterSuccess {
-                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, file)
+                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, myFile)
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
                             .doOnComplete {
-                                audioUrls.add(it.fields.key)
+                                audioUrls.add(ChooseMedia(it.fields.key,trackName = trackName,
+                                        authorMusic = author))
                                 fileToUrl[path] = it.fields.key
+                                myFile.delete()
                             }
                     //.doOnError { lastPhotoUrl = "" }
                 }
     }
 
-    override fun uploadVideoToAws(path: String, groupId: String?, upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>): Observable<Float> {
+    override fun uploadVideoToAws(path: String, urlPreview: String, groupId: String?, upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>): Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
         return upload(file.extension, groupId)
@@ -173,7 +184,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
                             .doOnComplete {
-                                videoUrls.add(it.fields.key)
+                                videoUrls.add(ChooseMedia(it.fields.key,urlPreview))
                                 fileToUrl[path] = it.fields.key
                             }
                     //.doOnError { lastPhotoUrl = "" }
@@ -202,44 +213,10 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
     }
 
-    /*override fun uploadAudioToAws(path: String, groupId: String): Observable<Float> {
+    override fun uploadImage(path: String, groupId: String?, upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>): Observable<String> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
-        return appApi.uploadPhoto(file.extension, groupId)
-                .doAfterSuccess {
-                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, file)
-                }
-                .flatMapObservable { it ->
-                    subject.doOnDispose { AndroidNetworking.cancelAll() }
-                            .doOnComplete {
-                                audioUrls.add(it.fields.key)
-                                fileToUrl[path] = it.fields.key
-                            }
-                            //.doOnError { lastPhotoUrl = "" }
-                }
-    }
-
-    override fun uploadVideoToAws(path: String, groupId: String): Observable<Float> {
-        val subject = PublishSubject.create<Float>()
-        val file = File(path)
-        return appApi.uploadPhoto(file.extension, groupId)
-                .doAfterSuccess {
-                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, file)
-                }
-                .flatMapObservable { it ->
-                    subject.doOnDispose { AndroidNetworking.cancelAll() }
-                            .doOnComplete {
-                                videoUrls.add(it.fields.key)
-                                fileToUrl[path] = it.fields.key
-                            }
-                            //.doOnError { lastPhotoUrl = "" }
-                }
-    }
-
-    override fun uploadImageToAws(path: String, groupId: String): Observable<Float> {
-        val subject = PublishSubject.create<Float>()
-        val file = File(path)
-        return appApi.uploadPhoto(file.extension, groupId)
+        return upload(file.extension, groupId)
                 .doAfterSuccess {
                     if (file.extension == "gif")
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
@@ -250,13 +227,14 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
-                            .doOnComplete {
-                                imageUrls.add(it.fields.key)
-                                fileToUrl[path] = it.fields.key
+                            .doOnComplete{
+                                if (file.exists()) {
+                                    file.delete();
+                                }
                             }
-                    //.doOnError { lastPhotoUrl = "" }
+                    return@flatMapObservable Observable.just(it.fields.key)
                 }
-    }*/
+    }
 
     override fun uploadToAws(groupId: String?): Observable<Float> {
         val subject = PublishSubject.create<Float>()

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
@@ -356,7 +357,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         }
     }
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         groupAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 

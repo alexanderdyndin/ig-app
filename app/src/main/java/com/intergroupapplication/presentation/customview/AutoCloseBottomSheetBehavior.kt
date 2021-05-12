@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.bottomsheet.view
+package com.intergroupapplication.presentation.customview
 
 import android.content.Context
 import android.graphics.Rect
@@ -7,7 +7,6 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import timber.log.Timber
 
 
 class AutoCloseBottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) : BottomSheetBehavior<V>(context, attrs) {

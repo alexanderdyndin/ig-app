@@ -35,15 +35,13 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
 
     fun attachFromGallery() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = ::upload)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler, upload = photoGateway::uploadToAws)
     }
 
     fun attachFromCamera() {
         stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler,upload = ::upload)
+        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler,upload = photoGateway::uploadToAws)
     }
-
-    private fun upload(groupId:String? = null):Observable<Float> = photoGateway.uploadToAws(groupId)
 
     fun changeUserAvatar() {
         compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()

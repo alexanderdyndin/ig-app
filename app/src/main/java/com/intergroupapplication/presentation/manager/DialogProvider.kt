@@ -1,13 +1,7 @@
 package com.intergroupapplication.presentation.manager
 
-import com.danikula.videocache.HttpProxyCacheServer
-import com.intergroupapplication.data.model.GalleryModel
-import com.intergroupapplication.data.model.VideoModel
-import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseDialogResolver
-import com.intergroupapplication.presentation.feature.bottomsheet.view.PreviewDialog
-import com.intergroupapplication.presentation.feature.bottomsheet.view.ViewPagerDialog
-import timber.log.Timber
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.PreviewDialog
 import javax.inject.Inject
 
 /**

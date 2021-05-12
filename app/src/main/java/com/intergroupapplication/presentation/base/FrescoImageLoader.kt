@@ -1,15 +1,25 @@
 package com.intergroupapplication.presentation.base
 
-import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.AttributeSet
+import com.facebook.common.references.CloseableReference
 import com.facebook.common.util.UriUtil
+import com.facebook.datasource.BaseDataSubscriber
+import com.facebook.datasource.DataSource
+import com.facebook.datasource.DataSubscriber
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.BytesRange
 import com.facebook.imagepipeline.common.ResizeOptions
+import com.facebook.imagepipeline.image.CloseableBitmap
+import com.facebook.imagepipeline.image.CloseableImage
+import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import timber.log.Timber
 import java.io.File
+import java.util.concurrent.ExecutorService
 
 
 /**
@@ -26,13 +36,23 @@ class FrescoImageLoader(private val callerContext: Context) : ImageLoader {
 
     override fun loadCompressedImageFromFile(filePath: String, target: SimpleDraweeView) {
         val request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(filePath)))
-                .setResizeOptions(ResizeOptions(80, 80))
-                .build()
+                    .setResizeOptions(ResizeOptions(80, 80))
+                    .build()
         target.controller = Fresco.newDraweeControllerBuilder()
                 .setOldController(target.controller)
                 .setImageRequest(request)
                 .build()
     }
+
+   /* override fun getImageByteRange(filePath: String,simpleDraweeView: SimpleDraweeView): Drawable {
+        val request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(filePath))).build()
+        simpleDraweeView.controller = Fresco.newDraweeControllerBuilder()
+                .setOldController(simpleDraweeView.controller)
+                .setImageRequest(request)
+                .build()
+        return simpleDraweeView.drawable
+    }*/
+
 
     override fun loadImageFromResources(resId: Int, target: SimpleDraweeView) {
         //todo может все таки лучше через контекст, чем через контроллер? Проверить

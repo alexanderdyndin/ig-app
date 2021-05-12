@@ -1,5 +1,6 @@
 package com.intergroupapplication.domain.gateway
 
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ImageUploadDto
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -15,15 +16,20 @@ interface PhotoGateway {
     fun uploadAvatarUser(userId: String? = null): Observable<Float>
     fun uploadAvatarGroup(groupId: String? = null): Observable<Float>
     fun getLastPhotoUrl(): Single<String>
-    fun getVideoUrls(): Single<List<String>>
-    fun getAudioUrls(): Single<List<String>>
+    fun getVideoUrls(): Single<List<ChooseMedia>>
+    fun getAudioUrls(): Single<List<ChooseMedia>>
     fun getImageUrls(): Single<List<String>>
     fun loadAudio(): Observable<List<String>>
     fun loadVideo(): Observable<List<String>>
     fun loadImagesFromGallery(): Observable<List<String>>
-    fun uploadAudioToAws(path: String, groupId: String? = null, upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
-    fun uploadVideoToAws(path: String, groupId: String? = null,upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
-    fun uploadImageToAws(path: String, groupId: String? = null,upload:(imageExs:String,id:String??)-> Single<ImageUploadDto>): Observable<Float>
+    fun uploadAudioToAws(path: String,trackName:String,author:String, groupId: String? = null,
+                         upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
+    fun uploadVideoToAws(path: String,urlPreview:String, groupId: String? = null,
+                         upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
+    fun uploadImageToAws(path: String, groupId: String? = null,
+                         upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
+    fun uploadImage(path: String, groupId: String? = null,
+                    upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<String>
     fun removeContent(path: String)
     fun removeAllContent()
 }

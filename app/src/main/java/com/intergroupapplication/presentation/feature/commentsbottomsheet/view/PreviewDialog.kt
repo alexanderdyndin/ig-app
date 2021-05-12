@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.bottomsheet.view
+package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -10,8 +10,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.bottomsheet.adapter.chooseMedia
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.addChooseMedia
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.removeChooseMedia
 import kotlinx.android.synthetic.main.dialog_preview.*
 import kotlinx.android.synthetic.main.fragment_group.*
 import timber.log.Timber
@@ -79,7 +82,7 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupVideoView() {
-        videoView.setVideoPath(url);
+        videoView.setVideoPath(url)
         videoView.requestFocus(0)
         videoView.setMediaController(MediaController(context))
         videoView.show()
@@ -97,14 +100,14 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
             if (it.isActivated) {
                 isChoose = false
                 it.isActivated = isChoose
-                chooseMedia.remove(url)
+                chooseMedias.removeChooseMedia(url)
                 parentFragmentManager.setFragmentResult(ADD_REQUEST_CODE,
                         bundleOf(ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
                                 IS_CHOOSE_KEY to isChoose))
             } else {
                 isChoose = true
                 it.isActivated = isChoose
-                chooseMedia.add(url)
+                chooseMedias.addChooseMedia(ChooseMedia(url))
                 parentFragmentManager.setFragmentResult(ADD_REQUEST_CODE,
                         bundleOf(ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
                                 IS_CHOOSE_KEY to isChoose))

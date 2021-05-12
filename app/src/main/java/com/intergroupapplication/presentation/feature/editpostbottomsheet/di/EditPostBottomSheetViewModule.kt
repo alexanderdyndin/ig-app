@@ -1,9 +1,8 @@
-package com.intergroupapplication.presentation.feature.bottomsheet.di
+package com.intergroupapplication.presentation.feature.editpostbottomsheet.di
 
 import android.content.Context
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
-import com.intergroupapplication.di.module.AppBuilderModule
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -11,40 +10,39 @@ import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.feature.bottomsheet.adapter.*
-import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
-import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.AudioAdapter
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.GalleryAdapter
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.PlaylistAdapter
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.VideoAdapter
+import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
-import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
 
-@Module()
-class BottomSheetViewModule {
-
+@Module
+class EditPostBottomSheetViewModule {
     @PerFragment
     @Provides
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate
-                              ,callback: BottomSheetFragment,
-    dialogDelegate: DialogDelegate): GalleryAdapter {
+                              , callback: EditPostBottomSheetFragment,
+                              dialogDelegate: DialogDelegate): GalleryAdapter {
         return GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
     }
 
     @PerFragment
     @Provides
-    fun provideAudioAdapter(callback: BottomSheetFragment): AudioAdapter{
+    fun provideAudioAdapter(callback: EditPostBottomSheetFragment): AudioAdapter {
         return AudioAdapter(callback)
     }
 
     @PerFragment
     @Provides
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                            callback: BottomSheetFragment,
+                            callback: EditPostBottomSheetFragment,
                             dialogDelegate: DialogDelegate): VideoAdapter {
         return VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
@@ -58,15 +56,10 @@ class BottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(fragment: BottomSheetFragment): Validator =
-            Validator(fragment).apply { setValidationListener(fragment) }
-
-    @PerFragment
-    @Provides
-    fun providePhotoGateway(fragment: BottomSheetFragment,
+    fun providePhotoGateway(fragmentComment: EditPostBottomSheetFragment,
                             cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragmentComment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides
@@ -82,14 +75,12 @@ class BottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(fragment: BottomSheetFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragmentComment: EditPostBottomSheetFragment): DialogManager =
+            DialogManager(fragmentComment.requireActivity().supportFragmentManager)
 
     @PerFragment
     @Provides
     fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
                        context: Context)
-            : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
+            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 }

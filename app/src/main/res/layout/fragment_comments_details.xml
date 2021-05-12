@@ -204,8 +204,8 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
-        android:id="@+id/containerBottomSheet"
+        android:id="@+id/containerCommentBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.intergroupapplication.presentation.feature.bottomsheet.view.AutoCloseBottomSheetBehavior"/>
+        app:layout_behavior="com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

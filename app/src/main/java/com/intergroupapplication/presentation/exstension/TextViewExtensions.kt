@@ -42,6 +42,12 @@ fun TextView.showKeyboard() {
             .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
 
+fun View.dismissKeyboard(){
+    requestFocus()
+    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(this.windowToken,0)
+}
+
 fun TextView.changeActivated(thisActivated:Boolean, view1:TextView, view2:TextView, view3:TextView){
     this.activated(thisActivated)
     view1.activated(false)

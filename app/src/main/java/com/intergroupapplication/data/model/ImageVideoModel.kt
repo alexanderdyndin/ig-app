@@ -9,5 +9,6 @@ data class ImageVideoModel(
         val description: String,
         val title: String,
         val post: Int,
-        val owner: Int
+        val owner: Int,
+        val preview:String?
 )

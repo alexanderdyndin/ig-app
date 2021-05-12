@@ -15,6 +15,7 @@ import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.exstension.hide
@@ -43,10 +44,10 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
     var cancelListener:(patch: String)-> Unit = {}
     var detachListener:(patch: String)-> Unit = {}
 
-    override fun showImageUploadingStarted(path: String) {
-        loadingViews[path] = LayoutInflater.from(context).inflate(R.layout.layout_attach_image, this, false)
-        loadingViews[path]?.let {
-            val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(path)))
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        loadingViews[chooseMedia.url] = LayoutInflater.from(context).inflate(R.layout.layout_attach_image, this, false)
+        loadingViews[chooseMedia.url]?.let {
+            val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(chooseMedia.url)))
                     .setResizeOptions(ResizeOptions(500, 500))
                     .build()
             it.imagePreview.controller = Fresco.newDraweeControllerBuilder()
@@ -55,8 +56,8 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
                     .setImageRequest(request)
                     .build()
         }
-        prepareListeners(loadingViews[path], path)
-        imageUploadingStarted(loadingViews[path])
+        prepareListeners(loadingViews[chooseMedia.url], chooseMedia.url)
+        imageUploadingStarted(loadingViews[chooseMedia.url])
         parseViewsList(loadingViews.values.toList())
     }
 

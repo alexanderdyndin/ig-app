@@ -168,6 +168,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
 
                 videoContainer.proxy = proxyCacheServer
+                videoContainer.imageLoadingDelegate = imageLoadingDelegate
                 videoContainer.setVideos(item.videos, false)
                 //videoContainer.expand = { item.videosExpanded = it }
 
@@ -246,6 +247,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 settingsBtn2.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
 
                 videoContainer.proxy = proxyCacheServer
+                videoContainer.imageLoadingDelegate = imageLoadingDelegate
                 videoContainer.setVideos(item.videos, false)
                 //videoContainer.expand = { item.videosExpanded = it }
 

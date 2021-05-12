@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.delegate
 
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.ImageUploader
@@ -28,7 +29,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
                 .doOnNext {
-                    view.showImageUploadingStarted(it)
+                    view.showImageUploadingStarted(ChooseMedia(it))
                     path = it
                 }
                 .observeOn(Schedulers.io())
@@ -51,7 +52,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
                 .doOnNext {
-                    view.showImageUploadingStarted(it)
+                    view.showImageUploadingStarted(ChooseMedia(it))
                     path = it
                 }
                 .observeOn(Schedulers.io())

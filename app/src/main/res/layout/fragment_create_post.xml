@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/createPostBackgroundColor"
+        android:background="@color/colorInput"
         android:orientation="vertical"
         tools:context=".presentation.feature.createpost.view.CreatePostFragment">
 
@@ -22,14 +22,12 @@
             android:layout_height="0dp"
             android:fillViewport="true"
             style="@style/ScrollBar"
-            android:background="@color/colorInput"
             app:layout_constraintBottom_toTopOf="@+id/panelAddFile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/navigationToolbar">
 
             <LinearLayout
-                android:id="@+id/postContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -49,70 +47,25 @@
 <!--                    android:id="@+id/imagesUploadingContainer"-->
 <!--                    android:layout_width="match_parent"-->
 <!--                    android:layout_height="wrap_content"/>-->
-
+                <GridLayout
+                    android:id="@+id/postContainer"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:columnCount="3"/>
+                <LinearLayout
+                    android:id="@+id/audioContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
             </LinearLayout>
-
         </ScrollView>
-
-        <LinearLayout
-            android:id="@+id/panelAddFile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorInput"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <TextView
-                android:id="@+id/attachPhoto"
-                style="@style/TextAccent10sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_gallery"
-                android:drawablePadding="2dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Галерея" />
-
-            <TextView
-                android:id="@+id/attachVideo"
-                style="@style/TextAccent10sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_video"
-                android:drawablePadding="2dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Видео" />
-
-            <TextView
-                android:id="@+id/attachAudio"
-                style="@style/TextAccent10sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_music"
-                android:drawablePadding="2dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Музыка" />
-
-            <TextView
-                style="@style/TextAccent10sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_playlist"
-                android:drawablePadding="2dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="Плейлист"
-                android:visibility="gone"/>
-
-
-        </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/containerBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,6 +1,9 @@
 package com.intergroupapplication.presentation.delegate
 
+import android.graphics.Bitmap
+import android.util.AttributeSet
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.BytesRange
 import com.intergroupapplication.presentation.base.ImageLoader
 import javax.inject.Inject
 
@@ -24,7 +27,6 @@ class ImageLoadingDelegate @Inject constructor(private val imageLoader: ImageLoa
     fun loadImageFromUrl(url: String, target: SimpleDraweeView) {
         imageLoader.loadImageFromUrl(url, target)
     }
-
 
 //    fun loadBitmapFromUrl(url: String): Bitmap? {
 //        val uri = Uri.parse(url)

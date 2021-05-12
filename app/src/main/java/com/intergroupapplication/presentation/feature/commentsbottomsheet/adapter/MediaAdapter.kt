@@ -1,37 +1,62 @@
-package com.intergroupapplication.presentation.feature.bottomsheet.adapter
+package com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Environment
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.AudioInAddFileModel
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
-import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
-import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
-import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_create_user_profile.view.*
 import timber.log.Timber
+import java.io.*
 import java.util.concurrent.atomic.AtomicBoolean
 
-//два сомнительных по архитектуре момента, но лучше пока не придумал
-val chooseMedia = mutableSetOf<String>()
 
+//два сомнительных по архитектуре момента, но лучше пока не придумал
+val chooseMedias = mutableSetOf<ChooseMedia>()
+fun MutableSet<ChooseMedia>.addChooseMedia(chooseMedia: ChooseMedia){
+    this.forEach {
+        if (it.url == chooseMedia.url){
+            return
+        }
+    }
+    this.add(chooseMedia)
+}
+fun MutableSet<ChooseMedia>.removeChooseMedia(url:String){
+    this.forEach {
+        if (it.url == url){
+            this.remove(it)
+            return
+        }
+    }
+}
+
+fun MutableSet<ChooseMedia>.containsMedia(url:String):Boolean{
+    this.forEach {
+        if (it.url == url){
+            return true
+        }
+    }
+    return false
+}
 interface MediaCallback{
     fun changeCountChooseImage()
     fun changeCountChooseVideo()
@@ -40,12 +65,12 @@ interface MediaCallback{
 }
 
 class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-     private val mediaCallback: MediaCallback,
-     private val dialogDelegate: DialogDelegate,
-     private val manager:FragmentManager
+                     private val mediaCallback: MediaCallback,
+                     private val dialogDelegate: DialogDelegate,
+                     private val manager: FragmentManager
 ):RecyclerView.Adapter<BaseHolder<GalleryModel>>(){
 
-    val photos = mutableListOf(GalleryModel("photos",0,false))
+    val photos = mutableListOf(GalleryModel("photos", 0, false))
 
     companion object {
         private const val PHOTO_HOLDER_KEY = 0
@@ -94,7 +119,7 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             with(view){
                 val makePhoto = findViewById<ImageView>(R.id.make_photo)
                 makePhoto.setOnClickListener {
-                    if (chooseMedia.size<10) {
+                    if (chooseMedias.size<10) {
                         mediaCallback.attachPhoto()
                     }else{
                         Toast.makeText(context, "Не больше 10 вложений", Toast.LENGTH_SHORT)
@@ -106,27 +131,24 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     }
 
-    fun getChoosePhotosFromObservable():Observable<String>{
-        return Observable.fromIterable(chooseMedia)
-    }
+    fun getChoosePhotosFromObservable():Observable<ChooseMedia> = Observable.fromIterable(chooseMedias)
 
     inner class ImageHolder(private val view: View) : BaseHolder<GalleryModel>(view) {
         val simpleDraweeView = view.findViewById<SimpleDraweeView>(R.id.imagePreview)
         override fun onBind(data: GalleryModel) {
             with(view){
-                imageLoadingDelegate.loadCompressedImageFromFile(data.url,simpleDraweeView)
+                imageLoadingDelegate.loadCompressedImageFromFile(data.url, simpleDraweeView)
                 val addImageFiles = findViewById<Button>(R.id.addImageFiles)
                 addImageFiles.apply {
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            Timber.tag("tut_size").d(chooseMedia.size.toString())
-                            if(!isChoose && chooseMedia.size<10 && !chooseMedia.contains(url)){
+                            if(!isChoose && chooseMedias.size<10 && !chooseMedias.containsMedia(url)){
                                 isChoose = true
-                                chooseMedia.add(url)
+                                chooseMedias.addChooseMedia(ChooseMedia(url))
                             } else if (isChoose) {
                                 isChoose = false
-                                chooseMedia.remove(url)
+                                chooseMedias.removeChooseMedia(url)
                             }
                             mediaCallback.changeCountChooseImage()
                             activated(isChoose)
@@ -134,7 +156,7 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     }
                 }
                 simpleDraweeView.setOnClickListener {
-                    dialogDelegate.showPreviewDialog(true, data.url, data.isChoose,manager)
+                    dialogDelegate.showPreviewDialog(true, data.url, data.isChoose, manager)
                 }
             }
         }
@@ -147,7 +169,7 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
     private var isPlaying = AtomicBoolean(false)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<AudioInAddFileModel> {
         val view = LayoutInflater.from(parent.context).
-        inflate(R.layout.item_audio_for_add_files_bottom_sheet, parent,false)
+        inflate(R.layout.item_audio_for_add_files_bottom_sheet, parent, false)
         return AudioHolder(view)
     }
 
@@ -157,7 +179,7 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
 
     override fun getItemCount() = audios.size
 
-    fun getChooseAudiosFromObservable() = Observable.fromIterable(chooseMedia)
+    fun getChooseAudiosFromObservable() = Observable.fromIterable(chooseMedias)
 
     inner class AudioHolder(private val view: View) : BaseHolder<AudioInAddFileModel>(view){
         override fun onBind(data: AudioInAddFileModel) {
@@ -172,12 +194,13 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && chooseMedia.size<10 && !chooseMedia.contains(url)){
+                            if(!isChoose && chooseMedias.size<10 && !chooseMedias.containsMedia(url)){
                                 isChoose = true
-                                chooseMedia.add(url)
+                                chooseMedias.addChooseMedia(ChooseMedia(url,trackName = data.name,
+                                        authorMusic = data.author))
                             } else if (isChoose) {
                                 isChoose = false
-                                chooseMedia.remove(url)
+                                chooseMedias.removeChooseMedia(url)
                             }
                             mediaCallback.changeCountChooseAudio()
                             activated(isChoose)
@@ -204,13 +227,13 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
 }
 
 class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-        private val mediaCallback: MediaCallback, private val dialogDelegate: DialogDelegate,
-        private val manager: FragmentManager)
+                   private val mediaCallback: MediaCallback, private val dialogDelegate: DialogDelegate,
+                   private val manager: FragmentManager)
     :RecyclerView.Adapter<BaseHolder<VideoModel>>(){
     val videos = mutableListOf<VideoModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<VideoModel> {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video_for_add_files_bottom_sheet, parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video_for_add_files_bottom_sheet, parent, false)
         return VideoHolder(view)
     }
 
@@ -220,13 +243,13 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     override fun getItemCount() = videos.size
 
-    fun getChooseVideosFromObservable() = Observable.fromIterable(chooseMedia)
+    fun getChooseVideosFromObservable() = Observable.fromIterable(chooseMedias)
 
     inner class VideoHolder(private val view: View) : BaseHolder<VideoModel>(view) {
         override fun onBind(data: VideoModel) {
             with(view){
                 val simpleDraweeView = findViewById<SimpleDraweeView>(R.id.imagePreview)
-                imageLoadingDelegate.loadCompressedImageFromFile(data.url,simpleDraweeView)
+                imageLoadingDelegate.loadImageFromFile(data.url, simpleDraweeView)
                 val textView = findViewById<TextView>(R.id.timeVideo)
                 textView.text = data.duration
                 val addVideoFiles = findViewById<Button>(R.id.addVideoFiles)
@@ -234,12 +257,12 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     activated(data.isChoose)
                     setOnClickListener {
                         data.run {
-                            if(!isChoose && chooseMedia.size<10 && !chooseMedia.contains(url)){
+                            if(!isChoose && chooseMedias.size<10 && !chooseMedias.containsMedia(url)){
                                 isChoose = true
-                                chooseMedia.add(url)
+                                chooseMedias.addChooseMedia(ChooseMedia(url,createFile(simpleDraweeView.drawable)))
                             } else if (isChoose){
                                 isChoose = false
-                                chooseMedia.remove(url)
+                                chooseMedias.removeChooseMedia(url)
                             }
                             mediaCallback.changeCountChooseVideo()
                             activated(isChoose)
@@ -252,13 +275,32 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
+        private fun createFile(drawable:Drawable):String{
+            val cacheFile =
+            if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()
+                    || !Environment.isExternalStorageRemovable()) {
+                view.context.externalCacheDir
+            } else {
+                view.context.cacheDir
+            }
+            val f = File(cacheFile, "previewImage")
+            f.createNewFile()
+            val bitmap = drawable.toBitmap(300,300)
+            val bos = ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , bos);
+            val bitmapData = bos.toByteArray();
+            f.writeBytes(bitmapData)
+            Timber.tag("tut_path").d("absolute ${f.absolutePath}")
+            return f.absolutePath
+        }
+
     }
 }
 
 class PlaylistAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):RecyclerView.Adapter<BaseHolder<String>>(){
     val playlists = mutableListOf<String>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<String> {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_attach_image, parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_attach_image, parent, false)
         return PlaylistHolder(view)
     }
 
@@ -277,5 +319,5 @@ class PlaylistAdapter(private val imageLoadingDelegate: ImageLoadingDelegate):Re
 }
 
 abstract class BaseHolder<T>(view: View):RecyclerView.ViewHolder(view){
-    abstract fun onBind(data:T)
+    abstract fun onBind(data: T)
 }

@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.exception.FIRST_NAME
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.SECOND_NAME
@@ -121,8 +122,8 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         }
     }
 
-    override fun showImageUploadingStarted(path: String) {
-        avatarHolder.showImageUploadingStarted(path)
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        avatarHolder.showImageUploadingStarted(chooseMedia)
     }
 
     override fun showImageUploaded(path: String) {

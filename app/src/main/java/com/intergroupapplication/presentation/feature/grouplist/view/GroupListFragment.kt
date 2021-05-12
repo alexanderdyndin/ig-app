@@ -25,6 +25,7 @@ import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
@@ -386,7 +387,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
 
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }

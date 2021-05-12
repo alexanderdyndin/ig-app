@@ -6,30 +6,23 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.danikula.videocache.CacheListener
 import com.danikula.videocache.HttpProxyCacheServer
+import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.extractor.ExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.dpToPx
 import com.intergroupapplication.presentation.exstension.getActivity
+import com.intergroupapplication.presentation.exstension.gone
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.exstension.pxToDp
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
-import kotlinx.android.synthetic.main.layout_2pic.view.*
-import kotlinx.android.synthetic.main.layout_3pic.view.*
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
-import kotlinx.android.synthetic.main.layout_pic.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,6 +47,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
     private var isExpanded: Boolean = false
 
     var proxy: HttpProxyCacheServer? = null
+    var imageLoadingDelegate: ImageLoadingDelegate? = null
 
     fun setVideos(uris: List<FileEntity>, isExpanded: Boolean = false) {
         this.uris = uris
@@ -99,9 +93,10 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
                 val bindedService = activity.bindMediaService()
                 bindedService?.let {
                     urls.forEach {
-                        val player = makeVideoPlayer(it, bindedService)
                         val playerView = VideoPlayerView(context)
+                        val player = makeVideoPlayer(it, bindedService,playerView.previewForVideo)
                         playerView.exoPlayer.player = player
+                        imageLoadingDelegate?.loadImageFromUrl(it.preview,playerView.previewForVideo)
                         container.addView(playerView)
                         if (player.playWhenReady) {
                             player.playWhenReady = false
@@ -114,7 +109,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         } else throw Exception("Activity is not MainActivity")
     }
 
-    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder,preview:SimpleDraweeView): SimpleExoPlayer {
         val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(false, video.id)) {
             val bindedPlayer = service.getExoPlayerInstance()
             if (bindedPlayer != null) return bindedPlayer
@@ -125,7 +120,18 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 if (playWhenReady) {
+                    preview.gone()
                     service.setPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id), video.title, video.description)
+                }
+            }
+
+            override fun onPlaybackStateChanged(state: Int) {
+                super.onPlaybackStateChanged(state)
+                if (state == Player.STATE_ENDED){
+                    preview.show()
+                }
+                else{
+                    preview.gone()
                 }
             }
         }

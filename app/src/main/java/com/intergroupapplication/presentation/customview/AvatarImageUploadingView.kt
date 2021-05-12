@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
@@ -72,11 +73,11 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
         state = AvatarUploadingState.NONE
     }
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         errorView.hide()
         darkCard.show()
         imageUploadingProgressBar.show()
-        imageLoaderDelegate?.loadImageFromFile(path, avatar)
+        imageLoaderDelegate?.loadImageFromFile(chooseMedia.url, avatar)
         imageUploadingProgressBar.progress = 0f
         state = AvatarUploadingState.UPLOADING
     }

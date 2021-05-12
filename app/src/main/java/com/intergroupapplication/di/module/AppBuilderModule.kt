@@ -8,11 +8,11 @@ import com.intergroupapplication.presentation.feature.agreements.di.AgreementsVi
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.intergroupapplication.presentation.feature.audiolist.di.AudioListViewModule
 import com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment
-import com.intergroupapplication.presentation.feature.bottomsheet.di.BottomSheetViewModule
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.di.BottomSheetViewModule
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.di.CommentsDetailsViewModule
-import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.confirmationmail.di.ConfirmationMailViewModule
 import com.intergroupapplication.presentation.feature.confirmationmail.di.ConfirmationUserProfileGatewayModule
@@ -23,6 +23,8 @@ import com.intergroupapplication.presentation.feature.createpost.di.CreatePostVi
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.createuserprofile.di.CreateUserProfileViewModule
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
+import com.intergroupapplication.presentation.feature.editpostbottomsheet.di.EditPostBottomSheetViewModule
+import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.image.di.ImageViewModule
@@ -86,7 +88,11 @@ interface AppBuilderModule {
 
     @PerFragment
     @ContributesAndroidInjector(modules = [BottomSheetViewModule::class])
-    fun provideBottomSheetFragment(): BottomSheetFragment
+    fun provideBottomSheetFragment(): CommentBottomSheetFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [EditPostBottomSheetViewModule::class])
+    fun provideEditPostBottomSheetFragment(): EditPostBottomSheetFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])

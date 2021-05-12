@@ -189,6 +189,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
                 videoContainer.proxy = proxyCacheServer
+                videoContainer.imageLoadingDelegate = imageLoadingDelegate
                 videoContainer.setVideos(item.videos, item.videosExpanded)
                 videoContainer.expand = { item.videosExpanded = it }
 

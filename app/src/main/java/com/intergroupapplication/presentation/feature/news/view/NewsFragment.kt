@@ -19,6 +19,7 @@ import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
@@ -419,7 +420,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         presenter.getUserInfo()
     }
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }

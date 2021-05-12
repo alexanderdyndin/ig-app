@@ -1,8 +1,6 @@
-package com.intergroupapplication.presentation.feature.bottomsheet.view
+package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
 
-import android.view.View
 import com.intergroupapplication.domain.entity.CommentEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy

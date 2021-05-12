@@ -3,14 +3,12 @@ package com.intergroupapplication.presentation.feature.commentsdetails.view
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
-import androidx.core.view.MotionEventCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +22,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
@@ -32,9 +31,9 @@ import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.bottomsheet.presenter.BottomSheetPresenter
-import com.intergroupapplication.presentation.feature.bottomsheet.view.AutoCloseBottomSheetBehavior
-import com.intergroupapplication.presentation.feature.bottomsheet.view.BottomSheetFragment
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
@@ -43,7 +42,7 @@ import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.C
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_comment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_comments_details.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.item_group_post.*
@@ -65,8 +64,8 @@ import kotlin.math.roundToInt
 import kotlin.coroutines.CoroutineContext
 
 
-class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
-        AppBarLayout.OnOffsetChangedListener,BottomSheetFragment.Callback {
+class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineScope,
+        AppBarLayout.OnOffsetChangedListener,CommentBottomSheetFragment.Callback {
 
     companion object {
         const val COMMENTS_DETAILS_REQUEST = 0
@@ -138,7 +137,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
     private var groupPostEntity: GroupPostEntity.PostEntity? = null
     private var lastRepliedComment: CommentEntity.Comment? = null
 
-    private val bottomFragment by lazy {BottomSheetFragment()}
+    private val bottomFragment by lazy {CommentBottomSheetFragment()}
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_comments_details
@@ -177,9 +176,9 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
 
     override fun viewCreated() {
         try {
-            childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet, bottomFragment).commit()
+            childFragmentManager.beginTransaction().replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
             bottomFragment.callback = this
-            bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet) as AutoCloseBottomSheetBehavior<View>
+            bottomSheetBehaviour = BottomSheetBehavior.from(containerCommentBottomSheet) as AutoCloseBottomSheetBehavior<View>
             bottomSheetBehaviour.run {
                 peekHeight = convertDpToPixel(93)
                 commentHolder.minimumHeight = peekHeight
@@ -226,6 +225,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
         }
         audioBody.proxy = proxyCacheServer
         videoBody.proxy = proxyCacheServer
+        videoBody.imageLoadingDelegate = imageLoadingDelegate
 
         imageBody.imageClick = { list, index ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
@@ -327,7 +327,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
         idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.id.toString())
         countComments.text = groupPostEntity.commentsCount
         idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.idp.toString())
-        commentBtn.text = groupPostEntity.commentsCount
+        countComments.text = groupPostEntity.commentsCount
         groupName.text = groupPostEntity.groupInPost.name
         postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
         postLike.text = groupPostEntity.reacts.likesCount.toString()
@@ -478,52 +478,20 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
         Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
     }
 
-    override fun showImageUploadingStarted(path: String) {
-        /*loadingViews[path] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer1, false)
-        loadingViews[path]?.let {
-            it.imagePreview?.let { draweeView ->
-                val type = MimeTypeMap.getFileExtensionFromUrl(path)
-                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
-                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
-                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
-                    it.nameView?.text = path.substring(path.lastIndexOf("/") + 1)
-                }
-                else
-                    imageLoadingDelegate.loadImageFromFile(path, draweeView)
-            }
-        }
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
 
-        postContainer1.addView(loadingViews[path])
-        prepareListeners(loadingViews[path], path)
-        imageUploadingStarted(loadingViews[path])*/
     }
 
     override fun showImageUploaded(path: String) {
-        /*loadingViews[path]?.apply {
-            darkCard?.hide()
-            stopUploading?.hide()
-            imageUploadingProgressBar?.hide()
-            detachImage?.show()
-            commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
-            setUpRightDrawableListener()
-        }*/
+
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        /*loadingViews[path]?.apply {
-            imageUploadingProgressBar?.progress = progress
-        }*/
+
     }
 
     override fun showImageUploadingError(path: String) {
-        /*loadingViews[path]?.apply {
-            darkCard?.show()
-            detachImage?.show()
-            refreshContainer?.show()
-            imageUploadingProgressBar?.hide()
-            stopUploading?.hide()
-        }*/
+
     }
 
     override fun createComment(textComment: String, bottomPresenter: BottomSheetPresenter) {
@@ -532,7 +500,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
                 bottomPresenter.createAnswerToComment(it.id, textComment)
             }
         } else {
-            bottomPresenter.createComment(groupPostEntity.id, textComment)
+            bottomPresenter.createComment(groupPostEntity?.id.toString(), textComment)
         }
     }
 
@@ -565,7 +533,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,
     private fun increaseCommentsCounter() {
         var commentsCount = countComments.text.toString().toInt()
         commentsCount++
-        commentBtn.text = commentsCount.toString()
+        countComments.text = commentsCount.toString()
         findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount.toString())
     }
 
