@@ -6,10 +6,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.R
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
 import kotlinx.android.synthetic.main.item_add_user_black_list.view.*
 
-class AddUserBlackListAdapter : RecyclerView.Adapter<AddUserBlackListAdapter.AddUserBlackListViewHolder>() {
+class AddUserBlackListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
+    : RecyclerView.Adapter<AddUserBlackListAdapter.AddUserBlackListViewHolder>() {
     companion object {
         var selectItem: (userItem: AddBlackListUserItem, position: Int) -> Unit = { _, _ -> }
     }
@@ -30,8 +32,8 @@ class AddUserBlackListAdapter : RecyclerView.Adapter<AddUserBlackListAdapter.Add
             itemView.run {
                 nameTxt.text = userEntity.fullName
                 profileIdTxt.text = "ID: ${userEntity.idProfile}"
-                if (userEntity.avatar.isNotEmpty()) userAvatarHolder.showAvatar(userEntity.avatar)
-                else userAvatarHolder.showAvatar(R.drawable.variant_10)
+                if (userEntity.avatar.isNotEmpty()) imageLoadingDelegate.loadImageFromUrl(userEntity.avatar, userAvatarHolder)
+                else imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, userAvatarHolder)
 
                 if (userEntity.isSelected) {
                     nameUsersAddBlackList.background = ContextCompat.getDrawable(context, R.drawable.bg_dark_element_radius_2dp)

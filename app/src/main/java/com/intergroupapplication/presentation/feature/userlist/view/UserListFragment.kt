@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.userlist.view
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import androidx.navigation.fragment.findNavController
 import androidx.paging.*
 import androidx.recyclerview.widget.ConcatAdapter
@@ -29,7 +31,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-class UserListFragment : BaseFragment() {
+class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -97,6 +99,8 @@ class UserListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupId = requireArguments().getString(GROUP_ID)!!
+
+        AddBlackListByIdFragment.callBack = this
 
         userSession.user?.id?.run {
             UserListAdapter.currentUserId = this
@@ -180,6 +184,7 @@ class UserListFragment : BaseFragment() {
                 args.putString(GROUP_ID, groupId)
                 addBlackListDialog.arguments = args
                 addBlackListDialog.show(childFragmentManager, "TAG")
+                addBlackListDialog.lifecycle
             }
         } else {
             getFollowers()
@@ -316,6 +321,12 @@ class UserListFragment : BaseFragment() {
                         }
                 )
         )
+    }
+
+    override fun updateList() {
+        adapterBlocked.refresh()
+        adapterAll.refresh()
+        adapterAdministrators.refresh()
     }
 
 }

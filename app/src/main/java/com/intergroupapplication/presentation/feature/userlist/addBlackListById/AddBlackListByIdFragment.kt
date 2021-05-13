@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment.Companion.GROUP_ID
+import com.intergroupapplication.presentation.feature.userlist.view.DialogFragmentCallBack
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_dialog_add_black_list_by_id.*
 import javax.inject.Inject
@@ -19,6 +20,10 @@ import javax.inject.Inject
 class AddBlackListByIdFragment @Inject constructor(
         private val modelFactory: ViewModelProvider.Factory
 ) : DialogFragment(R.layout.fragment_dialog_add_black_list_by_id) {
+
+    companion object {
+        lateinit var callBack: DialogFragmentCallBack
+    }
 
     @Inject
     lateinit var userAdapter: AddUserBlackListAdapter
@@ -76,6 +81,7 @@ class AddBlackListByIdFragment @Inject constructor(
         super.onPause()
         inputBlackListAddId.removeTextChangedListener(textWatcher)
         compositeDisposable.clear()
+        callBack.updateList()
     }
 
     private fun getData(searchFilter: String = "") {

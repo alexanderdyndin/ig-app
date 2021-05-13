@@ -142,8 +142,8 @@ class UserListViewModule {
 
     @PerFragment
     @Provides
-    fun provideAddUserBlackListAdapter(): AddUserBlackListAdapter {
-        return AddUserBlackListAdapter()
+    fun provideAddUserBlackListAdapter(imageLoadingDelegate: ImageLoadingDelegate): AddUserBlackListAdapter {
+        return AddUserBlackListAdapter(imageLoadingDelegate)
     }
 
 }

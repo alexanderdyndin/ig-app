@@ -1,5 +1,5 @@
 <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp"
@@ -56,12 +56,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shape_clip_drawable="@drawable/ava_group_create">
 
-        <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/userAvatarHolder"
             android:layout_width="50dp"
-            android:layout_height="50dp">
-
-        </com.intergroupapplication.presentation.customview.AvatarImageUploadingView>
+            android:layout_height="50dp"/>
 
     </com.github.florent37.shapeofview.ShapeOfView>
 
