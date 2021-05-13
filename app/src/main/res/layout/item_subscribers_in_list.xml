@@ -175,14 +175,6 @@
 
     <!-- Всплывающее окно по нажатию на настройки, только для админов -->
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shadow_setting_sub"
-        app:layout_constraintBottom_toBottomOf="@+id/settingsDialog"
-        app:layout_constraintEnd_toEndOf="@+id/settingsDialog"
-        app:layout_constraintStart_toStartOf="@+id/settingsDialog"
-        app:layout_constraintTop_toBottomOf="@+id/settingsDialog" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/settingsDialog"

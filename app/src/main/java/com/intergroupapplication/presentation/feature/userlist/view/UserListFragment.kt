@@ -16,7 +16,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
-import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
@@ -152,6 +151,8 @@ class UserListFragment : BaseFragment() {
             val handler = ViewPager2Circular(this, followers_refresh)
             handler.pageChanged = {
                 currentScreen = it
+                if (currentScreen == 2) btnAddId.visibility = View.VISIBLE
+                else btnAddId.visibility = View.GONE
             }
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
@@ -174,7 +175,6 @@ class UserListFragment : BaseFragment() {
             setAdapter(adapterBlocked, adapterFooterBlocked)
             getAllData()
 
-            btnAddId.visibility = View.VISIBLE
             btnAddId.setOnClickListener {
                 val args = Bundle()
                 args.putString(GROUP_ID, groupId)
