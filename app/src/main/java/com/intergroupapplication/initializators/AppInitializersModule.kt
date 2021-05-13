@@ -11,6 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.intergroupapplication.di.qualifier.AmazonOkHttpClient
 import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.presentation.base.FrescoMemoryTrimmableRegistry
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import dagger.Module
@@ -57,12 +58,12 @@ class AppInitializersModule {
 
     @Provides
     @IntoSet
-    fun provideFrecoInitializer(): Initializer = object : Initializer {
+    fun provideFrescoInitializer(frescoMemoryTrimmableRegistry: FrescoMemoryTrimmableRegistry): Initializer = object : Initializer {
         override fun initialize(app: Application) {
-//            val config: ImagePipelineConfig = ImagePipelineConfig.newBuilder(app)
-//                    .setDownsampleEnabled(true)
-//                    .build()
-            Fresco.initialize(app)
+            val config: ImagePipelineConfig = ImagePipelineConfig.newBuilder(app)
+                .setMemoryTrimmableRegistry(frescoMemoryTrimmableRegistry)
+                .build()
+            Fresco.initialize(app, config)
         }
     }
 

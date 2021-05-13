@@ -33,8 +33,8 @@ class ImageViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-            FrescoImageLoader(context)
+    fun provideFrescoImageLoader(fragment: ImageFragment): ImageLoader =
+            FrescoImageLoader(fragment)
 
     @PerFragment
     @Provides

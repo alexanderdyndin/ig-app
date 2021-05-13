@@ -34,8 +34,8 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-            FrescoImageLoader(context)
+    fun provideFrescoImageLoader(fragment: NewsFragment): ImageLoader =
+            FrescoImageLoader(fragment)
 
 
     @PerFragment

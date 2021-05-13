@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.base
 
+import android.widget.ImageView
 import com.facebook.drawee.view.SimpleDraweeView
 
 /**
@@ -8,5 +9,5 @@ import com.facebook.drawee.view.SimpleDraweeView
 interface ImageLoader {
     fun loadImageFromFile(filePath: String, target: SimpleDraweeView)
     fun loadImageFromResources(resId: Int, target: SimpleDraweeView)
-    fun loadImageFromUrl(url: String, target: SimpleDraweeView)
+    fun loadImageFromUrl(url: String, target: ImageView)
 }

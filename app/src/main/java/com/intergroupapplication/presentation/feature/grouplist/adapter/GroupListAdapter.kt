@@ -72,10 +72,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var AD_FIRST = 3
     }
 
-    private lateinit var context: Context
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-       context = parent.context
         val view: View
         return when (viewType) {
             AdViewHolder.NATIVE_AD -> {
@@ -184,14 +181,15 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     }
                 }
                 doOrIfNull(item.avatar, {
-                    val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.avatar))
-                            .setResizeOptions(ResizeOptions(100, 100))
-                            .build()
-                    avatar.controller = Fresco.newDraweeControllerBuilder()
-                            .setAutoPlayAnimations(true)
-                            .setOldController(avatar.controller)
-                            .setImageRequest(request)
-                            .build()
+//                    val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.avatar))
+//                            .setResizeOptions(ResizeOptions(100, 100))
+//                            .build()
+//                    avatar.controller = Fresco.newDraweeControllerBuilder()
+//                            .setAutoPlayAnimations(true)
+//                            .setOldController(avatar.controller)
+//                            .setImageRequest(request)
+//                            .build()
+                      imageLoadingDelegate.loadImageFromUrl(it, avatar)
                 }, { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, avatar)
                 })
 

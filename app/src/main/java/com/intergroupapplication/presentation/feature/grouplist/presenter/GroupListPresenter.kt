@@ -70,7 +70,7 @@ class GroupListPresenter @Inject constructor(private val errorHandler: ErrorHand
     }
 
 
-    private fun stopImageUploading() {
+    fun stopImageUploading() {
         uploadingImageDisposable?.dispose()
     }
 

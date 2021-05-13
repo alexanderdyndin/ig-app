@@ -61,13 +61,13 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
-        var commentClickListener: (groupPostEntity: GroupPostEntity.PostEntity) -> Unit = {}
-        var complaintListener: (Int) -> Unit = {}
-        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
-        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
-        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
-        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
-        var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
+        var commentClickListener: ((groupPostEntity: GroupPostEntity.PostEntity) -> Unit)? = null
+        var complaintListener: ((Int) -> Unit)? = null
+        var imageClickListener: ((List<FileEntity>, Int) -> Unit)? = null
+        var likeClickListener: ((isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit)? = null
+        var deleteClickListener: ((postId: Int, position: Int) -> Unit)? = null
+        var bellClickListener: ((item: GroupPostEntity.PostEntity, position: Int) -> Unit)? = null
+        var pinClickListener: ((item: GroupPostEntity.PostEntity, position: Int) -> Unit)? = null
         var isOwner = false
     }
 
@@ -143,7 +143,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         postText.text = item.postText
                         postText.show()
                         postText.setOnClickListener {
-                            commentClickListener.invoke(item)
+                            commentClickListener?.invoke(item)
                         }
                     } else {
                         postText.gone()
@@ -157,7 +157,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
                 }
 
-                anchorBtn.setOnClickListener { pinClickListener.invoke(item, layoutPosition) }
+                anchorBtn.setOnClickListener { pinClickListener?.invoke(item, layoutPosition) }
 
 //                if (isOwner) {
 //                    anchorBtn.show()
@@ -173,30 +173,31 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 //                }
 
                 subCommentBtn.setOnClickListener {
-                    bellClickListener.invoke(item, layoutPosition)
+                    bellClickListener?.invoke(item, layoutPosition)
                 }
                 commentBtn.setOnClickListener {
-                    commentClickListener.invoke(item)
+                    commentClickListener?.invoke(item)
                 }
                 postLikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener?.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
                 postDislikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener?.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
 
                 doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
-                videoContainer.proxy = proxyCacheServer
-                videoContainer.setVideos(item.videos, item.videosExpanded)
-                videoContainer.expand = { item.videosExpanded = it }
+//                videoContainer.proxy = proxyCacheServer
+//                videoContainer.setVideos(item.videos, item.videosExpanded)
+//                videoContainer.expand = { item.videosExpanded = it }
+//
+//                audioContainer.proxy = proxyCacheServer
+//                audioContainer.setAudios(item.audios, item.audiosExpanded)
+//                audioContainer.expand = { item.audiosExpanded = it }
 
-                audioContainer.proxy = proxyCacheServer
-                audioContainer.setAudios(item.audios, item.audiosExpanded)
-                audioContainer.expand = { item.audiosExpanded = it }
-
+                imageContainer.imageLoadingDelegate = imageLoadingDelegate
                 imageContainer.setImages(item.images, item.imagesExpanded)
                 imageContainer.imageClick = imageClickListener
                 imageContainer.expand = { item.imagesExpanded = it }
@@ -209,8 +210,8 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 //            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.complaint -> complaintListener.invoke(id)
-                    R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
+                    R.id.complaint -> complaintListener?.invoke(id)
+                    R.id.delete -> deleteClickListener?.invoke(id, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true
             }

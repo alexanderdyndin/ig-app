@@ -53,7 +53,8 @@
                 android:background="@drawable/btn_filter"
                 android:src="@drawable/icon_filter"
                 app:layout_constraintTop_toTopOf="@+id/activity_main__search_input"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="invisible"/>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/slidingCategories"

@@ -380,6 +380,12 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
         job.cancel()
     }
 
+    override fun onDestroyView() {
+        presenter.stopImageUploading()
+        super.onDestroyView()
+    }
+
+
     private fun openCreateGroup() {
         findNavController().navigate(R.id.action_groupListFragment2_to_createGroupActivity)
     }

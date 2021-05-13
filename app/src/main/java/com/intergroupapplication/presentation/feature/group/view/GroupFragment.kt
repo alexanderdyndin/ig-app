@@ -311,6 +311,19 @@ class GroupFragment() : BaseFragment(), GroupView,
         super.onStop()
     }
 
+    override fun onDestroy() {
+        GroupPostsAdapter.apply {
+            commentClickListener = null
+            complaintListener = null
+            imageClickListener = null
+            likeClickListener = null
+            deleteClickListener = null
+            bellClickListener = null
+            pinClickListener = null
+        }
+        super.onDestroy()
+    }
+
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
         swipeLayout.isEnabled = (verticalOffset == 0)
         val maxScroll = appBarLayout.totalScrollRange

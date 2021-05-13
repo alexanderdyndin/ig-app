@@ -11,6 +11,7 @@ import com.intergroupapplication.di.scope.PerApplication
 import com.intergroupapplication.domain.crypto.EncryptionDelegate
 import com.intergroupapplication.domain.crypto.Encryptor
 import com.intergroupapplication.presentation.base.BaseEncryptor
+import com.intergroupapplication.presentation.base.FrescoMemoryTrimmableRegistry
 import dagger.Module
 import dagger.Provides
 
@@ -42,4 +43,8 @@ class CoreModule {
             ColorStateList(arrayOf(intArrayOf(-attr.state_checked), intArrayOf(attr.state_checked)),
                     intArrayOf(ContextCompat.getColor(context, R.color.radioButtonCircleColor),
                             ContextCompat.getColor(context, R.color.colorAccent)))
+
+    @PerApplication
+    @Provides
+    fun provideFrescoMemoryTrim(): FrescoMemoryTrimmableRegistry = FrescoMemoryTrimmableRegistry()
 }

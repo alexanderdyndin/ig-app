@@ -41,6 +41,7 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
 
     fun unsubscribe() {
         newsDisposable.clear()
+        stopImageUploading()
     }
 
     private var uploadingImageDisposable: Disposable? = null

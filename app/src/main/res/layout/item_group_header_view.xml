@@ -65,7 +65,8 @@
             android:background="@drawable/btn_red_mini"
             android:contentDescription="btn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="invisible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

@@ -1,13 +1,21 @@
 package com.intergroupapplication.presentation.feature.image.adapter
 
+import android.net.Uri
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.customview.zoomable.DoubleTapGestureListener
+import com.intergroupapplication.presentation.customview.zoomable.ZoomableDraweeView
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
 
 
-class ImageAdapter(private val items: List<FileEntity>): RecyclerView.Adapter<ImageViewHolder>() {
+class ImageAdapter(private val items: List<FileEntity>,
+                   val imageLoadingDelegate: ImageLoadingDelegate): RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
 
     companion object {
         var imageClickListener: () -> Unit = {}
@@ -23,9 +31,30 @@ class ImageAdapter(private val items: List<FileEntity>): RecyclerView.Adapter<Im
 
 
     override fun getItemCount(): Int = items.count()
+
     override fun onViewRecycled(holder: ImageViewHolder) {
         holder.image.controller = null
         super.onViewRecycled(holder)
+    }
+
+    inner class ImageViewHolder(view: View): RecyclerView.ViewHolder(view) {
+
+        val image = itemView.findViewById<ZoomableDraweeView>(R.id.image)
+
+        fun bind(file: FileEntity) {
+//            val controller = Fresco.newDraweeControllerBuilder()
+//                .setUri(Uri.parse(file.file))
+//                .setAutoPlayAnimations(true)
+//                .build()
+//            image.controller = controller
+            imageLoadingDelegate.loadImageFromUrl(file.file, image)
+            image.setOnClickListener {
+                imageClickListener.invoke()
+            }
+            image.setAllowTouchInterceptionWhileZoomed(false)
+            image.setIsLongpressEnabled(false)
+            image.setTapListener(DoubleTapGestureListener(image))
+        }
     }
 
 }

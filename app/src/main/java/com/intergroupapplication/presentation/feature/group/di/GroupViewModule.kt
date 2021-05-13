@@ -36,8 +36,8 @@ class GroupViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-            FrescoImageLoader(context)
+    fun provideFrescoImageLoader(fragment: GroupFragment): ImageLoader =
+            FrescoImageLoader(fragment)
 
     @PerFragment
     @Provides

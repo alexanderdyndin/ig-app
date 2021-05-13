@@ -54,24 +54,13 @@ android {
         applicationId "com.intergroupapplication"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 100004
+        versionCode 100005
 //        androidGitVersion.code()
-        versionName "1.6.0.9"
+        versionName "1.6.0.10"
 //        androidGitVersion.name()
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
-        vectorDrawables.useSupportLibrary = true
 
-//        javaCompileOptions {
-//            annotationProcessorOptions {
-//                arguments = [
-//                        // here go the options for Moxy compiler
-//                        //disableEmptyStrategyCheck : 'true'
-//                        //defaultMoxyStrategy: 'moxy.viewstate.strategy.AddToEndSingleStrategy'
-//                        enableEmptyStrategyHelper: 'true'
-//                ]
-//            }
-//        }
     }
 
     compileOptions {
@@ -229,10 +218,8 @@ dependencies {
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
 
-    //LeackCanary
-//    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-//    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
-//    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
+//    LeakCanary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
 
     //Validation
     implementation "com.mobsandgeeks:android-saripaar:$saripaarVersion"
@@ -273,12 +260,6 @@ dependencies {
 
     //CryptoLibrary
     implementation "cc.duduhuo.util:digest-util-android:$cryptoLibraryVersion"
-
-    //Adapters
-//    implementation "com.mikepenz:fastadapter:$pinceAdapterVersion"
-//    implementation "com.mikepenz:fastadapter-commons:$pinceAdapterVersion"
-//    implementation "com.mikepenz:fastadapter-extensions:$pinceAdapterVersion"
-//    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$chinaAdapterVersion"
 
     //MultiDex
     implementation 'androidx.multidex:multidex:2.0.1'

@@ -180,7 +180,8 @@
                 android:layout_marginBottom="@dimen/large_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="invisible"/>
 
             <FrameLayout
                 android:id="@+id/frameLayout2"

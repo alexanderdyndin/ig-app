@@ -181,7 +181,8 @@
                 android:layout_marginEnd="@dimen/large_margin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnRecoveryPassword"/>
+                app:layout_constraintTop_toBottomOf="@id/btnRecoveryPassword"
+                android:visibility="invisible"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -66,13 +66,13 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
-        var commentClickListener: (groupPostEntity: GroupPostEntity.PostEntity) -> Unit = {}
-        var groupClickListener: (groupId: String) -> Unit = {}
-        var complaintListener: (Int) -> Unit = {}
-        var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
-        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
-        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
-        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
+        var commentClickListener: ((groupPostEntity: GroupPostEntity.PostEntity) -> Unit)? = null
+        var groupClickListener: ((groupId: String) -> Unit)? = null
+        var complaintListener: ((Int) -> Unit)? = null
+        var imageClickListener: ((List<FileEntity>, Int) -> Unit)? = null
+        var likeClickListener: ((isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit)? = null
+        var deleteClickListener: ((postId: Int, position: Int) -> Unit)? = null
+        var bellClickListener: ((item: GroupPostEntity.PostEntity, position: Int) -> Unit)? = null
         var USER_ID: Int? = null
     }
 
@@ -96,7 +96,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             if (holder is PostViewHolder && it is NewsEntity.Post)
                 holder.bind(it)
             else if (holder is AdViewHolder && it is NewsEntity.AdEntity) {
-                holder.bind(it.nativeAd, AD_TYPE)
+                holder.bind(it.nativeAd, AD_TYPE, "news_feed")
             }
         }
     }
@@ -139,7 +139,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         postText.text = item.post.postText
                         postText.show()
                         postText.setOnClickListener {
-                            commentClickListener.invoke(item.post)
+                            commentClickListener?.invoke(item.post)
                         }
                     } else {
                         postText.gone()
@@ -156,22 +156,22 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 //                anchorBtn.isVisible = item.post.isPinned
 
                 subCommentBtn.setOnClickListener {
-                    bellClickListener.invoke(item.post, layoutPosition)
+                    bellClickListener?.invoke(item.post, layoutPosition)
                 }
                 commentBtn.setOnClickListener {
-                    commentClickListener.invoke(item.post)
+                    commentClickListener?.invoke(item.post)
                 }
                 postAvatarHolder.setOnClickListener {
-                    groupClickListener.invoke(item.post.groupInPost.id)
+                    groupClickListener?.invoke(item.post.groupInPost.id)
                 }
                 headerPostFromGroup.setOnClickListener {
-                    groupClickListener.invoke(item.post.groupInPost.id)
+                    groupClickListener?.invoke(item.post.groupInPost.id)
                 }
                 postLikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(!item.post.reacts.isLike, item.post.reacts.isDislike, item.post, layoutPosition)
+                    likeClickListener?.invoke(!item.post.reacts.isLike, item.post.reacts.isDislike, item.post, layoutPosition)
                 }
                 postDislikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(item.post.reacts.isLike, !item.post.reacts.isDislike, item.post, layoutPosition)
+                    likeClickListener?.invoke(item.post.reacts.isLike, !item.post.reacts.isDislike, item.post, layoutPosition)
                 }
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }
 
@@ -186,6 +186,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 audioContainer.setAudios(item.post.audios, item.post.audiosExpanded)
                 audioContainer.expand = { item.post.audiosExpanded = it }
 
+                imageContainer.imageLoadingDelegate = imageLoadingDelegate
                 imageContainer.setImages(item.post.images, item.post.imagesExpanded)
                 imageContainer.imageClick = imageClickListener
                 imageContainer.expand = { item.post.imagesExpanded = it }
@@ -199,8 +200,8 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 //            popupMenu.menu.findItem(R.id.delete).isVisible = USER_ID == userId
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.complaint -> complaintListener.invoke(postId)
-                    R.id.delete -> deleteClickListener.invoke(newsId, layoutPosition)
+                    R.id.complaint -> complaintListener?.invoke(postId)
+                    R.id.delete -> deleteClickListener?.invoke(newsId, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true
             }
@@ -221,6 +222,11 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             holder.clear()
         }
         super.onViewRecycled(holder)
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        Timber.d("detached")
     }
 
 }

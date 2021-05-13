@@ -23,6 +23,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import kotlinx.android.synthetic.main.layout_2pic.view.*
 import kotlinx.android.synthetic.main.layout_3pic.view.*
@@ -41,8 +42,10 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
         var pxWidth = 1080
     }
 
-    var imageClick: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
+    var imageClick: ((List<FileEntity>, Int) -> Unit)? = null
     var expand: (isExpanded: Boolean) -> Unit = {}
+
+    var imageLoadingDelegate: ImageLoadingDelegate? = null
 
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -105,15 +108,18 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
     private fun createPic(img: FileEntity, width: Int): View {
         val image = LayoutInflater.from(context).inflate(R.layout.layout_pic, this, false)
         image.layoutParams = LayoutParams(width, LayoutParams.WRAP_CONTENT)
-        val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(img.file))
-            .setResizeOptions(ResizeOptions(500, 500))
-            .build()
-        image.pic.controller = Fresco.newDraweeControllerBuilder()
+        imageLoadingDelegate?.loadImageFromUrl(img.file, image.pic) ?: let {
+            val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(img.file))
+                .setResizeOptions(ResizeOptions(500, 500))
+                .build()
+            image.pic.controller = Fresco.newDraweeControllerBuilder()
+                .setCallerContext(context)
                 .setAutoPlayAnimations(true)
                 .setOldController(image.pic.controller)
                 .setImageRequest(request)
                 .build()
-        image.pic.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
+        }
+        image.pic.setOnClickListener { imageClick?.invoke(uris, uris.indexOf(img)) }
         return image
     }
 

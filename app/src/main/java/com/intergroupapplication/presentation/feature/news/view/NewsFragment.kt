@@ -133,6 +133,10 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        AppWatcher.objectWatcher.watch(adapter)
+//        AppWatcher.objectWatcher.watch(this)
+//        AppWatcher.objectWatcher.watch(viewModel)
+//        AppWatcher.objectWatcher.watch(presenter)
         //Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         //paging 3
         newPaging()
@@ -150,6 +154,12 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     override fun onPause() {
         super.onPause()
         job.cancel()
+    }
+
+    override fun onDestroyView() {
+        presenter.unsubscribe()
+        newsPosts.adapter = null
+        super.onDestroyView()
     }
 
     fun newPaging() {
@@ -305,6 +315,15 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     override fun onDestroy() {
         //adapterWrapper.release()
         presenter.unsubscribe()
+        NewsAdapter.apply {
+            complaintListener = null
+            commentClickListener = null
+            groupClickListener = null
+            imageClickListener = null
+            likeClickListener = null
+            deleteClickListener = null
+            bellClickListener = null
+        }
         super.onDestroy()
     }
 
