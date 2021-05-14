@@ -24,16 +24,17 @@ class GroupUseCase @Inject constructor(
 
     @SuppressLint("CheckResult")
     fun getUserRole(groupEntity: GroupEntity.Group) : Single<UserRole>{
-        return groupGateway.getAllGroupAdmins(groupEntity.id)
-                .zipWith(userProfileGateway.getUserProfile(), {admins, user ->
-                    admins.forEach {
-                        if (user.id == it) return@zipWith UserRole.ADMIN
-                    }
-                    when (groupEntity.isFollowing) {
-                        true -> UserRole.USER_FOLLOWER
-                        false -> UserRole.USER_NOT_FOLLOWER
-                    }
-                })
+        if (groupEntity.isFollowing) {
+            return groupGateway.getAllGroupAdmins(groupEntity.id)
+                    .zipWith(userProfileGateway.getUserProfile(), {admins, user ->
+                        admins.forEach {
+                            if (user.id == it) return@zipWith UserRole.ADMIN
+                        }
+                        UserRole.USER_FOLLOWER
+                    })
+        } else {
+            return Single.just(UserRole.USER_NOT_FOLLOWER)
+        }
     }
 
     fun getGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
