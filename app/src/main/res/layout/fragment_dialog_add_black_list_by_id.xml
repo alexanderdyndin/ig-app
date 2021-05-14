@@ -79,6 +79,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listUsers"
         style="@style/ScrollBar"
+        android:scrollbars="vertical"
         android:layout_width="0dp"
         android:layout_height="190dp"
         android:layout_marginTop="8dp"

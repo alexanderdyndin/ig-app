@@ -19,22 +19,19 @@
                 android:id="@+id/searchEditText"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
-                android:background="@drawable/bg_search"
-                android:paddingLeft="30dp"
-                android:drawableLeft="@drawable/icon_search"
-                android:drawablePadding="40dp"
+                android:paddingStart="32dp"
+                android:background="@drawable/bg_search_sub"
                 android:ems="15"
                 android:fontFamily="@font/play"
                 android:hint="@string/search"
                 android:inputType="textShortMessage"
+                android:paddingLeft="20dp"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@color/NoActiveText"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"/>
-
-
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/slidingCategories"
