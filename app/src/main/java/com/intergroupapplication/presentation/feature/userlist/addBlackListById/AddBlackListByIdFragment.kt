@@ -51,14 +51,15 @@ class AddBlackListByIdFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, R.style.BlockByIdDialog)
         viewModel = ViewModelProvider(requireActivity(), modelFactory)[AddBlackListByIdViewModel::class.java]
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
-        if (dialog != null && dialog!!.window != null) {
-            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.run {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            requestFeature(Window.FEATURE_NO_TITLE)
         }
         return view
     }
