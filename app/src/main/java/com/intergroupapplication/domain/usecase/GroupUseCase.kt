@@ -1,5 +1,6 @@
 package com.intergroupapplication.domain.usecase
 
+import android.annotation.SuppressLint
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
@@ -21,20 +22,19 @@ class GroupUseCase @Inject constructor(
         private val userProfileGateway: UserProfileGateway,
         private val groupGateway: GroupGateway) {
 
-    fun getUserRole(groupEntity: GroupEntity.Group): Single<UserRole> {
-        return userProfileGateway.getUserProfile()
-                .map {
-                    if (it.id == groupEntity.owner) {
-                        return@map UserRole.ADMIN
+    @SuppressLint("CheckResult")
+    fun getUserRole(groupEntity: GroupEntity.Group) : Single<UserRole>{
+        return groupGateway.getAllGroupAdmins(groupEntity.id)
+                .zipWith(userProfileGateway.getUserProfile(), {admins, user ->
+                    admins.forEach {
+                        if (user.id == it) return@zipWith UserRole.ADMIN
                     }
                     when (groupEntity.isFollowing) {
                         true -> UserRole.USER_FOLLOWER
                         false -> UserRole.USER_NOT_FOLLOWER
                     }
-
-                }
+                })
     }
-
 
     fun getGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getGroupList(searchFilter)
@@ -93,10 +93,6 @@ class GroupUseCase @Inject constructor(
         }
     }
 
-    fun getAllGroupAdmins(groupId: String): Single<List<String>> {
-        return groupGateway.getAllGroupAdmins(groupId)
-    }
-
     fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<AddBlackListUserItem>> {
         return groupGateway.getGroupFollowersForSearch(groupId, searchFilter)
                 .map { listUsers ->
@@ -110,7 +106,6 @@ class GroupUseCase @Inject constructor(
                                 isBlocked = groupUserEntity.isBlocked,
                                 subscriptionId = groupUserEntity.subscriptionId
                         )
-
                     }
                 }
     }

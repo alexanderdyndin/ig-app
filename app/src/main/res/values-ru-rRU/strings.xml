@@ -38,6 +38,7 @@
     <string name="comment_should_contain_text">Комментарий должен содержать текст</string>
     <string name="intergroup_notification">Нотификация от  InterGroup</string>
     <string name="here_no_groups_yet">Здесь пока нет групп</string>
+    <string name="here_no_users_yet">Здесь пока нет пользователей</string>
     <string name="user_blocked">Пользователь заблокирован</string>
     <string name="loading_error">Ошибка загрузки</string>
     <string name="retry">Повторить</string>

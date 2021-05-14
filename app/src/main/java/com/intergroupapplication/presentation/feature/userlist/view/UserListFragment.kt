@@ -18,6 +18,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
@@ -99,25 +100,11 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupId = requireArguments().getString(GROUP_ID)!!
+        isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
+        UserListAdapter.isAdmin = isAdmin
+        initPager()
 
         AddBlackListByIdFragment.callBack = this
-
-        userSession.user?.id?.run {
-            UserListAdapter.currentUserId = this
-            viewModel.checkIsAdmin(groupId, this)
-                    .subscribe(
-                            {
-                                isAdmin = it
-                                UserListAdapter.isAdmin = isAdmin
-                                initPager()
-                            },
-                            {
-                                isAdmin = false
-                                UserListAdapter.isAdmin = isAdmin
-                                initPager()
-                            }
-                    )
-        }
 
         toolbarTittle.text = getString(R.string.allUsers)
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
