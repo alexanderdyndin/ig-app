@@ -5,6 +5,8 @@ import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.domain.entity.AudioEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
@@ -38,7 +40,8 @@ class EditPostBottomSheetFragment:BaseBottomSheetFragment(),EditPostBottomSheetV
             when (bundle.getInt(CreatePostFragment.METHOD_KEY)){
                 CreatePostFragment.RETRY_LOADING_METHOD_CODE-> presenter.retryLoading(chooseMedia)
                 CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> presenter.cancelUploading(chooseMedia.url)
-                CreatePostFragment.REMOVE_CONTENT_METHOD_CODE -> presenter.removeContent(chooseMedia.url)
+                CreatePostFragment.REMOVE_CONTENT_METHOD_CODE -> {presenter.removeContent(chooseMedia.url)
+                }
             }
         }
     }
@@ -122,6 +125,10 @@ class EditPostBottomSheetFragment:BaseBottomSheetFragment(),EditPostBottomSheetV
     fun getPhotosUrl() = presenter.getPhotosUrl()
     fun getVideosUrl() = presenter.getVideosUrl()
     fun getAudiosUrl() = presenter.getAudiosUrl()
+
+    fun addAudioInAudiosUrl(audios:List<AudioEntity>) = presenter.addAudioInAudiosUrl(audios)
+    fun addVideoInVideosUrl(videos:List<FileEntity>) = presenter.addVideoInVideosUrl(videos)
+    fun addImagesInPhotosUrl(images:List<FileEntity>) = presenter.addImagesInPhotosUrl(images)
 
     interface Callback:ImageUploadingView{
         fun getState():Int

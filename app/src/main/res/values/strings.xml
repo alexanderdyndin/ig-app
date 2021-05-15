@@ -177,4 +177,5 @@
 
     <string name="demote">Demote</string>
     <string name="unblock">Unblock</string>
+    <string name="edit_post">Edit</string>
 </resources>

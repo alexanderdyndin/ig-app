@@ -4,6 +4,8 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.domain.entity.AudioEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.exception.CanNotUploadAudio
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.CanNotUploadVideo
@@ -19,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway: PhotoGateway,
@@ -30,7 +33,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
     var groupId: String? = null
     private val processes: MutableMap<String, Disposable> = mutableMapOf()
 
-    fun attachMedia(mediasObservable: Observable<ChooseMedia>, loadMedia:(chooseMedia:ChooseMedia)->Unit,loadingView:Map<String, View?>) {
+    fun attachMedia(mediasObservable: Observable<ChooseMedia>,
+                    loadMedia:(chooseMedia:ChooseMedia)->Unit,loadingView:Map<String, View?>) {
         mediaDisposable.add(mediasObservable
                 .filter { !loadingView.containsKey(it.url) }
                 .subscribeOn(Schedulers.io())
@@ -70,7 +74,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
                     it.printStackTrace()
                     errorHandler.handle(CanNotUploadVideo())
                     viewState.showImageUploadingError(chooseMedia.url)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
+                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                    viewState.showImageUploaded(chooseMedia.url) })
         mediaDisposable.add(processes[chooseMedia.url]!!)
     }
 
@@ -88,7 +93,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
                     it.printStackTrace()
                     errorHandler.handle(CanNotUploadAudio())
                     viewState.showImageUploadingError(chooseMedia.url)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
+                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                    viewState.showImageUploaded(chooseMedia.url) })
         mediaDisposable.add(processes[chooseMedia.url]!!)
 
     }
@@ -107,7 +113,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
                     it.printStackTrace()
                     errorHandler.handle(CanNotUploadPhoto())
                     viewState.showImageUploadingError(chooseMedia.url)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
+                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                    viewState.showImageUploaded(chooseMedia.url) })
         mediaDisposable.add(processes[chooseMedia.url]!!)
     }
 
@@ -126,7 +133,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
                         }, {
                             errorHandler.handle(CanNotUploadPhoto())
                             viewState.showImageUploadingError(chooseMedia.url)
-                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
+                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                            viewState.showImageUploaded(chooseMedia.url) })
             }
             in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> {
                 processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,groupId,appApi::uploadCommentsMedia)
@@ -142,7 +150,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
                             it.printStackTrace()
                             errorHandler.handle(CanNotUploadVideo())
                             viewState.showImageUploadingError(chooseMedia.url)
-                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
+                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                            viewState.showImageUploaded(chooseMedia.url) })
             }
             else -> {
                 processes[chooseMedia.url] = photoGateway.uploadImageToAws(chooseMedia.url, groupId, appApi::uploadPhoto)
@@ -154,7 +163,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
                         }, {
                             errorHandler.handle(CanNotUploadPhoto())
                             viewState.showImageUploadingError(chooseMedia.url)
-                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
+                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                            viewState.showImageUploaded(chooseMedia.url) })
             }
         }
         processes[chooseMedia.url]?.let {
@@ -162,17 +172,17 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
         }
     }
 
-    fun removeContent(path: String) {
+    fun removeContent(path:String) {
         photoGateway.removeContent(path)
     }
 
-    fun cancelUploading(file: String) {
-        processes[file]?.let {
+    fun cancelUploading(path:String) {
+        processes[path]?.let {
             it.dispose()
             mediaDisposable.remove(it)
         }
-        removeContent(file)
-        processes.remove(file)
+        removeContent(path)
+        processes.remove(path)
     }
 
     fun getPhotosUrl() = photoGateway.getImageUrls()
@@ -183,5 +193,31 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
         super.onDestroy()
         uploadingDisposable?.dispose()
         mediaDisposable.dispose()
+    }
+
+    fun addAudioInAudiosUrl(audios: List<AudioEntity>) {
+        photoGateway.setAudioUrls(audios.map { audioEntity ->
+            val chooseMedia = ChooseMedia("/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
+                    trackName = audioEntity.song,authorMusic = audioEntity.artist)
+            Timber.tag("tut_add_audio").d(chooseMedia.url)
+            chooseMedias.addChooseMedia(chooseMedia)
+            return@map chooseMedia
+        })
+    }
+
+    fun addVideoInVideosUrl(videos: List<FileEntity>) {
+        photoGateway.setVideoUrls(videos.map { videoEntity ->
+            val chooseMedia = ChooseMedia("/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
+            "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}")
+            chooseMedias.addChooseMedia(chooseMedia)
+            return@map chooseMedia
+        })
+    }
+
+    fun addImagesInPhotosUrl(images: List<FileEntity>) {
+        photoGateway.setImageUrls(images.map{
+            val url = "/groups/0/comments/${it.file.substringAfterLast("/")}"
+            chooseMedias.addChooseMedia(ChooseMedia(url))
+            return@map url})
     }
 }

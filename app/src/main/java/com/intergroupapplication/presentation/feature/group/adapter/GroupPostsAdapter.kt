@@ -1,5 +1,7 @@
 package com.intergroupapplication.presentation.feature.group.adapter
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,10 @@ import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.ktx.androidParameters
+import com.google.firebase.dynamiclinks.ktx.dynamicLink
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -34,6 +40,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         private val proxyCacheServer: HttpProxyCacheServer)
     : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
 
+    var isAdmin = false
     companion object {
         private const val DEFAULT_HOLDER = 1488
         private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntity>() {
@@ -64,6 +71,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
+        var editPostClickListener: (postEntity:GroupPostEntity.PostEntity) -> Unit = {}
         var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var isOwner = false
@@ -182,11 +190,27 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 postDislikesClickArea.setOnClickListener {
                     likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
-                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+                settingsPost.setOnClickListener {
+                        showPopupMenu(settingsPost, Integer.parseInt(item.id),item) }
 
                 doOrIfNull(item.groupInPost.avatar, {
                     imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
+
+                btnRepost.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.type = "text/plain"
+                    val link = Firebase.dynamicLinks.dynamicLink {
+                        domainUriPrefix = "https://intergroupapplication.page.link"
+                        link = Uri.parse("https://intergroup.com/post/${item.id}")
+                        androidParameters(packageName = "com.intergroupapplication"){
+                            minimumVersion = 1
+                        }
+                    }
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
+                    intent.putExtra(Intent.EXTRA_TEXT,link.uri.toString())
+                    context.startActivity(Intent.createChooser(intent,"Share using"))
+                }
 
                 videoContainer.proxy = proxyCacheServer
                 videoContainer.imageLoadingDelegate = imageLoadingDelegate
@@ -203,13 +227,15 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
-        private fun showPopupMenu(view: View, id: Int) {
+        private fun showPopupMenu(view: View, id: Int,groupPostEntity: GroupPostEntity.PostEntity) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
+            popupMenu.menu.findItem(R.id.edit).isVisible = isAdmin
 //            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)
+                    R.id.edit ->  editPostClickListener.invoke(groupPostEntity)
                     R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true

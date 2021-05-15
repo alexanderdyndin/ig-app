@@ -2,18 +2,10 @@ package com.intergroupapplication.data.repository
 
 import android.app.Activity
 import android.graphics.Bitmap
-import android.os.Environment
 import android.webkit.MimeTypeMap
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.common.Priority
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.OkHttpResponseListener
-import com.androidnetworking.interfaces.UploadProgressListener
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ImageUploadDto
-import com.intergroupapplication.data.model.PhotoUploadFields
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
@@ -22,23 +14,10 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
-import com.intergroupapplication.data.network.AmazonApi
-import com.intergroupapplication.domain.exception.CanNotUploadPhoto
-import com.intergroupapplication.domain.exception.ImageUploadingException
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import id.zelory.compressor.Compressor
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.Response
 import timber.log.Timber
 import java.io.File
-import java.net.URLEncoder
-import java.util.concurrent.Executors
-import java.util.concurrent.ThreadPoolExecutor
 
 
 /**
@@ -82,7 +61,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     .usingCamera()
                     .map {
                         val path = it.data()?.file?.path
-                        Timber.tag("tut_response").d(path)
                         lastAttachedImagePath = path
                         lastPhotoUrl = ""
                         if (path != null)
@@ -98,6 +76,27 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     override fun getImageUrls(): Single<List<String>> {
         return Single.fromCallable { imageUrls }
+    }
+
+    override fun setVideoUrls(videos: List<ChooseMedia>) {
+        videoUrls.addAll(videos)
+        videos.forEach {
+            fileToUrl[it.url] = it.url
+        }
+    }
+
+    override fun setAudioUrls(audios: List<ChooseMedia>) {
+        audioUrls.addAll(audios)
+        audios.forEach {
+            fileToUrl[it.url] = it.url
+        }
+    }
+
+    override fun setImageUrls(images: List<String>) {
+        imageUrls.addAll(images)
+        images.forEach {
+            fileToUrl[it] = it
+        }
     }
 
     override fun loadAudio(): Observable<List<String>> =
@@ -157,7 +156,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         myFile.createNewFile()
         val byteArray = file.readBytes()
         myFile.writeBytes(byteArray)
-        Timber.tag("tut_path").d(myFile.absolutePath)
         return upload(myFile.extension, groupId)
                 .doAfterSuccess {
                     awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, myFile)
@@ -296,15 +294,17 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
     }
 
-    override fun removeContent(path: String) {
+    override fun removeContent(path:String) {
         val type = MimeTypeMap.getFileExtensionFromUrl(path)
         when (MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: "") {
-            in listOf("audio/mpeg", "audio/aac", "audio/wav") -> audioUrls.remove(fileToUrl[path])
-            in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> videoUrls.remove(fileToUrl[path])
+            in listOf("audio/mpeg", "audio/aac", "audio/wav") ->{
+                audioUrls.removeMedia(fileToUrl[path]).toString()
+            }
+            in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> videoUrls.removeMedia(fileToUrl[path])
             else ->  {
                 imageUrls.remove(fileToUrl[path])
-                audioUrls.remove(fileToUrl[path])
-                videoUrls.remove(fileToUrl[path])
+                audioUrls.removeMedia(fileToUrl[path])
+                videoUrls.removeMedia(fileToUrl[path])
             }
         }
     }
@@ -314,4 +314,14 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         audioUrls.clear()
         videoUrls.clear()
     }
+}
+
+private fun MutableList<ChooseMedia>.removeMedia(url: String?):Boolean {
+    this.forEach {
+        if (it.url == url) {
+            remove(it)
+            return true
+        }
+    }
+    return false
 }

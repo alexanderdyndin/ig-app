@@ -4,12 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import com.danikula.videocache.CacheListener
 import com.danikula.videocache.HttpProxyCacheServer
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -47,7 +49,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
     private var isExpanded: Boolean = false
 
     var proxy: HttpProxyCacheServer? = null
-    var imageLoadingDelegate: ImageLoadingDelegate? = null
+    var imageLoadingDelegate:ImageLoadingDelegate? = null
 
     fun setVideos(uris: List<FileEntity>, isExpanded: Boolean = false) {
         this.uris = uris
@@ -94,8 +96,9 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
                 bindedService?.let {
                     urls.forEach {
                         val playerView = VideoPlayerView(context)
-                        val player = makeVideoPlayer(it, bindedService,playerView.previewForVideo)
+                        val player = makeVideoPlayer(it, bindedService,playerView)
                         playerView.exoPlayer.player = player
+                        playerView.exoPlayer.controllerHideOnTouch = false
                         imageLoadingDelegate?.loadImageFromUrl(it.preview,playerView.previewForVideo)
                         container.addView(playerView)
                         if (player.playWhenReady) {
@@ -109,33 +112,18 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         } else throw Exception("Activity is not MainActivity")
     }
 
-    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder,preview:SimpleDraweeView): SimpleExoPlayer {
+    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder,playerView:VideoPlayerView): SimpleExoPlayer {
         val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(false, video.id)) {
             val bindedPlayer = service.getExoPlayerInstance()
-            if (bindedPlayer != null) return bindedPlayer
+            if (bindedPlayer != null) {
+                setUpListener(service, bindedPlayer, video, playerView)
+                return bindedPlayer
+            }
             else SimpleExoPlayer.Builder(context).build()
         }
         else SimpleExoPlayer.Builder(context).build()
 
-        val listener = object : Player.EventListener {
-            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                if (playWhenReady) {
-                    preview.gone()
-                    service.setPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id), video.title, video.description)
-                }
-            }
-
-            override fun onPlaybackStateChanged(state: Int) {
-                super.onPlaybackStateChanged(state)
-                if (state == Player.STATE_ENDED){
-                    preview.show()
-                }
-                else{
-                    preview.gone()
-                }
-            }
-        }
-        videoPlayer.addListener(listener)
+        setUpListener(service, videoPlayer, video, playerView)
         proxy?.let {
             it.registerCacheListener(CacheListener { cacheFile, url, percentsAvailable ->
                 Timber.d(String.format("onCacheAvailable. percents: %d, file: %s, url: %s", percentsAvailable, cacheFile, url));
@@ -153,6 +141,33 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
 //                    musicPlayer.prepare()
         }
         return videoPlayer
+    }
+
+    private fun setUpListener(service: IGMediaService.ServiceBinder, videoPlayer: SimpleExoPlayer, video: FileEntity, playerView: VideoPlayerView) {
+        val listener = object : Player.EventListener {
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                if (playWhenReady) {
+                    playerView.exoPlayer.controllerHideOnTouch = true
+                    playerView.previewForVideo.gone()
+                    service.setPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id), video.title, video.description)
+                }
+            }
+
+            override fun onPlaybackStateChanged(state: Int) {
+                super.onPlaybackStateChanged(state)
+                when (state) {
+                    Player.STATE_ENDED -> {
+                        playerView.previewForVideo.show()
+                        playerView.exoPlayer.controllerHideOnTouch = false
+                    }
+                    else -> {
+                        playerView.exoPlayer.controllerHideOnTouch = true
+                        playerView.previewForVideo.gone()
+                    }
+                }
+            }
+        }
+        videoPlayer.addListener(listener)
     }
 
 }

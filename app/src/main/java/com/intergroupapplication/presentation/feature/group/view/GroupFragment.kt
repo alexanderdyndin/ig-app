@@ -25,13 +25,11 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.jakewharton.rxbinding2.view.RxView
-import com.workable.errorhandler.Action
-import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
@@ -196,7 +194,11 @@ class GroupFragment() : BaseFragment(), GroupView,
             complaintListener = { id -> presenter.complaintPost(id) }
             imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-                findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
+                findNavController().navigate(R.id.action_groupActivity_to_imageFragment,data)
+            }
+            editPostClickListener = {
+                val data = bundleOf(GROUP_ID to it.id, EditPostFragment.GROUP_POST_ENTITY_KEY to it)
+                findNavController().navigate(R.id.action_groupActivity_to_editPostFragment,data)
             }
             likeClickListener = { like, dislike, item, position ->
                 if (!item.isLoading) {
@@ -428,6 +430,7 @@ class GroupFragment() : BaseFragment(), GroupView,
                         mapOf(R.id.fromCamera to { presenter.attachFromCamera(groupId) }, R.id.fromGallery to { presenter.attachFromGallery(groupId) }))
             }
         }
+        adapter.isAdmin = isAdmin
     }
 
     private fun renderUserPage(viewId: Int) {

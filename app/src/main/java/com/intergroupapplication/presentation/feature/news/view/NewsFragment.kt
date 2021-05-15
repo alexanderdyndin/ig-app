@@ -350,7 +350,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
+                onClick { _ ->
                     toolbarTittle.text = getString(R.string.news)
                     false
                 }
@@ -362,7 +362,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
+                onClick { _ ->
                     findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
                     toolbarTittle.text = getString(R.string.groups)
                     false
@@ -399,7 +399,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { v ->
+                onClick { _ ->
                     userSession.logout()
                     findNavController().navigate(R.id.action_newsFragment2_to_loginActivity)
                     false

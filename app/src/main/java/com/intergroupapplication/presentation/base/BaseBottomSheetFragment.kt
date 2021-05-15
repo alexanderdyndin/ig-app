@@ -109,19 +109,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         setUpAddFilePanel()
     }
 
-
-    protected fun convertDpToPixel(dp: Int): Int {
-        val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
-        val px = dp * (metrics.densityDpi / 160f)
-        return px.roundToInt()
-    }
-
-    protected fun convertPixelToDp(pixel: Int): Int {
-        val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
-        val dp = pixel/ (metrics.densityDpi / 160f)
-        return dp.roundToInt()
-    }
-
     private fun setUpAddFilePanel() {
         icAttachFile.apply {
             setOnClickListener {

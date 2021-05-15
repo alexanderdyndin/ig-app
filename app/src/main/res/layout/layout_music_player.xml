@@ -126,16 +126,16 @@
             app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
             app:layout_constraintTop_toBottomOf="@+id/fromWhom" />
 
-        <SeekBar
-            android:id="@+id/exo_progress_placeholder"
-            style="@style/PostSeekBar"
+        <com.google.android.exoplayer2.ui.DefaultTimeBar
+            android:id="@+id/exo_progress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
+            app:scrubber_color="@color/colorAccent"
+            app:played_color="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="@+id/exo_duration"
             app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
             app:layout_constraintTop_toTopOf="@id/startLineSeekBar" />
-
 <!--        <View android:id="@id/exo_progress_placeholder"-->
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="26dp"-->

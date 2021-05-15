@@ -19,6 +19,9 @@ interface PhotoGateway {
     fun getVideoUrls(): Single<List<ChooseMedia>>
     fun getAudioUrls(): Single<List<ChooseMedia>>
     fun getImageUrls(): Single<List<String>>
+    fun setVideoUrls(videos:List<ChooseMedia>)
+    fun setAudioUrls(audios:List<ChooseMedia>)
+    fun setImageUrls(images:List<String>)
     fun loadAudio(): Observable<List<String>>
     fun loadVideo(): Observable<List<String>>
     fun loadImagesFromGallery(): Observable<List<String>>
@@ -30,6 +33,6 @@ interface PhotoGateway {
                          upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
     fun uploadImage(path: String, groupId: String? = null,
                     upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<String>
-    fun removeContent(path: String)
+    fun removeContent(path:String)
     fun removeAllContent()
 }

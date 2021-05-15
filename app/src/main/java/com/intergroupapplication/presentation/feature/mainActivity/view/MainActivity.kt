@@ -9,16 +9,23 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.media.AudioAttributes
 import android.media.AudioManager
+import android.net.Uri
 import android.os.*
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.android.billingclient.api.*
 import com.appodeal.ads.Appodeal
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.initializators.InitializerLocal
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import dagger.android.AndroidInjection
@@ -111,8 +118,31 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
         //viewModel.checkNewVersionAvaliable(supportFragmentManager)
+        settingDeepLink()
     }
 
+
+    private fun settingDeepLink() {
+        Firebase.dynamicLinks
+                .getDynamicLink(intent)
+                .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
+                    val deepLink: Uri? = pendingDynamicLinkData?.link
+                    if (deepLink != null) {
+                        val postId = deepLink.toString().substringAfterLast("/")
+                        val data = bundleOf(CommentsDetailsFragment.POST_ID to postId)
+                        val commentsDetailsFragment = CommentsDetailsFragment()
+                        commentsDetailsFragment.arguments = data
+                        try {
+                            if (userSession.isLoggedIn())
+                                findNavController(R.id.my_nav_host_fragment).navigate(R.id.commentsDetailsActivity, data)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            Timber.tag("tut_error").e(e)
+                        }
+                    }
+                }
+                .addOnFailureListener(this) { e -> e.printStackTrace() }
+    }
 
     suspend fun bindMediaService():IGMediaService.ServiceBinder? {
         return suspendCoroutine {
@@ -230,4 +260,5 @@ class MainActivity : FragmentActivity() {
             val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
         }
     }
+
 }

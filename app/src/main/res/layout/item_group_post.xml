@@ -96,14 +96,14 @@
             android:paddingLeft="4dp"
             android:paddingBottom="4dp"
             tools:text="999k"
+            android:clickable="true"
             android:fontFamily="@font/play"
             android:textSize="12dp"
             android:textColor="@color/colorAccent"
             android:background="@drawable/btn_repost"
             app:layout_constraintEnd_toStartOf="@+id/settingsPost"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"
-            tools:visibility="visible"/>
+            />
 
         <ImageView
             android:id="@+id/settingsPost"

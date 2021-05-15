@@ -168,19 +168,13 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     }
 
-    private fun convertDpToPixel(dp: Int): Int {
-        val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
-        val px = dp * (metrics.densityDpi / 160f)
-        return px.roundToInt()
-    }
-
     override fun viewCreated() {
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
             bottomFragment.callback = this
             bottomSheetBehaviour = BottomSheetBehavior.from(containerCommentBottomSheet) as AutoCloseBottomSheetBehavior<View>
             bottomSheetBehaviour.run {
-                peekHeight = convertDpToPixel(93)
+                peekHeight = requireContext().dpToPx(93)
                 commentHolder.minimumHeight = peekHeight
                 halfExpandedRatio = 0.6f
                 isFitToContents = false

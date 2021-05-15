@@ -1,5 +1,7 @@
 package com.intergroupapplication.presentation.feature.news.adapter
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +19,10 @@ import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.ktx.androidParameters
+import com.google.firebase.dynamiclinks.ktx.dynamicLink
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -176,6 +182,20 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 }
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }
 
+                btnRepost.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.type = "text/plain"
+                    val link = Firebase.dynamicLinks.dynamicLink {
+                        domainUriPrefix = "https://intergroupapplication.page.link"
+                        link =Uri.parse("https://intergroup.com/post/${item.post.id}")
+                        androidParameters(packageName = "com.intergroupapplication"){
+                            minimumVersion = 1
+                        }
+                    }
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
+                    intent.putExtra(Intent.EXTRA_TEXT,link.uri.toString())
+                    context.startActivity(Intent.createChooser(intent,"Share using"))
+                }
 
                 doOrIfNull(item.post.groupInPost.avatar, {
                     imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },

@@ -40,7 +40,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFragment.Callback {
+open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFragment.Callback {
 
     companion object{
         const val MEDIA_INTERACTION_REQUEST_CODE = "media_interaction_request_code"
@@ -63,12 +63,12 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
 
     private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<View>
 
-    private val bottomFragment by lazy { EditPostBottomSheetFragment() }
+    protected val bottomFragment by lazy { EditPostBottomSheetFragment() }
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_create_post
 
-    private val loadingViews: MutableMap<String, View?> = mutableMapOf()
+    protected val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createPostCoordinator
 
@@ -76,19 +76,14 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
 
     private lateinit var groupId: String
 
-    private fun convertDpToPixel(dp: Int): Int {
-        val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
-        val px = dp * (metrics.densityDpi / 160f)
-        return px.roundToInt()
-    }
-
     override fun viewCreated() {
+        chooseMedias.clear()
         groupId = arguments?.getString(GROUP_ID)!!
         presenter.groupId = groupId
         publishBtn.show()
         publishBtn.setOnClickListener {
             val post = postText.text.toString().trim()
-            if (post.isEmpty() && postContainer.childCount == 1 && audioContainer.childCount == 1) {
+            if (post.isEmpty() && postContainer.childCount == 0 && audioContainer.childCount == 0) {
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
             }
             else if (loadingViews.isNotEmpty()) {
@@ -96,21 +91,16 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
                 loadingViews.forEach { (key, view) ->
                     if (view?.darkCard?.isVisible() != false) {
                         isLoading = true
-                        Timber.tag("tut_view").d(key)
                     }
                 }
                 if (isLoading)
                     dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
                 else {
-                    presenter.createPostWithImage(postText.text.toString().trim(), groupId,
-                            bottomFragment.getPhotosUrl(),bottomFragment.getVideosUrl(),
-                            bottomFragment.getAudiosUrl())
+                    createPost()
                 }
             }
             else {
-                presenter.createPostWithImage(postText.text.toString().trim(), groupId,
-                        bottomFragment.getPhotosUrl(),bottomFragment.getVideosUrl(),
-                        bottomFragment.getAudiosUrl())
+                createPost()
             }
         }
 
@@ -119,7 +109,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
             bottomFragment.callback = this
             bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet) as AutoCloseBottomSheetBehavior<View>
             bottomSheetBehaviour.run {
-                peekHeight = convertDpToPixel(35)
+                peekHeight = requireContext().dpToPx(35)
                 halfExpandedRatio = 0.6f
                 isFitToContents = false
                 addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -144,6 +134,12 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
         toolbarBackAction.setOnClickListener { onResultCancel() }
         //postText.showKeyboard()
         setErrorHandler()
+    }
+
+    protected open fun createPost() {
+        presenter.createPostWithImage(postText.text.toString().trim(), groupId,
+                bottomFragment.getPhotosUrl(), bottomFragment.getVideosUrl(),
+                bottomFragment.getAudiosUrl())
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity.PostEntity) {
@@ -173,7 +169,6 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
         }
         prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
         imageUploadingStarted(loadingViews[chooseMedia.url])
-        //uploadingView.showImageUploadingStarted(path)
     }
 
     override fun showImageUploaded(path: String) {
@@ -215,7 +210,7 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
         }
     }
 
-    private fun detachImage(path: String) {
+    protected fun detachImage(path: String) {
         postContainer.removeView(loadingViews[path])
         audioContainer.removeView(loadingViews[path])
         loadingViews.remove(path)
@@ -288,4 +283,8 @@ class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFra
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        chooseMedias.clear()
+    }
 }

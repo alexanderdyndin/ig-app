@@ -268,7 +268,7 @@
         <item name="android:progressTint">@color/colorAccent</item>
     </style>
 
-    <style name="PostSeekBar">
+    <style name="PostSeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:progressBackgroundTint">@color/colorAccent</item>
         <item name="android:thumb">@drawable/selector_post_knob</item>
         <item name="android:thumbOffset">-0dp</item>

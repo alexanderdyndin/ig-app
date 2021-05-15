@@ -44,11 +44,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
 
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
-    private val heightView by lazy {convertDpToPixel(100)}
-    private val heightEditTextWithFiveLine by lazy {convertDpToPixel(156)}
-    private val heightEditText by lazy { convertDpToPixel(53) }
-    private val heightLineInEditText by lazy { convertDpToPixel(16) }
-    private val heightAnswerPanel by lazy { convertDpToPixel(35) }
+    private val heightView by lazy { requireContext().dpToPx(100) }
+    private val heightEditTextWithFiveLine by lazy { requireContext().dpToPx(156) }
+    private val heightEditText by lazy { requireContext().dpToPx(53) }
+    private val heightLineInEditText by lazy { requireContext().dpToPx(16) }
+    private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
 
     @ProvidePresenter
     fun providePresenter(): BottomSheetPresenter = presenter

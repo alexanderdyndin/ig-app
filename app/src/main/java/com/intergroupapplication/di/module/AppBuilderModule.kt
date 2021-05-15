@@ -25,6 +25,8 @@ import com.intergroupapplication.presentation.feature.createuserprofile.di.Creat
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.feature.editpostbottomsheet.di.EditPostBottomSheetViewModule
 import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
+import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
+import com.intergroupapplication.presentation.feature.editpost.di.EditPostViewModule
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.image.di.ImageViewModule
@@ -97,6 +99,10 @@ interface AppBuilderModule {
     @PerFragment
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])
     fun provideCreatePostFragmentFactory(): CreatePostFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [EditPostViewModule::class])
+    fun provideEditPostFragmentFactory(): EditPostFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [AgreementsViewModule::class])
