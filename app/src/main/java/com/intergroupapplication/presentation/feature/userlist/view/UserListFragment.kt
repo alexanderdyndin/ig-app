@@ -134,6 +134,15 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
     private fun initPager() {
 
+        compositeDisposable.add(viewModel.getCurrentUserId().subscribe(
+                {
+                    UserListAdapter.currentUserId = it.toString()
+                },
+                {
+                    errorHandler.handle(it)
+                }
+        ))
+
         val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
         adapterList.add(adapterAllAdd)
 

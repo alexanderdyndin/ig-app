@@ -76,24 +76,6 @@ class GroupUseCase @Inject constructor(
         return groupGateway.updateGroupAdmin(subscriptionId, updateGroupAdmin)
     }
 
-    fun getFollowersBanIds(groupId: String, searchFilter: String): Flowable<PagingData<AddBlackListUserItem>> {
-        return getGroupFollowers(groupId, searchFilter).map { pagingData ->
-            pagingData.map { groupEntity ->
-                groupEntity.run {
-                    return@run AddBlackListUserItem(
-                            fullName = "$firstName $surName",
-                            avatar = avatar,
-                            idProfile = idProfile,
-                            isAdministrator = isAdministrator,
-                            isOwner = isOwner,
-                            isBlocked = isBlocked,
-                            subscriptionId = subscriptionId
-                    )
-                }
-            }
-        }
-    }
-
     fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<AddBlackListUserItem>> {
         return groupGateway.getGroupFollowersForSearch(groupId, searchFilter)
                 .map { listUsers ->
@@ -109,5 +91,15 @@ class GroupUseCase @Inject constructor(
                         )
                     }
                 }
+                .zipWith(userProfileGateway.getUserProfile(), { followers, currentUser ->
+                    followers.filter {
+                        it.idProfile != currentUser.id && !it.isOwner
+                    }
+                })
     }
+
+    fun getCurrentUserId() =
+            userProfileGateway.getUserProfile().map {
+                it.id
+            }
 }
