@@ -4,9 +4,11 @@ import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.ItemImageBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.customview.zoomable.DoubleTapGestureListener
 import com.intergroupapplication.presentation.customview.zoomable.ZoomableDraweeView
@@ -18,7 +20,7 @@ class ImageAdapter(private val items: List<FileEntity>,
                    val imageLoadingDelegate: ImageLoadingDelegate): RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
 
     companion object {
-        var imageClickListener: () -> Unit = {}
+        var imageClickListener: (() -> Unit)? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
@@ -29,7 +31,6 @@ class ImageAdapter(private val items: List<FileEntity>,
         holder.bind(items[position])
     }
 
-
     override fun getItemCount(): Int = items.count()
 
     override fun onViewRecycled(holder: ImageViewHolder) {
@@ -39,7 +40,9 @@ class ImageAdapter(private val items: List<FileEntity>,
 
     inner class ImageViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        val image = itemView.findViewById<ZoomableDraweeView>(R.id.image)
+        private val viewBinding by viewBinding(ItemImageBinding::bind)
+
+        val image = viewBinding.image
 
         fun bind(file: FileEntity) {
 //            val controller = Fresco.newDraweeControllerBuilder()
@@ -49,7 +52,7 @@ class ImageAdapter(private val items: List<FileEntity>,
 //            image.controller = controller
             imageLoadingDelegate.loadImageFromUrl(file.file, image)
             image.setOnClickListener {
-                imageClickListener.invoke()
+                imageClickListener?.invoke()
             }
             image.setAllowTouchInterceptionWhileZoomed(false)
             image.setIsLongpressEnabled(false)
