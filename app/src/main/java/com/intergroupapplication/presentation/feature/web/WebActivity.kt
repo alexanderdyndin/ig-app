@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
@@ -35,6 +36,7 @@ class WebActivity : Fragment() {
 //            setDisplayHomeAsUpEnabled(true)
 //            setTitle(name)
 //        }
+        webView.clearCache(true)
         webView.loadUrl(path)
     }
 

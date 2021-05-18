@@ -115,7 +115,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
-        //lifecycleScope.newCoroutineContext(this.coroutineContext)
+        lifecycleScope.newCoroutineContext(this.coroutineContext)
         setAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -133,7 +133,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
+        //Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
         //paging 3
         newPaging()
         //crashing app when provide it by dagger
@@ -153,43 +153,6 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     }
 
     fun newPaging() {
-//        newSwipe.setOnRefreshListener {
-//            adapterNews.refresh()
-//        }
-//        newsPosts.adapter = adapterNews
-//        lifecycleScope.launch {
-//            adapterNews.loadStateFlow.collectLatest { loadStates ->
-//                when(loadStates.refresh) {
-//                    is LoadState.Loading -> {
-//                        if (adapterNews.itemCount == 0) {
-//                            loading_layout.show()
-//                        } else adapterNews.addLoading()
-//                        adapterNews.removeError()
-//                        emptyText.hide()
-//                    }
-//                    is LoadState.Error -> {
-//                        newSwipe.isRefreshing = false
-//                        emptyText.hide()
-//                        adapterNews.removeLoading()
-//                        loading_layout.gone()
-//                        adapterNews.addError()
-//                        errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-//                    }
-//                    is LoadState.NotLoading -> {
-//                        if (adapterNews.itemCount == 0) {
-//                            emptyText.show()
-//                        } else {
-//                            emptyText.hide()
-//                        }
-//                        loading_layout.gone()
-//                        adapterNews.removeError()
-//                        adapterNews.removeLoading()
-//                        newSwipe.isRefreshing = false
-//                    }
-//                    else ->{ newSwipe.isRefreshing = false }
-//                }
-//            }
-//        }
         newSwipe.setOnRefreshListener {
             adapter.refresh()
         }

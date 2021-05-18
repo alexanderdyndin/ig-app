@@ -301,6 +301,17 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         postLike.text = groupPostEntity.reacts.likesCount.toString()
         subCommentBtn.text = groupPostEntity.bells.count.toString()
 
+        if (groupPostEntity.reacts.isLike) {
+            postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
+        } else {
+            postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
+        }
+        if (groupPostEntity.reacts.isDislike) {
+            postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
+        } else {
+            postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
+        }
+
         doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                 { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 

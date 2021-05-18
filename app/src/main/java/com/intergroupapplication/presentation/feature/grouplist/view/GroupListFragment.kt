@@ -148,7 +148,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
+        //Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
         viewModel = ViewModelProvider(this, modelFactory)[GroupListViewModel::class.java]
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         fetchGroups()
@@ -328,6 +328,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 if (job.isCancelled) return@collectLatest
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
+                        //Appodeal.cache(requireActivity(), Appodeal.NATIVE, GroupListAdapter.AD_FREQ)
                     }
                     is LoadState.Error -> {
                         swipe_groups.isRefreshing = false

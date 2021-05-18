@@ -51,12 +51,16 @@ sealed class CommentEntity {
             other as AdEntity
 
             if (position != other.position) return false
+            if (nativeAd != other.nativeAd) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            return position
+            var result = position
+            result = 31 * result + (nativeAd?.hashCode() ?: 0)
+            return result
         }
+
     }
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="2dp"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/mainBlack">
 
@@ -12,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="93dp"
         android:layout_marginLeft="4dp"
-        android:layout_marginTop="4dp"
         android:layout_marginRight="4dp"
         android:background="@drawable/bg_colorinput_radius_4dp"
         app:layout_constraintStart_toStartOf="parent"

@@ -2,23 +2,29 @@ package com.intergroupapplication.presentation.feature.login.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.exstension.clicks
+import com.intergroupapplication.presentation.exstension.gone
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
-import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -28,14 +34,14 @@ import com.mobsandgeeks.saripaar.annotation.Email
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import com.tbruyelle.rxpermissions2.RxPermissions
-import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.auth_loader.*
-
+import kotlinx.android.synthetic.main.fragment_login.*
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -46,6 +52,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
+        const val RC_SIGN_IN = 123
     }
 
     @Inject
@@ -80,6 +87,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     override fun getSnackBarCoordinator(): CoordinatorLayout = loginCoordinator
 
     private lateinit var rxPermission: RxPermissions
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
@@ -100,6 +108,54 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         btnRecoveryPassword.clicks()
                 .subscribe { findNavController().navigate(R.id.action_loginActivity_to_recoveryPasswordActivity) }
                 .also { compositeDisposable.add(it) }
+        sign_in_button.setOnClickListener {
+            val intent = mGoogleSignInClient.signInIntent
+            startActivityForResult(intent, RC_SIGN_IN)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
+        }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+
+            // Signed in successfully, show authenticated UI.
+            //updateUI(account)
+            Toast.makeText(requireContext(), account.displayName, Toast.LENGTH_SHORT).show()
+        } catch (e: ApiException) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Timber.w("signInResult:failed code=%s", e.statusCode)
+            Toast.makeText(requireContext(), GoogleSignInStatusCodes.getStatusCodeString(e.statusCode), Toast.LENGTH_SHORT).show()
+            //updateUI(null)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestProfile()
+                .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
+                .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+
     }
 
     override fun onResume() {
@@ -140,16 +196,17 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(rxPermission.request(Manifest.permission.READ_PHONE_STATE)
+        compositeDisposable.add(rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe({
-                    if (it) {
-                        presenter.extractDeviceInfo()
-                    } else {
-                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                                mapOf(R.id.permissionOk to {
-                                    presenter.goToSettingsScreen()
-                                }))
-                    }
+//                    if (it) {
+//                        presenter.extractDeviceInfo()
+//                    } else {
+//                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
+//                                mapOf(R.id.permissionOk to {
+//                                    presenter.goToSettingsScreen()
+//                                }))
+//                    }
+                    presenter.extractDeviceInfo()
                 }, { Timber.e(it) }))
     }
 
