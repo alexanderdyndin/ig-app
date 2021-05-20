@@ -9,6 +9,7 @@ import com.intergroupapplication.data.mapper.FollowersGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
+import com.intergroupapplication.data.model.UserProfileModelResponse
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.data.network.AppApi
@@ -158,5 +159,28 @@ class GroupRepository @Inject constructor(
         return api.updateGroupAdmin(subscriptionId, updateGroupAdmin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun getAllGroupAdmins(groupId: String): Single<List<String>> {
+        return api.getGroupFollowers(groupId, 1, "admins", "")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { groupUserFollowersDto ->
+                    groupUserFollowersDto.results.map {
+                        it.user.id.toString()
+                    }
+                }
+    }
+
+    override fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<GroupUserEntity>> {
+        return api.getGroupFollowers(
+                groupId = groupId,
+                page = 1,
+                search = searchFilter
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map {
+                    followersGroupMapper.mapToListDomainEntity(it)
+                }
     }
 }

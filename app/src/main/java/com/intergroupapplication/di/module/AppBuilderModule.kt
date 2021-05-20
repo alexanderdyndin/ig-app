@@ -43,6 +43,8 @@ import com.intergroupapplication.presentation.feature.registration.di.Registrati
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment
 import com.intergroupapplication.presentation.feature.splash.SplashFragment
 import com.intergroupapplication.presentation.feature.splash.di.SplashViewModule
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdFragment
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdViewModule
 import com.intergroupapplication.presentation.feature.userlist.di.UserListViewModule
 import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import dagger.Module
@@ -136,4 +138,7 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [AudioListViewModule::class])
     fun provideAudioFragmentFactory(): AudioListFragment
 
+    @PerFragment
+    @ContributesAndroidInjector(modules = [AddBlackListByIdViewModule::class])
+    fun provideAddBlackListByIdFragmentFactory(): AddBlackListByIdFragment
 }

@@ -1,6 +1,7 @@
 package com.intergroupapplication.domain.gateway
 
 import androidx.paging.PagingData
+import com.intergroupapplication.data.model.UserProfileModelResponse
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.*
 import io.reactivex.Completable
@@ -25,4 +26,6 @@ interface GroupGateway {
     fun banUserInGroup(userId: String, reason: String, groupId: String): Completable
     fun deleteUserFromBansGroup(userId: String): Completable
     fun updateGroupAdmin(subscriptionId: String, updateGroupAdmin: UpdateGroupAdmin): Completable
+    fun getAllGroupAdmins(groupId: String): Single<List<String>>
+    fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<GroupUserEntity>>
 }

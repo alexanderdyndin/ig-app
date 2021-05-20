@@ -1,12 +1,15 @@
 package com.intergroupapplication.domain.usecase
 
+import android.annotation.SuppressLint
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListUserItem
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -19,28 +22,28 @@ class GroupUseCase @Inject constructor(
         private val userProfileGateway: UserProfileGateway,
         private val groupGateway: GroupGateway) {
 
-    fun getUserRole(groupEntity: GroupEntity.Group): Single<UserRole> {
-        return userProfileGateway.getUserProfile()
-                .map {
-                    if (it.id == groupEntity.owner) {
-                        return@map UserRole.ADMIN
-                    }
-                    when (groupEntity.isFollowing) {
-                        true -> UserRole.USER_FOLLOWER
-                        false -> UserRole.USER_NOT_FOLLOWER
-                    }
-
-                }
+    @SuppressLint("CheckResult")
+    fun getUserRole(groupEntity: GroupEntity.Group) : Single<UserRole>{
+        if (groupEntity.isFollowing) {
+            return groupGateway.getAllGroupAdmins(groupEntity.id)
+                    .zipWith(userProfileGateway.getUserProfile(), {admins, user ->
+                        admins.forEach {
+                            if (user.id == it) return@zipWith UserRole.ADMIN
+                        }
+                        UserRole.USER_FOLLOWER
+                    })
+        } else {
+            return Single.just(UserRole.USER_NOT_FOLLOWER)
+        }
     }
 
-
-    fun getGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>> =
+    fun getGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getGroupList(searchFilter)
 
-    fun getSubscribedGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>> =
+    fun getSubscribedGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getSubscribedGroupList(searchFilter)
 
-    fun getAdminGroupList(searchFilter:String): Flowable<PagingData<GroupEntity>> =
+    fun getAdminGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> =
             groupGateway.getAdminGroupList(searchFilter)
 
     fun subscribeGroup(groupId: String): Completable {
@@ -72,4 +75,31 @@ class GroupUseCase @Inject constructor(
         )
         return groupGateway.updateGroupAdmin(subscriptionId, updateGroupAdmin)
     }
+
+    fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<AddBlackListUserItem>> {
+        return groupGateway.getGroupFollowersForSearch(groupId, searchFilter)
+                .map { listUsers ->
+                    listUsers.map { groupUserEntity ->
+                        AddBlackListUserItem(
+                                fullName = "${groupUserEntity.firstName} ${groupUserEntity.surName}",
+                                avatar = groupUserEntity.avatar,
+                                idProfile = groupUserEntity.idProfile,
+                                isAdministrator = groupUserEntity.isAdministrator,
+                                isOwner = groupUserEntity.isOwner,
+                                isBlocked = groupUserEntity.isBlocked,
+                                subscriptionId = groupUserEntity.subscriptionId
+                        )
+                    }
+                }
+                .zipWith(userProfileGateway.getUserProfile(), { followers, currentUser ->
+                    followers.filter {
+                        it.idProfile != currentUser.id && !it.isOwner
+                    }
+                })
+    }
+
+    fun getCurrentUserId() =
+            userProfileGateway.getUserProfile().map {
+                it.id
+            }
 }

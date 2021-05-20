@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.group.presenter
 
 import moxy.InjectViewState
 import com.intergroupapplication.R
+import com.intergroupapplication.domain.exception.ForbiddenException
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -81,7 +82,7 @@ class GroupPresenter @Inject constructor(private val groupGateway: GroupGateway,
                 .subscribe({
                     //getGroupPosts(groupId)
                 }, {
-                    errorHandler.handle(it)
+                    if (it !is ForbiddenException) errorHandler.handle(it)
                 }))
     }
 

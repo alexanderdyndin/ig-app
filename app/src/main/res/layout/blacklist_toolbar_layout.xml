@@ -45,6 +45,7 @@
             style="@style/TextDark12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:background="@drawable/btn_publish_act"
             android:drawableRight="@drawable/ic_plus_black"
             android:paddingRight="4dp"
