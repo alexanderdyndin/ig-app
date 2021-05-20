@@ -102,6 +102,7 @@
     <string name="admGroups">Management</string>
     <string name="terms_accept_privacy">Accept privacy policy conditions\t \t\t</string>
     <string name="terms_accept_agreement">Accept user agreement conditions\t \t\t</string>
+    <string name="reputation">Reputation</string>
 
     <string-array name="countries">
         <item>Abkhazia</item>
