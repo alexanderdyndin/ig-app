@@ -136,7 +136,6 @@ class MainActivity : FragmentActivity() {
                             if (userSession.isLoggedIn())
                                 findNavController(R.id.my_nav_host_fragment).navigate(R.id.commentsDetailsActivity, data)
                         } catch (e: Exception) {
-                            e.printStackTrace()
                             Timber.tag("tut_error").e(e)
                         }
                     }

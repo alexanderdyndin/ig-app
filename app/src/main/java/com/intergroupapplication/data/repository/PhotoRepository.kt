@@ -197,9 +197,15 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     if (file.extension == "gif")
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                 file)
-                    else
-                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                    else{
+                            try {
+                                awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                        Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                            }catch (e:Exception){
+                                awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                        file)
+                            }
+                        }
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
@@ -219,9 +225,16 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     if (file.extension == "gif")
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                 file)
-                    else
-                        awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                    else{
+                        try {
+                            awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                    Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                            .compressToFile(file))
+                        }catch (e:Exception){
+                            awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+                                    file)
+                        }
+                    }
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }

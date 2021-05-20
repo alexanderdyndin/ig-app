@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.TimeBar
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -25,10 +26,14 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
+import kotlinx.android.synthetic.main.layout_music_player.view.*
+import kotlinx.android.synthetic.main.layout_video_player.view.*
+import kotlinx.android.synthetic.main.layout_video_player.view.exo_progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.File
 
 
 class VideoGalleryView @JvmOverloads constructor(context: Context,
@@ -122,13 +127,16 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
             else SimpleExoPlayer.Builder(context).build()
         }
         else SimpleExoPlayer.Builder(context).build()
-
         setUpListener(service, videoPlayer, video, playerView)
         proxy?.let {
-            it.registerCacheListener(CacheListener { cacheFile, url, percentsAvailable ->
-                Timber.d(String.format("onCacheAvailable. percents: %d, file: %s, url: %s", percentsAvailable, cacheFile, url));
-            }, video.file)
             val proxyUrl = it.getProxyUrl(video.file)
+            it.registerCacheListener({ _, _, percentsAvailable ->
+                Timber.tag("tut_percent").d(percentsAvailable.toString())
+                playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(percentsAvailable)
+            }, video.file)
+            if (it.isCached(video.file)){
+                playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(100)
+            }
             val videoMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
             // Set the media item to be played.
             videoPlayer.setMediaItem(videoMediaItem)
@@ -170,4 +178,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         videoPlayer.addListener(listener)
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+    }
 }

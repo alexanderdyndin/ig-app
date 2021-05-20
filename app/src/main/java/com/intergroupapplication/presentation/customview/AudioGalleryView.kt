@@ -1,16 +1,20 @@
 package com.intergroupapplication.presentation.customview
 
 import android.content.Context
+import android.graphics.BlendMode
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import android.widget.SeekBar
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.TimeBar
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
@@ -21,6 +25,7 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerVie
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
+import kotlinx.android.synthetic.main.layout_music_player.view.*
 import kotlinx.android.synthetic.main.layout_pic.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -91,8 +96,9 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                 val bindedService = activity.bindMediaService()
                 bindedService?.let {
                     urls.forEach {
-                        val player = makeAudioPlayer(it, bindedService)
                         val playerView = AudioPlayerView(context)
+                        //playerView.exoPlayer.mySeekBar.isIndeterminate = false
+                        val player = makeAudioPlayer(it, bindedService,playerView)
                         val trackName = if (it.artist == "") it.song else "${it.artist} - ${it.song}"
                         playerView.trackName = trackName
                         playerView.trackOwner = "Загрузил (ID:${it.owner})"
@@ -109,7 +115,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         } else throw Exception("Activity is not MainActivity")
     }
 
-    private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder): SimpleExoPlayer {
+    private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder,
+                                playerView: AudioPlayerView): SimpleExoPlayer {
 
         val musicPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
             val bindedPlayer = service.getExoPlayerInstance()
@@ -135,10 +142,18 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                 }
             }
         }
-        Timber.tag("tut_audio").d(audio.file)
         musicPlayer.addListener(listener)
+
         proxy?.let {
             val proxyUrl = it.getProxyUrl(audio.file)
+            it.registerCacheListener({ _, _, percentsAvailable ->
+               // playerView.exoPlayer.mySeekBar.secondaryProgress = percentsAvailable
+                Timber.tag("tut_percent").d(percentsAvailable.toString())
+                playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(percentsAvailable)
+            }, audio.file)
+            if (it.isCached(audio.file)){
+                playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(100)
+            }
             val musicMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
             // Set the media item to be played.
             musicPlayer.setMediaItem(musicMediaItem)

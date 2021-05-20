@@ -2,23 +2,23 @@ package com.intergroupapplication.presentation.feature.group.adapter
 
 import android.content.Intent
 import android.net.Uri
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.appodeal.ads.*
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
-import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
@@ -36,6 +36,8 @@ import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.item_loading.view.*
 import timber.log.Timber
 
+//TODO укоротить ссылку на пост, поменять в ней домен в firebase, добавить тоже самое в newsAdapter
+// и посмотреть как работает отправка сразу нескольких ссылок
 class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         private val proxyCacheServer: HttpProxyCacheServer)
     : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
@@ -71,7 +73,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
-        var editPostClickListener: (postEntity:GroupPostEntity.PostEntity) -> Unit = {}
+        var editPostClickListener: (postEntity: GroupPostEntity.PostEntity) -> Unit = {}
         var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var isOwner = false
@@ -191,25 +193,33 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
                 settingsPost.setOnClickListener {
-                        showPopupMenu(settingsPost, Integer.parseInt(item.id),item) }
+                        showPopupMenu(settingsPost, Integer.parseInt(item.id), item) }
 
                 doOrIfNull(item.groupInPost.avatar, {
-                    imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                    imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder)
+                },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
                 btnRepost.setOnClickListener {
                     val intent = Intent(Intent.ACTION_SEND)
                     intent.type = "text/plain"
                     val link = Firebase.dynamicLinks.dynamicLink {
-                        domainUriPrefix = "https://intergroupapplication.page.link"
+                        domainUriPrefix = context.getString(R.string.deeplinkDomain)
                         link = Uri.parse("https://intergroup.com/post/${item.id}")
                         androidParameters(packageName = "com.intergroupapplication"){
                             minimumVersion = 1
                         }
                     }
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
-                    intent.putExtra(Intent.EXTRA_TEXT,link.uri.toString())
-                    context.startActivity(Intent.createChooser(intent,"Share using"))
+                    val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                            .setLongLink(link.uri)
+                            .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                            .addOnCompleteListener {
+                                var ourUri = it.result.previewLink.toString()
+                                ourUri+= "/${item.id}"
+                                //intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
+                                intent.putExtra(Intent.EXTRA_TEXT, ourUri)
+                                context.startActivity(Intent.createChooser(intent, "Share using"))
+                            }
                 }
 
                 videoContainer.proxy = proxyCacheServer
@@ -227,7 +237,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
-        private fun showPopupMenu(view: View, id: Int,groupPostEntity: GroupPostEntity.PostEntity) {
+        private fun showPopupMenu(view: View, id: Int, groupPostEntity: GroupPostEntity.PostEntity) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
             popupMenu.menu.findItem(R.id.edit).isVisible = isAdmin
@@ -235,7 +245,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)
-                    R.id.edit ->  editPostClickListener.invoke(groupPostEntity)
+                    R.id.edit -> editPostClickListener.invoke(groupPostEntity)
                     R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true

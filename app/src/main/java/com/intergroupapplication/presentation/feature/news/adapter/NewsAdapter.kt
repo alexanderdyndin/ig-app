@@ -19,6 +19,8 @@ import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
@@ -186,15 +188,22 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     val intent = Intent(Intent.ACTION_SEND)
                     intent.type = "text/plain"
                     val link = Firebase.dynamicLinks.dynamicLink {
-                        domainUriPrefix = "https://intergroupapplication.page.link"
+                        domainUriPrefix = context.getString(R.string.deeplinkDomain)
                         link =Uri.parse("https://intergroup.com/post/${item.post.id}")
                         androidParameters(packageName = "com.intergroupapplication"){
                             minimumVersion = 1
                         }
                     }
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
-                    intent.putExtra(Intent.EXTRA_TEXT,link.uri.toString())
-                    context.startActivity(Intent.createChooser(intent,"Share using"))
+                    val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                            .setLongLink(link.uri)
+                            .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                            .addOnCompleteListener {
+                                var ourUri = it.result.previewLink.toString()
+                                ourUri+= "/${item.post.id}"
+                                //intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
+                                intent.putExtra(Intent.EXTRA_TEXT, ourUri)
+                                context.startActivity(Intent.createChooser(intent, "Share using"))
+                            }
                 }
 
                 doOrIfNull(item.post.groupInPost.avatar, {
