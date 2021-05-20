@@ -40,9 +40,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/btn_updown_act"
-                app:layout_constraintBottom_toTopOf="@+id/btnLeftRight"
+                app:layout_constraintBottom_toTopOf="@+id/valueUpDown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/maskAvatar"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <TextView
+                android:id="@+id/valueUpDown"
+                style="@style/TextAccent12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-12"
+                app:layout_constraintBottom_toTopOf="@+id/btnLeftRight"
+                app:layout_constraintEnd_toEndOf="@+id/btnUpDown"
+                app:layout_constraintStart_toStartOf="@+id/btnUpDown"
+                app:layout_constraintTop_toBottomOf="@+id/btnUpDown"
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <ImageButton
@@ -50,22 +62,45 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_leftright"
-                app:layout_constraintBottom_toTopOf="@+id/btnExpand"
+                app:layout_constraintBottom_toTopOf="@+id/valueLeftRight"
                 app:layout_constraintEnd_toEndOf="@+id/btnUpDown"
                 app:layout_constraintStart_toStartOf="@+id/btnUpDown"
-                app:layout_constraintTop_toBottomOf="@+id/btnUpDown"
+                app:layout_constraintTop_toBottomOf="@+id/valueUpDown"
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
+            <TextView
+                android:id="@+id/valueLeftRight"
+                style="@style/TextAccent12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50"
+                app:layout_constraintBottom_toTopOf="@+id/btnExpand"
+                app:layout_constraintEnd_toEndOf="@+id/btnLeftRight"
+                app:layout_constraintStart_toStartOf="@+id/btnLeftRight"
+                app:layout_constraintTop_toBottomOf="@+id/btnLeftRight"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <ImageButton
                 android:id="@+id/btnExpand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_expand"
-                app:layout_constraintBottom_toTopOf="@+id/btnTurn"
+                app:layout_constraintBottom_toTopOf="@+id/valueExpand"
                 app:layout_constraintEnd_toEndOf="@+id/btnLeftRight"
                 app:layout_constraintStart_toStartOf="@+id/btnLeftRight"
-                app:layout_constraintTop_toBottomOf="@+id/btnLeftRight"
+                app:layout_constraintTop_toBottomOf="@+id/valueLeftRight"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <TextView
+                android:id="@+id/valueExpand"
+                style="@style/TextAccent12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                app:layout_constraintBottom_toTopOf="@+id/btnTurn"
+                app:layout_constraintEnd_toEndOf="@+id/btnExpand"
+                app:layout_constraintStart_toStartOf="@+id/btnExpand"
+                app:layout_constraintTop_toBottomOf="@+id/btnExpand"
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <ImageButton
@@ -73,10 +108,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_turn"
+                app:layout_constraintBottom_toTopOf="@+id/valueTurn"
+                app:layout_constraintEnd_toEndOf="@+id/btnExpand"
+                app:layout_constraintStart_toStartOf="@+id/btnExpand"
+                app:layout_constraintTop_toBottomOf="@+id/valueExpand"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <TextView
+                android:id="@+id/valueTurn"
+                style="@style/TextAccent12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="45°"
                 app:layout_constraintBottom_toBottomOf="@+id/maskAvatar"
                 app:layout_constraintEnd_toEndOf="@+id/btnExpand"
                 app:layout_constraintStart_toStartOf="@+id/btnExpand"
-                app:layout_constraintTop_toBottomOf="@+id/btnExpand"
+                app:layout_constraintTop_toBottomOf="@+id/btnTurn"
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
 

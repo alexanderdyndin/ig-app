@@ -55,14 +55,16 @@
     <string name="add_photo_or_text">Type the text (enter the text or attach photo)</string>
     <string name="unknown">Unknown</string>
     <string name="unknown_user">Unknown user</string>
+
+    <!--New Design-->
     <string name="intergroup">InterGroup</string>
-    <string name="welcome">Welcome! Our social network allows to chat, listen to music, read news, view photos and create groups by interests.</string>
+    <string name="welcome">Welcome!\nOur social network allows to chat, listen to music, read news, view photos and create groups by interests.</string>
     <string name="privacy_police">Privacy policy</string>
     <string name="terms_accept">Accept conditions\t\t\t</string>
     <string name="terms_of_use">User agreement</string>
     <string name="rightholders">To copyright owners</string>
-    <string name="hardware_access">Provide access\nto soft hardware</string>
-    <string name="already_registered">I am authorized user</string>
+    <string name="hardware_access">Provide access to soft hardware</string>
+    <string name="already_registered">I am authorized user InterGroup</string>
     <string name="your_email">E-mail</string>
     <string name="your_pswd">Password</string>
     <string name="your_double_email">Please re-enter E-mail</string>
@@ -72,7 +74,7 @@
     <string name="repeat_code">Please resend confirmation code</string>
     <string name="your_code">Please enter confirmation code</string>
     <string name="spam">If you did not receive code,\nplease check spam folder</string>
-    <string name="add_photo">Add you logo image</string>
+    <string name="add_photo">Add your logo image</string>
     <string name="your_name">First name</string>
     <string name="your_surname">Last Name</string>
     <string name="your_berthday">Date of Birth</string>
@@ -184,4 +186,37 @@
     <string name="toBlackList">To black list</string>
     <string name="demote">Demote</string>
     <string name="unblock">Unblock</string>
+    <string name="nickname">Come up with a nickname</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="family_status">Family status</string>
+
+    <string name="publications">Publications</string>
+    <string name="comments">Comments</string>
+    <string name="reputation">Reputation</string>
+
+    <string name="filter_group">Filter group</string>
+    <string name="by_age">By age</string>
+    <string name="by_status">By status</string>
+    <string name="by_visit">By visit</string>
+    <string name="by_amount">By amount</string>
+    <string name="by_activity">By activity</string>
+    <string name="by_date_create">By date create</string>
+    <string-array name="filterVisit">
+        <item>For all time</item>
+        <item>For a month</item>
+        <item>For a week</item>
+        <item>For a day</item>
+    </string-array>
+    <string-array name="filterAmount">
+        <item>Followers</item>
+        <item>Posts</item>
+        <item>Comments</item>
+        <item>Likes</item>
+        <item>Dislikes</item>
+    </string-array>
+    <string name="reset_filter">Reset</string>
+    <string name="apply_filter">Apply</string>
 </resources>

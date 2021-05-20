@@ -103,7 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/very_big_margin"
                 android:background="@drawable/selector_add_avatar"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/play"
@@ -114,7 +114,7 @@
                 android:textColor="@color/selector_addava_color"
                 android:textSize="12sp"
                 android:drawableLeft="@drawable/selector_addava_drawleft"
-                app:layout_constraintStart_toStartOf="@+id/frameLayout3"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate_bg" />
 
             <ImageView
@@ -244,7 +244,7 @@
                 android:layout_height="@dimen/intergroup_profile_view_size"
                 app:shape_clip_drawable="@drawable/ava_group_create"
                 android:layout_marginLeft="@dimen/small_margin"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/middle_big_margin"
                 app:layout_constraintStart_toStartOf="@+id/groupCreate_bg"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate_bg">
 
@@ -575,10 +575,12 @@
 
             <FrameLayout
                 android:id="@+id/frameLayout3"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="@dimen/low_big_margin"
+                android:layout_marginTop="@dimen/middle_margin"
+                android:layout_marginEnd="@dimen/low_big_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxAgreementContainer">
@@ -587,21 +589,17 @@
 
                 <Button
                     android:id="@+id/createGroup"
-                    android:layout_width="wrap_content"
+                    style="@style/TextGrey16sp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_main"
+                    android:background="@drawable/selector_btn_big"
                     android:enabled="false"
-                    android:gravity="bottom|center_horizontal"
-                    android:paddingBottom="9dp"
+                    android:paddingTop="@dimen/middle_padding"
                     android:text="@string/create_group"
-                    android:textColor="@color/colorTextBtnNoActive" />
+                    android:textAllCaps="false" />
 
             </FrameLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/frameLayout3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
