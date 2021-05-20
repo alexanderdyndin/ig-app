@@ -43,4 +43,5 @@ class UserListViewModel @Inject constructor(
     fun demoteFromAdmins(subscriptionId: String) =
             useCase.updateGroupAdmin(subscriptionId, false)
 
+    fun getCurrentUserId() = useCase.getCurrentUserId()
 }

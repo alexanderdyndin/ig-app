@@ -27,10 +27,7 @@ import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.jakewharton.rxbinding2.view.RxView
-import com.workable.errorhandler.Action
-import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException

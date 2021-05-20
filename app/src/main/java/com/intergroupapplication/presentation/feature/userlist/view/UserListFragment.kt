@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.userlist.view
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import androidx.navigation.fragment.findNavController
 import androidx.paging.*
 import androidx.recyclerview.widget.ConcatAdapter
@@ -20,17 +22,17 @@ import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdFragment
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.view.*
+import kotlinx.android.synthetic.main.blacklist_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_user_list.*
-import kotlinx.android.synthetic.main.fragment_user_list.navigationToolbar
 import kotlinx.android.synthetic.main.fragment_user_list.pager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-class UserListFragment : BaseFragment(), UserListView {
+class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -71,6 +73,9 @@ class UserListFragment : BaseFragment(), UserListView {
     @Named("administrators")
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
+    @Inject
+    lateinit var addBlackListDialog: AddBlackListByIdFragment
+
     private lateinit var viewModel: UserListViewModel
     private lateinit var groupId: String
 
@@ -96,20 +101,21 @@ class UserListFragment : BaseFragment(), UserListView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupId = requireArguments().getString(GROUP_ID)!!
         isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
-
         UserListAdapter.isAdmin = isAdmin
-
-        navigationToolbar.toolbarTittle.text = getString(R.string.allUsers)
-        navigationToolbar.toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
-        super.onViewCreated(view, savedInstanceState)
-
         initPager()
+
+        AddBlackListByIdFragment.callBack = this
+
+        toolbarTittle.text = getString(R.string.allUsers)
+        toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
+
+        super.onViewCreated(view, savedInstanceState)
 
         followers_refresh.setOnRefreshListener {
             when(currentScreen) {
                 0 -> adapterAll.refresh()
-                1 -> adapterBlocked.refresh()
-                2 -> adapterAdministrators.refresh()
+                1 -> adapterAdministrators.refresh()
+                2 -> adapterBlocked.refresh()
             }
         }
     }
@@ -123,10 +129,19 @@ class UserListFragment : BaseFragment(), UserListView {
 
     override fun onPause() {
         super.onPause()
-        searchEditText.addTextChangedListener(textWatcher)
+        searchEditText.removeTextChangedListener(textWatcher)
     }
 
     private fun initPager() {
+
+        compositeDisposable.add(viewModel.getCurrentUserId().subscribe(
+                {
+                    UserListAdapter.currentUserId = it.toString()
+                },
+                {
+                    errorHandler.handle(it)
+                }
+        ))
 
         val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
         adapterList.add(adapterAllAdd)
@@ -136,6 +151,8 @@ class UserListFragment : BaseFragment(), UserListView {
             val handler = ViewPager2Circular(this, followers_refresh)
             handler.pageChanged = {
                 currentScreen = it
+                if (currentScreen == 2) btnAddId.visibility = View.VISIBLE
+                else btnAddId.visibility = View.GONE
             }
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
@@ -144,19 +161,27 @@ class UserListFragment : BaseFragment(), UserListView {
         if (isAdmin) {
             initActionAdmin()
 
-            adapterList.add(adapterBlockedAdd)
             adapterList.add(adapterAdministratorAdd)
+            adapterList.add(adapterBlockedAdd)
 
             slidingCategories.visibility = View.VISIBLE
 
-            val tabTitles = arrayOf(getString(R.string.followers), getString(R.string.blocked), getString(R.string.administrators))
+            val tabTitles = arrayOf(getString(R.string.followers), getString(R.string.administrators), getString(R.string.blocked))
             TabLayoutMediator(slidingCategories, pager) { tab, position ->
                 tab.text = tabTitles[position]
             }.attach()
 
-            setAdapter(adapterBlocked, adapterFooterBlocked)
             setAdapter(adapterAdministrators, adapterFooterAdministrators)
+            setAdapter(adapterBlocked, adapterFooterBlocked)
             getAllData()
+
+            btnAddId.setOnClickListener {
+                val args = Bundle()
+                args.putString(GROUP_ID, groupId)
+                addBlackListDialog.arguments = args
+                addBlackListDialog.show(childFragmentManager, "TAG")
+                addBlackListDialog.lifecycle
+            }
         } else {
             getFollowers()
         }
@@ -170,7 +195,7 @@ class UserListFragment : BaseFragment(), UserListView {
                                 groupUserEntity.isBlocked = true
                                 adapterAll.notifyItemChanged(position)
                                 adapterBlocked.refresh()
-                            },{
+                            }, {
                                 errorHandler.handle(it)
                             })
             )
@@ -214,6 +239,21 @@ class UserListFragment : BaseFragment(), UserListView {
                             })
             )
         }
+
+        UserListAdapter.banAdminFromAdminsClickListener = { groupUserEntity, position ->
+            compositeDisposable.add(
+                    viewModel.setUserBans(groupUserEntity.idProfile, BAN_REASON, groupId)
+                            .subscribe({
+                                groupUserEntity.isBlocked = true
+                                groupUserEntity.isAdministrator = false
+                                adapterAdministrators.notifyItemChanged(position)
+                                adapterBlocked.refresh()
+                                adapterAll.refresh()
+                            }, {
+                                errorHandler.handle(it)
+                            })
+            )
+        }
     }
 
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
@@ -247,7 +287,7 @@ class UserListFragment : BaseFragment(), UserListView {
                             adapterAll.submitData(lifecycle, it)
                         },
                         {
-                            it.printStackTrace()
+                            errorHandler.handle(it)
                         })
         )
     }
@@ -262,7 +302,7 @@ class UserListFragment : BaseFragment(), UserListView {
                             adapterBlocked.submitData(lifecycle, it)
                         },
                         {
-                            it.printStackTrace()
+                            errorHandler.handle(it)
                         }
                 )
         )
@@ -273,10 +313,16 @@ class UserListFragment : BaseFragment(), UserListView {
                             adapterAdministrators.submitData(lifecycle, it)
                         },
                         {
-                            it.printStackTrace()
+                            errorHandler.handle(it)
                         }
                 )
         )
+    }
+
+    override fun updateList() {
+        adapterBlocked.refresh()
+        adapterAll.refresh()
+        adapterAdministrators.refresh()
     }
 
 }

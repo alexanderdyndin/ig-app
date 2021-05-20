@@ -10,6 +10,7 @@ import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewM
 import com.intergroupapplication.presentation.feature.grouplist.viewModel.GroupListViewModel
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
+import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdViewModel
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
 import dagger.Binds
 import dagger.Module
@@ -36,6 +37,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserListViewModel::class)
     internal abstract fun bindUserListViewModel(userListViewModel: UserListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddBlackListByIdViewModel::class)
+    internal abstract fun bindAddBlackListByIdViewModel(addBlackListByIdViewModel: AddBlackListByIdViewModel): ViewModel
 
     @Binds
     @IntoMap

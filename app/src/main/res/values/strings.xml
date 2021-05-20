@@ -38,6 +38,7 @@
     <string name="comment_should_contain_text">Comment cannot be empty</string>
     <string name="intergroup_notification">Notification from InterGroup</string>
     <string name="here_no_groups_yet">There are no groups yet</string>
+    <string name="here_no_users_yet">There are no users yet</string>
     <string name="user_blocked">User blocked</string>
     <string name="loading_error">Loading error</string>
     <string name="retry">Retry</string>
@@ -175,6 +176,12 @@
         <item>To black list</item>
     </string-array>
 
+    <string-array name="listOfActionFromAdministrators">
+        <item>Demote</item>
+        <item>To black list</item>
+    </string-array>
+
+    <string name="toBlackList">To black list</string>
     <string name="demote">Demote</string>
     <string name="unblock">Unblock</string>
 </resources>

@@ -29,7 +29,9 @@ class UserListAdapter(
         var deleteBanUserClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
         var assignToAdminsClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
         var demoteFromAdminsClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
+        var banAdminFromAdminsClickListener: (groupUserEntity: GroupUserEntity, position: Int) -> Unit = { _, _ -> }
         var isAdmin = false
+        var currentUserId = ""
         private val diffUtil = object : DiffUtil.ItemCallback<GroupUserEntity>() {
             override fun areItemsTheSame(oldItem: GroupUserEntity, newItem: GroupUserEntity): Boolean {
                 return oldItem.idProfile == newItem.idProfile
@@ -92,6 +94,13 @@ class UserListAdapter(
                                                 banUserClickListener.invoke(item, layoutPosition)
                                             })
                                 }
+                            } else if (!item.isOwner && item.idProfile != currentUserId) {
+                                settingsBtn.setOnClickListener {
+                                    createPopMenu(listOf(resources.getString(R.string.toBlackList)), context, it,
+                                            {
+                                                banUserClickListener.invoke(item, layoutPosition)
+                                            }, {})
+                                }
                             } else settingsBtn.visibility = View.GONE
                         }
                         TypeUserList.BLOCKED -> {
@@ -102,12 +111,15 @@ class UserListAdapter(
                             }
                         }
                         TypeUserList.ADMINISTRATORS -> {
-                            if (!item.isOwner) {
+                            if (!item.isOwner && item.idProfile != currentUserId) {
                                 settingsBtn.setOnClickListener {
-                                    createPopMenu(listOf(resources.getString(R.string.demote)).toList(), context, it,
+                                    createPopMenu(resources.getStringArray(R.array.listOfActionFromAdministrators).toList(), context, it,
                                             {
                                                 demoteFromAdminsClickListener.invoke(item, layoutPosition)
-                                            }, {})
+                                            },
+                                            {
+                                                banAdminFromAdminsClickListener.invoke(item, layoutPosition)
+                                            })
                                 }
                             } else settingsBtn.visibility = View.GONE
                         }

@@ -33,4 +33,8 @@ class FollowersGroupMapper @Inject constructor() {
                 }
         )
     }
+
+    fun mapToListDomainEntity(from: GroupUserFollowersDto): List<GroupUserEntity> {
+        return mapToDomainEntity(from).users
+    }
 }
