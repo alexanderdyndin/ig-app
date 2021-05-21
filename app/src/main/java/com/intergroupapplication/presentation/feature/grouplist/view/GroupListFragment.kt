@@ -17,16 +17,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import com.appodeal.ads.Appodeal
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
-import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.GroupAlreadyFollowingException
@@ -45,7 +40,6 @@ import com.intergroupapplication.presentation.feature.mainActivity.view.MainActi
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
@@ -210,8 +204,9 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     fun prepareAdapter() {
         with (GroupListAdapter) {
             userID = userSession.user?.id
-            groupClickListener = {
-                val data = bundleOf(GROUP_ID to it)
+            groupClickListener = { groupId, position ->
+                setLastPosition(position)
+                val data = bundleOf(GROUP_ID to groupId)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
             //todo не всегда подписка/отписка отображается в UI
@@ -319,6 +314,14 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                             }))
                 }
             }
+        }
+    }
+
+    private fun setLastPosition(position: Int) {
+        when(currentScreen) {
+            0 -> GroupListAdapter.lastClickPositionAll = position
+            1 -> GroupListAdapter.lastClickPositionSubscribed = position
+            2 -> GroupListAdapter.lastClickPositionOwned = position
         }
     }
 

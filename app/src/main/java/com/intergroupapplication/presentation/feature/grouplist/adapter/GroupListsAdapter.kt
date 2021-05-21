@@ -23,7 +23,7 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
     }
 
     override fun onBindViewHolder(holder: GroupListViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], position)
     }
 
     override fun getItemCount(): Int {
@@ -36,10 +36,12 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         val emptyState: TextView = view.emptyText
         val progress: ProgressBar = view.progress_loading
 
-        fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+        fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, position: Int) {
             list.adapter = adapter
             list.itemAnimator = null
             list.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+
+            scrollToPosition(position)
             if (adapter is ConcatAdapter) {
                 adapter.adapters.forEach { adapter ->
                     if (adapter is PagingDataAdapter<*, *> ) {
@@ -67,6 +69,14 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
                         }
                     }
                 }
+            }
+        }
+
+        private fun scrollToPosition(typeAdapter: Int) {
+            when(typeAdapter) {
+                0 -> list.scrollToPosition(GroupListAdapter.lastClickPositionAll)
+                1 -> list.scrollToPosition(GroupListAdapter.lastClickPositionSubscribed)
+                2 -> list.scrollToPosition(GroupListAdapter.lastClickPositionOwned)
             }
         }
     }
