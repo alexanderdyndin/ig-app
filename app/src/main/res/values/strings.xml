@@ -84,8 +84,8 @@
     <string name="your_gender">Sex</string>
     <string name="save_settings">Save settings</string>
     <string name="editor_profile">Profile Editor</string>
-    <string name="description_email_part_1">Confirmation  code was sent to E-mail\n</string>
-    <string name="description_email_part_2">\nFor confirmation of Your E-mail please enter\nconfirmation code to the white field below</string>
+    <string name="description_email_part_1">Confirmation  code was sent to E-mail</string>
+    <string name="description_email_part_2">For confirmation of Your E-mail please enter \n confirmation code to the white field below</string>
     <string name="create_new_profile">Create new profile</string>
     <string name="autorization">Authorization</string>
     <string name="repeat_passwd">Forgot password? Send to the E-mail</string>

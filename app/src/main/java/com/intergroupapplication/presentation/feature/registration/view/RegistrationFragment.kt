@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.*
 import android.widget.TextView
@@ -49,9 +50,13 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_registration.*
-import kotlinx.android.synthetic.main.auth_loader.*
-
+import kotlinx.android.synthetic.main.fragment_login2.*
+import kotlinx.android.synthetic.main.fragment_registration2.*
+import kotlinx.android.synthetic.main.fragment_registration2.etMail
+import kotlinx.android.synthetic.main.fragment_registration2.passwordVisibility
+import kotlinx.android.synthetic.main.fragment_registration2.progressBar
+import kotlinx.android.synthetic.main.fragment_registration2.sign_in_button
+import kotlinx.android.synthetic.main.fragment_registration2.tvMailError
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -88,8 +93,10 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
 
+    private var passwordVisible = false
+
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_registration
+    override fun layoutRes() = R.layout.fragment_registration2
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = registrationCoordinator
 
@@ -116,12 +123,34 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
                 .subscribe { validator.validate() }.let(compositeDisposable::add)
         setErrorHandler()
 
-         btnLogin.clicks().subscribe { findNavController().navigate(R.id.action_registrationActivity_to_loginActivity2) }.also { compositeDisposable.add(it) }
+        textLogin.clicks().subscribe { findNavController().navigate(R.id.action_registrationActivity_to_loginActivity2) }.also { compositeDisposable.add(it) }
         initValidator()
         initEditText()
         sign_in_button.setOnClickListener {
             val intent = mGoogleSignInClient.signInIntent
             startActivityForResult(intent, LoginFragment.RC_SIGN_IN)
+        }
+        passwordVisibility.setOnClickListener {
+            visibilityPassword(passwordVisible)
+            passwordVisible = !passwordVisible
+        }
+        passwordVisibility2.setOnClickListener {
+            visibilityPassword(passwordVisible)
+            passwordVisible = !passwordVisible
+        }
+    }
+
+    private fun visibilityPassword(isVisible: Boolean) {
+        if (isVisible) {
+            etPassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+        } else {
+            etPassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
         }
     }
 

@@ -16,14 +16,6 @@
             android:layout_height="wrap_content"
             android:background="@color/mainBlack">
 
-            <include
-                android:id="@+id/navigationToolbar"
-                layout="@layout/creategroup_toolbar_layout" />
-
-           <include
-                android:id="@+id/navigationToolbar"
-                layout="@layout/creategroup_toolbar_layout" />
-
             <LinearLayout
                 android:id="@+id/userCreate_title_type_container"
                 android:layout_width="0dp"
@@ -38,7 +30,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userCreate_line_r">
 
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/userCreate_title"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
@@ -53,7 +45,8 @@
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="@+id/userCreate__titleBg"
                     app:layout_constraintTop_toTopOf="@+id/userCreate__titleBg"
-                    android:importantForAutofill="no" />
+                    android:importantForAutofill="no"
+                    android:visibility="invisible"/>
 
                 <RadioGroup
                     android:id="@+id/genderRadioGroup"
@@ -141,25 +134,46 @@
                 app:layout_constraintEnd_toEndOf="@+id/userCreate_title_type_container"
                 app:layout_constraintTop_toBottomOf="@+id/userCreate_title_type_container" />
 
-
-            <View
-                android:id="@+id/bgSurName"
+            <LinearLayout
+                android:id="@+id/surname_container"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/heightgroupcreateBG"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/heightgroupcreateBG"
+                android:orientation="vertical"
                 android:layout_marginTop="2dp"
                 android:background="@color/colorInput"
-                app:layout_constraintTop_toBottomOf="@id/lineGenderRadioGroup" />
+                app:layout_constraintTop_toBottomOf="@id/lineGenderRadioGroup">
 
-            <EditText
-                android:id="@+id/surName"
-                style="@style/AutocompleteStyle"
-                android:layout_width="match_parent"
-                android:layout_height="34dp"
-                android:hint="@string/your_surname"
-                app:layout_constraintBottom_toBottomOf="@+id/bgSurName"
-                app:layout_constraintEnd_toEndOf="@+id/bgSurName"
-                app:layout_constraintStart_toStartOf="@+id/bgSurName"
-                app:layout_constraintTop_toTopOf="@id/bgSurName"/>
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/surName"
+                    style="@style/AutocompleteStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/your_surname"
+                    app:layout_constraintBottom_toBottomOf="@+id/bgSurName"
+                    app:layout_constraintEnd_toEndOf="@+id/bgSurName"
+                    app:layout_constraintStart_toStartOf="@+id/bgSurName"
+                    app:layout_constraintTop_toTopOf="@id/bgSurName"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvSurname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/low_padding"
+                    android:fontFamily="@font/roboto"
+                    android:hint="@string/your_email"
+                    android:textColor="@color/red"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    android:paddingHorizontal="13dp"
+                    app:layout_constraintEnd_toEndOf="@+id/surName"
+                    app:layout_constraintStart_toStartOf="@+id/surName"
+                    app:layout_constraintTop_toBottomOf="@+id/surName"
+                    tools:text="пример ошибки"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
             <ImageView
                 android:id="@+id/userCreate_bg"
                 android:layout_width="wrap_content"
@@ -167,7 +181,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/bg_ava_create"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
+                app:layout_constraintTop_toTopOf="parent"
                 android:contentDescription="@string/imagebg" />
 
             <com.github.florent37.shapeofview.ShapeOfView
@@ -194,28 +208,50 @@
                 android:layout_height="wrap_content"
                 style="@style/ImageSeparatorLine"
                 android:contentDescription="@string/separateline"
-                app:layout_constraintTop_toBottomOf="@+id/bgSurName"
+                app:layout_constraintTop_toBottomOf="@+id/surname_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <View
-                android:id="@+id/bgName"
+            <LinearLayout
+                android:id="@+id/name_container"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/heightgroupcreateBG"
-                android:layout_marginTop="@dimen/marginTopGroupCreateBG"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/heightgroupcreateBG"
+                android:orientation="vertical"
+                android:layout_marginTop="2dp"
                 android:background="@color/colorInput"
-                app:layout_constraintTop_toBottomOf="@id/lineSurName" />
+                app:layout_constraintTop_toBottomOf="@id/lineSurName">
 
-            <EditText
-                android:id="@+id/name"
-                style="@style/AutocompleteStyle"
-                android:layout_width="match_parent"
-                android:layout_height="34dp"
-                android:hint="@string/your_name"
-                app:layout_constraintBottom_toBottomOf="@+id/bgName"
-                app:layout_constraintEnd_toEndOf="@+id/bgName"
-                app:layout_constraintStart_toStartOf="@+id/bgName"
-                app:layout_constraintTop_toTopOf="@id/bgName"/>
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/name"
+                    style="@style/AutocompleteStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/your_name"
+                    app:layout_constraintBottom_toBottomOf="@+id/bgName"
+                    app:layout_constraintEnd_toEndOf="@+id/bgName"
+                    app:layout_constraintStart_toStartOf="@+id/bgName"
+                    app:layout_constraintTop_toTopOf="@id/bgName"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvFirstname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/low_padding"
+                    android:fontFamily="@font/roboto"
+                    android:hint="@string/your_email"
+                    android:textColor="@color/red"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    android:layout_marginHorizontal="13dp"
+                    app:layout_constraintEnd_toEndOf="@+id/name"
+                    app:layout_constraintStart_toStartOf="@+id/name"
+                    app:layout_constraintTop_toBottomOf="@+id/name"
+                    tools:text="пример ошибки"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/lineName"
@@ -223,7 +259,7 @@
                 android:layout_height="wrap_content"
                 style="@style/ImageSeparatorLine"
                 android:contentDescription="@string/separateline"
-                app:layout_constraintTop_toBottomOf="@+id/bgName"
+                app:layout_constraintTop_toBottomOf="@+id/name_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -247,7 +283,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/inputDay"
                     style="@style/EditTextDate"
                     android:layout_width="0dp"
@@ -268,7 +304,7 @@
                     app:layout_constraintStart_toStartOf="@+id/inputDay"
                     app:layout_constraintTop_toBottomOf="@+id/inputDay" />
 
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/inputMonth"
                     style="@style/EditTextDate"
                     android:layout_width="0dp"
@@ -288,7 +324,7 @@
                     app:layout_constraintStart_toStartOf="@+id/inputMonth"
                     app:layout_constraintTop_toBottomOf="@+id/inputMonth" />
 
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/inputYear"
                     style="@style/EditTextDate"
                     android:layout_width="0dp"
@@ -318,7 +354,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toEndOf="@+id/inputYear"
-                    app:layout_constraintTop_toTopOf="@+id/inputDay" />
+                    app:layout_constraintTop_toTopOf="@+id/inputDay"
+                    android:visibility="invisible"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -329,7 +366,8 @@
                 android:layout_height="@dimen/heightgroupcreateBG"
                 android:layout_marginTop="@dimen/little_margin"
                 android:background="@color/colorInput"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                android:visibility="gone"/>
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextViewCountry"
@@ -340,8 +378,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/countryBg"
                 app:layout_constraintEnd_toEndOf="@+id/countryBg"
                 app:layout_constraintStart_toStartOf="@+id/countryBg"
-                app:layout_constraintTop_toTopOf="@id/countryBg">
-            </AutoCompleteTextView>
+                app:layout_constraintTop_toTopOf="@id/countryBg"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/lineCountry"
@@ -351,7 +389,8 @@
                 android:contentDescription="@string/separateline"
                 app:layout_constraintTop_toBottomOf="@+id/countryBg"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"/>
 
             <View
                 android:id="@+id/cityBg"
@@ -359,7 +398,8 @@
                 android:layout_height="@dimen/heightgroupcreateBG"
                 android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
-                app:layout_constraintTop_toBottomOf="@id/lineCountry"/>
+                app:layout_constraintTop_toBottomOf="@id/lineCountry"
+                android:visibility="gone"/>
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextViewCity"
@@ -370,7 +410,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/cityBg"
                 app:layout_constraintEnd_toEndOf="@+id/cityBg"
                 app:layout_constraintStart_toStartOf="@+id/cityBg"
-                app:layout_constraintTop_toTopOf="@id/cityBg">
+                app:layout_constraintTop_toTopOf="@id/cityBg"
+                android:visibility="gone">
             </AutoCompleteTextView>
 
             <ImageView
@@ -382,7 +423,8 @@
                 android:contentDescription="@string/separateline"
                 app:layout_constraintTop_toBottomOf="@+id/cityBg"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"/>
 
             <View
                 android:id="@+id/langBg"
@@ -390,7 +432,8 @@
                 android:layout_height="@dimen/heightgroupcreateBG"
                 android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
-                app:layout_constraintTop_toBottomOf="@id/lineCity"/>
+                app:layout_constraintTop_toBottomOf="@id/lineCity"
+                android:visibility="gone"/>
 
 
             <AutoCompleteTextView
@@ -402,7 +445,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/langBg"
                 app:layout_constraintEnd_toEndOf="@+id/langBg"
                 app:layout_constraintStart_toStartOf="@+id/langBg"
-                app:layout_constraintTop_toTopOf="@id/langBg">
+                app:layout_constraintTop_toTopOf="@id/langBg"
+                android:visibility="gone">
             </AutoCompleteTextView>
 
             <ImageView
@@ -413,7 +457,8 @@
                 android:contentDescription="@string/separateline"
                 app:layout_constraintTop_toBottomOf="@+id/langBg"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="gone"/>
 
             <View
                 android:id="@+id/familyBg"
@@ -421,7 +466,8 @@
                 android:layout_height="@dimen/heightgroupcreateBG"
                 android:layout_marginTop="@dimen/marginTopGroupCreateBG"
                 android:background="@color/colorInput"
-                app:layout_constraintTop_toBottomOf="@id/lineLang"/>
+                app:layout_constraintTop_toBottomOf="@id/lineLang"
+                android:visibility="gone"/>
 
 
             <AutoCompleteTextView
@@ -433,7 +479,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/familyBg"
                 app:layout_constraintEnd_toEndOf="@+id/familyBg"
                 app:layout_constraintStart_toStartOf="@+id/familyBg"
-                app:layout_constraintTop_toTopOf="@id/familyBg">
+                app:layout_constraintTop_toTopOf="@id/familyBg"
+                android:visibility="gone">
             </AutoCompleteTextView>
 
             <ImageView
@@ -444,7 +491,9 @@
                 android:contentDescription="@string/separateline"
                 app:layout_constraintTop_toBottomOf="@+id/familyBg"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+
+                android:visibility="gone"/>
 
 
             <FrameLayout
@@ -456,7 +505,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lineFamily">
+                android:layout_marginBottom="20dp">
 
                 <include layout="@layout/auth_loader" />
 
@@ -466,7 +515,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/selector_btn_big"
-                    android:enabled="false"
                     android:paddingTop="@dimen/middle_padding"
                     android:text="@string/save_settings"
                     android:textAllCaps="false" />

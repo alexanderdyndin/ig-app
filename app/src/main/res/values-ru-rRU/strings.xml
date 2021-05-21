@@ -85,8 +85,8 @@
     <string name="your_gender">Укажите Ваш пол</string>
     <string name="save_settings">СОХРАНИТЬ НАСТРОЙКИ</string>
     <string name="editor_profile">Редактор профиля</string>
-    <string name="description_email_part_1">На указанный Вами арес электронной  почты\n</string>
-    <string name="description_email_part_2">\nбыл отправлен проверочный код.\nДля подтверждения Вашего E-mail\nвведите проверочный код в белое поле ниже.</string>
+    <string name="description_email_part_1">На указанный Вами адрес электронной почты</string>
+    <string name="description_email_part_2">был отправлен проверочный код.\nДля подтверждения Вашего E-mail\nвведите проверочный код в белое поле ниже.</string>
     <string name="create_new_profile">СОЗДАТЬ НОВЫЙ ПРОФИЛЬ</string>
     <string name="autorization">Авторизация</string>
     <string name="repeat_passwd">Забыл пароль. Отправить на E-mail</string>

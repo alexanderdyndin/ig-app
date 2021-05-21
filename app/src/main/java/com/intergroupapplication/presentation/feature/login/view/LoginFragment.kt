@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.LayoutRes
@@ -38,8 +39,11 @@ import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.auth_loader.*
-import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_login2.*
+import kotlinx.android.synthetic.main.fragment_login2.passwordVisibility
+import kotlinx.android.synthetic.main.fragment_login2.progressBar
+import kotlinx.android.synthetic.main.fragment_login2.sign_in_button
+import kotlinx.android.synthetic.main.fragment_login2.tvMailError
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -82,12 +86,14 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     lateinit var errorHandlerLogin: ErrorHandler
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_login
+    override fun layoutRes() = R.layout.fragment_login2
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = loginCoordinator
 
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    private var passwordVisible = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
@@ -105,12 +111,26 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 .subscribe { findNavController().navigate(R.id.action_loginActivity_to_registrationActivity) }
                 .also { compositeDisposable.add(it) }
         mail.setOnTouchListener(rightDrawableListener)
-        btnRecoveryPassword.clicks()
+        recoveryPassword.clicks()
                 .subscribe { findNavController().navigate(R.id.action_loginActivity_to_recoveryPasswordActivity) }
                 .also { compositeDisposable.add(it) }
         sign_in_button.setOnClickListener {
             val intent = mGoogleSignInClient.signInIntent
             startActivityForResult(intent, RC_SIGN_IN)
+        }
+        passwordVisibility.setOnClickListener {
+            visibilityPassword(passwordVisible)
+            passwordVisible = !passwordVisible
+        }
+    }
+
+    private fun visibilityPassword(isVisible: Boolean) {
+        if (isVisible) {
+            password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+        } else {
+            password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
         }
     }
 

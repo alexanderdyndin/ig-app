@@ -17,10 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center">
 
-            <include
-                android:id="@+id/navigationToolbar"
-                layout="@layout/creategroup_toolbar_layout" />
-
 
             <TextView
                 android:id="@+id/textConfirmation1"
@@ -33,15 +29,15 @@
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
-                tools:text="На указанный вами адрес электронной почты" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/description_email_part_1" />
 
             <TextView
                 android:id="@+id/emailConfirmation"
                 style="@style/TextNoActive18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ivanovivan@mail.ru"
+                tools:text="ivanovivan@mail.ru"
                 android:layout_marginTop="@dimen/middle_margin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,8 +55,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/emailConfirmation"
-                tools:text="был отправлен проверочный код.
-Для подтверждения Вашего E-mail введите проверочный код в поле ниже" />
+                android:text="@string/description_email_part_2" />
 
             <EditText
                 android:id="@+id/confirmation"
@@ -110,6 +105,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/codeError">
 
                 <TextView
+                    android:id="@+id/btnChangeEmail"
                     style="@style/TextNoActive14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -124,6 +120,7 @@
                     android:src="@drawable/vertical_line_separ" />
 
                 <TextView
+                    android:id="@+id/btnRepeatCode"
                     style="@style/TextNoActive14sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -166,7 +163,6 @@
                     android:layout_marginEnd="@dimen/low_big_margin"
                     android:background="@drawable/selector_btn_big"
                     android:paddingTop="@dimen/middle_padding"
-                    android:enabled="false"
                     android:text="@string/next"
                     android:textAllCaps="false"/>
 

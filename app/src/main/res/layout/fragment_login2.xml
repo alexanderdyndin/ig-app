@@ -48,7 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/registration" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etMail"
                 style="@style/EditTextAuth"
                 android:layout_width="0dp"
@@ -84,7 +84,7 @@
                 tools:text="Пример ошибки"
                 tools:visibility="visible" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/password"
                 style="@style/EditTextAuth"
                 android:layout_width="0dp"
@@ -92,19 +92,18 @@
                 android:layout_marginTop="@dimen/middle_margin"
                 android:hint="@string/your_pswd"
                 android:imeOptions="actionNext"
-                android:inputType="textPassword"
+                android:inputType="textWebPassword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMailError" />
 
-<!-- Не получается выровнять по середине -->
-            <CheckBox
+            <TextView
                 android:id="@+id/passwordVisibility"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/middle_padding"
                 android:layout_marginEnd="@dimen/middle_margin"
-                android:button="@drawable/ic_password_invisible"
+                android:drawableStart="@drawable/ic_password_visible"
                 app:layout_constraintBottom_toBottomOf="@+id/password"
                 app:layout_constraintEnd_toEndOf="@+id/password"
                 app:layout_constraintTop_toTopOf="@+id/password" />
@@ -141,6 +140,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvPasswdError">
 
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:visibility="invisible"
+                    tools:visibility="visible" />
+
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/next"
                     style="@style/TextGrey16sp"
@@ -150,11 +157,8 @@
                     android:layout_marginEnd="@dimen/low_big_margin"
                     android:background="@drawable/selector_btn_big"
                     android:paddingTop="@dimen/middle_padding"
-                    android:enabled="false"
                     android:text="@string/enter"
                     android:textAllCaps="false"/>
-
-                <include layout="@layout/auth_loader2" />
 
             </FrameLayout>
 
@@ -193,6 +197,18 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/big_margin"
                     android:text="@string/intergroup" />
+
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/sign_in_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/large_margin"
+                    android:layout_marginTop="@dimen/middle_high_big_margin"
+                    android:layout_marginEnd="@dimen/large_margin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btnRecoveryPassword"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

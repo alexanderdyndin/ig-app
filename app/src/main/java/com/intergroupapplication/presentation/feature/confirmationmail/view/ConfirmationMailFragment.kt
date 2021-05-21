@@ -13,13 +13,14 @@ import com.intergroupapplication.R
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
+import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_confirmation_mail.*
-import kotlinx.android.synthetic.main.auth_loader.*
+import kotlinx.android.synthetic.main.fragment_confirmation_mail2.*
+import kotlinx.android.synthetic.main.auth_loader2.*
 
 import javax.inject.Inject
 import javax.inject.Named
@@ -35,7 +36,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     lateinit var presenter: ConfirmationMailPresenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_confirmation_mail
+    override fun layoutRes() = R.layout.fragment_confirmation_mail2
 
     @ProvidePresenter
     fun providePresenter(): ConfirmationMailPresenter = presenter
@@ -55,11 +56,11 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
                 .subscribe { presenter.confirmMail(confirmation.text.toString()) }
                 .let { compositeDisposable.add(it) }
 
-        btnChangeEmail.clicks()
+        btnRepeatCode.clicks()
                 .subscribe { findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity) }
                 .also { compositeDisposable.add(it) }
 
-        btnRepeatCode.clicks()
+        btnChangeEmail.clicks()
                 .subscribe { presenter.performRegistration() }
                 .also { compositeDisposable.add(it) }
     }
@@ -86,14 +87,18 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     }
 
     override fun fillData(email: String) {
-        val color = ContextCompat.getColor(requireContext(), R.color.cerulean)
-        val descriptionMail1 = getString(R.string.description_email_part_1)
-        val descriptionMail2 = getString(R.string.description_email_part_2)
-        val desc = SpannableString("$descriptionMail1$email$descriptionMail2")
-        val start = descriptionMail1.length
-        val end = descriptionMail1.length + email.length
-        desc.setSpan(ForegroundColorSpan(color), start, end, 0)
-        tvWel.text = desc
+//        val color = ContextCompat.getColor(requireContext(), R.color.cerulean)
+//        val descriptionMail1 = getString(R.string.description_email_part_1)
+//        val descriptionMail2 = getString(R.string.description_email_part_2)
+//        val desc = SpannableString("$descriptionMail1$email$descriptionMail2")
+//        val start = descriptionMail1.length
+//        val end = descriptionMail1.length + email.length
+//        desc.setSpan(ForegroundColorSpan(color), start, end, 0)
+//        tvWel.text = desc
+        if (email.isNotEmpty())
+            emailConfirmation.text = email
+        else
+            emailConfirmation.gone()
     }
 
     override fun completed() {

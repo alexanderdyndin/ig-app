@@ -30,12 +30,14 @@ import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_create_user_profile.*
+import kotlinx.android.synthetic.main.fragment_create_user_profile2.*
 import kotlinx.android.synthetic.main.auth_loader.*
 
 import javax.inject.Inject
+import javax.inject.Named
 
 
 class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
@@ -51,9 +53,6 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     @ProvidePresenter
     fun providePresenter(): CreateUserProfilePresenter = presenter
-//
-//    @Inject
-//    override lateinit var navigator: SupportAppNavigator
 
     @Inject
     lateinit var colorStateList: ColorStateList
@@ -64,6 +63,10 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     @Inject
     lateinit var validator: Validator
 
+    @Inject
+    @Named("userProfileHandler")
+    lateinit var errorHandlerLogin: ErrorHandler
+
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var surName: AppCompatEditText
 
@@ -71,27 +74,23 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     lateinit var name: AppCompatEditText
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_create_user_profile
+    override fun layoutRes() = R.layout.fragment_create_user_profile2
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createUserCoordinator
 
     override fun viewCreated() {
-//        setSupportActionBar(toolbar)
-//        supportActionBar?.apply {
-//            setDisplayHomeAsUpEnabled(true)
-//            setHomeButtonEnabled(true)
-//            setTitle(R.string.editor_profile)
-//        }
-
+        initErrorHandler(errorHandler)
         name = requireView().findViewById(R.id.name)
         surName = requireView().findViewById(R.id.surName)
+
+        userAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
 
         CompoundButtonCompat.setButtonTintList(man, colorStateList)
         CompoundButtonCompat.setButtonTintList(woman, colorStateList)
         listenEditTexts()
         listenGenderToggle()
         listenAvatarClicks()
-        nextCreate.clicks()
+        createGroup.clicks()
                 .subscribe { validator.validate() }
                 .also { compositeDisposable.add(it) }
         initRadioButton()
@@ -113,28 +112,28 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     override fun showLoading(show: Boolean) {
         if (show) {
-            nextCreate.hide()
+            createGroup.hide()
             progressBar.show()
         } else {
-            nextCreate.show()
+            createGroup.show()
             progressBar.hide()
         }
     }
 
     override fun showImageUploadingStarted(path: String) {
-        avatarHolder.showImageUploadingStarted(path)
+        userAvatarHolder.showImageUploadingStarted(path)
     }
 
     override fun showImageUploaded(path: String) {
-        avatarHolder.showImageUploaded()
+        userAvatarHolder.showImageUploaded(path)
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        avatarHolder.showImageUploadingProgress(progress)
+        userAvatarHolder.showImageUploadingProgress(progress)
     }
 
     override fun showImageUploadingError(path: String) {
-        avatarHolder.showImageUploadingError()
+        userAvatarHolder.showImageUploadingError(path)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -188,13 +187,13 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     private fun listenGenderToggle() {
         genderRadioGroup.setOnCheckedChangeListener { _, _ ->
-            nextCreate.show()
+            createGroup.show()
         }
     }
 
     private fun listenAvatarClicks() {
-        avatarHolder.clicks().subscribe { openPhoto() }.also { compositeDisposable.add(it) }
-        change.setLinkClickable { openPhoto() }
+        userCreate__addAvatar.clicks().subscribe { openPhoto() }.also { compositeDisposable.add(it) }
+//        change.setLinkClickable { openPhoto() }
     }
 
     private fun openPhoto() {
@@ -210,10 +209,10 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         } else {
             "female"
         }
-        if (avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
-                avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
-                avatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
-            val birthDay = "${etDD.text}.${etMM.text}.${etGGGG.text}"
+        if (userAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
+            userAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
+            userAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
+            val birthDay = "${inputDay.text}.${inputMonth.text}.${inputYear.text}"
             presenter.createUserProfile(name.text.toString().trim(), surName.text.toString(),
                     birthDay, gender)
         } else {
@@ -228,7 +227,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     private fun setErrorHandler() {
-        errorHandler.on(CompositeException::class.java) { throwable, _ ->
+        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -247,7 +246,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     private fun initValidator() {
 
-        validator.put(etDD, object : QuickRule<TextView>() {
+        validator.put(inputDay, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
                     "Неправильная дата"
@@ -259,7 +258,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             }
         })
 
-        validator.put(etMM, object : QuickRule<TextView>() {
+        validator.put(inputMonth, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
                     "Неправильная дата"
@@ -271,7 +270,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             }
         })
 
-        validator.put(etGGGG, object : QuickRule<TextView>() {
+        validator.put(inputYear, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
                     "Неправильная дата"

@@ -16,8 +16,8 @@ import com.intergroupapplication.presentation.feature.agreements.presenter.Agree
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.auth_loader.*
-import kotlinx.android.synthetic.main.fragment_agreements.*
+import kotlinx.android.synthetic.main.auth_loader2.*
+import kotlinx.android.synthetic.main.fragment_agreements2.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -52,7 +52,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     fun providePresenter(): AgreementsPresenter = presenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_agreements
+    override fun layoutRes() = R.layout.fragment_agreements2
 
     override fun viewCreated() {
         initCheckBox()
@@ -117,13 +117,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         val textColor = ContextCompat.getColor(requireContext(), if (isChecked) android.R.color.white else R.color.manatee)
         buttonView?.setTextColor(textColor)
-        if (cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked) {
-            btnNext.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_button)
-            btnNext.isEnabled = true
-        } else {
-            btnNext.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_button_disable)
-            btnNext.isEnabled = false
-        }
+        btnNext.isEnabled = cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked
     }
 
     private fun initCheckBox() {
@@ -133,15 +127,15 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     private fun initBtn() {
-        btnPrivacyPolicy.clicks().subscribe {
+        conditionsPolicy.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_PRIVACY_POLICY, KEY_TITLE to RES_ID_PRIVACY_POLICY)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
-        btnRightholders.clicks().subscribe {
+        conditionsAgreement.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_TERMS_OF_USE, KEY_TITLE to RES_ID_TERMS_OF_USE)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
-        btnTermsOfUse.clicks().subscribe {
+        conditionsCopyrightHolders.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }

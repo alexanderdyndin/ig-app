@@ -214,124 +214,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-<!--            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnPrivacyPolicy"
-                style="@style/ButtonAuthStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginTop="@dimen/small_big_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:text="@string/privacy_police"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
-
-            <CheckBox
-                android:id="@+id/cbPP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/ic_check_box"
-                android:fontFamily="@font/roboto"
-                android:layoutDirection="rtl"
-                android:paddingTop="@dimen/high_middle_padding"
-                android:paddingBottom="@dimen/small_big_padding"
-                android:text="@string/terms_accept_privacy"
-                android:textColor="@color/manatee"
-                android:textSize="@dimen/big_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnPrivacyPolicy" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnTermsOfUse"
-                style="@style/ButtonAuthStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:text="@string/terms_of_use"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cbPP" />
-
-            <CheckBox
-                android:id="@+id/cbTOU"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/ic_check_box"
-                android:fontFamily="@font/roboto"
-                android:layoutDirection="rtl"
-                android:paddingTop="@dimen/high_middle_padding"
-                android:paddingBottom="@dimen/small_big_padding"
-                android:text="@string/terms_accept_agreement"
-                android:textColor="@color/manatee"
-                android:textSize="@dimen/big_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnTermsOfUse" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRightholders"
-                style="@style/ButtonAuthStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:text="@string/rightholders"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cbTOU" />
-
-            <CheckBox
-                android:id="@+id/cbRH"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/ic_check_box"
-                android:fontFamily="@font/roboto"
-                android:layoutDirection="rtl"
-                android:paddingTop="@dimen/high_middle_padding"
-                android:paddingBottom="@dimen/small_big_padding"
-                android:text="@string/terms_accept"
-                android:textColor="@color/manatee"
-                android:textSize="@dimen/big_size"
-                app:layout_constraintBottom_toTopOf="@+id/tvIMEI"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnRightholders"
-                app:layout_constraintVertical_chainStyle="spread_inside" />-->
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnAppodeal"
-                style="@style/ButtonAuthStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:text="@string/appodealpolicy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cbRH"
-                android:visibility="gone"/>
-
-            <CheckBox
-                android:id="@+id/cbAp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/ic_check_box"
-                android:fontFamily="@font/roboto"
-                android:layoutDirection="rtl"
-                android:paddingTop="@dimen/high_middle_padding"
-                android:paddingBottom="@dimen/small_big_padding"
-                android:text="@string/terms_accept"
-                android:textColor="@color/manatee"
-                android:textSize="@dimen/big_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnAppodeal"
-                app:layout_constraintVertical_chainStyle="spread_inside"
-                android:visibility="gone"/>
-
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvIMEI"
                 android:layout_width="wrap_content"
@@ -343,7 +225,8 @@
                 android:textAlignment="center"
                 app:layout_constraintBottom_toTopOf="@+id/frameLayout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="invisible"/>
 
             <FrameLayout
                 android:id="@+id/frameLayout"
