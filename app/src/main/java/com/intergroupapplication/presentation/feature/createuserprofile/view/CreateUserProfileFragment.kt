@@ -8,12 +8,10 @@ import androidx.core.widget.CompoundButtonCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.CompoundButton
-import android.widget.RadioButton
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -85,10 +83,29 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     private lateinit var userAvatarHolder: AvatarImageUploadingView
     private lateinit var createGroup: Button
     private lateinit var man: RadioButton
-    private lateinit var womane: RadioButton
-
+    private lateinit var woman: RadioButton
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tvFirstname: AppCompatTextView
+    private lateinit var tvSurname: AppCompatTextView
+    private lateinit var inputDay: AppCompatEditText
+    private lateinit var inputMonth: AppCompatEditText
+    private lateinit var inputYear: AppCompatEditText
+    private lateinit var genderRadioGroup: RadioGroup
+    private lateinit var userCreate__addAvatar: TextView
 
     override fun viewCreated() {
+        userAvatarHolder = viewBinding.userAvatarHolder
+        createGroup = viewBinding.createGroup
+        man = viewBinding.man
+        woman = viewBinding.woman
+        progressBar = viewBinding.loader.progressBar
+        tvFirstname = viewBinding.tvFirstname
+        tvSurname = viewBinding.tvSurname
+        inputDay = viewBinding.inputDay
+        inputMonth = viewBinding.inputMonth
+        genderRadioGroup = viewBinding.genderRadioGroup
+        userCreate__addAvatar = viewBinding.userCreateAddAvatar
+
         initErrorHandler(errorHandler)
         name = requireView().findViewById(R.id.name)
         surName = requireView().findViewById(R.id.surName)

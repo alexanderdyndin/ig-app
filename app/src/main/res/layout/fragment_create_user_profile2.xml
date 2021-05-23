@@ -507,7 +507,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginBottom="20dp">
 
-                <include layout="@layout/auth_loader" />
+                <include
+                    android:id="@+id/loader"
+                    layout="@layout/auth_loader" />
 
                 <Button
                     android:id="@+id/createGroup"
