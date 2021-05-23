@@ -166,7 +166,9 @@
                     android:text="@string/next"
                     android:textAllCaps="false"/>
 
-                <include layout="@layout/auth_loader2" />
+                <include
+                    android:id="@+id/loader"
+                    layout="@layout/auth_loader2" />
 
             </FrameLayout>
 

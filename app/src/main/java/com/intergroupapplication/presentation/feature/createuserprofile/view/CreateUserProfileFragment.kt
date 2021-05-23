@@ -8,15 +8,19 @@ import androidx.core.widget.CompoundButtonCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.CompoundButton
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentCreateUserProfile2Binding
 import com.intergroupapplication.domain.exception.FIRST_NAME
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.SECOND_NAME
@@ -33,8 +37,6 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_create_user_profile2.*
-import kotlinx.android.synthetic.main.auth_loader.*
 
 import javax.inject.Inject
 import javax.inject.Named
@@ -46,6 +48,8 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     companion object {
         fun getIntent(context: Context?) = Intent(context, CreateUserProfileFragment::class.java)
     }
+
+    private val viewBinding by viewBinding(FragmentCreateUserProfile2Binding::bind)
 
     @Inject
     @InjectPresenter
@@ -76,7 +80,13 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_create_user_profile2
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = createUserCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.createUserCoordinator
+
+    private lateinit var userAvatarHolder: AvatarImageUploadingView
+    private lateinit var createGroup: Button
+    private lateinit var man: RadioButton
+    private lateinit var womane: RadioButton
+
 
     override fun viewCreated() {
         initErrorHandler(errorHandler)

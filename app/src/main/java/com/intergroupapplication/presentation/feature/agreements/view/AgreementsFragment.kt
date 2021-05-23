@@ -2,12 +2,19 @@ package com.intergroupapplication.presentation.feature.agreements.view
 
 import android.Manifest
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.AuthLoader2Binding
+import com.intergroupapplication.databinding.FragmentAgreements2Binding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
@@ -16,8 +23,6 @@ import com.intergroupapplication.presentation.feature.agreements.presenter.Agree
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.auth_loader2.*
-import kotlinx.android.synthetic.main.fragment_agreements2.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -43,6 +48,8 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 
     }
 
+    private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
+    //private val viewBindingLoader by viewBinding(AuthLoader2Binding::bind)
 
     @Inject
     @InjectPresenter
@@ -54,7 +61,24 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_agreements2
 
+    private lateinit var btnNext: AppCompatButton
+    private lateinit var progressBar: ProgressBar
+    private lateinit var cbPP: CheckBox
+    private lateinit var cbRH: CheckBox
+    private lateinit var cbTOU: CheckBox
+    private lateinit var conditionsAgreement: LinearLayout
+    private lateinit var conditionsCopyrightHolders: LinearLayout
+    private lateinit var conditionsPolicy: LinearLayout
+
     override fun viewCreated() {
+        btnNext = viewBinding.btnNext
+        progressBar = viewBinding.loader.progressBar
+        cbPP = viewBinding.cbPP
+        cbRH = viewBinding.cbRH
+        cbTOU = viewBinding.cbTOU
+        conditionsAgreement = viewBinding.conditionsAgreement
+        conditionsCopyrightHolders = viewBinding.conditionsCopyrightHolders
+        conditionsPolicy = viewBinding.conditionsPolicy
         initCheckBox()
         initBtn()
         clicks(btnNext)
@@ -98,7 +122,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 //        }
     }
 
-    override fun getSnackBarCoordinator(): ViewGroup? = container
+    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.container
 
     override fun toSplash() {
         findNavController().navigate(R.id.action_AgreementsFragment2_to_splashActivity)

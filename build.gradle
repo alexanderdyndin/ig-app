@@ -22,18 +22,16 @@ buildscript {
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
     }
-
 }
 
-plugins {
-    id "io.gitlab.arturbosch.detekt" version "1.0.0.RC6-4"
-}
+
 
 allprojects {
     repositories {
         google()
         jcenter()
     }
+
 }
 
 task clean(type: Delete) {

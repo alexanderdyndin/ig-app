@@ -3,13 +3,19 @@ package com.intergroupapplication.presentation.feature.confirmationmail.view
 import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentConfirmationMail2Binding
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
@@ -19,8 +25,6 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_confirmation_mail2.*
-import kotlinx.android.synthetic.main.auth_loader2.*
 
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,6 +34,8 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     companion object {
         const val REGISTRATION_ENTITY = "REGISTRATION_ENTITY"
     }
+
+    private val viewBinding by viewBinding(FragmentConfirmationMail2Binding::bind)
 
     @Inject
     @InjectPresenter
@@ -45,9 +51,23 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     @Named("mailHandler")
     lateinit var errorHandlerLogin: ErrorHandler
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = confirmationCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
+
+    private lateinit var btnNext: AppCompatButton
+    private lateinit var btnRepeatCode: TextView
+    private lateinit var btnChangeEmail: TextView
+    private lateinit var confirmation: EditText
+    private lateinit var progressBar: ProgressBar
+    private lateinit var emailConfirmation: TextView
 
     override fun viewCreated() {
+        btnNext = viewBinding.btnNext
+        btnRepeatCode = viewBinding.btnRepeatCode
+        btnChangeEmail = viewBinding.btnChangeEmail
+        confirmation = viewBinding.confirmation
+        progressBar = viewBinding.loader.progressBar
+        emailConfirmation = viewBinding.emailConfirmation
+
         presenter.start(arguments?.getString("entity"))
         initErrorHandler(errorHandlerLogin)
         setErrorHandler()
