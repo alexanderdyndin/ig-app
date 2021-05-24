@@ -6,6 +6,9 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
@@ -15,10 +18,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import by.kirich1409.viewbindingdelegate.viewBinding
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentNewsBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
@@ -45,10 +52,6 @@ import com.workable.errorhandler.Action
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_news.*
-import kotlinx.android.synthetic.main.layout_profile_header.view.*
-import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
@@ -62,6 +65,8 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     companion object {
         const val LABEL = "fragment_news"
     }
+
+    private val viewBinding by viewBinding(FragmentNewsBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -101,7 +106,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     override fun layoutRes() = R.layout.fragment_news
 
-    override fun getSnackBarCoordinator(): ViewGroup? = newsCoordinator
+    override fun getSnackBarCoordinator(): ViewGroup = viewBinding.newsCoordinator
 
     private lateinit var viewDrawer: View
 
@@ -110,6 +115,11 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     lateinit var profileAvatarHolder: AvatarImageUploadingView
 
     var clickedPostId: String? = null
+
+    private lateinit var newsPosts: RecyclerView
+    private lateinit var newSwipe: SwipeRefreshLayout
+    private lateinit var progressBar: ProgressBar
+    private lateinit var emptyText: TextView
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,12 +143,11 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //Appodeal.cache(requireActivity(), Appodeal.NATIVE, 5)
-        //paging 3
+        newsPosts = viewBinding.newsPosts
+        newSwipe = viewBinding.newSwipe
+        progressBar = viewBinding.loadingLayout.progressBar
+        emptyText = viewBinding.emptyText
         newPaging()
-        //crashing app when provide it by dagger
-        //newsPosts.layoutManager = layoutManager
-        newsPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         newsPosts.itemAnimator = null
     }
 
@@ -152,7 +161,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         job.cancel()
     }
 
-    fun newPaging() {
+    private fun newPaging() {
         newSwipe.setOnRefreshListener {
             adapter.refresh()
         }
@@ -163,14 +172,14 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 when(loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
-                            loading_layout.show()
+                            progressBar.show()
                         }
                         emptyText.hide()
                     }
                     is LoadState.Error -> {
                         newSwipe.isRefreshing = false
                         emptyText.hide()
-                        loading_layout.gone()
+                        progressBar.gone()
                         if (adapter.itemCount == 0) {
                             footerAdapter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
@@ -182,7 +191,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                         } else {
                             emptyText.hide()
                         }
-                        loading_layout.gone()
+                        progressBar.gone()
                         newSwipe.isRefreshing = false
                     }
                     else ->{ newSwipe.isRefreshing = false }
@@ -315,16 +324,15 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
 
     override fun viewCreated() {
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
-        viewDrawer.profileAvatarHolder.setOnClickListener {
+        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, viewBinding.newsCoordinator, false)
+        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                         || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
                     dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
                             mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
                 }
             }
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
-        profileAvatarHolder = viewDrawer.profileAvatarHolder
+        profileAvatarHolder = viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
         drawer = drawer {
@@ -332,7 +340,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
             headerView = viewDrawer
             actionBarDrawerToggleEnabled = true
             translucentStatusBar = true
-            viewDrawer.profileAvatarHolder.setOnClickListener {
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                         || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
                     dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
@@ -347,7 +355,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
-                    toolbarTittle.text = getString(R.string.news)
+                    viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
                 }
             }
@@ -360,7 +368,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
                     findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
-                    toolbarTittle.text = getString(R.string.groups)
+                    viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                     false
                 }
             }
@@ -403,14 +411,14 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
             }
         }.apply {
             setSelection(drawerItem)
-            viewDrawer.drawerArrow.setOnClickListener { closeDrawer() }
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
                 findNavController().navigate(R.id.action_newsFragment2_self)
-                toolbarTittle.text = getString(R.string.news)
+                viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                 false
             }
         }
-        toolbarMenu.setOnClickListener {
+        viewBinding.navigationToolbar.toolbarMenu.setOnClickListener {
             drawer.openDrawer()
         }
         presenter.getUserInfo()
@@ -438,7 +446,6 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         profileAvatarHolder.showImageUploadingProgress(progress)
     }
 
-
     override fun showImageUploadingError(path: String) {
         profileAvatarHolder.clearUploadingState()
         presenter.showLastUserAvatar()
@@ -446,7 +453,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     override fun showUserInfo(userEntity: UserEntity) {
         val userName = userEntity.firstName + " " + userEntity.surName
-        viewDrawer.profileName.text = userName
+        viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
         doOrIfNull(userEntity.avatar,
                 { profileAvatarHolder.showAvatar(it) },
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })

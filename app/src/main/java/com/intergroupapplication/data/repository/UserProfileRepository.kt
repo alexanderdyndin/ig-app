@@ -48,15 +48,6 @@ class UserProfileRepository @Inject constructor(private val api: AppApi,
                         }
                     }
 
-//    override fun getAdParameters(): Single<AdEntity> {
-//        return api.adCountInfo()
-//                .map { userProfileMapper.mapToDomainEntity(it) }
-//                .doOnSuccess {
-//                    sessionStorage.countAd = it
-//                }
-//                .doOnError { Completable.error(it) }
-//    }
-
     override fun getUserProfile(): Single<UserEntity> {
         return if (sessionStorage.user != null) {
             Single.fromCallable { sessionStorage.user }
