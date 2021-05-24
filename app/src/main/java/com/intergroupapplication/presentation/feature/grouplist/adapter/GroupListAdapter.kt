@@ -43,10 +43,13 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     companion object {
         var lettersToSpan = ""
         var userID: String? = null
-        var lastClickPositionAll = 0
-        var lastClickPositionSubscribed = 0
-        var lastClickPositionOwned = 0
-        var groupClickListener: (groupId: String, position: Int) -> Unit = {_, _ -> }
+        var positionAll = 0
+        var topPaddingAll = 0
+        var positionSubscribed = 0
+        var topPaddingSubscribed = 0
+        var positionOwned = 0
+        var topPaddingOwned = 0
+        var groupClickListener: (groupId: String) -> Unit = {_ -> }
         var unsubscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = { _, _ -> }
         var subscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = {_, _ -> }
         private const val DEFAULT_HOLDER = 1488
@@ -157,7 +160,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     item_group__lock.setBackgroundResource(R.drawable.bg_unlock)
                 }
                 groupAvatarHolder.setOnClickListener {
-                    groupClickListener.invoke(item.id, layoutPosition)
+                    groupClickListener.invoke(item.id)
                 }
                 if (item.isSubscribing) {
                     subscribingProgressBar.show()

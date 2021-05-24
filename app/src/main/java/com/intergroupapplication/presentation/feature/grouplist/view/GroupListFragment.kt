@@ -204,8 +204,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     fun prepareAdapter() {
         with (GroupListAdapter) {
             userID = userSession.user?.id
-            groupClickListener = { groupId, position ->
-                setLastPosition(position)
+            groupClickListener = { groupId ->
                 val data = bundleOf(GROUP_ID to groupId)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
@@ -314,14 +313,6 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                             }))
                 }
             }
-        }
-    }
-
-    private fun setLastPosition(position: Int) {
-        when(currentScreen) {
-            0 -> GroupListAdapter.lastClickPositionAll = position
-            1 -> GroupListAdapter.lastClickPositionSubscribed = position
-            2 -> GroupListAdapter.lastClickPositionOwned = position
         }
     }
 
