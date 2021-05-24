@@ -47,10 +47,6 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     @ProvidePresenter
     fun providePresenter(): ConfirmationMailPresenter = presenter
 
-    @Inject
-    @Named("mailHandler")
-    lateinit var errorHandlerLogin: ErrorHandler
-
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
     private lateinit var btnNext: AppCompatButton
@@ -69,7 +65,6 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
         emailConfirmation = viewBinding.emailConfirmation
 
         presenter.start(arguments?.getString("entity"))
-        initErrorHandler(errorHandlerLogin)
         setErrorHandler()
 
         btnNext.clicks()
@@ -130,7 +125,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
