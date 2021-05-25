@@ -6,17 +6,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentLogin2Binding
 import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
@@ -39,11 +46,6 @@ import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_login2.*
-import kotlinx.android.synthetic.main.fragment_login2.passwordVisibility
-import kotlinx.android.synthetic.main.fragment_login2.progressBar
-import kotlinx.android.synthetic.main.fragment_login2.sign_in_button
-import kotlinx.android.synthetic.main.fragment_login2.tvMailError
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -58,6 +60,8 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         private const val DEBOUNCE_TIMEOUT = 300L
         const val RC_SIGN_IN = 123
     }
+
+    private val viewBinding by viewBinding(FragmentLogin2Binding::bind)
 
     @Inject
     @InjectPresenter
@@ -88,19 +92,37 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_login2
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = loginCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.loginCoordinator
 
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
+
+    private lateinit var next: AppCompatButton
+    private lateinit var registration: AppCompatButton
+    private lateinit var recoveryPassword: TextView
+    private lateinit var sign_in_button: SignInButton
+    private lateinit var passwordVisibility: TextView
+    private lateinit var tvMailError: AppCompatTextView
+    private lateinit var tvPasswdError: AppCompatTextView
+    private lateinit var progressBar: ProgressBar
 
     private var passwordVisible = false
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
+        next = viewBinding.next
+        registration = viewBinding.registration
+        recoveryPassword = viewBinding.recoveryPassword
+        sign_in_button = viewBinding.signInButton
+        passwordVisibility = viewBinding.passwordVisibility
+        tvMailError = viewBinding.tvMailError
+        tvPasswdError = viewBinding.tvPasswdError
+        progressBar = viewBinding.progressBar
+
         initErrorHandler(errorHandlerLogin)
         rxPermission = RxPermissions(this)
-        mail = requireView().findViewById(R.id.etMail)
-        password = requireView().findViewById(R.id.password)
+        mail = viewBinding.etMail
+        password = viewBinding.password
         listenInputs()
         RxView.clicks(next)
                 .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
