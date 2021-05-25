@@ -82,6 +82,7 @@
                             tools:context=".presentation.feature.commentsdetails.view.CommentsDetailsFragment">
 
                             <include
+                                android:id="@+id/post"
                                 layout="@layout/item_group_post"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

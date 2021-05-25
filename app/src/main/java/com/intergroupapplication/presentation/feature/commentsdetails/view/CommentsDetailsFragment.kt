@@ -6,13 +6,13 @@ import androidx.core.view.ViewCompat
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Scroller
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.postDelayed
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -20,7 +20,9 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.danikula.videocache.HttpProxyCacheServer
+import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -28,12 +30,16 @@ import com.google.android.material.appbar.AppBarLayout
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentCommentsDetailsBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.customview.AudioGalleryView
+import com.intergroupapplication.presentation.customview.ImageGalleryView
+import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
@@ -52,16 +58,13 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
+import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_comments_details.*
-import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
-import kotlinx.android.synthetic.main.item_group_post.*
-import kotlinx.android.synthetic.main.item_group_post.view.*
-import kotlinx.android.synthetic.main.reply_comment_layout.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
+import org.w3c.dom.Text
 
 import timber.log.Timber
 import javax.inject.Inject
@@ -82,6 +85,8 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         const val POST_ID = "post_id"
         const val COMMENT_PAGE = "page"
     }
+
+    private val viewBinding by viewBinding(FragmentCommentsDetailsBinding::bind)
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -141,7 +146,32 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_comments_details
 
-    override fun getSnackBarCoordinator(): ViewGroup? = coordinator
+    override fun getSnackBarCoordinator() = viewBinding.coordinator
+
+    private lateinit var commentsList: RecyclerView
+    private lateinit var settingsPost: ImageView
+    private lateinit var swipeLayout: SwipyRefreshLayout
+    private lateinit var imageBody: ImageGalleryView
+    private lateinit var audioBody: AudioGalleryView
+    private lateinit var videoBody: VideoGalleryView
+    private lateinit var loading_layout: FrameLayout
+    private lateinit var emptyText: TextView
+    private lateinit var nestedScrollComments: NestedScrollView
+    private lateinit var appbar: AppBarLayout
+    private lateinit var postPrescription: TextView
+    private lateinit var postText: TextView
+    private lateinit var idpGroupPost: TextView
+    private lateinit var commentBtn: TextView
+    private lateinit var groupName: TextView
+    private lateinit var postLike: TextView
+    private lateinit var postDislike: TextView
+    private lateinit var postLikesClickArea: FrameLayout
+    private lateinit var postDislikesClickArea: FrameLayout
+    private lateinit var subCommentBtn: TextView
+    private lateinit var postAvatarHolder: SimpleDraweeView
+    private lateinit var headerPostFromGroup: TextView
+    private lateinit var commentHolder: LinearLayout
+    private lateinit var commentLoader: ProgressBar
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,7 +198,16 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     override fun viewCreated() {
-        commentEditText = requireView().findViewById(R.id.commentEditText)
+        commentsList = viewBinding.commentsList
+        settingsPost = viewBinding.post.settingsPost
+        swipeLayout = viewBinding.swipeLayout
+        imageBody = viewBinding.post.imageBody
+        audioBody = viewBinding.post.audioBody
+        videoBody = viewBinding.post.videoBody
+        loading_layout = viewBinding.loadingLayout
+
+
+        commentEditText = viewBinding.commentEditText
         val decorator = CommentDividerItemDecorator(requireContext())
         prepareEditText()
         //crashing app when provide it by dagger
@@ -182,7 +221,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         controlCommentEditTextChanges()
         //setSupportActionBar(toolbar)
         //supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbarAction.setOnClickListener { findNavController().popBackStack() }
+        viewBinding.toolbarAction.setOnClickListener { findNavController().popBackStack() }
         ViewCompat.setNestedScrollingEnabled(commentsList, false)
         settingsPost.clicks()
                 .subscribe { showPopupMenu(settingsPost) }
@@ -529,7 +568,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                         commentHolder.removeViewAt(0)
                     }
                     commentHolder.addView(view, 0)
-                    view.responseToUser
+                    view.findViewById<TextView>(R.id.responseToUser)
                             .apply {
                                 setOnClickListener {
                                     commentHolder.removeView(view)

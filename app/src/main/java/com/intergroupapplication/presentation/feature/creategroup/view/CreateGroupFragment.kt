@@ -16,8 +16,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.chip.Chip
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentGroupCreateBinding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -34,15 +36,14 @@ import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_group_create.*
-import kotlinx.android.synthetic.main.auth_loader.*
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 
 import javax.inject.Inject
 
 class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.ValidationListener {
+
+    private val viewBinding by viewBinding(FragmentGroupCreateBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -66,7 +67,7 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_group_create
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = createGroupCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.createGroupCoordinator
 
     override fun viewCreated() {
         val countries = resources.getStringArray(R.array.countries)

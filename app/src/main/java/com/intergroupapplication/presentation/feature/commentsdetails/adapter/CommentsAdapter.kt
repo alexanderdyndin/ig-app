@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.NativeAd
 import com.appodeal.ads.NativeAdView
 import com.appodeal.ads.NativeIconView
@@ -20,6 +21,8 @@ import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.ItemCommentAnswerBinding
+import com.intergroupapplication.databinding.ItemCommentBinding
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
@@ -31,9 +34,6 @@ import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.item_comment.view.*
-import kotlinx.android.synthetic.main.item_comment_answer.view.*
-import kotlinx.android.synthetic.main.post_item_error.view.*
 import timber.log.Timber
 
 /**
@@ -119,13 +119,16 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
 
     inner class CommentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+        private val viewBinding by viewBinding(ItemCommentBinding::bind)
+
         fun bind(item: CommentEntity.Comment) {
-            with(itemView) {
+            with(viewBinding) {
                 val name = item.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}" }
                         ?: let { itemView.resources.getString(R.string.unknown_user) }
                 userName.text = name
-                idUser.text = context.getString(R.string.id,
+                idUser.text = itemView.context.getString(R.string.id,
                         item.commentOwner?.user ?: "нет id")
                 postText.text = item.text
                 compositeDisposable.add(getDateDescribeByString(item.date)
@@ -173,8 +176,11 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     }
 
     inner class CommentAnswerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+        private val viewBinding by viewBinding(ItemCommentAnswerBinding::bind)
+
         fun bind(item: CommentEntity.Comment) {
-            with(itemView) {
+            with(viewBinding) {
                 idcGroupUser2.text = itemView.context.getString(R.string.idc, item.idc.toString())
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
@@ -187,7 +193,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                 userName2.text = item.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}" }
                         ?: let { itemView.resources.getString(R.string.unknown_user) }
-                idUser2.text = context.getString(R.string.id,
+                idUser2.text = itemView.context.getString(R.string.id,
                         item.commentOwner?.user ?: "нет id")
                 val replyName =  item.answerTo?.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}, " }
