@@ -20,12 +20,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.databinding.FragmentGroupListBinding
 import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.FieldException
@@ -48,10 +50,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_group_list.*
-import kotlinx.android.synthetic.main.layout_profile_header.view.*
-import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
@@ -67,6 +65,8 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     companion object {
         const val CREATED_GROUP_ID = "created_group_id"
     }
+
+    private val viewBinding by viewBinding(FragmentGroupListBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -143,7 +143,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun layoutRes() = R.layout.fragment_group_list
 
-    override fun getSnackBarCoordinator(): ViewGroup? = groupListCoordinator
+    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.groupListCoordinator
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {

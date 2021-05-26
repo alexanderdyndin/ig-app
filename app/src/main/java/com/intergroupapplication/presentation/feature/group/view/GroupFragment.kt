@@ -2,8 +2,8 @@ package com.intergroupapplication.presentation.feature.group.view
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
+import android.view.ViewStub
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
@@ -13,8 +13,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentGroupBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
@@ -32,12 +36,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.auth_loader.progressBar
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
-import kotlinx.android.synthetic.main.fragment_group.*
-import kotlinx.android.synthetic.main.item_group_header_view.*
-import kotlinx.android.synthetic.main.layout_admin_create_post_button.*
-import kotlinx.android.synthetic.main.layout_user_join_button.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
@@ -61,6 +59,8 @@ class GroupFragment() : BaseFragment(), GroupView,
         const val FRAGMENT_RESULT = "fragmentResult"
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
+
+    private val viewBinding by viewBinding(FragmentGroupBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -108,7 +108,29 @@ class GroupFragment() : BaseFragment(), GroupView,
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_group
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = adminGroupCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.adminGroupCoordinator
+
+    private lateinit var groupPosts: RecyclerView
+    private lateinit var groupAvatarHolder: AvatarImageUploadingView
+    private lateinit var toolbarTittle: TextView
+    private lateinit var appbar: AppBarLayout
+    private lateinit var toolbarBackAction: ImageButton
+    private lateinit var groupStrength: TextView
+    private lateinit var swipeLayout: SwipeRefreshLayout
+    private lateinit var emptyText: TextView
+    private lateinit var loading_layout: FrameLayout
+    private lateinit var id_group: TextView
+    private lateinit var likes_count: TextView
+    private lateinit var dislikes_count: TextView
+    private lateinit var comments_count: TextView
+    private lateinit var posts_count: TextView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var joinToGroup: Button
+    private lateinit var goOutFromGroup: Button
+    private lateinit var headGroupCreatePostViewStub: ViewStub
+    private lateinit var createPost: Button
+    private lateinit var headGroupJoinViewStub: ViewStub
+    private lateinit var signingProgress: ProgressBar
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,6 +149,27 @@ class GroupFragment() : BaseFragment(), GroupView,
     }
 
     override fun viewCreated() {
+        groupPosts = viewBinding.groupPosts
+        groupAvatarHolder = viewBinding.group.groupAvatarHolder
+        toolbarTittle = viewBinding.navigationToolbar.toolbarTittle
+        appbar = viewBinding.appbar
+        toolbarBackAction = viewBinding.navigationToolbar.toolbarBackAction
+        groupStrength = viewBinding.group.groupStrength
+        swipeLayout = viewBinding.swipeLayout
+        emptyText = viewBinding.emptyText
+        loading_layout = viewBinding.loadingLayout
+        id_group = viewBinding.group.idGroup
+        likes_count = viewBinding.group.likesCount
+        dislikes_count = viewBinding.group.dislikesCount
+        comments_count = viewBinding.group.commentsCount
+        posts_count = viewBinding.group.postsCount
+        progressBar = viewBinding.progressBar
+        joinToGroup = viewBinding.group.headGroupJoinViewStub.findViewById(R.id.joinToGroup)
+        goOutFromGroup = viewBinding.group.headGroupJoinViewStub.findViewById(R.id.goOutFromGroup)
+        headGroupCreatePostViewStub = viewBinding.group.headGroupCreatePostViewStub
+        createPost = viewBinding.group.headGroupCreatePostViewStub.findViewById(R.id.createPost)
+        headGroupJoinViewStub = viewBinding.group.headGroupJoinViewStub
+        signingProgress = viewBinding.group.headGroupJoinViewStub.findViewById(R.id.signingProgress)
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)?.observe(
                 viewLifecycleOwner) { id ->
             if (createdPostId != id) {

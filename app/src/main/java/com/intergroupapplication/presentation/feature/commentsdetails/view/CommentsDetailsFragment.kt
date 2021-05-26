@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.postDelayed
 import androidx.core.widget.NestedScrollView
@@ -169,7 +170,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     private lateinit var postDislikesClickArea: FrameLayout
     private lateinit var subCommentBtn: TextView
     private lateinit var postAvatarHolder: SimpleDraweeView
-    private lateinit var headerPostFromGroup: TextView
+    private lateinit var headerPostFromGroup: ConstraintLayout
     private lateinit var commentHolder: LinearLayout
     private lateinit var commentLoader: ProgressBar
 
@@ -205,8 +206,23 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         audioBody = viewBinding.post.audioBody
         videoBody = viewBinding.post.videoBody
         loading_layout = viewBinding.loadingLayout
-
-
+        emptyText = viewBinding.emptyText
+        nestedScrollComments = viewBinding.nestedScrollComments
+        appbar = viewBinding.appbar
+        postPrescription = viewBinding.post.postPrescription
+        postText = viewBinding.post.postText
+        idpGroupPost = viewBinding.post.idpGroupPost
+        commentBtn = viewBinding.post.commentBtn
+        groupName = viewBinding.post.groupName
+        postLike = viewBinding.post.postLike
+        postDislike = viewBinding.post.postDislike
+        postLikesClickArea = viewBinding.post.postLikesClickArea
+        postDislikesClickArea = viewBinding.post.postDislikesClickArea
+        subCommentBtn = viewBinding.post.subCommentBtn
+        postAvatarHolder = viewBinding.post.postAvatarHolder
+        headerPostFromGroup = viewBinding.post.headerPostFromGroup
+        commentHolder = viewBinding.commentHolder
+        commentLoader = viewBinding.commentLoader
         commentEditText = viewBinding.commentEditText
         val decorator = CommentDividerItemDecorator(requireContext())
         prepareEditText()
