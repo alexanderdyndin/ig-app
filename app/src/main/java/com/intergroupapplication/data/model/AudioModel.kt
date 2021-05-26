@@ -1,6 +1,7 @@
 package com.intergroupapplication.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.time.Duration
 
 data class AudioModel(
         val id: Int,
@@ -11,5 +12,6 @@ data class AudioModel(
         val artist: String,
         val genre: String,
         val post: Int,
-        val owner: Int
+        val owner: Int,
+        val duration: String?
 )

@@ -39,7 +39,13 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
                             { before: CommentEntity.Comment?, after: CommentEntity.Comment? ->
                                 i++
                                 when {
-                                    before == null -> null
+                                    //для того, чтобы запихнуть первой позицией сам пост
+                                    before == null ->
+                                        if (i == 0) {
+                                            CommentEntity.AdEntity(0, null)
+                                        }else{
+                                            null
+                                        }
                                     after == null -> null
                                     else -> if ( i % CommentsAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?

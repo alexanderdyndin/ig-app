@@ -25,6 +25,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
+import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -49,10 +50,12 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                                 photos.map { FileRequestEntity(file = it, description = null,
                                         title = it.substringAfter("/comments/")) },
                                 audios.map { AudioRequestEntity(it.url, null,
-                                        it.trackName, it.authorMusic, null) },
+                                        it.trackName, it.authorMusic, null, duration = it.duration) },
                                 videos.map { FileRequestEntity(file = it.url, description = null, title =
-                                        it.url.substringAfter("/comments/"),it.urlPreview) },
+                                        it.url.substringAfter("/comments/"),it.urlPreview,
+                                duration = it.duration) },
                         )
+                        Timber.tag("tut_create_text").d(textComment)
                         return create
                     }
                 })
@@ -79,8 +82,10 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                     override fun invoke(photos: List<String>, audios: List<ChooseMedia>, videos: List<ChooseMedia>): CreateCommentEntity {
                         return CreateCommentEntity(textComment,
                                 photos.map { FileRequestEntity(file = it, description = null, title = it.substringAfter("/posts/")) },
-                                audios.map { AudioRequestEntity(it.url, null, it.trackName, it.authorMusic, null) },
-                                videos.map { FileRequestEntity(file = it.url, description = null, title = it.url.substringAfter("/posts/"),it.urlPreview) },
+                                audios.map { AudioRequestEntity(it.url, null, it.trackName, it.authorMusic, null,
+                                duration = it.duration) },
+                                videos.map { FileRequestEntity(file = it.url, description = null, title = it.url.substringAfter("/posts/"),it.urlPreview,
+                                duration = it.duration) },
                         )
                     }
 
@@ -132,7 +137,8 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
         var progress = 0f
         processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,postId,appApi::uploadCommentsMedia)
                 .flatMap {
-                    photoGateway.uploadVideoToAws(chooseMedia.url,it, postId, appApi::uploadCommentsMedia)
+                    photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
+                            duration = chooseMedia.duration), postId, appApi::uploadCommentsMedia)
                 }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
@@ -150,8 +156,8 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
 
     fun loadAudio(chooseMedia: ChooseMedia) {
         var progress = 0f
-        processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia.url,chooseMedia.trackName
-                ,chooseMedia.authorMusic, postId, appApi::uploadCommentsMedia)
+        processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia, postId,
+                appApi::uploadCommentsMedia)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
@@ -189,8 +195,8 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
         val type = MimeTypeMap.getFileExtensionFromUrl(chooseMedia.url)
         when (MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: "") {
             in listOf("audio/mpeg", "audio/aac", "audio/wav", "audio/mp3") -> {
-                processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia.url,chooseMedia.trackName,
-                        chooseMedia.authorMusic,postId, appApi::uploadCommentsMedia)
+                processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia,
+                        postId, appApi::uploadCommentsMedia)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
@@ -204,7 +210,8 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
             in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> {
                 processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,postId,appApi::uploadCommentsMedia)
                         .flatMap {
-                            photoGateway.uploadVideoToAws(chooseMedia.url,it, postId, appApi::uploadCommentsMedia)
+                            photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
+                                    duration = chooseMedia.duration), postId, appApi::uploadCommentsMedia)
                         }.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }

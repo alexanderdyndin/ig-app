@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.news.adapter
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -36,6 +37,9 @@ import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
+import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
+import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -82,6 +86,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
         var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
+        var progressBarVisibility:(visibility:Boolean) -> Unit = {_->}
         var USER_ID: Int? = null
     }
 
@@ -185,25 +190,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }
 
                 btnRepost.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "text/plain"
-                    val link = Firebase.dynamicLinks.dynamicLink {
-                        domainUriPrefix = context.getString(R.string.deeplinkDomain)
-                        link =Uri.parse("https://intergroup.com/post/${item.post.id}")
-                        androidParameters(packageName = "com.intergroupapplication"){
-                            minimumVersion = 1
-                        }
-                    }
-                    val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                            .setLongLink(link.uri)
-                            .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
-                            .addOnCompleteListener {
-                                var ourUri = it.result.previewLink.toString()
-                                ourUri+= "/${item.post.id}"
-                                //intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
-                                intent.putExtra(Intent.EXTRA_TEXT, ourUri)
-                                context.startActivity(Intent.createChooser(intent, "Share using"))
-                            }
+                   sharePost(context,item)
                 }
 
                 doOrIfNull(item.post.groupInPost.avatar, {
@@ -225,6 +212,40 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
+        private fun sharePost(context: Context, item: NewsEntity.Post){
+            progressBarVisibility.invoke(true)
+            val link = Firebase.dynamicLinks.dynamicLink {
+                domainUriPrefix = context.getString(R.string.deeplinkDomain)
+                link =Uri.parse("https://intergroup.com/post/${item.post.id}")
+                androidParameters(packageName = "com.intergroupapplication"){
+                    minimumVersion = 1
+                }
+            }
+            FirebaseDynamicLinks.getInstance().createDynamicLink()
+                    .setLongLink(link.uri)
+                    .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                    .addOnCompleteListener {
+                        createShareIntent(context,item,it.result.previewLink.toString())
+                    }
+        }
+
+        private fun createShareIntent(context: Context, item: NewsEntity.Post, url:String){
+            val text = url+"/${item.post.id}"
+            val filesUrls = mutableListOf<String>()
+            filesUrls.addAll(item.post.videos.map { it.file })
+            filesUrls.addAll(item.post.images.map { it.file })
+            OmegaIntentBuilder.from(context)
+                    .share()
+                    .text(text)
+                    .filesUrls(filesUrls)
+                    .download(object: DownloadCallback {
+                        override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
+                            progressBarVisibility.invoke(false)
+                            contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    .startActivity()
+                        }
+                    })
+        }
 
         private fun showPopupMenu(view: View, postId: Int, newsId: Int, userId: Int) {
             val popupMenu = PopupMenu(view.context, view)

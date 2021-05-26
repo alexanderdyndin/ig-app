@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import com.danikula.videocache.CacheListener
 import com.danikula.videocache.HttpProxyCacheServer
 import com.facebook.drawee.view.SimpleDraweeView
@@ -29,7 +30,7 @@ class VideoPlayerView @JvmOverloads constructor(
     private val _exoPlayer = LayoutInflater.from(context).inflate(R.layout.view_video_player, this)
     val exoPlayer by lazy<PlayerView> { _exoPlayer.findViewById(R.id.videoExoPlayerView) }
     val previewForVideo by lazy<SimpleDraweeView> { _exoPlayer.findViewById(R.id.previewForVideo) }
-
+    val nameVideo by lazy<TextView> { _exoPlayer.findViewById(R.id.nameVideo) }
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     }

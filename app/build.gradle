@@ -334,4 +334,9 @@ dependencies {
     implementation "com.android.billingclient:billing-ktx:3.0.2"
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.firebase:firebase-auth'
+
+    implementation 'com.github.Omega-R.OmegaIntentBuilder:core:1.1.5'
+    // For extras
+    implementation 'com.github.Omega-R.OmegaIntentBuilder:annotations:1.1.5'
+    kapt 'com.github.Omega-R.OmegaIntentBuilder:processor:1.1.5'
 }

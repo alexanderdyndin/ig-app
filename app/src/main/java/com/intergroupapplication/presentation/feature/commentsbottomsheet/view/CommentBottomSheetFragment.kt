@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.main.layout_attach_image.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Validator.ValidationListener {
@@ -119,6 +118,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
                     text = comment.commentOwner?.firstName
                             ?: getString(R.string.unknown_user)
                 }
+        textAnswer.text = comment.text
         val height = commentEditText.height + iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
         callback.addHeightContainer(height)
         //commentEditText.showKeyboard()
@@ -187,7 +187,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun stateSettling() {
-        Timber.tag("tut_state").d("SETTING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
         changeBottomConstraintForRecyclerView(horizontal_guide_end.id)
     }
@@ -200,7 +199,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
         if (answer_layout.isVisible())
             height -= heightAnswerPanel
         commentEditText.maxLines = height/heightLineInEditText - 1
-        Timber.tag("tut_state").d("EXPANDED")
     }
 
     override fun stateHalfExpanded() {
@@ -212,17 +210,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
             height -= heightAnswerPanel
         commentEditText.maxLines = (height/heightLineInEditText).toInt() - 1
         changeBottomConstraintForRecyclerView(horizontal_guide_center.id)
-        Timber.tag("tut_state").d("HALF_EXPANDED")
     }
 
     override fun stateDragging() {
-        Timber.tag("tut_state").d("DRAGGING")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
         changeBottomConstraintForRecyclerView(horizontal_guide_end.id)
     }
 
     override fun stateHidden() {
-        Timber.tag("tut_state").d("HIDDEN")
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
     }
 

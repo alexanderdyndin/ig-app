@@ -1,23 +1,15 @@
 package com.intergroupapplication.presentation.customview
 
 import android.content.Context
-import android.graphics.BlendMode
-import android.graphics.Color
-import android.media.MediaPlayer
-import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import android.widget.SeekBar
 import com.danikula.videocache.HttpProxyCacheServer
-import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.TimeBar
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
-import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.exstension.dpToPx
 import com.intergroupapplication.presentation.exstension.getActivity
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
@@ -25,8 +17,8 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerVie
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
-import kotlinx.android.synthetic.main.layout_music_player.view.*
-import kotlinx.android.synthetic.main.layout_pic.view.*
+import kotlinx.android.synthetic.main.layout_music_player.view.exo_duration
+import kotlinx.android.synthetic.main.layout_music_player.view.exo_progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -97,11 +89,11 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                 bindedService?.let {
                     urls.forEach {
                         val playerView = AudioPlayerView(context)
-                        //playerView.exoPlayer.mySeekBar.isIndeterminate = false
                         val player = makeAudioPlayer(it, bindedService,playerView)
                         val trackName = if (it.artist == "") it.song else "${it.artist} - ${it.song}"
                         playerView.trackName = trackName
                         playerView.trackOwner = "Загрузил (ID:${it.owner})"
+                        playerView.exoPlayer.exo_duration.text = if (it.duration == "") it.duration else "00:00"
                         playerView.exoPlayer.player = player
                         container.addView(playerView)
                         if (player.playWhenReady) {
@@ -120,7 +112,10 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
 
         val musicPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
             val bindedPlayer = service.getExoPlayerInstance()
-            if (bindedPlayer != null) return bindedPlayer
+            if (bindedPlayer != null){
+
+                return bindedPlayer
+            }
             else SimpleExoPlayer.Builder(context).build()
         }
         else SimpleExoPlayer.Builder(context).build()
@@ -128,42 +123,25 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 if (playWhenReady) {
-                    service.setPlayer(musicPlayer, IGMediaService.MediaFile(true, audio.id), audio.song, audio.description)
+                    service.setAudioPlayer(musicPlayer, IGMediaService.MediaFile(true, audio.id), audio.song, audio.description,playerView)
                 }
-            }
-
-            override fun onPlayerError(error: ExoPlaybackException) {
-                when (error.type) {
-                    ExoPlaybackException.TYPE_SOURCE -> {
-                        Timber.tag("tut_error_music").d("TYPE_SOURCE: " + error.sourceException)
-                    }
-                    ExoPlaybackException.TYPE_RENDERER -> Timber.tag("tut_error_music").d("TYPE_RENDERER: " + error.rendererException)
-                    ExoPlaybackException.TYPE_UNEXPECTED -> Timber.tag("tut_error_music").d("TYPE_UNEXPECTED: " + error.unexpectedException)
-                }
+                service.changeControlButton(playWhenReady)
             }
         }
         musicPlayer.addListener(listener)
-
         proxy?.let {
             val proxyUrl = it.getProxyUrl(audio.file)
             it.registerCacheListener({ _, _, percentsAvailable ->
-               // playerView.exoPlayer.mySeekBar.secondaryProgress = percentsAvailable
-                Timber.tag("tut_percent").d(percentsAvailable.toString())
                 playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(percentsAvailable)
             }, audio.file)
             if (it.isCached(audio.file)){
                 playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(100)
             }
             val musicMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
-            // Set the media item to be played.
             musicPlayer.setMediaItem(musicMediaItem)
         } ?: let {
-            // Build the media item.
             val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
-            // Set the media item to be played.
             musicPlayer.setMediaItem(musicMediaItem)
-            // Prepare the player.
-            //musicPlayer.prepare()
         }
         return musicPlayer
     }

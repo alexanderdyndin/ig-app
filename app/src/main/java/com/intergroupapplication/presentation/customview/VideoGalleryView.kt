@@ -4,15 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.core.view.isVisible
-import com.danikula.videocache.CacheListener
 import com.danikula.videocache.HttpProxyCacheServer
-import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.ui.TimeBar
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -20,22 +15,18 @@ import com.intergroupapplication.presentation.exstension.dpToPx
 import com.intergroupapplication.presentation.exstension.getActivity
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.exstension.pxToDp
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
-import kotlinx.android.synthetic.main.layout_music_player.view.*
-import kotlinx.android.synthetic.main.layout_video_player.view.*
+import kotlinx.android.synthetic.main.layout_video_player.view.exo_duration
 import kotlinx.android.synthetic.main.layout_video_player.view.exo_progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.io.File
 
-
+var isVisibleController = true
 class VideoGalleryView @JvmOverloads constructor(context: Context,
                                                  private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
         LinearLayout(context, attrs, defStyleAttr) {
@@ -100,15 +91,30 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
                 val bindedService = activity.bindMediaService()
                 bindedService?.let {
                     urls.forEach {
+                        val currentIsVisible = isVisibleController
                         val playerView = VideoPlayerView(context)
                         val player = makeVideoPlayer(it, bindedService,playerView)
                         playerView.exoPlayer.player = player
-                        playerView.exoPlayer.controllerHideOnTouch = false
                         imageLoadingDelegate?.loadImageFromUrl(it.preview,playerView.previewForVideo)
+                        playerView.exoPlayer.exo_duration.text = if (it.duration == "") it.duration else "00:00"
+                        playerView.nameVideo.text = it.title
+                        playerView.exoPlayer.setControllerVisibilityListener {visibility:Int->
+                            isVisibleController = visibility == 0
+                        }
                         container.addView(playerView)
                         if (player.playWhenReady) {
                             player.playWhenReady = false
                             player.playWhenReady = true
+                        }
+                        playerView.previewForVideo.show()
+                        if (currentIsVisible && !player.playWhenReady) {
+                            playerView.exoPlayer.controllerHideOnTouch = false
+                        }
+                        else if (!currentIsVisible && player.playWhenReady){
+                            playerView.exoPlayer.hideController()
+                        }
+                        if (player.isPlaying){
+                            playerView.previewForVideo.gone()
                         }
                     }
 
@@ -131,22 +137,16 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         proxy?.let {
             val proxyUrl = it.getProxyUrl(video.file)
             it.registerCacheListener({ _, _, percentsAvailable ->
-                Timber.tag("tut_percent").d(percentsAvailable.toString())
                 playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(percentsAvailable)
             }, video.file)
             if (it.isCached(video.file)){
                 playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(100)
             }
             val videoMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
-            // Set the media item to be played.
             videoPlayer.setMediaItem(videoMediaItem)
         } ?: let {
-            // Build the media item.
             val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
-            // Set the media item to be played.
             videoPlayer.setMediaItem(videoMediaItem)
-            // Prepare the player.
-//                    musicPlayer.prepare()
         }
         return videoPlayer
     }
@@ -157,8 +157,10 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
                 if (playWhenReady) {
                     playerView.exoPlayer.controllerHideOnTouch = true
                     playerView.previewForVideo.gone()
-                    service.setPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id), video.title, video.description)
+                    service.setVideoPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id),
+                            video.title, video.description,playerView)
                 }
+                service.changeControlButton(playWhenReady)
             }
 
             override fun onPlaybackStateChanged(state: Int) {
@@ -178,7 +180,5 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         videoPlayer.addListener(listener)
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-    }
+
 }

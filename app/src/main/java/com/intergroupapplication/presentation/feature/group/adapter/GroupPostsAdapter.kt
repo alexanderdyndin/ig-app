@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.group.adapter
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -11,14 +12,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.appodeal.ads.*
 import com.danikula.videocache.HttpProxyCacheServer
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
@@ -29,15 +27,18 @@ import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
+import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
+import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.item_loading.view.*
 import timber.log.Timber
+import java.io.*
+import java.util.*
 
-//TODO укоротить ссылку на пост, поменять в ней домен в firebase, добавить тоже самое в newsAdapter
-// и посмотреть как работает отправка сразу нескольких ссылок
 class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         private val proxyCacheServer: HttpProxyCacheServer)
     : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
@@ -77,6 +78,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var isOwner = false
+        var progressBarVisibility:(visibility:Boolean) -> Unit = {_->}
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -201,25 +203,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
                 btnRepost.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_SEND)
-                    intent.type = "text/plain"
-                    val link = Firebase.dynamicLinks.dynamicLink {
-                        domainUriPrefix = context.getString(R.string.deeplinkDomain)
-                        link = Uri.parse("https://intergroup.com/post/${item.id}")
-                        androidParameters(packageName = "com.intergroupapplication"){
-                            minimumVersion = 1
-                        }
-                    }
-                    val shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                            .setLongLink(link.uri)
-                            .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
-                            .addOnCompleteListener {
-                                var ourUri = it.result.previewLink.toString()
-                                ourUri+= "/${item.id}"
-                                //intent.putExtra(Intent.EXTRA_SUBJECT, "Firebase Deep Link")
-                                intent.putExtra(Intent.EXTRA_TEXT, ourUri)
-                                context.startActivity(Intent.createChooser(intent, "Share using"))
-                            }
+                    sharePost(context, item)
                 }
 
                 videoContainer.proxy = proxyCacheServer
@@ -235,6 +219,58 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 imageContainer.imageClick = imageClickListener
                 imageContainer.expand = { item.imagesExpanded = it }
             }
+        }
+
+        private fun sharePost(context: Context, item: GroupPostEntity.PostEntity){
+            progressBarVisibility.invoke(true)
+            val link = Firebase.dynamicLinks.dynamicLink {
+                domainUriPrefix = context.getString(R.string.deeplinkDomain)
+                link = Uri.parse("https://intergroup.com/post/${item.id}")
+                androidParameters(packageName = "com.intergroupapplication"){
+                    minimumVersion = 1
+                }
+            }
+            FirebaseDynamicLinks.getInstance().createDynamicLink()
+                    .setLongLink(link.uri)
+                    .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                    .addOnCompleteListener {
+                        createShareIntent(context, item, it.result.previewLink.toString())
+                    }
+        }
+
+        private fun createShareIntent(context: Context, item: GroupPostEntity.PostEntity, url: String){
+            /*val imagePath = context.cacheDir
+            Single.just(item.videos[0].file)
+                    .map {
+                        URL(it).openStream().readBytes()
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe { bytes->
+                val newFile = File(imagePath,"images.jpeg")
+                newFile.createNewFile()
+                newFile.writeBytes(bytes)
+                val contentUri: Uri = FileProvider.getUriForFile(context, "com.intergroupapplication.app.file_provider", newFile)
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                intent.type = "images/"
+                intent.putExtra(Intent.EXTRA_STREAM,contentUri)
+                context.startActivity(intent)
+            }*/
+            val text = url+"/${item.id}"
+            val filesUrls = mutableListOf<String>()
+            filesUrls.addAll(item.videos.map { it.file })
+            filesUrls.addAll(item.images.map { it.file })
+            OmegaIntentBuilder.from(context)
+                    .share()
+                    .text(text)
+                    .filesUrls(filesUrls)
+                    .download(object : DownloadCallback {
+                        override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
+                            progressBarVisibility.invoke(false)
+                            contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    .startActivity()
+                        }
+                    })
         }
 
         private fun showPopupMenu(view: View, id: Int, groupPostEntity: GroupPostEntity.PostEntity) {

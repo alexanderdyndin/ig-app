@@ -218,7 +218,6 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             val birthDay = "${etDD.text}.${etMM.text}.${etGGGG.text}"
             presenter.createUserProfile(name.text.toString().trim(), surName.text.toString(),
                     birthDay, gender)
-            Timber.tag("tut_create").d("$gender ${name.text.toString().trim()}")
         } else {
             dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
         }

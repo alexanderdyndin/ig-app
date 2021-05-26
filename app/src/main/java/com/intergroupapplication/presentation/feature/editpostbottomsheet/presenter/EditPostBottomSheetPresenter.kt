@@ -63,7 +63,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
         var progress = 0f
         processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,groupId,appApi::uploadCommentsMedia)
                 .flatMap {
-                    photoGateway.uploadVideoToAws(chooseMedia.url,it, groupId, appApi::uploadCommentsMedia)
+                    photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
+                            duration = chooseMedia.duration), groupId, appApi::uploadCommentsMedia)
                 }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
@@ -81,8 +82,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
 
     fun loadAudio(chooseMedia: ChooseMedia) {
         var progress = 0f
-        processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia.url,chooseMedia.trackName,
-                chooseMedia.authorMusic,groupId, appApi::uploadCommentsMedia)
+        processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia,
+                groupId, appApi::uploadCommentsMedia)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
@@ -123,8 +124,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
         val type = MimeTypeMap.getFileExtensionFromUrl(chooseMedia.url)
         when (MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: "") {
             in listOf("audio/mpeg", "audio/aac", "audio/wav") -> {
-                processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia.url,chooseMedia.trackName,
-                        chooseMedia.authorMusic,groupId, appApi::uploadPhoto)
+                processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia,
+                        groupId, appApi::uploadPhoto)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
@@ -139,7 +140,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
             in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> {
                 processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,groupId,appApi::uploadCommentsMedia)
                         .flatMap {
-                            photoGateway.uploadVideoToAws(chooseMedia.url,it, groupId, appApi::uploadCommentsMedia)
+                            photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
+                                    duration = chooseMedia.duration), groupId, appApi::uploadCommentsMedia)
                         }.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }

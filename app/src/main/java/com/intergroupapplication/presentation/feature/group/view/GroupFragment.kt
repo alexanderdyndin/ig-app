@@ -297,6 +297,14 @@ class GroupFragment() : BaseFragment(), GroupView,
                         })
                 )
             }
+            progressBarVisibility = {visibility ->
+                if (visibility){
+                    progressDownload.show()
+                }
+                else{
+                    progressDownload.gone()
+                }
+            }
         }
     }
 

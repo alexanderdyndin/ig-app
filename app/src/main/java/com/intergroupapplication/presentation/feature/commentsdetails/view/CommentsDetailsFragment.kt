@@ -1,44 +1,54 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
-import android.content.res.Resources
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
-import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.ShortDynamicLink
+import com.google.firebase.dynamiclinks.ktx.androidParameters
+import com.google.firebase.dynamiclinks.ktx.dynamicLink
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
-import com.intergroupapplication.domain.exception.NotFoundException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
-import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
+import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
+import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
+import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
@@ -46,21 +56,17 @@ import kotlinx.android.synthetic.main.fragment_comment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_comments_details.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
 import kotlinx.android.synthetic.main.item_group_post.*
-import kotlinx.android.synthetic.main.item_group_post.postText
 import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.item_input_comment.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import kotlinx.android.synthetic.main.reply_comment_layout.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.math.roundToInt
 import kotlin.coroutines.CoroutineContext
 
 
@@ -73,7 +79,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         const val GROUP_ID_VALUE = "GROUP_ID"
 
         private const val GROUP_ID = "group_id"
-        private const val COMMENT_ID = "comment_id"
+        const val COMMENT_ID = "comment_id"
         const val POST_ID = "post_id"
         const val COMMENT_PAGE = "page"
     }
@@ -93,13 +99,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
-
-    //@Inject
-    //lateinit var validator: Validator
-
-    //@Inject
-    //lateinit var rightDrawableListener: RightDrawableListener
-
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -125,19 +124,25 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     var page: String = "1"
 
+    private var comment_id:String = "1"
+
     var commentCreated = false
 
-    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<View>
-
-    //private val loadingViews: MutableMap<String, View?> = mutableMapOf()
-
-    //@NotEmpty(messageResId = R.string.comment_should_contain_text)
-    //lateinit var commentEditText: AppCompatEditText
+    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<FrameLayout>
 
     private var groupPostEntity: GroupPostEntity.PostEntity? = null
     private var lastRepliedComment: CommentEntity.Comment? = null
 
     private val bottomFragment by lazy {CommentBottomSheetFragment()}
+
+    private val scrollListener = object:RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            val endPos = (commentsList.layoutManager as LinearLayoutManager)
+                    .findLastCompletelyVisibleItemPosition()
+            swipeLayout.isEnabled = endPos == adapter.itemCount-1
+        }
+    }
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_comments_details
@@ -151,20 +156,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
         postId = arguments?.getString(POST_ID)
-        page = arguments?.getString(COMMENT_PAGE)!!
-        if (infoForCommentEntity != null) {
-            compositeDisposable.add(
-                    viewModel.fetchComments(infoForCommentEntity!!.groupPostEntity.id, page).subscribe {
-                        adapter.submitData(lifecycle, it)
-                    }
-            )
-        } else if (postId != null) {
-            compositeDisposable.add(
-                    viewModel.fetchComments(postId!!, page).subscribe {
-                        adapter.submitData(lifecycle, it)
-                    }
-            )
-        }
+        page = arguments?.getString(COMMENT_PAGE)?:"1"
+        comment_id = arguments?.getString(COMMENT_ID)?:"1"
 
     }
 
@@ -172,9 +165,9 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
             bottomFragment.callback = this
-            bottomSheetBehaviour = BottomSheetBehavior.from(containerCommentBottomSheet) as AutoCloseBottomSheetBehavior<View>
+            bottomSheetBehaviour = BottomSheetBehavior.from(containerCommentBottomSheet) as AutoCloseBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
-                peekHeight = requireContext().dpToPx(93)
+                peekHeight = requireContext().dpToPx(96)
                 commentHolder.minimumHeight = peekHeight
                 halfExpandedRatio = 0.6f
                 isFitToContents = false
@@ -193,37 +186,19 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         }
         presenter.postId = postId
         val decorator = CommentDividerItemDecorator(requireContext())
-        //prepareEditText()
-        //crashing app when provide it by dagger
-        //commentsList.layoutManager = layoutManager
         commentsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        //commentsList.setHasFixedSize(true)
         commentsList.itemAnimator = null
         commentsList.addItemDecoration(decorator)
+        commentsList.addOnScrollListener(scrollListener)
+        swipeLayout.isEnabled = false
         prepareAdapter()
-        manageDataFlow(infoForCommentEntity)
-        //controlCommentEditTextChanges()
-        //setSupportActionBar(toolbar)
-        //supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbarAction.setOnClickListener { findNavController().popBackStack() }
-        ViewCompat.setNestedScrollingEnabled(commentsList, false)
-        settingsPost.clicks()
-                .subscribe { showPopupMenu(settingsPost) }
-                .also { compositeDisposable.add(it) }
 
         newPaging()
 
         swipeLayout.setOnRefreshListener {
             groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
             adapter.refresh()
-        }
-        audioBody.proxy = proxyCacheServer
-        videoBody.proxy = proxyCacheServer
-        videoBody.imageLoadingDelegate = imageLoadingDelegate
-
-        imageBody.imageClick = { list, index ->
-                val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
-                findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
         }
     }
 
@@ -238,7 +213,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                             loading_layout.show()
                         }
                         emptyText.hide()
-                        //bottomFragment.commentEditText.isEnabled = false
                     }
                     is LoadState.Error -> {
                         swipeLayout.isRefreshing = false
@@ -248,24 +222,28 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                             adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-                        // bottomFragment.commentEditText.isEnabled = true
                     }
                     is LoadState.NotLoading -> {
+                        if (swipeLayout.isRefreshing){
+                           // (commentsList.layoutManager as LinearLayoutManager).scrollToPosition(adapter.itemCount-1)
+                            swipeLayout.isRefreshing = false
+                        }
+                        if (comment_id != "1" && adapter.itemCount != 0) {
+                            val positionAnswerComment = adapter.positionAnswerComment(comment_id)
+                            commentsList.scrollToPosition(positionAnswerComment)
+                            comment_id = "1"
+                        }
                         if (adapter.itemCount == 0) {
                             emptyText.show()
                         } else {
                             emptyText.hide()
                         }
                         loading_layout.gone()
-                        swipeLayout.isRefreshing = false
                         if (commentCreated) {
-                            nestedScrollComments.postDelayed(250) {
-                                nestedScrollComments.smoothScrollTo(0, commentsList.bottom)
-                            }
+                            commentsList.scrollToPosition(adapter.itemCount - 1)
                             commentCreated = false
                         }
-                        //bottomFragment.commentEditText.isEnabled = true
-                        swipeLayout.isRefreshing = false
+
                     }
                     else -> {
                         swipeLayout.isRefreshing = false
@@ -282,7 +260,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     override fun onResume() {
         super.onResume()
         job = Job()
-        appbar.addOnOffsetChangedListener(this)
+        manageDataFlow(infoForCommentEntity)
+        //appbar.addOnOffsetChangedListener(this)
     }
 
     override fun onPause() {
@@ -291,7 +270,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     }
 
     override fun onStop() {
-        appbar.removeOnOffsetChangedListener(this)
+       // appbar.removeOnOffsetChangedListener(this)
         super.onStop()
     }
 
@@ -303,168 +282,50 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     override fun showPostDetailInfo(groupPostEntity: GroupPostEntity.PostEntity) {
         setErrorHandler()
         this.groupPostEntity = groupPostEntity
-
-        compositeDisposable.add(getDateDescribeByString(groupPostEntity.date)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-
-        groupPostEntity.postText.let {
-            if (it.isNotEmpty()) {
-                postText.text = it
-                postText.show()
-            } else {
-                postText.gone()
-            }
+        adapter.groupPostEntity = groupPostEntity
+        if (infoForCommentEntity != null) {
+            compositeDisposable.add(
+                    viewModel.fetchComments(infoForCommentEntity!!.groupPostEntity.id, page).subscribe {
+                        page = (groupPostEntity.commentsCount.toInt()/20+1).toString()
+                        Timber.tag("tut_fetch").d("1")
+                        adapter.submitData(lifecycle, it)
+                    }
+            )
         }
-
-        idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.id.toString())
-        countComments.text = groupPostEntity.commentsCount
-        idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.idp.toString())
-        countComments.text = groupPostEntity.commentsCount
-        groupName.text = groupPostEntity.groupInPost.name
-        postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
-        postLike.text = groupPostEntity.reacts.likesCount.toString()
-        subCommentBtn.text = groupPostEntity.bells.count.toString()
-
-        if (groupPostEntity.reacts.isLike) {
-            postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
-        } else {
-            postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
-        }
-        if (groupPostEntity.reacts.isDislike) {
-            postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
-        } else {
-            postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
-        }
-
-        doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
-                { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
-
-
-        imageBody.setImages(groupPostEntity.images)
-        videoBody.setVideos(groupPostEntity.videos)
-        audioBody.setAudios(groupPostEntity.audios)
-
-        subCommentBtn.setOnClickListener {
-            if (!groupPostEntity.isLoading) {
-                if (groupPostEntity.bells.isActive) {
-                    compositeDisposable.add(viewModel.deleteBell(groupPostEntity.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe { groupPostEntity.isLoading = true }
-                            .doFinally {
-                                groupPostEntity.isLoading = false
-                                showPostDetailInfo(groupPostEntity)
-                            }
-                            .subscribe({
-                                groupPostEntity.bells.isActive = false
-                                groupPostEntity.bells.count--
-                            }, { exception ->
-                                if (exception is NotFoundException) {
-                                    groupPostEntity.bells.isActive = false
-                                    groupPostEntity.bells.count--
-                                } else
-                                    errorHandler.handle(exception)
-                            }))
-                } else {
-                    compositeDisposable.add(viewModel.setBell(groupPostEntity.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe { groupPostEntity.isLoading = true }
-                            .doFinally {
-                                groupPostEntity.isLoading = false
-                                showPostDetailInfo(groupPostEntity)
-                            }
-                            .subscribe({
-                                groupPostEntity.bells.isActive = true
-                                groupPostEntity.bells.count++
-
-                            }, { exception ->
-                                if (exception is CompositeException) {
-                                    exception.exceptions.forEach { ex ->
-                                        (ex as? FieldException)?.let {
-                                            if (it.field == "post") {
-                                                groupPostEntity.bells.isActive = true
-                                                groupPostEntity.bells.count++
-                                            }
-                                        }
-                                    }
-                                } else
-                                    errorHandler.handle(exception)
-                            }))
-                }
-            }
-        }
-        postLikesClickArea.setOnClickListener {
-            if (!groupPostEntity.isLoading) {
-                compositeDisposable.add(viewModel.setReact(isLike = !groupPostEntity.reacts.isLike,
-                        isDislike = groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {
-                            groupPostEntity.isLoading = true
-                        }
-                        .doFinally {
-                            groupPostEntity.isLoading = false
-                            showPostDetailInfo(groupPostEntity)
-                        }
-                        .subscribe({
-                            groupPostEntity.reacts = it
-                        },
-                                {
-                                    errorHandler.handle(it)
-                                }))
-            }
-        }
-        postDislikesClickArea.setOnClickListener {
-            if (!groupPostEntity.isLoading) {
-                compositeDisposable.add(viewModel.setReact(isLike = groupPostEntity.reacts.isLike,
-                        isDislike = !groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {
-                            groupPostEntity.isLoading = true
-                        }
-                        .doFinally {
-                            groupPostEntity.isLoading = false
-                            showPostDetailInfo(groupPostEntity)
-                        }
-                        .subscribe({
-                            groupPostEntity.reacts = it
-                        },
-                                {
-                                    errorHandler.handle(it)
-                                }))
-            }
+        else if (postId !=null){
+            compositeDisposable.add(
+                    viewModel.fetchComments(postId!!, page).subscribe {
+                        adapter.submitData(lifecycle, it)
+                        Timber.tag("tut_fetch").d("2")
+                        page = (groupPostEntity.commentsCount.toInt()/20+1).toString()
+                    }
+            )
         }
     }
 
 
 
     override fun commentCreated(commentEntity: CommentEntity) {
-        adapter.refresh()
         commentCreated = true
         increaseCommentsCounter()
+        adapter.refresh()
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        adapter.refresh()
         commentCreated = true
         increaseCommentsCounter()
         if (commentHolder.childCount > 1) {
             commentHolder.removeViewAt(0)
         }
+        adapter.refresh()
     }
 
 
     override fun showCommentUploading(show: Boolean) {
         if (show) {
-            //bottomFragment.commentEditText.isEnabled = false
             commentLoader.show()
         } else {
             commentLoader.hide()
-            //bottomFragment.commentEditText.isEnabled = true
         }
     }
 
@@ -525,10 +386,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     }
 
     private fun increaseCommentsCounter() {
-        var commentsCount = countComments.text.toString().toInt()
-        commentsCount++
-        countComments.text = commentsCount.toString()
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount.toString())
+        adapter.postInCommentHolder.increaseCommentsCounter()
     }
 
     private fun prepareAdapter() {
@@ -542,7 +400,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                     commentHolder.addView(view, 0)
                     bottomFragment.answerComment(comment)
                     lastRepliedComment = comment.copy()
-                   // bottomFragment.commentEditText.showKeyboard()
                 }
             }
            imageClickListener = { list: List<FileEntity>, i: Int ->
@@ -569,6 +426,16 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                                 { errorHandler.handle(it) })
                 )
             }
+            showPostDetailInfo = ::showPostDetailInfo
+            clicksSettingPost = { settingsPost: ImageView ->
+                settingsPost.clicks()
+                        .subscribe { showPopupMenu(settingsPost) }
+                        .also { compositeDisposable.add(it) }
+            }
+            changeCountComments = {count ->
+                findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(COMMENTS_COUNT_VALUE, count.toString())
+            }
             USER_ID = userSession.user?.id?.toInt()
         }
     }
@@ -577,12 +444,12 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         if (infoForCommentEntity != null) {
             groupPostEntity = infoForCommentEntity.groupPostEntity
             showPostDetailInfo(infoForCommentEntity.groupPostEntity)
-            if (infoForCommentEntity.isFromNewsScreen) {
+            /*if (infoForCommentEntity.isFromNewsScreen) {
                 headerPostFromGroup.setOnClickListener {
                     val data = bundleOf(GROUP_ID to infoForCommentEntity.groupPostEntity.groupInPost.id)
                     findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, data)
                 }
-            }
+            }*/
         }
         else if (postId != null){
             presenter.getPostDetailsInfo(postId!!)

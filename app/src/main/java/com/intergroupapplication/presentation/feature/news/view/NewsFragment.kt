@@ -288,6 +288,14 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                     }
                 }
             }
+            progressBarVisibility = {visibility ->
+                if (visibility){
+                    progressDownload.show()
+                }
+                else{
+                    progressDownload.gone()
+                }
+            }
             USER_ID = userSession.user?.id?.toInt()
             compositeDisposable.add(
                     viewModel.getNews()

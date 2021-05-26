@@ -190,6 +190,11 @@
         app:layout_constraintStart_toStartOf="parent"
         >
 
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_answer_to_user"
+            android:layout_marginEnd="@dimen/big_margin"/>
         <TextView
             style="@style/InterGroupGreyTextStyle"
             android:layout_width="wrap_content"
@@ -202,8 +207,15 @@
             style="@style/InterGroupBlueTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/big_margin"
             android:textSize="@dimen/middle_high_size"
-            tools:text="Маше" />
+            />
+        <TextView
+            android:id="@+id/textAnswer"
+            style="@style/InterGroupGreyTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"/>
 
     </LinearLayout>
 

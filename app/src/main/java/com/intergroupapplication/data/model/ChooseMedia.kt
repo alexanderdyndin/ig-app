@@ -7,4 +7,5 @@ import kotlinx.android.parcel.Parcelize
 data class ChooseMedia(val url:String,
                        val urlPreview:String ="",
                        val trackName:String = "",
-                       val authorMusic:String = ""):Parcelable
+                       val authorMusic:String = "",
+                       val duration:String = ""):Parcelable

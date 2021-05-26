@@ -197,7 +197,8 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
                             if(!isChoose && chooseMedias.size<10 && !chooseMedias.containsMedia(url)){
                                 isChoose = true
                                 chooseMedias.addChooseMedia(ChooseMedia(url,trackName = data.name,
-                                        authorMusic = data.author))
+                                        authorMusic = data.author,
+                                        duration = data.duration))
                             } else if (isChoose) {
                                 isChoose = false
                                 chooseMedias.removeChooseMedia(url)
@@ -259,7 +260,8 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         data.run {
                             if(!isChoose && chooseMedias.size<10 && !chooseMedias.containsMedia(url)){
                                 isChoose = true
-                                chooseMedias.addChooseMedia(ChooseMedia(url,createFile(simpleDraweeView.drawable)))
+                                chooseMedias.addChooseMedia(ChooseMedia(url,createFile(simpleDraweeView.drawable),
+                                duration = data.duration))
                             } else if (isChoose){
                                 isChoose = false
                                 chooseMedias.removeChooseMedia(url)
@@ -290,7 +292,6 @@ class VideoAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100 , bos);
             val bitmapData = bos.toByteArray();
             f.writeBytes(bitmapData)
-            Timber.tag("tut_path").d("absolute ${f.absolutePath}")
             return f.absolutePath
         }
 
