@@ -43,12 +43,6 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     companion object {
         var lettersToSpan = ""
         var userID: String? = null
-        var positionAll = 0
-        var topPaddingAll = 0
-        var positionSubscribed = 0
-        var topPaddingSubscribed = 0
-        var positionOwned = 0
-        var topPaddingOwned = 0
         var groupClickListener: (groupId: String) -> Unit = {_ -> }
         var unsubscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = { _, _ -> }
         var subscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = {_, _ -> }

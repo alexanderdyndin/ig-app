@@ -18,6 +18,13 @@ import kotlinx.android.synthetic.main.fragment_group_category.view.*
 
 class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<GroupListsAdapter.GroupListViewHolder>() {
 
+    private var positionAll = 0
+    private var topPaddingAll = 0
+    private var positionSubscribed = 0
+    private var topPaddingSubscribed = 0
+    private var positionOwned = 0
+    private var topPaddingOwned = 0
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupListViewHolder {
         return GroupListViewHolder(parent.inflate(R.layout.fragment_group_category))
     }
@@ -30,7 +37,7 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         return items.count()
     }
 
-    class GroupListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class GroupListViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         val list: RecyclerView = view.allGroupsList
         val emptyState: TextView = view.emptyText
@@ -79,24 +86,24 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
                     super.onScrolled(recyclerView, dx, dy)
                     when (typeAdapter) {
                         0 -> {
-                            GroupListAdapter.positionAll = linearLayoutManager.findFirstVisibleItemPosition()
+                            positionAll = linearLayoutManager.findFirstVisibleItemPosition()
                             val currentView = linearLayoutManager.getChildAt(0)
                             currentView?.run {
-                                GroupListAdapter.topPaddingAll = top - linearLayoutManager.paddingTop
+                                topPaddingAll = top - linearLayoutManager.paddingTop
                             }
                         }
                         1 -> {
-                            GroupListAdapter.positionSubscribed = linearLayoutManager.findFirstVisibleItemPosition()
+                            positionSubscribed = linearLayoutManager.findFirstVisibleItemPosition()
                             val currentView = linearLayoutManager.getChildAt(0)
                             currentView?.run {
-                                GroupListAdapter.topPaddingSubscribed = top - linearLayoutManager.paddingTop
+                                topPaddingSubscribed = top - linearLayoutManager.paddingTop
                             }
                         }
                         2 -> {
-                            GroupListAdapter.positionOwned = linearLayoutManager.findFirstVisibleItemPosition()
+                            positionOwned = linearLayoutManager.findFirstVisibleItemPosition()
                             val currentView = linearLayoutManager.getChildAt(0)
                             currentView?.run {
-                                GroupListAdapter.topPaddingOwned = top - linearLayoutManager.paddingTop
+                                topPaddingOwned = top - linearLayoutManager.paddingTop
                             }
                         }
                     }
@@ -106,9 +113,9 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
 
         private fun scrollToPosition(typeAdapter: Int) {
             when(typeAdapter) {
-                0 -> linearLayoutManager.scrollToPositionWithOffset(GroupListAdapter.positionAll, GroupListAdapter.topPaddingAll)
-                1 -> linearLayoutManager.scrollToPositionWithOffset(GroupListAdapter.positionSubscribed, GroupListAdapter.topPaddingSubscribed)
-                2 -> linearLayoutManager.scrollToPositionWithOffset(GroupListAdapter.positionOwned, GroupListAdapter.topPaddingOwned)
+                0 -> linearLayoutManager.scrollToPositionWithOffset(positionAll, topPaddingAll)
+                1 -> linearLayoutManager.scrollToPositionWithOffset(positionSubscribed, topPaddingSubscribed)
+                2 -> linearLayoutManager.scrollToPositionWithOffset(positionOwned, topPaddingOwned)
             }
         }
     }
