@@ -333,4 +333,9 @@ dependencies {
     implementation "com.android.billingclient:billing-ktx:3.0.2"
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.firebase:firebase-auth'
+
+    // room
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-rxjava2:$roomVersion"
 }
