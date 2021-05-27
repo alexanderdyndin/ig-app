@@ -36,7 +36,6 @@ class BottomSheetRepository @Inject constructor(private val context: Context) {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Timber.tag("tut_repository").e(e)
         }
         listUrlMedia.reverse()
         return BottomSheetEntity(listUrlMedia)

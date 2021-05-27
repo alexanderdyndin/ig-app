@@ -87,23 +87,18 @@ class EditPostBottomSheetFragment:BaseBottomSheetFragment(),EditPostBottomSheetV
     }
 
     override fun stateSettling() {
-        Timber.tag("tut_state").d("SETTING")
     }
 
     override fun stateExpanded() {
-        Timber.tag("tut_state").d("EXPANDED")
     }
 
     override fun stateHalfExpanded() {
-        Timber.tag("tut_state").d("HALF_EXPANDED")
     }
 
     override fun stateDragging() {
-        Timber.tag("tut_state").d("DRAGGING")
     }
 
     override fun stateHidden() {
-        Timber.tag("tut_state").d("HIDDEN")
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {

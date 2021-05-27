@@ -63,4 +63,31 @@ sealed class CommentEntity {
         }
 
     }
+
+    data class PostEntity(
+            val id: String,
+            val bells: BellsEntity,
+            val groupInPost: GroupInPostEntity,
+            val postText: String,
+            val date: String,
+            val updated: String?,
+            val author: AuthorEntity,
+            val pin: String?,
+            val photo: String?,
+            var commentsCount: String,
+            val activeCommentsCount: String,
+            val isActive: Boolean,
+            val isOffered: Boolean,
+            var isPinned: Boolean,
+            var reacts: ReactsEntity,
+            val idp: Int,
+            val images: List<FileEntity>,
+            val audios: List<AudioEntity>,
+            val videos: List<FileEntity>,
+            var isLoading: Boolean = false,
+            val unreadComments: String,
+            var imagesExpanded: Boolean = false,
+            var audiosExpanded: Boolean = false,
+            var videosExpanded: Boolean = false
+    ):CommentEntity()
 }

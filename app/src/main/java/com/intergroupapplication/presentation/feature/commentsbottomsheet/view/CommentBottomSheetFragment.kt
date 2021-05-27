@@ -8,6 +8,7 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
@@ -16,6 +17,7 @@ import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -29,7 +31,15 @@ import javax.inject.Inject
 
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Validator.ValidationListener {
 
-    lateinit var callback: Callback
+    companion object{
+        const val CREATE_COMMENT_DATA = 0
+        const val CHANGE_STATE_BOTTOM_SHEET_DATA = 1
+        const val ADD_HEIGHT_CONTAINER = 2
+        const val COMMENT_CREATED_DATA = 3
+        const val ANSWER_COMMENT_CREATED_DATA = 4
+        const val SHOW_COMMENT_UPLOADING_DATA = 5
+        const val HIDE_SWIPE_DATA = 6
+    }
 
     @Inject
     @InjectPresenter
@@ -40,6 +50,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
 
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
+
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: CommentsViewModel
 
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
@@ -55,6 +70,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     override fun layoutRes() = R.layout.fragment_comment_bottom_sheet
 
     override fun getSnackBarCoordinator() = bottom_sheet_coordinator
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         commentEditText = view.findViewById(R.id.commentEditText)
@@ -90,7 +110,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
                         }
                         if (answer_layout.isVisible())
                             height += heightAnswerPanel
-                        callback.addHeightContainer(height)
+                        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
                     }
                 }
                 .let(compositeDisposable::add)
@@ -120,8 +140,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
                 }
         textAnswer.text = comment.text
         val height = commentEditText.height + iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
-        callback.addHeightContainer(height)
-        //commentEditText.showKeyboard()
+        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
     }
 
     override fun attachFileNotActivated() {
@@ -163,9 +182,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun changeStateWhenAttachFile() {
-        if (callback.getState() == BottomSheetBehavior.STATE_COLLAPSED){
-            callback.changeStateBottomSheet(BottomSheetBehavior.STATE_HALF_EXPANDED)
-        }
+        CommentsViewModel.publishSubject
+                .onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA, BottomSheetBehavior.STATE_HALF_EXPANDED))
     }
 
     override fun changeStateViewAfterAddMedia() {
@@ -224,7 +242,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     override fun stateCollapsed() {
         val height = restoreHeightEditText()
         restoreAllViewForCollapsedState()
-        callback.addHeightContainer(height)
+        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
         chooseMedias.clear()
         chooseMedias.addAll(loadingViews.keys.map {
             ChooseMedia(it)
@@ -233,21 +251,23 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun commentCreated(commentEntity: CommentEntity) {
-        callback.commentCreated(commentEntity)
-        callback.addHeightContainer(heightEditText + iconPanel.height + pushUpDown.height / 2)
-        callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        CommentsViewModel.publishSubject.onNext(Pair(COMMENT_CREATED_DATA, commentEntity))
+        CommentsViewModel.publishSubject.onNext(
+                Pair(ADD_HEIGHT_CONTAINER, heightEditText + iconPanel.height + pushUpDown.height / 2))
+        CommentsViewModel.publishSubject.onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA,BottomSheetBehavior.STATE_COLLAPSED))
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        callback.answerToCommentCreated(commentEntity)
-        callback.addHeightContainer(heightEditText + iconPanel.height + pushUpDown.height / 2)
-        callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        CommentsViewModel.publishSubject.onNext(Pair(ANSWER_COMMENT_CREATED_DATA, commentEntity))
+        CommentsViewModel.publishSubject.onNext(
+                Pair(ADD_HEIGHT_CONTAINER, heightEditText + iconPanel.height + pushUpDown.height / 2))
+        CommentsViewModel.publishSubject.onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA, BottomSheetBehavior.STATE_COLLAPSED))
         answer_layout.gone()
         answer_layout.activated(false)
     }
 
     override fun showCommentUploading(show: Boolean) {
-        callback.showCommentUploading(show)
+        CommentsViewModel.publishSubject.onNext(Pair(SHOW_COMMENT_UPLOADING_DATA,show))
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
@@ -338,16 +358,19 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun hideSwipeLayout() {
-        callback.hideSwipeLayout()
+        CommentsViewModel.publishSubject.onNext(Pair(HIDE_SWIPE_DATA, null))
     }
 
     override fun onValidationSucceeded() {
-        callback.createComment(commentEditText.text.toString().trim(), presenter)
+        CommentsViewModel.publishSubject
+                .onNext(Pair(CREATE_COMMENT_DATA,Pair(commentEditText.text.toString().trim(), presenter)))
+        //callback.createComment(commentEditText.text.toString().trim(), presenter)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         if (loadingViews.isNotEmpty()){
-            callback.createComment(commentEditText.text.toString().trim(), presenter)
+            CommentsViewModel.publishSubject
+                    .onNext(Pair(CREATE_COMMENT_DATA,Pair(commentEditText.text.toString().trim(), presenter)))
             return
         }
         for (error in errors) {
@@ -364,7 +387,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
             commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     null, null)
             val height = commentEditText.height + iconPanel.height + pushUpDown.height/2
-            callback.addHeightContainer(height)
+            CommentsViewModel.publishSubject
+                    .onNext(Pair(ADD_HEIGHT_CONTAINER, height))
         }
     }
 
@@ -389,16 +413,5 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
         commentEditText.show()
         postContainer.show()
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
-    }
-
-    interface Callback{
-        fun createComment(textComment: String, bottomPresenter: BottomSheetPresenter)
-        fun changeStateBottomSheet(newState: Int)
-        fun getState():Int
-        fun addHeightContainer(height: Int)
-        fun commentCreated(commentEntity: CommentEntity)
-        fun answerToCommentCreated(commentEntity: CommentEntity)
-        fun showCommentUploading(show: Boolean)
-        fun hideSwipeLayout()
     }
 }

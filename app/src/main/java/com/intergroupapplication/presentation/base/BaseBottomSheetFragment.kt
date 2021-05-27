@@ -312,7 +312,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
         icAttachFile.activated(false)
         btnAdd.isEnabled = false
-        Timber.tag("tut_state").d("_COLLAPSED")
     }
 
     protected fun changeBottomConstraintForRecyclerView(id:Int) {

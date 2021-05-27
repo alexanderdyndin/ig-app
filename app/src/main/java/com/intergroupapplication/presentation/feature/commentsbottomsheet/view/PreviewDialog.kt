@@ -153,11 +153,9 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
             if (e1.x - e2.x > SWIPE_MIN_DISTANCE
                     && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                         //тут плюс position
-                Timber.tag("tut_swipe").d("toLeft")
             } else if (e2.x - e1.x > SWIPE_MIN_DISTANCE
                     && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
                         //тут минус position
-                Timber.tag("tut_swipe").d("toRight")
 
             }
         } catch (e: Exception) {

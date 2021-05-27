@@ -201,7 +201,6 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
         photoGateway.setAudioUrls(audios.map { audioEntity ->
             val chooseMedia = ChooseMedia("/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
                     trackName = audioEntity.song,authorMusic = audioEntity.artist)
-            Timber.tag("tut_add_audio").d(chooseMedia.url)
             chooseMedias.addChooseMedia(chooseMedia)
             return@map chooseMedia
         })

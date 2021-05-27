@@ -9,11 +9,12 @@ import androidx.paging.rxjava2.cachedIn
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.NativeAd
 import com.intergroupapplication.domain.entity.CommentEntity
+import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.usecase.CommentsUseCase
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import io.reactivex.Flowable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -26,10 +27,13 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
+    companion object{
+        val publishSubject =  PublishSubject.create<Pair<Int,Any?>>()
+    }
 
-    fun fetchComments(postId: String, page: String): Flowable<PagingData<CommentEntity>> {
+    fun fetchComments(postEntity: CommentEntity.PostEntity, page: String): Flowable<PagingData<CommentEntity>> {
         return commentsUseCase
-                .getComments(postId, page)
+                .getComments(postEntity.id, page)
                 .map { pagingData ->
                     var i = -CommentsAdapter.AD_FIRST - 1
                     pagingData.map {
@@ -40,12 +44,7 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
                                 i++
                                 when {
                                     //для того, чтобы запихнуть первой позицией сам пост
-                                    before == null ->
-                                        if (i == 0) {
-                                            CommentEntity.AdEntity(0, null)
-                                        }else{
-                                            null
-                                        }
+                                    before == null -> postEntity
                                     after == null -> null
                                     else -> if ( i % CommentsAdapter.AD_FREQ == 0 && i >= 0) {
                                         var nativeAd: NativeAd?

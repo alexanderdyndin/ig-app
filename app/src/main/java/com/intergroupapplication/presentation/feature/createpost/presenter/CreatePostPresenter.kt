@@ -60,13 +60,10 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
         )
                 .subscribeOn(Schedulers.io())
                 .flatMap {
-                    Timber.tag("tut_flatMap").d(it.toString())
-                    Timber.tag("tut_groupId").d(groupId)
                     groupPostGateway.createPost(it, groupId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
                 .subscribe({ viewState.postCreateSuccessfully(it) }, {
-                    Timber.tag("tut_error").e(it)
                     errorHandler.handle(it) }))
     }
 }

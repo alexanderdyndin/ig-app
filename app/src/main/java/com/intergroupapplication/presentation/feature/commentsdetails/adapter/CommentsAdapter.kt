@@ -2,17 +2,11 @@ package com.intergroupapplication.presentation.feature.commentsdetails.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -36,7 +30,6 @@ import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
 import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
@@ -56,7 +49,6 @@ import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.item_group_post.view.*
 import kotlinx.android.synthetic.main.post_item_error.view.*
 import timber.log.Timber
-import kotlin.math.min
 
 /**
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
@@ -94,9 +86,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: CommentEntity.Comment, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
-        var showPostDetailInfo: (groupPostEntity:GroupPostEntity.PostEntity) ->Unit = {_->}
+        var showPostDetailInfo: (groupPostEntity:CommentEntity.PostEntity) ->Unit = {_->}
         var clicksSettingPost: (settingPost: ImageView)->Unit = { _->}
         var changeCountComments: (count:Int)->Unit = {_->}
+        var progressBarVisibility:(visibility:Boolean) -> Unit = {_->}
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
@@ -105,7 +98,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
 
     private var compositeDisposable = CompositeDisposable()
-    var groupPostEntity:GroupPostEntity.PostEntity? = null
+    private  var groupPostEntity:CommentEntity.PostEntity? = null
     lateinit var errorHandler: ErrorHandler
     lateinit var viewModel:CommentsViewModel
     lateinit var postInCommentHolder: PostInCommentHolder
@@ -132,22 +125,20 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position == 0) {
-            groupPostEntity?.let { (holder as PostInCommentHolder).bind(it) }
-        }
-        else {
-            getItem(position)?.let {
-                when (holder) {
-                    is CommentViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
-                    is CommentAnswerViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
-                    is AdViewHolder -> if (it is CommentEntity.AdEntity) holder.bind(it.nativeAd, AD_TYPE, "comments")
+        getItem(position)?.let {
+            when (holder) {
+                is CommentViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
+                is CommentAnswerViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
+                is AdViewHolder -> if (it is CommentEntity.AdEntity) holder.bind(it.nativeAd, AD_TYPE, "comments")
+                is PostInCommentHolder -> if (it is CommentEntity.PostEntity) {
+                    groupPostEntity = it
+                    holder.bind(it)
                 }
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0) return POST_IN_COMMENT_HOLDER
         return when (val item = getItem(position)) {
             is CommentEntity.Comment -> {
                 if (item.answerTo == null)
@@ -156,6 +147,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     ANSWER_HOLDER
             }
             is CommentEntity.AdEntity -> AdViewHolder.NATIVE_AD
+            is CommentEntity.PostEntity -> POST_IN_COMMENT_HOLDER
             null -> throw IllegalStateException("Unknown view")
         }
     }
@@ -181,7 +173,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         private val settingPostInComments = view.findViewById<ImageView>(R.id.settingsPost)
         val countComments = view.findViewById<TextView>(R.id.countComments)
 
-        fun bind(groupPostEntity: GroupPostEntity.PostEntity){
+        fun bind(groupPostEntity: CommentEntity.PostEntity){
             with(view){
                 compositeDisposable.add(getDateDescribeByString(groupPostEntity.date)
                         .subscribeOn(Schedulers.io())
@@ -222,7 +214,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
                 doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
-
 
                 imageContainer.setImages(groupPostEntity.images)
                 imageContainer.imageClick = imageClickListener
@@ -278,7 +269,9 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                                             }
                                         } else
                                             errorHandler.handle(exception)
-                                    }))
+                                    }
+                                )
+                            )
                         }
                     }
                 }
@@ -327,9 +320,8 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
-        private fun sharePost(item: GroupPostEntity.PostEntity,context: Context){
-            Timber.tag("tut_share").d("tut")
-            //progressDownload.show()
+        private fun sharePost(item: CommentEntity.PostEntity,context: Context){
+            progressBarVisibility.invoke(true)
             val link = Firebase.dynamicLinks.dynamicLink {
                 domainUriPrefix =context.getString(R.string.deeplinkDomain)
                 link = Uri.parse("https://intergroup.com/post/${item.id}")
@@ -346,33 +338,33 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         }
 
         fun increaseCommentsCounter() {
-            var commentsCount = 0
-            if (countComments.text.toString() != "")
-                commentsCount = countComments.text.toString().toInt()
-            else if(groupPostEntity != null){
-                commentsCount = groupPostEntity?.activeCommentsCount?.toInt()?:0
+            var commentsCount = if (countComments.text.toString() != "")
+                countComments.text.toString().toInt()
+            else {
+                groupPostEntity?.activeCommentsCount?.toInt()?:0
             }
             commentsCount++
             countComments.text = commentsCount.toString()
             changeCountComments.invoke(commentsCount)
         }
 
-        private fun createShareIntent(item: GroupPostEntity.PostEntity, url:String,context: Context){
+        private fun createShareIntent(item:CommentEntity.PostEntity, url:String,context: Context){
             val text = url +"/${item.id}"
             val filesUrls = mutableListOf<String>()
             filesUrls.addAll(item.videos.map { it.file })
             filesUrls.addAll(item.images.map { it.file })
             OmegaIntentBuilder.from(context)
-                    .share()
-                    .text(text)
-                    .filesUrls(filesUrls)
-                    .download(object: DownloadCallback {
-                        override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
-                            //progressDownload.gone()
-                            contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    .startActivity()
-                        }
-                    })
+                .share()
+                .text(text)
+                .filesUrls(filesUrls)
+                .download(object: DownloadCallback {
+                    override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
+                        progressBarVisibility.invoke(false)
+                        contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                .startActivity()
+                    }
+                }
+            )
         }
     }
 
@@ -516,7 +508,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         private fun showPopupMenu(view: View, id: Int, userId: Int?) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-//            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)

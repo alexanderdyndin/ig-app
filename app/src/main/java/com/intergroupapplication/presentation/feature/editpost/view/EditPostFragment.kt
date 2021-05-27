@@ -58,7 +58,6 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
     private fun fillingView(postEntity: GroupPostEntity.PostEntity?){
         postEntity?.audios?.forEach {audioEntity->
             val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
-            Timber.tag("tut_audios").d(url)
             loadingViews[url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,audioContainer, false)
             loadingViews[url]?.let {
                 it.trackName?.text = audioEntity.song

@@ -40,12 +40,10 @@ class EditPostPresenter @Inject constructor(private val groupPostGateway: GroupP
         )
                 .subscribeOn(Schedulers.io())
                 .flatMap {
-                    Timber.tag("tut_flatMap").d(it.toString())
                     groupPostGateway.editPost(it,postId) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
                 .subscribe({ viewState.postCreateSuccessfully(it) }, {
-                    Timber.tag("tut_error").e(it)
                     errorHandler.handle(it) }))
     }
 }

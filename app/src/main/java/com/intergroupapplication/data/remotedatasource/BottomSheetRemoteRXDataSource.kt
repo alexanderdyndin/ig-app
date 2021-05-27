@@ -15,13 +15,10 @@ class BottomSheetRemoteRXDataSource(private val entity:BottomSheetEntity, privat
     }
 
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, String>> {
-
-        Timber.tag("tut_updateKey").d((updateKey == null).toString())
         var key =  params.key?:0
         updateKey = 1
         if (key<0) key = 0
         val size = entity.mediaList.size
-        Timber.tag("tut_key").d(key.toString())
         val listData:List<String>
         listData = when {
             size<=30 -> {

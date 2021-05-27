@@ -55,7 +55,6 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                                         it.url.substringAfter("/comments/"),it.urlPreview,
                                 duration = it.duration) },
                         )
-                        Timber.tag("tut_create_text").d(textComment)
                         return create
                     }
                 })
