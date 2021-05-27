@@ -8,7 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
@@ -20,10 +20,13 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
@@ -145,6 +148,14 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.groupListCoordinator
 
+    private lateinit var pager: ViewPager2
+    private lateinit var slidingCategories: TabLayout
+    private lateinit var swipe_groups: SwipeRefreshLayout
+    private lateinit var createGroup: Button
+    private lateinit var activity_main__btn_filter: ImageButton
+    private lateinit var activity_main__search_input: EditText
+    private lateinit var toolbarMenu: TextView
+
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,11 +181,14 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pager = viewBinding.pager
+        slidingCategories = viewBinding.slidingCategories
+        swipe_groups = viewBinding.swipeGroups
+        createGroup = viewBinding.navigationToolbar.createGroup
+        activity_main__btn_filter = viewBinding.activityMainBtnFilter
+        activity_main__search_input = viewBinding.activityMainSearchInput
+        toolbarMenu = viewBinding.navigationToolbar.toolbarMenu
 
-//        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
-//        adapterList.add(adapterAllAd)
-//        adapterList.add(adapterSubscribedAd)
-//        adapterList.add(adapterOwnedAd)
         pager.apply {
             adapter = viewPagerAdapter
             val handler = ViewPager2Circular(this, swipe_groups)
@@ -420,15 +434,15 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun showUserInfo(userEntity: UserEntity) {
         val userName = userEntity.firstName + " " + userEntity.surName
-        viewDrawer.profileName.text = userName
+        viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
         doOrIfNull(userEntity.avatar,
                 { profileAvatarHolder.showAvatar(it) },
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
     }
 
     override fun viewCreated() {
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
-        profileAvatarHolder = viewDrawer.profileAvatarHolder
+        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, viewBinding.groupListCoordinator, false)
+        profileAvatarHolder = viewDrawer.findViewById(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
         drawer = drawer {                           //FIXME ЧТО ЗА БЛЯДСКИЙ ГОВНОКОД??
@@ -436,7 +450,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
             headerView = viewDrawer
             actionBarDrawerToggleEnabled = true
             translucentStatusBar = true
-            viewDrawer.profileAvatarHolder.setOnClickListener {
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                         || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
                     dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
@@ -452,7 +466,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
                     findNavController().navigate(R.id.action_groupListFragment2_to_newsFragment2)
-                    toolbarTittle.text = getString(R.string.news)
+                    viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
                 }
             }
@@ -505,10 +519,10 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
             setSelection(drawerItem)
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
                 findNavController().navigate(R.id.action_groupListFragment2_self)
-                toolbarTittle.text = getString(R.string.groups)
+                viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                 false
             }
-            viewDrawer.drawerArrow.setOnClickListener { closeDrawer() }
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
         }
         toolbarMenu.setOnClickListener {
             drawer.openDrawer()
