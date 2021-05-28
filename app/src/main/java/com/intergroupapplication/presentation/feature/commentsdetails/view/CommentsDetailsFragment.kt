@@ -22,6 +22,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.intergroupapplication.R
+import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
@@ -253,11 +254,9 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                         }
                         loading_layout.gone()
                         if (commentCreated) {
-                            Timber.tag("tut_create").d("count adapter ${adapter.itemCount}")
-                            commentsList.scrollToPosition(adapter.itemCount - 1)
+                            commentsList.scrollToPosition(adapter.itemCount-1)
                             commentCreated = false
                         }
-                        Timber.tag("tut_not_loading").d("count_adapter ${adapter.itemCount}")
                     }
                     else -> {
                         swipeLayout.isRefreshing = false
@@ -290,12 +289,9 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     override fun showPostDetailInfo(groupPostEntity: CommentEntity.PostEntity) {
         setErrorHandler()
         this.groupPostEntity = groupPostEntity
-        //adapter.groupPostEntity = groupPostEntity
         if (infoForCommentEntity != null) {
-            Timber.tag("tut_if").d("tut")
             compositeDisposable.add(
                     viewModel.fetchComments(groupPostEntity, page).subscribe {
-                        Timber.tag("tut_fetch").d("page $page")
                         page = (groupPostEntity.commentsCount.toInt()/20+1).toString()
                         adapter.submitData(lifecycle, it)
                     }
@@ -315,8 +311,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     private fun commentCreated(commentEntity: CommentEntity) {
         commentCreated = true
-        Timber.tag("tut_create").d("create")
         increaseCommentsCounter()
+        groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
         adapter.refresh()
     }
 
@@ -326,6 +322,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         if (commentHolder.childCount > 1) {
             commentHolder.removeViewAt(0)
         }
+        groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
         adapter.refresh()
     }
 

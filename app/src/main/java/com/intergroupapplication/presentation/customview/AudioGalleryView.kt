@@ -15,9 +15,8 @@ import com.intergroupapplication.presentation.exstension.getActivity
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
-import kotlinx.android.synthetic.main.layout_expand.view.*
+import kotlinx.android.synthetic.main.layout_expand.view.btnExpand
 import kotlinx.android.synthetic.main.layout_hide.view.*
-import kotlinx.android.synthetic.main.layout_music_player.view.exo_duration
 import kotlinx.android.synthetic.main.layout_music_player.view.exo_progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -93,7 +92,7 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                         val trackName = if (it.artist == "") it.song else "${it.artist} - ${it.song}"
                         playerView.trackName = trackName
                         playerView.trackOwner = "Загрузил (ID:${it.owner})"
-                        playerView.exoPlayer.exo_duration.text = if (it.duration == "") it.duration else "00:00"
+                        playerView.durationTrack.text = if (it.duration != "") it.duration else "00:00"
                         playerView.exoPlayer.player = player
                         container.addView(playerView)
                         if (player.playWhenReady) {

@@ -15,6 +15,7 @@ class AudioPlayerView @JvmOverloads constructor(
     val exoPlayer by lazy<PlayerView> { _exoPlayer.findViewById(R.id.musicExoPlayerView) }
     private val nameTrack =  _exoPlayer.findViewById<TextView>(R.id.trackName)
     private val whomTrack =  _exoPlayer.findViewById<TextView>(R.id.fromWhom)
+    val durationTrack = _exoPlayer.findViewById<TextView>(R.id.exoDuration)
     var trackName: String = ""
         set(value) {
             field = value

@@ -75,7 +75,7 @@ class MediaMapper @Inject constructor() {
     }
 
     fun mapToDomainEntity(from: ImageVideoModel): FileEntity {
-        return FileEntity(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner,from.preview?:"", from.duration?:"")
+        return FileEntity(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner,from.preview?:"", from.duration?:"00:00")
     }
 
     fun mapToDto(from: AudioEntity): AudioModel {
@@ -83,7 +83,7 @@ class MediaMapper @Inject constructor() {
     }
 
     fun mapToDomainEntity(from: AudioModel): AudioEntity {
-        return AudioEntity(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner,from.duration?:"")
+        return AudioEntity(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner,from.duration?:"00:00")
     }
 
 

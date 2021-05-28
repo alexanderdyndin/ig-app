@@ -13,5 +13,5 @@ data class FileEntity(
         val post: Int,
         val owner: Int,
         val preview:String = "",
-        val duration:String = ""
+        val duration:String = "00:00"
 ): Parcelable

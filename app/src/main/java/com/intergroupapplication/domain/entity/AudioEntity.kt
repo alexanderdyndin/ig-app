@@ -14,7 +14,7 @@ data class AudioEntity (
         val genre: String,
         val post: Int,
         val owner: Int,
-        val duration:String
+        val duration:String = "00:00"
         ): Parcelable {
 
         override fun equals(other: Any?): Boolean {

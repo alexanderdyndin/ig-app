@@ -20,11 +20,11 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
 import kotlinx.android.synthetic.main.layout_expand.view.*
 import kotlinx.android.synthetic.main.layout_hide.view.*
-import kotlinx.android.synthetic.main.layout_video_player.view.exo_duration
 import kotlinx.android.synthetic.main.layout_video_player.view.exo_progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 var isVisibleController = true
 class VideoGalleryView @JvmOverloads constructor(context: Context,
@@ -96,7 +96,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
                         val player = makeVideoPlayer(it, bindedService,playerView)
                         playerView.exoPlayer.player = player
                         imageLoadingDelegate?.loadImageFromUrl(it.preview,playerView.previewForVideo)
-                        playerView.exoPlayer.exo_duration.text = if (it.duration == "") it.duration else "00:00"
+                        playerView.durationVideo.text = if (it.duration != "") it.duration else "00:00"
                         playerView.nameVideo.text = it.title
                         playerView.exoPlayer.setControllerVisibilityListener {visibility:Int->
                             isVisibleController = visibility == 0

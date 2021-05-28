@@ -31,6 +31,7 @@ class VideoPlayerView @JvmOverloads constructor(
     val exoPlayer by lazy<PlayerView> { _exoPlayer.findViewById(R.id.videoExoPlayerView) }
     val previewForVideo by lazy<SimpleDraweeView> { _exoPlayer.findViewById(R.id.previewForVideo) }
     val nameVideo by lazy<TextView> { _exoPlayer.findViewById(R.id.nameVideo) }
+    val durationVideo by lazy<TextView> {_exoPlayer.findViewById(R.id.exoDuration)  }
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     }
