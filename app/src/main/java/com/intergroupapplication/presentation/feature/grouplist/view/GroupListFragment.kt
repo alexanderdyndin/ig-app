@@ -31,6 +31,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.databinding.FragmentGroupListBinding
+import com.intergroupapplication.databinding.LayoutAdminCreatePostButtonBinding
+import com.intergroupapplication.databinding.LayoutUserJoinButtonBinding
 import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.FieldException
@@ -187,7 +189,6 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
         createGroup = viewBinding.navigationToolbar.createGroup
         activity_main__btn_filter = viewBinding.activityMainBtnFilter
         activity_main__search_input = viewBinding.activityMainSearchInput
-        toolbarMenu = viewBinding.navigationToolbar.toolbarMenu
 
         pager.apply {
             adapter = viewPagerAdapter
@@ -441,6 +442,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     }
 
     override fun viewCreated() {
+        toolbarMenu = viewBinding.navigationToolbar.toolbarMenu
         viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, viewBinding.groupListCoordinator, false)
         profileAvatarHolder = viewDrawer.findViewById(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate

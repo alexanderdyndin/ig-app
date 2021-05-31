@@ -15,10 +15,13 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewbinding.ViewBinding
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentGroupBinding
+import com.intergroupapplication.databinding.LayoutAdminCreatePostButtonBinding
+import com.intergroupapplication.databinding.LayoutUserJoinButtonBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
@@ -164,12 +167,9 @@ class GroupFragment() : BaseFragment(), GroupView,
         comments_count = viewBinding.group.commentsCount
         posts_count = viewBinding.group.postsCount
         progressBar = viewBinding.progressBar
-        joinToGroup = viewBinding.group.headGroupJoinViewStub.findViewById(R.id.joinToGroup)
-        goOutFromGroup = viewBinding.group.headGroupJoinViewStub.findViewById(R.id.goOutFromGroup)
         headGroupCreatePostViewStub = viewBinding.group.headGroupCreatePostViewStub
-        createPost = viewBinding.group.headGroupCreatePostViewStub.findViewById(R.id.createPost)
         headGroupJoinViewStub = viewBinding.group.headGroupJoinViewStub
-        signingProgress = viewBinding.group.headGroupJoinViewStub.findViewById(R.id.signingProgress)
+
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)?.observe(
                 viewLifecycleOwner) { id ->
             if (createdPostId != id) {
@@ -457,6 +457,7 @@ class GroupFragment() : BaseFragment(), GroupView,
     private fun renderAdminPage() {
         isAdmin = true
         headGroupCreatePostViewStub.inflate()
+        createPost = requireView().findViewById(R.id.createPost)
         createPost.setOnClickListener {
             openCreatePost(groupId)
         }
@@ -471,8 +472,11 @@ class GroupFragment() : BaseFragment(), GroupView,
 
     private fun renderUserPage(viewId: Int) {
         headGroupJoinViewStub.inflate()
+        joinToGroup = requireView().findViewById(R.id.joinToGroup)
+        goOutFromGroup = requireView().findViewById(R.id.goOutFromGroup)
+        signingProgress = requireView().findViewById(R.id.signingProgress)
         listenButtonClicks()
-        requireView().findViewById<TextView>(viewId).show()
+        requireView().findViewById<Button>(viewId).show()
     }
 
     override fun groupFollowedError() {
