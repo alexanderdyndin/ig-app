@@ -101,6 +101,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         progressBar = viewBinding.loader.progressBar
         tvFirstname = viewBinding.tvFirstname
         tvSurname = viewBinding.tvSurname
+        inputYear = viewBinding.inputYear
         inputDay = viewBinding.inputDay
         inputMonth = viewBinding.inputMonth
         genderRadioGroup = viewBinding.genderRadioGroup
