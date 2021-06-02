@@ -60,7 +60,6 @@ class GroupFragment() : BaseFragment(), GroupView,
         const val IS_ADMIN = "is_admin"
         const val POST_ID = "post_id"
         const val FRAGMENT_RESULT = "fragmentResult"
-        const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
 
     private val viewBinding by viewBinding(FragmentGroupBinding::bind)
@@ -74,7 +73,6 @@ class GroupFragment() : BaseFragment(), GroupView,
 
     private lateinit var groupId: String
 
-    private var isGroupCreatedNow = false
     private var isAdmin = false
 
     @Inject
@@ -139,7 +137,6 @@ class GroupFragment() : BaseFragment(), GroupView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString(GROUP_ID)!!
-        isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
         viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         prepareAdapter()

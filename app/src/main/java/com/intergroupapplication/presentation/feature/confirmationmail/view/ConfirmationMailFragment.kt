@@ -72,7 +72,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
                 .let { compositeDisposable.add(it) }
 
         btnRepeatCode.clicks()
-                .subscribe { findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity) }
+                .subscribe { findNavController().navigate(R.id.action_global_registrationActivity) }
                 .also { compositeDisposable.add(it) }
 
         btnChangeEmail.clicks()

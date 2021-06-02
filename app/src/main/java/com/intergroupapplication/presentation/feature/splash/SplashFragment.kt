@@ -31,9 +31,9 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         when {
-            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_splashActivity_to_AgreementsFragment2)
-            !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_splashActivity_to_registrationActivity)
-            else -> findNavController().navigate(R.id.action_splashActivity_to_newsFragment2)
+            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_global_AgreementsFragment2)
+            !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_global_registrationActivity)
+            else -> findNavController().navigate(R.id.action_global_newsFragment2)
         }
     }
 

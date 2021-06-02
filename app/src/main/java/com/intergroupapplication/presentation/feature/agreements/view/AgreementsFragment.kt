@@ -90,7 +90,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.container
 
     override fun toSplash() {
-        findNavController().navigate(R.id.action_AgreementsFragment2_to_splashActivity)
+        findNavController().navigate(R.id.action_global_splashActivity)
     }
 
     override fun showLoading(show: Boolean) {

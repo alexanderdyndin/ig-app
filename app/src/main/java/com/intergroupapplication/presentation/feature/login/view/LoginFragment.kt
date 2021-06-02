@@ -215,7 +215,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun login() {
-        findNavController().navigate(R.id.action_loginActivity_to_splashActivity)
+        findNavController().navigate(R.id.action_global_splashActivity)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -303,13 +303,13 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 }
             }
         }
-        errorHandlerLogin.on(UserNotVerifiedException::class.java) { throwable, _ ->
+        errorHandlerLogin.on(UserNotVerifiedException::class.java) { _, _ ->
             val email = mail.text.toString()
             val data = bundleOf("entity" to email)
-            findNavController().navigate(R.id.action_loginActivity_to_confirmationMailActivity, data)
+            findNavController().navigate(R.id.action_global_confirmationMailActivity, data)
         }
-        errorHandlerLogin.on(UserNotProfileException::class.java) { throwable, _ ->
-            findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
+        errorHandlerLogin.on(UserNotProfileException::class.java) { _, _ ->
+            findNavController().navigate(R.id.action_global_createUserProfileActivity)
         }
         errorHandlerLogin.on(BadRequestException::class.java) { throwable, _ ->
             dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)

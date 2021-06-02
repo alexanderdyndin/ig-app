@@ -150,7 +150,10 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
                 .subscribe { validator.validate() }.let(compositeDisposable::add)
         setErrorHandler()
 
-        textLogin.clicks().subscribe { findNavController().navigate(R.id.action_registrationActivity_to_loginActivity2) }.also { compositeDisposable.add(it) }
+        textLogin.clicks().subscribe {
+            val n = findNavController()
+            n.navigate(R.id.action_registrationActivity_to_loginActivity2)
+        }.also { compositeDisposable.add(it) }
         initValidator()
         initEditText()
         sign_in_button.setOnClickListener {

@@ -367,7 +367,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
-                    findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
+                    findNavController().navigate(R.id.action_global_groupListFragment2)
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                     false
                 }
@@ -405,7 +405,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { v ->
                     userSession.logout()
-                    findNavController().navigate(R.id.action_newsFragment2_to_loginActivity)
+                    findNavController().navigate(R.id.action_global_loginActivity)
                     false
                 }
             }
@@ -413,7 +413,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
             setSelection(drawerItem)
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
-                findNavController().navigate(R.id.action_newsFragment2_self)
+                findNavController().navigate(R.id.action_global_newsFragment2)
                 viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                 false
             }
@@ -457,19 +457,6 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         doOrIfNull(userEntity.avatar,
                 { profileAvatarHolder.showAvatar(it) },
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
-    }
-
-    override fun openConfirmationEmail() = Action { _, _ ->
-        if (findNavController().currentDestination?.label == LABEL) {
-            val email = userSession.email?.email.orEmpty()
-            val data = bundleOf("entity" to email)
-            findNavController().navigate(R.id.action_newsFragment2_to_confirmationMailActivity, data)
-        }
-    }
-
-    override fun openCreateProfile()  = Action { _, _ ->
-        if (findNavController().currentDestination?.label == LABEL)
-            findNavController().navigate(R.id.action_newsFragment2_to_createUserProfileActivity)
     }
 
 }

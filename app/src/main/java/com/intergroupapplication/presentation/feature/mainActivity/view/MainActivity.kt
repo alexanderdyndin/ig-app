@@ -13,16 +13,17 @@ import android.os.*
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.android.billingclient.api.*
-import com.appodeal.ads.Appodeal
-import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.databinding.ActivityMainBinding
 import com.intergroupapplication.initializators.InitializerLocal
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
@@ -44,6 +45,8 @@ class MainActivity : FragmentActivity() {
         const val MEDIA_FILE_URI = "MediaFileUri"
         const val EXIT_DELAY = 2000L
     }
+
+    private val viewBinding by viewBinding(ActivityMainBinding::bind)
 
     private val TAG: String = "MainActivity"
 
@@ -106,6 +109,7 @@ class MainActivity : FragmentActivity() {
         viewModel.getAdCount()
         createNotificationChannel()
         initBilling()
+
     }
 
     override fun onResume() {

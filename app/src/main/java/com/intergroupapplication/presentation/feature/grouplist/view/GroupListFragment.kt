@@ -467,7 +467,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
-                    findNavController().navigate(R.id.action_groupListFragment2_to_newsFragment2)
+                    findNavController().navigate(R.id.action_global_newsFragment2)
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
                 }
@@ -513,14 +513,14 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { v ->
                     presenter.goOutFromProfile()
-                    findNavController().navigate(R.id.action_groupListFragment2_to_loginActivity2)
+                    findNavController().navigate(R.id.action_global_loginActivity)
                     false
                 }
             }
         }.apply {
             setSelection(drawerItem)
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
-                findNavController().navigate(R.id.action_groupListFragment2_self)
+                findNavController().navigate(R.id.action_global_groupListFragment2)
                 viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                 false
             }

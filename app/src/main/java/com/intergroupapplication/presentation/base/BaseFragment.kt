@@ -129,14 +129,19 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     protected open fun openCreateProfile() = Action { _, _ ->
         Timber.e("403 catched")
+        findNavController().navigate(R.id.action_global_createUserProfileActivity)
     }
 
     protected open fun openConfirmationEmail() = Action { _, _ ->
+        val email = userSession.email?.email.orEmpty()
+        val data = bundleOf("entity" to email)
+        findNavController().navigate(R.id.action_global_confirmationMailActivity, data)
         Timber.e("403 catched")
     }
 
     private fun openAutorize() = Action { _, _ ->
         userSession.logout()
+        findNavController().navigate(R.id.action_global_loginActivity)
     }
 
     open fun viewCreated() { }
@@ -151,9 +156,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         super.onAttach(context)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -173,7 +175,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     override fun onPause() {
         dialogDelegate.coordinator = null
-        //compositeDisposable.clear()
         super.onPause()
     }
 

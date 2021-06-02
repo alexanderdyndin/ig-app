@@ -101,6 +101,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         progressBar = viewBinding.loader.progressBar
         tvFirstname = viewBinding.tvFirstname
         tvSurname = viewBinding.tvSurname
+        inputYear = viewBinding.inputYear
         inputDay = viewBinding.inputDay
         inputMonth = viewBinding.inputMonth
         genderRadioGroup = viewBinding.genderRadioGroup
@@ -134,7 +135,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     override fun completed() {
-        findNavController().navigate(R.id.action_createUserProfileActivity_to_splashActivity)
+        findNavController().navigate(R.id.action_global_splashActivity)
     }
 
     override fun showLoading(show: Boolean) {

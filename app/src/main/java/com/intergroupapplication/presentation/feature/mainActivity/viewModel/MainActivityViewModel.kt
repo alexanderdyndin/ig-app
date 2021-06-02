@@ -24,7 +24,6 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
                                                 private val errorHandler: ErrorHandler
                                                 ): ViewModel() {
 
-
     fun checkNewVersionAvaliable(fragmentManager: FragmentManager) {
         compositeDisposable.add(appStatusUseCase.getAppStatus(BuildConfig.VERSION_NAME)
                 .subscribeOn(Schedulers.io())
