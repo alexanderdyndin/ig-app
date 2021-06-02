@@ -49,7 +49,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
-    //private val viewBindingLoader by viewBinding(AuthLoader2Binding::bind)
+
 
     @Inject
     @InjectPresenter
@@ -85,41 +85,6 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
                 .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { next() }.let(compositeDisposable::add)
-//        ConsentManager.getInstance(this).requestConsentInfoUpdate(
-//                BuildConfig.APPODEAL_APP_KEY,
-//                object : ConsentInfoUpdateListener {
-//                    override fun onConsentInfoUpdated(consent: Consent?) {}
-//                    override fun onFailedToUpdateConsentInfo(exception: ConsentManagerException) {}
-//                })
-//        val consentManager = ConsentManager.getInstance(this)
-//        val consent = consentManager.consent
-//        val consentZone = consentManager.consentZone
-//        val consentStatus = consentManager.consentStatus
-//        val iabString = consentManager.iabConsentString
-//        val consentFormListener: ConsentFormListener = object : ConsentFormListener {
-//            override fun onConsentFormLoaded() {
-//                // Consent form was loaded. Now you can display consent form as activity or as dialog
-//            }
-//            override fun onConsentFormError(error: ConsentManagerException) {
-//                // Consent form loading or showing failed. More info can be found in 'error' object
-//            }
-//            override fun onConsentFormOpened() {
-//                // Conset form was shown
-//            }
-//            override fun onConsentFormClosed(consent: Consent) {
-//                // Consent form was closed
-//            }
-//        }
-//
-//        val consentForm = ConsentForm.Builder(this as Context)
-//                .withListener(consentFormListener)
-//                .build()
-//        consentForm.load()
-//        btnAppodeal.setOnClickListener {
-//            Timber.d(consentForm.isLoaded.toString())
-//            Timber.d(consentForm.isShowing.toString())
-//            consentForm.showAsActivity()
-//        }
     }
 
     override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.container
@@ -166,34 +131,9 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     private fun next() {
-//        Appodeal.requestAndroidMPermissions(requireActivity(), object : PermissionsHelper.AppodealPermissionCallbacks {
-//            override fun writeExternalStorageResponse(result: Int) {
-//                if (result == PackageManager.PERMISSION_GRANTED) {
-//                    //showToast("WRITE_EXTERNAL_STORAGE permission was granted")
-//                } else {
-//                    //showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
-//                }
-//            }
-//
-//            override fun accessCoarseLocationResponse(result: Int) {
-//                if (result == PackageManager.PERMISSION_GRANTED) {
-//                    //showToast("ACCESS_COARSE_LOCATION permission was granted")
-//                } else {
-//                    //showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
-//                }
-//            }
-//        })
         compositeDisposable.add(
                         RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe({
-//                            if (it) {
-//                                presenter.next()
-//                            } else {
-//                                dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-//                                        mapOf(R.id.permissionOk to {
-//                                            presenter.goToSettingsScreen()
-//                                        }))
-//                            }
                             presenter.next()
                         }, { Timber.e(it) }))
 
