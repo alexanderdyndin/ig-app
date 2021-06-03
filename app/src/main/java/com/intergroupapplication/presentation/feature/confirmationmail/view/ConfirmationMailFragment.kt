@@ -49,6 +49,10 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
+    @Inject
+    @Named("ConfirmationProfileHandler")
+    override lateinit var errorHandler: ErrorHandler
+
     private lateinit var btnNext: AppCompatButton
     private lateinit var btnRepeatCode: TextView
     private lateinit var btnChangeEmail: TextView

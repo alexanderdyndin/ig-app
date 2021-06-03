@@ -10,6 +10,7 @@ import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.scope.PerActivity
+import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.initializators.Initializer
@@ -21,6 +22,7 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -34,6 +36,18 @@ import java.util.*
 
 @Module
 class MainActivityViewModule {
+
+    @PerActivity
+    @Provides
+    fun provideDialogManager(activity: MainActivity): DialogManager =
+        DialogManager(activity.supportFragmentManager)
+
+    @PerActivity
+    @Provides
+    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+                       context: Context)
+            : DialogDelegate =
+        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
     @PerActivity
     @Provides

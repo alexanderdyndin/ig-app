@@ -9,7 +9,7 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 21/08/2018 at project InterGroupApplication.
  */
-class ErrorHandlerInitializer (private val errorHandler: ErrorHandler) {
+class ErrorHandlerInitializer @Inject constructor(private val errorHandler: ErrorHandler) {
 
     fun initializeErrorHandler(errorMap: Map<Class<out Exception>, Action>, otherWiseAction: Action) {
         for (mutableEntry in errorMap) {

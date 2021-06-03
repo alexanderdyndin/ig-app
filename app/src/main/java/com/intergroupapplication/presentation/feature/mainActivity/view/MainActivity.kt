@@ -11,6 +11,7 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.os.*
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -20,9 +21,15 @@ import com.android.billingclient.api.*
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.databinding.ActivityMainBinding
+import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.initializators.InitializerLocal
+import com.intergroupapplication.presentation.delegate.DialogDelegate
+import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
+import com.workable.errorhandler.Action
+import com.workable.errorhandler.ErrorHandler
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +39,8 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
 
@@ -46,8 +55,6 @@ class MainActivity : FragmentActivity() {
         const val EXIT_DELAY = 2000L
     }
 
-    private val viewBinding by viewBinding(ActivityMainBinding::bind)
-
     private val TAG: String = "MainActivity"
 
     @Inject
@@ -60,6 +67,15 @@ class MainActivity : FragmentActivity() {
 
     @Inject
     lateinit var userSession: UserSession
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
+
+    @Inject
+    lateinit var errorHandlerInitializer: ErrorHandlerInitializer
+
+    @Inject
+    lateinit var dialogDelegate: DialogDelegate
 
     /**
      *  Billing
@@ -109,7 +125,12 @@ class MainActivity : FragmentActivity() {
         viewModel.getAdCount()
         createNotificationChannel()
         initBilling()
+        initErrorHandler(errorHandler)
+    }
 
+    override fun onStart() {
+        super.onStart()
+        dialogDelegate.coordinator = this.findViewById(R.id.navigationCoordinator)
     }
 
     override fun onResume() {
@@ -117,6 +138,10 @@ class MainActivity : FragmentActivity() {
         //viewModel.checkNewVersionAvaliable(supportFragmentManager)
     }
 
+    override fun onStop() {
+        super.onStop()
+        dialogDelegate.coordinator = null
+    }
 
     suspend fun bindMediaService():IGMediaService.ServiceBinder? {
         return suspendCoroutine {
@@ -233,5 +258,89 @@ class MainActivity : FragmentActivity() {
                     .build()
             val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
         }
+    }
+
+    private fun initErrorHandler(errorHandler: ErrorHandler) {
+        errorHandler.clear()
+        val errorMap = mapOf(
+            BadRequestException::class.java to
+                    Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message) },
+            UserBlockedException::class.java to getActionForBlockedUser(),
+            ServerException::class.java to
+                    Action { _, _ -> dialogDelegate.showErrorSnackBar(getString(R.string.server_error)) },
+            NotFoundException::class.java to
+                    Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as NotFoundException).message.orEmpty()) },
+            UnknownHostException::class.java to createSnackBarAction(R.string.no_network_connection),
+            CanNotUploadPhoto::class.java to createToast(R.string.can_not_change_avatar),
+            CanNotUploadVideo::class.java to createToast(R.string.can_not_upload_video),
+            CanNotUploadAudio::class.java to createToast(R.string.can_not_upload_audio),
+            UserNotProfileException::class.java to openCreateProfile(),
+            GroupBlockedException::class.java to getActionForBlockedGroup(),
+            UserNotVerifiedException::class.java to openConfirmationEmail(),
+            ForbiddenException::class.java to createSnackBarAction(R.string.forbidden_error),
+            ImeiException::class.java to getActionForBlockedImei(),
+            InvalidRefreshException::class.java to openAutorize(),
+            GroupAlreadyFollowingException::class.java to Action { _, _ ->},
+            PageNotFoundException::class.java to
+                    Action { throwable, _ ->
+                        dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())},
+            UnknowServerException::class.java to Action { _, _ ->
+                createSnackBarAction(R.string.unknown_error)},
+            ConnectException::class.java to Action { _, _ ->
+                dialogDelegate.showErrorSnackBar(this.getString(R.string.no_network_connection))
+            }
+        )
+
+        errorHandlerInitializer.initializeErrorHandler(errorMap,
+            createSnackBarAction(R.string.unknown_error))
+    }
+
+    private fun getActionForBlockedImei() = Action { throwable, _ ->
+        userSession.clearAllData()
+        finish()
+    }
+
+    private fun getActionForBlockedUser() =
+        if (userSession.isLoggedIn()) {
+            actionForBlockedUser()
+        } else {
+            createSnackBarAction(R.string.user_blocked)
+        }
+
+
+    private fun getActionForBlockedGroup() = actionForBlockedGroup
+
+    private val actionForBlockedGroup = Action { _, _ ->
+        dialogDelegate.showErrorSnackBar("Группа заблокирована")
+        findNavController(R.id.nav_host_fragment_container).popBackStack()
+    }
+
+    fun actionForBlockedUser() = Action { _, _ ->
+        userSession.logout()
+        finish()
+    }
+
+    private fun createSnackBarAction(message: Int) =
+        Action { _, _ -> dialogDelegate.showErrorSnackBar(getString(message)) }
+
+    private fun createToast(message: Int) =
+        Action { _, _ -> Toast.makeText(this, getString(message), Toast.LENGTH_SHORT).show() }
+
+
+    private fun openCreateProfile() = Action { _, _ ->
+        Timber.e("403 catched")
+        findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_createUserProfileActivity)
+    }
+
+    private fun openConfirmationEmail() = Action { _, _ ->
+        val email = userSession.email?.email.orEmpty()
+        val data = bundleOf("entity" to email)
+        findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_confirmationMailActivity, data)
+        Timber.e("403 catched")
+    }
+
+    private fun openAutorize() = Action { _, _ ->
+        userSession.logout()
+        findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_loginActivity)
     }
 }

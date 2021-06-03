@@ -87,7 +87,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     @Inject
     @Named("loginHandler")
-    lateinit var errorHandlerLogin: ErrorHandler
+    override lateinit var errorHandler: ErrorHandler
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_login2
@@ -119,7 +119,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         tvPasswdError = viewBinding.tvPasswdError
         progressBar = viewBinding.progressBar
 
-        initErrorHandler(errorHandlerLogin)
         rxPermission = RxPermissions(this)
         mail = viewBinding.etMail
         password = viewBinding.password
@@ -144,6 +143,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             visibilityPassword(passwordVisible)
             passwordVisible = !passwordVisible
         }
+        setErrorHandler()
     }
 
     private fun visibilityPassword(isVisible: Boolean) {
@@ -198,16 +198,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         super.onStart()
         val account = GoogleSignIn.getLastSignedInAccount(requireContext())
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setErrorHandler()
-    }
-
-    override fun onPause() {
-        errorHandlerLogin.clear()
-        super.onPause()
     }
 
     override fun deviceInfoExtracted() {
@@ -288,7 +278,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -303,17 +293,17 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 }
             }
         }
-        errorHandlerLogin.on(UserNotVerifiedException::class.java) { _, _ ->
-            val email = mail.text.toString()
-            val data = bundleOf("entity" to email)
-            findNavController().navigate(R.id.action_global_confirmationMailActivity, data)
-        }
-        errorHandlerLogin.on(UserNotProfileException::class.java) { _, _ ->
-            findNavController().navigate(R.id.action_global_createUserProfileActivity)
-        }
-        errorHandlerLogin.on(BadRequestException::class.java) { throwable, _ ->
-            dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
-        }
+//        errorHandler.on(UserNotVerifiedException::class.java) { _, _ ->
+//            val email = mail.text.toString()
+//            val data = bundleOf("entity" to email)
+//            findNavController().navigate(R.id.action_global_confirmationMailActivity, data)
+//        }
+//        errorHandler.on(UserNotProfileException::class.java) { _, _ ->
+//            findNavController().navigate(R.id.action_global_createUserProfileActivity)
+//        }
+//        errorHandler.on(BadRequestException::class.java) { throwable, _ ->
+//            dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
+//        }
     }
 
 //    override fun openConfirmationEmail() = Action { _, _ ->

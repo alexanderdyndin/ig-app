@@ -67,7 +67,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     @Inject
     @Named("userProfileHandler")
-    lateinit var errorHandlerLogin: ErrorHandler
+    override lateinit var errorHandler: ErrorHandler
 
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var surName: AppCompatEditText
@@ -107,7 +107,6 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         genderRadioGroup = viewBinding.genderRadioGroup
         userCreate__addAvatar = viewBinding.userCreateAddAvatar
 
-        initErrorHandler(errorHandler)
         name = requireView().findViewById(R.id.name)
         surName = requireView().findViewById(R.id.surName)
 
@@ -255,7 +254,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -319,7 +318,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
                 var textEntered = s.toString()
 
                 if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0].isUpperCase()) {
-                    textEntered = s?.toString().orEmpty().toUpperCase()
+                    textEntered = s?.toString().orEmpty().uppercase()
                     name.setText(textEntered)
                     name.setSelection(name.text?.length ?: 0)
                 }
@@ -341,7 +340,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
                 var textEntered = s.toString()
 
                 if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0].isUpperCase()) {
-                    textEntered = s?.toString().orEmpty().toUpperCase()
+                    textEntered = s?.toString().orEmpty().uppercase()
                     surName.setText(textEntered)
                     surName.setSelection(surName.text?.length ?: 0)
                 }

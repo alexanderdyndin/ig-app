@@ -18,7 +18,8 @@ import javax.inject.Named
 @InjectViewState
 class CreateUserProfilePresenter @Inject constructor(private val userProfileGateway: UserProfileGateway,
                                                      private val imageUploadingDelegate: ImageUploader,
-                                                     @Named("userProfileHandler") private val errorHandler: ErrorHandler)
+                                                     @Named("userProfileHandler")
+                                                     private val errorHandler: ErrorHandler)
     : BasePresenter<CreateUserProfileView>() {
 
     private var uploadingDisposable: Disposable? = null
