@@ -17,6 +17,7 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.presen
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
+import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import kotlinx.android.synthetic.main.fragment_comment_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
@@ -34,7 +35,7 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import javax.inject.Inject
 
-class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
+class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Validator.ValidationListener{
 
     companion object{
         const val CREATE_COMMENT_DATA = 0
@@ -405,5 +406,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelAddFile.gone()
         createCommentCustomView.show()
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
+    }
+
+    override fun onValidationSucceeded() {
+
+    }
+
+    override fun onValidationFailed(errors: MutableList<ValidationError>?) {
     }
 }
