@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.ItemAudioBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.customview.AudioGalleryView
 import com.intergroupapplication.presentation.exstension.inflate
 
-class AudioListAdapter(): PagingDataAdapter<AudioEntity, AudioListAdapter.AudioViewHolder>(diffUtil) {
+class AudioListAdapter: PagingDataAdapter<AudioEntity, AudioListAdapter.AudioViewHolder>(diffUtil) {
 
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<AudioEntity>() {
@@ -34,9 +36,11 @@ class AudioListAdapter(): PagingDataAdapter<AudioEntity, AudioListAdapter.AudioV
         }
     }
 
-    inner class AudioViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class AudioViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        private val audio: AudioGalleryView = itemView.findViewById(R.id.audio)
+        private val viewBinding by viewBinding(ItemAudioBinding::bind)
+
+        private val audio: AudioGalleryView = viewBinding.audio
 
         fun bind(audioEntity: AudioEntity) {
             audio.setAudios(listOf(audioEntity))

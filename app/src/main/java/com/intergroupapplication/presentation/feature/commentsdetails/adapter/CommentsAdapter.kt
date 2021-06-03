@@ -18,9 +18,19 @@ import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.appodeal.ads.NativeAd
+import com.appodeal.ads.NativeAdView
+import com.appodeal.ads.NativeIconView
+import com.appodeal.ads.NativeMediaView
+import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
+import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
+import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.domain.entity.BellsEntity
+import com.intergroupapplication.databinding.ItemCommentAnswerBinding
+import com.intergroupapplication.databinding.ItemCommentBinding
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -362,13 +372,15 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     inner class CommentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val viewBinding by viewBinding(ItemCommentBinding::bind)
+
         fun bind(item: CommentEntity.Comment) {
-            with(itemView) {
+            with(viewBinding) {
                 val name = item.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}" }
                         ?: let { itemView.resources.getString(R.string.unknown_user) }
                 userName.text = name
-                idUser.text = context.getString(R.string.id,
+                idUser.text = itemView.context.getString(R.string.id,
                         item.commentOwner?.user ?: "нет id")
                 //postText3.text = item.text
                 compositeDisposable.add(getDateDescribeByString(item.date)
@@ -427,8 +439,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     inner class CommentAnswerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val viewBinding by viewBinding(ItemCommentAnswerBinding::bind)
+
         fun bind(item: CommentEntity.Comment) {
-            with(itemView) {
+            with(viewBinding) {
                 idcGroupUser2.text = itemView.context.getString(R.string.idc, item.idc.toString())
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
@@ -441,7 +455,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 userName2.text = item.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}" }
                         ?: let { itemView.resources.getString(R.string.unknown_user) }
-                idUser2.text = context.getString(R.string.id,
+                idUser2.text = itemView.context.getString(R.string.id,
                         item.commentOwner?.user ?: "нет id")
                 postDislike2.text = item.reacts.dislikesCount.toString()
                 postLike2.text = item.reacts.likesCount.toString()
@@ -481,6 +495,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         private fun showPopupMenu(view: View, id: Int, userId: Int?) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
+//            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)

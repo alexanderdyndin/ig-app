@@ -1,10 +1,11 @@
 plugins {
     id 'com.gladed.androidgitversion' version '0.4.3'
+    id("io.gitlab.arturbosch.detekt").version("1.17.0")
 }
 
-apply from: 'scripts/versioning.gradle'
-
-apply from: 'scripts/detekt.gradle'
+//apply from: 'scripts/versioning.gradle'
+//
+//apply from: 'scripts/detekt.gradle'
 
 apply plugin: 'com.android.application'
 
@@ -164,6 +165,23 @@ android {
         }
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+detekt {
+    buildUponDefaultConfig = true // preconfigure defaults
+    allRules = false // activate all available (even unstable) rules.
+    config = files("$projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
+    baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
+
+    reports {
+        html.enabled = true // observe findings in your browser with structure and code snippets
+        xml.enabled = true // checkstyle like format mainly for integrations like Jenkins
+        txt.enabled = true // similar to the console output, contains issue signature to manually edit baseline files
+        sarif.enabled = true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
+    }
 }
 
 dependencies {
@@ -291,7 +309,6 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
 
     //Firebase
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
@@ -339,4 +356,7 @@ dependencies {
     // For extras
     implementation 'com.github.Omega-R.OmegaIntentBuilder:annotations:1.1.5'
     kapt 'com.github.Omega-R.OmegaIntentBuilder:processor:1.1.5'
+
+    // To use only without reflection variants of viewBinding
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.6'
 }

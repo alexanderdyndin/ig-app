@@ -7,6 +7,7 @@ import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole
+import com.intergroupapplication.domain.exception.ForbiddenException
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
 import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListUserItem
@@ -32,6 +33,7 @@ class GroupUseCase @Inject constructor(
                         }
                         UserRole.USER_FOLLOWER
                     })
+                .onErrorReturnItem(UserRole.USER_FOLLOWER)
         } else {
             return Single.just(UserRole.USER_NOT_FOLLOWER)
         }

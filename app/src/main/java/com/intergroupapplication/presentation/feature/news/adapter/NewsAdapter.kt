@@ -10,6 +10,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
@@ -21,6 +22,7 @@ import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.domain.entity.CommentEntity
+import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
@@ -104,7 +106,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             if (holder is PostViewHolder && it is NewsEntity.Post)
                 holder.bind(it)
             else if (holder is AdViewHolder && it is NewsEntity.AdEntity) {
-                holder.bind(it.nativeAd, AD_TYPE)
+                holder.bind(it.nativeAd, AD_TYPE, "news_feed")
             }
         }
     }
@@ -118,10 +120,11 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
 
         fun bind(item: NewsEntity.Post) {
-            with(itemView) {
-                idpGroupPost.text = context.getString(R.string.idp, item.post.idp.toString())
+            with(viewBinding) {
+                idpGroupPost.text = itemView.context.getString(R.string.idp, item.post.idp.toString())
                 postLike.text = item.post.reacts.likesCount.toString()
                 if (item.post.reacts.isLike) {
                     postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
@@ -138,7 +141,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                countComments.text = context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
+                countComments.text = itemView.context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
 
                 postCustomView.proxy = cacheServer
                 postCustomView.imageClickListener = imageClickListener

@@ -10,17 +10,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment.Companion.GROUP_ID
 import com.intergroupapplication.presentation.feature.userlist.view.DialogFragmentCallBack
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.android.synthetic.main.fragment_dialog_add_black_list_by_id.*
 import javax.inject.Inject
+import com.intergroupapplication.databinding.FragmentDialogAddBlackListByIdBinding
+import by.kirich1409.viewbindingdelegate.viewBinding
 
 class AddBlackListByIdFragment @Inject constructor(
         private val modelFactory: ViewModelProvider.Factory
@@ -38,6 +39,14 @@ class AddBlackListByIdFragment @Inject constructor(
     private var lastPosition = 0
     private var lastSelectedUser: AddBlackListUserItem? = null
     private val BAN_REASON = "ban reason"
+    private val viewBinding by viewBinding(FragmentDialogAddBlackListByIdBinding::bind)
+
+    private lateinit var addBlackListBtn: TextView
+    private lateinit var listUsers: RecyclerView
+    private lateinit var inputBlackListAddId: EditText
+    private lateinit var btnClose: ImageButton
+    private lateinit var textNoFoundId: TextView
+
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -68,6 +77,8 @@ class AddBlackListByIdFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         groupId = arguments?.getString(GROUP_ID, "") ?: ""
 
+        initViewBinding()
+
         listUsers.run {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             itemAnimator = null
@@ -97,6 +108,14 @@ class AddBlackListByIdFragment @Inject constructor(
         inputBlackListAddId.removeTextChangedListener(textWatcher)
         compositeDisposable.clear()
         callBack.updateList()
+    }
+
+    private fun initViewBinding() {
+        addBlackListBtn = viewBinding.addBlackListBtn
+        listUsers = viewBinding.listUsers
+        inputBlackListAddId = viewBinding.inputBlackListAddId
+        btnClose = viewBinding.btnClose
+        textNoFoundId = viewBinding.textNoFoundId
     }
 
     private fun getData(searchFilter: String = "") {

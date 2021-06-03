@@ -9,12 +9,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-//import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentGroupCategoryBinding
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import kotlinx.android.synthetic.main.fragment_group_category.view.*
 
 class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<GroupListsAdapter.GroupListViewHolder>() {
 
@@ -32,9 +32,11 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
 
     class GroupListViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        val list: RecyclerView = view.allGroupsList
-        val emptyState: TextView = view.emptyText
-        val progress: ProgressBar = view.progress_loading
+        private val viewBinding by viewBinding(FragmentGroupCategoryBinding::bind)
+
+        private val list: RecyclerView = viewBinding.allGroupsList
+        private val emptyState: TextView = viewBinding.emptyText
+        private val progress: ProgressBar = viewBinding.progressLoading
 
         fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
             list.adapter = adapter

@@ -15,11 +15,12 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
+import javax.inject.Named
 
 @InjectViewState
 class CreateUserProfilePresenter @Inject constructor(private val userProfileGateway: UserProfileGateway,
                                                      private val imageUploadingDelegate: ImageUploader,
-                                                     private val errorHandler: ErrorHandler,
+                                                     @Named("userProfileHandler") private val errorHandler: ErrorHandler,
                                                      private val photoGateway: PhotoGateway)
     : BasePresenter<CreateUserProfileView>() {
 

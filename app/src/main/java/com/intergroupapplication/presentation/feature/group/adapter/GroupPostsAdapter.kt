@@ -10,6 +10,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
@@ -20,6 +21,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
+import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
@@ -35,8 +37,6 @@ import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.item_group_post.view.*
-import kotlinx.android.synthetic.main.item_loading.view.*
 import timber.log.Timber
 import java.io.*
 import java.util.*
@@ -127,9 +127,15 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
+
+        private val audioContainer = viewBinding.audioBody
+        private val videoContainer = viewBinding.videoBody
+        val imageContainer = viewBinding.imageBody
+
         fun bind(item: GroupPostEntity.PostEntity) {
-            with(itemView) {
-                idpGroupPost.text = context.getString(R.string.idp, item.idp.toString())
+            with(viewBinding) {
+                idpGroupPost.text = itemView.context.getString(R.string.idp, item.idp.toString())
                 postLike.text = item.reacts.likesCount.toString()
                 postDislike.text = item.reacts.dislikesCount.toString()
                 if (item.reacts.isLike) {
