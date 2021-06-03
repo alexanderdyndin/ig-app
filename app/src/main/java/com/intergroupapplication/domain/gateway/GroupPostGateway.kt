@@ -1,6 +1,7 @@
 package com.intergroupapplication.domain.gateway
 
 import androidx.paging.PagingData
+import com.intergroupapplication.data.db.entity.GroupPostDbModel
 import com.intergroupapplication.domain.entity.*
 import io.reactivex.Completable
 import io.reactivex.Flowable

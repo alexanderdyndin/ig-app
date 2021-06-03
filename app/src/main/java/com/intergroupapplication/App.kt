@@ -3,6 +3,7 @@ package com.intergroupapplication
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.multidex.MultiDex
+import com.intergroupapplication.data.db.IgDatabase
 import com.intergroupapplication.di.DaggerAppComponent
 import com.intergroupapplication.initializators.Initializer
 import com.intergroupapplication.presentation.base.BaseCrashlyticsTree
@@ -28,6 +29,7 @@ class App : DaggerApplication() {
             Timber.plant(BaseCrashlyticsTree())
         }
 
+//        IgDatabase.getInstance(applicationContext)
     }
 
     override fun attachBaseContext(base: Context) {
