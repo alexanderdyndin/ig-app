@@ -70,6 +70,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     lateinit var amountFiles: TextView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        chooseMedias.clear()
         mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
         icAttachFile = view.findViewById(R.id.icAttachFile)
         galleryButton = view.findViewById(R.id.galleryButton)
@@ -246,7 +247,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     }
 
     private fun settingAdapter() {
-        chooseMedias.clear()
         galleryAdapter.apply {
             photos.addAll(addGalleryUri())
         }

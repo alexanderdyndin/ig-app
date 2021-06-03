@@ -159,23 +159,6 @@
 
     </LinearLayout>
 
-    <HorizontalScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
-        style="@style/ScrollBar"
-        app:layout_constraintTop_toBottomOf="@+id/panelAddFile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/colorInput">
-        <LinearLayout
-            android:id="@+id/postContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
-    </HorizontalScrollView>
-
     <LinearLayout
         android:id="@+id/answer_layout"
         android:layout_width="match_parent"
@@ -186,7 +169,7 @@
         android:paddingStart="@dimen/big_padding"
         android:paddingTop="@dimen/middle_padding"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/scroll_view"
+        app:layout_constraintTop_toBottomOf="@id/panelAddFile"
         app:layout_constraintStart_toStartOf="parent"
         >
 
@@ -219,22 +202,20 @@
 
     </LinearLayout>
 
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/commentEditText"
-        android:background="@color/colorInput"
-        android:gravity="center_vertical"
-        style="@style/InterGroupCommentEditTextStyle"
-        android:inputType="textMultiLine|textCapSentences"
+    <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/write_your_comment"
-        android:minHeight="@dimen/comment_edit_text_height"
-        android:padding="@dimen/big_padding"
         app:layout_constraintTop_toBottomOf="@id/answer_layout"
-       />
-
-    <!-- Добавление файлов -->
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    <com.intergroupapplication.presentation.customview.CreatePostCustomView
+        android:id="@+id/createCommentCustomView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        />
+    </ScrollView>
     <TextView
         android:id="@+id/amountFiles"
         style="@style/TextAccent14sp"
@@ -245,7 +226,7 @@
         android:paddingStart="16dp"
         android:text="Выберите фото"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/commentEditText"
+        app:layout_constraintTop_toBottomOf="@id/scroll_view"
         />
 
     <TextView

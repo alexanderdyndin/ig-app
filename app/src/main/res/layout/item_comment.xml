@@ -107,50 +107,11 @@
         app:layout_constraintStart_toStartOf="@+id/bgAvaComment"
         app:layout_constraintTop_toBottomOf="@+id/headerComments">
 
-        <TextView
-            android:id="@+id/postText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TextLight12sp"
-            android:paddingLeft="8dp"
-            tools:text="Идейные соображения высшего порядка, а также новая модель организационной деятельности играет важную роль в формировании позиций, занимаемых участниками в отношении поставленных задач. Товар.."/>
-
-        <!--        Есть только когда болеее 4 строк текста.
-        При нажатии должны появляться остальные строчки.        -->
-        <FrameLayout
-            android:id="@+id/btnExpand"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="8dp"
-                style="@style/TextAccent12sp"
-                android:drawableRight="@drawable/ic_arrow_down_blue"
-                android:drawablePadding="6dp"
-                tools:text="Развернуть"/>
-        </FrameLayout>
-
-        <com.intergroupapplication.presentation.customview.ImageGalleryView
-            android:id="@+id/imageBody"
+        <com.intergroupapplication.presentation.customview.PostCustomView
+            android:id="@+id/commentCustomView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
-
-        <com.intergroupapplication.presentation.customview.VideoGalleryView
-            android:id="@+id/videoBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-        <com.intergroupapplication.presentation.customview.AudioGalleryView
-            android:id="@+id/audioBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/postMusic"

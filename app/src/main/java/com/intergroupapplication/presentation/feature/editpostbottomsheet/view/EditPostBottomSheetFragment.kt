@@ -9,6 +9,7 @@ import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.base.ImageUploadingView
+import com.intergroupapplication.presentation.customview.CreatePostCustomView
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpostbottomsheet.presenter.EditPostBottomSheetPresenter
 import kotlinx.android.synthetic.main.fragment_edit_post_bottom_sheet.*

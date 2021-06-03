@@ -19,6 +19,8 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.MarkupModel
+import com.intergroupapplication.domain.entity.BellsEntity
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -31,6 +33,7 @@ import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
 import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
 import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
@@ -43,7 +46,6 @@ import kotlinx.android.synthetic.main.fragment_comments_details.*
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.item_comment.view.postDislike
 import kotlinx.android.synthetic.main.item_comment.view.postLike
-import kotlinx.android.synthetic.main.item_comment.view.postText as postText3
 import kotlinx.android.synthetic.main.item_comment_answer.view.*
 import kotlinx.android.synthetic.main.item_group_post.*
 import kotlinx.android.synthetic.main.item_group_post.view.*
@@ -167,9 +169,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class PostInCommentHolder(val view:View):RecyclerView.ViewHolder(view){
-        private val audioContainer = view.findViewById<AudioGalleryView>(R.id.audioBody)
-        private val videoContainer = view.findViewById<VideoGalleryView>(R.id.videoBody)
-        private val imageContainer = view.findViewById<ImageGalleryView>(R.id.imageBody)
         private val settingPostInComments = view.findViewById<ImageView>(R.id.settingsPost)
         val countComments = view.findViewById<TextView>(R.id.countComments)
 
@@ -180,14 +179,11 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
 
-                groupPostEntity.postText.let {
-                    if (it.isNotEmpty()) {
-                        postText.text = it
-                        postText.show()
-                    } else {
-                        postText.gone()
-                    }
-                }
+                postCustomView.proxy = proxyCacheServer
+                postCustomView.imageClickListener = imageClickListener
+                postCustomView.imageLoadingDelegate = imageLoadingDelegate
+                postCustomView.setUpPost(mapToGroupEntityPost(groupPostEntity))
+
                 idpGroupPost.text = context.getString(R.string.idp, groupPostEntity.id)
                 countComments.text = groupPostEntity.commentsCount
                 idpGroupPost.text = context.getString(R.string.idp, groupPostEntity.idp.toString())
@@ -214,14 +210,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
                 doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
-
-                imageContainer.setImages(groupPostEntity.images)
-                imageContainer.imageClick = imageClickListener
-                videoContainer.setVideos(groupPostEntity.videos)
-                audioContainer.setAudios(groupPostEntity.audios)
-                audioContainer.proxy = proxyCacheServer
-                videoContainer.proxy = proxyCacheServer
-                videoContainer.imageLoadingDelegate = imageLoadingDelegate
 
                 subCommentBtn.setOnClickListener {
                     if (!groupPostEntity.isLoading) {
@@ -320,6 +308,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
+        private fun mapToGroupEntityPost(postEntity: CommentEntity.PostEntity) =
+                MarkupModel(postEntity.postText,postEntity.images,postEntity.audios,postEntity.videos,
+                        postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
+
         private fun sharePost(item: CommentEntity.PostEntity,context: Context){
             progressBarVisibility.invoke(true)
             val link = Firebase.dynamicLinks.dynamicLink {
@@ -369,9 +361,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class CommentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
-        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
 
         fun bind(item: CommentEntity.Comment) {
             with(itemView) {
@@ -381,7 +370,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 userName.text = name
                 idUser.text = context.getString(R.string.id,
                         item.commentOwner?.user ?: "нет id")
-                postText3.text = item.text
+                //postText3.text = item.text
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -410,18 +399,10 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 idcGroupUser.text = itemView.context.getString(R.string.idc, item.idc.toString())
                 settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
 
-                videoContainer.proxy = proxyCacheServer
-                videoContainer.imageLoadingDelegate = imageLoadingDelegate
-                videoContainer.setVideos(item.videos, false)
-                //videoContainer.expand = { item.videosExpanded = it }
-
-                audioContainer.proxy = proxyCacheServer
-                audioContainer.setAudios(item.audios, false)
-                //audioContainer.expand = { item.audiosExpanded = it }
-
-                imageContainer.setImages(item.images, false)
-                imageContainer.imageClick = imageClickListener
-                //imageContainer.expand = { item.imagesExpanded = it }
+                commentCustomView.proxy = proxyCacheServer
+                commentCustomView.imageClickListener = imageClickListener
+                commentCustomView.imageLoadingDelegate = imageLoadingDelegate
+                commentCustomView.setUpPost(mapToGroupEntityPost(item))
 
             }
         }
@@ -439,12 +420,12 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
             popupMenu.show()
         }
+
+        private fun mapToGroupEntityPost(comment: CommentEntity.Comment) =
+                MarkupModel(comment.text,comment.images,comment.audios,comment.videos)
     }
 
     inner class CommentAnswerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
-        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
 
         fun bind(item: CommentEntity.Comment) {
             with(itemView) {
@@ -462,12 +443,6 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         ?: let { itemView.resources.getString(R.string.unknown_user) }
                 idUser2.text = context.getString(R.string.id,
                         item.commentOwner?.user ?: "нет id")
-                val replyName =  item.answerTo?.commentOwner
-                        ?.let { "${it.firstName} ${it.secondName}, " }
-                        ?: let { itemView.resources.getString(R.string.unknown_user) }
-                nameUserReply.text = replyName
-                postText2.text = item.text
-                endReply.text = itemView.context.getString(R.string.reply_to, item.answerTo?.idc.toString())
                 postDislike2.text = item.reacts.dislikesCount.toString()
                 postLike2.text = item.reacts.likesCount.toString()
                 userAvatarHolder2.run {
@@ -489,21 +464,19 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 }
                 settingsBtn2.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
 
-                videoContainer.proxy = proxyCacheServer
-                videoContainer.imageLoadingDelegate = imageLoadingDelegate
-                videoContainer.setVideos(item.videos, false)
-                //videoContainer.expand = { item.videosExpanded = it }
-
-                audioContainer.proxy = proxyCacheServer
-                audioContainer.setAudios(item.audios, false)
-                //audioContainer.expand = { item.audiosExpanded = it }
-
-                imageContainer.setImages(item.images, false)
-                imageContainer.imageClick = imageClickListener
-                //imageContainer.expand = { item.imagesExpanded = it }
+                val replyName =  item.answerTo?.commentOwner
+                        ?.let { "${it.firstName} ${it.secondName}, " }
+                        ?: let { itemView.resources.getString(R.string.unknown_user) }
+                answerCommentCustomView.proxy = proxyCacheServer
+                answerCommentCustomView.imageClickListener = imageClickListener
+                answerCommentCustomView.imageLoadingDelegate = imageLoadingDelegate
+                answerCommentCustomView.setUpPost(mapToGroupEntityPost(item,replyName+item.text))
 
             }
         }
+
+        private fun mapToGroupEntityPost(comment: CommentEntity.Comment, textAnswerComment:String) =
+                MarkupModel(textAnswerComment,comment.images,comment.audios,comment.videos)
 
         private fun showPopupMenu(view: View, id: Int, userId: Int?) {
             val popupMenu = PopupMenu(view.context, view)

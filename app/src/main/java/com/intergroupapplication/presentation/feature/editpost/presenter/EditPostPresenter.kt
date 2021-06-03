@@ -19,19 +19,19 @@ class EditPostPresenter @Inject constructor(private val groupPostGateway: GroupP
                                             private val errorHandler: ErrorHandler)
     :BasePresenter<CreatePostView>() {
 
-    fun editPost(postText: String, postId: String, photos: Single<List<String>>,
+    fun editPost(postText: String, postId: String, photos: Single<List<ChooseMedia>>,
                             videos: Single<List<ChooseMedia>>, audios: Single<List<ChooseMedia>>) {
         compositeDisposable.add(Single.zip(photos,
                 videos,
                 audios,
-                object : Function3<List<String>, List<ChooseMedia>, List<ChooseMedia>, CreateGroupPostEntity> {
-                    override fun invoke(photo: List<String>, video: List<ChooseMedia>, audio: List<ChooseMedia>): CreateGroupPostEntity {
+                object : Function3<List<ChooseMedia>, List<ChooseMedia>, List<ChooseMedia>, CreateGroupPostEntity> {
+                    override fun invoke(photo: List<ChooseMedia>, video: List<ChooseMedia>, audio: List<ChooseMedia>): CreateGroupPostEntity {
                         return CreateGroupPostEntity(postText,
-                                photo.map { FileRequestEntity(file = it, description = null, title = it.substringAfter("/posts/")) },
-                                audio.map { AudioRequestEntity(it.url, null, it.trackName, it.authorMusic, null,it.duration) },
+                                photo.map { FileRequestEntity(file = it.url, description = null, title = it.name) },
+                                audio.map { AudioRequestEntity(it.url, null, it.name, it.authorMusic, null,it.duration) },
                                 video.map {
                                     FileRequestEntity(file = it.url, description = null,
-                                            title = it.url.substringAfter("/posts/"), it.urlPreview,it.duration)
+                                            title = it.name, it.urlPreview,it.duration)
                                 },
                                 false,
                                 null)

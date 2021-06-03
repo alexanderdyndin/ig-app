@@ -25,7 +25,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
-import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -43,16 +42,16 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
     fun createComment(postId: String, textComment: String) {
         compositeDisposable.add(Single.zip(photoGateway.getImageUrls(),photoGateway.getAudioUrls(),
                 photoGateway.getVideoUrls(),
-                object : Function3<List<String>, List<ChooseMedia>, List<ChooseMedia>, CreateCommentEntity> {
-                    override fun invoke(photos: List<String>, audios: List<ChooseMedia>, videos: List<ChooseMedia>)
+                object : Function3<List<ChooseMedia>, List<ChooseMedia>, List<ChooseMedia>, CreateCommentEntity> {
+                    override fun invoke(photos: List<ChooseMedia>, audios: List<ChooseMedia>, videos: List<ChooseMedia>)
                                 : CreateCommentEntity{
                         val create =CreateCommentEntity(textComment,
-                                photos.map { FileRequestEntity(file = it, description = null,
-                                        title = it.substringAfter("/comments/")) },
+                                photos.map { FileRequestEntity(file = it.url, description = null,
+                                        title = it.name) },
                                 audios.map { AudioRequestEntity(it.url, null,
-                                        it.trackName, it.authorMusic, null, duration = it.duration) },
+                                        it.name, it.authorMusic, null, duration = it.duration) },
                                 videos.map { FileRequestEntity(file = it.url, description = null, title =
-                                        it.url.substringAfter("/comments/"),it.urlPreview,
+                                        it.name,it.urlPreview,
                                 duration = it.duration) },
                         )
                         return create
@@ -77,13 +76,16 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
     fun createAnswerToComment(answerToCommentId: String, textComment:String) {
         compositeDisposable.add(Single.zip(photoGateway.getImageUrls(),photoGateway.getAudioUrls(),
                 photoGateway.getVideoUrls(),
-                object : Function3<List<String>, List<ChooseMedia>, List<ChooseMedia>, CreateCommentEntity> {
-                    override fun invoke(photos: List<String>, audios: List<ChooseMedia>, videos: List<ChooseMedia>): CreateCommentEntity {
+                object : Function3<List<ChooseMedia>, List<ChooseMedia>, List<ChooseMedia>, CreateCommentEntity> {
+                    override fun invoke(photos: List<ChooseMedia>, audios: List<ChooseMedia>, videos: List<ChooseMedia>): CreateCommentEntity {
                         return CreateCommentEntity(textComment,
-                                photos.map { FileRequestEntity(file = it, description = null, title = it.substringAfter("/posts/")) },
-                                audios.map { AudioRequestEntity(it.url, null, it.trackName, it.authorMusic, null,
+                                photos.map { FileRequestEntity(file = it.url, description = null,
+                                        title = it.name) },
+                                audios.map { AudioRequestEntity(it.url, null,
+                                        it.name, it.authorMusic, null,
                                 duration = it.duration) },
-                                videos.map { FileRequestEntity(file = it.url, description = null, title = it.url.substringAfter("/posts/"),it.urlPreview,
+                                videos.map { FileRequestEntity(file = it.url, description = null,
+                                        title = it.name,it.urlPreview,
                                 duration = it.duration) },
                         )
                     }
@@ -164,6 +166,7 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                     progress = it
                     viewState.showImageUploadingProgress(it, chooseMedia.url)
                 }, {
+                    it.printStackTrace()
                     errorHandler.handle(CanNotUploadAudio())
                     viewState.showImageUploadingError(chooseMedia.url)
                 }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
@@ -182,6 +185,7 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
                     progress = it
                     viewState.showImageUploadingProgress(it, chooseMedia.url)
                 }, {
+                    it.printStackTrace()
                     errorHandler.handle(CanNotUploadPhoto())
                     viewState.showImageUploadingError(chooseMedia.url)
                 }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })

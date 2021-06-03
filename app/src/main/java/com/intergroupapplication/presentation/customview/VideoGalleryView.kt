@@ -60,7 +60,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         this.addView(container)
         if (isExpanded && urls.size > 1) {
             createVideos(urls)
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(300 * urls.size))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
             hider.btnHide.setOnClickListener {
                 this.isExpanded = false
@@ -70,7 +70,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
             this.addView(hider)
         } else if (!isExpanded && urls.size > 1) {
             createVideos(urls.subList(0, 1))
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(300))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
             expander.btnExpand.setOnClickListener {
                 this.isExpanded = true
@@ -80,7 +80,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
             this.addView(expander)
         } else if (urls.isNotEmpty()) {
             createVideos(urls)
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(300 * urls.size))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         }
     }
 

@@ -18,10 +18,10 @@ interface PhotoGateway {
     fun getLastPhotoUrl(): Single<String>
     fun getVideoUrls(): Single<List<ChooseMedia>>
     fun getAudioUrls(): Single<List<ChooseMedia>>
-    fun getImageUrls(): Single<List<String>>
+    fun getImageUrls(): Single<List<ChooseMedia>>
     fun setVideoUrls(videos:List<ChooseMedia>)
     fun setAudioUrls(audios:List<ChooseMedia>)
-    fun setImageUrls(images:List<String>)
+    fun setImageUrls(images:List<ChooseMedia>)
     fun loadAudio(): Observable<List<String>>
     fun loadVideo(): Observable<List<String>>
     fun loadImagesFromGallery(): Observable<List<String>>

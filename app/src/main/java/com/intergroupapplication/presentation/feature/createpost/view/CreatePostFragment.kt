@@ -1,8 +1,7 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
-import android.content.res.Resources
-import android.util.DisplayMetrics
 import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
@@ -26,7 +25,6 @@ import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import io.reactivex.exceptions.CompositeException
 import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import kotlinx.android.synthetic.main.fragment_create_post.*
-import kotlinx.android.synthetic.main.fragment_create_post.postContainer
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.detachImage
 import kotlinx.android.synthetic.main.layout_attach_image.view.imageUploadingProgressBar
@@ -38,7 +36,6 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFragment.Callback {
 
@@ -61,7 +58,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
-    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<View>
+    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<FrameLayout>
 
     protected val bottomFragment by lazy { EditPostBottomSheetFragment() }
 
@@ -82,8 +79,8 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
         presenter.groupId = groupId
         publishBtn.show()
         publishBtn.setOnClickListener {
-            val post = postText.text.toString().trim()
-            if (post.isEmpty() && postContainer.childCount == 0 && audioContainer.childCount == 0) {
+            val post = createPostCustomView.createFinalText()
+            if (post.isEmpty()){
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
             }
             else if (loadingViews.isNotEmpty()) {
@@ -96,18 +93,18 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
                 if (isLoading)
                     dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
                 else {
-                    createPost()
+                    createPost(post)
                 }
             }
             else {
-                createPost()
+                createPost(post)
             }
         }
 
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet, bottomFragment).commit()
             bottomFragment.callback = this
-            bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet) as AutoCloseBottomSheetBehavior<View>
+            bottomSheetBehaviour = BottomSheetBehavior.from(containerBottomSheet) as AutoCloseBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
                 peekHeight = requireContext().dpToPx(35)
                 halfExpandedRatio = 0.6f
@@ -131,13 +128,15 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
         }catch (e: Exception){
             e.printStackTrace()
         }
+        firstCreateView()
         toolbarBackAction.setOnClickListener { onResultCancel() }
-        //postText.showKeyboard()
         setErrorHandler()
     }
 
-    protected open fun createPost() {
-        presenter.createPostWithImage(postText.text.toString().trim(), groupId,
+    protected open fun createPost(post:String) {
+        presenter.createPostWithImage(
+                post,
+                groupId,
                 bottomFragment.getPhotosUrl(), bottomFragment.getVideosUrl(),
                 bottomFragment.getAudiosUrl())
     }
@@ -152,23 +151,33 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg") || chooseMedia.url.contains(".wav")){
-            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,audioContainer, false)
+            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,
+                    createPostCustomView.audioContainer, false)
             loadingViews[chooseMedia.url]?.let {
-                it.trackName?.text = chooseMedia.trackName
+                it.trackName?.text = chooseMedia.name
             }
-            audioContainer.addView(loadingViews[chooseMedia.url])
+            createPostCustomView.addMusic(chooseMedia.name,loadingViews[chooseMedia.url])
         }
         else {
-            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
+            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image,
+                    createPostCustomView.imageContainer, false)
             loadingViews[chooseMedia.url]?.let {
                 it.imagePreview?.let { draweeView ->
                     imageLoadingDelegate.loadImageFromFile(chooseMedia.url, draweeView)
                 }
             }
-            postContainer.addView(loadingViews[chooseMedia.url])
+            createPostCustomView.addImageOrVideo(chooseMedia.url.substringAfterLast("/"),
+                    loadingViews[chooseMedia.url])
         }
         prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
         imageUploadingStarted(loadingViews[chooseMedia.url])
+        if (loadingViews.size == chooseMedias.size && createPostCustomView.currentContainerIsLast()){
+            createPostCustomView.createAllMainView()
+        }
+    }
+
+    protected open fun firstCreateView() {
+        createPostCustomView.createAllMainView()
     }
 
     override fun showImageUploaded(path: String) {
@@ -211,8 +220,13 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
     }
 
     protected fun detachImage(path: String) {
-        postContainer.removeView(loadingViews[path])
-        audioContainer.removeView(loadingViews[path])
+        createPostCustomView.listImageContainers.forEach {container->
+            container.removeView(loadingViews[path])
+        }
+        createPostCustomView.listAudioContainers.forEach {container->
+            container.removeView(loadingViews[path])
+        }
+        createPostCustomView.detachName(loadingViews[path])
         loadingViews.remove(path)
         chooseMedias.removeChooseMedia(path)
     }
@@ -234,6 +248,12 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
                 childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
                         bundleOf(METHOD_KEY to RETRY_LOADING_METHOD_CODE,
                         CHOOSE_MEDIA_KEY to chooseMedia))
+                createPostCustomView.listImageContainers.forEach {container->
+                    container.removeView(uploadingView)
+                }
+                createPostCustomView.listAudioContainers.forEach {container->
+                    container.removeView(uploadingView)
+                }
                 imageUploadingStarted(uploadingView)
             }
             stopUploading?.setOnClickListener {
@@ -250,14 +270,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
             }
         }
     }
-
-//    private fun manageClipVisibility() {
-//        if (postContainer.childCount > 1) {
-//            attachPhoto.hide()
-//        } else {
-//            attachPhoto.show()
-//        }
-//    }
 
     private fun onResultOk(postId: String) {
         findNavController().previousBackStackEntry?.savedStateHandle?.set(GroupFragment.POST_ID, postId)
@@ -277,7 +289,9 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
     override fun getLoadingView() = loadingViews
     override fun closeKeyboard() {
         try {
-            postText.dismissKeyboard()
+            createPostCustomView.listEditText.forEach { editText->
+                editText.dismissKeyboard()
+            }
         }catch (e:Exception){
             e.printStackTrace()
         }

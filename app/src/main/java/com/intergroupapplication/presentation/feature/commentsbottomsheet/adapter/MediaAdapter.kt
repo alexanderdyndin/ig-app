@@ -25,7 +25,6 @@ import com.intergroupapplication.presentation.exstension.activated
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import java.io.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -196,7 +195,7 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
                         data.run {
                             if(!isChoose && chooseMedias.size<10 && !chooseMedias.containsMedia(url)){
                                 isChoose = true
-                                chooseMedias.addChooseMedia(ChooseMedia(url,trackName = data.name,
+                                chooseMedias.addChooseMedia(ChooseMedia(url,name = data.name,
                                         authorMusic = data.author,
                                         duration = data.duration))
                             } else if (isChoose) {

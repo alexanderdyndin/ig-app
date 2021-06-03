@@ -3,22 +3,14 @@ package com.intergroupapplication.presentation.feature.news.adapter
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.view.children
-import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.appodeal.ads.*
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
-import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ShortDynamicLink
@@ -27,6 +19,8 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.MarkupModel
+import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
@@ -124,9 +118,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
-        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
 
         fun bind(item: NewsEntity.Post) {
             with(itemView) {
@@ -148,17 +139,12 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
                 countComments.text = context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
-                item.post.postText.let { it ->
-                    if (it.isNotEmpty()) {
-                        postText.text = item.post.postText
-                        postText.show()
-                        postText.setOnClickListener {
-                            commentClickListener.invoke(item.post)
-                        }
-                    } else {
-                        postText.gone()
-                    }
-                }
+
+                postCustomView.proxy = cacheServer
+                postCustomView.imageClickListener = imageClickListener
+                postCustomView.imageLoadingDelegate = imageLoadingDelegate
+                postCustomView.setUpPost(mapToGroupEntityPost(item.post))
+
                 groupName.text = item.post.groupInPost.name
                 subCommentBtn.text = item.post.bells.count.toString()
                 if (item.post.bells.isActive) {
@@ -166,8 +152,6 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 } else {
                     subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
                 }
-
-//                anchorBtn.isVisible = item.post.isPinned
 
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item.post, layoutPosition)
@@ -197,20 +181,12 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
 
-                videoContainer.proxy = cacheServer
-                videoContainer.imageLoadingDelegate = imageLoadingDelegate
-                videoContainer.setVideos(item.post.videos, item.post.videosExpanded)
-                videoContainer.expand = { item.post.videosExpanded = it }
-
-                audioContainer.proxy = cacheServer
-                audioContainer.setAudios(item.post.audios, item.post.audiosExpanded)
-                audioContainer.expand = { item.post.audiosExpanded = it }
-
-                imageContainer.setImages(item.post.images, item.post.imagesExpanded)
-                imageContainer.imageClick = imageClickListener
-                imageContainer.expand = { item.post.imagesExpanded = it }
             }
         }
+
+        private fun mapToGroupEntityPost(postEntity: GroupPostEntity.PostEntity) =
+                MarkupModel(postEntity.postText,postEntity.images,postEntity.audios,postEntity.videos,
+                        postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
 
         private fun sharePost(context: Context, item: NewsEntity.Post){
             progressBarVisibility.invoke(true)
@@ -270,7 +246,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.imageContainer.destroy()
+           // holder.imageContainer.destroy()
         } else if (holder is AdViewHolder) {
             holder.clear()
         }

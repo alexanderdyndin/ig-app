@@ -21,7 +21,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 
 class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway: PhotoGateway,
@@ -181,7 +180,7 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
     fun cancelUploading(path:String) {
         processes[path]?.let {
             it.dispose()
-            mediaDisposable.remove(it)
+            //mediaDisposable.remove(it)
         }
         removeContent(path)
         processes.remove(path)
@@ -200,7 +199,7 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
     fun addAudioInAudiosUrl(audios: List<AudioEntity>) {
         photoGateway.setAudioUrls(audios.map { audioEntity ->
             val chooseMedia = ChooseMedia("/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
-                    trackName = audioEntity.song,authorMusic = audioEntity.artist)
+                    name = audioEntity.song,authorMusic = audioEntity.artist)
             chooseMedias.addChooseMedia(chooseMedia)
             return@map chooseMedia
         })
@@ -209,7 +208,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
     fun addVideoInVideosUrl(videos: List<FileEntity>) {
         photoGateway.setVideoUrls(videos.map { videoEntity ->
             val chooseMedia = ChooseMedia("/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
-            "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}")
+            "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}",
+                    name = videoEntity.title)
             chooseMedias.addChooseMedia(chooseMedia)
             return@map chooseMedia
         })
@@ -218,7 +218,8 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
     fun addImagesInPhotosUrl(images: List<FileEntity>) {
         photoGateway.setImageUrls(images.map{
             val url = "/groups/0/comments/${it.file.substringAfterLast("/")}"
-            chooseMedias.addChooseMedia(ChooseMedia(url))
-            return@map url})
+            val chooseMedia = ChooseMedia(url = url,name = it.title)
+            chooseMedias.addChooseMedia(chooseMedia)
+            return@map chooseMedia})
     }
 }

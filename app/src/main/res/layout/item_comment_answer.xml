@@ -108,48 +108,8 @@
         app:layout_constraintStart_toStartOf="@+id/headerReplyComments"
         app:layout_constraintTop_toBottomOf="@+id/headerReplyComments">
 
-        <LinearLayout
-            android:id="@+id/textReply"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/nameUserReply"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Владислав Кутузов,"
-                style="@style/TextAccent14sp"/>
-
-            <TextView
-                android:id="@+id/postText2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TextLight12sp"
-                tools:text="Как твои дела?" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:background="@drawable/sticker_120x120"
-            android:visibility="gone"/>
-
-        <com.intergroupapplication.presentation.customview.ImageGalleryView
-            android:id="@+id/imageBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-        <com.intergroupapplication.presentation.customview.VideoGalleryView
-            android:id="@+id/videoBody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-        <com.intergroupapplication.presentation.customview.AudioGalleryView
-            android:id="@+id/audioBody"
+        <com.intergroupapplication.presentation.customview.PostCustomView
+            android:id="@+id/answerCommentCustomView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>

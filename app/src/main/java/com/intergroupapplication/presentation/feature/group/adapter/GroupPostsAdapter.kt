@@ -19,6 +19,7 @@ import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
@@ -27,6 +28,7 @@ import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
 import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
 import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
@@ -108,7 +110,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.imageContainer.destroy()
+            //holder.imageContainer.destroy()
         } else if (holder is AdViewHolder) {
             holder.clear()
         }
@@ -124,9 +126,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
-        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
 
         fun bind(item: GroupPostEntity.PostEntity) {
             with(itemView) {
@@ -148,17 +147,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
                 countComments.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
-                item.postText.let { it ->
-                    if (it.isNotEmpty()) {
-                        postText.text = item.postText
-                        postText.show()
-                        postText.setOnClickListener {
-                            commentClickListener.invoke(item)
-                        }
-                    } else {
-                        postText.gone()
-                    }
-                }
+                postCustomView.proxy = proxyCacheServer
+                postCustomView.imageClickListener = imageClickListener
+                postCustomView.imageLoadingDelegate = imageLoadingDelegate
+                postCustomView.setUpPost(mapToGroupEntityPost(item))
+
                 groupName.text = item.groupInPost.name
                 subCommentBtn.text = item.bells.count.toString()
                 if (item.bells.isActive) {
@@ -168,19 +161,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 }
 
                 anchorBtn.setOnClickListener { pinClickListener.invoke(item, layoutPosition) }
-
-//                if (isOwner) {
-//                    anchorBtn.show()
-//                    if (item.isPinned) {
-//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor_act)
-//                        anchorBtn.setImageResource(R.drawable.ic_anchor_act)
-//                    } else {
-//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor)
-//                        anchorBtn.setImageResource(R.drawable.ic_anchor)
-//                    }
-//                } else {
-//                    anchorBtn.gone()
-//                }
 
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item, layoutPosition)
@@ -206,20 +186,12 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     sharePost(context, item)
                 }
 
-                videoContainer.proxy = proxyCacheServer
-                videoContainer.imageLoadingDelegate = imageLoadingDelegate
-                videoContainer.setVideos(item.videos, item.videosExpanded)
-                videoContainer.expand = { item.videosExpanded = it }
-
-                audioContainer.proxy = proxyCacheServer
-                audioContainer.setAudios(item.audios, item.audiosExpanded)
-                audioContainer.expand = { item.audiosExpanded = it }
-
-                imageContainer.setImages(item.images, item.imagesExpanded)
-                imageContainer.imageClick = imageClickListener
-                imageContainer.expand = { item.imagesExpanded = it }
             }
         }
+
+        private fun mapToGroupEntityPost(postEntity: GroupPostEntity.PostEntity) =
+                MarkupModel(postEntity.postText,postEntity.images,postEntity.audios,postEntity.videos,
+                        postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
 
         private fun sharePost(context: Context, item: GroupPostEntity.PostEntity){
             progressBarVisibility.invoke(true)

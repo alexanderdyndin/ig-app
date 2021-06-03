@@ -1,11 +1,8 @@
 package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.View
-import android.webkit.MimeTypeMap
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -20,16 +17,24 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.presen
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
-import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import kotlinx.android.synthetic.main.fragment_comment_bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_create_post.*
+import kotlinx.android.synthetic.main.item_comment.*
 import kotlinx.android.synthetic.main.layout_attach_image.*
 import kotlinx.android.synthetic.main.layout_attach_image.view.*
+import kotlinx.android.synthetic.main.layout_attach_image.view.darkCard
+import kotlinx.android.synthetic.main.layout_attach_image.view.detachImage
+import kotlinx.android.synthetic.main.layout_attach_image.view.imageUploadingProgressBar
+import kotlinx.android.synthetic.main.layout_attach_image.view.refreshContainer
+import kotlinx.android.synthetic.main.layout_attach_image.view.stopUploading
+import kotlinx.android.synthetic.main.layout_audio_in_create_post.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
 
-class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Validator.ValidationListener {
+class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
         const val CREATE_COMMENT_DATA = 0
@@ -59,7 +64,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
     private val heightView by lazy { requireContext().dpToPx(100) }
-    private val heightEditTextWithFiveLine by lazy { requireContext().dpToPx(156) }
+    private val heightEditTextWithFiveLine by lazy { requireContext().dpToPx(180) }
     private val heightEditText by lazy { requireContext().dpToPx(53) }
     private val heightLineInEditText by lazy { requireContext().dpToPx(16) }
     private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
@@ -77,21 +82,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        commentEditText = view.findViewById(R.id.commentEditText)
-        prepareEditText()
-        controlCommentEditTextChanges()
+        createCommentCustomView.createAllMainView()
+        createCommentCustomView.textPost.hint = requireContext().getString(R.string.write_your_comment)
+        controlFirstCommentEditTextChanges()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun prepareEditText() {
-        commentEditText.isVerticalScrollBarEnabled = true
-        commentEditText.maxLines = 5
-        commentEditText.setScroller(Scroller(requireContext()))
-        commentEditText.movementMethod = ScrollingMovementMethod()
-    }
-
-    private fun controlCommentEditTextChanges() {
-        RxTextView.afterTextChangeEvents(commentEditText)
+    private fun controlFirstCommentEditTextChanges() {
+        RxTextView.afterTextChangeEvents( createCommentCustomView.listEditText[0])
                 .subscribe {
                     val view = it.view()
                     if (view.text.trim().isEmpty() && loadingViews.isEmpty()) {
@@ -101,13 +99,9 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
                         view.setCompoundDrawablesWithIntrinsicBounds(null, null,
                                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
                     }
-
-                    if (commentEditText.isFocused) {
-                        var height = if (commentEditText.lineCount<=5)iconPanel.height + pushUpDown.height / 2 + heightEditText + heightLineInEditText * (commentEditText.lineCount - 1)
+                    if (createCommentCustomView.listEditText[0].isFocused ) {
+                        var height = if (createCommentCustomView.listEditText[0].lineCount<=5)iconPanel.height + pushUpDown.height / 2 + heightEditText + heightLineInEditText * createCommentCustomView.listEditText[0].lineCount
                         else heightEditTextWithFiveLine
-                        if (loadingViews.isNotEmpty()) {
-                            height += heightView
-                        }
                         if (answer_layout.isVisible())
                             height += heightAnswerPanel
                         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
@@ -117,17 +111,37 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
         setUpRightDrawableListener()
     }
 
+    private fun controlCommentEditTextChanges(){
+        compositeDisposable.clear()
+        RxTextView.afterTextChangeEvents(createCommentCustomView.textPost).subscribe {
+            val view = it.view()
+            if (createCommentCustomView.allTextIsEmpty() && loadingViews.isEmpty()) {
+                view.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                        null, null)
+            } else {
+                view.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
+            }
+        }.let(compositeDisposable::add)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setUpRightDrawableListener() {
-        commentEditText.setOnTouchListener(rightDrawableListener)
         rightDrawableListener.clickListener = {
-            validator.validate()
+            CommentsViewModel.publishSubject
+                    .onNext(Pair(CREATE_COMMENT_DATA,Pair(createCommentCustomView.createFinalText(), presenter)))
             loadingViews.clear()
             chooseMedias.clear()
-            postContainer.removeAllViews()
-            commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    null, null)
+            createCommentCustomView.removeAllViews()
+            createCommentCustomView.createAllMainView()
+            createCommentCustomView.textPost.run {
+                hint = requireContext()
+                        .getString(R.string.write_your_comment)
+                setCompoundDrawablesWithIntrinsicBounds(null, null,
+                        null, null)
+            }
         }
+        createCommentCustomView.textPost.setOnTouchListener(rightDrawableListener)
     }
 
     fun answerComment(comment:CommentEntity.Comment){
@@ -138,17 +152,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
                     text = comment.commentOwner?.firstName
                             ?: getString(R.string.unknown_user)
                 }
-        textAnswer.text = comment.text
-        val height = commentEditText.height + iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
+        textAnswer.text = comment.text.substringBefore("~~")
+        val height = createCommentCustomView.listEditText[0].height + iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
     }
 
     override fun attachFileNotActivated() {
-        commentEditText.show()
+        createCommentCustomView.show()
         panelAddFile.gone()
         btnAdd.gone()
         amountFiles.gone()
-        postContainer.show()
         if (answer_layout.isActivated){
             answer_layout.show()
         }
@@ -156,8 +169,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun attachFileActivated() {
-        postContainer.gone()
-        commentEditText.gone()
+        createCommentCustomView.gone()
         answer_layout.gone()
         panelAddFile.show()
     }
@@ -190,15 +202,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
         mediaRecyclerView.gone()
         icAttachFile.activated(false)
         panelAddFile.gone()
-        postContainer.show()
         amountFiles.gone()
         btnAdd.gone()
-        commentEditText.show()
+        createCommentCustomView.show()
     }
 
     override fun closeKeyboard() {
         try {
-            commentEditText.dismissKeyboard()
+            createCommentCustomView.listEditText.forEach {editText->
+                editText.dismissKeyboard()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -210,23 +223,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun stateExpanded() {
-        val metrics = Resources.getSystem().displayMetrics
-        var height = metrics.heightPixels-iconPanel.height - pushUpDown.height / 2
-        if (loadingViews.isNotEmpty())
-            height -=heightView
-        if (answer_layout.isVisible())
-            height -= heightAnswerPanel
-        commentEditText.maxLines = height/heightLineInEditText - 1
+
     }
 
     override fun stateHalfExpanded() {
-        val metrics = Resources.getSystem().displayMetrics
-        var height = metrics.heightPixels*0.6-iconPanel.height - pushUpDown.height / 2
-        if (loadingViews.isNotEmpty())
-            height -=heightView
-        if (answer_layout.isVisible())
-            height -= heightAnswerPanel
-        commentEditText.maxLines = (height/heightLineInEditText).toInt() - 1
         changeBottomConstraintForRecyclerView(horizontal_guide_center.id)
     }
 
@@ -271,24 +271,36 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image, postContainer, false)
-        loadingViews[chooseMedia.url]?.let {
-            it.imagePreview?.let { draweeView ->
-                val type = MimeTypeMap.getFileExtensionFromUrl(chooseMedia.url)
-                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: ""
-                if (mime in listOf("audio/mpeg", "audio/aac", "audio/wav")) {
-                    imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, draweeView)
-                    it.nameView?.text = chooseMedia.trackName
-                }
-                else
-                    imageLoadingDelegate.loadImageFromFile(chooseMedia.url, draweeView)
+        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg") || chooseMedia.url.contains(".wav")){
+            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,
+                    createCommentCustomView.audioContainer, false)
+            loadingViews[chooseMedia.url]?.let {
+                it.trackName?.text = chooseMedia.name
             }
+            createCommentCustomView.addMusic(chooseMedia.name,loadingViews[chooseMedia.url])
         }
-        commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
-               null, null)
-        postContainer.addView(loadingViews[chooseMedia.url])
+        else {
+            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image,
+                   createCommentCustomView.imageContainer, false)
+            loadingViews[chooseMedia.url]?.let {
+                it.imagePreview?.let { draweeView ->
+                    imageLoadingDelegate.loadImageFromFile(chooseMedia.url, draweeView)
+                }
+            }
+            createCommentCustomView.addImageOrVideo(chooseMedia.url.substringAfterLast("/"),
+                    loadingViews[chooseMedia.url])
+        }
+        createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                null, null)
         prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
         imageUploadingStarted(loadingViews[chooseMedia.url])
+
+        if (loadingViews.size == chooseMedias.size && createCommentCustomView.currentContainerIsLast()){
+            createCommentCustomView.createAllMainView()
+            createCommentCustomView.textPost.hint = requireContext()
+                    .getString(R.string.write_your_comment)
+            controlCommentEditTextChanges()
+        }
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
@@ -333,7 +345,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
             }
         }
         if (!countUpload || loadingViews.size == 1){
-            commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
             setUpRightDrawableListener()
         }
@@ -361,46 +373,27 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
         CommentsViewModel.publishSubject.onNext(Pair(HIDE_SWIPE_DATA, null))
     }
 
-    override fun onValidationSucceeded() {
-        CommentsViewModel.publishSubject
-                .onNext(Pair(CREATE_COMMENT_DATA,Pair(commentEditText.text.toString().trim(), presenter)))
-        //callback.createComment(commentEditText.text.toString().trim(), presenter)
-    }
-
-    override fun onValidationFailed(errors: MutableList<ValidationError>) {
-        if (loadingViews.isNotEmpty()){
-            CommentsViewModel.publishSubject
-                    .onNext(Pair(CREATE_COMMENT_DATA,Pair(commentEditText.text.toString().trim(), presenter)))
-            return
-        }
-        for (error in errors) {
-            val message = error.getCollatedErrorMessage(requireContext())
-            dialogDelegate.showErrorSnackBar(message)
-        }
-    }
-
     private fun detachImage(path: String) {
-        postContainer.removeView(loadingViews[path])
+        createCommentCustomView.listImageContainers.forEach {container->
+            container.removeView(loadingViews[path])
+        }
+        createCommentCustomView.listAudioContainers.forEach {container->
+            container.removeView(loadingViews[path])
+        }
+        createCommentCustomView.detachName(loadingViews[path])
         loadingViews.remove(path)
         chooseMedias.removeChooseMedia(path)
         if(loadingViews.isEmpty()){
-            commentEditText.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     null, null)
-            val height = commentEditText.height + iconPanel.height + pushUpDown.height/2
-            CommentsViewModel.publishSubject
-                    .onNext(Pair(ADD_HEIGHT_CONTAINER, height))
         }
     }
 
     private fun restoreHeightEditText(): Int {
-        commentEditText.maxLines = 5
-        var height = if (commentEditText.lineCount > 5) {
+        var height = if (createCommentCustomView.listEditText[0].lineCount > 5) {
             heightEditTextWithFiveLine
         } else {
-            commentEditText.height + iconPanel.height + pushUpDown.height / 2
-        }
-        if (loadingViews.isNotEmpty()) {
-            height += heightView
+            createCommentCustomView.listEditText[0].height + iconPanel.height + pushUpDown.height / 2
         }
         if(answer_layout.isVisible()){
             height += heightAnswerPanel
@@ -410,8 +403,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView, Val
 
     private fun restoreAllViewForCollapsedState() {
         panelAddFile.gone()
-        commentEditText.show()
-        postContainer.show()
+        createCommentCustomView.show()
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
     }
 }

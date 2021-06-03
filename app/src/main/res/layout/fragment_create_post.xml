@@ -22,45 +22,27 @@
             android:layout_height="0dp"
             android:fillViewport="true"
             style="@style/ScrollBar"
-            app:layout_constraintBottom_toTopOf="@+id/panelAddFile"
+            app:layout_constraintBottom_toTopOf="@+id/mediaHolder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/navigationToolbar">
 
-            <LinearLayout
+            <com.intergroupapplication.presentation.customview.CreatePostCustomView
+                android:id="@+id/createPostCustomView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/postText"
-                    style="@style/InterGroupWhiteTextStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:gravity="top"
-                    android:textColorHint="@color/commentEditTextHintColor"
-                    android:hint="@string/add_photo_or_text"
-                    android:padding="@dimen/big_padding" />
-
-<!--                <com.intergroupapplication.presentation.customview.ImagesUploadingView-->
-<!--                    android:id="@+id/imagesUploadingContainer"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"/>-->
-                <GridLayout
-                    android:id="@+id/postContainer"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:columnCount="3"/>
-                <LinearLayout
-                    android:id="@+id/audioContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"/>
-            </LinearLayout>
+                android:orientation="vertical"/>
         </ScrollView>
+        <LinearLayout
+            android:id="@+id/mediaHolder"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_gravity="bottom"
+
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

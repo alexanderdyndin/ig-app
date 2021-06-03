@@ -56,7 +56,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         this.addView(container)
         if (isExpanded && urls.size > 2) {
             createAudios(urls)
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
+          //  container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
             val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
             hider.btnHide.setOnClickListener {
                 this.isExpanded = false
@@ -66,7 +67,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
             this.addView(hider)
         } else if (!isExpanded && urls.size > 2) {
             createAudios(urls.subList(0, 2))
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * 2))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
+            //container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * 2))
             val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
             expander.btnExpand.setOnClickListener {
                 this.isExpanded = true
@@ -76,7 +78,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
             this.addView(expander)
         } else if (urls.isNotEmpty()) {
             createAudios(urls)
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
+            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
+            //container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
         }
     }
 

@@ -38,7 +38,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     private val videoPaths: MutableList<String> = mutableListOf()
     private val audioPaths: MutableList<String> = mutableListOf()
 
-    private val imageUrls: MutableList<String> = mutableListOf()
+    private val imageUrls: MutableList<ChooseMedia> = mutableListOf()
     private val videoUrls: MutableList<ChooseMedia> = mutableListOf()
     private val audioUrls: MutableList<ChooseMedia> = mutableListOf()
 
@@ -74,7 +74,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     override fun getAudioUrls(): Single<List<ChooseMedia>> = Single.fromCallable { audioUrls }
 
-    override fun getImageUrls(): Single<List<String>> {
+    override fun getImageUrls(): Single<List<ChooseMedia>> {
         return Single.fromCallable { imageUrls }
     }
 
@@ -92,10 +92,10 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         }
     }
 
-    override fun setImageUrls(images: List<String>) {
+    override fun setImageUrls(images: List<ChooseMedia>) {
         imageUrls.addAll(images)
         images.forEach {
-            fileToUrl[it] = it
+            fileToUrl[it.url] = it.url
         }
     }
 
@@ -138,8 +138,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     .crop(cropOptions)
                     .usingGallery()
                     .map { response ->
-                        //val paths = response.data()?.map { it.file.path } ?: emptyList()
-                        //imagePaths.addAll(paths)
                         val path = response.data()?.file?.path
                         path?.let {
                             imagePaths.add(it)
@@ -152,7 +150,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 : Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(chooseMedia.url)
-        val myFile = File(activity.externalCacheDir,"temporary_file_with_music.${file.extension}")
+        val myFile = File(activity.externalCacheDir,"${chooseMedia.authorMusic}.${file.extension}")
         myFile.createNewFile()
         val byteArray = file.readBytes()
         myFile.writeBytes(byteArray)
@@ -161,9 +159,11 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, myFile)
                 }
                 .flatMapObservable { it ->
-                    subject.doOnDispose { AndroidNetworking.cancelAll() }
+                    subject.doOnDispose {
+                      //  AndroidNetworking.cancelAll()
+                    }
                             .doOnComplete {
-                                audioUrls.add(ChooseMedia(it.fields.key,trackName = chooseMedia.trackName,
+                                audioUrls.add(ChooseMedia(it.fields.key,name = chooseMedia.name,
                                 authorMusic = chooseMedia.authorMusic,duration = chooseMedia.duration ))
                                 fileToUrl[chooseMedia.url] = it.fields.key
                                 myFile.delete()
@@ -180,13 +180,16 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, file)
                 }
                 .flatMapObservable { it ->
-                    subject.doOnDispose { AndroidNetworking.cancelAll() }
+                    subject.doOnDispose {
+                        Timber.tag("tut_dispose").d("tut")
+                        //AndroidNetworking.cancelAll()
+                            }
                             .doOnComplete {
                                 videoUrls.add(ChooseMedia(it.fields.key,urlPreview = chooseMedia.urlPreview
-                                        ,duration = chooseMedia.duration))
+                                        ,duration = chooseMedia.duration,
+                                        name = chooseMedia.url.substringAfterLast("/")))
                                 fileToUrl[chooseMedia.url] = it.fields.key
                             }
-                    //.doOnError { lastPhotoUrl = "" }
                 }
     }
 
@@ -209,9 +212,12 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                         }
                 }
                 .flatMapObservable { it ->
-                    subject.doOnDispose { AndroidNetworking.cancelAll() }
+                    subject.doOnDispose {
+                        //AndroidNetworking.cancelAll()
+                    }
                             .doOnComplete {
-                                imageUrls.add(it.fields.key)
+                                imageUrls.add(ChooseMedia(url = it.fields.key,
+                                        name = path.substringAfterLast("/")))
                                 fileToUrl[path] = it.fields.key
                             }
                     //.doOnError { lastPhotoUrl = "" }
@@ -316,7 +322,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
             }
             in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> videoUrls.removeMedia(fileToUrl[path])
             else ->  {
-                imageUrls.remove(fileToUrl[path])
+                imageUrls.removeMedia(fileToUrl[path])
                 audioUrls.removeMedia(fileToUrl[path])
                 videoUrls.removeMedia(fileToUrl[path])
             }
@@ -328,14 +334,14 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         audioUrls.clear()
         videoUrls.clear()
     }
-}
 
-private fun MutableList<ChooseMedia>.removeMedia(url: String?):Boolean {
-    this.forEach {
-        if (it.url == url) {
-            remove(it)
-            return true
+    private fun MutableList<ChooseMedia>.removeMedia(url: String?):Boolean {
+        this.forEach {
+            if (it.url == url) {
+                remove(it)
+                return true
+            }
         }
+        return false
     }
-    return false
 }

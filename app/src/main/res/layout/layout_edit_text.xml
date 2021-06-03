@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatEditText android:id="@+id/postText"
+    style="@style/InterGroupWhiteTextStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:gravity="top"
+    android:textColorHint="@color/commentEditTextHintColor"
+    android:hint="@string/add_photo_or_text"
+    android:padding="@dimen/big_padding"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
