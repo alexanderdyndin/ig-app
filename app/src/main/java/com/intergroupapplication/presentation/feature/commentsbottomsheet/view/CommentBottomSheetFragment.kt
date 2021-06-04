@@ -6,11 +6,16 @@ import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.budiyev.android.circularprogressbar.CircularProgressBar
+import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
+import com.intergroupapplication.presentation.customview.CreatePostCustomView
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
@@ -19,20 +24,8 @@ import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
-import kotlinx.android.synthetic.main.fragment_comment_bottom_sheet.*
-import kotlinx.android.synthetic.main.fragment_create_post.*
-import kotlinx.android.synthetic.main.item_comment.*
-import kotlinx.android.synthetic.main.layout_attach_image.*
-import kotlinx.android.synthetic.main.layout_attach_image.view.*
-import kotlinx.android.synthetic.main.layout_attach_image.view.darkCard
-import kotlinx.android.synthetic.main.layout_attach_image.view.detachImage
-import kotlinx.android.synthetic.main.layout_attach_image.view.imageUploadingProgressBar
-import kotlinx.android.synthetic.main.layout_attach_image.view.refreshContainer
-import kotlinx.android.synthetic.main.layout_attach_image.view.stopUploading
-import kotlinx.android.synthetic.main.layout_audio_in_create_post.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Validator.ValidationListener{
@@ -46,6 +39,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
         const val SHOW_COMMENT_UPLOADING_DATA = 5
         const val HIDE_SWIPE_DATA = 6
     }
+
+    private val viewBinding by viewBinding(FragmentCommentBottomSheetBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -75,7 +70,17 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     override fun layoutRes() = R.layout.fragment_comment_bottom_sheet
 
-    override fun getSnackBarCoordinator() = bottom_sheet_coordinator
+    override fun getSnackBarCoordinator() = viewBinding.bottomSheetCoordinator
+
+    private lateinit var createCommentCustomView:CreatePostCustomView
+    private lateinit var iconPanel:LinearLayout
+    private lateinit var pushUpDown:Button
+    private lateinit var answerLayout:LinearLayout
+    private lateinit var panelAddFile:LinearLayout
+    private lateinit var responseToUser:TextView
+    private lateinit var textAnswer:TextView
+    private lateinit var horizontalGuideCenter:LinearLayout
+    private lateinit var horizontalGuideEnd:LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +88,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        createCommentCustomView = viewBinding.createCommentCustomView
+        iconPanel = viewBinding.iconPanel
+        pushUpDown = viewBinding.pushUpDown
+        answerLayout = viewBinding.answerLayout
+        panelAddFile = viewBinding.panelAddFile
+        responseToUser = viewBinding.responseToUser
+        textAnswer = viewBinding.textAnswer
+        horizontalGuideCenter = viewBinding.horizontalGuideCenter
+        horizontalGuideEnd = viewBinding.horizontalGuideEnd
         createCommentCustomView.createAllMainView()
         createCommentCustomView.textPost.hint = requireContext().getString(R.string.write_your_comment)
         controlFirstCommentEditTextChanges()
@@ -103,7 +117,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
                     if (createCommentCustomView.listEditText[0].isFocused ) {
                         var height = if (createCommentCustomView.listEditText[0].lineCount<=5)iconPanel.height + pushUpDown.height / 2 + heightEditText + heightLineInEditText * createCommentCustomView.listEditText[0].lineCount
                         else heightEditTextWithFiveLine
-                        if (answer_layout.isVisible())
+                        if (answerLayout.isVisible())
                             height += heightAnswerPanel
                         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
                     }
@@ -146,8 +160,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
     }
 
     fun answerComment(comment:CommentEntity.Comment){
-        answer_layout.show()
-        answer_layout.activated(true)
+        answerLayout.show()
+        answerLayout.activated(true)
         responseToUser
                 .apply {
                     text = comment.commentOwner?.firstName
@@ -163,15 +177,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
         panelAddFile.gone()
         btnAdd.gone()
         amountFiles.gone()
-        if (answer_layout.isActivated){
-            answer_layout.show()
+        if (answerLayout.isActivated){
+            answerLayout.show()
         }
         mediaRecyclerView.gone()
     }
 
     override fun attachFileActivated() {
         createCommentCustomView.gone()
-        answer_layout.gone()
+        answerLayout.gone()
         panelAddFile.show()
     }
 
@@ -220,7 +234,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     override fun stateSettling() {
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
-        changeBottomConstraintForRecyclerView(horizontal_guide_end.id)
+        changeBottomConstraintForRecyclerView(horizontalGuideEnd.id)
     }
 
     override fun stateExpanded() {
@@ -228,12 +242,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
     }
 
     override fun stateHalfExpanded() {
-        changeBottomConstraintForRecyclerView(horizontal_guide_center.id)
+        changeBottomConstraintForRecyclerView(horizontalGuideCenter.id)
     }
 
     override fun stateDragging() {
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
-        changeBottomConstraintForRecyclerView(horizontal_guide_end.id)
+        changeBottomConstraintForRecyclerView(horizontalGuideEnd.id)
     }
 
     override fun stateHidden() {
@@ -263,8 +277,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
         CommentsViewModel.publishSubject.onNext(
                 Pair(ADD_HEIGHT_CONTAINER, heightEditText + iconPanel.height + pushUpDown.height / 2))
         CommentsViewModel.publishSubject.onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA, BottomSheetBehavior.STATE_COLLAPSED))
-        answer_layout.gone()
-        answer_layout.activated(false)
+        answerLayout.gone()
+        answerLayout.activated(false)
     }
 
     override fun showCommentUploading(show: Boolean) {
@@ -276,7 +290,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
             loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,
                     createCommentCustomView.audioContainer, false)
             loadingViews[chooseMedia.url]?.let {
-                it.trackName?.text = chooseMedia.name
+                val trackName = it.findViewById<TextView>(R.id.trackName)
+                trackName.text = chooseMedia.name
             }
             createCommentCustomView.addMusic(chooseMedia.name,loadingViews[chooseMedia.url])
         }
@@ -284,9 +299,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
             loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image,
                    createCommentCustomView.imageContainer, false)
             loadingViews[chooseMedia.url]?.let {
-                it.imagePreview?.let { draweeView ->
-                    imageLoadingDelegate.loadImageFromFile(chooseMedia.url, draweeView)
-                }
+                val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
+                imageLoadingDelegate.loadImageFromFile(chooseMedia.url, imagePreview)
             }
             createCommentCustomView.addImageOrVideo(chooseMedia.url.substringAfterLast("/"),
                     loadingViews[chooseMedia.url])
@@ -306,12 +320,18 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
         loadingViews[path]?.apply {
-            imageUploadingProgressBar?.progress = progress
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            imageUploadingProgressBar.progress = progress
         }
     }
 
     override fun showImageUploadingError(path: String) {
         loadingViews[path]?.apply {
+            val darkCard = findViewById<TextView>(R.id.darkCard)
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
             darkCard?.show()
             detachImage?.show()
             refreshContainer?.show()
@@ -323,6 +343,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     private fun imageUploadingStarted(uploadingView: View?) {
         uploadingView?.apply {
+            val darkCard = findViewById<TextView>(R.id.darkCard)
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
             darkCard?.show()
             imageUploadingProgressBar?.show()
             stopUploading?.show()
@@ -333,14 +358,20 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     override fun showImageUploaded(path: String) {
         loadingViews[path]?.apply {
+            val darkCard = findViewById<TextView>(R.id.darkCard)
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
             darkCard?.hide()
             stopUploading?.hide()
             imageUploadingProgressBar?.hide()
             detachImage?.show()
         }
         var countUpload = false
-        loadingViews.values.forEach{ _ ->
-            if (imageUploadingProgressBar.progress<100){
+        loadingViews.values.forEach{ view ->
+            val imageUploadingProgressBar = view
+                ?.findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            if (imageUploadingProgressBar?.progress?:0.0f<100){
                 countUpload = true
                 return@forEach
             }
@@ -354,8 +385,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     private fun prepareListeners(uploadingView: View?, chooseMedia: ChooseMedia) {
         uploadingView?.apply {
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
             refreshContainer.setOnClickListener {
-                this.imageUploadingProgressBar?.progress = 0f
+                imageUploadingProgressBar.progress = 0f
                 presenter.retryLoading(chooseMedia)
                 imageUploadingStarted(uploadingView)
             }
@@ -396,7 +431,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
         } else {
             createCommentCustomView.listEditText[0].height + iconPanel.height + pushUpDown.height / 2
         }
-        if(answer_layout.isVisible()){
+        if(answerLayout.isVisible()){
             height += heightAnswerPanel
         }
         return height

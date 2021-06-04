@@ -18,8 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.android.billingclient.api.*
 import com.appodeal.ads.Appodeal
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
@@ -123,7 +123,7 @@ class MainActivity : FragmentActivity() {
 
 
     private fun settingDeepLink() {
-        Firebase.dynamicLinks
+        FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
                 .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
                     val deepLink: Uri? = pendingDynamicLinkData?.link

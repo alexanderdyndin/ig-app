@@ -51,7 +51,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
 
-class GroupFragment() : BaseFragment(), GroupView,
+class GroupFragment : BaseFragment(), GroupView,
         AppBarLayout.OnOffsetChangedListener, CoroutineScope {
 
     companion object {
@@ -342,10 +342,10 @@ class GroupFragment() : BaseFragment(), GroupView,
             }
             progressBarVisibility = {visibility ->
                 if (visibility){
-                    progressDownload.show()
+                    viewBinding.progressDownload.show()
                 }
                 else{
-                    progressDownload.gone()
+                    viewBinding.progressDownload.gone()
                 }
             }
         }

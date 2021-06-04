@@ -4,28 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.GridLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.os.bundleOf
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.domain.entity.AudioEntity
-import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.ImageGalleryView
 import com.intergroupapplication.presentation.customview.PostCustomView
-import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpost.presenter.EditPostPresenter
 import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
-import kotlinx.android.synthetic.main.fragment_create_post.*
-import kotlinx.android.synthetic.main.layout_attach_image.view.*
-import kotlinx.android.synthetic.main.layout_attach_image.view.detachImage
-import kotlinx.android.synthetic.main.layout_audio_in_create_post.view.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -116,8 +108,10 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 loadingViews[url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,
                         audioContainer, false)
                 loadingViews[url]?.let {
-                    it.trackName?.text = audioEntity.song
-                    it.detachImage.run {
+                    val trackName = it.findViewById<TextView>(R.id.trackName)
+                    val detachImage = it.findViewById<ImageView>(R.id.detachImage)
+                    trackName?.text = audioEntity.song
+                    detachImage.run {
                         show()
                         setOnClickListener {
                             childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
@@ -138,10 +132,10 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 loadingViews[url] = layoutInflater.inflate(R.layout.layout_attach_image,
                         imageContainer, false)
                 loadingViews[url]?.let {
-                    it.imagePreview?.let { draweeView ->
-                        imageLoadingDelegate.loadImageFromUrl(fileEntity.file, draweeView)
-                    }
-                    it.detachImage.run {
+                    val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
+                    imageLoadingDelegate.loadImageFromUrl(fileEntity.file, imagePreview)
+                    val detachImage = it.findViewById<ImageView>(R.id.detachImage)
+                    detachImage.run {
                         show()
                         setOnClickListener {
                             childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
@@ -162,10 +156,10 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 loadingViews[url] = layoutInflater.inflate(R.layout.layout_attach_image,
                       imageContainer, false)
                 loadingViews[url]?.let {
-                    it.imagePreview?.let { draweeView ->
-                        imageLoadingDelegate.loadImageFromUrl(fileEntity.preview, draweeView)
-                    }
-                    it.detachImage.run {
+                    val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
+                    imageLoadingDelegate.loadImageFromUrl(fileEntity.preview, imagePreview)
+                    val detachImage = it.findViewById<ImageView>(R.id.detachImage)
+                    detachImage.run {
                         show()
                         setOnClickListener {
                             childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,

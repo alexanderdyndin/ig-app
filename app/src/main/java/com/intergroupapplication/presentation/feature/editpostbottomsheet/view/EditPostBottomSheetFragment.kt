@@ -2,25 +2,25 @@ package com.intergroupapplication.presentation.feature.editpostbottomsheet.view
 
 import android.os.Bundle
 import android.view.View
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.databinding.FragmentEditPostBottomSheetBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.base.ImageUploadingView
-import com.intergroupapplication.presentation.customview.CreatePostCustomView
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpostbottomsheet.presenter.EditPostBottomSheetPresenter
-import kotlinx.android.synthetic.main.fragment_edit_post_bottom_sheet.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 
 class EditPostBottomSheetFragment:BaseBottomSheetFragment(),EditPostBottomSheetView {
 
     lateinit var callback: Callback
+    private val editPostBottomBinding by viewBinding(FragmentEditPostBottomSheetBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -31,7 +31,7 @@ class EditPostBottomSheetFragment:BaseBottomSheetFragment(),EditPostBottomSheetV
 
     override fun layoutRes() = R.layout.fragment_edit_post_bottom_sheet
 
-    override fun getSnackBarCoordinator() = bottom_sheet_coordinator
+    override fun getSnackBarCoordinator() = editPostBottomBinding.bottomSheetCoordinator
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

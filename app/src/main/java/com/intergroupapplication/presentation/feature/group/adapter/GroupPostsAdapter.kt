@@ -13,21 +13,15 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ShortDynamicLink
-import com.google.firebase.dynamiclinks.ktx.androidParameters
-import com.google.firebase.dynamiclinks.ktx.dynamicLink
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
-import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.ImageGalleryView
-import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
@@ -129,10 +123,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
         private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
 
-        private val audioContainer = viewBinding.audioBody
-        private val videoContainer = viewBinding.videoBody
-        val imageContainer = viewBinding.imageBody
-
         fun bind(item: GroupPostEntity.PostEntity) {
             with(viewBinding) {
                 idpGroupPost.text = itemView.context.getString(R.string.idp, item.idp.toString())
@@ -152,7 +142,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                countComments.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
+                countComments.text = view.context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
                 postCustomView.proxy = proxyCacheServer
                 postCustomView.imageClickListener = imageClickListener
                 postCustomView.imageLoadingDelegate = imageLoadingDelegate
@@ -189,7 +179,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
                 btnRepost.setOnClickListener {
-                    sharePost(context, item)
+                    sharePost(view.context, item)
                 }
 
             }
@@ -201,19 +191,24 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
         private fun sharePost(context: Context, item: GroupPostEntity.PostEntity){
             progressBarVisibility.invoke(true)
-            val link = Firebase.dynamicLinks.dynamicLink {
+            /*val link = Firebase.dynamicLinks.dynamicLink {
                 domainUriPrefix = context.getString(R.string.deeplinkDomain)
                 link = Uri.parse("https://intergroup.com/post/${item.id}")
                 androidParameters(packageName = "com.intergroupapplication"){
                     minimumVersion = 1
                 }
-            }
+            }*/
             FirebaseDynamicLinks.getInstance().createDynamicLink()
-                    .setLongLink(link.uri)
-                    .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
-                    .addOnCompleteListener {
-                        createShareIntent(context, item, it.result.previewLink.toString())
-                    }
+                //.setLongLink(link.uri)
+                .setDomainUriPrefix( context.getString(R.string.deeplinkDomain))
+                .setLink(Uri.parse("https://intergroup.com/post/${item.id}"))
+                .setAndroidParameters(
+                    DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
+                    .setMinimumVersion(1).build())
+                .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                .addOnCompleteListener {
+                    createShareIntent(context,item,it.result.previewLink.toString())
+                }
         }
 
         private fun createShareIntent(context: Context, item: GroupPostEntity.PostEntity, url: String){

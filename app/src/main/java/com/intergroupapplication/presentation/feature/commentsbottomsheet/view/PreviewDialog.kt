@@ -9,15 +9,14 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.databinding.DialogPreviewBinding
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.addChooseMedia
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.removeChooseMedia
-import kotlinx.android.synthetic.main.dialog_preview.*
-import kotlinx.android.synthetic.main.fragment_group.*
-import timber.log.Timber
 import kotlin.math.abs
 
 class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
@@ -34,42 +33,43 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
     }
     private lateinit var videoView: VideoView
     private lateinit var gestureDetector: GestureDetector
+    private val previewViewBinding by viewBinding(DialogPreviewBinding::bind)
     lateinit var url:String
     var isPhoto = false
     var isChoose = false
 
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_preview, null, false)
-        videoView = view.findViewById(R.id.videoPlayer)
-        gestureDetector = GestureDetector(context,this)
-        setupAllView(view)
-        val builder = AlertDialog.Builder(requireContext())
-        return builder.setView(view).create()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.dialog_preview, container, false)
     }
 
-   /* override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.dialog_preview, container, false)
-        gestureDetector = GestureDetector(context,this)
-        setupAllView(view)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        with(previewViewBinding){
+            videoView = videoPlayer
+            gestureDetector = GestureDetector(context,this@PreviewDialog)
+            setupAllView()
+        }
+    }
 
-        return view
-    }*/
-
-    private fun setupAllView(view: View) {
+    private fun setupAllView() {
         if (isPhoto) {
-            setupImageView(view)
+            setupImageView()
         } else {
             setupVideoView()
         }
-        setupClosePreview(view)
-        setupAddButton(view)
+        setupClosePreview()
+        setupAddButton()
     }
 
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupImageView(view: View) {
-        val imageView = view.findViewById<ImageView>(R.id.imagePreview)
+    private fun setupImageView() {
+        val imageView = previewViewBinding.imagePreview
         imageView.setImageURI(Uri.parse(url))
         imageView.show()
         imageView.setOnClickListener {
@@ -93,8 +93,8 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
     }
 
 
-    private fun setupAddButton(view: View) {
-        val addButton = view.findViewById<Button>(R.id.addButton)
+    private fun setupAddButton() {
+        val addButton = previewViewBinding.addButton
         addButton.isActivated = isChoose
         addButton.setOnClickListener {
             if (it.isActivated) {
@@ -115,8 +115,8 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
         }
     }
 
-    private fun setupClosePreview(view: View) {
-        val closePreview = view.findViewById<ImageView>(R.id.closePreview)
+    private fun setupClosePreview() {
+        val closePreview = previewViewBinding.closePreview
         closePreview.setOnClickListener {
             this@PreviewDialog.dismiss()
         }

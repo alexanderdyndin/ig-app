@@ -13,24 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ShortDynamicLink
-import com.google.firebase.dynamiclinks.ktx.androidParameters
-import com.google.firebase.dynamiclinks.ktx.dynamicLink
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
-import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.base.AdViewHolder.Companion.NATIVE_AD
-import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.ImageGalleryView
-import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
@@ -39,10 +32,6 @@ import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.item_group_post.view.*
-import kotlinx.android.synthetic.main.item_image.view.*
-import kotlinx.android.synthetic.main.item_loading.view.*
-import kotlinx.android.synthetic.main.layout_pic.view.*
 import timber.log.Timber
 
 
@@ -177,7 +166,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }
 
                 btnRepost.setOnClickListener {
-                   sharePost(context,item)
+                   sharePost(view.context,item)
                 }
 
                 doOrIfNull(item.post.groupInPost.avatar, {
@@ -193,15 +182,19 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
         private fun sharePost(context: Context, item: NewsEntity.Post){
             progressBarVisibility.invoke(true)
-            val link = Firebase.dynamicLinks.dynamicLink {
+            /*val link = Firebase.dynamicLinks.dynamicLink {
                 domainUriPrefix = context.getString(R.string.deeplinkDomain)
                 link =Uri.parse("https://intergroup.com/post/${item.post.id}")
                 androidParameters(packageName = "com.intergroupapplication"){
                     minimumVersion = 1
                 }
-            }
+            }*/
             FirebaseDynamicLinks.getInstance().createDynamicLink()
-                    .setLongLink(link.uri)
+                    //.setLongLink(link.uri)
+                    .setDomainUriPrefix( context.getString(R.string.deeplinkDomain))
+                    .setLink(Uri.parse("https://intergroup.com/post/${item.post.id}"))
+                    .setAndroidParameters(DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
+                        .setMinimumVersion(1).build())
                     .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
                     .addOnCompleteListener {
                         createShareIntent(context,item,it.result.previewLink.toString())

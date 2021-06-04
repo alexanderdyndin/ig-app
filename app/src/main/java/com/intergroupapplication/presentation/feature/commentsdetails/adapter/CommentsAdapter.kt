@@ -14,26 +14,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ShortDynamicLink
-import com.google.firebase.dynamiclinks.ktx.androidParameters
-import com.google.firebase.dynamiclinks.ktx.dynamicLink
-import com.google.firebase.dynamiclinks.ktx.dynamicLinks
-import com.google.firebase.ktx.Firebase
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.appodeal.ads.NativeAd
-import com.appodeal.ads.NativeAdView
-import com.appodeal.ads.NativeIconView
-import com.appodeal.ads.NativeMediaView
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
-import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
+import com.google.firebase.dynamiclinks.DynamicLink
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
-import com.intergroupapplication.domain.entity.BellsEntity
 import com.intergroupapplication.databinding.ItemCommentAnswerBinding
 import com.intergroupapplication.databinding.ItemCommentBinding
+import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
 import com.intergroupapplication.presentation.customview.AudioGalleryView
@@ -52,14 +41,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_comments_details.*
-import kotlinx.android.synthetic.main.item_comment.view.*
-import kotlinx.android.synthetic.main.item_comment.view.postDislike
-import kotlinx.android.synthetic.main.item_comment.view.postLike
-import kotlinx.android.synthetic.main.item_comment_answer.view.*
-import kotlinx.android.synthetic.main.item_group_post.*
-import kotlinx.android.synthetic.main.item_group_post.view.*
-import kotlinx.android.synthetic.main.post_item_error.view.*
 import timber.log.Timber
 
 /**
@@ -180,10 +161,11 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     inner class PostInCommentHolder(val view:View):RecyclerView.ViewHolder(view){
         private val settingPostInComments = view.findViewById<ImageView>(R.id.settingsPost)
+        private val viewBinding by viewBinding (ItemGroupPostBinding::bind)
         val countComments = view.findViewById<TextView>(R.id.countComments)
 
         fun bind(groupPostEntity: CommentEntity.PostEntity){
-            with(view){
+            with(viewBinding){
                 compositeDisposable.add(getDateDescribeByString(groupPostEntity.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -194,16 +176,16 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 postCustomView.imageLoadingDelegate = imageLoadingDelegate
                 postCustomView.setUpPost(mapToGroupEntityPost(groupPostEntity))
 
-                idpGroupPost.text = context.getString(R.string.idp, groupPostEntity.id)
+                idpGroupPost.text = view.context.getString(R.string.idp, groupPostEntity.id)
                 countComments.text = groupPostEntity.commentsCount
-                idpGroupPost.text = context.getString(R.string.idp, groupPostEntity.idp.toString())
+                idpGroupPost.text = view.context.getString(R.string.idp, groupPostEntity.idp.toString())
                 countComments.text = groupPostEntity.commentsCount
                 groupName.text = groupPostEntity.groupInPost.name
                 postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
                 postLike.text = groupPostEntity.reacts.likesCount.toString()
                 subCommentBtn.text = groupPostEntity.bells.count.toString()
                 btnRepost.setOnClickListener {
-                    sharePost(groupPostEntity,context)
+                    sharePost(groupPostEntity,view.context)
                 }
                 clicksSettingPost.invoke(settingPostInComments)
 
@@ -324,19 +306,16 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
         private fun sharePost(item: CommentEntity.PostEntity,context: Context){
             progressBarVisibility.invoke(true)
-            val link = Firebase.dynamicLinks.dynamicLink {
-                domainUriPrefix =context.getString(R.string.deeplinkDomain)
-                link = Uri.parse("https://intergroup.com/post/${item.id}")
-                androidParameters(packageName = "com.intergroupapplication"){
-                    minimumVersion = 1
-                }
-            }
             FirebaseDynamicLinks.getInstance().createDynamicLink()
-                    .setLongLink(link.uri)
-                    .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
-                    .addOnCompleteListener {
-                        createShareIntent(item ,it.result.previewLink.toString(),context)
-                    }
+                .setDomainUriPrefix( context.getString(R.string.deeplinkDomain))
+                .setLink(Uri.parse("https://intergroup.com/post/${item.id}"))
+                .setAndroidParameters(
+                    DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
+                        .setMinimumVersion(1).build())
+                .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                .addOnCompleteListener {
+                    createShareIntent(item ,it.result.previewLink.toString(),context)
+                }
         }
 
         fun increaseCommentsCounter() {
