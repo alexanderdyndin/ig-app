@@ -54,21 +54,32 @@ class AvatarRepository @Inject constructor(private val context: Context,
     }
 
    override fun uploadToAws(path: String, groupId: String?): Observable<ImageUploadingState> {
-        val subject = PublishSubject.create<ImageUploadingState>()
+        val subject = PublishSubject.create<Float>()
         val file = File(path)
+
         return appApi.uploadPhoto(file.extension, groupId)
             .doAfterSuccess {
-                if (file.extension == "gif")
-                    awsUploadingGateway.uploadAvatarToAws(it.url, subject, it.fields,
+//                if (file.extension == "gif")
+                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                         file)
-                else
-                    awsUploadingGateway.uploadAvatarToAws(it.url, subject, it.fields,
-                        Compressor(context).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+//                else
+//                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
+//                        Compressor(context).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
             }
             .flatMapObservable {
-                subject.doOnDispose { AndroidNetworking.cancelAll() }
+                subject.map { progress ->
+                    when (progress) {
+                        FULL_UPLOADED_PROGRESS -> {
+                            ImageUploadingState.ImageUploaded(it.fields.key)
+                        }
+                        else -> {
+                            ImageUploadingState.ImageUploadingProgress(progress)
+                        }
+                    }
+                }
+                .doOnDispose { AndroidNetworking.cancelAll() }
             }
-    }
+        }
 
 
 }

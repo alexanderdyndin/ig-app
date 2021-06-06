@@ -62,35 +62,24 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
     fun getUserProfile() = userProfileUseCase.getUserProfile()
 
     fun uploadImageFromGallery(file: String) {
-        var progress = 0f
         compositeDisposable.clear()
         compositeDisposable.add(avatarUploadingUseCase.upload(file)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                imageUploadingState.value = ImageUploadingState.ImageUploadingStarted(file)
+            }
+            .doOnComplete {
+                imageUploadingState.value = ImageUploadingState.ImageUploaded(file)
+            }
             .subscribe({
                 imageUploadingState.value = it
-                when (it) {
-                    is ImageUploadingState.ImageUploadingProgress -> progress = it.progress
-                    is ImageUploadingState.ImageUploaded -> changeAvatar(it.path)
-                    else -> {}
-                }
+                if (it is ImageUploadingState.ImageUploaded)
+                    changeAvatar(it.path)
             }, {
+                imageUploadingState.value = ImageUploadingState.ImageUploadingError()
                 errorHandler.handle(it)
-               }, {
-                if (progress == ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
-                    imageUploadingState.value = ImageUploadingState.ImageUploaded(file)
-               }))
-    }
-
-    fun uploadImageFromCamera() {
-//        compositeDisposable.clear()
-//        compositeDisposable.add(imageUploadingUseCase.uploadFromCamera(errorHandler)
-//            .subscribe {
-//                when (it) {
-//                    is ImageUploadingState.ImageUploaded -> changeAvatar()
-//                    else -> imageUploadingState.value = it
-//                }
-//            })
+            }))
     }
 
     private fun changeAvatar(photo: String) {

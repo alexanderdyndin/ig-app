@@ -28,9 +28,9 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
                     is ImageUploadingState.ImageUploadingStarted ->
                         showImageUploadingStarted(it.path)
                     is ImageUploadingState.ImageUploadingError ->
-                        showImageUploadingStarted(it.path)
+                        showImageUploadingError(it.path)
                     is ImageUploadingState.ImageUploaded ->
-                        showImageUploadingStarted(it.path)
+                        showImageUploaded(it.path)
                     is ImageUploadingState.ImageUploadingProgress ->
                         showImageUploadingProgress(it.progress, it.path)
                 }
@@ -101,6 +101,7 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     override fun showImageUploaded(path: String) {
+        imageUploadingProgressBar.progress = 100f
         darkCard.hide()
         imageUploadingProgressBar.hide()
         imageUploadingProgressBar.progress = 0f

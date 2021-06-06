@@ -8,10 +8,6 @@ import java.io.File
 
 interface AwsUploadingGateway {
 
-    fun uploadAvatarToAws(uploadUrl: String, progressObserver: Observer<ImageUploadingState>,
-                         fields: PhotoUploadFields,
-                         uploadingFile: File)
-
     fun uploadImageToAws(uploadUrl: String, progressObserver: Observer<Float>,
                          fields: PhotoUploadFields,
                          uploadingFile: File)

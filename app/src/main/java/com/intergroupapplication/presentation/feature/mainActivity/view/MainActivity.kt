@@ -485,9 +485,12 @@ class MainActivity : FragmentActivity() {
         compositeDisposable.add(RxPaparazzo.single(this)
             .crop(cropOptions)
             .usingCamera()
-            .subscribe { response ->
-                val path = response.data()?.file?.path
-                path?.let {
+            .map {response ->
+                response.data()?.file?.path
+            }
+            .filter { it.isNotEmpty() }
+            .subscribe {
+                it?.let {
                     viewModel.uploadImageFromGallery(it)
                 }
             }
@@ -498,9 +501,12 @@ class MainActivity : FragmentActivity() {
         compositeDisposable.add(RxPaparazzo.single(this)
             .crop(cropOptions)
             .usingGallery()
-            .subscribe { response ->
-                val path = response.data()?.file?.path
-                path?.let {
+            .map {response ->
+                response.data()?.file?.path
+            }
+            .filter { it.isNotEmpty() }
+            .subscribe {
+                it?.let {
                     viewModel.uploadImageFromGallery(it)
                 }
             }
