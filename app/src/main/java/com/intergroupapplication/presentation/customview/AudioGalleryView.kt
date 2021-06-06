@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.danikula.videocache.HttpProxyCacheServer
 import com.google.android.exoplayer2.MediaItem
@@ -10,19 +11,13 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
-import com.intergroupapplication.presentation.exstension.dpToPx
 import com.intergroupapplication.presentation.exstension.getActivity
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
-import kotlinx.android.synthetic.main.layout_expand.view.btnExpand
-import kotlinx.android.synthetic.main.layout_hide.view.*
-import kotlinx.android.synthetic.main.layout_music_player.view.exo_progress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
 
 class AudioGalleryView @JvmOverloads constructor(context: Context,
                                                  private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
@@ -59,7 +54,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
             container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
           //  container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
             val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
-            hider.btnHide.setOnClickListener {
+            val btnHide = hider.findViewById<FrameLayout>(R.id.btnHide)
+            btnHide.setOnClickListener {
                 this.isExpanded = false
                 parseUrl(uris, this.isExpanded)
                 expand.invoke(this.isExpanded)
@@ -70,7 +66,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
             container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
             //container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * 2))
             val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
-            expander.btnExpand.setOnClickListener {
+            val btnExpand = expander.findViewById<FrameLayout>(R.id.btnExpand)
+            btnExpand.setOnClickListener {
                 this.isExpanded = true
                 parseUrl(uris, this.isExpanded)
                 expand.invoke(this.isExpanded)
@@ -134,10 +131,10 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         proxy?.let {
             val proxyUrl = it.getProxyUrl(audio.file)
             it.registerCacheListener({ _, _, percentsAvailable ->
-                playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(percentsAvailable)
+                playerView.exoProgress.setLocalCacheBufferedPosition(percentsAvailable)
             }, audio.file)
             if (it.isCached(audio.file)){
-                playerView.exoPlayer.exo_progress.setLocalCacheBufferedPosition(100)
+                playerView.exoProgress.setLocalCacheBufferedPosition(100)
             }
             val musicMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
             musicPlayer.setMediaItem(musicMediaItem)

@@ -6,11 +6,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.core.view.children
+import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
@@ -20,7 +20,6 @@ import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
-import kotlinx.android.synthetic.main.layout_attach_image.view.*
 import java.io.File
 
 class ImagesUploadingView @JvmOverloads constructor(context: Context,
@@ -50,9 +49,10 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
             val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(File(chooseMedia.url)))
                     .setResizeOptions(ResizeOptions(500, 500))
                     .build()
-            it.imagePreview.controller = Fresco.newDraweeControllerBuilder()
+            val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
+            imagePreview.controller = Fresco.newDraweeControllerBuilder()
                     .setAutoPlayAnimations(true)
-                    .setOldController(it.imagePreview.controller)
+                    .setOldController(imagePreview.controller)
                     .setImageRequest(request)
                     .build()
         }
@@ -78,10 +78,11 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
 
     private fun createContainer(views: List<View?>) {
         val container = LinearLayout(context, attrs, defStyleAttr)
-        container.orientation = LinearLayout.HORIZONTAL
+        container.orientation = HORIZONTAL
         container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         views.forEach {
-            it?.container?.layoutParams = LayoutParams(pxWidth/views.size, pxWidth/views.size)
+            val this_container = it?.findViewById<LinearLayout>(R.id.container)
+            this_container?.layoutParams = LayoutParams(pxWidth/views.size, pxWidth/views.size)
             container.addView(it)
         }
         this.addView(container)
@@ -89,43 +90,57 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
 
     override fun showImageUploaded(path: String) {
         loadingViews[path]?.apply {
-            darkCard?.hide()
-            stopUploading?.hide()
-            imageUploadingProgressBar?.hide()
-            detachImage?.show()
+            val darkCard = findViewById<TextView>(R.id.darkCard)
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            darkCard.hide()
+            stopUploading.hide()
+            imageUploadingProgressBar.hide()
+            detachImage.show()
         }
     }
 
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
         loadingViews[path]?.apply {
-            imageUploadingProgressBar?.progress = progress
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            imageUploadingProgressBar.progress = progress
         }
     }
 
 
     override fun showImageUploadingError(path: String) {
         loadingViews[path]?.apply {
-            darkCard?.show()
-            detachImage?.show()
-            refreshContainer?.show()
-            imageUploadingProgressBar?.hide()
-            stopUploading?.hide()
+            val darkCard = findViewById<TextView>(R.id.darkCard)
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
+            darkCard.show()
+            detachImage.show()
+            refreshContainer.show()
+            imageUploadingProgressBar.hide()
+            stopUploading.hide()
         }
     }
 
     private fun prepareListeners(uploadingView: View?, path: String) {
         uploadingView?.apply {
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
             refreshContainer.setOnClickListener {
-                this.imageUploadingProgressBar?.progress = 0f
+                imageUploadingProgressBar.progress = 0f
                 retryListener.invoke(path)
                 imageUploadingStarted(uploadingView)
             }
-            stopUploading?.setOnClickListener {
+            stopUploading.setOnClickListener {
                 cancelListener.invoke(path)
                 detachImage(path)
             }
-            detachImage?.setOnClickListener {
+            detachImage.setOnClickListener {
                 detachListener.invoke(path)
                 detachImage(path)
             }
@@ -146,11 +161,16 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
 
     private fun imageUploadingStarted(uploadingView: View?) {
         uploadingView?.apply {
-            darkCard?.show()
-            imageUploadingProgressBar?.show()
-            stopUploading?.show()
-            detachImage?.hide()
-            refreshContainer?.hide()
+            val darkCard = findViewById<TextView>(R.id.darkCard)
+            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
+            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
+            darkCard.show()
+            imageUploadingProgressBar.show()
+            stopUploading.show()
+            detachImage.hide()
+            refreshContainer.hide()
         }
     }
 

@@ -13,7 +13,6 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import kotlinx.android.synthetic.main.fragment_user_category.view.*
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.databinding.FragmentUserCategoryBinding
 

@@ -147,13 +147,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
                     .onNext(Pair(CREATE_COMMENT_DATA,Pair(createCommentCustomView.createFinalText(), presenter)))
             loadingViews.clear()
             chooseMedias.clear()
-            createCommentCustomView.removeAllViews()
-            createCommentCustomView.createAllMainView()
-            createCommentCustomView.textPost.run {
-                hint = requireContext()
+            with(createCommentCustomView){
+                removeAllBesidesFirstView()
+                controlFirstCommentEditTextChanges()
+                textPost.run {
+                    hint = requireContext()
                         .getString(R.string.write_your_comment)
-                setCompoundDrawablesWithIntrinsicBounds(null, null,
+                    setCompoundDrawablesWithIntrinsicBounds(null, null,
                         null, null)
+            }
             }
         }
         createCommentCustomView.textPost.setOnTouchListener(rightDrawableListener)

@@ -3,12 +3,14 @@ package com.intergroupapplication.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import android.widget.TextView
+import com.budiyev.android.circularprogressbar.CircularProgressBar
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import kotlinx.android.synthetic.main.layout_avatar.view.*
 
 class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
 
@@ -19,6 +21,8 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     var imageLoaderDelegate: ImageLoadingDelegate? = null
     var state = AvatarUploadingState.NONE
         private set
+
+    private val avatar by lazy <SimpleDraweeView> { findViewById(R.id.avatar) }
 
     constructor(context: Context) : super(context) {
         init()
@@ -45,6 +49,9 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     fun clearUploadingState() {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.hide()
         imageUploadingProgressBar.hide()
@@ -53,6 +60,9 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     fun showImageUploadingStartedWithoutFile() {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.show()
         imageUploadingProgressBar.show()
@@ -61,6 +71,9 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     fun clearUploadingState(lastAvatar: String?) {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.hide()
         imageUploadingProgressBar.hide()
@@ -74,6 +87,9 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.show()
         imageUploadingProgressBar.show()
@@ -83,6 +99,8 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     override fun showImageUploaded(path: String) {
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         darkCard.hide()
         imageUploadingProgressBar.hide()
         imageUploadingProgressBar.progress = 0f
@@ -91,11 +109,15 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
 
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         imageUploadingProgressBar.progress = progress
     }
 
 
     override fun showImageUploadingError(path: String) {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         darkCard.show()
         errorView.show()
         imageUploadingProgressBar.hide()

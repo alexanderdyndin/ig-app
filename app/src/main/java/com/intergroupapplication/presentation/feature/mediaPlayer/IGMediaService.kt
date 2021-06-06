@@ -18,11 +18,9 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import kotlinx.android.synthetic.main.layout_music_player.view.*
 
 
 class IGMediaService : MediaBrowserService() {
@@ -122,11 +120,11 @@ class IGMediaService : MediaBrowserService() {
                  audioPlayer: AudioPlayerView){
             if (player != exoPlayer){
                 exoPlayer?.pause()
-                audioPlayerView?.exo_progress?.setLocalCacheBufferedPosition(0)
-                videoPlayerView?.exo_progress?.setLocalCacheBufferedPosition(0)
+                audioPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
+                videoPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
                 audioPlayerView = audioPlayer
                 exoPlayer?.seekTo(0)
-                audioPlayer.exo_progress.setLocalCacheBufferedPosition(100)
+                audioPlayer.exoProgress.setLocalCacheBufferedPosition(100)
                 exoPlayer = player
             }
             this@IGMediaService.notificationTitle = notificationTitle
@@ -139,11 +137,11 @@ class IGMediaService : MediaBrowserService() {
                           videoPlayer:VideoPlayerView){
             if (player != exoPlayer){
                 exoPlayer?.pause()
-                audioPlayerView?.exo_progress?.setLocalCacheBufferedPosition(0)
-                videoPlayerView?.exo_progress?.setLocalCacheBufferedPosition(0)
+                audioPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
+                videoPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
                 videoPlayerView = videoPlayer
                 exoPlayer?.seekTo(0)
-                videoPlayer.exo_progress.setLocalCacheBufferedPosition(100)
+                videoPlayer.exoProgress.setLocalCacheBufferedPosition(100)
                 exoPlayer = player
             }
             this@IGMediaService.notificationTitle = notificationTitle

@@ -48,6 +48,26 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
         addEditText(editText)
     }
 
+    fun removeAllBesidesFirstView(){
+        with(this.getChildAt(0) as LinearLayout){
+            textPost = (this.getChildAt(0) as AppCompatEditText)
+            textPost.setText("")
+            textPost.activated(true)
+            imageContainer =(this.getChildAt(1) as GridLayout)
+            imageContainer.removeAllViews()
+            audioContainer =  (this.getChildAt(2) as LinearLayout)
+            audioContainer.removeAllViews()
+        }
+        (1 until this.childCount).forEach {
+            this.removeViewAt(it)
+            listAudioContainers.removeAt(it)
+            listEditText.removeAt(it)
+            listImageContainers.removeAt(it)
+        }
+        namesAudio.clear()
+        namesVideoOrImage.clear()
+    }
+
     private fun addEditText(editText:AppCompatEditText){
         textPost = editText
         setupEditText()
