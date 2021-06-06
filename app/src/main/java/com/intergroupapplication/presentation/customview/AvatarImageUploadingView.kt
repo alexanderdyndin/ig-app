@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.intergroupapplication.R
+import com.intergroupapplication.presentation.base.ImageUploadingState
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
@@ -18,6 +19,24 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     var imageLoaderDelegate: ImageLoadingDelegate? = null
     var state = AvatarUploadingState.NONE
         private set
+
+    var imageState: ImageUploadingState? = null
+        set(value) {
+            field = value
+            value?.let {
+                when (it) {
+                    is ImageUploadingState.ImageUploadingStarted ->
+                        showImageUploadingStarted(it.path)
+                    is ImageUploadingState.ImageUploadingError ->
+                        showImageUploadingStarted(it.path)
+                    is ImageUploadingState.ImageUploaded ->
+                        showImageUploadingStarted(it.path)
+                    is ImageUploadingState.ImageUploadingProgress ->
+                        showImageUploadingProgress(it.progress, it.path)
+                }
+            }
+
+        }
 
     constructor(context: Context) : super(context) {
         init()

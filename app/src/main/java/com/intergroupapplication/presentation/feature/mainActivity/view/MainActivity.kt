@@ -7,30 +7,42 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.Typeface
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.os.*
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import by.kirich1409.viewbindingdelegate.viewBinding
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.android.billingclient.api.*
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.databinding.ActivityMainBinding
 import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.domain.usecase.AvatarUploadingUseCase
 import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.initializators.InitializerLocal
+import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.ExitActivity
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import com.intergroupapplication.presentation.exstension.doOrIfNull
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
+import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
+import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
+import com.yalantis.ucrop.UCrop
 import dagger.android.AndroidInjection
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
@@ -76,6 +88,19 @@ class MainActivity : FragmentActivity() {
 
     @Inject
     lateinit var dialogDelegate: DialogDelegate
+
+    @Inject
+    lateinit var imageLoadingDelegate: ImageLoadingDelegate
+
+    @Inject
+    lateinit var compositeDisposable: CompositeDisposable
+
+    @Inject
+    lateinit var cropOptions: UCrop.Options
+
+    lateinit var drawer: Drawer
+
+    lateinit var profileAvatarHolder: AvatarImageUploadingView
 
     /**
      *  Billing
@@ -126,6 +151,118 @@ class MainActivity : FragmentActivity() {
         createNotificationChannel()
         initBilling()
         initErrorHandler(errorHandler)
+        createDrawer()
+    }
+
+    private fun createDrawer() {
+        val viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, findViewById(R.id.navigationCoordinator), false)
+        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
+            if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
+                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                    mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+            }
+        }
+        profileAvatarHolder = viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+        profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
+        lateinit var drawerItem: PrimaryDrawerItem
+        drawer = drawer {
+            sliderBackgroundColorRes = R.color.profileTabColor
+            headerView = viewDrawer
+            actionBarDrawerToggleEnabled = true
+            translucentStatusBar = true
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
+                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                    || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
+                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                        mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+                }
+            }
+            drawerItem = primaryItem(getString(R.string.news)) {
+                icon = R.drawable.ic_news
+                selectedIcon = R.drawable.ic_news_blue
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+                onClick { _ ->
+                    //
+                    false
+                }
+            }
+            primaryItem(getString(R.string.groups)) {
+                icon = R.drawable.ic_groups
+                selectedIcon = R.drawable.ic_groups_blue
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+                onClick { _ ->
+                    findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_groupListFragment2)
+                    false
+                }
+            }
+//            primaryItem(getString(R.string.music)) {
+//                icon = R.drawable.ic_music
+//                selectedIcon = R.drawable.ic_music_act
+//                textColorRes = R.color.whiteTextColor
+//                selectedColorRes = R.color.profileTabColor
+//                selectedTextColorRes = R.color.selectedItemTabColor
+//                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+//                onClick { v ->
+//                    findNavController().navigate(R.id.action_newsFragment2_to_audioListFragment)
+//                    toolbarTittle.text = getString(R.string.groups)
+//                    false
+//                }
+//            }
+            primaryItem(getString(R.string.buy_premium)) {
+                icon = R.drawable.icon_like
+                selectedIcon = R.drawable.icon_like
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+                selectable = false
+                onClick { _ ->
+                    bill()
+                    false
+                }
+            }
+            primaryItem(getString(R.string.logout)) {
+                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+                textColorRes = R.color.whiteTextColor
+                selectedColorRes = R.color.profileTabColor
+                selectedTextColorRes = R.color.selectedItemTabColor
+                onClick { _ ->
+                    userSession.logout()
+                    findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_loginActivity)
+                    false
+                }
+            }
+        }.apply {
+            setSelection(drawerItem)
+            drawerItem.withOnDrawerItemClickListener { _, _, _ ->
+                findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_newsFragment2)
+                false
+            }
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
+        }
+        compositeDisposable.add(viewModel.getUserProfile()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ userEntity ->
+                val userName = userEntity.firstName + " " + userEntity.surName
+                viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
+                doOrIfNull(userEntity.avatar,
+                    { profileAvatarHolder.showAvatar(it) },
+                    { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+            }, {
+                profileAvatarHolder.showImageUploadingError()
+                errorHandler.handle(it)
+            }))
+        viewModel.imageUploadingState.observe(this, {
+            profileAvatarHolder.imageState = it
+        })
     }
 
     override fun onStart() {
@@ -342,5 +479,31 @@ class MainActivity : FragmentActivity() {
     private fun openAutorize() = Action { _, _ ->
         userSession.logout()
         findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_loginActivity)
+    }
+
+    private fun loadFromCamera() {
+        compositeDisposable.add(RxPaparazzo.single(this)
+            .crop(cropOptions)
+            .usingCamera()
+            .subscribe { response ->
+                val path = response.data()?.file?.path
+                path?.let {
+                    viewModel.uploadImageFromGallery(it)
+                }
+            }
+        )
+    }
+
+    private fun loadFromGallery() {
+        compositeDisposable.add(RxPaparazzo.single(this)
+            .crop(cropOptions)
+            .usingGallery()
+            .subscribe { response ->
+                val path = response.data()?.file?.path
+                path?.let {
+                    viewModel.uploadImageFromGallery(it)
+                }
+            }
+        )
     }
 }

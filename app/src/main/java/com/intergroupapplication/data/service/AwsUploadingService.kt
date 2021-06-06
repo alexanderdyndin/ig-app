@@ -7,6 +7,7 @@ import com.androidnetworking.interfaces.OkHttpResponseListener
 import com.intergroupapplication.data.model.PhotoUploadFields
 import com.intergroupapplication.domain.exception.ImageUploadingException
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
+import com.intergroupapplication.presentation.base.ImageUploadingState
 import io.reactivex.Observer
 import okhttp3.Response
 import java.io.File
@@ -14,6 +15,48 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class AwsUploadingService @Inject constructor() : AwsUploadingGateway {
+
+    override fun uploadAvatarToAws(
+        uploadUrl: String,
+        progressObserver: Observer<ImageUploadingState>,
+        fields: PhotoUploadFields,
+        uploadingFile: File
+    ) {
+        progressObserver.onNext(ImageUploadingState.ImageUploadingStarted(uploadingFile.path))
+        AndroidNetworking.upload(uploadUrl)
+            .addMultipartParameter(
+                mutableMapOf("policy" to fields.policy,
+                    "acl" to "public-read",
+                    "key" to fields.key,
+                    "x-amz-algorithm" to fields.algorithm,
+                    "x-amz-credential" to fields.credential,
+                    "x-amz-date" to fields.date,
+                    "x-amz-signature" to fields.signature))
+            .addMultipartFile("file", uploadingFile)
+            .setPriority(Priority.HIGH)
+            .setPercentageThresholdForCancelling(50)
+            .setExecutor(Executors.newSingleThreadExecutor())
+            .build()
+            .setUploadProgressListener { bytesUploaded, totalBytes ->
+                progressObserver.onNext(ImageUploadingState.ImageUploadingProgress((100 * bytesUploaded / totalBytes).toFloat()))
+            }
+            .getAsOkHttpResponse(object : OkHttpResponseListener {
+                override fun onResponse(response: Response) {
+                    if (response.isSuccessful) {
+                        progressObserver.onNext(ImageUploadingState.ImageUploaded(fields.key))
+                        progressObserver.onComplete()
+                    } else {
+                        progressObserver.onNext(ImageUploadingState.ImageUploadingError(uploadingFile.path))
+                        progressObserver.onError(ImageUploadingException())
+                    }
+                }
+
+                override fun onError(anError: ANError) {
+                    progressObserver.onNext(ImageUploadingState.ImageUploadingError(uploadingFile.path))
+                    progressObserver.onError(anError)
+                }
+            })
+    }
 
     override fun uploadImageToAws(uploadUrl: String, progressObserver: Observer<Float>,
                                   fields: PhotoUploadFields,

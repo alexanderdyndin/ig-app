@@ -312,7 +312,6 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     }
 
     override fun onDestroy() {
-        //adapterWrapper.release()
         presenter.unsubscribe()
         super.onDestroy()
     }
@@ -324,104 +323,15 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
 
     override fun viewCreated() {
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, viewBinding.newsCoordinator, false)
-        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
-                }
-            }
-        profileAvatarHolder = viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
-        profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
-        lateinit var drawerItem: PrimaryDrawerItem
-        drawer = drawer {
-            sliderBackgroundColorRes = R.color.profileTabColor
-            headerView = viewDrawer
-            actionBarDrawerToggleEnabled = true
-            translucentStatusBar = true
-            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
-                }
-            }
-            drawerItem = primaryItem(getString(R.string.news)) {
-                icon = R.drawable.ic_news
-                selectedIcon = R.drawable.ic_news_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
-                    viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
-                    false
-                }
-            }
-            primaryItem(getString(R.string.groups)) {
-                icon = R.drawable.ic_groups
-                selectedIcon = R.drawable.ic_groups_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
-                    findNavController().navigate(R.id.action_global_groupListFragment2)
-                    viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
-                    false
-                }
-            }
-//            primaryItem(getString(R.string.music)) {
-//                icon = R.drawable.ic_music
-//                selectedIcon = R.drawable.ic_music_act
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-//                onClick { v ->
-//                    findNavController().navigate(R.id.action_newsFragment2_to_audioListFragment)
-//                    toolbarTittle.text = getString(R.string.groups)
-//                    false
-//                }
-//            }
-            primaryItem(getString(R.string.buy_premium)) {
-                icon = R.drawable.icon_like
-                selectedIcon = R.drawable.icon_like
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                selectable = false
-                onClick { _ ->
-                    (requireActivity() as MainActivity).bill()
-                    false
-                }
-            }
-            primaryItem(getString(R.string.logout)) {
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { v ->
-                    userSession.logout()
-                    findNavController().navigate(R.id.action_global_loginActivity)
-                    false
-                }
-            }
-        }.apply {
-            setSelection(drawerItem)
-            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
-            drawerItem.withOnDrawerItemClickListener { _, _, _ ->
-                findNavController().navigate(R.id.action_global_newsFragment2)
-                viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
-                false
-            }
-        }
+
         viewBinding.navigationToolbar.toolbarMenu.setOnClickListener {
-            drawer.openDrawer()
+            //drawer.openDrawer()
+            val activity = requireActivity()
+            if (activity is MainActivity) {
+                activity.drawer.openDrawer()
+            }
         }
-        presenter.getUserInfo()
+//        presenter.getUserInfo()
     }
 
     override fun showImageUploadingStarted(path: String) {
@@ -430,7 +340,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     }
 
     override fun showImageUploaded(path: String) {
-        presenter.changeUserAvatar()
+        //presenter.changeUserAvatar()
     }
 
     override fun avatarChanged(url: String) {

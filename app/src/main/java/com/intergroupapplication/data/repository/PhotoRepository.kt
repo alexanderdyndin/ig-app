@@ -6,6 +6,7 @@ import android.os.Environment
 import android.webkit.MimeTypeMap
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
@@ -41,7 +42,7 @@ import java.util.concurrent.ThreadPoolExecutor
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
-class PhotoRepository @Inject constructor(private val activity: Activity,
+class PhotoRepository @Inject constructor(private val activity: Fragment,
                                           private val cropOptions: UCrop.Options,
                                           private val appApi: AppApi,
                                           private val awsUploadingGateway: AwsUploadingGateway) : PhotoGateway {
@@ -186,7 +187,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                Compressor(activity.requireActivity()).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
@@ -208,7 +209,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                Compressor(activity.requireActivity()).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }

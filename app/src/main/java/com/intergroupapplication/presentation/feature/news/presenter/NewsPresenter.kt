@@ -19,8 +19,7 @@ import javax.inject.Inject
 @InjectViewState
 class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                                         private val postsUseCase: PostsUseCase,
-                                        private val userProfileGateway: UserProfileGateway,
-                                        private val imageUploadingDelegate: ImageUploadingDelegate)
+                                        private val userProfileGateway: UserProfileGateway)
     : BasePresenter<NewsView>() {
 
     private val newsDisposable = CompositeDisposable()
@@ -43,51 +42,11 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
         newsDisposable.clear()
     }
 
-    private var uploadingImageDisposable: Disposable? = null
-
-    fun attachFromGallery() {
-        stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromGallery(viewState, errorHandler)
-    }
-
-    fun attachFromCamera() {
-        stopImageUploading()
-        uploadingImageDisposable = imageUploadingDelegate.uploadFromCamera(viewState, errorHandler)
-    }
-
-    fun changeUserAvatar() {
-        compositeDisposable.add(imageUploadingDelegate.getLastPhotoUploadedUrl()
-                .flatMap { userProfileGateway.changeUserProfileAvatar(it) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ viewState.avatarChanged(it) }, {
-                    viewState.showImageUploadingError()
-                    errorHandler.handle(it)
-                }))
-    }
-
     fun showLastUserAvatar() {
         compositeDisposable.add(userProfileGateway.getUserProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ viewState.showLastAvatar(it.avatar) }, { errorHandler.handle(it) }))
-    }
-
-    fun getUserInfo() {
-        compositeDisposable.add(userProfileGateway.getUserProfile()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    viewState.showUserInfo(it)
-                           }, {
-                    viewState.showImageUploadingError()
-                    errorHandler.handle(it)
-                }))
-    }
-
-
-    private fun stopImageUploading() {
-        uploadingImageDisposable?.dispose()
     }
 
     fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) {
