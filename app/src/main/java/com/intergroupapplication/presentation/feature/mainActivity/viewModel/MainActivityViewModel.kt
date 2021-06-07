@@ -27,7 +27,6 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
                                                 private val errorHandler: ErrorHandler
                                                 ): ViewModel() {
 
-
     val imageUploadingState: MutableLiveData<ImageUploadingState> by lazy {
         MutableLiveData<ImageUploadingState>()
     }
@@ -70,11 +69,12 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
                 imageUploadingState.value = ImageUploadingState.ImageUploadingStarted(file)
             }
             .subscribe({
-                imageUploadingState.value = it
                 if (it is ImageUploadingState.ImageUploaded)
                     changeAvatar(it.path)
+                else
+                    imageUploadingState.value = it
             }, {
-                imageUploadingState.value = ImageUploadingState.ImageUploadingError()
+                imageUploadingState.value = ImageUploadingState.ImageUploadingError(file)
                 errorHandler.handle(it)
             }))
     }
@@ -84,7 +84,7 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                //imageUploadingState.value = ImageUploadingState.ImageUploaded(it)
+                imageUploadingState.value = ImageUploadingState.ImageUploaded(it)
             }, {
                 imageUploadingState.value = ImageUploadingState.ImageUploadingError()
                 errorHandler.handle(it)

@@ -25,12 +25,20 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
             field = value
             value?.let {
                 when (it) {
-                    is ImageUploadingState.ImageUploadingStarted ->
-                        showImageUploadingStarted(it.path)
-                    is ImageUploadingState.ImageUploadingError ->
+                    is ImageUploadingState.ImageUploadingStarted -> {
+                        if (it.path.isNotEmpty())
+                            showImageUploadingStarted(it.path)
+                        else
+                            showImageUploadingStartedWithoutFile()
+                    }
+                    is ImageUploadingState.ImageUploadingError -> {
+                        clearUploadingState()
                         showImageUploadingError(it.path)
-                    is ImageUploadingState.ImageUploaded ->
+                    }
+                    is ImageUploadingState.ImageUploaded -> {
+                        showAvatar(it.path)
                         showImageUploaded(it.path)
+                    }
                     is ImageUploadingState.ImageUploadingProgress ->
                         showImageUploadingProgress(it.progress, it.path)
                 }

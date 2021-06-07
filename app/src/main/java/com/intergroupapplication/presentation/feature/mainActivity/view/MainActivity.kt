@@ -157,7 +157,7 @@ class MainActivity : FragmentActivity() {
         initErrorHandler(errorHandler)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        createDrawer()
+        //createDrawer()
     }
 
     fun createDrawer() {
