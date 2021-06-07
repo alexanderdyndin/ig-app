@@ -23,8 +23,6 @@ class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
                                          private val userProfileUseCase: UserProfileUseCase)
     : BasePresenter<LoginView>() {
 
-
-
     fun performLogin(loginEntity: LoginEntity) {
         compositeDisposable.add(loginGateway.performLogin(loginEntity)
                 .flatMap { userProfileUseCase.getUserProfile() }
@@ -41,21 +39,5 @@ class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ viewState.deviceInfoExtracted() }, { errorHandler.handle(it) }))
-    }
-
-    fun goToRegistrationScreen() {
-        //router.newRootScreen(RegistrationScreen())
-    }
-
-    fun goToSettingsScreen() {
-        //router.navigateTo(ActionApplicationDetailsScreen())
-    }
-
-    fun goToRecoveryPassword() {
-        //router.navigateTo(RecoveryPasswordScreen())
-    }
-
-    private fun goToNavigationScreen() {
-        //router.newRootScreen(SplashScreen())
     }
 }

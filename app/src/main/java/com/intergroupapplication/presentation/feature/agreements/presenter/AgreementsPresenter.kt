@@ -38,7 +38,7 @@ class AgreementsPresenter @Inject constructor(private val errorHandler: ErrorHan
     fun next() {
         compositeDisposable.add(imeiGateway.extractDeviceInfo()
                 .subscribeOn(Schedulers.io())
-                .andThen(permissionGetaway.isBlocked())
+                //.andThen(permissionGetaway.isBlocked())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
                 .subscribe({

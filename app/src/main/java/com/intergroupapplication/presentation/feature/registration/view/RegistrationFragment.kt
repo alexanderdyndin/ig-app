@@ -177,7 +177,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
-            mail.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
             passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
             passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
@@ -261,17 +261,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(rxPermission.request(Manifest.permission.READ_PHONE_STATE)
-                .subscribe({
-                    if (it) {
-                        presenter.extractDeviceInfo()
-                    } else {
-                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                                mapOf(R.id.permissionOk to {
-                                    presenter.goToSettingsScreen()
-                                }))
-                    }
-                }, { Timber.e(it) }))
+        presenter.extractDeviceInfo()
     }
 
     override fun clearViewErrorState() {

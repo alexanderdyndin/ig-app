@@ -99,4 +99,9 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
+    fun logOut() {
+        userSession.logout()
+        findNavController().navigate(R.id.action_global_loginActivity)
+    }
+
 }

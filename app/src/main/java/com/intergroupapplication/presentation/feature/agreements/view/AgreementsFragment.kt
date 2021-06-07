@@ -84,10 +84,10 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         clicks(btnNext)
                 .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { next() }.let(compositeDisposable::add)
+                .subscribe { presenter.next() }.let(compositeDisposable::add)
     }
 
-    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.container
+    override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
 
     override fun toSplash() {
         findNavController().navigate(R.id.action_global_splashActivity)
@@ -130,13 +130,5 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         }.also { compositeDisposable.add(it) }
     }
 
-    private fun next() {
-        compositeDisposable.add(
-                        RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .subscribe({
-                            presenter.next()
-                        }, { Timber.e(it) }))
-
-    }
 
 }

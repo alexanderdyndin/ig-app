@@ -30,8 +30,7 @@ class RegistrationPresenter @Inject constructor(private val registrationGateway:
                         .subscribe({
                             viewState.confirmMail(entity.email)
                         }) {
-                            errorHandler.always { _, _ -> viewState.clearViewErrorState() }
-                                    .handle(it)
+                            errorHandler.handle(it)
                         })
     }
 
