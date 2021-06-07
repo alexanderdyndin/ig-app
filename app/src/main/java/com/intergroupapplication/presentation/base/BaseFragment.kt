@@ -91,4 +91,12 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         super.onPause()
     }
 
+    fun showToast(msg: String) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+    }
+
+    fun showToast(msg: Int) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+    }
+
 }

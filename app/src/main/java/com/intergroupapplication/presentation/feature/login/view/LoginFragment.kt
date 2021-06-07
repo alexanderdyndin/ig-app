@@ -33,6 +33,7 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -293,27 +294,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 }
             }
         }
-//        errorHandler.on(UserNotVerifiedException::class.java) { _, _ ->
-//            val email = mail.text.toString()
-//            val data = bundleOf("entity" to email)
-//            findNavController().navigate(R.id.action_global_confirmationMailActivity, data)
-//        }
-//        errorHandler.on(UserNotProfileException::class.java) { _, _ ->
-//            findNavController().navigate(R.id.action_global_createUserProfileActivity)
-//        }
-//        errorHandler.on(BadRequestException::class.java) { throwable, _ ->
-//            dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
-//        }
     }
 
-//    override fun openConfirmationEmail() = Action { _, _ ->
-//        val email = mail.text
-//        val data = bundleOf("entity" to email)
-//        findNavController().navigate(R.id.action_loginActivity_to_confirmationMailActivity, data)
-//    }
-//
-//    override fun openCreateProfile()  = Action { _, _ ->
-//        findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
-//    }
 
 }

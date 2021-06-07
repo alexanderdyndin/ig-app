@@ -27,6 +27,7 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createuserprofile.presenter.CreateUserProfilePresenter
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
@@ -35,6 +36,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
+import java.lang.IllegalStateException
 
 import javax.inject.Inject
 import javax.inject.Named
@@ -134,7 +136,10 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     override fun completed() {
-        findNavController().navigate(R.id.action_global_splashActivity)
+        val activity = requireActivity()
+        if (activity is MainActivity) {
+            activity.createDrawer()
+        } else throw IllegalStateException("Wrong Activity")
     }
 
     override fun showLoading(show: Boolean) {

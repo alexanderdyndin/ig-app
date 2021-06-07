@@ -17,7 +17,9 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.android.billingclient.api.*
@@ -102,6 +104,8 @@ class MainActivity : FragmentActivity() {
 
     lateinit var profileAvatarHolder: AvatarImageUploadingView
 
+    private lateinit var navController: NavController
+
     /**
      *  Billing
      */
@@ -151,10 +155,12 @@ class MainActivity : FragmentActivity() {
         createNotificationChannel()
         initBilling()
         initErrorHandler(errorHandler)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
         createDrawer()
     }
 
-    private fun createDrawer() {
+    fun createDrawer() {
         val viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, findViewById(R.id.navigationCoordinator), false)
         viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
             if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
@@ -186,7 +192,7 @@ class MainActivity : FragmentActivity() {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
                 onClick { _ ->
-                    //
+                    navController.navigate(R.id.action_global_newsFragment2)
                     false
                 }
             }
@@ -198,7 +204,7 @@ class MainActivity : FragmentActivity() {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
                 onClick { _ ->
-                    findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_groupListFragment2)
+                    navController.navigate(R.id.action_global_groupListFragment2)
                     false
                 }
             }
@@ -235,16 +241,12 @@ class MainActivity : FragmentActivity() {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { _ ->
                     userSession.logout()
-                    findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_loginActivity)
+                    navController.navigate(R.id.action_global_loginActivity)
                     false
                 }
             }
         }.apply {
             setSelection(drawerItem)
-            drawerItem.withOnDrawerItemClickListener { _, _, _ ->
-                findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_newsFragment2)
-                false
-            }
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
         }
         compositeDisposable.add(viewModel.getUserProfile()
@@ -449,7 +451,7 @@ class MainActivity : FragmentActivity() {
 
     private val actionForBlockedGroup = Action { _, _ ->
         dialogDelegate.showErrorSnackBar("Группа заблокирована")
-        findNavController(R.id.nav_host_fragment_container).popBackStack()
+        navController.popBackStack()
     }
 
     fun actionForBlockedUser() = Action { _, _ ->
@@ -466,19 +468,19 @@ class MainActivity : FragmentActivity() {
 
     private fun openCreateProfile() = Action { _, _ ->
         Timber.e("403 catched")
-        findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_createUserProfileActivity)
+        navController.navigate(R.id.action_global_createUserProfileActivity)
     }
 
     private fun openConfirmationEmail() = Action { _, _ ->
         val email = userSession.email?.email.orEmpty()
         val data = bundleOf("entity" to email)
-        findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_confirmationMailActivity, data)
+        navController.navigate(R.id.action_global_confirmationMailActivity, data)
         Timber.e("403 catched")
     }
 
     private fun openAutorize() = Action { _, _ ->
         userSession.logout()
-        findNavController(R.id.nav_host_fragment_container).navigate(R.id.action_global_loginActivity)
+        navController.navigate(R.id.action_global_loginActivity)
     }
 
     private fun loadFromCamera() {

@@ -69,9 +69,6 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
             .doOnSubscribe {
                 imageUploadingState.value = ImageUploadingState.ImageUploadingStarted(file)
             }
-            .doOnComplete {
-                imageUploadingState.value = ImageUploadingState.ImageUploaded(file)
-            }
             .subscribe({
                 imageUploadingState.value = it
                 if (it is ImageUploadingState.ImageUploaded)
@@ -87,7 +84,7 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                imageUploadingState.value = ImageUploadingState.ImageUploaded(it)
+                //imageUploadingState.value = ImageUploadingState.ImageUploaded(it)
             }, {
                 imageUploadingState.value = ImageUploadingState.ImageUploadingError()
                 errorHandler.handle(it)

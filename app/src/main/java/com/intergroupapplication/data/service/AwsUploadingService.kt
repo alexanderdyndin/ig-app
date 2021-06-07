@@ -34,7 +34,8 @@ class AwsUploadingService @Inject constructor() : AwsUploadingGateway {
                 .setExecutor(Executors.newSingleThreadExecutor())
                 .build()
                 .setUploadProgressListener { bytesUploaded, totalBytes ->
-                    progressObserver.onNext(((100 * bytesUploaded / totalBytes).toFloat()))
+                    //if ((100 * bytesUploaded / totalBytes).toInt() % 10 == 0)
+                        progressObserver.onNext((100 * bytesUploaded / totalBytes).toFloat())
                 }
                 .getAsOkHttpResponse(object : OkHttpResponseListener {
                     override fun onResponse(response: Response) {

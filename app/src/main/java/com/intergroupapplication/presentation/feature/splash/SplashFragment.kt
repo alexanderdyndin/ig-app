@@ -11,7 +11,9 @@ import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.presentation.base.BaseFragment
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import dagger.android.support.AndroidSupportInjection
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class SplashFragment : Fragment(R.layout.fragment_splash) {
@@ -29,7 +31,12 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
         when {
             !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_global_AgreementsFragment2)
             !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_global_registrationActivity)
-            else -> findNavController().navigate(R.id.action_global_newsFragment2)
+            else ->  {
+                val activity = requireActivity()
+                if (activity is MainActivity) {
+                    activity.createDrawer()
+                } else throw IllegalStateException("Wrong Activity")
+            }
         }
     }
 

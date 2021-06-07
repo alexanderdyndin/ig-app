@@ -4,10 +4,6 @@ import androidx.paging.PagedList
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
-import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
-import com.intergroupapplication.presentation.feature.grouplist.view.GroupListView
-import com.intergroupapplication.presentation.feature.navigation.presenter.NavigationPresenter
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationView
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
