@@ -1,14 +1,14 @@
 package com.intergroupapplication.data.repository
 
-import android.content.Context
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
-import com.intergroupapplication.data.db.IgDatabase
 import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.mapper.ReactsMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
-import com.intergroupapplication.data.remote_mediator.GroupPostMediatorRXDataSource
+import com.intergroupapplication.data.remotedatasource.GroupNewsRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.gateway.GroupPostGateway
@@ -24,12 +24,8 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 class GroupPostsRepository @Inject constructor(private val api: AppApi,
                                                private val groupPostMapper: GroupPostMapper,
-                                               private val reactsMapper: ReactsMapper,
-                                               context: Context
-                                               ): GroupPostGateway {
-
-    // todo
-    private val db = IgDatabase.getInstance(context)
+                                               private val reactsMapper: ReactsMapper
+): GroupPostGateway {
 
     override fun getPostById(postId: String): Single<GroupPostEntity.PostEntity> {
         return api.getPostById(postId).map { groupPostMapper.mapToDomainEntity(it) }
@@ -50,18 +46,14 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         ).flowable
     }
 
-    @ExperimentalPagingApi
+    // todo db
     override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
         return Pager(
-            config = PagingConfig(PAGE_SIZE, 5),
-            remoteMediator = GroupPostMediatorRXDataSource(api, db, groupPostMapper, groupId)
-        ) {
-            db.groupPost().getAllGroupPostsModel(groupId)
-        }.flowable.map { paging ->
-            paging.map { groupPostModel ->
-                groupPostMapper.mapToDomainEntity(groupPostModel)
-            }
-        }
+                config = PagingConfig(
+                        pageSize = PAGE_SIZE,
+                        prefetchDistance = 5),
+                pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
+        ).flowable
     }
 
     override fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity.PostEntity> {

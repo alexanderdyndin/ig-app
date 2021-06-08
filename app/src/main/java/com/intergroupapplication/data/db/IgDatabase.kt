@@ -1,18 +1,19 @@
 package com.intergroupapplication.data.db
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import com.intergroupapplication.data.db.dao.GroupPostDao
 import com.intergroupapplication.data.db.dao.GroupPostKeyDao
 import com.intergroupapplication.data.db.entity.GroupPostDbModel
 import com.intergroupapplication.data.db.entity.GroupPostRemoteKeysModel
+import com.intergroupapplication.data.db.entity.VideoModel
+import com.intergroupapplication.data.model.ImageVideoModel
 
-@Database(entities = [GroupPostDbModel::class, GroupPostRemoteKeysModel::class], version = 1, exportSchema = false)
+@Database(entities = [GroupPostDbModel::class, ImageVideoModel::class, VideoModel::class, GroupPostRemoteKeysModel::class], version = 1, exportSchema = false)
 abstract class IgDatabase : RoomDatabase() {
-    abstract fun groupPost(): GroupPostDao
-    abstract fun groupPostKey(): GroupPostKeyDao
+
+    abstract fun groupPostKeyDao(): GroupPostKeyDao
+    abstract fun groupPostDao(): GroupPostDao
 
     companion object {
 

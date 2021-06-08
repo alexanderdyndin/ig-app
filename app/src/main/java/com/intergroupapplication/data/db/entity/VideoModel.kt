@@ -1,16 +1,14 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 @Entity
-data class ImageVideoModel(
+data class VideoModel(
         @PrimaryKey val id: Int,
         val file: String,
-        @SerializedName("is_active") val isActive: Boolean,
+        val isActive: Boolean,
         val description: String,
         val title: String,
         val post: Int,
-        val owner: Int
-)
+        val owner: Int)

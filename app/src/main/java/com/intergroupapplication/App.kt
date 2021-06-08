@@ -29,7 +29,9 @@ class App : DaggerApplication() {
             Timber.plant(BaseCrashlyticsTree())
         }
 
-//        IgDatabase.getInstance(applicationContext)
+        // todo db
+        val db = IgDatabase.getInstance(applicationContext)
+//        val dao = db.groupDao()
     }
 
     override fun attachBaseContext(base: Context) {
