@@ -18,13 +18,6 @@ import kotlinx.android.synthetic.main.fragment_group_category.view.*
 
 class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<GroupListsAdapter.GroupListViewHolder>() {
 
-    private var positionAll = 0
-    private var topPaddingAll = 0
-    private var positionSubscribed = 0
-    private var topPaddingSubscribed = 0
-    private var positionOwned = 0
-    private var topPaddingOwned = 0
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupListViewHolder {
         return GroupListViewHolder(parent.inflate(R.layout.fragment_group_category))
     }
@@ -36,6 +29,15 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
     override fun getItemCount(): Int {
         return items.count()
     }
+
+    private data class Coordinate(
+        var elementPosition: Int,
+        var topPadding: Int
+    )
+
+    private val positionValues = hashMapOf(0 to Coordinate(0, 0),
+        1 to Coordinate(0, 0),
+        2 to Coordinate(0, 0))
 
     inner class GroupListViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
@@ -84,27 +86,11 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
             list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    when (typeAdapter) {
-                        0 -> {
-                            positionAll = linearLayoutManager.findFirstVisibleItemPosition()
-                            val currentView = linearLayoutManager.getChildAt(0)
-                            currentView?.run {
-                                topPaddingAll = top - linearLayoutManager.paddingTop
-                            }
-                        }
-                        1 -> {
-                            positionSubscribed = linearLayoutManager.findFirstVisibleItemPosition()
-                            val currentView = linearLayoutManager.getChildAt(0)
-                            currentView?.run {
-                                topPaddingSubscribed = top - linearLayoutManager.paddingTop
-                            }
-                        }
-                        2 -> {
-                            positionOwned = linearLayoutManager.findFirstVisibleItemPosition()
-                            val currentView = linearLayoutManager.getChildAt(0)
-                            currentView?.run {
-                                topPaddingOwned = top - linearLayoutManager.paddingTop
-                            }
+                    positionValues[typeAdapter]?.apply {
+                        elementPosition = linearLayoutManager.findFirstVisibleItemPosition()
+                        val currentView = linearLayoutManager.getChildAt(0)
+                        currentView?.let { view ->
+                            topPadding = view.top - linearLayoutManager.paddingTop
                         }
                     }
                 }
@@ -112,10 +98,8 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         }
 
         private fun scrollToPosition(typeAdapter: Int) {
-            when(typeAdapter) {
-                0 -> linearLayoutManager.scrollToPositionWithOffset(positionAll, topPaddingAll)
-                1 -> linearLayoutManager.scrollToPositionWithOffset(positionSubscribed, topPaddingSubscribed)
-                2 -> linearLayoutManager.scrollToPositionWithOffset(positionOwned, topPaddingOwned)
+            positionValues[typeAdapter]?.run {
+                linearLayoutManager.scrollToPositionWithOffset(elementPosition, topPadding)
             }
         }
     }
