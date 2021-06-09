@@ -17,8 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
@@ -52,7 +50,6 @@ import com.intergroupapplication.presentation.feature.mainActivity.view.MainActi
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
@@ -225,8 +222,8 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     fun prepareAdapter() {
         with (GroupListAdapter) {
             userID = userSession.user?.id
-            groupClickListener = {
-                val data = bundleOf(GROUP_ID to it)
+            groupClickListener = { groupId ->
+                val data = bundleOf(GROUP_ID to groupId)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
             //todo не всегда подписка/отписка отображается в UI

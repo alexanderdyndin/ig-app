@@ -43,7 +43,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     companion object {
         var lettersToSpan = ""
         var userID: String? = null
-        var groupClickListener: (groupId: String) -> Unit = {}
+        var groupClickListener: (groupId: String) -> Unit = {_ -> }
         var unsubscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = { _, _ -> }
         var subscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = {_, _ -> }
         private const val DEFAULT_HOLDER = 1488
