@@ -13,6 +13,7 @@
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:src="@drawable/bg_shadow"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/secondPanel"
             app:layout_constraintEnd_toEndOf="@+id/secondPanel"
             app:layout_constraintStart_toStartOf="@+id/secondPanel" />
@@ -34,6 +35,7 @@
         android:background="@drawable/bg_colorinput_radius_2dp"
         android:orientation="horizontal"
         android:padding="4dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/iconPanel"
         app:layout_constraintEnd_toStartOf="@+id/pushUpDown"
         app:layout_constraintStart_toStartOf="@+id/iconPanel">
@@ -183,7 +185,7 @@
         android:background="@drawable/bg_comment_panel"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/writeMessage"
+        app:layout_constraintBottom_toTopOf="@+id/panelAddFile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -252,6 +254,83 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/panelAddFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/commentEditText">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorInput"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        >
+
+        <TextView
+            android:id="@+id/galleryButton"
+            style="@style/TextAccent10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_add_files_gallery"
+            android:drawablePadding="2dp"
+            android:gravity="center"
+            android:text="Галерея" />
+
+        <TextView
+            android:id="@+id/videoButton"
+            style="@style/TextAccent10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_add_files_video"
+            android:drawablePadding="2dp"
+            android:gravity="center"
+            android:text="Видео" />
+
+        <TextView
+            android:id="@+id/musicButton"
+            style="@style/TextAccent10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_add_files_music"
+            android:drawablePadding="2dp"
+            android:gravity="center"
+            android:text="Музыка" />
+
+        <TextView
+            android:id="@+id/playlistButton"
+            style="@style/TextAccent10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/selector_add_files_playlist"
+            android:drawablePadding="2dp"
+            android:gravity="center"
+            android:text="Плейлист" />
+
+
+    </LinearLayout>
+        <HorizontalScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            style="@style/ScrollBar"
+            android:background="@color/colorInput"
+            >
+            <LinearLayout
+                android:id="@+id/postContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"/>
+        </HorizontalScrollView>
+    </LinearLayout>
+
 <!-- В развернутом состоянии @drawable/btn_push_up меняется на @drawable/btn_push_down-->
     <Button
         android:id="@+id/pushUpDown"
@@ -263,26 +342,28 @@
         app:layout_constraintStart_toStartOf="@+id/iconPanel"
         app:layout_constraintTop_toTopOf="@+id/iconPanel" />
 
-    <TextView
-        android:id="@+id/writeMessage"
-        style="@style/TextAccent14sp"
-        android:layout_width="match_parent"
-        android:layout_height="37dp"
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/commentEditText"
         android:background="@drawable/bg_edit_input"
         android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:text="Написать сообщение"
+        style="@style/InterGroupCommentEditTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/write_your_comment"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minHeight="@dimen/comment_edit_text_height"
+        android:padding="@dimen/big_padding"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="-160dp" />
 
-    <Button
+    <!--<Button
         android:layout_width="26dp"
         android:layout_height="21dp"
         android:background="@drawable/ic_send"
         android:layout_marginEnd="@dimen/middle_margin"
-        app:layout_constraintBottom_toBottomOf="@+id/writeMessage"
-        app:layout_constraintEnd_toEndOf="@+id/writeMessage"
-        app:layout_constraintTop_toBottomOf="@+id/iconPanel" />
+        app:layout_constraintBottom_toBottomOf="@+id/commentEditText"
+        app:layout_constraintEnd_toEndOf="@+id/commentEditText"
+        app:layout_constraintTop_toBottomOf="@+id/iconPanel" />!-->
 
     <Button
         android:id="@+id/btnScrollDown"
@@ -291,6 +372,7 @@
         android:background="@drawable/btn_scroll_down"
         android:layout_marginBottom="@dimen/little_margin"
         android:layout_marginEnd="@dimen/middle_margin"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/iconPanel"
         app:layout_constraintEnd_toEndOf="@+id/iconPanel" />
 
@@ -302,6 +384,7 @@
         android:elevation="5dp"
         android:background="@drawable/bg_accent2dp"
         android:padding="2dp"
+        android:visibility="gone"
         android:text="29258"
         app:layout_constraintBottom_toTopOf="@+id/btnScrollDown"
         app:layout_constraintEnd_toEndOf="@+id/btnScrollDown"

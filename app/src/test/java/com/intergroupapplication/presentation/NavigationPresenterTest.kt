@@ -2,8 +2,6 @@ package com.intergroupapplication.presentation
 
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.GroupGateway
-import com.intergroupapplication.presentation.feature.navigation.presenter.NavigationPresenter
-import com.intergroupapplication.presentation.feature.navigation.view.NavigationView
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
@@ -26,11 +24,11 @@ class NavigationPresenterTest {
     @get:Rule
     val schedulerRule = RxSchedulesRule()
 
-    private lateinit var navigationPresenter: NavigationPresenter
-    private val router: Router = mock()
+    //private lateinit var navigationPresenter: NavigationPresenter
+   // private val router: Router = mock()
     private val groupGateway: GroupGateway = mock()
     private val errorHandler: ErrorHandler = spy(ErrorHandler.defaultErrorHandler())
-    private val navigationView: NavigationView = mock()
+    //private val navigationView: NavigationView = mock()
 
 //    @Before
 //    fun setUp() {

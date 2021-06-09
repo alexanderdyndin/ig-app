@@ -27,6 +27,7 @@ import com.appodeal.ads.Appodeal
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.databinding.FragmentGroupListBinding
 import com.intergroupapplication.databinding.LayoutAdminCreatePostButtonBinding
@@ -398,7 +399,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
 
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }

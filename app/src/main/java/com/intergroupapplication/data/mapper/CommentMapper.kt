@@ -54,10 +54,18 @@ class CommentMapper @Inject constructor(private val userProfileMapper: UserProfi
             } ?: let { null }
 
     fun mapToDto(from: CreateCommentEntity): CreateCommentModel =
-            CreateCommentModel(text = from.text)
+            CreateCommentModel(text = from.text,
+                              images = from.images,
+                              audios = from.audios,
+                              videos = from.videos,
+            )
 
     fun mapToDomainEntity(from: CreateCommentModel): CreateCommentEntity =
-            CreateCommentEntity(text = from.text)
+            CreateCommentEntity(text = from.text,
+                                images = from.images,
+                                audios = from.audios,
+                                videos = from.videos,
+                               )
 
 
     fun mapToDto(from: CommentsEntity): CommentsDto =

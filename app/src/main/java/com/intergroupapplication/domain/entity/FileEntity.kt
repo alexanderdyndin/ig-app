@@ -11,5 +11,7 @@ data class FileEntity(
         val description: String,
         val title: String,
         val post: Int,
-        val owner: Int
+        val owner: Int,
+        val preview:String = "",
+        val duration:String = "00:00"
 ): Parcelable

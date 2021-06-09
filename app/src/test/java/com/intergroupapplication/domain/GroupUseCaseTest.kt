@@ -27,7 +27,7 @@ class GroupUseCaseTest {
 
     @Before
     fun setUp() {
-        groupUseCase = GroupUseCase(userProfileGateway)
+      //  groupUseCase = GroupUseCase(userProfileGateway)
     }
 
     @Test

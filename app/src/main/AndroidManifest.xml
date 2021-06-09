@@ -53,6 +53,15 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="intergroup.page.link"
+                    android:scheme="https"
+                    android:pathPrefix="/post"/>
+            </intent-filter>
         </activity>
 
         <service android:name=".presentation.feature.mediaPlayer.IGMediaService">
@@ -65,7 +74,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.file_provider"
+            android:authorities="com.intergroupapplication.app.file_provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

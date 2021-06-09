@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.manager
 
 import com.intergroupapplication.presentation.base.BaseDialogResolver
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.PreviewDialog
 import javax.inject.Inject
 
 /**
@@ -13,5 +14,23 @@ class DialogProvider @Inject constructor() {
         fragment.actionsMap = actionsMap
         fragment.dialogLayout = dialogLayout
         return fragment
+    }
+
+   /* fun newPreviewDialog(isPhoto:Boolean,photos:MutableList<GalleryModel>,videos:MutableList<VideoModel>,
+        position:Int):ViewPagerDialog{
+        val dialog = ViewPagerDialog()
+        dialog.isPhoto = isPhoto
+        dialog.photos = photos
+        dialog.videos = videos
+        dialog.position = position
+        return dialog
+    }*/
+
+    fun newPreviewDialog(isPhoto:Boolean,url:String,isChoose:Boolean):PreviewDialog{
+        val dialog = PreviewDialog()
+        dialog.url = url
+        dialog.isChoose = isChoose
+        dialog.isPhoto = isPhoto
+        return dialog
     }
 }

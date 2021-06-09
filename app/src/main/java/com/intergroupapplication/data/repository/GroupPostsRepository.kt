@@ -28,8 +28,8 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
                                                private val reactsMapper: ReactsMapper
                                                ): GroupPostGateway {
 
-    override fun getPostById(postId: String): Single<GroupPostEntity.PostEntity> {
-        return api.getPostById(postId).map { groupPostMapper.mapToDomainEntity(it) }
+    override fun getPostById(postId: String): Single<CommentEntity.PostEntity> {
+        return api.getPostById(postId).map { groupPostMapper.mapToPostEntity(it) }
     }
 
     override fun createPost(createGroupPostEntity: CreateGroupPostEntity,

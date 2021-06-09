@@ -18,6 +18,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.chip.Chip
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentGroupCreateBinding
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -277,8 +278,8 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
         viewBinding.groupCreateBtnAge12.isChecked = true
     }
 
-    override fun showImageUploadingStarted(path: String) {
-        viewBinding.groupAvatarHolder.showImageUploadingStarted(path)
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploadingStarted(chooseMedia)
     }
 
 

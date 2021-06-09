@@ -22,6 +22,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentGroupBinding
 import com.intergroupapplication.databinding.LayoutAdminCreatePostButtonBinding
 import com.intergroupapplication.databinding.LayoutUserJoinButtonBinding
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
@@ -31,6 +32,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
@@ -49,7 +51,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
 
-class GroupFragment() : BaseFragment(), GroupView,
+class GroupFragment : BaseFragment(), GroupView,
         AppBarLayout.OnOffsetChangedListener, CoroutineScope {
 
     companion object {
@@ -235,7 +237,11 @@ class GroupFragment() : BaseFragment(), GroupView,
             complaintListener = { id -> presenter.complaintPost(id) }
             imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-                findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
+                findNavController().navigate(R.id.action_groupActivity_to_imageFragment,data)
+            }
+            editPostClickListener = {
+                val data = bundleOf(GROUP_ID to it.id, EditPostFragment.GROUP_POST_ENTITY_KEY to it)
+                findNavController().navigate(R.id.action_groupActivity_to_editPostFragment,data)
             }
             likeClickListener = { like, dislike, item, position ->
                 if (!item.isLoading) {
@@ -334,6 +340,14 @@ class GroupFragment() : BaseFragment(), GroupView,
                         })
                 )
             }
+            progressBarVisibility = {visibility ->
+                if (visibility){
+                    viewBinding.progressDownload.show()
+                }
+                else{
+                    viewBinding.progressDownload.gone()
+                }
+            }
         }
     }
 
@@ -396,7 +410,7 @@ class GroupFragment() : BaseFragment(), GroupView,
         }
     }
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         groupAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
@@ -468,6 +482,7 @@ class GroupFragment() : BaseFragment(), GroupView,
                         mapOf(R.id.fromCamera to { presenter.attachFromCamera(groupId) }, R.id.fromGallery to { presenter.attachFromGallery(groupId) }))
             }
         }
+        adapter.isAdmin = isAdmin
     }
 
     private fun renderUserPage(viewId: Int) {

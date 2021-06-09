@@ -353,6 +353,11 @@
             android:name="owner"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_groupActivity_to_editPostFragment"
+            app:destination="@id/editPostFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/CreatePostFragment"
@@ -417,5 +422,17 @@
         <action
             android:id="@+id/action_audioListFragment_self"
             app:destination="@id/audioListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPostFragment"
+        android:name="com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment"
+        android:label="EditPostFragment" >
+        <argument
+            android:name="group_id"
+            app:argType="string" />
+        <argument
+            android:name="group_post_entity_key"
+            app:argType="com.intergroupapplication.domain.entity.GroupPostEntity$PostEntity"
+            app:nullable="false"/>
     </fragment>
 </navigation>

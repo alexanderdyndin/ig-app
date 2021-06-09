@@ -1,35 +1,34 @@
 package com.intergroupapplication.presentation.feature.news.adapter
 
-import android.view.LayoutInflater
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.view.children
-import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
-import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.base.AdViewHolder.Companion.NATIVE_AD
-import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.ImageGalleryView
-import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
+import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
+import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -72,6 +71,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
         var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
+        var progressBarVisibility:(visibility:Boolean) -> Unit = {_->}
         var USER_ID: Int? = null
     }
 
@@ -109,12 +109,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-
         private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
-
-        private val audioContainer = viewBinding.audioBody
-        private val videoContainer = viewBinding.videoBody
-        val imageContainer = viewBinding.imageBody
 
         fun bind(item: NewsEntity.Post) {
             with(viewBinding) {
@@ -135,18 +130,13 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = itemView.context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
-                item.post.postText.let { it ->
-                    if (it.isNotEmpty()) {
-                        postText.text = item.post.postText
-                        postText.show()
-                        postText.setOnClickListener {
-                            commentClickListener.invoke(item.post)
-                        }
-                    } else {
-                        postText.gone()
-                    }
-                }
+                countComments.text = itemView.context.getString(R.string.comments_count, item.post.commentsCount, item.post.unreadComments)
+
+                postCustomView.proxy = cacheServer
+                postCustomView.imageClickListener = imageClickListener
+                postCustomView.imageLoadingDelegate = imageLoadingDelegate
+                postCustomView.setUpPost(mapToGroupEntityPost(item.post))
+
                 groupName.text = item.post.groupInPost.name
                 subCommentBtn.text = item.post.bells.count.toString()
                 if (item.post.bells.isActive) {
@@ -155,12 +145,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
                 }
 
-//                anchorBtn.isVisible = item.post.isPinned
-
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item.post, layoutPosition)
                 }
-                commentBtn.setOnClickListener {
+                countComments.setOnClickListener {
                     commentClickListener.invoke(item.post)
                 }
                 postAvatarHolder.setOnClickListener {
@@ -177,23 +165,59 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 }
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }
 
-                doOrIfNull(item.post.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                btnRepost.setOnClickListener {
+                   sharePost(view.context,item)
+                }
+
+                doOrIfNull(item.post.groupInPost.avatar, {
+                    imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, postAvatarHolder) })
 
-                videoContainer.proxy = cacheServer
-                videoContainer.setVideos(item.post.videos, item.post.videosExpanded)
-                videoContainer.expand = { item.post.videosExpanded = it }
-
-                audioContainer.proxy = cacheServer
-                audioContainer.setAudios(item.post.audios, item.post.audiosExpanded)
-                audioContainer.expand = { item.post.audiosExpanded = it }
-
-                imageContainer.setImages(item.post.images, item.post.imagesExpanded)
-                imageContainer.imageClick = imageClickListener
-                imageContainer.expand = { item.post.imagesExpanded = it }
             }
         }
 
+        private fun mapToGroupEntityPost(postEntity: GroupPostEntity.PostEntity) =
+                MarkupModel(postEntity.postText,postEntity.images,postEntity.audios,postEntity.videos,
+                        postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
+
+        private fun sharePost(context: Context, item: NewsEntity.Post){
+            progressBarVisibility.invoke(true)
+            /*val link = Firebase.dynamicLinks.dynamicLink {
+                domainUriPrefix = context.getString(R.string.deeplinkDomain)
+                link =Uri.parse("https://intergroup.com/post/${item.post.id}")
+                androidParameters(packageName = "com.intergroupapplication"){
+                    minimumVersion = 1
+                }
+            }*/
+            FirebaseDynamicLinks.getInstance().createDynamicLink()
+                    //.setLongLink(link.uri)
+                    .setDomainUriPrefix( context.getString(R.string.deeplinkDomain))
+                    .setLink(Uri.parse("https://intergroup.com/post/${item.post.id}"))
+                    .setAndroidParameters(DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
+                        .setMinimumVersion(1).build())
+                    .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                    .addOnCompleteListener {
+                        createShareIntent(context,item,it.result.previewLink.toString())
+                    }
+        }
+
+        private fun createShareIntent(context: Context, item: NewsEntity.Post, url:String){
+            val text = url+"/${item.post.id}"
+            val filesUrls = mutableListOf<String>()
+            filesUrls.addAll(item.post.videos.map { it.file })
+            filesUrls.addAll(item.post.images.map { it.file })
+            OmegaIntentBuilder.from(context)
+                    .share()
+                    .text(text)
+                    .filesUrls(filesUrls)
+                    .download(object: DownloadCallback {
+                        override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
+                            progressBarVisibility.invoke(false)
+                            contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    .startActivity()
+                        }
+                    })
+        }
 
         private fun showPopupMenu(view: View, postId: Int, newsId: Int, userId: Int) {
             val popupMenu = PopupMenu(view.context, view)
@@ -218,7 +242,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.imageContainer.destroy()
+           // holder.imageContainer.destroy()
         } else if (holder is AdViewHolder) {
             holder.clear()
         }

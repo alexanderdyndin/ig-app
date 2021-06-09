@@ -8,6 +8,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.NotificationCommentModel
 import com.intergroupapplication.device.notification.notificationcreators.NotificationCreator
 import com.intergroupapplication.device.notification.CreatorType
+import timber.log.Timber
 
 /**
  * Created by abakarmagomedov on 05/09/2018 at project InterGroupApplication.
@@ -16,7 +17,7 @@ class OnNewCommentAction(
         private val notificationCreator: NotificationCreator<CreatorType.Comment>,
         private val notificationManager: NotificationManager,
         private val context: Context) : NotificationAction<RemoteMessage> {
-
+    
     override fun proceed(action: RemoteMessage) {
         val map = action.data
         val postId = map["post_id"] ?: ""
@@ -38,10 +39,11 @@ class OnNewCommentAction(
                 comment.message,
                 comment.page
         )
-        sendNotification(notificationCreator.create(type), type.commentId.toInt())
+        sendNotification(notificationCreator.create(type), type.postId.toInt())
     }
 
     private fun sendNotification(notification: Notification, notificationId: Int) {
+        notificationManager.cancel(notificationId)
         notificationManager.notify(notificationId, notification)
     }
 

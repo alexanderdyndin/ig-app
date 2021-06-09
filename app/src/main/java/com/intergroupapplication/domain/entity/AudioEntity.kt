@@ -13,7 +13,8 @@ data class AudioEntity (
         val artist: String,
         val genre: String,
         val post: Int,
-        val owner: Int
+        val owner: Int,
+        val duration:String = "00:00"
         ): Parcelable {
 
         override fun equals(other: Any?): Boolean {
@@ -31,7 +32,7 @@ data class AudioEntity (
                 if (genre != other.genre) return false
                 if (post != other.post) return false
                 if (owner != other.owner) return false
-
+                if (duration != other.duration) return false
                 return true
         }
 
@@ -45,6 +46,7 @@ data class AudioEntity (
                 result = 31 * result + genre.hashCode()
                 result = 31 * result + post
                 result = 31 * result + owner
+                result = 31 * result + duration.hashCode()
                 return result
         }
 }

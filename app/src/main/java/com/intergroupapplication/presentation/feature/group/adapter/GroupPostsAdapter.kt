@@ -1,41 +1,45 @@
 package com.intergroupapplication.presentation.feature.group.adapter
 
-import android.view.LayoutInflater
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
-import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
-import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.ImageGalleryView
-import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
+import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
+import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
+import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.io.*
+import java.util.*
 
 class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         private val proxyCacheServer: HttpProxyCacheServer)
     : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
 
+    var isAdmin = false
     companion object {
         private const val DEFAULT_HOLDER = 1488
         private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntity>() {
@@ -66,9 +70,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
+        var editPostClickListener: (postEntity: GroupPostEntity.PostEntity) -> Unit = {}
         var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
         var isOwner = false
+        var progressBarVisibility:(visibility:Boolean) -> Unit = {_->}
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -98,7 +104,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.imageContainer.destroy()
+            //holder.imageContainer.destroy()
         } else if (holder is AdViewHolder) {
             holder.clear()
         }
@@ -116,10 +122,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
-
-        private val audioContainer = viewBinding.audioBody
-        private val videoContainer = viewBinding.videoBody
-        val imageContainer = viewBinding.imageBody
 
         fun bind(item: GroupPostEntity.PostEntity) {
             with(viewBinding) {
@@ -140,18 +142,12 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = itemView.context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
-                item.postText.let { it ->
-                    if (it.isNotEmpty()) {
-                        postText.text = item.postText
-                        postText.show()
-                        postText.setOnClickListener {
-                            commentClickListener.invoke(item)
-                        }
-                    } else {
-                        postText.gone()
-                    }
-                }
+                countComments.text = view.context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
+                postCustomView.proxy = proxyCacheServer
+                postCustomView.imageClickListener = imageClickListener
+                postCustomView.imageLoadingDelegate = imageLoadingDelegate
+                postCustomView.setUpPost(mapToGroupEntityPost(item))
+
                 groupName.text = item.groupInPost.name
                 subCommentBtn.text = item.bells.count.toString()
                 if (item.bells.isActive) {
@@ -162,23 +158,10 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
                 anchorBtn.setOnClickListener { pinClickListener.invoke(item, layoutPosition) }
 
-//                if (isOwner) {
-//                    anchorBtn.show()
-//                    if (item.isPinned) {
-//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor_act)
-//                        anchorBtn.setImageResource(R.drawable.ic_anchor_act)
-//                    } else {
-//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor)
-//                        anchorBtn.setImageResource(R.drawable.ic_anchor)
-//                    }
-//                } else {
-//                    anchorBtn.gone()
-//                }
-
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item, layoutPosition)
                 }
-                commentBtn.setOnClickListener {
+                countComments.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
                 postLikesClickArea.setOnClickListener {
@@ -187,32 +170,91 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 postDislikesClickArea.setOnClickListener {
                     likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
                 }
-                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+                settingsPost.setOnClickListener {
+                        showPopupMenu(settingsPost, Integer.parseInt(item.id), item) }
 
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                doOrIfNull(item.groupInPost.avatar, {
+                    imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder)
+                },
                         { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
 
-                videoContainer.proxy = proxyCacheServer
-                videoContainer.setVideos(item.videos, item.videosExpanded)
-                videoContainer.expand = { item.videosExpanded = it }
+                btnRepost.setOnClickListener {
+                    sharePost(view.context, item)
+                }
 
-                audioContainer.proxy = proxyCacheServer
-                audioContainer.setAudios(item.audios, item.audiosExpanded)
-                audioContainer.expand = { item.audiosExpanded = it }
-
-                imageContainer.setImages(item.images, item.imagesExpanded)
-                imageContainer.imageClick = imageClickListener
-                imageContainer.expand = { item.imagesExpanded = it }
             }
         }
 
-        private fun showPopupMenu(view: View, id: Int) {
+        private fun mapToGroupEntityPost(postEntity: GroupPostEntity.PostEntity) =
+                MarkupModel(postEntity.postText,postEntity.images,postEntity.audios,postEntity.videos,
+                        postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
+
+        private fun sharePost(context: Context, item: GroupPostEntity.PostEntity){
+            progressBarVisibility.invoke(true)
+            /*val link = Firebase.dynamicLinks.dynamicLink {
+                domainUriPrefix = context.getString(R.string.deeplinkDomain)
+                link = Uri.parse("https://intergroup.com/post/${item.id}")
+                androidParameters(packageName = "com.intergroupapplication"){
+                    minimumVersion = 1
+                }
+            }*/
+            FirebaseDynamicLinks.getInstance().createDynamicLink()
+                //.setLongLink(link.uri)
+                .setDomainUriPrefix( context.getString(R.string.deeplinkDomain))
+                .setLink(Uri.parse("https://intergroup.com/post/${item.id}"))
+                .setAndroidParameters(
+                    DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
+                    .setMinimumVersion(1).build())
+                .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                .addOnCompleteListener {
+                    createShareIntent(context,item,it.result.previewLink.toString())
+                }
+        }
+
+        private fun createShareIntent(context: Context, item: GroupPostEntity.PostEntity, url: String){
+            /*val imagePath = context.cacheDir
+            Single.just(item.videos[0].file)
+                    .map {
+                        URL(it).openStream().readBytes()
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe { bytes->
+                val newFile = File(imagePath,"images.jpeg")
+                newFile.createNewFile()
+                newFile.writeBytes(bytes)
+                val contentUri: Uri = FileProvider.getUriForFile(context, "com.intergroupapplication.app.file_provider", newFile)
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                intent.type = "images/"
+                intent.putExtra(Intent.EXTRA_STREAM,contentUri)
+                context.startActivity(intent)
+            }*/
+            val text = url+"/${item.id}"
+            val filesUrls = mutableListOf<String>()
+            filesUrls.addAll(item.videos.map { it.file })
+            filesUrls.addAll(item.images.map { it.file })
+            OmegaIntentBuilder.from(context)
+                    .share()
+                    .text(text)
+                    .filesUrls(filesUrls)
+                    .download(object : DownloadCallback {
+                        override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
+                            progressBarVisibility.invoke(false)
+                            contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    .startActivity()
+                        }
+                    })
+        }
+
+        private fun showPopupMenu(view: View, id: Int, groupPostEntity: GroupPostEntity.PostEntity) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
+            popupMenu.menu.findItem(R.id.edit).isVisible = isAdmin
 //            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)
+                    R.id.edit -> editPostClickListener.invoke(groupPostEntity)
                     R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true

@@ -189,4 +189,5 @@
     <string name="toBlackList">Заблокировать</string>
     <string name="demote">Разжаловать</string>
     <string name="unblock">Разблокировать</string>
+    <string name="edit_post">Редактировать</string>
 </resources>

@@ -18,6 +18,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentCreateUserProfile2Binding
 import com.intergroupapplication.domain.exception.FIRST_NAME
 import com.intergroupapplication.domain.exception.FieldException
@@ -148,8 +149,8 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         }
     }
 
-    override fun showImageUploadingStarted(path: String) {
-        userAvatarHolder.showImageUploadingStarted(path)
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        userAvatarHolder.showImageUploadingStarted(chooseMedia)
     }
 
     override fun showImageUploaded(path: String) {

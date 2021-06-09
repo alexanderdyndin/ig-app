@@ -20,9 +20,9 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
         val createGroupPostEntity = CreateGroupPostEntity(groupPostEntity.postText,
                 groupPostEntity.images.map { FileRequestEntity(it.file, it.description, it.title) },
                 groupPostEntity.audios.map {
-                    AudioRequestEntity(it.file, it.description, it.song, it.artist, it.genre)
+                    AudioRequestEntity(it.file, it.description, it.song, it.artist, it.genre,it.duration)
                 },
-                groupPostEntity.videos.map { FileRequestEntity(it.file, it.description, it.title) },
+                groupPostEntity.videos.map { FileRequestEntity(it.file, it.description, it.title,it.preview,it.duration) },
                 groupPostEntity.isPinned, groupPostEntity.pin)
         return groupPostGateway.editPost(createGroupPostEntity, groupPostEntity.id)
     }

@@ -25,6 +25,7 @@ import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentNewsBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -56,6 +57,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.Writer
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
@@ -293,6 +297,14 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                     }
                 }
             }
+            progressBarVisibility = {visibility ->
+                if (visibility){
+                    viewBinding.progressDownload.show()
+                }
+                else{
+                    viewBinding.progressDownload.gone()
+                }
+            }
             USER_ID = userSession.user?.id?.toInt()
             compositeDisposable.add(
                     viewModel.getNews()
@@ -354,7 +366,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
+                onClick { _ ->
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
                 }
@@ -366,7 +378,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
+                onClick { _ ->
                     findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                     false
@@ -403,7 +415,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { v ->
+                onClick { _ ->
                     userSession.logout()
                     findNavController().navigate(R.id.action_newsFragment2_to_loginActivity)
                     false
@@ -424,7 +436,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         presenter.getUserInfo()
     }
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }

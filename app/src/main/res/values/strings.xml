@@ -186,6 +186,8 @@
     <string name="toBlackList">To black list</string>
     <string name="demote">Demote</string>
     <string name="unblock">Unblock</string>
+    <string name="edit_post">Edit</string>
+    <string name="deeplinkDomain">https://intergroupapplication.page.link</string>
     <string name="nickname">Come up with a nickname</string>
     <string name="day">Day</string>
     <string name="week">Week</string>

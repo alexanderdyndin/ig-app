@@ -36,6 +36,8 @@ class IGMediaService : MediaBrowserService() {
 
 
     private var exoPlayer: SimpleExoPlayer? = null
+    private var audioPlayerView:AudioPlayerView? = null
+    private var videoPlayerView:VideoPlayerView? = null
     private var mediaFile: MediaFile? = null
     private var notificationTitle: String? = null
     private var notificationSubtitle: String? = null
@@ -88,7 +90,6 @@ class IGMediaService : MediaBrowserService() {
         }
         return super.onStartCommand(intent, flags, startId)
     }
-
     /**
      * This class will be what is returned when an activity binds to this service.
      * The activity will also use this to know what it can get from our service to know
@@ -103,7 +104,8 @@ class IGMediaService : MediaBrowserService() {
          */
         fun getExoPlayerInstance() = exoPlayer
         fun getMediaFile() = mediaFile
-        fun setPlayer(player: SimpleExoPlayer, mediaFile: MediaFile, notificationTitle: String?, notificationSubtitle: String?) {
+
+        /*fun setPlayer(player: SimpleExoPlayer, mediaFile: MediaFile, notificationTitle: String?, notificationSubtitle: String?) {
             if (player != exoPlayer){
                 exoPlayer?.pause()
                 exoPlayer = player
@@ -112,6 +114,44 @@ class IGMediaService : MediaBrowserService() {
             this@IGMediaService.notificationSubtitle = notificationSubtitle
             this@IGMediaService.mediaFile = mediaFile
             displayNotification(true)
+        }*/
+
+        fun setAudioPlayer(player: SimpleExoPlayer, mediaFile: MediaFile, notificationTitle: String?, notificationSubtitle: String?,
+                 audioPlayer: AudioPlayerView){
+            if (player != exoPlayer){
+                exoPlayer?.pause()
+                audioPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
+                videoPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
+                audioPlayerView = audioPlayer
+                exoPlayer?.seekTo(0)
+                audioPlayer.exoProgress.setLocalCacheBufferedPosition(100)
+                exoPlayer = player
+            }
+            this@IGMediaService.notificationTitle = notificationTitle
+            this@IGMediaService.notificationSubtitle = notificationSubtitle
+            this@IGMediaService.mediaFile = mediaFile
+            displayNotification(true)
+        }
+
+        fun setVideoPlayer(player: SimpleExoPlayer, mediaFile: MediaFile, notificationTitle: String?, notificationSubtitle: String?,
+                          videoPlayer:VideoPlayerView){
+            if (player != exoPlayer){
+                exoPlayer?.pause()
+                audioPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
+                videoPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
+                videoPlayerView = videoPlayer
+                exoPlayer?.seekTo(0)
+                videoPlayer.exoProgress.setLocalCacheBufferedPosition(100)
+                exoPlayer = player
+            }
+            this@IGMediaService.notificationTitle = notificationTitle
+            this@IGMediaService.notificationSubtitle = notificationSubtitle
+            this@IGMediaService.mediaFile = mediaFile
+            displayNotification(true)
+        }
+
+        fun changeControlButton(start:Boolean){
+            displayNotification(start)
         }
 
         fun loadMedia(mediaUrl: String) {
