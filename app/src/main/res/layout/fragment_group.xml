@@ -41,11 +41,14 @@
                     app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                     <include
+                        android:id="@+id/group"
                         layout="@layout/item_group_header_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
-                    <include layout="@layout/auth_loader" />
+                    <include
+                        android:id="@+id/groupLoader"
+                        layout="@layout/auth_loader" />
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
@@ -53,7 +56,6 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <TextView

@@ -7,6 +7,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenResumed
@@ -14,6 +17,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.*
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -24,13 +31,11 @@ import com.intergroupapplication.presentation.feature.userlist.adapter.UserListA
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
 import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdFragment
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
-import kotlinx.android.synthetic.main.blacklist_toolbar_layout.*
-import kotlinx.android.synthetic.main.fragment_user_list.*
-import kotlinx.android.synthetic.main.fragment_user_list.pager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
+import com.intergroupapplication.databinding.FragmentUserListBinding
 
 class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
@@ -83,6 +88,7 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     private var currentScreen = 0
     private val BAN_REASON = "ban reason"
 
+    private val viewBinding by viewBinding(FragmentUserListBinding::bind)
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -90,6 +96,14 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
             getAllData(s.toString())
         }
     }
+
+    private lateinit var followers_refresh: SwipeRefreshLayout
+    private lateinit var searchEditText: EditText
+    private lateinit var pager: ViewPager2
+    private lateinit var btnAddId: TextView
+    private lateinit var slidingCategories: TabLayout
+    private lateinit var toolbarTittle: TextView
+    private lateinit var toolbarBackAction: ImageButton
 
     override fun layoutRes() = R.layout.fragment_user_list
 
@@ -102,6 +116,8 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
         groupId = requireArguments().getString(GROUP_ID)!!
         isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
         UserListAdapter.isAdmin = isAdmin
+
+        initViewBinding()
         initPager()
 
         AddBlackListByIdFragment.callBack = this
@@ -120,7 +136,7 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
         }
     }
 
-    override fun getSnackBarCoordinator(): ViewGroup? = userListCoordinator
+    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.userListCoordinator
 
     override fun onResume() {
         super.onResume()
@@ -130,6 +146,16 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     override fun onPause() {
         super.onPause()
         searchEditText.removeTextChangedListener(textWatcher)
+    }
+
+    private fun initViewBinding() {
+        followers_refresh = viewBinding.followersRefresh
+        searchEditText = viewBinding.searchEditText
+        pager = viewBinding.pager
+        btnAddId = viewBinding.navigationToolbar.btnAddId
+        slidingCategories = viewBinding.slidingCategories
+        toolbarTittle = viewBinding.navigationToolbar.toolbarTittle
+        toolbarBackAction = viewBinding.navigationToolbar.toolbarBackAction
     }
 
     private fun initPager() {

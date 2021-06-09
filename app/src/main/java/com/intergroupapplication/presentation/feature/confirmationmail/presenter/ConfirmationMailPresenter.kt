@@ -16,7 +16,7 @@ import javax.inject.Named
 
 @InjectViewState
 class ConfirmationMailPresenter @Inject constructor(private val confirmationMailGateway: ConfirmationMailGateway,
-                                                    @Named("mailHandler") private val errorHandler: ErrorHandler,
+                                                    private val errorHandler: ErrorHandler,
                                                     private val resendCodeGateway: ResendCodeGateway)
     : BasePresenter<ConfirmationMailView>() {
 

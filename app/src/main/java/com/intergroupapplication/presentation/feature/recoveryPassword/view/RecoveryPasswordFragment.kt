@@ -3,16 +3,23 @@ package com.intergroupapplication.presentation.feature.recoveryPassword.view
 import android.content.Context
 import android.content.Intent
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentRecoveryPassword2Binding
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -30,14 +37,14 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_recovery_password.*
-import kotlinx.android.synthetic.main.fragment_recovery_password.etDoublePassword
-import kotlinx.android.synthetic.main.fragment_recovery_password.etMail
-import kotlinx.android.synthetic.main.fragment_recovery_password.etPassword
+import kotlinx.android.synthetic.main.fragment_login2.*
 
 import javax.inject.Inject
 
-class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener {
+class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener,
+    View.OnClickListener {
+
+    private val viewBinding by viewBinding(FragmentRecoveryPassword2Binding::bind)
 
     @Inject
     @InjectPresenter
@@ -55,18 +62,51 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     @Inject
     lateinit var validator: Validator
 
-    override fun layoutRes() = R.layout.fragment_recovery_password
+    override fun layoutRes() = R.layout.fragment_recovery_password2
 
-    override fun getSnackBarCoordinator() = coordinator
+    override fun getSnackBarCoordinator() = viewBinding.coordinator
+
+    private lateinit var btnSave: AppCompatButton
+    private lateinit var btnSend: AppCompatButton
+    private lateinit var etMail: AppCompatEditText
+    private lateinit var etCode: AppCompatEditText
+    private lateinit var etDoublePassword: AppCompatEditText
+    private lateinit var pbSave: ProgressBar
+    private lateinit var pbEmail: ProgressBar
+    private lateinit var pbCode: ProgressBar
+    private lateinit var tvErrorCode: AppCompatTextView
+    private lateinit var tvErrorDoublePass: AppCompatTextView
+    private lateinit var tvErrorMail: AppCompatTextView
+    private lateinit var tvErrorPass: AppCompatTextView
+    private lateinit var tvSendCode: AppCompatTextView
+    private lateinit var passwordVisibility: TextView
+    private lateinit var passwordVisibility2: TextView
+
+    var passwordVisible = true
 
     override fun viewCreated() {
-        //setSupportActionBar(toolbar)
-        toolbar.apply {
-            this.setNavigationOnClickListener { findNavController().popBackStack() }
-            setTitle(R.string.settings_password)
-        }
+        passwordVisibility = viewBinding.passwordVisibility
+        passwordVisibility2 = viewBinding.passwordVisibility2
+        btnSave = viewBinding.btnSave
+        btnSend = viewBinding.btnSend
+        etMail = viewBinding.etMail
+        etCode = viewBinding.etCode
+        etDoublePassword = viewBinding.etDoublePassword
+        password = viewBinding.etPassword
+        pbSave = viewBinding.pbSave.progressBar
+        pbEmail = viewBinding.pbEmail.progressBar
+        pbCode = viewBinding.pbCode.progressBar
+        tvErrorCode = viewBinding.tvErrorCode
+        tvErrorDoublePass = viewBinding.tvErrorDoublePass
+        tvErrorMail = viewBinding.tvErrorMail
+        tvErrorPass = viewBinding.tvErrorPass
+        tvSendCode = viewBinding.tvSendCode
 
-        password = requireView().findViewById(R.id.etPassword)
+        //setSupportActionBar(toolbar)
+//        toolbar.apply {
+//            this.setNavigationOnClickListener { findNavController().popBackStack() }
+//            setTitle(R.string.settings_password)
+//        }
 
         listenInputs()
         initValidator()
@@ -87,7 +127,8 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
                     presenter.sendCode(code)
                 }
                 .also { compositeDisposable.add(it) }
-
+        passwordVisibility.setOnClickListener(this)
+        passwordVisibility2.setOnClickListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -98,14 +139,13 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     }
 
     override fun showPassword(enable: Boolean) {
-        val drawableIdTv = if (enable) R.drawable.background_edit_text else R.drawable.background_edit_text_disable
-        val drawableIdBtn = if (enable) R.drawable.background_button else R.drawable.background_button_disable
+        val hintColor = if (enable) requireContext().getColor(R.color.colorAccent2)
+        else requireContext().getColor(R.color.colorTextBtnNoActive)
         etDoublePassword.isEnabled = enable
-        etPassword.isEnabled = enable
+        password.isEnabled = enable
         btnSave.isEnabled = enable
-        etDoublePassword.setBackgroundResource(drawableIdTv)
-        etPassword.setBackgroundResource(drawableIdTv)
-        btnSave.setBackgroundResource(drawableIdBtn)
+        etDoublePassword.setHintTextColor(hintColor)
+        password.setHintTextColor(hintColor)
     }
 
     override fun successSaveSetings() {
@@ -165,7 +205,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     }
 
     override fun onValidationSucceeded() {
-        val password = etPassword.text.toString()
+        val password = password.text.toString()
         val doublePassword = etDoublePassword.text.toString()
         presenter.saveSettings(password, doublePassword)
     }
@@ -176,9 +216,10 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         } else {
             tvSendCode.hide()
         }
-        val drawableIdTv = if (visible) R.drawable.background_edit_text else R.drawable.background_edit_text_disable
+        val hintColor = if (visible) requireContext().getColor(R.color.colorAccent2)
+        else requireContext().getColor(R.color.colorTextBtnNoActive)
         with(etCode) {
-            setBackgroundResource(drawableIdTv)
+            setHintTextColor(hintColor)
             text?.clear()
         }
         etCode.isEnabled = visible
@@ -249,13 +290,13 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     }
 
     private fun initEditText() {
-        etPassword.addTextChangedListener(object : TextWatcher {
+        password.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val textEntered = etPassword.text.toString()
+                val textEntered = password.text.toString()
 
                 if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
-                    etPassword.setText(etPassword.text.toString().replace(" ", ""))
-                    etPassword.setSelection(etPassword.text?.length ?: 0)
+                    password.setText(password.text.toString().replace(" ", ""))
+                    password.setSelection(password.text?.length ?: 0)
                 }
             }
 
@@ -276,8 +317,26 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
         })
+    }
+
+    override fun onClick(v: View?) {
+        visibilityPassword(passwordVisible)
+        passwordVisible = !passwordVisible
+    }
+
+    private fun visibilityPassword(isVisible: Boolean) {
+        if (isVisible) {
+            password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+        } else {
+            password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+        }
     }
 
 }

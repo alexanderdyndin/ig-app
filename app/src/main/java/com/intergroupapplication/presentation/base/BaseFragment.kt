@@ -161,8 +161,8 @@ abstract class BaseFragment : MvpAppCompatFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewCreated()
         initErrorHandler(errorHandler)
+        viewCreated()
         super.onViewCreated(view, savedInstanceState)
     }
 

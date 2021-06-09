@@ -10,12 +10,14 @@ import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
 import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
@@ -28,8 +30,6 @@ import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.item_group_post.view.*
-import kotlinx.android.synthetic.main.item_loading.view.*
 import timber.log.Timber
 
 class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
@@ -114,13 +114,16 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
-        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
+
+        private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
+
+        private val audioContainer = viewBinding.audioBody
+        private val videoContainer = viewBinding.videoBody
+        val imageContainer = viewBinding.imageBody
 
         fun bind(item: GroupPostEntity.PostEntity) {
-            with(itemView) {
-                idpGroupPost.text = context.getString(R.string.idp, item.idp.toString())
+            with(viewBinding) {
+                idpGroupPost.text = itemView.context.getString(R.string.idp, item.idp.toString())
                 postLike.text = item.reacts.likesCount.toString()
                 postDislike.text = item.reacts.dislikesCount.toString()
                 if (item.reacts.isLike) {
@@ -137,7 +140,7 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
+                commentBtn.text = itemView.context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
                 item.postText.let { it ->
                     if (it.isNotEmpty()) {
                         postText.text = item.postText

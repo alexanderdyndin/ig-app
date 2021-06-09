@@ -101,7 +101,6 @@ class NewsPresenter @Inject constructor(private val errorHandler: ErrorHandler,
                     viewState.showMessage("Дизлайк отправляется")
                 }
             }
-            //.doFinally { viewState.showSubscribeLoading(false) }
             .subscribe({
                 if (isLike) {
                     viewState.showMessage("Лайк поставлен")
