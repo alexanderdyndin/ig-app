@@ -20,7 +20,8 @@ import dagger.android.support.AndroidSupportInjectionModule
     (ListenersModule::class),
     (NetworkErrorHandlingModule::class),
     (NotificationModule::class),
-    (ViewModelModule::class)])
+    (ViewModelModule::class),
+    (DatabaseModule::class)])
 interface AppComponent : AndroidInjector<App> {
 
     @Component.Builder

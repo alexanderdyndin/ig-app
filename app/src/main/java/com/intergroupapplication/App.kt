@@ -3,7 +3,6 @@ package com.intergroupapplication
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.multidex.MultiDex
-import com.intergroupapplication.data.db.IgDatabase
 import com.intergroupapplication.di.DaggerAppComponent
 import com.intergroupapplication.initializators.Initializer
 import com.intergroupapplication.presentation.base.BaseCrashlyticsTree
@@ -28,10 +27,6 @@ class App : DaggerApplication() {
         } else {
             Timber.plant(BaseCrashlyticsTree())
         }
-
-        // todo db
-        val db = IgDatabase.getInstance(applicationContext)
-//        val dao = db.groupDao()
     }
 
     override fun attachBaseContext(base: Context) {

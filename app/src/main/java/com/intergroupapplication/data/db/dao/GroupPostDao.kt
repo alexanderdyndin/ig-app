@@ -2,16 +2,16 @@ package com.intergroupapplication.data.db.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.intergroupapplication.data.db.entity.GroupPostDbModel
+import com.intergroupapplication.data.model.GroupPostModel
 
 @Dao
 interface GroupPostDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(groupPosts: List<GroupPostDbModel>)
+    fun insertAll(groupPosts: List<GroupPostModel>)
 
     @Query("SELECT * FROM group_post WHERE groupId = :groupId")
-    fun getAllGroupPostsModel(groupId: String): PagingSource<Int, GroupPostDbModel>
+    fun getAllGroupPostsModel(groupId: String): PagingSource<Int, GroupPostModel>
 
     @Query("DELETE FROM group_post WHERE groupId = :groupId")
     fun clearAllGroupPosts(groupId: String)

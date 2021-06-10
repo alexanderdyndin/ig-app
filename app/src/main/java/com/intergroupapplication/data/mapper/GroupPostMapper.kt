@@ -1,7 +1,6 @@
 package com.intergroupapplication.data.mapper
 
 import androidx.room.PrimaryKey
-import com.intergroupapplication.data.db.entity.GroupPostDbModel
 import com.intergroupapplication.data.model.*
 import com.intergroupapplication.domain.entity.*
 import javax.inject.Inject
@@ -141,56 +140,4 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
                     from.user,
                     from.post
             )
-    // todo db
-//
-//    fun mapResponseToModelDb(from: GroupPostModel, groupId: String): GroupPostDbModel {
-//        return GroupPostDbModel(
-//                id = from.id,
-//                groupId = groupId,
-//                postText = from.postText,
-//                date = from.date,
-//                updated = from.updated,
-//                pin = from.pin,
-//                photo = from.photo,
-//                commentsCount = from.commentsCount,
-//                activeCommentsCount = from.activeCommentsCount,
-//                isActive = from.isActive,
-//                isOffered = from.isOffered,
-//                isPinned = from.isPinned,
-//                idp = from.idp,
-//                unreadComments = from.unreadComments,
-//                groupInPost = from.groupInPost,
-//                author = from.author,
-//                reacts = from.reacts,
-//                bells = from.bells,
-//                images = from.images,
-//                audios = from.audios,
-//                videos = from.videos
-//        )
-//    }
-//
-//    fun mapToDomainEntity(from: GroupPostDbModel): GroupPostEntity.PostEntity {
-//        return GroupPostEntity.PostEntity(
-//                id = from.id,
-//                bells = mapToDomainEntity(from.bells),
-//                groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost),
-//                postText = from.postText,
-//                date = from.date,
-//                updated = from.updated,
-//                author = userProfileMapper.mapToDomainEntity(from.author),
-//                photo = from.photo,
-//                commentsCount = from.commentsCount,
-//                unreadComments = from.unreadComments,
-//                activeCommentsCount = from.activeCommentsCount,
-//                isPinned = from.isPinned,
-//                isActive = from.isActive,
-//                isOffered = from.isOffered,
-//                pin = from.pin,
-//                idp = from.idp,
-//                reacts = reactsMapper.mapToDomainEntity(from.reacts),
-//                images = from.images.map { mediaMapper.mapToDomainEntity(it) },
-//                audios = from.audios.map { mediaMapper.mapToDomainEntity(it) },
-//                videos = from.videos.map { mediaMapper.mapToDomainEntity(it) }
-//        )
-//    }
 }

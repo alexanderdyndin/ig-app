@@ -14,7 +14,7 @@ interface GroupPostKeyDao {
     fun insertOrReplace(remoteKey: GroupPostRemoteKeysModel?)
 
     @Query("SELECT * FROM group_post_remote_keys WHERE groupId = :groupId")
-    fun getRemoteKey(groupId: String): Single<List<GroupPostRemoteKeysModel>>
+    fun getRemoteKey(groupId: String): Single<GroupPostRemoteKeysModel>
 
     @Query("DELETE FROM group_post_remote_keys WHERE groupId = :groupId")
     fun deleteByGroupId(groupId: String?)
