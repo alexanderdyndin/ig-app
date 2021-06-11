@@ -10,7 +10,8 @@ import com.google.gson.annotations.SerializedName
  */
 @Entity(tableName = "group_post")
 data class GroupPostModel(
-        @PrimaryKey val id: String,
+        @PrimaryKey(autoGenerate = true) val uid: Long = 1L,
+        val id: String,
         var groupId: String = "",
         @SerializedName("active_comments_count") val activeCommentsCount: String,
         @Embedded

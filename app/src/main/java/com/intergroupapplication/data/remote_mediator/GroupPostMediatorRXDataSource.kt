@@ -43,7 +43,8 @@ class GroupPostMediatorRXDataSource(
                         return@flatMap Single.just(MediatorResult.Success(true))
                     }
 
-                    return@flatMap appApi.getGroupPosts(groupId, remoteKey.next ?: 1)
+                    val page = remoteKey.next ?: 1
+                    return@flatMap appApi.getGroupPosts(groupId, page)
                             .map { response ->
                                 appDatabase.runInTransaction {
                                     if (loadType == LoadType.REFRESH) {
@@ -52,10 +53,16 @@ class GroupPostMediatorRXDataSource(
                                     }
 
                                     appDatabase.run {
+                                        val next =
+                                                if (response.next != null) page.plus(1)
+                                                else null
+                                        val previous =
+                                                if (response.previous != null) page.minus(1)
+                                                else null
                                         groupPostKeyDao().insertOrReplace(GroupPostRemoteKeysModel(
                                                 groupId,
-                                                response.next.toInt(),
-                                                response.previous.toInt())
+                                                next,
+                                                previous)
                                         )
 
                                         groupPostDao().insertAll(
@@ -67,7 +74,7 @@ class GroupPostMediatorRXDataSource(
                                     }
 
                                 }
-                                MediatorResult.Success(response.next.isNotEmpty())
+                                MediatorResult.Success(!response.next.isNullOrEmpty())
                             }
                 }
     }

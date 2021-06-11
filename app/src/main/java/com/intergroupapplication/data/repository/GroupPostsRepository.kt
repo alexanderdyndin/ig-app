@@ -64,7 +64,6 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         }
     }
 //    override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
-//        val dao = db.groupPostKeyDao()
 //        return Pager(
 //                config = PagingConfig(
 //                        pageSize = PAGE_SIZE,
