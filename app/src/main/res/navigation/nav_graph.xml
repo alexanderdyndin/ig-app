@@ -20,10 +20,10 @@
         <action
             android:id="@+id/action_groupListFragment2_to_groupActivity"
             app:destination="@id/groupActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/newsFragment2"
@@ -33,17 +33,13 @@
         <action
             android:id="@+id/action_newsFragment2_to_groupActivity"
             app:destination="@id/groupActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
         <action
             android:id="@+id/action_newsFragment2_to_commentsDetailsActivity"
-            app:destination="@id/commentsDetailsActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:destination="@id/commentsDetailsActivity" />
         <action
             android:id="@+id/action_newsFragment2_to_imageFragment"
             app:destination="@id/imageFragment"
@@ -224,7 +220,11 @@
             android:defaultValue="1" />
         <action
             android:id="@+id/action_commentsDetailsActivity_to_groupActivity"
-            app:destination="@id/groupActivity" />
+            app:destination="@id/groupActivity"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/userListFragment"
