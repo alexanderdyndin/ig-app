@@ -56,9 +56,13 @@ class GroupsRemoteRXDataSource (private val appApi: AppApi,
     }
 
     override fun getRefreshKey(state: PagingState<Int, GroupEntity>): Int? {
-        val position = state.anchorPosition ?: 0
-        val page = (position / PAGE_SIZE) + 1
-        return page
+        return state.anchorPosition?.let { anchorPosition ->
+            // This loads starting from previous page, but since PagingConfig.initialLoadSize spans
+            // multiple pages, the initial load will still load items centered around
+            // anchorPosition. This also prevents needing to immediately launch prepend due to
+            // prefetchDistance.
+            (state.closestPageToPosition(anchorPosition)?.prevKey ?: 0) + 1
+        }
     }
 
 }

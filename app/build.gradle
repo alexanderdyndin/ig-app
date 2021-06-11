@@ -1,29 +1,16 @@
 plugins {
-    id 'com.gladed.androidgitversion' version '0.4.3'
-    id("io.gitlab.arturbosch.detekt").version("1.17.0")
+    id "com.android.application"
+    id "com.frogermcs.androiddevmetrics"
+    id "kotlin-android"
+    id "kotlin-android-extensions"
+    id "kotlin-kapt"
+    id "com.google.firebase.crashlytics"
+    id "com.google.gms.google-services"
+    id "androidx.navigation.safeargs.kotlin"
+    id("com.gladed.androidgitversion") version("0.4.3")
+    id("io.gitlab.arturbosch.detekt") version("1.17.0")
+
 }
-
-//apply from: 'scripts/versioning.gradle'
-//
-//apply from: 'scripts/detekt.gradle'
-
-apply plugin: 'com.android.application'
-
-apply plugin: 'com.frogermcs.androiddevmetrics'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'kotlin-kapt'
-
-apply plugin: 'com.google.firebase.crashlytics'
-
-//apply plugin: 'realm-android'
-
-apply plugin: 'com.google.gms.google-services'
-
-apply plugin: "androidx.navigation.safeargs.kotlin"
 
 allprojects {
     repositories {
@@ -45,10 +32,6 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-androidExtensions {
-    experimental = true
-}
-
 android {
     compileSdkVersion 30
     defaultConfig {
@@ -59,7 +42,7 @@ android {
 //        androidGitVersion.code()
         versionName "1.6.0.9"
 //        androidGitVersion.name()
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
@@ -67,9 +50,9 @@ android {
 //            annotationProcessorOptions {
 //                arguments = [
 //                        // here go the options for Moxy compiler
-//                        //disableEmptyStrategyCheck : 'true'
-//                        //defaultMoxyStrategy: 'moxy.viewstate.strategy.AddToEndSingleStrategy'
-//                        enableEmptyStrategyHelper: 'true'
+//                        //disableEmptyStrategyCheck : "true"
+//                        //defaultMoxyStrategy: "moxy.viewstate.strategy.AddToEndSingleStrategy"
+//                        enableEmptyStrategyHelper: "true"
 //                ]
 //            }
 //        }
@@ -97,10 +80,10 @@ android {
                 storePassword System.getenv("STORE_PASSWORD")
                 keyPassword System.getenv("KEY_PASSWORD")
             } catch (Exception ignored) {
-                keyAlias keystoreProperties['RELEASE_KEY_ALIAS']
-                keyPassword keystoreProperties['RELEASE_KEY_PASSWORD']
-                storeFile file(keystoreProperties['RELEASE_STORE_FILE'])
-                storePassword keystoreProperties['RELEASE_STORE_PASSWORD']
+                keyAlias keystoreProperties["RELEASE_KEY_ALIAS"]
+                keyPassword keystoreProperties["RELEASE_KEY_PASSWORD"]
+                storeFile file(keystoreProperties["RELEASE_STORE_FILE"])
+                storePassword keystoreProperties["RELEASE_STORE_PASSWORD"]
             }
         }
 
@@ -111,14 +94,14 @@ android {
     productFlavors {
         develop {
             dimension "mode"
-            getProps('./config/development.props').each { p ->
-                buildConfigField 'String', p.key, p.value
+            getProps("./config/development.props").each { p ->
+                buildConfigField "String", p.key, p.value
             }
         }
         production {
             dimension "mode"
-            getProps('./config/production.props').each { p ->
-                buildConfigField 'String', p.key, p.value
+            getProps("./config/production.props").each { p ->
+                buildConfigField "String", p.key, p.value
             }
         }
 
@@ -128,24 +111,24 @@ android {
         debug {
             minifyEnabled false
             signingConfig signingConfigs.debug
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            proguardFiles fileTree('proguard').asList().toArray()
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles fileTree("proguard").asList().toArray()
         }
 
         release {
             debuggable false
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
     }
 
     configurations.all {
-        exclude group: 'com.android.support', module: 'support-v13'
+        exclude group: "com.android.support", module: "support-v13"
     }
 
     packagingOptions {
-        exclude 'META-INF/library_release.kotlin_module'
+        exclude "META-INF/library_release.kotlin_module"
     }
 
     android.applicationVariants.all { variant ->
@@ -184,112 +167,160 @@ detekt {
     }
 }
 
+ext {
+    paging_version = "3.0.0"
+    junitVersion = "4.13.2"
+    mockitoVersion = "2.19.0"
+    mockitoKotlinVersion = "1.5.0"
+    assertVersion = "3.19.0"
+    espressoVersion = "2.2.2"
+    supportLibraryVersion = "26.0.1"
+    constraintVersion = "1.0.2"
+    moxyVersion = "2.2.0"
+    retrofitVersion = "2.9.0"
+    loggingInterceptorVersion = "4.9.0"
+    daggerVersion = "2.35.1"
+    rxJavaVersion = "2.2.6"
+    rxAndroidVersion = "2.1.1"
+    ciceroneVersion = "5.1.1"
+    leakCanaryVersion = "1.6.3"
+    rxBindingVersion = "2.2.0"
+    androidLibraryVersion = "28.0.0"
+    pinceAdapterVersion = "3.2.8"
+    chinaAdapterVersion = "2.9.40"
+    multiDexVersion = "1.0.3"
+    cryptoLibraryVersion = "1.0.0"
+    rxPaparazzoVersion = "0.6.1-2.x"
+    deviceInfoVersion = "2.4.1"
+    frescoVersion = "2.4.0"
+    timberVersion = "4.7.1"
+    errorHandlerVersion = "1.1.0"
+    saripaarVersion = "2.0.3"
+    toastyVersion = "1.3.0"
+    loadingLibraryVersion = "2.1.3"
+    datePickerVersion = "3.5.1"
+    materialEditTextVersion = "2.1.4"
+    clansFabVersion = "1.6.4"
+    linkBuilderVersion = "2.0.5"
+    constraintVersion = "1.1.3"
+    testRunnerVersion = "1.0.2"
+    espressoVersion = "3.0.2"
+    jUnitVersion = "4.13.1"
+    googleProgressBarVersion = "1.2.0"
+    snackBarVersion = "1.1.1"
+    firebaseVersion = "18.0.2"
+    firebaseMessagingVersion = "21.0.1"
+    adsVersion = "19.7.0"
+    gmsVersion = "17.2.1"
+    materialDrawerVersion = "1.3.7"
+    circleProgressBarVersion = "1.2.2"
+    androidNetworkingVersion = "1.0.2"
+    compressorVersion = "2.1.0"
+    refreshVersion = "1.2.3@aar"
+}
+
 dependencies {
 
+
+
     //Android dependencies
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'androidx.browser:browser:1.3.0'
-    implementation 'androidx.leanback:leanback:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
-    implementation 'androidx.media:media:1.3.1'
-    implementation 'androidx.activity:activity-ktx:1.3.0-alpha08'
-    implementation 'androidx.fragment:fragment-ktx:1.3.4'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.palette:palette-ktx:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation("androidx.browser:browser:1.3.0")
+    implementation("androidx.leanback:leanback:1.0.0")
+    implementation("com.google.android.material:material:1.3.0")
+    implementation("androidx.media:media:1.3.1")
+    implementation("androidx.activity:activity-ktx:1.3.0-beta01")
+    implementation("androidx.fragment:fragment-ktx:1.3.4")
+    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    implementation("androidx.palette:palette-ktx:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 
     //Tests
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "com.nhaarman:mockito-kotlin-kt1.1:$mockitoKotlinVersion"
-    testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.assertj:assertj-core:$assertVersion"
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("com.nhaarman:mockito-kotlin-kt1.1:$mockitoKotlinVersion")
+    testImplementation("junit:junit:$junitVersion")
+    testImplementation("org.assertj:assertj-core:$assertVersion")
 
     //Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0"
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0")
 
     //Reactive
-    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
-    implementation "android.arch.lifecycle:reactivestreams:1.1.1"
+    implementation("io.reactivex.rxjava2:rxjava:$rxJavaVersion")
+    implementation("io.reactivex.rxjava2:rxandroid:$rxAndroidVersion")
+    implementation("android.arch.lifecycle:reactivestreams:1.1.1")
 
     //Network
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
-    implementation "com.amitshekhar.android:android-networking:$androidNetworkingVersion"
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation("com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion")
+    implementation("com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion")
+    implementation("com.amitshekhar.android:android-networking:$androidNetworkingVersion")
 
     //DI
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    implementation "com.google.dagger:dagger-android:$daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation("com.google.dagger:dagger:$daggerVersion")
+    implementation("com.google.dagger:dagger-android:$daggerVersion")
+    implementation("com.google.dagger:dagger-android-support:$daggerVersion")
+    kapt("com.google.dagger:dagger-android-processor:$daggerVersion")
+    kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 
     //MVP
-    implementation "com.github.moxy-community:moxy:$moxyVersion"
-    kapt "com.github.moxy-community:moxy-compiler:$moxyVersion"
-    implementation "com.github.moxy-community:moxy-android:$moxyVersion"
-    implementation "com.github.moxy-community:moxy-androidx:$moxyVersion"
-    implementation "com.github.moxy-community:moxy-material:$moxyVersion"
-    implementation "com.github.moxy-community:moxy-ktx:$moxyVersion"
+    implementation("com.github.moxy-community:moxy:$moxyVersion")
+    kapt("com.github.moxy-community:moxy-compiler:$moxyVersion")
+    implementation("com.github.moxy-community:moxy-android:$moxyVersion")
+    implementation("com.github.moxy-community:moxy-androidx:$moxyVersion")
+    implementation("com.github.moxy-community:moxy-material:$moxyVersion")
+    implementation("com.github.moxy-community:moxy-ktx:$moxyVersion")
 
     //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
-    implementation 'android.arch.navigation:navigation-ui:1.0.0'
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+    implementation("android.arch.navigation:navigation-ui:1.0.0")
 
     //LeackCanary
-//    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-//    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
-//    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
+//    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion")
+//    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion")
+//    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion")
 
     //Validation
-    implementation "com.mobsandgeeks:android-saripaar:$saripaarVersion"
+    implementation("com.mobsandgeeks:android-saripaar:$saripaarVersion")
 
     //MaterialUtils
-    implementation "com.klinkerapps:link_builder:$linkBuilderVersion"
-    implementation "com.github.clans:fab:$clansFabVersion"
-    implementation "com.rengwuxian.materialedittext:library:$materialEditTextVersion"
-    implementation "co.infinum:materialdatetimepicker-support:$datePickerVersion"
-    implementation "com.github.GrenderG:Toasty:$toastyVersion"
-    implementation "com.wang.avi:library:$loadingLibraryVersion"
-    implementation "com.jpardogo.googleprogressbar:library:$googleProgressBarVersion"
-    implementation "com.androidadvance:topsnackbar:$snackBarVersion"
-    implementation "co.zsmb:materialdrawer-kt:$materialDrawerVersion"
-    implementation "com.budiyev.android:circular-progress-bar:$circleProgressBarVersion"
+    implementation("com.klinkerapps:link_builder:$linkBuilderVersion")
+    implementation("com.github.clans:fab:$clansFabVersion")
+    implementation("com.rengwuxian.materialedittext:library:$materialEditTextVersion")
+    implementation("co.infinum:materialdatetimepicker-support:$datePickerVersion")
+    implementation("com.github.GrenderG:Toasty:$toastyVersion")
+    implementation("com.wang.avi:library:$loadingLibraryVersion")
+    implementation("com.jpardogo.googleprogressbar:library:$googleProgressBarVersion")
+    implementation("com.androidadvance:topsnackbar:$snackBarVersion")
+    implementation("co.zsmb:materialdrawer-kt:$materialDrawerVersion")
+    implementation("com.budiyev.android:circular-progress-bar:$circleProgressBarVersion")
 
     //Fresco
-    implementation "com.facebook.fresco:fresco:$frescoVersion"
-    implementation "com.facebook.fresco:animated-gif:$frescoVersion"
-    implementation "com.facebook.fresco:animated-webp:$frescoVersion"
-    implementation "com.facebook.fresco:webpsupport:$frescoVersion"
-    //implementation 'com.jsibbold:zoomage:1.3.1'
+    implementation("com.facebook.fresco:fresco:$frescoVersion")
+    implementation("com.facebook.fresco:animated-gif:$frescoVersion")
+    implementation("com.facebook.fresco:animated-webp:$frescoVersion")
+    implementation("com.facebook.fresco:webpsupport:$frescoVersion")
 
     //Logging
-    implementation "com.jakewharton.timber:timber:$timberVersion"
+    implementation("com.jakewharton.timber:timber:$timberVersion")
 
     //ErrorHandling
-    implementation "com.workable:error-handler:$errorHandlerVersion"
+    implementation("com.workable:error-handler:$errorHandlerVersion")
 
     //RxBindings
-    implementation "com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion"
-    implementation "com.jakewharton.rxbinding2:rxbinding-support-v4:$rxBindingVersion"
-    implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxBindingVersion"
-    implementation "com.jakewharton.rxbinding2:rxbinding-design:$rxBindingVersion"
-    implementation "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxBindingVersion"
-    //implementation "com.jakewharton.rxbinding2:rxbinding-leanback-v17:$rxBindingVersion"
-    implementation "com.github.miguelbcr:RxPaparazzo:$rxPaparazzoVersion"
+    implementation("com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding2:rxbinding-support-v4:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding2:rxbinding-design:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$rxBindingVersion")
+    implementation("com.github.miguelbcr:RxPaparazzo:$rxPaparazzoVersion")
 
     //CryptoLibrary
-    implementation "cc.duduhuo.util:digest-util-android:$cryptoLibraryVersion"
+    implementation("cc.duduhuo.util:digest-util-android:$cryptoLibraryVersion")
 
     //Adapters
 //    implementation "com.mikepenz:fastadapter:$pinceAdapterVersion"
@@ -298,59 +329,58 @@ dependencies {
 //    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$chinaAdapterVersion"
 
     //MultiDex
-    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation("androidx.multidex:multidex:2.0.1")
 
     // Crashlitycs
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    implementation platform("com.google.firebase:firebase-bom:27.1.0")
 
     // Declare the dependencies for the Crashlytics and Analytics libraries
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    // When using the BoM, you don"t specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
     //Firebase
-    implementation "com.google.firebase:firebase-core:$firebaseVersion"
-    implementation "com.google.firebase:firebase-messaging:$firebaseMessagingVersion"
+    implementation("com.google.firebase:firebase-core:$firebaseVersion")
+    implementation("com.google.firebase:firebase-messaging:$firebaseMessagingVersion")
 
 
     //Ads
-    implementation "com.google.android.gms:play-services-ads:$adsVersion"
-    implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
-    implementation "com.google.firebase:firebase-ads:$adsVersion"
-    implementation "com.google.android.gms:play-services-tasks:$gmsVersion"
-    //implementation "com.github.clockbyte:admobadapter:$admobAdapterVersion"
+    implementation("com.google.android.gms:play-services-ads:$adsVersion")
+    implementation("com.google.android.gms:play-services-ads-identifier:17.0.0")
+    implementation("com.google.firebase:firebase-ads:$adsVersion")
+    implementation("com.google.android.gms:play-services-tasks:$gmsVersion")
 
     //Compressor
-    implementation "id.zelory:compressor:$compressorVersion"
+    implementation("id.zelory:compressor:$compressorVersion")
 
     //Time
-    implementation "com.jakewharton.threetenabp:threetenabp:$jakeWhartonInstaTime"
-    implementation project(':ta_library')
+    implementation("com.jakewharton.threetenabp:threetenabp:$jakeWhartonInstaTime")
+    implementation project(":ta_library")
 
     //RefreshLayout
-    implementation "com.github.omadahealth:swipy:${refreshVersion}"
+    implementation("com.github.omadahealth:swipy:${refreshVersion}")
 
-    implementation 'com.github.florent37:shapeofview:1.4.7'
+    implementation("com.github.florent37:shapeofview:1.4.7")
 
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
-    implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
+    implementation("androidx.viewpager2:viewpager2:1.1.0-alpha01")
     //appodeal
-    implementation 'com.appodeal.ads:sdk:2.9.2.+'
-    implementation 'com.explorestack:consent:1.0.2'
+    implementation("com.appodeal.ads:sdk:2.9.2.+")
+    implementation("com.explorestack:consent:1.0.2")
     //Video player
-    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
-    implementation 'com.danikula:videocache:2.7.1'
+    implementation("com.google.android.exoplayer:exoplayer:2.12.2")
+    implementation("com.danikula:videocache:2.7.1")
 
     //paging 3
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
+    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
+    implementation("androidx.paging:paging-rxjava2-ktx:$paging_version")
 
-    implementation "com.android.billingclient:billing-ktx:3.0.2"
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
-    implementation 'com.google.firebase:firebase-auth'
+    implementation("com.android.billingclient:billing-ktx:3.0.2")
+    implementation("com.google.android.gms:play-services-auth:19.0.0")
+    implementation("com.google.firebase:firebase-auth")
 
     // To use only without reflection variants of viewBinding
-    implementation 'com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.6'
+    implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.6")
 }
