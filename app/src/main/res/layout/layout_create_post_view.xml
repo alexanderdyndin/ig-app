@@ -16,7 +16,25 @@
         android:hint="@string/add_photo_or_text"
         android:padding="@dimen/big_padding" />
 
-    <GridLayout
+    <com.intergroupapplication.presentation.customview.ImageGalleryView
+        android:id="@+id/createImageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <com.intergroupapplication.presentation.customview.VideoGalleryView
+        android:id="@+id/createVideoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <com.intergroupapplication.presentation.customview.AudioGalleryView
+        android:id="@+id/createAudioContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <!--<GridLayout
         android:id="@+id/imageAndVideoContainer"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
@@ -27,5 +45,5 @@
         android:id="@+id/audioContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical"/>!-->
 </LinearLayout>

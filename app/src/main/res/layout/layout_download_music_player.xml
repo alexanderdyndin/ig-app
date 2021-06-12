@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/colorInput">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/postMusic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        tools:layout_editor_absoluteX="4dp">
+
+        <ImageView
+            android:id="@+id/bgPostMusic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_post_music"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/trackName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            tools:text="The Anix - Die With You"
+            android:ellipsize="end"
+            android:maxLines="1"
+            style="@style/TextAccent14sp"
+            app:layout_constraintEnd_toStartOf="@+id/exoDuration"
+            app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
+            app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+        <TextView
+            android:id="@+id/fromWhom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="12dp"
+            android:paddingStart="8dp"
+            tools:text="Загрузил: (ID:1223456)"
+            style="@style/TextNoActive10sp"
+            app:layout_constraintStart_toStartOf="@+id/trackName"
+            app:layout_constraintTop_toBottomOf="@+id/trackName" />
+
+        <TextView
+            android:id="@+id/exoDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            tools:text="(4:03)"
+            style="@style/TextNoActive12sp"
+            app:layout_constraintBottom_toBottomOf="@id/bgPostMusic"
+            app:layout_constraintEnd_toStartOf="@+id/playPause"
+            app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+        <FrameLayout
+            android:id="@+id/playPause"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+            app:layout_constraintEnd_toEndOf="@+id/bgPostMusic"
+            app:layout_constraintTop_toTopOf="@+id/bgPostMusic" >
+
+            <ImageButton
+                android:id="@+id/exo_play"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_post_play"
+                android:background="?attr/selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+                app:layout_constraintEnd_toEndOf="@+id/bgPostMusic"
+                app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+            <ImageButton
+                android:id="@+id/exo_pause"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginEnd="2dp"
+                android:src="@drawable/ic_post_pause"
+                android:background="?attr/selectableItemBackground"
+                app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+                app:layout_constraintEnd_toEndOf="@+id/bgPostMusic"
+                app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/startLineSeekBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/start_line_seek_bar"
+            app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+            app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
+            app:layout_constraintTop_toBottomOf="@+id/fromWhom" />
+
+        <com.intergroupapplication.presentation.customview.CustomTimeBar
+            android:id="@+id/exo_progress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            app:scrubber_color="@color/colorAccent"
+            app:scrubber_drawable="@drawable/ic_post_knob_press"
+            app:played_color="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/exoDuration"
+            app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
+            app:layout_constraintTop_toTopOf="@id/startLineSeekBar" />
+
+        <ImageView
+            android:id="@+id/detachImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit_delete"
+            app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/darkCard"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/uploading_image_foreground_rectangle_shadow_drawable"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible" />
+        <com.budiyev.android.circularprogressbar.CircularProgressBar
+            android:id="@+id/imageUploadingProgressBar"
+            android:layout_width="@dimen/image_uploading_circular_bar_size"
+            android:layout_height="@dimen/image_uploading_circular_bar_size"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            app:animateProgress="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:backgroundStrokeColor="#424242"
+            app:backgroundStrokeWidth="2dp"
+            app:foregroundStrokeColor="#ffffff"
+            app:foregroundStrokeWidth="3dp"
+            app:progressAnimationDuration="2000" />
+
+        <ImageView
+            android:id="@+id/stopUploading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_close_white" />
+
+        <LinearLayout
+            android:id="@+id/refreshContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_replay" />
+
+            <TextView
+                style="@style/InterGroupSmallWhiteTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/little_margin"
+                android:text="@string/error" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

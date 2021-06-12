@@ -97,19 +97,19 @@ class PostCustomView @JvmOverloads constructor(context:Context,
         }
     }
 
-    private fun createImageGalleryView(imageUrl: List<FileEntity>,imageGalleryView: ImageGalleryView) {
+    private fun createImageGalleryView(imageUrl: MutableList<FileEntity>,imageGalleryView: ImageGalleryView) {
         imageGalleryView.setImages(imageUrl, markupModel.imagesExpanded)
         imageGalleryView.imageClick = imageClickListener
         imageGalleryView.expand = { markupModel.imagesExpanded = it }
     }
 
-    private fun createAudioGalleryView(audioUrl: List<AudioEntity>,audioGalleryView: AudioGalleryView) {
+    private fun createAudioGalleryView(audioUrl: MutableList<AudioEntity>,audioGalleryView: AudioGalleryView) {
         audioGalleryView.proxy = proxy
         audioGalleryView.setAudios(audioUrl)
         audioGalleryView.expand = { markupModel.audiosExpanded = it }
     }
 
-    private fun createVideoGalleryView(videoUrl: List<FileEntity>,videoGalleryView: VideoGalleryView) {
+    private fun createVideoGalleryView(videoUrl: MutableList<FileEntity>,videoGalleryView: VideoGalleryView) {
         videoGalleryView.proxy = proxy
         videoGalleryView.imageLoadingDelegate = imageLoadingDelegate
         videoGalleryView.setVideos(videoUrl)

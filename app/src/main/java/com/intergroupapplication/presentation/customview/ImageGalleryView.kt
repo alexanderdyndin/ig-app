@@ -47,6 +47,10 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
         parseUrl(uris, isExpanded)
     }
 
+    fun addImage(view:View){
+        this.addView(view)
+    }
+
     private fun parseUrl(urls: List<FileEntity>, isExpanded: Boolean) {
         this.removeAllViews()
         if (isExpanded && urls.size > 3) {
@@ -82,7 +86,7 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
 
     private fun createContainer(urls: List<FileEntity>) {
         val container = LinearLayout(context, attrs, defStyleAttr)
-        container.orientation = LinearLayout.HORIZONTAL
+        container.orientation = HORIZONTAL
         container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         urls.forEach {
             container.addView(createPic(it, pxWidth/urls.size))

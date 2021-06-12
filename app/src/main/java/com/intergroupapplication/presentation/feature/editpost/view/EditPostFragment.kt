@@ -80,7 +80,7 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 setupMediaViews(text.second, imageContainer,audioContainer, groupPost)
                 val textView = container.findViewById<AppCompatEditText>(R.id.postText)
                 textView.setText(text.first)
-                createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer)
+                //createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer)
                 createPostCustomView.addView(container)
             }
         }
@@ -146,7 +146,7 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                     }
                 }
                 imageContainer.addView(loadingViews[url])
-                createPostCustomView.namesVideoOrImage.add(Pair(name,loadingViews[url]))
+                createPostCustomView.namesImage.add(Pair(name,loadingViews[url]))
                 return@fillingView
             }
         }
@@ -170,7 +170,7 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                     }
                 }
                 imageContainer.addView(loadingViews[url])
-                createPostCustomView.namesVideoOrImage.add(Pair(name, loadingViews[url]))
+                createPostCustomView.namesVideo.add(Pair(name, loadingViews[url]))
                 return@fillingView
             }
         }

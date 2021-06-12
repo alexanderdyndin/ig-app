@@ -190,4 +190,10 @@
     <string name="demote">Разжаловать</string>
     <string name="unblock">Разблокировать</string>
     <string name="edit_post">Редактировать</string>
+    <string name="answer_comment">ответил на ваш комментарий</string>
+    <string name="dislike_your_comment">не понравился ваш</string>
+    <string name="like_your_comment">понравился ваш</string>
+    <string name="have_new_comment">новый комментарий под постом</string>
+    <string name="video">Видео</string>
+    <string name="my_video">Моё видео</string>
 </resources>

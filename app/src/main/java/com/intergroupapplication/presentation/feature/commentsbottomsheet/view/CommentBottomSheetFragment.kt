@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -13,21 +14,26 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
+import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.CommentEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
-import com.intergroupapplication.presentation.customview.CreatePostCustomView
+import com.intergroupapplication.presentation.customview.*
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
-
+//TODO создавать аудио, видео вьюхи прям тут и добавлять их в контейнер вручную, а уже внутри сетать player
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Validator.ValidationListener{
 
     companion object{
@@ -59,7 +65,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
-    private val heightView by lazy { requireContext().dpToPx(100) }
     private val heightEditTextWithFiveLine by lazy { requireContext().dpToPx(180) }
     private val heightEditText by lazy { requireContext().dpToPx(53) }
     private val heightLineInEditText by lazy { requireContext().dpToPx(16) }
@@ -138,6 +143,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
                         ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
             }
         }.let(compositeDisposable::add)
+        createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -288,35 +295,62 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg") || chooseMedia.url.contains(".wav")){
-            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,
-                    createCommentCustomView.audioContainer, false)
-            loadingViews[chooseMedia.url]?.let {
-                val trackName = it.findViewById<TextView>(R.id.trackName)
-                trackName.text = chooseMedia.name
-            }
-            createCommentCustomView.addMusic(chooseMedia.name,loadingViews[chooseMedia.url])
+        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
+                || chooseMedia.url.contains(".wav")){
+            val audioEntity = AudioEntity(0,chooseMedia.url,false,"",
+                chooseMedia.name,chooseMedia.authorMusic,"",0,0,
+                chooseMedia.duration)
+            loadingViews[chooseMedia.url] = createAudioPlayerView(audioEntity)
+            createCommentCustomView.addMusic(audioEntity,loadingViews[chooseMedia.url] as DownloadAudioPlayerView)
+        }
+        else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
+                || chooseMedia.url.contains(".png")){
+            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
+                chooseMedia.url.substringAfterLast("/"),0,0)
+            loadingViews[chooseMedia.url] = createImageView(fileEntity)
+            loadingViews[chooseMedia.url]?.let { createCommentCustomView.addImage(fileEntity, it) }
         }
         else {
-            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image,
-                   createCommentCustomView.imageContainer, false)
-            loadingViews[chooseMedia.url]?.let {
-                val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
-                imageLoadingDelegate.loadImageFromFile(chooseMedia.url, imagePreview)
-            }
-            createCommentCustomView.addImageOrVideo(chooseMedia.url.substringAfterLast("/"),
-                    loadingViews[chooseMedia.url])
+            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
+                chooseMedia.url.substringAfterLast("/"),0,0,
+                chooseMedia.urlPreview, chooseMedia.duration)
+            loadingViews[chooseMedia.url] = createVideoPlayerView(fileEntity)
+            createCommentCustomView.addVideo(fileEntity,
+                loadingViews[chooseMedia.url] as DownloadVideoPlayerView)
         }
         createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                null, null)
+               null, null)
         prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
         imageUploadingStarted(loadingViews[chooseMedia.url])
 
         if (loadingViews.size == chooseMedias.size && createCommentCustomView.currentContainerIsLast()){
             createCommentCustomView.createAllMainView()
-            createCommentCustomView.textPost.hint = requireContext()
-                    .getString(R.string.write_your_comment)
             controlCommentEditTextChanges()
+        }
+    }
+
+    private fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
+        return DownloadAudioPlayerView(requireContext()).apply {
+            trackName = audioEntity.song
+            trackOwner = "Загрузил (ID:${audioEntity.owner})"
+            durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
+        }
+    }
+
+    private fun createImageView(fileEntity: FileEntity): View {
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_attach_image,
+            createCommentCustomView.imageContainer, false)
+        val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
+        imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
+        return image
+    }
+
+    private fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
+        return DownloadVideoPlayerView(requireContext()).apply {
+            Timber.tag("tut_preview").d("preview ${fileEntity.preview}")
+            imageLoadingDelegate.loadImageFromFile(fileEntity.preview,previewForVideo)
+            durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
+            nameVideo.text = fileEntity.title
         }
     }
 
@@ -378,7 +412,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
                 return@forEach
             }
         }
-        if (!countUpload || loadingViews.size == 1){
+        if (!countUpload || loadingViews.isNotEmpty()){
             createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
             setUpRightDrawableListener()
@@ -416,9 +450,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
             container.removeView(loadingViews[path])
         }
         createCommentCustomView.listAudioContainers.forEach {container->
-            container.removeView(loadingViews[path])
+            container.removeAudioView(loadingViews[path])
         }
-        createCommentCustomView.detachName(loadingViews[path])
+        createCommentCustomView.listVideoContainers.forEach { container->
+            container.removeVideoView(loadingViews[path])
+        }
+        createCommentCustomView.deleteName(loadingViews[path])
         loadingViews.remove(path)
         chooseMedias.removeChooseMedia(path)
         if(loadingViews.isEmpty()){

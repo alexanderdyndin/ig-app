@@ -1,5 +1,7 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
+import android.net.Uri
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -11,11 +13,17 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.ResizeOptions
+import com.facebook.imagepipeline.request.ImageRequest
+import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentCreatePostBinding
+import com.intergroupapplication.domain.entity.AudioEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
@@ -30,6 +38,8 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapte
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
 import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -157,29 +167,57 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg") || chooseMedia.url.contains(".wav")){
-            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,
-                    createPostCustomView.audioContainer, false)
-            loadingViews[chooseMedia.url]?.let {
-                val trackName = view?.findViewById<TextView>(R.id.trackName)
-                trackName?.text = chooseMedia.name
-            }
-            createPostCustomView.addMusic(chooseMedia.name,loadingViews[chooseMedia.url])
+        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
+            || chooseMedia.url.contains(".wav")){
+            val audioEntity = AudioEntity(0,chooseMedia.url,false,"",
+                chooseMedia.name,chooseMedia.authorMusic,"",0,0,
+                chooseMedia.duration)
+            loadingViews[chooseMedia.url] = createAudioPlayerView(audioEntity)
+            createPostCustomView.addMusic(audioEntity,loadingViews[chooseMedia.url] as DownloadAudioPlayerView)
+        }
+        else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
+            || chooseMedia.url.contains(".png")){
+            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
+                chooseMedia.url.substringAfterLast("/"),0,0)
+            loadingViews[chooseMedia.url] = createImageView(fileEntity)
+            loadingViews[chooseMedia.url]?.let { createPostCustomView.addImage(fileEntity, it) }
         }
         else {
-            loadingViews[chooseMedia.url] = layoutInflater.inflate(R.layout.layout_attach_image,
-                    createPostCustomView.imageContainer, false)
-            loadingViews[chooseMedia.url]?.let {
-                val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
-                imageLoadingDelegate.loadImageFromFile(chooseMedia.url, imagePreview)
-            }
-            createPostCustomView.addImageOrVideo(chooseMedia.url.substringAfterLast("/"),
-                    loadingViews[chooseMedia.url])
+            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
+                chooseMedia.url.substringAfterLast("/"),0,0,
+                chooseMedia.urlPreview, chooseMedia.duration)
+            loadingViews[chooseMedia.url] = createVideoPlayerView(fileEntity)
+            createPostCustomView.addVideo(fileEntity,
+                loadingViews[chooseMedia.url] as DownloadVideoPlayerView)
         }
         prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
         imageUploadingStarted(loadingViews[chooseMedia.url])
         if (loadingViews.size == chooseMedias.size && createPostCustomView.currentContainerIsLast()){
             createPostCustomView.createAllMainView()
+        }
+    }
+
+    private fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
+        return DownloadAudioPlayerView(requireContext()).apply {
+            trackName = trackName
+            trackOwner = "Загрузил (ID:${audioEntity.owner})"
+            durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
+        }
+    }
+
+    private fun createImageView(fileEntity: FileEntity): View {
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_attach_image,
+            createPostCustomView.imageContainer, false)
+        val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
+        imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
+        return image
+    }
+
+    private fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
+        return DownloadVideoPlayerView(requireContext()).apply {
+            imageLoadingDelegate.loadImageFromFile(fileEntity.preview,previewForVideo)
+            durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
+            nameVideo.text = fileEntity.title
         }
     }
 
@@ -241,9 +279,12 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
             container.removeView(loadingViews[path])
         }
         createPostCustomView.listAudioContainers.forEach {container->
-            container.removeView(loadingViews[path])
+            container.removeAudioView(loadingViews[path])
         }
-        createPostCustomView.detachName(loadingViews[path])
+        createPostCustomView.listVideoContainers.forEach { container->
+            container.removeVideoView(loadingViews[path])
+        }
+        createPostCustomView.deleteName(loadingViews[path])
         loadingViews.remove(path)
         chooseMedias.removeChooseMedia(path)
     }

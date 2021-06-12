@@ -187,7 +187,7 @@
     <string name="demote">Demote</string>
     <string name="unblock">Unblock</string>
     <string name="edit_post">Edit</string>
-    <string name="deeplinkDomain">https://intergroupapplication.page.link</string>
+    <string name="deeplinkDomain" translatable="false">https://intergroupapplication.page.link</string>
     <string name="nickname">Come up with a nickname</string>
     <string name="day">Day</string>
     <string name="week">Week</string>
@@ -221,4 +221,10 @@
     </string-array>
     <string name="reset_filter">Reset</string>
     <string name="apply_filter">Apply</string>
+    <string name="answer_comment">answer your comment</string>
+    <string name="dislike_your_comment">dislike your comment</string>
+    <string name="like_your_comment">like your comment</string>
+    <string name="have_new_comment">new comment under the post</string>
+    <string name="video">Video</string>
+    <string name="my_video">My video</string>
 </resources>

@@ -5,11 +5,20 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.GridLayout
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.LayoutCreatePostViewBinding
+import com.intergroupapplication.domain.entity.AudioEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.exstension.activated
+import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
+import kotlinx.android.synthetic.main.item_comment.view.*
 import timber.log.Timber
 
 class CreatePostCustomView @JvmOverloads constructor(context: Context,
@@ -21,13 +30,21 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
         orientation = VERTICAL
     }
 
-    lateinit var imageContainer:GridLayout
-    lateinit var audioContainer:LinearLayout
+    //lateinit var imageContainer:GridLayout
+    //lateinit var audioContainer:LinearLayout
+    lateinit var imageContainer:ImageGalleryView
+    lateinit var videoContainer:VideoGalleryView
+    lateinit var audioContainer:AudioGalleryView
     lateinit var textPost:AppCompatEditText
-    val namesVideoOrImage = mutableListOf<Pair<String,View?>>()
+   // val namesVideoOrImage = mutableListOf<Pair<String,View?>>()
+    val namesImage = mutableListOf<Pair<String,View?>>()
+    val namesVideo = mutableListOf<Pair<String,View?>>()
     val namesAudio = mutableListOf<Pair<String,View?>>()
-    val listImageContainers = mutableListOf<GridLayout>()
-    val listAudioContainers = mutableListOf<LinearLayout>()
+    //val listImageContainers = mutableListOf<GridLayout>()
+    //val listAudioContainers = mutableListOf<LinearLayout>()
+    val listImageContainers = mutableListOf<ImageGalleryView>()
+    val listAudioContainers = mutableListOf<AudioGalleryView>()
+    val listVideoContainers = mutableListOf<VideoGalleryView>()
     val listEditText = mutableListOf<AppCompatEditText>()
 
     fun createAllMainView(){
@@ -35,16 +52,19 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
         val view = LayoutInflater.from(context).inflate(R.layout.layout_create_post_view,this,false)
         addView(view)
         textPost = view.findViewById(R.id.postText)
-        imageContainer = view.findViewById(R.id.imageAndVideoContainer)
-        audioContainer = view.findViewById(R.id.audioContainer)
+        imageContainer = view.findViewById(R.id.createImageContainer)
+        videoContainer = view.findViewById(R.id.createVideoContainer)
+        audioContainer = view.findViewById(R.id.createAudioContainer)
+        listEditText.add(textPost)
         setupEditText()
         listImageContainers.add(imageContainer)
-        listEditText.add(textPost)
         listAudioContainers.add(audioContainer)
+        listVideoContainers.add(videoContainer)
     }
 
-    fun addViewInEditPost(editText: AppCompatEditText,imageContainer: GridLayout,audioContainer: LinearLayout){
-        addMediaContainer(imageContainer, audioContainer)
+    fun addViewInEditPost(editText: AppCompatEditText,imageContainer: ImageGalleryView,
+                          audioContainer: AudioGalleryView,videoGalleryView: VideoGalleryView){
+        addMediaContainer(imageContainer, audioContainer,videoGalleryView)
         addEditText(editText)
     }
 
@@ -53,9 +73,11 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
             textPost = (this.getChildAt(0) as AppCompatEditText)
             textPost.setText("")
             textPost.activated(true)
-            imageContainer =(this.getChildAt(1) as GridLayout)
+            imageContainer =(this.getChildAt(1) as ImageGalleryView)
             imageContainer.removeAllViews()
-            audioContainer =  (this.getChildAt(2) as LinearLayout)
+            videoContainer =  (this.getChildAt(2) as VideoGalleryView)
+            videoContainer.removeAllViews()
+            audioContainer =  (this.getChildAt(3) as AudioGalleryView)
             audioContainer.removeAllViews()
         }
         (1 until this.childCount).forEach {
@@ -65,7 +87,9 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
             listImageContainers.removeAt(it)
         }
         namesAudio.clear()
-        namesVideoOrImage.clear()
+        namesImage.clear()
+        namesVideo.clear()
+        //namesVideoOrImage.clear()
     }
 
     private fun addEditText(editText:AppCompatEditText){
@@ -76,20 +100,31 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupEditText() {
+        if (childCount > 1){
+            textPost.hint = ""
+        }
         textPost.setOnTouchListener { v, event ->
             changeActivatedAllEditText()
             v.activated(true)
             changeCurrentContainers()
             return@setOnTouchListener super.onTouchEvent(event)
         }
+        textPost.setOnClickListener {v->
+            changeActivatedAllEditText()
+            v.activated(true)
+            changeCurrentContainers()
+        }
         textPost.activated(true)
     }
 
-    private fun addMediaContainer(imageContainer:GridLayout,audioContainer:LinearLayout){
+    private fun addMediaContainer(imageContainer:ImageGalleryView,audioContainer:AudioGalleryView,
+        videoContainer: VideoGalleryView){
         this.imageContainer = imageContainer
         listImageContainers.add(imageContainer)
         this.audioContainer = audioContainer
         listAudioContainers.add(audioContainer)
+        this.videoContainer = videoContainer
+        listVideoContainers.add(videoContainer)
     }
 
     fun currentContainerIsLast():Boolean{
@@ -116,37 +151,49 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
         }
     }
 
-    fun addMusic(name:String,view:View?){
-        audioContainer.addView(view)
-        namesAudio.add(Pair(name,view))
-    }
-
     private fun changeCurrentContainers(){
         listEditText.forEachIndexed { index,editText->
             if (editText.isActivated){
                 imageContainer = listImageContainers[index]
                 audioContainer = listAudioContainers[index]
+                videoContainer = listVideoContainers[index]
             }
         }
     }
 
-    fun addImageOrVideo(name:String,view:View?){
-        imageContainer.addView(view)
-        namesVideoOrImage.add(Pair(name,view))
+    fun addMusic(audioEntity: AudioEntity,view:DownloadAudioPlayerView){
+        audioContainer.addAudio(audioEntity,view)
+        namesAudio.add(Pair(audioEntity.song,view))
+    }
+    fun addImage(fileEntity: FileEntity, view:View){
+        imageContainer.addImage(view)
+        namesImage.add(Pair(fileEntity.title,view))
     }
 
-    fun detachName(view:View?){
-        namesVideoOrImage.forEach { pair->
+    fun addVideo(fileEntity: FileEntity,view:DownloadVideoPlayerView){
+        videoContainer.addVideo(fileEntity,view)
+        namesVideo.add(Pair(fileEntity.title,view))
+    }
+
+    fun deleteName(view:View?){
+        namesImage.forEach { pair->
             if (pair.second == view){
-                namesVideoOrImage.remove(pair)
-                return@detachName
+                namesImage.remove(pair)
+                return@deleteName
+            }
+        }
+
+        namesVideo.forEach { pair->
+            if (pair.second == view){
+                namesVideo.remove(pair)
+                return@deleteName
             }
         }
 
         namesAudio.forEach { pair->
             if (pair.second == view){
                 namesAudio.remove(pair)
-                return@detachName
+                return@deleteName
             }
         }
     }
@@ -167,7 +214,13 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
             }
             if (listImageContainers[index].childCount!=0) {
                 (0 until listImageContainers[index].childCount).forEach { _ ->
-                    textBeforeSend += "${namesVideoOrImage[numberImage].first},"
+                    textBeforeSend += "${namesImage[numberImage].first},"
+                    numberImage++
+                }
+            }
+            if (listVideoContainers[index].childCount!=0) {
+                (0 until listVideoContainers[index].childCount).forEach { _ ->
+                    textBeforeSend += "${namesVideo[numberImage].first},"
                     numberImage++
                 }
             }
