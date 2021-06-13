@@ -59,26 +59,19 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
     }
 
     fun removeAllBesidesFirstView(){
-        with(this.getChildAt(0) as LinearLayout){
-            textPost = (this.getChildAt(0) as AppCompatEditText)
-            textPost.setText("")
-            textPost.activated(true)
-            imageContainer =(this.getChildAt(1) as CreateImageGalleryView)
-            imageContainer.removeAllViews()
-            videoContainer =  (this.getChildAt(2) as CreateVideoGalleryView)
-            videoContainer.removeAllViews()
-            audioContainer =  (this.getChildAt(3) as CreateAudioGalleryView)
-            audioContainer.removeAllViews()
-        }
-        (1 until this.childCount).forEach {
-            this.removeViewAt(it)
-            listAudioContainers.removeAt(it)
-            listEditText.removeAt(it)
-            listImageContainers.removeAt(it)
-        }
+        clearAllList()
+        this.removeAllViews()
+        createAllMainView()
+    }
+
+    private fun clearAllList() {
         namesAudio.clear()
         namesImage.clear()
         namesVideo.clear()
+        listEditText.clear()
+        listImageContainers.clear()
+        listVideoContainers.clear()
+        listAudioContainers.clear()
     }
 
     private fun addEditText(editText:AppCompatEditText){

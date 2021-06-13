@@ -115,20 +115,6 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
             if (audioEntity.song == name) {
                 val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createAudioPlayerView(audioEntity)
-                /*loadingViews[url]?.let {
-                    val trackName = it.findViewById<TextView>(R.id.trackName)
-                    val detachImage = it.findViewById<ImageView>(R.id.detachImage)
-                    trackName?.text = audioEntity.song
-                    detachImage.run {
-                        show()
-                        setOnClickListener {
-                            childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
-                                    bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
-                                            CHOOSE_MEDIA_KEY to ChooseMedia(url)))
-                            detachMedia(url)
-                        }
-                    }
-                }*/
                 audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
                 createPostCustomView.namesVideo.add(Pair(name,loadingViews[url]))
                 return@fillingView
@@ -138,20 +124,6 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
             if (fileEntity.title == name) {
                 val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createImageView(fileEntity)
-                /*loadingViews[url]?.let {
-                    val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
-                    imageLoadingDelegate.loadImageFromUrl(fileEntity.file, imagePreview)
-                    val detachImage = it.findViewById<ImageView>(R.id.detachImage)
-                    detachImage.run {
-                        show()
-                        setOnClickListener {
-                            childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
-                                    bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
-                                            CHOOSE_MEDIA_KEY to ChooseMedia(url)))
-                            detachMedia(url)
-                        }
-                    }
-                }*/
                 loadingViews[url]?.let { imageContainer.addImage(it) }
                 createPostCustomView.namesImage.add(Pair(name, loadingViews[url]))
                 return@fillingView
@@ -161,23 +133,8 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
             if (fileEntity.title == name) {
                 val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createVideoPlayerView(fileEntity)
-                /*loadingViews[url]?.let {
-                    val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
-                    imageLoadingDelegate.loadImageFromUrl(fileEntity.preview, imagePreview)
-                    val detachImage = it.findViewById<ImageView>(R.id.detachImage)
-                    detachImage.run {
-                        show()
-                        setOnClickListener {
-                            childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
-                                    bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
-                                            CHOOSE_MEDIA_KEY to ChooseMedia(url)))
-                            detachMedia(url)
-                        }
-                    }
-                }*/
                 videoContainer.addVideo(fileEntity, loadingViews[url] as DownloadVideoPlayerView)
                 createPostCustomView.namesVideo.add(Pair(name, loadingViews[url]))
-              //  createPostCustomView.addVideo(fileEntity, loadingViews[url] as DownloadVideoPlayerView)
                 return@fillingView
             }
         }
@@ -200,6 +157,31 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 }
             }
         }
+    }
+
+    override fun createImageView(fileEntity: FileEntity): View {
+        val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
+        val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
+        if (fileEntity.file.contains("/groups/0/comments/")){
+            imageLoadingDelegate.loadImageFromUrl(fileEntity.file, pic)
+        }
+        else{
+            imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
+        }
+        image.run {
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            detachImage.run {
+                show()
+                setOnClickListener {
+                    childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
+                        bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
+                            CHOOSE_MEDIA_KEY to ChooseMedia(url)))
+                    detachMedia(url)
+                }
+            }
+        }
+        return image
     }
 
     override fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {

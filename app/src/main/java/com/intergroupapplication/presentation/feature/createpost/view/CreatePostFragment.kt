@@ -203,7 +203,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
         val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
         val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
         imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
-        imageLoadingDelegate.loadImageFromUrl(fileEntity.file, pic)
         return image
     }
 

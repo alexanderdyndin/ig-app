@@ -153,18 +153,21 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
     private fun setUpRightDrawableListener() {
         rightDrawableListener.clickListener = {
             CommentsViewModel.publishSubject
-                    .onNext(Pair(CREATE_COMMENT_DATA,Pair(createCommentCustomView.createFinalText(), presenter)))
+                    .onNext(Pair(CREATE_COMMENT_DATA,Pair(createCommentCustomView.createFinalText(),
+                        presenter)))
             loadingViews.clear()
             chooseMedias.clear()
             with(createCommentCustomView){
                 removeAllBesidesFirstView()
+                createCommentCustomView.textPost.hint = requireContext()
+                    .getString(R.string.write_your_comment)
                 controlFirstCommentEditTextChanges()
-                textPost.run {
+                /*textPost.run {
                     hint = requireContext()
                         .getString(R.string.write_your_comment)
                     setCompoundDrawablesWithIntrinsicBounds(null, null,
                         null, null)
-            }
+            }*/
             }
         }
         createCommentCustomView.textPost.setOnTouchListener(rightDrawableListener)
