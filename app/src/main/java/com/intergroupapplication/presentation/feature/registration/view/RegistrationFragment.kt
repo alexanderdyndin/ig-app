@@ -157,10 +157,11 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         setErrorHandler()
         textLogin.clicks().subscribe {
             val n = findNavController()
-            n.navigate(R.id.action_registrationActivity_to_loginActivity2)
+            n.navigate(R.id.action_registrationActivity_to_loginActivity)
         }.also { compositeDisposable.add(it) }
         initValidator()
         initEditText()
+        visibilityPassword(!passwordVisible)
         sign_in_button.setOnClickListener {
             val intent = mGoogleSignInClient.signInIntent
             startActivityForResult(intent, LoginFragment.RC_SIGN_IN)
@@ -179,13 +180,13 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         if (isVisible) {
             password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
         } else {
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
         }
     }
 

@@ -534,6 +534,7 @@
         <item name="android:textSize">@dimen/big_size</item>
         <item name="android:background">@drawable/bg_inpt_mini</item>
         <item name="android:fontFamily">@font/play</item>
+        <item name="android:inputType">number</item>
     </style>
 
     <style name="ImageSeparatorLineMini">
@@ -570,5 +571,15 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    </style>
+    <style name="btnBigStyle">
+        <item name="android:layout_marginStart">@dimen/low_big_margin</item>
+        <item name="android:layout_marginEnd">@dimen/low_big_margin</item>
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/btn_text_selector</item>
+        <item name="android:textSize">@dimen/big_size</item>
+        <item name="android:background">@drawable/selector_btn_big</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:paddingTop">@dimen/middle_padding</item>
     </style>
 </resources>

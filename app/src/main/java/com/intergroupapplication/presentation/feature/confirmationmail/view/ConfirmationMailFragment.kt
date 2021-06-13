@@ -107,7 +107,9 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
         if (email.isNotEmpty())
             emailConfirmation.text = email
         else {
-            emailConfirmation.gone()
+            textConfirmation.hide()
+            textConfirmation.hide()
+            emailConfirmation.hide()
         }
     }
 

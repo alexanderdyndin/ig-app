@@ -2,10 +2,7 @@ package com.intergroupapplication.presentation.feature.agreements.view
 
 import android.Manifest
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.CompoundButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -69,6 +66,9 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     private lateinit var conditionsAgreement: LinearLayout
     private lateinit var conditionsCopyrightHolders: LinearLayout
     private lateinit var conditionsPolicy: LinearLayout
+    private lateinit var privacyPolicy: TextView
+    private lateinit var userAgreement: TextView
+    private lateinit var copyrightAgreement: TextView
 
     override fun viewCreated() {
         btnNext = viewBinding.btnNext
@@ -79,6 +79,9 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         conditionsAgreement = viewBinding.conditionsAgreement
         conditionsCopyrightHolders = viewBinding.conditionsCopyrightHolders
         conditionsPolicy = viewBinding.conditionsPolicy
+        privacyPolicy = viewBinding.privacyPolicy
+        userAgreement = viewBinding.userAgreement
+        copyrightAgreement = viewBinding.copyrightAgreement
         initCheckBox()
         initBtn()
         clicks(btnNext)
@@ -116,15 +119,15 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     private fun initBtn() {
-        conditionsPolicy.clicks().subscribe {
+        privacyPolicy.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_PRIVACY_POLICY, KEY_TITLE to RES_ID_PRIVACY_POLICY)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
-        conditionsAgreement.clicks().subscribe {
+        userAgreement.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_TERMS_OF_USE, KEY_TITLE to RES_ID_TERMS_OF_USE)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
-        conditionsCopyrightHolders.clicks().subscribe {
+        copyrightAgreement.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }

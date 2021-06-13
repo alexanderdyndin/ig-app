@@ -43,9 +43,4 @@ class RegistrationPresenter @Inject constructor(private val registrationGateway:
                 }))
     }
 
-
-    fun goToSettingsScreen() {
-        //router.navigateTo(ActionApplicationDetailsScreen())
-    }
-
 }

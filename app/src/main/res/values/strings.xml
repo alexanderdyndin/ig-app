@@ -59,10 +59,10 @@
     <!--New Design-->
     <string name="intergroup">InterGroup</string>
     <string name="welcome">Welcome!\nOur social network allows to chat, listen to music, read news, view photos and create groups by interests.</string>
-    <string name="privacy_police">Privacy policy</string>
+    <string name="privacy_police"><u>Privacy policy</u></string>
     <string name="terms_accept">Accept conditions\t\t\t</string>
-    <string name="terms_of_use">User agreement</string>
-    <string name="rightholders">To copyright owners</string>
+    <string name="terms_of_use"><u>User agreement</u></string>
+    <string name="rightholders"><u>To copyright owners</u></string>
     <string name="hardware_access">Provide access to soft hardware</string>
     <string name="already_registered">I am authorized user InterGroup</string>
     <string name="your_email">E-mail</string>

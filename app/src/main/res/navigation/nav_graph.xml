@@ -57,42 +57,38 @@
         android:label="activity_registration"
         tools:layout="@layout/fragment_registration" >
         <action
-            android:id="@+id/action_registrationActivity_to_loginActivity2"
-            app:destination="@id/loginActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popUpTo="@id/loginActivity"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_registrationActivity_to_confirmationMailActivity2"
             app:destination="@id/confirmationMailActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"
             app:popUpTo="@id/registrationActivity"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registrationActivity_to_loginActivity"
+            app:destination="@id/loginActivity"
+            app:enterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/loginActivity"
         android:name="com.intergroupapplication.presentation.feature.login.view.LoginFragment"
         android:label="LoginActivity" >
         <action
-            android:id="@+id/action_loginActivity_to_registrationActivity"
-            app:destination="@id/registrationActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            app:popUpTo="@id/registrationActivity"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_loginActivity_to_recoveryPasswordActivity"
             app:destination="@id/recoveryPasswordActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
+        <action
+            android:id="@+id/action_loginActivity_to_registrationActivity"
+            app:destination="@id/registrationActivity"
+            app:enterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out"
+            app:popUpTo="@id/registrationActivity"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/confirmationMailActivity"
@@ -105,10 +101,10 @@
         <action
             android:id="@+id/action_confirmationMailActivity_to_createUserProfileActivity"
             app:destination="@id/createUserProfileActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out"
             app:popUpTo="@id/confirmationMailActivity"
             app:popUpToInclusive="true" />
     </fragment>

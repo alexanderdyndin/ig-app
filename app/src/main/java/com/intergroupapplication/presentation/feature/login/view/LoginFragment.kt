@@ -140,6 +140,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             val intent = mGoogleSignInClient.signInIntent
             startActivityForResult(intent, RC_SIGN_IN)
         }
+        visibilityPassword(!passwordVisible)
         passwordVisibility.setOnClickListener {
             visibilityPassword(passwordVisible)
             passwordVisible = !passwordVisible
@@ -150,10 +151,10 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
             password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
         } else {
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
         }
     }
 

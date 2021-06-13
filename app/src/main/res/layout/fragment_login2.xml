@@ -151,15 +151,10 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/next"
-                    style="@style/TextGrey16sp"
+                    style="@style/btnBigStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/low_big_margin"
-                    android:layout_marginEnd="@dimen/low_big_margin"
-                    android:background="@drawable/selector_btn_big"
-                    android:paddingTop="@dimen/middle_padding"
-                    android:text="@string/enter"
-                    android:textAllCaps="false"/>
+                    android:text="@string/enter"/>
 
             </FrameLayout>
 

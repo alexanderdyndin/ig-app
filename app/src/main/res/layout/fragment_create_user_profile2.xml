@@ -66,7 +66,7 @@
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/gcreate_btnopen_selector"
                         android:button="@android:color/transparent"
-                        android:drawableLeft="@drawable/ic_man"
+                        android:drawableLeft="@drawable/ic_man_selector"
                         android:drawablePadding="6dp"
                         android:paddingStart="12dp"
                         android:text="@string/men"
@@ -80,7 +80,7 @@
                         android:paddingBottom="@dimen/small_low_padding"
                         android:background="@drawable/gcreate_btnclose_selector"
                         android:button="@android:color/transparent"
-                        android:drawableLeft="@drawable/ic_woman"
+                        android:drawableLeft="@drawable/ic_woman_selector"
                         android:drawablePadding="6dp"
                         android:fontFamily="@font/play"
                         android:paddingLeft="12dp"
@@ -351,11 +351,11 @@
                     android:layout_marginStart="@dimen/middle_margin"
                     android:layout_marginEnd="@dimen/small_margin"
                     android:background="@drawable/btn_check_mini"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toEndOf="@+id/inputYear"
-                    app:layout_constraintTop_toTopOf="@+id/inputDay"
-                    android:visibility="invisible"/>
+                    app:layout_constraintTop_toTopOf="@+id/inputDay" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -500,8 +500,6 @@
                 android:id="@+id/frameLayout3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/low_big_margin"
-                android:layout_marginEnd="@dimen/low_big_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -513,13 +511,10 @@
 
                 <Button
                     android:id="@+id/createGroup"
-                    style="@style/TextGrey16sp"
+                    style="@style/btnBigStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selector_btn_big"
-                    android:paddingTop="@dimen/middle_padding"
-                    android:text="@string/save_settings"
-                    android:textAllCaps="false" />
+                    android:text="@string/save_settings" />
 
             </FrameLayout>
 
