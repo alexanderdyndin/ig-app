@@ -61,16 +61,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
     fun addAudio(audioEntity: AudioEntity,view:DownloadAudioPlayerView){
         this.removeAllViews()
         this.addView(container)
-        val activity = this.getActivity()
-        if (activity is MainActivity) {
-            CoroutineScope(Dispatchers.Main).launch {
-                val bindService = activity.bindMediaService()
-                bindService?.let {
-                    view.exoPlayer.player = makeAudioPlayer(audioEntity,it,view)
-                    container.addView(view)
-                }
-            }
-        } else throw Exception("Activity is not MainActivity")
+        view.exoPlayer.player = makeAudioPlayer(audioEntity, view)
+        container.addView(view)
     }
 
     fun removeAudioView(view: View?){
@@ -85,8 +77,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         if (isExpanded && urls.size > 2) {
             createAudios(urls)
             container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
-          //  container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
-            val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
+            val hider = LayoutInflater.from(context).
+                inflate(R.layout.layout_hide, this, false)
             val btnHide = hider.findViewById<FrameLayout>(R.id.btnHide)
             btnHide.setOnClickListener {
                 this.isExpanded = false
@@ -97,8 +89,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         } else if (!isExpanded && urls.size > 2) {
             createAudios(urls.subList(0, 2))
             container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
-            //container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * 2))
-            val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
+            val expander = LayoutInflater.from(context).
+                inflate(R.layout.layout_expand, this, false)
             val btnExpand = expander.findViewById<FrameLayout>(R.id.btnExpand)
             btnExpand.setOnClickListener {
                 this.isExpanded = true
@@ -109,7 +101,6 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         } else if (urls.isNotEmpty()) {
             createAudios(urls)
             container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
-            //container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, context.dpToPx(60 * urls.size))
         }
     }
 
@@ -143,7 +134,8 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
     private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder,
                                 playerView: AudioPlayerView): SimpleExoPlayer {
 
-        val musicPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
+        val musicPlayer =
+            if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
             val bindedPlayer = service.getExoPlayerInstance()
             if (bindedPlayer != null){
 
@@ -156,8 +148,9 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 if (playWhenReady) {
-                    service.setAudioPlayer(musicPlayer, IGMediaService.MediaFile(true, audio.id),
-                        audio.song, audio.description,playerView)
+                    service.setAudioPlayer(musicPlayer,
+                        IGMediaService.MediaFile(true, audio.id), audio.song,
+                        audio.description,playerView)
                 }
                 service.changeControlButton(playWhenReady)
             }
@@ -197,18 +190,10 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         return musicPlayer
     }
 
-    private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder,
-                                playerView: DownloadAudioPlayerView): SimpleExoPlayer {
+    private fun makeAudioPlayer(audio: AudioEntity, playerView: DownloadAudioPlayerView)
+            : SimpleExoPlayer {
 
-        val musicPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
-            val bindedPlayer = service.getExoPlayerInstance()
-            if (bindedPlayer != null){
-
-                return bindedPlayer
-            }
-            else SimpleExoPlayer.Builder(context).build()
-        }
-        else SimpleExoPlayer.Builder(context).build()
+        val musicPlayer = SimpleExoPlayer.Builder(context).build()
         proxy?.let {
             val proxyUrl = it.getProxyUrl(audio.file)
             it.registerCacheListener({ _, _, percentsAvailable ->

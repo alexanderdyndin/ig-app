@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.facebook.drawee.view.SimpleDraweeView
@@ -307,7 +309,9 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
                 || chooseMedia.url.contains(".png")){
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
                 chooseMedia.url.substringAfterLast("/"),0,0)
-            loadingViews[chooseMedia.url] = createImageView(fileEntity)
+            loadingViews[chooseMedia.url] =
+                //createCommentCustomView.imageContainer.createPic(fileEntity,imageLoadingDelegate)
+                    createImageView(fileEntity)
             loadingViews[chooseMedia.url]?.let { createCommentCustomView.addImage(fileEntity, it) }
         }
         else {
@@ -338,8 +342,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
     }
 
     private fun createImageView(fileEntity: FileEntity): View {
-        val image = LayoutInflater.from(context).inflate(R.layout.layout_attach_image,
-            createCommentCustomView.imageContainer, false)
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
         val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
         imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
         return image
@@ -347,7 +350,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
 
     private fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
         return DownloadVideoPlayerView(requireContext()).apply {
-            Timber.tag("tut_preview").d("preview ${fileEntity.preview}")
             imageLoadingDelegate.loadImageFromFile(fileEntity.preview,previewForVideo)
             durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
             nameVideo.text = fileEntity.title
@@ -432,11 +434,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
             }
             stopUploading?.setOnClickListener {
                 presenter.cancelUploading(chooseMedia.url)
-                detachImage(chooseMedia.url)
+                detachMedia(chooseMedia.url)
             }
             detachImage?.setOnClickListener {
                 presenter.removeContent(chooseMedia.url)
-                detachImage(chooseMedia.url)
+                detachMedia(chooseMedia.url)
             }
         }
     }
@@ -445,20 +447,32 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
         CommentsViewModel.publishSubject.onNext(Pair(HIDE_SWIPE_DATA, null))
     }
 
-    private fun detachImage(path: String) {
-        createCommentCustomView.listImageContainers.forEach {container->
-            container.removeView(loadingViews[path])
-        }
-        createCommentCustomView.listAudioContainers.forEach {container->
-            container.removeAudioView(loadingViews[path])
-        }
-        createCommentCustomView.listVideoContainers.forEach { container->
-            container.removeVideoView(loadingViews[path])
+    private fun detachMedia(path: String) {
+        loadingViews[path].let {view->
+            when(view){
+                is DownloadVideoPlayerView->{
+                    view.exoPlayer.player?.pause()
+                    createCommentCustomView.listVideoContainers.forEach { container->
+                        container.removeVideoView(loadingViews[path])
+                    }
+                }
+                is DownloadAudioPlayerView->{
+                    view.exoPlayer.player?.pause()
+                    createCommentCustomView.listAudioContainers.forEach {container->
+                        container.removeAudioView(loadingViews[path])
+                    }
+                }
+                is FrameLayout ->{
+                    createCommentCustomView.listImageContainers.forEach {container->
+                        container.removeImageView(loadingViews[path])
+                    }
+                }
+            }
         }
         createCommentCustomView.deleteName(loadingViews[path])
         loadingViews.remove(path)
         chooseMedias.removeChooseMedia(path)
-        if(loadingViews.isEmpty()){
+        if(loadingViews.isEmpty() && createCommentCustomView.allTextIsEmpty()){
             createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     null, null)
         }

@@ -57,7 +57,7 @@
             tools:text="(4:03)"
             style="@style/TextNoActive12sp"
             app:layout_constraintBottom_toBottomOf="@id/bgPostMusic"
-            app:layout_constraintEnd_toStartOf="@+id/playPause"
+            app:layout_constraintEnd_toStartOf="@+id/detachImage"
             app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
 
         <FrameLayout
@@ -113,7 +113,7 @@
             app:scrubber_color="@color/colorAccent"
             app:scrubber_drawable="@drawable/ic_post_knob_press"
             app:played_color="@color/colorAccent"
-            app:layout_constraintEnd_toEndOf="@+id/exoDuration"
+            app:layout_constraintEnd_toEndOf="@+id/detachImage"
             app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
             app:layout_constraintTop_toTopOf="@id/startLineSeekBar" />
 
@@ -123,8 +123,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_edit_delete"
             app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
+            android:layout_marginEnd="@dimen/materialize_baseline_grid"
             android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/playPause"
             app:layout_constraintTop_toTopOf="parent"
             />
 

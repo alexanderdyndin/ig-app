@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.createpost.view
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -13,11 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
-import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.ResizeOptions
-import com.facebook.imagepipeline.request.ImageRequest
-import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
@@ -30,7 +25,6 @@ import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.customview.CreatePostCustomView
-import com.intergroupapplication.presentation.customview.ImagesUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
@@ -82,8 +76,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
     protected lateinit var createPostCustomView:CreatePostCustomView
     protected lateinit var publishBtn:TextView
 
-    private lateinit var uploadingView: ImagesUploadingView
-
     private lateinit var groupId: String
 
     override fun viewCreated() {
@@ -100,7 +92,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
             }
             else if (loadingViews.isNotEmpty()) {
                 var isLoading = false
-                loadingViews.forEach { (key, view) ->
+                loadingViews.forEach { (_, view) ->
                     val darkCard = view?.findViewById<TextView>(R.id.darkCard)
                     if (darkCard?.isVisible() != false) {
                         isLoading = true
@@ -179,7 +171,9 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
             || chooseMedia.url.contains(".png")){
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
                 chooseMedia.url.substringAfterLast("/"),0,0)
-            loadingViews[chooseMedia.url] = createImageView(fileEntity)
+            loadingViews[chooseMedia.url] =
+                //createPostCustomView.imageContainer.createPic(fileEntity,imageLoadingDelegate)
+                    createImageView(fileEntity)
             loadingViews[chooseMedia.url]?.let { createPostCustomView.addImage(fileEntity, it) }
         }
         else {
@@ -197,23 +191,23 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
         }
     }
 
-    private fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
+    protected open fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
         return DownloadAudioPlayerView(requireContext()).apply {
-            trackName = trackName
+            trackName = audioEntity.song
             trackOwner = "Загрузил (ID:${audioEntity.owner})"
             durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
         }
     }
 
-    private fun createImageView(fileEntity: FileEntity): View {
-        val image = LayoutInflater.from(context).inflate(R.layout.layout_attach_image,
-            createPostCustomView.imageContainer, false)
+    protected open fun createImageView(fileEntity: FileEntity): View{
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
         val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
         imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
+        imageLoadingDelegate.loadImageFromUrl(fileEntity.file, pic)
         return image
     }
 
-    private fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
+    protected open fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
         return DownloadVideoPlayerView(requireContext()).apply {
             imageLoadingDelegate.loadImageFromFile(fileEntity.preview,previewForVideo)
             durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
@@ -274,15 +268,27 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
         }
     }
 
-    protected fun detachImage(path: String) {
-        createPostCustomView.listImageContainers.forEach {container->
-            container.removeView(loadingViews[path])
-        }
-        createPostCustomView.listAudioContainers.forEach {container->
-            container.removeAudioView(loadingViews[path])
-        }
-        createPostCustomView.listVideoContainers.forEach { container->
-            container.removeVideoView(loadingViews[path])
+    protected fun detachMedia(path: String) {
+        loadingViews[path].let {view->
+            when(view){
+                is DownloadVideoPlayerView->{
+                    view.exoPlayer.player?.pause()
+                    createPostCustomView.listVideoContainers.forEach { container->
+                        container.removeVideoView(loadingViews[path])
+                    }
+                }
+                is DownloadAudioPlayerView->{
+                    view.exoPlayer.player?.pause()
+                    createPostCustomView.listAudioContainers.forEach {container->
+                        container.removeAudioView(loadingViews[path])
+                    }
+                }
+                is FrameLayout ->{
+                    createPostCustomView.listImageContainers.forEach {container->
+                        container.removeImageView(loadingViews[path])
+                    }
+                }
+            }
         }
         createPostCustomView.deleteName(loadingViews[path])
         loadingViews.remove(path)
@@ -327,13 +333,13 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
                 childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
                         bundleOf(METHOD_KEY to  CANCEL_LOADING_METHOD_CODE,
                         CHOOSE_MEDIA_KEY to chooseMedia))
-                detachImage(chooseMedia.url)
+                detachMedia(chooseMedia.url)
             }
             detachImage?.setOnClickListener {
                 childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
                         bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
                         CHOOSE_MEDIA_KEY to chooseMedia))
-                detachImage(chooseMedia.url)
+                detachMedia(chooseMedia.url)
             }
         }
     }

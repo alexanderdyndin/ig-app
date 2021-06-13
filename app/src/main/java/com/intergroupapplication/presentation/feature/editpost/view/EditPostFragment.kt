@@ -12,12 +12,19 @@ import androidx.core.os.bundleOf
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.domain.entity.AudioEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.presentation.customview.CreateAudioGalleryView
+import com.intergroupapplication.presentation.customview.CreateImageGalleryView
+import com.intergroupapplication.presentation.customview.CreateVideoGalleryView
 import com.intergroupapplication.presentation.customview.PostCustomView
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpost.presenter.EditPostPresenter
 import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
+import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -50,7 +57,6 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
     }
 
     override fun createPost(post:String) {
-        Timber.tag("tut_text").d(post)
         groupPost?.id?.let {
             editPostPresenter.editPost(
                post, it,
@@ -73,14 +79,15 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
         textAfterParse.forEach { text:Pair<String,String>->
             if (text.first.isNotEmpty() || text.second.isNotEmpty()) {
                 val container: LinearLayout = LayoutInflater.from(context)
-                        .inflate(R.layout.layout_create_post_view, createPostCustomView, false)
-                        as LinearLayout
-                val imageContainer = container.findViewById<GridLayout>(R.id.imageAndVideoContainer)
-                val audioContainer = container.findViewById<LinearLayout>(R.id.audioContainer)
-                setupMediaViews(text.second, imageContainer,audioContainer, groupPost)
+                    .inflate(R.layout.layout_create_post_view, createPostCustomView, false)
+                    as LinearLayout
+                val imageContainer = container.findViewById<CreateImageGalleryView>(R.id.createImageContainer)
+                val audioContainer = container.findViewById<CreateAudioGalleryView>(R.id.createAudioContainer)
+                val videoContainer = container.findViewById<CreateVideoGalleryView>(R.id.createVideoContainer)
+                setupMediaViews(text.second, imageContainer,audioContainer,videoContainer, groupPost)
                 val textView = container.findViewById<AppCompatEditText>(R.id.postText)
                 textView.setText(text.first)
-                //createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer)
+                createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer, videoContainer)
                 createPostCustomView.addView(container)
             }
         }
@@ -90,24 +97,25 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
 
     }
 
-    private fun setupMediaViews(text: String,imageContainer: GridLayout,audioContainer: LinearLayout
+    private fun setupMediaViews(text: String,imageContainer: CreateImageGalleryView,
+                audioContainer: CreateAudioGalleryView, videoContainer:CreateVideoGalleryView
                                 ,postEntity: GroupPostEntity.PostEntity?) {
         if (text.length>3) {
             val newText = text.substring(1, text.length - 2).split(",")
             newText.forEach { nameMedia ->
-                fillingView(postEntity, nameMedia, audioContainer, imageContainer)
+                fillingView(postEntity, nameMedia, imageContainer, audioContainer, videoContainer)
             }
         }
     }
 
-    private fun fillingView(postEntity: GroupPostEntity.PostEntity?,name:String,audioContainer:LinearLayout,
-                            imageContainer:GridLayout){
+    private fun fillingView(postEntity: GroupPostEntity.PostEntity?,name:String,
+                imageContainer:CreateImageGalleryView,audioContainer:CreateAudioGalleryView,
+                            videoContainer: CreateVideoGalleryView){
         postEntity?.audios?.forEach {audioEntity->
             if (audioEntity.song == name) {
                 val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = layoutInflater.inflate(R.layout.layout_audio_in_create_post,
-                        audioContainer, false)
-                loadingViews[url]?.let {
+                loadingViews[url] = createAudioPlayerView(audioEntity)
+                /*loadingViews[url]?.let {
                     val trackName = it.findViewById<TextView>(R.id.trackName)
                     val detachImage = it.findViewById<ImageView>(R.id.detachImage)
                     trackName?.text = audioEntity.song
@@ -117,21 +125,20 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                             childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
                                     bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
                                             CHOOSE_MEDIA_KEY to ChooseMedia(url)))
-                            detachImage(url)
+                            detachMedia(url)
                         }
                     }
-                }
-                audioContainer.addView(loadingViews[url])
-                createPostCustomView.namesAudio.add(Pair(audioEntity.song, loadingViews[url]))
+                }*/
+                audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
+                createPostCustomView.namesVideo.add(Pair(name,loadingViews[url]))
                 return@fillingView
             }
         }
         postEntity?.images?.forEach{fileEntity ->
             if (fileEntity.title == name) {
                 val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = layoutInflater.inflate(R.layout.layout_attach_image,
-                        imageContainer, false)
-                loadingViews[url]?.let {
+                loadingViews[url] = createImageView(fileEntity)
+                /*loadingViews[url]?.let {
                     val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
                     imageLoadingDelegate.loadImageFromUrl(fileEntity.file, imagePreview)
                     val detachImage = it.findViewById<ImageView>(R.id.detachImage)
@@ -141,21 +148,20 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                             childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
                                     bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
                                             CHOOSE_MEDIA_KEY to ChooseMedia(url)))
-                            detachImage(url)
+                            detachMedia(url)
                         }
                     }
-                }
-                imageContainer.addView(loadingViews[url])
-                createPostCustomView.namesImage.add(Pair(name,loadingViews[url]))
+                }*/
+                loadingViews[url]?.let { imageContainer.addImage(it) }
+                createPostCustomView.namesImage.add(Pair(name, loadingViews[url]))
                 return@fillingView
             }
         }
         postEntity?.videos?.forEach { fileEntity ->
             if (fileEntity.title == name) {
                 val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = layoutInflater.inflate(R.layout.layout_attach_image,
-                      imageContainer, false)
-                loadingViews[url]?.let {
+                loadingViews[url] = createVideoPlayerView(fileEntity)
+                /*loadingViews[url]?.let {
                     val imagePreview = it.findViewById<SimpleDraweeView>(R.id.imagePreview)
                     imageLoadingDelegate.loadImageFromUrl(fileEntity.preview, imagePreview)
                     val detachImage = it.findViewById<ImageView>(R.id.detachImage)
@@ -165,13 +171,56 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                             childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
                                     bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
                                             CHOOSE_MEDIA_KEY to ChooseMedia(url)))
-                            detachImage(url)
+                            detachMedia(url)
                         }
                     }
-                }
-                imageContainer.addView(loadingViews[url])
+                }*/
+                videoContainer.addVideo(fileEntity, loadingViews[url] as DownloadVideoPlayerView)
                 createPostCustomView.namesVideo.add(Pair(name, loadingViews[url]))
+              //  createPostCustomView.addVideo(fileEntity, loadingViews[url] as DownloadVideoPlayerView)
                 return@fillingView
+            }
+        }
+    }
+
+    override fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
+        val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
+        return DownloadAudioPlayerView(requireContext()).apply {
+            trackName = audioEntity.song
+            trackOwner = "Загрузил (ID:${audioEntity.owner})"
+            durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            detachImage.run {
+                show()
+                setOnClickListener {
+                    childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
+                        bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
+                            CHOOSE_MEDIA_KEY to ChooseMedia(url)))
+                    detachMedia(url)
+                }
+            }
+        }
+    }
+
+    override fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
+        val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
+        return DownloadVideoPlayerView(requireContext()).apply {
+            if (fileEntity.preview.contains("previewImage")){
+                imageLoadingDelegate.loadImageFromFile(fileEntity.preview, previewForVideo)
+            }else {
+                imageLoadingDelegate.loadImageFromUrl(fileEntity.preview, previewForVideo)
+            }
+            durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
+            nameVideo.text = fileEntity.title
+            val detachImage = findViewById<ImageView>(R.id.detachImage)
+            detachImage.run {
+                show()
+                setOnClickListener {
+                    childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
+                        bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
+                            CHOOSE_MEDIA_KEY to ChooseMedia(url)))
+                    detachMedia(url)
+                }
             }
         }
     }

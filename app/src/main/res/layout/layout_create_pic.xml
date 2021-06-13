@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
+    android:foreground="@drawable/mask_foreground">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:viewAspectRatio="1.0"/>
+
+    <TextView
+        android:id="@+id/darkCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/uploading_image_foreground_rectangle_shadow_drawable"
+        android:visibility="invisible" />
+
+    <com.budiyev.android.circularprogressbar.CircularProgressBar
+        android:id="@+id/imageUploadingProgressBar"
+        android:layout_width="@dimen/image_uploading_circular_bar_size"
+        android:layout_height="@dimen/image_uploading_circular_bar_size"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:animateProgress="true"
+        app:backgroundStrokeColor="#424242"
+        app:backgroundStrokeWidth="2dp"
+        app:foregroundStrokeColor="#ffffff"
+        app:foregroundStrokeWidth="3dp"
+        app:progressAnimationDuration="2000" />
+
+    <ImageView
+        android:id="@+id/stopUploading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:src="@drawable/ic_close_white" />
+
+    <LinearLayout
+        android:id="@+id/refreshContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_replay" />
+
+        <TextView
+            style="@style/InterGroupSmallWhiteTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/little_margin"
+            android:text="@string/error" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/detachImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:visibility="invisible"
+        android:src="@drawable/ic_edit_delete"
+        android:layout_margin="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+</FrameLayout>

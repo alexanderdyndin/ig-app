@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.danikula.videocache.HttpProxyCacheServer
@@ -18,14 +17,12 @@ import com.intergroupapplication.presentation.exstension.getActivity
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 var isVisibleController = true
 class VideoGalleryView @JvmOverloads constructor(context: Context,
@@ -40,9 +37,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
     }
 
     private var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
-
     private var uris:List<FileEntity> = emptyList()
-
     private var isExpanded: Boolean = false
 
     var proxy: HttpProxyCacheServer? = null
@@ -52,31 +47,6 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         this.uris = uris
         this.isExpanded = isExpanded
         parseUrl(uris, isExpanded)
-    }
-
-    fun addVideo(fileEntity: FileEntity, view:DownloadVideoPlayerView){
-        this.removeAllViews()
-        this.addView(container)
-        val activity = this.getActivity()
-        if (activity is MainActivity) {
-            CoroutineScope(Dispatchers.Main).launch {
-                val bindService = activity.bindMediaService()
-                bindService?.let {
-                    val player = makeVideoPlayer(fileEntity, it,view)
-                    view.exoPlayer.player = player
-                    container.addView(view)
-                    if (player.playWhenReady) {
-                        player.playWhenReady = false
-                        player.playWhenReady = true
-                    }
-                }
-            }
-        } else throw Exception("Activity is not MainActivity")
-
-    }
-
-    fun removeVideoView(view: View?){
-        container.removeView(view)
     }
 
     private fun parseUrl(urls: List<FileEntity>, isExpanded: Boolean) {
@@ -180,33 +150,6 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
         return videoPlayer
     }
 
-    private fun makeVideoPlayer(video: FileEntity, service: IGMediaService.ServiceBinder,
-                                playerView:DownloadVideoPlayerView): SimpleExoPlayer {
-        val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(false, video.id)) {
-            val bindedPlayer = service.getExoPlayerInstance()
-            if (bindedPlayer != null) {
-                return bindedPlayer
-            }
-            else SimpleExoPlayer.Builder(context).build()
-        }
-        else SimpleExoPlayer.Builder(context).build()
-        proxy?.let {
-            val proxyUrl = it.getProxyUrl(video.file)
-            it.registerCacheListener({ _, _, percentsAvailable ->
-                playerView.exoProgress.setLocalCacheBufferedPosition(percentsAvailable)
-            }, video.file)
-            if (it.isCached(video.file)){
-                playerView.exoProgress.setLocalCacheBufferedPosition(100)
-            }
-            val videoMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
-            videoPlayer.setMediaItem(videoMediaItem)
-        } ?: let {
-            val videoMediaItem: MediaItem = MediaItem.fromUri(video.file)
-            videoPlayer.setMediaItem(videoMediaItem)
-        }
-        return videoPlayer
-    }
-
     private fun setUpListener(service: IGMediaService.ServiceBinder, videoPlayer: SimpleExoPlayer, video: FileEntity, playerView: VideoPlayerView) {
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -214,7 +157,7 @@ class VideoGalleryView @JvmOverloads constructor(context: Context,
                     playerView.exoPlayer.controllerHideOnTouch = true
                     playerView.previewForVideo.gone()
                     service.setVideoPlayer(videoPlayer, IGMediaService.MediaFile(false, video.id),
-                            video.title, video.description,playerView)
+                        video.title, video.description,playerView)
                 }
                 service.changeControlButton(playWhenReady)
             }
