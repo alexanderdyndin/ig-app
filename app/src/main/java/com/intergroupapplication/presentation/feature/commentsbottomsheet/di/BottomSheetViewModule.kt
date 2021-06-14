@@ -55,11 +55,6 @@ class BottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideValidator(fragmentComment: CommentBottomSheetFragment): Validator =
-            Validator(fragmentComment).apply { setValidationListener(fragmentComment) }
-
-    @PerFragment
-    @Provides
     fun providePhotoGateway(fragmentComment: CommentBottomSheetFragment,
                             cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =

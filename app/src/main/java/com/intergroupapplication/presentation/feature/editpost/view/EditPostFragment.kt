@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.os.bundleOf
+import androidx.core.view.isNotEmpty
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
@@ -76,8 +77,8 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 textAfterParse.add(Pair(s,""))
             }
         }
-        textAfterParse.forEach { text:Pair<String,String>->
-            if (text.first.isNotEmpty() || text.second.isNotEmpty()) {
+        textAfterParse.filter { pair-> pair.second.isNotEmpty() || pair.first.trim().isNotEmpty() }
+            .forEachIndexed { index, text:Pair<String,String>->
                 val container: LinearLayout = LayoutInflater.from(context)
                     .inflate(R.layout.layout_create_post_view, createPostCustomView, false)
                     as LinearLayout
@@ -90,7 +91,6 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer, videoContainer)
                 createPostCustomView.addView(container)
             }
-        }
         createPostCustomView.createAllMainView()
     }
 

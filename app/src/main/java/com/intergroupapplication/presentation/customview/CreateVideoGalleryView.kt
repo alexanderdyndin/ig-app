@@ -80,14 +80,16 @@ class CreateVideoGalleryView @JvmOverloads constructor(context: Context,
         videoEntity: FileEntity,
         view: DownloadVideoPlayerView
     ) {
-        val player = makeVideoPlayer(videoEntity, view)
-        view.exoPlayer.controllerHideOnTouch = false
-        view.exoPlayer.player = player
-        container.addView(view)
-        if (player.playWhenReady) {
-            player.playWhenReady = false
-            player.playWhenReady = true
+        if (view.exoPlayer.player == null) {
+            val player = makeVideoPlayer(videoEntity, view)
+            view.exoPlayer.controllerHideOnTouch = false
+            view.exoPlayer.player = player
+            if (player.playWhenReady) {
+                player.playWhenReady = false
+                player.playWhenReady = true
+            }
         }
+        container.addView(view)
     }
 
     private fun makeVideoPlayer(video: FileEntity,

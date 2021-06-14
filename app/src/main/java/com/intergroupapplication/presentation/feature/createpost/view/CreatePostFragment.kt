@@ -282,7 +282,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
                         container.removeAudioView(loadingViews[path])
                     }
                 }
-                is FrameLayout ->{
+                else ->{
                     createPostCustomView.listImageContainers.forEach {container->
                         container.removeImageView(loadingViews[path])
                     }

@@ -74,14 +74,16 @@ class CreateAudioGalleryView  @JvmOverloads constructor(context: Context,
 
     private fun setupDownloadAudioPlayerView(
         audioEntity: AudioEntity, view: DownloadAudioPlayerView) {
-        val player = makeAudioPlayer(audioEntity)
-        view.exoPlayer.controllerHideOnTouch = false
-        view.exoPlayer.player = player
-        container.addView(view)
-        if (player.playWhenReady) {
-            player.playWhenReady = false
-            player.playWhenReady = true
+        if (view.exoPlayer.player == null) {
+            val player = makeAudioPlayer(audioEntity)
+            view.exoPlayer.controllerHideOnTouch = false
+            view.exoPlayer.player = player
+            if (player.playWhenReady) {
+                player.playWhenReady = false
+                player.playWhenReady = true
+            }
         }
+        container.addView(view)
     }
 
     private fun makeAudioPlayer(audio: AudioEntity)

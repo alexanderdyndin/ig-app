@@ -36,7 +36,7 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import javax.inject.Inject
 //TODO создавать аудио, видео вьюхи прям тут и добавлять их в контейнер вручную, а уже внутри сетать player
-class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Validator.ValidationListener{
+class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
         const val CREATE_COMMENT_DATA = 0
@@ -53,9 +53,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
     @Inject
     @InjectPresenter
     lateinit var presenter: BottomSheetPresenter
-
-    @Inject
-    lateinit var validator: Validator
 
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
@@ -465,7 +462,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
                         container.removeAudioView(loadingViews[path])
                     }
                 }
-                is FrameLayout ->{
+                else ->{
                     createCommentCustomView.listImageContainers.forEach {container->
                         container.removeImageView(loadingViews[path])
                     }
@@ -497,12 +494,5 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView,Vali
         panelAddFile.gone()
         createCommentCustomView.show()
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
-    }
-
-    override fun onValidationSucceeded() {
-
-    }
-
-    override fun onValidationFailed(errors: MutableList<ValidationError>?) {
     }
 }

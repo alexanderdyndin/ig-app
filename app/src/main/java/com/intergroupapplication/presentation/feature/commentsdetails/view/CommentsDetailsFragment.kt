@@ -186,7 +186,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
             bottomSheetBehaviour = BottomSheetBehavior.from(viewBinding.containerCommentBottomSheet)
                     as AutoCloseBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
-                peekHeight = requireContext().dpToPx(100)
+                peekHeight = requireContext().dpToPx(110)
                 commentHolder.minimumHeight = peekHeight
                 halfExpandedRatio = 0.6f
                 isFitToContents = false
