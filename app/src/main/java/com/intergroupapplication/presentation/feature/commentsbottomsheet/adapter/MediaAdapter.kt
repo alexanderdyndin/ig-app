@@ -22,9 +22,11 @@ import com.intergroupapplication.data.model.VideoModel
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
+import com.intergroupapplication.presentation.feature.mediaPlayer.AudioForAddFilesBottomSheetPlayerView
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.io.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -163,16 +165,13 @@ class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     }
 }
 class AudioAdapter(private val mediaCallback: MediaCallback)
-    :RecyclerView.Adapter<BaseHolder<AudioInAddFileModel>>(){
+    :RecyclerView.Adapter<AudioAdapter.AudioHolder>(){
     val audios = mutableListOf<AudioInAddFileModel>()
-    private var isPlaying = AtomicBoolean(false)
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<AudioInAddFileModel> {
-        val view = LayoutInflater.from(parent.context).
-        inflate(R.layout.item_audio_for_add_files_bottom_sheet, parent, false)
-        return AudioHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioHolder {
+        return AudioHolder(AudioForAddFilesBottomSheetPlayerView(parent.context))
     }
 
-    override fun onBindViewHolder(holder: BaseHolder<AudioInAddFileModel>, position: Int) {
+    override fun onBindViewHolder(holder: AudioHolder, position: Int) {
        holder.onBind(audios[position])
     }
 
@@ -180,15 +179,17 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
 
     fun getChooseAudiosFromObservable() = Observable.fromIterable(chooseMedias)
 
-    inner class AudioHolder(private val view: View) : BaseHolder<AudioInAddFileModel>(view){
+    override fun onViewRecycled(holder: AudioHolder) {
+        holder.view.exoPlayer.player?.pause()
+        holder.view.exoPlayer.player = null
+        super.onViewRecycled(holder)
+    }
+
+    inner class AudioHolder(val view: AudioForAddFilesBottomSheetPlayerView)
+            : BaseHolder<AudioInAddFileModel>(view){
         override fun onBind(data: AudioInAddFileModel) {
             with(view){
-                val trackName = findViewById<TextView>(R.id.trackName)
-                val audioDuration = findViewById<TextView>(R.id.audioDuration)
-                val addAudioButton = findViewById<Button>(R.id.addAudioButton)
-                val audioPlay = findViewById<ImageButton>(R.id.audioPlay)
-                trackName.text = data.name
-                audioDuration.text = data.duration
+                setupDownloadAudioPlayerView(data)
                 addAudioButton.apply {
                     activated(data.isChoose)
                     setOnClickListener {
@@ -204,18 +205,6 @@ class AudioAdapter(private val mediaCallback: MediaCallback)
                             }
                             mediaCallback.changeCountChooseAudio()
                             activated(isChoose)
-                        }
-                    }
-                }
-                audioPlay.setOnClickListener {
-                    if(!isPlaying.get()) {
-                        isPlaying.set(true)
-                        val mediaPlayer = MediaPlayer.create(context, Uri.parse(data.url))
-                        Single.just("1").subscribeOn(Schedulers.io()).subscribe { it ->
-                            mediaPlayer.start()
-                            SystemClock.sleep(4000)
-                            mediaPlayer.stop()
-                            isPlaying.set(false)
                         }
                     }
                 }

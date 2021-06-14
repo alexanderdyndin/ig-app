@@ -27,7 +27,7 @@ class CreateVideoGalleryView @JvmOverloads constructor(context: Context,
     }
 
     private var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
-    private val downloadVideoPlayerViewList = mutableListOf<Pair<FileEntity,DownloadVideoPlayerView>>()
+    val downloadVideoPlayerViewList = mutableListOf<Pair<FileEntity,DownloadVideoPlayerView>>()
     private var isExpanded: Boolean = false
 
     fun addVideo(fileEntity: FileEntity, view: DownloadVideoPlayerView){

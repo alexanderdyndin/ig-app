@@ -26,7 +26,7 @@ class CreateImageGalleryView  @JvmOverloads constructor(context: Context,
         pxWidth = displayMetrics.widthPixels - 30
     }
 
-    private val downloadImageView = mutableListOf<View>()
+    val downloadImageView = mutableListOf<View>()
     private var isExpanded: Boolean = false
 
     fun addImage(view: View){

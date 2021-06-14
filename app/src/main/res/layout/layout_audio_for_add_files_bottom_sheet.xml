@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="6dp"
+    android:background="@color/colorInput">
+
+    <FrameLayout
+        android:id="@+id/playPause"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        >
+
+        <ImageButton
+            android:id="@+id/exo_play"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
+            android:src="@drawable/ic_post_play"
+            android:background="?attr/selectableItemBackground" />
+
+        <ImageButton
+            android:id="@+id/exo_pause"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
+            android:src="@drawable/ic_post_pause"
+            android:background="?attr/selectableItemBackground" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/trackName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:layout_margin="2dp"
+        tools:text="The Anix - Die With You"
+        android:layout_gravity="center"
+        style="@style/TextAccent14sp"
+        app:layout_constraintEnd_toStartOf="@+id/exo_duration"
+        app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
+        app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+
+    <TextView
+        android:id="@+id/audioDuration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        tools:text="(4:03)"
+        android:layout_weight="1"
+        style="@style/TextNoActive12sp"
+        app:layout_constraintBottom_toBottomOf="@id/bgPostMusic"
+        app:layout_constraintEnd_toStartOf="@+id/playPause"
+        app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+
+    <Button
+        android:id="@+id/addAudioButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:background="@drawable/selector_choice" />
+
+
+</LinearLayout>

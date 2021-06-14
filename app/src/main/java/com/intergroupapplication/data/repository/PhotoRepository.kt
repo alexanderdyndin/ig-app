@@ -145,15 +145,17 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                         } ?: emptyList()
                     }
 
+    private var count = 0
     override fun uploadAudioToAws(chooseMedia: ChooseMedia, groupId: String?,
                                   upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>)
                                 : Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(chooseMedia.url)
-        val myFile = File(activity.externalCacheDir,"${chooseMedia.authorMusic}.${file.extension}")
+        val myFile = File(activity.externalCacheDir,"upload_music_$count.mp3")
         myFile.createNewFile()
         val byteArray = file.readBytes()
         myFile.writeBytes(byteArray)
+        count++
         return upload(myFile.extension, groupId)
                 .doAfterSuccess {
                     awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, myFile)
@@ -181,7 +183,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose {
-                        Timber.tag("tut_dispose").d("tut")
                         //AndroidNetworking.cancelAll()
                             }
                             .doOnComplete {

@@ -91,6 +91,7 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 createPostCustomView.addView(container)
             }
         }
+        createPostCustomView.createAllMainView()
     }
 
     override fun firstCreateView() {
@@ -116,7 +117,7 @@ class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback
                 val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createAudioPlayerView(audioEntity)
                 audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
-                createPostCustomView.namesVideo.add(Pair(name,loadingViews[url]))
+                createPostCustomView.namesAudio.add(Pair(name,loadingViews[url]))
                 return@fillingView
             }
         }

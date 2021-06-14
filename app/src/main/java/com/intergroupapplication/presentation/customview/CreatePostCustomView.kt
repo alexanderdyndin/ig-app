@@ -183,6 +183,7 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
     fun createFinalText():String{
         var textBeforeSend = ""
         var numberImage = 0
+        var numberVideo = 0
         var numberAudio = 0
         (0 until this.childCount).forEach { index->
             textBeforeSend += listEditText[index].text.toString().trim()
@@ -195,19 +196,21 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
                 return@createFinalText textBeforeSend
             }
             if (listImageContainers[index].childCount!=0) {
-                (0 until listImageContainers[index].childCount).forEach { _ ->
+                listImageContainers[index].downloadImageView.forEach { _ ->
                     textBeforeSend += "${namesImage[numberImage].first},"
                     numberImage++
                 }
             }
             if (listVideoContainers[index].childCount!=0) {
-                (0 until listVideoContainers[index].childCount).forEach { _ ->
+                listVideoContainers[index].downloadVideoPlayerViewList.forEach { pair->
+                    pair.second.exoPlayer.player?.pause()
                     textBeforeSend += "${namesVideo[numberImage].first},"
-                    numberImage++
+                    numberVideo++
                 }
             }
             if (listAudioContainers[index].childCount!=0) {
-                (0 until listAudioContainers[index].childCount).forEach { _ ->
+                listAudioContainers[index].downloadAudioPlayerViewList.forEach { pair ->
+                    pair.second.exoPlayer.player?.pause()
                     textBeforeSend += "${namesAudio[numberAudio].first},"
                     numberAudio++
                 }

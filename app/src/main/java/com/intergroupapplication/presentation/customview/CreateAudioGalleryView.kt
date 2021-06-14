@@ -22,7 +22,7 @@ class CreateAudioGalleryView  @JvmOverloads constructor(context: Context,
     }
 
     private var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
-    private val downloadAudioPlayerViewList = mutableListOf<Pair<AudioEntity, DownloadAudioPlayerView>>()
+    val downloadAudioPlayerViewList = mutableListOf<Pair<AudioEntity, DownloadAudioPlayerView>>()
 
     private var isExpanded: Boolean = false
 
@@ -39,7 +39,7 @@ class CreateAudioGalleryView  @JvmOverloads constructor(context: Context,
         this.addView(container)
         if (isExpanded && list.size > 2){
             list.forEach { pair->
-                setupDownloadVideoPlayerView(pair.first, pair.second)
+                setupDownloadAudioPlayerView(pair.first, pair.second)
             }
             val hider = LayoutInflater.from(context).inflate(
                 R.layout.layout_hide, this,
@@ -53,7 +53,7 @@ class CreateAudioGalleryView  @JvmOverloads constructor(context: Context,
         }
         else if(!isExpanded && list.size > 2){
             list.subList(0, 2).forEach { pair->
-                setupDownloadVideoPlayerView(pair.first, pair.second)
+                setupDownloadAudioPlayerView(pair.first, pair.second)
             }
             val expander = LayoutInflater.from(context).inflate(
                 R.layout.layout_expand, this,
@@ -67,12 +67,12 @@ class CreateAudioGalleryView  @JvmOverloads constructor(context: Context,
         }
         else {
             list.forEach { pair ->
-                setupDownloadVideoPlayerView(pair.first, pair.second)
+                setupDownloadAudioPlayerView(pair.first, pair.second)
             }
         }
     }
 
-    private fun setupDownloadVideoPlayerView(
+    private fun setupDownloadAudioPlayerView(
         audioEntity: AudioEntity, view: DownloadAudioPlayerView) {
         val player = makeAudioPlayer(audioEntity)
         view.exoPlayer.controllerHideOnTouch = false

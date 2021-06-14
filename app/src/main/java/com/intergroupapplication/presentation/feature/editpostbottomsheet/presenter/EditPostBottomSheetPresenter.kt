@@ -21,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway: PhotoGateway,
@@ -35,14 +36,16 @@ class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway:
     fun attachMedia(mediasObservable: Observable<ChooseMedia>,
                     loadMedia:(chooseMedia:ChooseMedia)->Unit,loadingView:Map<String, View?>) {
         mediaDisposable.add(mediasObservable
-                .filter { !loadingView.containsKey(it.url) }
+                .filter {
+                    !loadingView.containsKey(it.url) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     loadMedia(it)
                 }, {
                     it.printStackTrace()
-                    errorHandler.handle(CanNotUploadPhoto())}))
+                    errorHandler.handle(CanNotUploadPhoto())
+                }))
     }
 
     fun attachFromCamera() {
