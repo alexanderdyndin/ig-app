@@ -12,7 +12,7 @@ sealed class GroupPostEntity {
         @Parcelize data class PostEntity(
                 val id: String,
                 val bells: BellsEntity,
-                val groupInPost: GroupInPostEntity,
+                val groupInPost: GroupEntity.Group,
                 val postText: String,
                 val date: String,
                 val updated: String?,

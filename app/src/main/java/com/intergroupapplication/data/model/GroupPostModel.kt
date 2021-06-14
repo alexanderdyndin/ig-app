@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 data class GroupPostModel(
         val id: String,
         @SerializedName("active_comments_count") val activeCommentsCount: String,
-        @SerializedName("group") val groupInPost: GroupInPostModel,
+        @SerializedName("group") val groupInPost: GroupModel,
         val bells: BellsModel,
         val reacts: ReactsModel,
         val images: List<ImageVideoModel>,
