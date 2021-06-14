@@ -10,7 +10,7 @@ interface GroupPostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(groupPosts: List<GroupPostModel>)
 
-    @Query("SELECT * FROM group_post WHERE groupId = :groupId")
+    @Query("SELECT * FROM group_post WHERE groupId = :groupId ORDER BY uid")
     fun getAllGroupPostsModel(groupId: String): PagingSource<Int, GroupPostModel>
 
     @Query("DELETE FROM group_post WHERE groupId = :groupId")

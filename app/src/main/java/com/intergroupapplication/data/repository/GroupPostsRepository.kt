@@ -53,8 +53,10 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
     @ExperimentalPagingApi
     override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
         return Pager(
-                config = PagingConfig(PAGE_SIZE, 20),
-                remoteMediator = GroupPostMediatorRXDataSource(api, db, groupPostMapper, groupId)
+                config = PagingConfig(
+                        pageSize = PAGE_SIZE,
+                        15),
+                remoteMediator = GroupPostMediatorRXDataSource(api, db, groupId)
         ) {
             groupPostDao.getAllGroupPostsModel(groupId)
         }.flowable.map { paging ->

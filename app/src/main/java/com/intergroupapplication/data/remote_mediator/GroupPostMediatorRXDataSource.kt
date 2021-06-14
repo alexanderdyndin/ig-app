@@ -6,12 +6,10 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxRemoteMediator
 import com.intergroupapplication.data.db.IgDatabase
-import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
 import io.reactivex.Single
-import androidx.paging.PagingSource.*
-import androidx.paging.RemoteMediator.*
 import com.intergroupapplication.data.db.entity.GroupPostRemoteKeysModel
+import com.intergroupapplication.data.model.GroupPostsDto
 import io.reactivex.schedulers.Schedulers
 
 
@@ -19,64 +17,68 @@ import io.reactivex.schedulers.Schedulers
 class GroupPostMediatorRXDataSource(
         private val appApi: AppApi,
         private val appDatabase: IgDatabase,
-        private val mapper: GroupPostMapper,
         private val groupId: String
 ) : RxRemoteMediator<Int, GroupPostModel>() {
 
-    override fun initializeSingle(): Single<InitializeAction> {
-        return Single.just(InitializeAction.LAUNCH_INITIAL_REFRESH)
+    companion object {
+        const val INVALID_PAGE = -1
     }
 
     override fun loadSingle(loadType: LoadType, state: PagingState<Int, GroupPostModel>): Single<MediatorResult> {
-        val remoteKeySingle: Single<GroupPostRemoteKeysModel> = when (loadType) {
-            LoadType.REFRESH -> {
-                Single.just(GroupPostRemoteKeysModel(groupId, null, null))
-            }
-            LoadType.PREPEND -> return Single.just(MediatorResult.Success(true))
-            LoadType.APPEND -> appDatabase.groupPostKeyDao().getRemoteKey(groupId)
-        }
-
-        return remoteKeySingle
+        return Single.just(loadType)
                 .subscribeOn(Schedulers.io())
-                .flatMap { remoteKey ->
-                    if (loadType != LoadType.REFRESH && remoteKey.next == null) {
-                        return@flatMap Single.just(MediatorResult.Success(true))
+                .map {
+                    when (it) {
+                        LoadType.REFRESH -> {
+                            val position = appDatabase.groupPostKeyDao().getRemoteKey(groupId)
+                            position?.next ?: 1
+                        }
+                        LoadType.PREPEND -> {
+                            INVALID_PAGE
+                        }
+                        LoadType.APPEND -> {
+                            appDatabase.groupPostKeyDao().getRemoteKey(groupId)?.next ?: INVALID_PAGE
+                        }
+                    }
+                }
+                .flatMap { page ->
+                    if (page == INVALID_PAGE) {
+                        Single.just(MediatorResult.Success(true))
+                    } else {
+                        appApi.getGroupPosts(groupId, page)
+                                .map { data ->
+                                    insertToDb(page, loadType, data)
+                                }
+                                .map<MediatorResult> {
+                                    MediatorResult.Success(it.next == null)
+                                }
                     }
 
-                    val page = remoteKey.next ?: 1
-                    return@flatMap appApi.getGroupPosts(groupId, page)
-                            .map { response ->
-                                appDatabase.runInTransaction {
-                                    if (loadType == LoadType.REFRESH) {
-                                        appDatabase.groupPostDao().clearAllGroupPosts(groupId)
-                                        appDatabase.groupPostKeyDao().deleteByGroupId(groupId)
-                                    }
-
-                                    appDatabase.run {
-                                        val next =
-                                                if (response.next != null) page.plus(1)
-                                                else null
-                                        val previous =
-                                                if (response.previous != null) page.minus(1)
-                                                else null
-                                        groupPostKeyDao().insertOrReplace(GroupPostRemoteKeysModel(
-                                                groupId,
-                                                next,
-                                                previous)
-                                        )
-
-                                        groupPostDao().insertAll(
-                                                response.results.map { groupPostModel ->
-                                                    groupPostModel.groupId = groupId
-                                                    groupPostModel
-                                                }
-                                        )
-                                    }
-
-                                }
-                                MediatorResult.Success(!response.next.isNullOrEmpty())
-                            }
                 }
     }
-}
 
+    private fun insertToDb(page: Int, loadType: LoadType, data: GroupPostsDto): GroupPostsDto {
+
+        if (loadType == LoadType.REFRESH) {
+            appDatabase.groupPostDao().clearAllGroupPosts(groupId)
+            appDatabase.groupPostKeyDao().deleteByGroupId(groupId)
+        }
+
+        val next =
+                if (data.next != null) page.plus(1)
+                else null
+
+        val keys = GroupPostRemoteKeysModel(
+                groupId,
+                next
+        )
+        appDatabase.groupPostKeyDao().insertOrReplace(keys)
+        appDatabase.groupPostDao().insertAll(
+                data.results.map { groupPostModel ->
+                    groupPostModel.groupId = groupId
+                    groupPostModel
+                }
+        )
+        return data
+    }
+}
