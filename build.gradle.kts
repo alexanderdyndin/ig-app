@@ -8,7 +8,6 @@ buildscript {
     }
     val kotlin_version: String by extra
     val nav_version: String by extra
-    val jakeWhartonInstaTime: String by extra
     val tools_version = "4.2.1"
     val devmetrict_version = "0.6"
     val gms_version = "4.3.5"
@@ -16,7 +15,7 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven (url="https://jitpack.io")
         maven (url="https://artifactory.appodeal.com/appodeal")
     }
@@ -37,6 +36,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 
 }
