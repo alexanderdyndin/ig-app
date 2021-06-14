@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.facebook.drawee.view.SimpleDraweeView
@@ -29,13 +27,10 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioP
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
-import com.mobsandgeeks.saripaar.ValidationError
-import com.mobsandgeeks.saripaar.Validator
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
-//TODO создавать аудио, видео вьюхи прям тут и добавлять их в контейнер вручную, а уже внутри сетать player
+
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
@@ -159,12 +154,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 createCommentCustomView.textPost.hint = requireContext()
                     .getString(R.string.write_your_comment)
                 controlFirstCommentEditTextChanges()
-                /*textPost.run {
-                    hint = requireContext()
-                        .getString(R.string.write_your_comment)
-                    setCompoundDrawablesWithIntrinsicBounds(null, null,
-                        null, null)
-            }*/
             }
         }
         createCommentCustomView.textPost.setOnTouchListener(rightDrawableListener)
@@ -230,6 +219,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelAddFile.gone()
         amountFiles.gone()
         btnAdd.gone()
+        if (answerLayout.isActivated) answerLayout.show()
         createCommentCustomView.show()
     }
 
@@ -249,10 +239,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun stateExpanded() {
-
+        if (answerLayout.isActivated) answerLayout.show()
     }
 
     override fun stateHalfExpanded() {
+        if (answerLayout.isActivated) answerLayout.show()
         changeBottomConstraintForRecyclerView(horizontalGuideCenter.id)
     }
 
@@ -310,7 +301,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
                 chooseMedia.url.substringAfterLast("/"),0,0)
             loadingViews[chooseMedia.url] =
-                //createCommentCustomView.imageContainer.createPic(fileEntity,imageLoadingDelegate)
                     createImageView(fileEntity)
             loadingViews[chooseMedia.url]?.let { createCommentCustomView.addImage(fileEntity, it) }
         }
@@ -491,6 +481,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     private fun restoreAllViewForCollapsedState() {
+        if (answerLayout.isActivated) answerLayout.show()
         panelAddFile.gone()
         createCommentCustomView.show()
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)

@@ -59,9 +59,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     companion object {
         const val COMMENTS_DETAILS_REQUEST = 0
         const val COMMENTS_COUNT_VALUE = "COMMENTS_COUNT"
-        const val GROUP_ID_VALUE = "GROUP_ID"
-
-        private const val GROUP_ID = "group_id"
         const val COMMENT_ID = "comment_id"
         const val POST_ID = "post_id"
         const val COMMENT_PAGE = "page"
@@ -109,7 +106,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     private var page: String = "1"
 
-    private var comment_id:String = "1"
+    private var commentId:String = "1"
 
     private var commentCreated = false
 
@@ -136,7 +133,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     private lateinit var commentsList: RecyclerView
     private lateinit var swipeLayout: SwipyRefreshLayout
-    private lateinit var loading_layout: FrameLayout
+    private lateinit var loadingLayout: FrameLayout
     private lateinit var emptyText: TextView
     private lateinit var commentHolder: LinearLayout
     private lateinit var commentLoader: ProgressBar
@@ -152,7 +149,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
         postId = arguments?.getString(POST_ID)
         page = arguments?.getString(COMMENT_PAGE)?:"1"
-        comment_id = arguments?.getString(COMMENT_ID)?:"1"
+        commentId = arguments?.getString(COMMENT_ID)?:"1"
         disposable = CommentsViewModel.publishSubject.subscribe{
             when(it.first){
                 CommentBottomSheetFragment.ADD_HEIGHT_CONTAINER->
@@ -175,7 +172,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     }
 
     override fun viewCreated() {
-        loading_layout = viewBinding.loadingLayout
+        loadingLayout = viewBinding.loadingLayout
         emptyText = viewBinding.emptyText
         commentsList = viewBinding.commentsList
         swipeLayout = viewBinding.swipeLayout
@@ -225,7 +222,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         super.onDestroy()
         disposable.dispose()
     }
-    fun newPaging() {
+    private fun newPaging() {
         commentsList.adapter = adapterAd
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
@@ -233,14 +230,14 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
-                            loading_layout.show()
+                            loadingLayout.show()
                         }
                         emptyText.hide()
                     }
                     is LoadState.Error -> {
                         swipeLayout.isRefreshing = false
                         emptyText.hide()
-                        loading_layout.gone()
+                        loadingLayout.gone()
                         if (adapter.itemCount == 0) {
                             adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
@@ -251,17 +248,17 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                             commentsList.scrollToPosition(adapter.itemCount-1)
                             swipeLayout.isRefreshing = false
                         }
-                        if (comment_id != "1" && adapter.itemCount != 0) {
-                            val positionAnswerComment = adapter.positionAnswerComment(comment_id)
+                        if (commentId != "1" && adapter.itemCount != 0) {
+                            val positionAnswerComment = adapter.positionAnswerComment(commentId)
                             commentsList.scrollToPosition(positionAnswerComment)
-                            comment_id = "1"
+                            commentId = "1"
                         }
                         if (adapter.itemCount == 0) {
                             emptyText.show()
                         } else {
                             emptyText.hide()
                         }
-                        loading_layout.gone()
+                        loadingLayout.gone()
                         if (commentCreated) {
                             commentsList.scrollToPosition(adapter.itemCount-1)
                             commentCreated = false

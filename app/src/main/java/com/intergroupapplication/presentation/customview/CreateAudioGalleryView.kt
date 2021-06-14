@@ -13,7 +13,7 @@ import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 
 class CreateAudioGalleryView  @JvmOverloads constructor(context: Context,
-                                                        private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
+                                       attrs: AttributeSet? = null, defStyleAttr: Int = 0):
     LinearLayout(context, attrs, defStyleAttr) {
 
     init {
@@ -21,7 +21,7 @@ class CreateAudioGalleryView  @JvmOverloads constructor(context: Context,
         orientation = VERTICAL
     }
 
-    private var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
+    var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
     val downloadAudioPlayerViewList = mutableListOf<Pair<AudioEntity, DownloadAudioPlayerView>>()
 
     private var isExpanded: Boolean = false

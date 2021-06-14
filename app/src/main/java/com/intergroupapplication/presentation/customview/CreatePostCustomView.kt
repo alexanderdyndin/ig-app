@@ -5,9 +5,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.view.forEachIndexed
+import androidx.core.view.isEmpty
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
@@ -25,9 +26,9 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
         orientation = VERTICAL
     }
 
-    lateinit var imageContainer:CreateImageGalleryView
-    lateinit var videoContainer:CreateVideoGalleryView
-    lateinit var audioContainer:CreateAudioGalleryView
+    private lateinit var imageContainer:CreateImageGalleryView
+    private lateinit var videoContainer:CreateVideoGalleryView
+    private lateinit var audioContainer:CreateAudioGalleryView
     lateinit var textPost:AppCompatEditText
     val namesImage = mutableListOf<Pair<String,View?>>()
     val namesVideo = mutableListOf<Pair<String,View?>>()
@@ -39,7 +40,8 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
 
     fun createAllMainView(){
         changeActivatedAllEditText()
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_create_post_view,this,false)
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_create_post_view,this,
+            false)
         addView(view)
         textPost = view.findViewById(R.id.postText)
         imageContainer = view.findViewById(R.id.createImageContainer)
@@ -158,6 +160,7 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
     }
 
     fun deleteName(view:View?){
+        removeContainer()
         namesImage.forEach { pair->
             if (pair.second == view){
                 namesImage.remove(pair)
@@ -178,6 +181,26 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
                 return@deleteName
             }
         }
+    }
+
+    private fun removeContainer(){
+        this.forEachIndexed { index,view->
+            if (listEditText[index].text.toString().trim().isEmpty() &&
+                listAudioContainers[index].downloadAudioPlayerViewList.isEmpty() &&
+                listVideoContainers[index].downloadVideoPlayerViewList.isEmpty() &&
+                    listImageContainers[index].isEmpty() && index != this.childCount - 1){
+                removeEmptyContainer(index, view)
+                return@removeContainer
+            }
+        }
+    }
+
+    private fun removeEmptyContainer(index: Int, view: View) {
+        listEditText.removeAt(index)
+        listVideoContainers.removeAt(index)
+        listAudioContainers.removeAt(index)
+        listImageContainers.removeAt(index)
+        this.removeView(view)
     }
 
     fun createFinalText():String{
@@ -204,6 +227,7 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
             if (listVideoContainers[index].childCount!=0) {
                 listVideoContainers[index].downloadVideoPlayerViewList.forEach { pair->
                     pair.second.exoPlayer.player?.pause()
+                    pair.second.exoPlayer.player = null
                     textBeforeSend += "${namesVideo[numberImage].first},"
                     numberVideo++
                 }
@@ -211,6 +235,7 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
             if (listAudioContainers[index].childCount!=0) {
                 listAudioContainers[index].downloadAudioPlayerViewList.forEach { pair ->
                     pair.second.exoPlayer.player?.pause()
+                    pair.second.exoPlayer.player = null
                     textBeforeSend += "${namesAudio[numberAudio].first},"
                     numberAudio++
                 }

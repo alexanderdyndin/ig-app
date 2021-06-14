@@ -16,7 +16,8 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 
 class CreateVideoGalleryView @JvmOverloads constructor(context: Context,
-                       private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
+                                                       attrs: AttributeSet? = null,
+                                                       defStyleAttr: Int = 0):
     LinearLayout(context, attrs, defStyleAttr) {
 
     var expand: (isExpanded: Boolean) -> Unit = {}
@@ -26,7 +27,7 @@ class CreateVideoGalleryView @JvmOverloads constructor(context: Context,
         orientation = VERTICAL
     }
 
-    private var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
+    var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
     val downloadVideoPlayerViewList = mutableListOf<Pair<FileEntity,DownloadVideoPlayerView>>()
     private var isExpanded: Boolean = false
 

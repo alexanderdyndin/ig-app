@@ -58,46 +58,10 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:srl_direction="bottom">
 
-          <!--  <androidx.core.widget.NestedScrollView
-                android:id="@+id/nestedScrollComments"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">!-->
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
-                    <!--  <com.google.android.material.appbar.AppBarLayout
-                          android:id="@+id/appbar"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-                       <LinearLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="match_parent"
-                           android:clipToPadding="false"
-                           android:orientation="vertical"
-                           tools:context=".presentation.feature.commentsdetails.view.CommentsDetailsFragment">
-
-                           <include
-                               layout="@layout/item_group_post"
-                               android:layout_width="match_parent"
-                               android:layout_height="wrap_content"
-                               android:layout_marginBottom="-8dp" />
-
-                           <View
-                               android:layout_width="match_parent"
-                               android:layout_height="2dp"
-                               android:background="@color/underTextLineColor"
-                               app:layout_constraintBottom_toBottomOf="parent"
-                               app:layout_constraintEnd_toEndOf="parent"
-                               app:layout_constraintStart_toStartOf="parent" />
-
-                       </LinearLayout>
-
-                   </com.google.android.material.appbar.AppBarLayout>!-->
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -143,7 +107,6 @@
                     </FrameLayout>
                 </LinearLayout>
 
-            <!--</androidx.core.widget.NestedScrollView>!-->
         </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
         <LinearLayout
@@ -157,29 +120,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <!-- <FrameLayout
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content">
-
-                 <androidx.appcompat.widget.AppCompatEditText
-                     android:id="@+id/commentEditText"
-                     style="@style/InterGroupCommentEditTextStyle"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:hint="@string/write_your_comment"
-                     android:inputType="textMultiLine|textCapSentences"
-                     android:minHeight="@dimen/comment_edit_text_height"
-                     android:padding="@dimen/big_padding" />!-->
-
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
-
-               <!--<include
-                    android:id="@+id/item_input_comment"
-                    layout="@layout/item_input_comment"
-                    />!-->
 
                 <ProgressBar
                     android:id="@+id/commentLoader"
