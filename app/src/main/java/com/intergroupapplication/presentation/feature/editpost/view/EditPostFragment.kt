@@ -3,13 +3,10 @@ package com.intergroupapplication.presentation.feature.editpost.view
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.os.bundleOf
-import androidx.core.view.isNotEmpty
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
@@ -23,15 +20,14 @@ import com.intergroupapplication.presentation.customview.PostCustomView
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpost.presenter.EditPostPresenter
-import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 
-class EditPostFragment:CreatePostFragment(),EditPostBottomSheetFragment.Callback {
+class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
     companion object{
         const val GROUP_POST_ENTITY_KEY = "group_post_entity_key"
     }

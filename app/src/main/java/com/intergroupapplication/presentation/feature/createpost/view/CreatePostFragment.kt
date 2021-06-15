@@ -30,7 +30,7 @@ import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.removeChooseMedia
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
-import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
@@ -39,7 +39,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
-open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomSheetFragment.Callback {
+open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFragment.Callback {
 
     companion object{
         const val MEDIA_INTERACTION_REQUEST_CODE = "media_interaction_request_code"
@@ -62,7 +62,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,EditPostBottomShe
 
     private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<FrameLayout>
 
-    protected val bottomFragment by lazy { EditPostBottomSheetFragment() }
+    protected val bottomFragment by lazy { PostBottomSheetFragment() }
 
     private val createPostBinding by viewBinding(FragmentCreatePostBinding::bind)
 

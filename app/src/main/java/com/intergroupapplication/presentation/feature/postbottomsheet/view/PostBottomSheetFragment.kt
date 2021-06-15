@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.editpostbottomsheet.view
+package com.intergroupapplication.presentation.feature.postbottomsheet.view
 
 import android.os.Bundle
 import android.view.View
@@ -12,22 +12,22 @@ import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
-import com.intergroupapplication.presentation.feature.editpostbottomsheet.presenter.EditPostBottomSheetPresenter
+import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.PostBottomSheetPresenter
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
-class EditPostBottomSheetFragment:BaseBottomSheetFragment(),EditPostBottomSheetView {
+class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     lateinit var callback: Callback
     private val editPostBottomBinding by viewBinding(FragmentEditPostBottomSheetBinding::bind)
 
     @Inject
     @InjectPresenter
-    lateinit var presenter: EditPostBottomSheetPresenter
+    lateinit var presenter: PostBottomSheetPresenter
 
     @ProvidePresenter
-    fun providePresenter(): EditPostBottomSheetPresenter = presenter
+    fun providePresenter(): PostBottomSheetPresenter = presenter
 
     override fun layoutRes() = R.layout.fragment_edit_post_bottom_sheet
 

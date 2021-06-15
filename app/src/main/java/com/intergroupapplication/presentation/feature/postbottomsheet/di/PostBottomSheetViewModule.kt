@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.editpostbottomsheet.di
+package com.intergroupapplication.presentation.feature.postbottomsheet.di
 
 import android.content.Context
 import com.intergroupapplication.data.network.AppApi
@@ -14,7 +14,7 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapte
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.GalleryAdapter
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.PlaylistAdapter
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.VideoAdapter
-import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -23,11 +23,11 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class EditPostBottomSheetViewModule {
+class PostBottomSheetViewModule {
     @PerFragment
     @Provides
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate
-                              , callback: EditPostBottomSheetFragment,
+                              , callback: PostBottomSheetFragment,
                               dialogDelegate: DialogDelegate): GalleryAdapter {
         return GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
@@ -35,14 +35,14 @@ class EditPostBottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideAudioAdapter(callback: EditPostBottomSheetFragment): AudioAdapter {
+    fun provideAudioAdapter(callback: PostBottomSheetFragment): AudioAdapter {
         return AudioAdapter(callback)
     }
 
     @PerFragment
     @Provides
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                            callback: EditPostBottomSheetFragment,
+                            callback: PostBottomSheetFragment,
                             dialogDelegate: DialogDelegate): VideoAdapter {
         return VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
@@ -56,7 +56,7 @@ class EditPostBottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(fragmentComment: EditPostBottomSheetFragment,
+    fun providePhotoGateway(fragmentComment: PostBottomSheetFragment,
                             cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
             PhotoRepository(fragmentComment.requireActivity(), cropOptions, api, awsUploadingGateway)
@@ -75,7 +75,7 @@ class EditPostBottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun provideDialogManager(fragmentComment: EditPostBottomSheetFragment): DialogManager =
+    fun provideDialogManager(fragmentComment: PostBottomSheetFragment): DialogManager =
             DialogManager(fragmentComment.requireActivity().supportFragmentManager)
 
     @PerFragment

@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentManager
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -47,13 +49,16 @@ import timber.log.Timber
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
 class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-                      private val proxyCacheServer: HttpProxyCacheServer)
+                      private val proxyCacheServer: HttpProxyCacheServer,
+                      private val manager:FragmentManager)
     : PagingDataAdapter<CommentEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
         private const val POST_IN_COMMENT_HOLDER = 332
         private const val DEFAULT_HOLDER = 1488
         private const val ANSWER_HOLDER = 228
+        const val EDIT_COMMENT_REQUEST = "edit_comment_request"
+        const val COMMENT_KEY = "comment_key"
         private val diffUtil = object : DiffUtil.ItemCallback<CommentEntity>() {
             override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
                 return if (oldItem is CommentEntity.Comment && newItem is CommentEntity.Comment) {
@@ -75,6 +80,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
         var replyListener: (commentEntity: CommentEntity.Comment) -> Unit = {}
+        var deleteAnswerLayout: () -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: CommentEntity.Comment, position: Int) -> Unit = { _, _, _, _ -> }
@@ -162,7 +168,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     inner class PostInCommentHolder(val view:View):RecyclerView.ViewHolder(view){
         private val settingPostInComments = view.findViewById<ImageView>(R.id.settingsPost)
         private val viewBinding by viewBinding (ItemGroupPostBinding::bind)
-        val countComments = view.findViewById<TextView>(R.id.countComments)
+        private val countComments = view.findViewById<TextView>(R.id.countComments)
 
         fun bind(groupPostEntity: CommentEntity.PostEntity){
             with(viewBinding){
@@ -388,7 +394,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
                 idcGroupUser.text = itemView.context.getString(R.string.idc, item.idc.toString())
-                settingsBtn.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
+                settingsBtn.setOnClickListener { showPopupMenu(it,item) }
 
                 commentCustomView.proxy = proxyCacheServer
                 commentCustomView.imageClickListener = imageClickListener
@@ -398,14 +404,20 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
-        private fun showPopupMenu(view: View, id: Int, userId: Int?) {
+        private fun showPopupMenu(view: View,item: CommentEntity.Comment) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
+            popupMenu.menu.findItem(R.id.edit).isVisible = item.commentOwner?.user == USER_ID
+            popupMenu.menu.findItem(R.id.delete).isVisible = item.commentOwner?.user == USER_ID
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.complaint -> complaintListener.invoke(id)
-                    R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
+                    R.id.complaint -> complaintListener.invoke(item.id.toInt())
+                    R.id.edit -> {
+                        deleteAnswerLayout.invoke()
+                        manager.setFragmentResult(EDIT_COMMENT_REQUEST,
+                            bundleOf(COMMENT_KEY to item))
+                    }
+                    R.id.delete -> deleteClickListener.invoke(item.id.toInt(), layoutPosition)
                 }
                 return@setOnMenuItemClickListener true
             }
@@ -455,7 +467,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 postLikes2.setOnClickListener {
                     likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
                 }
-                settingsBtn2.setOnClickListener { showPopupMenu(it, Integer.parseInt(item.id), item.commentOwner?.user) }
+                settingsBtn2.setOnClickListener { showPopupMenu(it, item) }
 
                 val replyName =  item.answerTo?.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}, " }
@@ -471,14 +483,20 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         private fun mapToGroupEntityPost(comment: CommentEntity.Comment, textAnswerComment:String) =
                 MarkupModel(textAnswerComment,comment.images,comment.audios,comment.videos)
 
-        private fun showPopupMenu(view: View, id: Int, userId: Int?) {
+        private fun showPopupMenu(view: View, item:CommentEntity.Comment) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
+            popupMenu.menu.findItem(R.id.edit).isVisible = item.commentOwner?.user == USER_ID
 //            popupMenu.menu.findItem(R.id.delete).isVisible = userId == USER_ID
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.complaint -> complaintListener.invoke(id)
-                    R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
+                    R.id.complaint -> complaintListener.invoke(item.id.toInt())
+                    R.id.edit -> {
+                        deleteAnswerLayout.invoke()
+                        manager.setFragmentResult(EDIT_COMMENT_REQUEST,
+                            bundleOf(COMMENT_KEY to item))
+                    }
+                    R.id.delete -> deleteClickListener.invoke(item.id.toInt(), layoutPosition)
                 }
                 return@setOnMenuItemClickListener true
             }

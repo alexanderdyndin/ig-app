@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.editpostbottomsheet.presenter
+package com.intergroupapplication.presentation.feature.postbottomsheet.presenter
 
 import android.view.View
 import android.webkit.MimeTypeMap
@@ -14,20 +14,19 @@ import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.addChooseMedia
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
-import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetView
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 
-class EditPostBottomSheetPresenter @Inject constructor(private val photoGateway: PhotoGateway,
-                                                       private val errorHandler: ErrorHandler,
-                                                       private val appApi: AppApi)
-: BasePresenter<EditPostBottomSheetView>() {
+class PostBottomSheetPresenter @Inject constructor(private val photoGateway: PhotoGateway,
+                                                   private val errorHandler: ErrorHandler,
+                                                   private val appApi: AppApi)
+: BasePresenter<PostBottomSheetView>() {
     private var uploadingDisposable: Disposable? = null
     private var mediaDisposable = CompositeDisposable()
     var groupId: String? = null

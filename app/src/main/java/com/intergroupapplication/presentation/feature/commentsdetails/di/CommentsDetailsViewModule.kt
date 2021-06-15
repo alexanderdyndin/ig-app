@@ -87,7 +87,8 @@ class CommentsDetailsViewModule {
     @Provides
     fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                            userSession: UserSession,
-                           proxyCacheServer: HttpProxyCacheServer): CommentsAdapter {
+                           proxyCacheServer: HttpProxyCacheServer,
+                           fragment: CommentsDetailsFragment): CommentsAdapter {
         if (userSession.isAdEnabled) {
             CommentsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsComments ?: 1
             CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
@@ -96,7 +97,7 @@ class CommentsDetailsViewModule {
             CommentsAdapter.AD_FREQ = 999
             CommentsAdapter.AD_FIRST = 999
         }
-        return CommentsAdapter(imageLoadingDelegate,proxyCacheServer)
+        return CommentsAdapter(imageLoadingDelegate,proxyCacheServer,fragment.childFragmentManager)
     }
 
     @PerFragment

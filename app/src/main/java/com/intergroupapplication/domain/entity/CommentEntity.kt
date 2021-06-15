@@ -1,11 +1,14 @@
 package com.intergroupapplication.domain.entity
 
+import android.os.Parcelable
 import com.appodeal.ads.NativeAd
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
 sealed class CommentEntity {
+    @Parcelize
     data class Comment(val id: String,
                        val commentOwner: CommentUserEntity?,
                        var reacts: ReactsEntity,
@@ -17,7 +20,7 @@ sealed class CommentEntity {
                        val isActive: Boolean,
                        val idc: Int,
                        val post: Int,
-                       val answerTo: Comment?) : CommentEntity() {
+                       val answerTo: Comment?) : CommentEntity(),Parcelable {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false

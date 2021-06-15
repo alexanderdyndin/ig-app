@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
@@ -21,14 +23,17 @@ import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.customview.*
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
+import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
+import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
 
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
@@ -47,7 +52,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     @Inject
     @InjectPresenter
-    lateinit var presenter: BottomSheetPresenter
+    lateinit var presenter: CommentBottomSheetPresenter
 
     @Inject
     lateinit var rightDrawableListener: RightDrawableListener
@@ -65,7 +70,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
 
     @ProvidePresenter
-    fun providePresenter(): BottomSheetPresenter = presenter
+    fun providePresenter(): CommentBottomSheetPresenter = presenter
 
     override fun layoutRes() = R.layout.fragment_comment_bottom_sheet
 
@@ -84,6 +89,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
+        parentFragmentManager.setFragmentResultListener(CommentsAdapter.EDIT_COMMENT_REQUEST, this,
+            { _, result ->
+                val comment: CommentEntity.Comment? = result
+                                                    .getParcelable(CommentsAdapter.COMMENT_KEY)
+                if (comment != null){
+                    setupEditComment(comment)
+                }
+            })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -340,7 +353,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     private fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
         return DownloadVideoPlayerView(requireContext()).apply {
-            imageLoadingDelegate.loadImageFromFile(fileEntity.preview,previewForVideo)
+            imageLoadingDelegate.loadImageFromFile(fileEntity.preview, previewForVideo)
             durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
             nameVideo.text = fileEntity.title
         }
@@ -484,6 +497,138 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (answerLayout.isActivated) answerLayout.show()
         panelAddFile.gone()
         createCommentCustomView.show()
-        pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_down)
+        pushUpDown.background = context?.
+                    let { ContextCompat.getDrawable(it, R.drawable.btn_push_down) }
     }
+
+    private fun setupEditComment(comment: CommentEntity.Comment) {
+        answerLayout.activated(false)
+        answerLayout.gone()
+        parsingTextInComment(comment)
+        presenter.addMediaUrl(comment)
+    }
+
+    private fun parsingTextInComment(comment: CommentEntity.Comment) {
+        createCommentCustomView.removeAllViewsAndContainer()
+        val textAfterParse = mutableListOf<Pair<String,String>>()
+        val splitList = comment.text.split(PostCustomView.PARSE_SYMBOL)
+        splitList.forEachIndexed { index, s:String ->
+            if (index %2 == 1){
+                textAfterParse.add(Pair(splitList[index-1],s))
+            }
+            if (splitList.size-1 < index +1){
+                textAfterParse.add(Pair(s,""))
+            }
+        }
+        textAfterParse.filter { pair-> pair.second.isNotEmpty() || pair.first.trim().isNotEmpty() }
+            .forEach { text:Pair<String,String>->
+                val container: LinearLayout = LayoutInflater.from(context)
+                    .inflate(R.layout.layout_create_post_view, createCommentCustomView, false)
+                        as LinearLayout
+                val imageContainer = container.findViewById<CreateImageGalleryView>(R.id.createImageContainer)
+                val audioContainer = container.findViewById<CreateAudioGalleryView>(R.id.createAudioContainer)
+                val videoContainer = container.findViewById<CreateVideoGalleryView>(R.id.createVideoContainer)
+                setupMediaViews(text.second, imageContainer,audioContainer,videoContainer, comment)
+                val textView = container.findViewById<AppCompatEditText>(R.id.postText)
+                textView.setText(text.first)
+                createCommentCustomView.addViewInEditPost(textView,imageContainer, audioContainer, videoContainer)
+                createCommentCustomView.addView(container)
+            }
+        createCommentCustomView.createAllMainView()
+        controlCommentEditTextChanges()
+        setUpRightDrawableListener()
+    }
+
+    private fun setupMediaViews(text: String,imageContainer: CreateImageGalleryView,
+                    audioContainer: CreateAudioGalleryView, videoContainer:CreateVideoGalleryView
+                                ,comment: CommentEntity.Comment) {
+        if (text.length>3) {
+            val newText = text.substring(1, text.length - 2).split(",")
+            newText.forEach { nameMedia ->
+                fillingView(comment, nameMedia, imageContainer, audioContainer, videoContainer)
+            }
+        }
+    }
+
+    private fun fillingView(comment: CommentEntity.Comment, name:String,
+                            imageContainer:CreateImageGalleryView, audioContainer:CreateAudioGalleryView,
+                            videoContainer: CreateVideoGalleryView){
+        comment.audios.forEach {audioEntity->
+            if (audioEntity.song == name) {
+                val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
+                loadingViews[url] = createAudioPlayerViewForEditComment(audioEntity)
+                audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
+                createCommentCustomView.namesAudio.add(Pair(name,loadingViews[url]))
+                return@fillingView
+            }
+        }
+        comment.images.forEach{imageEntity ->
+            if (imageEntity.title == name) {
+                val url = "/groups/0/comments/${imageEntity.file.substringAfterLast("/")}"
+                loadingViews[url] = createImageViewForEditComment(imageEntity)
+                loadingViews[url]?.let { imageContainer.addImage(it) }
+                createCommentCustomView.namesImage.add(Pair(name, loadingViews[url]))
+                return@fillingView
+            }
+        }
+        comment.videos.forEach { videoEntity ->
+            if (videoEntity.title == name) {
+                val url = "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}"
+                loadingViews[url] = createVideoPlayerViewForEditComment(videoEntity)
+                videoContainer.addVideo(videoEntity, loadingViews[url] as DownloadVideoPlayerView)
+                createCommentCustomView.namesVideo.add(Pair(name, loadingViews[url]))
+                return@fillingView
+            }
+        }
+    }
+
+    private fun createAudioPlayerViewForEditComment(audioEntity: AudioEntity):DownloadAudioPlayerView{
+        val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
+        return DownloadAudioPlayerView(requireContext()).apply {
+            trackName = audioEntity.song
+            trackOwner = "Загрузил (ID:${audioEntity.owner})"
+            durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
+           findViewById<ImageView>(R.id.detachImage).apply {
+               show()
+               setOnClickListener {
+                   presenter.removeContent(url)
+                   detachMedia(url)
+               }
+           }
+        }
+    }
+
+    private fun createImageViewForEditComment(imageEntity: FileEntity):View{
+        val url = "/groups/0/comments/${imageEntity.file.substringAfterLast("/")}"
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
+        val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
+        imageLoadingDelegate.loadImageFromUrl(imageEntity.file, pic)
+        image.run {
+            findViewById<ImageView>(R.id.detachImage).apply {
+                show()
+                setOnClickListener {
+                    presenter.removeContent(url)
+                    detachMedia(url)
+                }
+            }
+        }
+        return image
+    }
+
+    private fun createVideoPlayerViewForEditComment(videoEntity:FileEntity):DownloadVideoPlayerView{
+        val url = "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}"
+        return DownloadVideoPlayerView(requireContext()).apply {
+            imageLoadingDelegate.loadImageFromUrl(videoEntity.preview, previewForVideo)
+            durationVideo.text = if (videoEntity.duration != "") videoEntity.duration else "00:00"
+            nameVideo.text = videoEntity.title
+            findViewById<ImageView>(R.id.detachImage).apply {
+                show()
+                setOnClickListener {
+                    presenter.removeContent(url)
+                    detachMedia(url)
+                }
+            }
+        }
+    }
+
 }

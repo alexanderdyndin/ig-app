@@ -32,7 +32,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
@@ -77,7 +77,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     @ProvidePresenter
     fun providePresenter(): CommentsDetailsPresenter = presenter
-
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
@@ -155,13 +154,13 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                 CommentBottomSheetFragment.ADD_HEIGHT_CONTAINER->
                     addHeightContainer(it.second as Int)
                 CommentBottomSheetFragment.ANSWER_COMMENT_CREATED_DATA->
-                    answerToCommentCreated(it.second as CommentEntity)
+                    answerToCommentCreated()
                 CommentBottomSheetFragment.COMMENT_CREATED_DATA->
-                    commentCreated(it.second as CommentEntity)
+                    commentCreated()
                 CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA->
                     changeStateBottomSheet(it.second as Int)
                 CommentBottomSheetFragment.CREATE_COMMENT_DATA-> {
-                    val data = it.second as Pair<String,BottomSheetPresenter>
+                    val data = it.second as Pair<String,CommentBottomSheetPresenter>
                     createComment(data.first,data.second)
                 }
                 CommentBottomSheetFragment.HIDE_SWIPE_DATA -> hideSwipeLayout()
@@ -315,14 +314,14 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
 
 
-    private fun commentCreated(commentEntity: CommentEntity) {
+    private fun commentCreated() {
         commentCreated = true
         increaseCommentsCounter()
         groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
         adapter.refresh()
     }
 
-    private fun answerToCommentCreated(commentEntity: CommentEntity) {
+    private fun answerToCommentCreated() {
         commentCreated = true
         increaseCommentsCounter()
         if (commentHolder.childCount > 1) {
@@ -345,13 +344,13 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
     }
 
-    private fun createComment(textComment: String, bottomPresenter: BottomSheetPresenter) {
+    private fun createComment(textComment: String, commentBottomPresenter: CommentBottomSheetPresenter) {
         if (commentHolder.childCount > 1) {
             lastRepliedComment?.let {
-                bottomPresenter.createAnswerToComment(it.id, textComment)
+                commentBottomPresenter.createAnswerToComment(it.id, textComment)
             }
         } else {
-            bottomPresenter.createComment(groupPostEntity?.id.toString(), textComment)
+            commentBottomPresenter.createComment(groupPostEntity?.id.toString(), textComment)
         }
     }
 
@@ -401,6 +400,11 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                     commentHolder.addView(view, 0)
                     bottomFragment.answerComment(comment)
                     lastRepliedComment = comment.copy()
+                }
+            }
+            deleteAnswerLayout = {
+                if (commentHolder.childCount > 1) {
+                    commentHolder.removeViewAt(0)
                 }
             }
            imageClickListener = { list: List<FileEntity>, i: Int ->

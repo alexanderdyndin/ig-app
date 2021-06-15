@@ -61,9 +61,13 @@ class CreatePostCustomView @JvmOverloads constructor(context: Context,
     }
 
     fun removeAllBesidesFirstView(){
+        removeAllViewsAndContainer()
+        createAllMainView()
+    }
+
+    fun removeAllViewsAndContainer(){
         clearAllList()
         this.removeAllViews()
-        createAllMainView()
     }
 
     private fun clearAllList() {

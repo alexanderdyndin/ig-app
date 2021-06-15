@@ -4,9 +4,7 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.network.AppApi
-import com.intergroupapplication.domain.entity.AudioRequestEntity
-import com.intergroupapplication.domain.entity.CreateCommentEntity
-import com.intergroupapplication.domain.entity.FileRequestEntity
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.CanNotUploadAudio
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.CanNotUploadVideo
@@ -28,10 +26,10 @@ import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState
-class BottomSheetPresenter @Inject constructor(private val commentGateway: CommentGateway,
-                                              private val errorHandler: ErrorHandler,
-                                              private val photoGateway: PhotoGateway,
-                                              private val appApi: AppApi): BasePresenter<BottomSheetView>() {
+class CommentBottomSheetPresenter @Inject constructor(private val commentGateway: CommentGateway,
+                                                      private val errorHandler: ErrorHandler,
+                                                      private val photoGateway: PhotoGateway,
+                                                      private val appApi: AppApi): BasePresenter<BottomSheetView>() {
 
     private val commentsDisposable = CompositeDisposable()
     private var uploadingDisposable: Disposable? = null
@@ -249,6 +247,40 @@ class BottomSheetPresenter @Inject constructor(private val commentGateway: Comme
 
     fun stopImageUploading() {
         uploadingDisposable?.dispose()
+    }
+
+    fun addMediaUrl(commentEntity: CommentEntity.Comment){
+        photoGateway.removeAllContent()
+        addAudioInAudiosUrl(commentEntity.audios)
+        addImagesInPhotosUrl(commentEntity.images)
+        addVideoInVideosUrl(commentEntity.images)
+    }
+
+    private fun addAudioInAudiosUrl(audios: List<AudioEntity>) {
+        photoGateway.setAudioUrls(audios.map { audioEntity ->
+            val chooseMedia = ChooseMedia("/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
+                name = audioEntity.song,authorMusic = audioEntity.artist)
+            chooseMedias.addChooseMedia(chooseMedia)
+            return@map chooseMedia
+        })
+    }
+
+    private fun addVideoInVideosUrl(videos: List<FileEntity>) {
+        photoGateway.setVideoUrls(videos.map { videoEntity ->
+            val chooseMedia = ChooseMedia("/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
+                "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}",
+                name = videoEntity.title)
+            chooseMedias.addChooseMedia(chooseMedia)
+            return@map chooseMedia
+        })
+    }
+
+    private fun addImagesInPhotosUrl(images: List<FileEntity>) {
+        photoGateway.setImageUrls(images.map{
+            val url = "/groups/0/comments/${it.file.substringAfterLast("/")}"
+            val chooseMedia = ChooseMedia(url = url,name = it.title)
+            chooseMedias.addChooseMedia(chooseMedia)
+            return@map chooseMedia})
     }
 
     fun removeContent(path: String) {
