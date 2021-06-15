@@ -11,6 +11,7 @@ import com.intergroupapplication.databinding.ItemAudioBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.customview.AudioGalleryView
 import com.intergroupapplication.presentation.exstension.inflate
+import timber.log.Timber
 
 class AudioListAdapter: PagingDataAdapter<AudioEntity, AudioListAdapter.AudioViewHolder>(diffUtil) {
 
@@ -27,24 +28,26 @@ class AudioListAdapter: PagingDataAdapter<AudioEntity, AudioListAdapter.AudioVie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioViewHolder {
-        return AudioViewHolder(parent.inflate(R.layout.item_audio))
+        return  AudioViewHolder(parent.inflate(R.layout.item_audio))
     }
 
     override fun onBindViewHolder(holder: AudioViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it)
+            holder.bind(it, position)
         }
     }
 
-    class AudioViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class AudioViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         private val viewBinding by viewBinding(ItemAudioBinding::bind)
 
-        private val audio: AudioGalleryView = viewBinding.audio
+        val audio: AudioGalleryView = viewBinding.audio
 
-        fun bind(audioEntity: AudioEntity) {
-            audio.setAudios(listOf(audioEntity))
+        fun bind(audioEntity: AudioEntity, position: Int) {
+            audio.setAudios(listOf(audioEntity), position = position)
         }
     }
+
+
 
 }

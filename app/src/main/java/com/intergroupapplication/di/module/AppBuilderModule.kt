@@ -47,6 +47,8 @@ import com.intergroupapplication.presentation.feature.userlist.addBlackListById.
 import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdViewModule
 import com.intergroupapplication.presentation.feature.userlist.di.UserListViewModule
 import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
+import com.intergroupapplication.presentation.feature.videolist.di.VideoListViewModule
+import com.intergroupapplication.presentation.feature.videolist.view.VideoListFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -137,6 +139,10 @@ interface AppBuilderModule {
     @PerFragment
     @ContributesAndroidInjector(modules = [AudioListViewModule::class])
     fun provideAudioFragmentFactory(): AudioListFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [VideoListViewModule::class])
+    fun provideVideoListFragmentFactory():VideoListFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [AddBlackListByIdViewModule::class])

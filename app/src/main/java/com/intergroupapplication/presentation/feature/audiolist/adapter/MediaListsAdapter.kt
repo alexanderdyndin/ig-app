@@ -16,13 +16,14 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
 
-class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<AudioListsAdapter.AudioListViewHolder>() {
+class MediaListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>)
+    : RecyclerView.Adapter<MediaListsAdapter.MediaListViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioListViewHolder {
-        return AudioListViewHolder(parent.inflate(R.layout.fragment_group_category))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaListViewHolder {
+        return MediaListViewHolder(parent.inflate(R.layout.fragment_group_category))
     }
 
-    override fun onBindViewHolder(holder: AudioListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MediaListViewHolder, position: Int) {
         holder.bind(items[position])
     }
 
@@ -30,7 +31,7 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         return items.count()
     }
 
-    inner class AudioListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class MediaListViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         private val viewBinding by viewBinding(FragmentGroupCategoryBinding::bind)
 
