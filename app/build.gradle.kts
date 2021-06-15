@@ -104,15 +104,15 @@ android {
             proguardFiles.add(getDefaultProguardFile("proguard-android.txt"))
             proguardFiles.add(file("proguard-rules.pro"))
 //            proguardFiles.addAll(fileTree("proguard").toMutableList())
-            isMinifyEnabled = true
+            isMinifyEnabled = false
         }
 
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             isDebuggable = false
             proguardFiles.add(getDefaultProguardFile("proguard-android.txt"))
             proguardFiles.add(file("proguard-rules.pro"))
-            proguardFiles.addAll(fileTree("proguard").toMutableList())
+            //proguardFiles.addAll(fileTree("proguard").toMutableList())
             signingConfig = signingConfigs.getByName("release")
         }
     })
