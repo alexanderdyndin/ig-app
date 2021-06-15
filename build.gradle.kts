@@ -22,7 +22,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:${tools_version}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.7.0")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.6.1")
         classpath("com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:$devmetrict_version")
         classpath("com.google.gms:google-services:$gms_version")
         classpath("org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version")

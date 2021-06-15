@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 #-dontshrink
-#
+
 #-dontobfuscate
 
 # Rxjava rules
@@ -31,7 +31,9 @@
     long producerIndex;
     long consumerIndex;
 }
-#-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
-#    long producerNode;
-#    long consumerNode;
-#}
+
+#validator
+-keep class com.mobsandgeeks.saripaar.** {*;}
+
+#keep models
+-keep class com.intergroupapplication.data.model.** {*;}

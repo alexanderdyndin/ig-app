@@ -103,8 +103,8 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             proguardFiles.add(getDefaultProguardFile("proguard-android.txt"))
             proguardFiles.add(file("proguard-rules.pro"))
-            proguardFiles.addAll(fileTree("proguard").toMutableList())
-            isMinifyEnabled = false
+//            proguardFiles.addAll(fileTree("proguard").toMutableList())
+            isMinifyEnabled = true
         }
 
         getByName("release") {
