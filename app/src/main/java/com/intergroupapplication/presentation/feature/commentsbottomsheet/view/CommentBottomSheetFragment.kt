@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
@@ -26,14 +25,12 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapte
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
-import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.widget.RxTextView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
@@ -302,7 +299,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
-                || chooseMedia.url.contains(".wav")){
+            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")){
             val audioEntity = AudioEntity(0,chooseMedia.url,false,"",
                 chooseMedia.name,chooseMedia.authorMusic,"",0,0,
                 chooseMedia.duration)

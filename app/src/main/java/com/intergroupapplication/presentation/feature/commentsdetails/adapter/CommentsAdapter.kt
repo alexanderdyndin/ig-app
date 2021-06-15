@@ -27,14 +27,10 @@ import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
-import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.ImageGalleryView
-import com.intergroupapplication.presentation.customview.VideoGalleryView
 import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
 import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
 import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
@@ -43,7 +39,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 
 /**
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
@@ -82,7 +77,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var replyListener: (commentEntity: CommentEntity.Comment) -> Unit = {}
         var deleteAnswerLayout: () -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
-        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
+        var imageClickListener: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: CommentEntity.Comment, position: Int) -> Unit = { _, _, _, _ -> }
         var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
         var showPostDetailInfo: (groupPostEntity:CommentEntity.PostEntity) ->Unit = {_->}
@@ -147,7 +142,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
             is CommentEntity.AdEntity -> AdViewHolder.NATIVE_AD
             is CommentEntity.PostEntity -> POST_IN_COMMENT_HOLDER
-            null -> throw IllegalStateException("Unknown view")
+            else -> throw IllegalStateException("Unknown view")
         }
     }
 
@@ -175,7 +170,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 compositeDisposable.add(getDateDescribeByString(groupPostEntity.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
+                        .subscribe{ text -> postPrescription.text = text })
 
                 postCustomView.proxy = proxyCacheServer
                 postCustomView.imageClickListener = imageClickListener
@@ -371,18 +366,17 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            timeComment.text = it
-                        }, {
-                            Timber.e(it)
-                        }))
+                        .subscribe{ text->
+                            timeComment.text = text
+                        })
                 postDislike.text = item.reacts.dislikesCount.toString()
                 postLike.text = item.reacts.likesCount.toString()
                 userAvatarHolder.run {
                     doOrIfNull(item.commentOwner?.avatar, {
                         imageLoadingDelegate.loadImageFromUrl(it, this) },
-                            {
-                                imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
+                        {
+                            imageLoadingDelegate.
+                            loadImageFromResources(R.drawable.application_logo, this) })
                 }
                 replyButton.setOnClickListener {
                     replyListener.invoke(item)
@@ -438,11 +432,9 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 compositeDisposable.add(getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            timeComment2.text = it
-                        }, {
-                            Timber.e(it)
-                        }))
+                        .subscribe{ text ->
+                            timeComment2.text = text
+                        })
                 userName2.text = item.commentOwner
                         ?.let { "${it.firstName} ${it.secondName}" }
                         ?: let { itemView.resources.getString(R.string.unknown_user) }

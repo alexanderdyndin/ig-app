@@ -10,10 +10,7 @@ import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.AudioAdapter
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.GalleryAdapter
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.PlaylistAdapter
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.VideoAdapter
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
@@ -28,30 +25,30 @@ class PostBottomSheetViewModule {
     @Provides
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate
                               , callback: PostBottomSheetFragment,
-                              dialogDelegate: DialogDelegate): GalleryAdapter {
-        return GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
+                              dialogDelegate: DialogDelegate): MediaAdapter.GalleryAdapter {
+        return MediaAdapter.GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
     }
 
     @PerFragment
     @Provides
-    fun provideAudioAdapter(callback: PostBottomSheetFragment): AudioAdapter {
-        return AudioAdapter(callback)
+    fun provideAudioAdapter(callback: PostBottomSheetFragment): MediaAdapter.AudioAdapter {
+        return MediaAdapter.AudioAdapter(callback)
     }
 
     @PerFragment
     @Provides
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                             callback: PostBottomSheetFragment,
-                            dialogDelegate: DialogDelegate): VideoAdapter {
-        return VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
+                            dialogDelegate: DialogDelegate): MediaAdapter.VideoAdapter {
+        return MediaAdapter.VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
     }
 
     @PerFragment
     @Provides
-    fun providePlaylistAdapter(imageLoadingDelegate: ImageLoadingDelegate): PlaylistAdapter {
-        return PlaylistAdapter(imageLoadingDelegate)
+    fun providePlaylistAdapter(imageLoadingDelegate: ImageLoadingDelegate): MediaAdapter.PlaylistAdapter {
+        return MediaAdapter.PlaylistAdapter(imageLoadingDelegate)
     }
 
     @PerFragment

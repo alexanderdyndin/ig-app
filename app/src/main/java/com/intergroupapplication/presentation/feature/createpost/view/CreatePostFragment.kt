@@ -160,7 +160,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
-            || chooseMedia.url.contains(".wav")){
+            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")){
             val audioEntity = AudioEntity(0,chooseMedia.url,false,"",
                 chooseMedia.name,chooseMedia.authorMusic,"",0,0,
                 chooseMedia.duration)

@@ -27,30 +27,30 @@ class BottomSheetViewModule {
     @Provides
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate
                               , callback: CommentBottomSheetFragment,
-                              dialogDelegate: DialogDelegate): GalleryAdapter {
-        return GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
+                              dialogDelegate: DialogDelegate): MediaAdapter.GalleryAdapter {
+        return MediaAdapter.GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
     }
 
     @PerFragment
     @Provides
-    fun provideAudioAdapter(callback: CommentBottomSheetFragment): AudioAdapter{
-        return AudioAdapter(callback)
+    fun provideAudioAdapter(callback: CommentBottomSheetFragment): MediaAdapter.AudioAdapter{
+        return MediaAdapter.AudioAdapter(callback)
     }
 
     @PerFragment
     @Provides
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                             callback: CommentBottomSheetFragment,
-                            dialogDelegate: DialogDelegate): VideoAdapter {
-        return VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
+                            dialogDelegate: DialogDelegate): MediaAdapter.VideoAdapter {
+        return MediaAdapter.VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
                 callback.childFragmentManager)
     }
 
     @PerFragment
     @Provides
-    fun providePlaylistAdapter(imageLoadingDelegate: ImageLoadingDelegate): PlaylistAdapter {
-        return PlaylistAdapter(imageLoadingDelegate)
+    fun providePlaylistAdapter(imageLoadingDelegate: ImageLoadingDelegate): MediaAdapter.PlaylistAdapter {
+        return MediaAdapter.PlaylistAdapter(imageLoadingDelegate)
     }
 
     @PerFragment

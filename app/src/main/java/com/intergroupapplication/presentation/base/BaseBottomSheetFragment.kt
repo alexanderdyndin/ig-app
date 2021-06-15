@@ -3,10 +3,8 @@ package com.intergroupapplication.presentation.base
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.*
 import androidx.annotation.DimenRes
@@ -32,7 +30,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadingView{
 
@@ -44,16 +41,16 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
-    lateinit var galleryAdapter: GalleryAdapter
+    lateinit var galleryAdapter: MediaAdapter.GalleryAdapter
 
     @Inject
-    lateinit var audioAdapter: AudioAdapter
+    lateinit var audioAdapter: MediaAdapter.AudioAdapter
 
     @Inject
-    lateinit var videoAdapter: VideoAdapter
+    lateinit var videoAdapter: MediaAdapter.VideoAdapter
 
     @Inject
-    lateinit var playlistAdapter: PlaylistAdapter
+    lateinit var playlistAdapter: MediaAdapter.PlaylistAdapter
 
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
@@ -163,7 +160,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
         btnAdd.setOnClickListener {
             when (mediaRecyclerView.adapter) {
-                is GalleryAdapter -> {
+                is MediaAdapter.GalleryAdapter -> {
                     galleryAdapter.apply {
                         attachGallery()
                         photos.forEachIndexed { index, galleryModel ->
@@ -175,7 +172,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                     }
                     changeCountChooseImage()
                 }
-                is VideoAdapter -> {
+                is MediaAdapter.VideoAdapter -> {
                     videoAdapter.apply {
                         attachVideo()
                         videos.forEachIndexed { index, videoModel ->
@@ -187,7 +184,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                     }
                     changeCountChooseVideo()
                 }
-                is AudioAdapter -> {
+                is MediaAdapter.AudioAdapter -> {
                     audioAdapter.apply {
                         attachAudio()
                         audios.forEachIndexed { index, audioInAddFileModel ->
