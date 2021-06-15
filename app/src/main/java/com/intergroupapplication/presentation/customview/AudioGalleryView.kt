@@ -3,7 +3,6 @@ package com.intergroupapplication.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.danikula.videocache.HttpProxyCacheServer
@@ -11,33 +10,23 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.intergroupapplication.R
-import com.intergroupapplication.data.model.AudioWithPlayer
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.exstension.getActivity
-import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListAdapter
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
-import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class AudioGalleryView @JvmOverloads constructor(context: Context,
-                     private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
+                     attrs: AttributeSet? = null, defStyleAttr: Int = 0):
         LinearLayout(context, attrs, defStyleAttr) {
     var expand: (isExpanded: Boolean) -> Unit = {}
 
-    //TODO придумать как подгружать следующие аудио, если они есть и очищать надо его после ухода
-    // с этого экрана
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         orientation = VERTICAL
-    }
-
-    companion object{
-        val mediaPlayerList = mutableListOf<AudioWithPlayer>()
     }
 
     private var container: LinearLayout = LinearLayout(context, attrs, defStyleAttr)
@@ -46,27 +35,12 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
 
     private var isExpanded: Boolean = false
 
-    var audioListAdapter:AudioListAdapter? = null
     var proxy: HttpProxyCacheServer? = null
 
-    private var position = 0
-
-    fun setAudios(uris: List<AudioEntity>, isExpanded: Boolean = false, position:Int = 0) {
+    fun setAudios(uris: List<AudioEntity>, isExpanded: Boolean = false) {
         this.uris = uris
         this.isExpanded = isExpanded
-        this.position = position
         parseUrl(uris, isExpanded)
-    }
-
-    fun addAudio(audioEntity: AudioEntity,view:DownloadAudioPlayerView){
-        this.removeAllViews()
-        this.addView(container)
-        view.exoPlayer.player = makeAudioPlayer(audioEntity, view)
-        container.addView(view)
-    }
-
-    fun removeAudioView(view: View?){
-        container.removeView(view)
     }
 
     private fun parseUrl(urls: List<AudioEntity>, isExpanded: Boolean) {
@@ -118,7 +92,6 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                         playerView.trackOwner = "Загрузил (ID:${it.owner})"
                         playerView.durationTrack.text = if (it.duration != "") it.duration else "00:00"
                         playerView.exoPlayer.player = player
-                        mediaPlayerList.addAudioWithPlayer(AudioWithPlayer(position,it,player))
                         container.addView(playerView)
                         if (player.playWhenReady) {
                             player.playWhenReady = false
@@ -159,16 +132,6 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                 super.onPlaybackStateChanged(state)
                 if(state == Player.STATE_ENDED){
                     service.changeControlButton(false)
-                    position++
-                    if (position < mediaPlayerList.size) {
-                        mediaPlayerList[position].player.run {
-                            prepare()
-                            play()
-                        }
-                    }
-                    else{
-                        // тут подгружать список
-                    }
                 }
             }
         }
@@ -190,34 +153,4 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         return musicPlayer
     }
 
-    private fun makeAudioPlayer(audio: AudioEntity, playerView: DownloadAudioPlayerView)
-            : SimpleExoPlayer {
-
-        val musicPlayer = SimpleExoPlayer.Builder(context).build()
-        proxy?.let {
-            val proxyUrl = it.getProxyUrl(audio.file)
-            it.registerCacheListener({ _, _, percentsAvailable ->
-                playerView.exoProgress.setLocalCacheBufferedPosition(percentsAvailable)
-            }, audio.file)
-            if (it.isCached(audio.file)){
-                playerView.exoProgress.setLocalCacheBufferedPosition(100)
-            }
-            val musicMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
-            musicPlayer.setMediaItem(musicMediaItem)
-        } ?: let {
-            val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
-            musicPlayer.setMediaItem(musicMediaItem)
-        }
-        return musicPlayer
-    }
-
-    private fun MutableList<AudioWithPlayer>.addAudioWithPlayer(audioWithPlayer: AudioWithPlayer){
-        this.forEach {
-            if (it.id == audioWithPlayer.id){
-                return
-            }
-
-        }
-        this.add(audioWithPlayer)
-    }
 }

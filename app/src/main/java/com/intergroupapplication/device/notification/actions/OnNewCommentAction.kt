@@ -17,7 +17,8 @@ class OnNewCommentAction(
         private val notificationCreator: NotificationCreator<CreatorType.Comment>,
         private val notificationManager: NotificationManager,
         private val context: Context) : NotificationAction<RemoteMessage> {
-    
+
+
     override fun proceed(action: RemoteMessage) {
         val map = action.data
         val postId = map["post_id"] ?: ""
@@ -39,12 +40,32 @@ class OnNewCommentAction(
                 comment.message,
                 comment.page
         )
-        sendNotification(notificationCreator.create(type), type.postId.toInt())
+        sendNotification(notificationCreator.create(type),
+            createNotificationId(comment.postId.toInt()*10,comment.message))
     }
 
     private fun sendNotification(notification: Notification, notificationId: Int) {
         notificationManager.cancel(notificationId)
         notificationManager.notify(notificationId, notification)
+    }
+
+    private fun createNotificationId(postId:Int,message:String):Int{
+        return when {
+            message.contains(context.getString(R.string.answer_comment)) -> {
+                postId
+            }
+            message.contains(context.getString(R.string.dislike_your_comment)) -> {
+                postId + 1
+            }
+            message.contains(context.getString(R.string.like_your_comment)) -> {
+                postId + 2
+            }
+            message.contains(context.getString(R.string.have_new_comment)) -> {
+                postId + 3
+            }
+            else -> postId
+        }
+
     }
 
 }

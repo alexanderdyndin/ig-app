@@ -23,8 +23,8 @@ import com.intergroupapplication.presentation.feature.createpost.di.CreatePostVi
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.createuserprofile.di.CreateUserProfileViewModule
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
-import com.intergroupapplication.presentation.feature.editpostbottomsheet.di.EditPostBottomSheetViewModule
-import com.intergroupapplication.presentation.feature.editpostbottomsheet.view.EditPostBottomSheetFragment
+import com.intergroupapplication.presentation.feature.postbottomsheet.di.PostBottomSheetViewModule
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
 import com.intergroupapplication.presentation.feature.editpost.di.EditPostViewModule
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
@@ -95,8 +95,8 @@ interface AppBuilderModule {
     fun provideBottomSheetFragment(): CommentBottomSheetFragment
 
     @PerFragment
-    @ContributesAndroidInjector(modules = [EditPostBottomSheetViewModule::class])
-    fun provideEditPostBottomSheetFragment(): EditPostBottomSheetFragment
+    @ContributesAndroidInjector(modules = [PostBottomSheetViewModule::class])
+    fun provideEditPostBottomSheetFragment(): PostBottomSheetFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])
