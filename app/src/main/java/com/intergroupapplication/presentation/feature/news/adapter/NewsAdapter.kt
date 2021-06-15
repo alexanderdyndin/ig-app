@@ -21,6 +21,7 @@ import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
@@ -66,7 +67,7 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var AD_FREQ = 3
         var AD_FIRST = 3
         var commentClickListener: (groupPostEntity: GroupPostEntity.PostEntity) -> Unit = {}
-        var groupClickListener: (groupId: String) -> Unit = {}
+        var groupClickListener: (group: GroupEntity.Group) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
         var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
@@ -164,10 +165,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     commentClickListener.invoke(item.post)
                 }
                 postAvatarHolder.setOnClickListener {
-                    groupClickListener.invoke(item.post.groupInPost.id)
+                    groupClickListener.invoke(item.post.groupInPost)
                 }
                 headerPostFromGroup.setOnClickListener {
-                    groupClickListener.invoke(item.post.groupInPost.id)
+                    groupClickListener.invoke(item.post.groupInPost)
                 }
                 postLikesClickArea.setOnClickListener {
                     likeClickListener.invoke(!item.post.reacts.isLike, item.post.reacts.isDislike, item.post, layoutPosition)

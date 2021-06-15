@@ -33,6 +33,7 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.GROUP
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
@@ -176,7 +177,7 @@ class NewsFragment: BaseFragment() {
                 openCommentDetails(InfoForCommentEntity(it, true))
             }
             groupClickListener = {
-                val data = bundleOf(GROUP_ID to it)
+                val data = bundleOf(GROUP_ID to it.id, GROUP to it)
                 findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
             }
             imageClickListener = { list: List<FileEntity>, i: Int ->
