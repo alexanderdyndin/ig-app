@@ -11,15 +11,14 @@ import android.os.Bundle
 import android.os.IBinder
 import android.service.media.MediaBrowserService
 import androidx.core.app.NotificationCompat
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.AudioWithPlayer
+import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 
 
@@ -35,6 +34,7 @@ class IGMediaService : MediaBrowserService() {
     }
 
 
+    private val listAllPlayer = mutableListOf<AudioWithPlayer>()
     private var exoPlayer: SimpleExoPlayer? = null
     private var audioPlayerView:AudioPlayerView? = null
     private var videoPlayerView:VideoPlayerView? = null
@@ -46,9 +46,7 @@ class IGMediaService : MediaBrowserService() {
      * Will be called by our activity to get information about exo player.
      */
     override fun onBind(intent: Intent?): IBinder {
-            exoPlayer?.playWhenReady = false  //Tell exoplayer to start as soon as it's content is loaded.
-//            loadExampleMedia(intent.getStringExtra(MEDIA_URL))
-//            displayNotification()
+        exoPlayer?.playWhenReady = false  //Tell exoplayer to start as soon as it's content is loaded.
         return ServiceBinder()
     }
 
@@ -61,7 +59,6 @@ class IGMediaService : MediaBrowserService() {
     }
 
     private fun stop() {
-//        exoPlayer?.release()
         stopForeground(true)
     }
 
@@ -69,12 +66,11 @@ class IGMediaService : MediaBrowserService() {
         super.onCreate()
         val trackSelection = AdaptiveTrackSelection.Factory()
         val trackSelector = DefaultTrackSelector(this, trackSelection)
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+        exoPlayer = SimpleExoPlayer.Builder(this).setTrackSelector(trackSelector).build()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val action = intent?.action
-        when (action) {
+        when (intent?.action) {
             ACTION_STOP_FOREGROUND_SERVICE -> {
                 stop()
             }
@@ -105,26 +101,76 @@ class IGMediaService : MediaBrowserService() {
         fun getExoPlayerInstance() = exoPlayer
         fun getMediaFile() = mediaFile
 
-        /*fun setPlayer(player: SimpleExoPlayer, mediaFile: MediaFile, notificationTitle: String?, notificationSubtitle: String?) {
-            if (player != exoPlayer){
-                exoPlayer?.pause()
-                exoPlayer = player
+        private fun createAudioPlayer(player: SimpleExoPlayer, audioEntity: AudioEntity,
+                                      playerView: AudioPlayerView?){
+            val listener = object: Player.EventListener{
+                override fun onPlaybackStateChanged(state: Int) {
+                    when(state){
+                        Player.STATE_ENDED -> {
+                            changeControlButton(false)
+                            listAllPlayer.getNextPlayer(player)?.
+                                let { playNextAudio(it) } ?: downloadNextAudio()
+                        }
+                        else -> super.onPlaybackStateChanged(state)
+                    }
+                }
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    if (playWhenReady) {
+                        setAudioPlayer(player,
+                            MediaFile(true, audioEntity.id), audioEntity.song,
+                            audioEntity.description,playerView)
+                    }
+                    changeControlButton(playWhenReady)
+                }
+
             }
-            this@IGMediaService.notificationTitle = notificationTitle
-            this@IGMediaService.notificationSubtitle = notificationSubtitle
-            this@IGMediaService.mediaFile = mediaFile
-            displayNotification(true)
-        }*/
+            player.addListener(listener)
+            val musicMediaItem: MediaItem = MediaItem.fromUri(audioEntity.file)
+            player.setMediaItem(musicMediaItem)
+            listAllPlayer.add(AudioWithPlayer(audioEntity, player))
+        }
+
+        private fun downloadNextAudio() {
+
+        }
+
+        fun getPlayerByAudio(audioEntity: AudioEntity,context:Context, playerView: AudioPlayerView)
+                            :SimpleExoPlayer{
+            listAllPlayer.forEach { audioWithPlayer ->
+                if (audioEntity == audioWithPlayer.audio){
+                    return audioWithPlayer.player
+                }
+            }
+            return SimpleExoPlayer.Builder(context).build().apply {
+                createAudioPlayer(this,audioEntity, playerView)
+            }
+        }
+
+        private fun MutableList<AudioWithPlayer>.getNextPlayer(player: SimpleExoPlayer):SimpleExoPlayer?{
+            forEachIndexed { index, audioWithPlayer ->
+                if (audioWithPlayer.player == player){
+                    return if ( size > index + 1)
+                        this[index + 1].player
+                    else null
+                }
+            }
+            return null
+        }
+
+        private fun playNextAudio(playerNext:SimpleExoPlayer){
+            playerNext.prepare()
+            playerNext.play()
+        }
 
         fun setAudioPlayer(player: SimpleExoPlayer, mediaFile: MediaFile, notificationTitle: String?, notificationSubtitle: String?,
-                 audioPlayer: AudioPlayerView){
+                 audioPlayer: AudioPlayerView?){
             if (player != exoPlayer){
                 exoPlayer?.pause()
                 audioPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
                 videoPlayerView?.exoProgress?.setLocalCacheBufferedPosition(0)
                 audioPlayerView = audioPlayer
                 exoPlayer?.seekTo(0)
-                audioPlayer.exoProgress.setLocalCacheBufferedPosition(100)
+                audioPlayer?.exoProgress?.setLocalCacheBufferedPosition(100)
                 exoPlayer = player
             }
             this@IGMediaService.notificationTitle = notificationTitle
@@ -153,29 +199,12 @@ class IGMediaService : MediaBrowserService() {
         fun changeControlButton(start:Boolean){
             displayNotification(start)
         }
-
-        fun loadMedia(mediaUrl: String) {
-            loadExampleMedia(mediaUrl)
-            displayNotification(true)
-        }
     }
 
     data class MediaFile(
             val isAudio: Boolean,
             val fileId: Int
     )
-
-    /**
-     * When called will load into exo player our sample playback video.
-     */
-    private fun loadExampleMedia(urlLink: String) {
-        val mediaItem = MediaItem.fromUri(urlLink)
-        val source = ExtractorMediaSource.Factory(DefaultDataSourceFactory(this))
-                .setExtractorsFactory(DefaultExtractorsFactory()).createMediaSource(mediaItem)
-        exoPlayer?.setMediaSource(source)
-        exoPlayer?.playWhenReady = true
-//        exoPlayer?.prepare()
-    }
 
     private fun displayNotification(startForeground: Boolean) {
         val isPlaying = exoPlayer?.playWhenReady == true

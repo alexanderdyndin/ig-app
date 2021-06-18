@@ -10,6 +10,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.databinding.ItemAudioBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.presentation.customview.AudioGalleryView
+import com.intergroupapplication.presentation.customview.AudioViewInList
 import com.intergroupapplication.presentation.exstension.inflate
 import timber.log.Timber
 
@@ -33,7 +34,7 @@ class AudioListAdapter: PagingDataAdapter<AudioEntity, AudioListAdapter.AudioVie
 
     override fun onBindViewHolder(holder: AudioViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it, position)
+            holder.bind(it)
         }
     }
 
@@ -41,10 +42,11 @@ class AudioListAdapter: PagingDataAdapter<AudioEntity, AudioListAdapter.AudioVie
 
         private val viewBinding by viewBinding(ItemAudioBinding::bind)
 
-        val audio: AudioGalleryView = viewBinding.audio
+        val audio: AudioViewInList = viewBinding.audio
 
-        fun bind(audioEntity: AudioEntity, position: Int) {
-            audio.setAudios(listOf(audioEntity), position = position)
+        fun bind(audioEntity: AudioEntity) {
+            //audio.setAudios(listOf(audioEntity), position = position)
+            audio.setAudio(audioEntity)
         }
     }
 
