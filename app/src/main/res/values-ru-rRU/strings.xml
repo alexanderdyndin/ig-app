@@ -196,4 +196,5 @@
     <string name="have_new_comment">новый комментарий под постом</string>
     <string name="video">Видео</string>
     <string name="my_video">Моё видео</string>
+    <string name="group_name_is_not_empty">Название группы не должно быть пустым</string>
 </resources>

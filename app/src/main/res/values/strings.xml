@@ -227,4 +227,5 @@
     <string name="have_new_comment">new comment under the post</string>
     <string name="video">Video</string>
     <string name="my_video">My video</string>
+    <string name="group_name_is_not_empty">Group name must not be empty</string>
 </resources>
