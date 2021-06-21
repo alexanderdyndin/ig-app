@@ -9,7 +9,6 @@ buildscript {
     val kotlin_version: String by extra
     val nav_version: String by extra
     val tools_version = "4.2.1"
-    val devmetrict_version = "0.6"
     val gms_version = "4.3.5"
     val dokka_version = "0.9.17"
 
@@ -23,7 +22,6 @@ buildscript {
         classpath("com.android.tools.build:gradle:${tools_version}")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath("com.google.firebase:firebase-crashlytics-gradle:2.6.1")
-        classpath("com.frogermcs.androiddevmetrics:androiddevmetrics-plugin:$devmetrict_version")
         classpath("com.google.gms:google-services:$gms_version")
         classpath("org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")

@@ -5,7 +5,6 @@ import com.android.build.gradle.internal.dsl.BuildType
 
 plugins {
     id("com.android.application")
-    id("com.frogermcs.androiddevmetrics")
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("kotlin-kapt")
@@ -47,7 +46,6 @@ android {
         versionName ="1.6.0.9"
 //        androidGitVersion.name()
         testInstrumentationRunner ="androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled = true
     })
 
     java {
@@ -251,6 +249,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:$activityVersion")
     implementation("androidx.fragment:fragment-ktx:$fragmentVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintVersion")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion")
     androidTestImplementation("androidx.test.ext:junit:$junitTestVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
@@ -332,9 +331,6 @@ dependencies {
 
     //CryptoLibrary
     implementation("cc.duduhuo.util:digest-util-android:$cryptoLibraryVersion")
-
-    //MultiDex
-    implementation("androidx.multidex:multidex:2.0.1")
 
     // Crashlitycs
     // Import the BoM for the Firebase platform
