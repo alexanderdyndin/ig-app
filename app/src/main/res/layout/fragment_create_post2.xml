@@ -683,7 +683,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_strice" />
+                android:src="@drawable/selector_ic_strike" />
 
             <ImageView
                 android:layout_width="wrap_content"

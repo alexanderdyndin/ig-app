@@ -57,25 +57,37 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     private val permissions by lazy { RxPermissions(this) }
 
-    lateinit var mediaRecyclerView:RecyclerView
-    lateinit var icAttachFile:ImageView
-    lateinit var galleryButton:TextView
-    lateinit var musicButton: TextView
-    lateinit var videoButton: TextView
-    lateinit var playlistButton: TextView
-    lateinit var btnAdd: TextView
-    lateinit var amountFiles: TextView
+    protected lateinit var mediaRecyclerView:RecyclerView
+    protected lateinit var icAttachFile:ImageView
+    private lateinit var icEditText:ImageView
+    protected lateinit var panelStyleText:LinearLayout
+    private lateinit var galleryButton:TextView
+    private lateinit var musicButton: TextView
+    private lateinit var videoButton: TextView
+    private lateinit var playlistButton: TextView
+    protected lateinit var btnAdd: TextView
+    protected lateinit var amountFiles: TextView
+    protected lateinit var boldText:ImageView
+    protected lateinit var italicText:ImageView
+    protected lateinit var strikeText:ImageView
+    protected lateinit var underlineText:ImageView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         chooseMedias.clear()
         mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
         icAttachFile = view.findViewById(R.id.icAttachFile)
+        icEditText = view.findViewById(R.id.icEditText)
+        panelStyleText = view.findViewById(R.id.panelStyleText)
         galleryButton = view.findViewById(R.id.galleryButton)
         musicButton = view.findViewById(R.id.musicButton)
         videoButton = view.findViewById(R.id.videoButton)
         playlistButton = view.findViewById(R.id.playlistButton)
         btnAdd = view.findViewById(R.id.btnAdd)
         amountFiles = view.findViewById(R.id.amountFiles)
+        boldText = view.findViewById(R.id.selectBoldText)
+        italicText = view.findViewById(R.id.selectItalicText)
+        strikeText = view.findViewById(R.id.selectStrikeText)
+        underlineText = view.findViewById(R.id.selectUnderlineText)
         mediaRecyclerView.apply {
             addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
         }
@@ -108,7 +120,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     }
 
     private fun setUpAddFilePanel() {
-        icAttachFile.apply {
+        icAttachFile.run {
             setOnClickListener {
                 requestPermission()
                 closeKeyboard()
@@ -128,8 +140,25 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             }
         }
 
+        icEditText.run {
+            setOnClickListener {
+                if (isActivated) {
+                    activated(false)
+                    gonePanelStyleText()
+                }
+                else {
+                    activated(true)
+                    showPanelStyleText()
+                }
+            }
+        }
+
+        panelStyleText.run {
+            setupPanelStyleText(this)
+        }
+
         galleryButton.setOnClickListener {
-            mediaRecyclerView.apply {
+            mediaRecyclerView.run {
                 adapter = galleryAdapter
                 layoutManager = GridLayoutManager(context, 3)
             }
@@ -139,7 +168,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         }
 
         musicButton.setOnClickListener {
-            mediaRecyclerView.apply {
+            mediaRecyclerView.run {
                 adapter = audioAdapter
                 layoutManager = LinearLayoutManager(context)
             }
@@ -149,7 +178,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         }
 
         videoButton.setOnClickListener {
-            mediaRecyclerView.apply {
+            mediaRecyclerView.run {
                 adapter = videoAdapter
                 layoutManager = GridLayoutManager(context, 3)
             }
@@ -161,7 +190,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         btnAdd.setOnClickListener {
             when (mediaRecyclerView.adapter) {
                 is MediaAdapter.GalleryAdapter -> {
-                    galleryAdapter.apply {
+                    galleryAdapter.run {
                         attachGallery()
                         photos.forEachIndexed { index, galleryModel ->
                             if (galleryModel.isChoose) {
@@ -173,7 +202,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                     changeCountChooseImage()
                 }
                 is MediaAdapter.VideoAdapter -> {
-                    videoAdapter.apply {
+                    videoAdapter.run {
                         attachVideo()
                         videos.forEachIndexed { index, videoModel ->
                             if (videoModel.isChoose) {
@@ -185,7 +214,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                     changeCountChooseVideo()
                 }
                 is MediaAdapter.AudioAdapter -> {
-                    audioAdapter.apply {
+                    audioAdapter.run {
                         attachAudio()
                         audios.forEachIndexed { index, audioInAddFileModel ->
                             if (audioInAddFileModel.isChoose) {
@@ -205,6 +234,57 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             Toast.makeText(requireContext(), "Пока недоступно", Toast.LENGTH_SHORT).show()
         }
     }
+
+    protected open fun gonePanelStyleText() {
+        panelStyleText.gone()
+    }
+
+    protected open fun showPanelStyleText() {
+        panelStyleText.show()
+    }
+
+    private fun setupPanelStyleText(view:View) {
+        setupBoldTextView(view)
+        setupItalicTextView(view)
+        setupStrikeTextView(view)
+        setupUnderlineTextView(view)
+    }
+
+    private fun setupBoldTextView(view:View) {
+        boldText.setOnClickListener {
+            it.activated(!it.isActivated)
+            setupBoldText()
+        }
+    }
+
+    abstract fun setupBoldText()
+
+    private fun setupItalicTextView(view:View) {
+        italicText.setOnClickListener {
+            it.activated(!it.isActivated)
+            setupItalicText()
+        }
+    }
+
+    abstract fun setupItalicText()
+
+    private fun setupStrikeTextView(view:View) {
+        strikeText.setOnClickListener {
+            it.activated(!it.isActivated)
+            setupStrikeText()
+        }
+    }
+
+    abstract fun setupStrikeText()
+
+    private fun setupUnderlineTextView(view:View) {
+        underlineText.setOnClickListener {
+            it.activated(!it.isActivated)
+            setupUnderlineText()
+        }
+    }
+
+    abstract fun setupUnderlineText()
 
     abstract fun attachFileNotActivated()
 

@@ -47,6 +47,22 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         }
     }
 
+    override fun setupBoldText() {
+
+    }
+
+    override fun setupItalicText() {
+
+    }
+
+    override fun setupStrikeText() {
+
+    }
+
+    override fun setupUnderlineText() {
+
+    }
+
     override fun attachFileNotActivated() {
         callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
     }
