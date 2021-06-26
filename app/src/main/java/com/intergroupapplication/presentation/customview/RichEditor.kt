@@ -3,7 +3,6 @@ package com.intergroupapplication.presentation.customview
 import android.R
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -15,7 +14,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.presentation.exstension.dpToPx
-import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -63,7 +61,7 @@ class RichEditor
         isHorizontalScrollBarEnabled = false
         settings.javaScriptEnabled = true
         webChromeClient = WebChromeClient()
-        webViewClient = createWebviewClient()
+        webViewClient = EditorWebViewClient()
         loadUrl(SETUP_HTML)
         applyAttributes(context, attrs)
     }
@@ -72,10 +70,6 @@ class RichEditor
     constructor(context: Context, attrs: AttributeSet? = null) : this(context, attrs,
         R.attr.webViewStyle
     )
-
-    private fun createWebviewClient(): EditorWebViewClient {
-        return EditorWebViewClient()
-    }
 
     fun setOnTextChangeListener(listener: OnTextChangeListener?) {
         mTextChangeListener = listener
@@ -95,7 +89,8 @@ class RichEditor
     }
 
     private fun stateCheck(text: String) {
-        val state = text.replaceFirst(STATE_SCHEME.toRegex(), "").toUpperCase(Locale.ENGLISH)
+        val state = text.replaceFirst(STATE_SCHEME.toRegex(), "").
+            toUpperCase(Locale.ENGLISH)
         val types: MutableList<TextType> = mutableListOf()
         TextType.values().forEach { type ->
             if (type.r == -1) {
@@ -125,8 +120,7 @@ class RichEditor
             R.attr.gravity
         )
         val ta = context.obtainStyledAttributes(attrs, attrsArray)
-        val gravity = ta.getInt(0, NO_ID)
-        when (gravity) {
+        when (ta.getInt(0, NO_ID)) {
             Gravity.LEFT -> exec("javascript:RE.setTextAlign(\"left\")")
             Gravity.RIGHT -> exec("javascript:RE.setTextAlign(\"right\")")
             Gravity.TOP -> exec("javascript:RE.setVerticalAlign(\"top\")")
@@ -141,7 +135,6 @@ class RichEditor
         ta.recycle()
     }
 
-    // No handling
     var html: String?
         get() = mContents
         set(contents) {
@@ -152,9 +145,8 @@ class RichEditor
             try {
                 exec("javascript:RE.setHtml('" + URLEncoder.encode(thisContents, "UTF-8") + "');")
             } catch (e: UnsupportedEncodingException) {
-                // No handling
+
             }
-            //mContents = contents
         }
 
     fun setEditorFontColor(color: Int): RichEditor {
@@ -187,20 +179,6 @@ class RichEditor
         return this
     }
 
-    override fun setBackgroundResource(resid: Int) {
-       /* val bitmap: Bitmap = Utils.decodeResource(context, resid)
-        val base64: String = Utils.toBase64(bitmap)
-        bitmap.recycle()
-        exec("javascript:RE.setBackgroundImage('url(data:image/png;base64,$base64)');")*/
-    }
-
-    override fun setBackground(background: Drawable) {
-       /* val bitmap: Bitmap = Utils.toBitmap(background)
-        val base64: String = Utils.toBase64(bitmap)
-        bitmap.recycle()
-        exec("javascript:RE.setBackgroundImage('url(data:image/png;base64,$base64)');")*/
-    }
-
     fun setBackground(url: String) {
         exec("javascript:RE.setBackgroundImage('url($url)');")
     }
@@ -229,14 +207,6 @@ class RichEditor
                 "    head.appendChild(link);" +
                 "}) ();")
         exec("javascript:$jsCSSImport")
-    }
-
-    fun undo() {
-        exec("javascript:RE.undo();")
-    }
-
-    fun redo() {
-        exec("javascript:RE.redo();")
     }
 
     fun setBold() {
@@ -282,14 +252,6 @@ class RichEditor
 
     fun setHeading(heading: Int) {
         exec("javascript:RE.setHeading('$heading');")
-    }
-
-    fun setIndent() {
-        exec("javascript:RE.setIndent();")
-    }
-
-    fun setOutdent() {
-        exec("javascript:RE.setOutdent();")
     }
 
     fun setAlignLeft() {
@@ -393,8 +355,8 @@ class RichEditor
                     m = p.matcher(decode)
                     isRegexFound = m.find()
                     if (isRegexFound) {
-                        reCallback = m.group(1)
-                        reState = m.group(2)
+                        m.group(1)?.let { reCallback = it }
+                        m.group(2)?.let{ reState = it }
                     }
                 } catch (e: UnsupportedEncodingException) {
                     return false

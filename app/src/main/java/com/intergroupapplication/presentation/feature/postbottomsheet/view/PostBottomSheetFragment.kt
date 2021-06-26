@@ -63,6 +63,18 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     }
 
+    override fun setupLeftGravity() {
+
+    }
+
+    override fun setupCenterGravity() {
+
+    }
+
+    override fun setupRightGravity() {
+
+    }
+
     override fun attachFileNotActivated() {
         callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
     }

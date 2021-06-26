@@ -101,7 +101,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         richEditor = viewBinding.richEditor.apply {
             setEditorFontSize(18)
-            setEditorPadding(4, 0, 4, 0)
+            val padding = context.dpToPx(4)
+            setEditorPadding(padding, padding, padding, padding)
             setEditorFontColor(ContextCompat.getColor(view.context, R.color.whiteTextColor))
             setPlaceholder(context.getString(R.string.add_photo_or_text))
             setBackgroundColor(Color.parseColor("#12161E"))
@@ -136,6 +137,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                                         strikeText.activated(true)
                                         buttons.remove(strikeText)
                                     }
+                                    TextType.JUSTIFYLEFT->{
+                                        leftGravityButton.isChecked = true
+                                    }
+                                    TextType.JUSTIFYCENTER->{
+                                        centerGravityButton.isChecked = true
+                                    }
+                                    TextType.JUSTIFYRIGHT->{
+                                        rightGravityButton.isChecked = true
+                                    }
                                 }
                             }
                         }
@@ -167,7 +177,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 }
         textAnswer.text = comment.text.substringBefore(PostCustomView.PARSE_SYMBOL)
         var height = iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
-        if(panelStyleText.isVisible()){
+        if(panelStyleText.isVisible() || panelGravityText.isVisible()){
             height += heightTextStylePanel
         }
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
@@ -242,6 +252,18 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun setupUnderlineText() {
         richEditor.clearAndFocusEditor()
         richEditor.setUnderline()
+    }
+
+    override fun setupLeftGravity() {
+        richEditor.setAlignLeft()
+    }
+
+    override fun setupCenterGravity() {
+        richEditor.setAlignCenter()
+    }
+
+    override fun setupRightGravity() {
+        richEditor.setAlignRight()
     }
 
     override fun attachGallery() {

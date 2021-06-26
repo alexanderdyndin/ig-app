@@ -73,6 +73,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var italicText:ImageView
     protected lateinit var strikeText:ImageView
     protected lateinit var underlineText:ImageView
+    protected lateinit var leftGravityButton:RadioButton
+    protected lateinit var centerGravityButton:RadioButton
+    protected lateinit var rightGravityButton:RadioButton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         chooseMedias.clear()
@@ -92,6 +95,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         italicText = view.findViewById(R.id.selectItalicText)
         strikeText = view.findViewById(R.id.selectStrikeText)
         underlineText = view.findViewById(R.id.selectUnderlineText)
+        leftGravityButton = view.findViewById(R.id.left_gravity_button)
+        centerGravityButton = view.findViewById(R.id.center_gravity_button)
+        rightGravityButton = view.findViewById(R.id.right_gravity_button)
         mediaRecyclerView.apply {
             addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
         }
@@ -170,9 +176,8 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             }
         }
 
-        panelStyleText.run {
-            setupPanelStyleText(this)
-        }
+        setupPanelStyleText()
+        setupPanelGravityText()
 
         galleryButton.setOnClickListener {
             mediaRecyclerView.run {
@@ -268,14 +273,14 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         panelGravityText.show()
     }
 
-    private fun setupPanelStyleText(view:View) {
-        setupBoldTextView(view)
-        setupItalicTextView(view)
-        setupStrikeTextView(view)
-        setupUnderlineTextView(view)
+    private fun setupPanelStyleText() {
+        setupBoldTextView()
+        setupItalicTextView()
+        setupStrikeTextView()
+        setupUnderlineTextView()
     }
 
-    private fun setupBoldTextView(view:View) {
+    private fun setupBoldTextView() {
         boldText.setOnClickListener {
             it.activated(!it.isActivated)
             setupBoldText()
@@ -284,7 +289,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun setupBoldText()
 
-    private fun setupItalicTextView(view:View) {
+    private fun setupItalicTextView() {
         italicText.setOnClickListener {
             it.activated(!it.isActivated)
             setupItalicText()
@@ -293,7 +298,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun setupItalicText()
 
-    private fun setupStrikeTextView(view:View) {
+    private fun setupStrikeTextView() {
         strikeText.setOnClickListener {
             it.activated(!it.isActivated)
             setupStrikeText()
@@ -302,7 +307,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun setupStrikeText()
 
-    private fun setupUnderlineTextView(view:View) {
+    private fun setupUnderlineTextView() {
         underlineText.setOnClickListener {
             it.activated(!it.isActivated)
             setupUnderlineText()
@@ -310,6 +315,39 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     }
 
     abstract fun setupUnderlineText()
+
+    private fun setupPanelGravityText(){
+        setupLeftGravityView()
+        setupCenterGravityView()
+        setupRightGravityView()
+    }
+
+    private fun setupLeftGravityView(){
+        leftGravityButton.setOnClickListener {
+            Timber.tag("tut_left_click").d("tut")
+            setupLeftGravity()
+        }
+    }
+
+    abstract fun setupLeftGravity()
+
+    private fun setupCenterGravityView(){
+        centerGravityButton.setOnClickListener {
+            Timber.tag("tut_center_click").d("tut")
+            setupCenterGravity()
+        }
+    }
+
+    abstract fun setupCenterGravity()
+
+    private fun setupRightGravityView(){
+        rightGravityButton.setOnClickListener {
+            Timber.tag("tut_center_click").d("tut")
+            setupRightGravity()
+        }
+    }
+
+    abstract fun setupRightGravity()
 
     abstract fun attachFileNotActivated()
 
