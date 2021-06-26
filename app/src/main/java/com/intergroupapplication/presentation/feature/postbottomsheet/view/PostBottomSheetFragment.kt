@@ -63,6 +63,18 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     }
 
+    override fun startChooseColorText() {
+
+    }
+
+    override fun endChooseColorText() {
+
+    }
+
+    override fun changeTextColor(color: Int) {
+
+    }
+
     override fun setupLeftGravity() {
 
     }
@@ -101,7 +113,7 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         presenter.attachFromCamera()
     }
 
-    override fun changeStateWhenAttachFile() {
+    override fun changeStateToHalfExpanded() {
         if (callback.getState() == BottomSheetBehavior.STATE_COLLAPSED){
             callback.changeStateBottomSheet(BottomSheetBehavior.STATE_HALF_EXPANDED)
         }

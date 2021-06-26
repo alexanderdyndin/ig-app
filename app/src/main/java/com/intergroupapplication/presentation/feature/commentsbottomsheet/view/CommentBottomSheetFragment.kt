@@ -254,6 +254,19 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         richEditor.setUnderline()
     }
 
+    override fun startChooseColorText() {
+
+    }
+
+    override fun endChooseColorText() {
+
+    }
+
+    override fun changeTextColor(color: Int) {
+        richEditor.setTextColor(color)
+        richEditor.showKeyBoard()
+    }
+
     override fun setupLeftGravity() {
         richEditor.setAlignLeft()
     }
@@ -285,7 +298,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         presenter.attachFromCamera()
     }
 
-    override fun changeStateWhenAttachFile() {
+    override fun changeStateToHalfExpanded() {
         CommentsViewModel.publishSubject
                 .onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA, BottomSheetBehavior.STATE_HALF_EXPANDED))
     }

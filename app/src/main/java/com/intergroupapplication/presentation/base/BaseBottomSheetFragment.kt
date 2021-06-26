@@ -60,6 +60,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var mediaRecyclerView:RecyclerView
     protected lateinit var icAttachFile:ImageView
     private lateinit var icEditText:ImageView
+    private lateinit var icEditColor:ImageView
     private lateinit var icEditAlign:ImageView
     protected lateinit var panelStyleText:LinearLayout
     protected lateinit var panelGravityText:RadioGroup
@@ -82,6 +83,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
         icAttachFile = view.findViewById(R.id.icAttachFile)
         icEditText = view.findViewById(R.id.icEditText)
+        icEditColor = view.findViewById(R.id.icEditColor)
         icEditAlign = view.findViewById(R.id.icEditAlign)
         panelStyleText = view.findViewById(R.id.panelStyleText)
         panelGravityText = view.findViewById(R.id.panelGravityText)
@@ -105,10 +107,10 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             val isPhoto = bundle.getBoolean(PreviewDialog.IS_PHOTO_KEY)
             val result = bundle.getString(PreviewDialog.ADD_URI_KEY)
             val isChoose = bundle.getBoolean(PreviewDialog.IS_CHOOSE_KEY)
-            result?.let { result->
+            result?.let { string->
                 if (isPhoto){
                     galleryAdapter.photos.mapIndexed { index, galleryModel ->
-                        if (galleryModel.url == result){
+                        if (galleryModel.url == string){
                             galleryModel.isChoose = isChoose
                             galleryAdapter.notifyItemChanged(index)
                         }
@@ -117,7 +119,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                 }
                 else{
                     videoAdapter.videos.mapIndexed { index, videoGallery->
-                        if (videoGallery.url == result){
+                        if (videoGallery.url == string){
                             videoGallery.isChoose = isChoose
                             videoAdapter.notifyItemChanged(index)
                         }
@@ -130,25 +132,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     }
 
     private fun setUpAddFilePanel() {
-        icAttachFile.run {
-            setOnClickListener {
-                requestPermission()
-                closeKeyboard()
-                changeStateWhenAttachFile()
-                if (isActivated) {
-                    activated(false)
-                    attachFileNotActivated()
-                    galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
-                    galleryAdapter.photos.cancelChoose()
-                    videoAdapter.videos.cancelChoose()
-                    audioAdapter.audios.cancelChoose()
-                } else {
-                    activated(true)
-                    attachFileActivated()
-                }
-
-            }
-        }
 
         icEditText.run {
             setOnClickListener {
@@ -163,6 +146,21 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             }
         }
 
+        icEditColor.run {
+            setOnClickListener {
+                changeStateToHalfExpanded()
+                closeKeyboard()
+                if (isActivated){
+                    activated(false)
+                    endChooseColorText()
+                }
+                else{
+                    activated(true)
+                    startChooseColorText()
+                }
+            }
+        }
+
         icEditAlign.run {
             setOnClickListener {
                 if (isActivated){
@@ -173,6 +171,26 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                     activated(true)
                     showPanelGravityText()
                 }
+            }
+        }
+
+        icAttachFile.run {
+            setOnClickListener {
+                requestPermission()
+                closeKeyboard()
+                changeStateToHalfExpanded()
+                if (isActivated) {
+                    activated(false)
+                    attachFileNotActivated()
+                    galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+                    galleryAdapter.photos.cancelChoose()
+                    videoAdapter.videos.cancelChoose()
+                    audioAdapter.audios.cancelChoose()
+                } else {
+                    activated(true)
+                    attachFileActivated()
+                }
+
             }
         }
 
@@ -316,6 +334,12 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun setupUnderlineText()
 
+    abstract fun startChooseColorText()
+
+    abstract fun endChooseColorText()
+
+    abstract fun changeTextColor(color:Int)
+
     private fun setupPanelGravityText(){
         setupLeftGravityView()
         setupCenterGravityView()
@@ -324,7 +348,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     private fun setupLeftGravityView(){
         leftGravityButton.setOnClickListener {
-            Timber.tag("tut_left_click").d("tut")
             setupLeftGravity()
         }
     }
@@ -333,7 +356,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     private fun setupCenterGravityView(){
         centerGravityButton.setOnClickListener {
-            Timber.tag("tut_center_click").d("tut")
             setupCenterGravity()
         }
     }
@@ -342,7 +364,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     private fun setupRightGravityView(){
         rightGravityButton.setOnClickListener {
-            Timber.tag("tut_center_click").d("tut")
             setupRightGravity()
         }
     }
@@ -361,7 +382,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun attachFromCamera()
 
-    abstract fun changeStateWhenAttachFile()
+    abstract fun changeStateToHalfExpanded()
 
     abstract fun changeStateViewAfterAddMedia()
 

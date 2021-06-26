@@ -45,10 +45,10 @@ class RichEditor
 
 
     private var isReady = false
-    private var mContents: String? = null
-    private var mTextChangeListener: OnTextChangeListener? = null
+    private var content: String? = null
+    private var textChangeListener: OnTextChangeListener? = null
     var decorationStateListener:OnDecorationStateListener? = null
-    private var mLoadListener: AfterInitialLoadListener? = null
+    private var loadListener: AfterInitialLoadListener? = null
 
     companion object {
         private const val SETUP_HTML = "file:///android_asset/editor.html"
@@ -72,20 +72,18 @@ class RichEditor
     )
 
     fun setOnTextChangeListener(listener: OnTextChangeListener?) {
-        mTextChangeListener = listener
+        textChangeListener = listener
     }
 
 
     fun setOnInitialLoadListener(listener: AfterInitialLoadListener?) {
-        mLoadListener = listener
+        loadListener = listener
     }
 
 
     private fun callback(text: String) {
-        mContents = text.replaceFirst(CALLBACK_SCHEME.toRegex(), "")
-        if (mTextChangeListener != null) {
-            mTextChangeListener!!.onTextChange(mContents)
-        }
+        content = text.replaceFirst(CALLBACK_SCHEME.toRegex(), "")
+        textChangeListener?.onTextChange(content)
     }
 
     private fun stateCheck(text: String) {
@@ -136,7 +134,7 @@ class RichEditor
     }
 
     var html: String?
-        get() = mContents
+        get() = content
         set(contents) {
             var thisContents = contents
             if (thisContents == null) {
@@ -335,7 +333,7 @@ class RichEditor
     inner class EditorWebViewClient : WebViewClient() {
         override fun onPageFinished(view: WebView, url: String) {
             isReady = url.equals(SETUP_HTML, ignoreCase = true)
-            mLoadListener?.onAfterInitialLoad(isReady)
+            loadListener?.onAfterInitialLoad(isReady)
         }
 
         override fun shouldOverrideUrlLoading(
