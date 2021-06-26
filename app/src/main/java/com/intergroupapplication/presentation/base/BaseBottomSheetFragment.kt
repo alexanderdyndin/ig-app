@@ -60,7 +60,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var mediaRecyclerView:RecyclerView
     protected lateinit var icAttachFile:ImageView
     private lateinit var icEditText:ImageView
+    private lateinit var icEditAlign:ImageView
     protected lateinit var panelStyleText:LinearLayout
+    protected lateinit var panelGravityText:RadioGroup
     private lateinit var galleryButton:TextView
     private lateinit var musicButton: TextView
     private lateinit var videoButton: TextView
@@ -77,7 +79,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
         icAttachFile = view.findViewById(R.id.icAttachFile)
         icEditText = view.findViewById(R.id.icEditText)
+        icEditAlign = view.findViewById(R.id.icEditAlign)
         panelStyleText = view.findViewById(R.id.panelStyleText)
+        panelGravityText = view.findViewById(R.id.panelGravityText)
         galleryButton = view.findViewById(R.id.galleryButton)
         musicButton = view.findViewById(R.id.musicButton)
         videoButton = view.findViewById(R.id.videoButton)
@@ -149,6 +153,19 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                 else {
                     activated(true)
                     showPanelStyleText()
+                }
+            }
+        }
+
+        icEditAlign.run {
+            setOnClickListener {
+                if (isActivated){
+                    activated(false)
+                    gonePanelGravityText()
+                }
+                else{
+                    activated(true)
+                    showPanelGravityText()
                 }
             }
         }
@@ -241,6 +258,14 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     protected open fun showPanelStyleText() {
         panelStyleText.show()
+    }
+
+    protected open fun gonePanelGravityText(){
+        panelGravityText.gone()
+    }
+
+    protected open fun showPanelGravityText(){
+        panelGravityText.show()
     }
 
     private fun setupPanelStyleText(view:View) {

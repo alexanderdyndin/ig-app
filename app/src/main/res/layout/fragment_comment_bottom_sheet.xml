@@ -25,52 +25,94 @@
         app:layout_constraintTop_toTopOf="@+id/iconPanel"
         app:layout_constraintVertical_bias="1.0" />
 
+
     <LinearLayout
-        android:id="@+id/panelStyleText"
-        android:layout_width="wrap_content"
+        android:id="@+id/overall_panel_style_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_colorinput_radius_2dp"
         android:orientation="horizontal"
-        android:padding="4dp"
-        android:visibility="gone"
-        android:layout_marginBottom="3dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/selectBoldText"
+        app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout
+            android:id="@+id/panelStyleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:src="@drawable/selector_ic_bold" />
+            android:background="@drawable/bg_colorinput_radius_2dp"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:visibility="gone"
+            android:layout_marginBottom="3dp"
+            >
 
-        <ImageView
-            android:id="@+id/selectItalicText"
+            <ImageView
+                android:id="@+id/selectBoldText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_bold" />
+
+            <ImageView
+                android:id="@+id/selectItalicText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_italic" />
+
+            <ImageView
+                android:id="@+id/selectStrikeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_strike" />
+
+            <ImageView
+                android:id="@+id/selectUnderlineText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:src="@drawable/selector_ic_underline" />
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/panelGravityText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:src="@drawable/selector_ic_italic" />
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:layout_marginBottom="3dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_colorinput_radius_2dp"
+            android:layout_gravity="center">
 
-        <ImageView
-            android:id="@+id/selectStrikeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:src="@drawable/selector_ic_strike" />
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="16dp"
+                android:button="@drawable/selector_ic_edit_align_left" />
 
-        <ImageView
-            android:id="@+id/selectUnderlineText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:src="@drawable/selector_ic_underline" />
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="16dp"
+                android:button="@drawable/selector_ic_edit_align_center" />
+
+            <RadioButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@drawable/selector_ic_edit_align_right" />
+
+        </RadioGroup>
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +123,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/middle_margin"
-        app:layout_constraintTop_toBottomOf="@+id/panelStyleText"
+        app:layout_constraintTop_toBottomOf="@+id/overall_panel_style_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -113,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_align_center" />
+                android:src="@drawable/selector_ic_edit_gravity" />
         </LinearLayout>
 
 
@@ -251,22 +293,6 @@
 
     </LinearLayout>
 
-   <!-- <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/answer_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
-    <com.intergroupapplication.presentation.customview.CreatePostCustomView
-        android:id="@+id/createCommentCustomView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        />
-    </ScrollView>!-->
     <com.intergroupapplication.presentation.customview.RichEditor
         android:id="@+id/rich_editor"
         android:layout_width="match_parent"
@@ -277,6 +303,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
     <TextView
         android:id="@+id/amountFiles"
         style="@style/TextAccent14sp"

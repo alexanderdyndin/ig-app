@@ -1,8 +1,8 @@
 package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
 
+import android.graphics.Color
 import android.graphics.Typeface.*
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -31,7 +31,6 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoP
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -76,7 +75,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun getSnackBarCoordinator() = viewBinding.bottomSheetCoordinator
 
-   // private lateinit var createCommentCustomView:CreatePostCustomView
     private lateinit var richEditor: RichEditor
     private lateinit var iconPanel:LinearLayout
     private lateinit var pushUpDown:Button
@@ -101,13 +99,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //createCommentCustomView = viewBinding.createCommentCustomView
         richEditor = viewBinding.richEditor.apply {
             setEditorFontSize(18)
             setEditorPadding(4, 0, 4, 0)
-            //setTextColor(ContextCompat.getColor(context?.applicationContext!!, R.color.GreyElement))
-            //setBackgroundColor(Color.parseColor("#12161E"))
+            setEditorFontColor(ContextCompat.getColor(view.context, R.color.whiteTextColor))
             setPlaceholder(context.getString(R.string.add_photo_or_text))
+            setBackgroundColor(Color.parseColor("#12161E"))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             decorationStateListener = object :RichEditor.OnDecorationStateListener{
 
@@ -157,9 +154,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         textAnswer = viewBinding.textAnswer
         horizontalGuideCenter = viewBinding.horizontalGuideCenter
         horizontalGuideEnd = viewBinding.horizontalGuideEnd
-       // createCommentCustomView.createAllMainView()
-        //createCommentCustomView.textPost.hint = requireContext().getString(R.string.write_your_comment)
-        //controlFirstCommentEditTextChanges()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -173,7 +167,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 }
         textAnswer.text = comment.text.substringBefore(PostCustomView.PARSE_SYMBOL)
         var height = iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
-        //var height = createCommentCustomView.listEditText[0].height + iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
         if(panelStyleText.isVisible()){
             height += heightTextStylePanel
         }
@@ -193,7 +186,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachFileActivated() {
-       // createCommentCustomView.gone()
         richEditor.gone()
         answerLayout.gone()
         panelAddFile.show()
@@ -201,27 +193,38 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun gonePanelStyleText() {
         super.gonePanelStyleText()
-        //var height = if (createCommentCustomView.listEditText[0].lineCount<=5)iconPanel.height + pushUpDown.height / 2 + heightEditText + heightLineInEditText * createCommentCustomView.listEditText[0].lineCount
-        //else heightEditTextWithFiveLine
-        var height = 0
-        if (answerLayout.isVisible())
-            height += heightAnswerPanel
+        var height = calculateHeight()
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
     }
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
-        //var height = if (createCommentCustomView.listEditText[0].lineCount<=5)iconPanel.height + pushUpDown.height / 2 + heightEditText + heightLineInEditText * createCommentCustomView.listEditText[0].lineCount
-        //else heightEditTextWithFiveLine
-        var height = 0
+        var height = calculateHeight()
+        height += heightTextStylePanel
+        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+    }
+
+    private fun calculateHeight(): Int {
+        var height = iconPanel.height + pushUpDown.height / 2 + heightEditText
         if (answerLayout.isVisible())
             height += heightAnswerPanel
+        return height
+    }
+
+    override fun gonePanelGravityText() {
+        super.gonePanelGravityText()
+        var height = calculateHeight()
+        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+    }
+
+    override fun showPanelGravityText() {
+        super.showPanelGravityText()
+        var height = calculateHeight()
         height += heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
     }
 
     override fun setupBoldText() {
-        richEditor.setTextColor(ContextCompat.getColor(context?.applicationContext!!, R.color.GreyElement))
         richEditor.clearAndFocusEditor()
         richEditor.setBold()
     }
