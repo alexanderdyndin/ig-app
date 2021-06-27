@@ -61,5 +61,59 @@
     <color name="blackout">#CC12161E</color>
     <color name="GreyElement">#2C3444</color>
     <color name="pingForButton">#F33657</color>
+    
+    <!-- text colors !-->
+    <color name="blue_1">#AEEBFD</color>
+    <color name="blue_2">#88E1FB</color>
+    <color name="blue_3">#6CD5FA</color>
+    <color name="blue_4">#59AFD5</color>
+    <color name="blue_5">#4C97B1</color>
+    <color name="blue_6">#3C768C</color>
+    <color name="blue_7">#2B5564</color>
+    <color name="blue_8">#203E4A</color>
 
+    <color name="dark_blue1">#B0CDFC</color>
+    <color name="dark_blue2">#84B3FC</color>
+    <color name="dark_blue3">#5A98FA</color>
+    <color name="dark_blue4">#5A99FA</color>
+    <color name="dark_blue5">#3778FA</color>
+    <color name="dark_blue6">#3169D1</color>
+    <color name="dark_blue7">#2653A5</color>
+    <color name="dark_blue8">#2653A6</color>
+
+    <color name="purple_1">#C290FB</color>
+    <color name="purple_2">#A557F9</color>
+    <color name="purple_3">#8E39EF</color>
+    <color name="purple_4">#742DB8</color>
+    <color name="purple_5">#5C259A</color>
+    <color name="purple_6">#491D79</color>
+    <color name="purple_7">#491D79</color>
+    <color name="purple_8">#351558</color>
+    
+    <color name="red_1">#EBAFB0</color>
+    <color name="red_2">#E38587</color>
+    <color name="red_3">#DB5758</color>
+    <color name="red_4">#D73224</color>
+    <color name="red_5">#D73224</color>
+    <color name="red_6">#BB1907</color>
+    <color name="red_7">#951406</color>
+    <color name="red_8">#6B0E04</color>
+
+    <color name="orange_1">#F5CFA9</color>
+    <color name="orange_2">#F0B77A</color>
+    <color name="orange_3">#EC9f4A</color>
+    <color name="orange_4">#EA9225</color>
+    <color name="orange_5">#C16F1C</color>
+    <color name="orange_6">#6E4010</color>
+    <color name="orange_7">#6E4010</color>
+    <color name="orange_8">#502f0c</color>
+
+    <color name="green_1">#DAE8B6</color>
+    <color name="green_2">#C6DD8F</color>
+    <color name="green_3">#B5D267</color>
+    <color name="green_4">#9ABA4C</color>
+    <color name="green_5">#829B40</color>
+    <color name="green_6">#667932</color>
+    <color name="green_7">#4a5824</color>
+    <color name="green_8">#36401a</color>
 </resources>

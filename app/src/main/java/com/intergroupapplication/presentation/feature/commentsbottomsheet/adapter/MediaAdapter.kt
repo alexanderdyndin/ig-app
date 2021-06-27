@@ -16,6 +16,7 @@ import com.intergroupapplication.data.model.AudioInAddFileModel
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
+import com.intergroupapplication.databinding.ItemColorBinding
 import com.intergroupapplication.databinding.ItemImageForAddFilesBottomSheetBinding
 import com.intergroupapplication.databinding.ItemPhotoForAddFilesBottomSheetBinding
 import com.intergroupapplication.databinding.ItemVideoForAddFilesBottomSheetBinding
@@ -23,6 +24,7 @@ import com.intergroupapplication.presentation.base.BaseHolder
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
+import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioForAddFilesBottomSheetPlayerView
 import io.reactivex.Observable
 import java.io.*
@@ -60,6 +62,7 @@ interface MediaCallback{
     fun changeCountChooseVideo()
     fun changeCountChooseAudio()
     fun attachPhoto()
+    fun changeTextColor(color:Int)
 }
 sealed class MediaAdapter<T>: RecyclerView.Adapter<BaseHolder<T>>(){
     class GalleryAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
@@ -112,7 +115,7 @@ sealed class MediaAdapter<T>: RecyclerView.Adapter<BaseHolder<T>>(){
             super.onViewRecycled(holder)
         }
 
-        inner class PhotoHolder(private val view: View) : BaseHolder<GalleryModel>(view){
+        inner class PhotoHolder(view: View) : BaseHolder<GalleryModel>(view){
             private val binding by viewBinding(ItemPhotoForAddFilesBottomSheetBinding::bind)
             override fun onBind(data: GalleryModel) {
                 with(binding){
@@ -131,7 +134,7 @@ sealed class MediaAdapter<T>: RecyclerView.Adapter<BaseHolder<T>>(){
 
         fun getChoosePhotosFromObservable():Observable<ChooseMedia> = Observable.fromIterable(chooseMedias)
 
-        inner class ImageHolder(private val view: View) : BaseHolder<GalleryModel>(view) {
+        inner class ImageHolder(view: View) : BaseHolder<GalleryModel>(view) {
             val binding by viewBinding(ItemImageForAddFilesBottomSheetBinding::bind)
             override fun onBind(data: GalleryModel) {
                 with(binding){
@@ -234,7 +237,7 @@ sealed class MediaAdapter<T>: RecyclerView.Adapter<BaseHolder<T>>(){
 
         fun getChooseVideosFromObservable() = Observable.fromIterable(chooseMedias)
 
-        inner class VideoHolder(private val view: View) : BaseHolder<VideoModel>(view) {
+        inner class VideoHolder(view: View) : BaseHolder<VideoModel>(view) {
             private val binding by viewBinding(ItemVideoForAddFilesBottomSheetBinding::bind)
             override fun onBind(data: VideoModel) {
                 with(binding){
@@ -267,9 +270,9 @@ sealed class MediaAdapter<T>: RecyclerView.Adapter<BaseHolder<T>>(){
                 val cacheFile =
                     if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState()
                         || !Environment.isExternalStorageRemovable()) {
-                        view.context.externalCacheDir
+                        binding.root.context.externalCacheDir
                     } else {
-                        view.context.cacheDir
+                        binding.root.context.cacheDir
                     }
                 val f = File(cacheFile, "previewImage")
                 f.createNewFile()
@@ -304,5 +307,33 @@ sealed class MediaAdapter<T>: RecyclerView.Adapter<BaseHolder<T>>(){
             }
 
         }
+    }
+
+    class ColorAdapter(private val mediaCallback: MediaCallback):MediaAdapter<Int>(){
+        val colors = mutableListOf<Int>()
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<Int> {
+            return ColorHolder(parent.inflate(R.layout.item_color))
+        }
+
+        override fun onBindViewHolder(holder: BaseHolder<Int>, position: Int) {
+            holder.onBind(colors[position])
+        }
+
+        override fun getItemCount() = colors.size
+
+        inner class ColorHolder(view:View):BaseHolder<Int>(view){
+
+            private val colorBinding by viewBinding(ItemColorBinding::bind)
+
+            override fun onBind(data: Int) {
+                colorBinding.colorButton.run {
+                    setBackgroundColor(data)
+                    setOnClickListener{
+                        mediaCallback.changeTextColor(data)
+                    }
+                }
+            }
+        }
+
     }
 }

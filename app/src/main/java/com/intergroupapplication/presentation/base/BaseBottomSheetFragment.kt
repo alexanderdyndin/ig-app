@@ -52,6 +52,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     @Inject
     lateinit var playlistAdapter: MediaAdapter.PlaylistAdapter
 
+    @Inject
+    lateinit var colorAdapter: MediaAdapter.ColorAdapter
+
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
 
@@ -64,6 +67,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     private lateinit var icEditAlign:ImageView
     protected lateinit var panelStyleText:LinearLayout
     protected lateinit var panelGravityText:RadioGroup
+    protected lateinit var panelAddFile:LinearLayout
     private lateinit var galleryButton:TextView
     private lateinit var musicButton: TextView
     private lateinit var videoButton: TextView
@@ -87,6 +91,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         icEditAlign = view.findViewById(R.id.icEditAlign)
         panelStyleText = view.findViewById(R.id.panelStyleText)
         panelGravityText = view.findViewById(R.id.panelGravityText)
+        panelAddFile = view.findViewById(R.id.panelAddFile)
         galleryButton = view.findViewById(R.id.galleryButton)
         musicButton = view.findViewById(R.id.musicButton)
         videoButton = view.findViewById(R.id.videoButton)
@@ -147,15 +152,14 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         }
 
         icEditColor.run {
+            colorAdapter.colors.addAll(addLocalMediaGateway.addColors())
             setOnClickListener {
                 changeStateToHalfExpanded()
                 closeKeyboard()
                 if (isActivated){
-                    activated(false)
                     endChooseColorText()
                 }
                 else{
-                    activated(true)
                     startChooseColorText()
                 }
             }
@@ -334,11 +338,24 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun setupUnderlineText()
 
-    abstract fun startChooseColorText()
+    protected open fun startChooseColorText(){
+        icEditColor.activated(true)
+        closeKeyboard()
+        changeStateToHalfExpanded()
+        panelAddFile.gone()
+        amountFiles.gone()
+        btnAdd.gone()
+        mediaRecyclerView.run {
+            show()
+            adapter = colorAdapter
+            layoutManager = GridLayoutManager(context,8)
+        }
+    }
 
-    abstract fun endChooseColorText()
-
-    abstract fun changeTextColor(color:Int)
+    protected open fun endChooseColorText(){
+        mediaRecyclerView.gone()
+        icEditColor.activated(false)
+    }
 
     private fun setupPanelGravityText(){
         setupLeftGravityView()
@@ -408,27 +425,15 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     }
 
     private fun settingAdapter() {
-        galleryAdapter.apply {
-            photos.addAll(addGalleryUri())
+        galleryAdapter.run {
+            photos.addAll(addLocalMediaGateway.addGalleryUri())
         }
-        audioAdapter.apply {
-            audios.addAll(addAudioUri())
+        audioAdapter.run {
+            audios.addAll(addLocalMediaGateway.addAudioUri())
         }
-        videoAdapter.apply {
-            videos.addAll(addVideoUri())
+        videoAdapter.run {
+            videos.addAll(addLocalMediaGateway.addVideoUri())
         }
-    }
-
-    private fun addGalleryUri():MutableList<GalleryModel> {
-       return addLocalMediaGateway.addGalleryUri()
-    }
-
-    private fun addVideoUri():MutableList<VideoModel>{
-      return addLocalMediaGateway.addVideoUri()
-    }
-
-    private fun addAudioUri():MutableList<AudioInAddFileModel>{
-       return addLocalMediaGateway.addAudioUri()
     }
 
     fun changeState(state: Int){

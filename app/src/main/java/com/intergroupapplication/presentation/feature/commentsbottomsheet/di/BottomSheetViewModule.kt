@@ -49,8 +49,15 @@ class BottomSheetViewModule {
 
     @PerFragment
     @Provides
-    fun providePlaylistAdapter(imageLoadingDelegate: ImageLoadingDelegate): MediaAdapter.PlaylistAdapter {
+    fun providePlaylistAdapter(imageLoadingDelegate: ImageLoadingDelegate):
+            MediaAdapter.PlaylistAdapter {
         return MediaAdapter.PlaylistAdapter(imageLoadingDelegate)
+    }
+
+    @PerFragment
+    @Provides
+    fun provideColorAdapter(callback: CommentBottomSheetFragment):MediaAdapter.ColorAdapter{
+        return MediaAdapter.ColorAdapter(callback)
     }
 
     @PerFragment

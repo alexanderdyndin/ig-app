@@ -3,6 +3,7 @@ package com.intergroupapplication.data.repository
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
+import com.intergroupapplication.R
 import com.intergroupapplication.data.model.AudioInAddFileModel
 import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
@@ -118,5 +119,58 @@ class AddLocalMediaRepository@Inject constructor(private val context: Context):A
         }
         listUrlAudio.reverse()
         return listUrlAudio
+    }
+
+    override fun addColors(): MutableList<Int> {
+        return mutableListOf(
+            context.getColor(R.color.blue_1),
+            context.getColor(R.color.blue_2),
+            context.getColor(R.color.blue_3),
+            context.getColor(R.color.blue_4),
+            context.getColor(R.color.blue_5),
+            context.getColor(R.color.blue_6),
+            context.getColor(R.color.blue_7),
+            context.getColor(R.color.blue_8),
+            context.getColor(R.color.dark_blue1),
+            context.getColor(R.color.dark_blue2),
+            context.getColor(R.color.dark_blue3),
+            context.getColor(R.color.dark_blue4),
+            context.getColor(R.color.dark_blue5),
+            context.getColor(R.color.dark_blue6),
+            context.getColor(R.color.dark_blue7),
+            context.getColor(R.color.dark_blue8),
+            context.getColor(R.color.purple_1),
+            context.getColor(R.color.purple_2),
+            context.getColor(R.color.purple_3),
+            context.getColor(R.color.purple_4),
+            context.getColor(R.color.purple_5),
+            context.getColor(R.color.purple_6),
+            context.getColor(R.color.purple_7),
+            context.getColor(R.color.purple_8),
+            context.getColor(R.color.red_1),
+            context.getColor(R.color.red_2),
+            context.getColor(R.color.red_3),
+            context.getColor(R.color.red_4),
+            context.getColor(R.color.red_5),
+            context.getColor(R.color.red_6),
+            context.getColor(R.color.red_7),
+            context.getColor(R.color.red_8),
+            context.getColor(R.color.orange_1),
+            context.getColor(R.color.orange_2),
+            context.getColor(R.color.orange_3),
+            context.getColor(R.color.orange_4),
+            context.getColor(R.color.orange_5),
+            context.getColor(R.color.orange_6),
+            context.getColor(R.color.orange_7),
+            context.getColor(R.color.orange_8),
+            context.getColor(R.color.green_1),
+            context.getColor(R.color.green_2),
+            context.getColor(R.color.green_3),
+            context.getColor(R.color.green_4),
+            context.getColor(R.color.green_5),
+            context.getColor(R.color.green_6),
+            context.getColor(R.color.green_7),
+            context.getColor(R.color.green_8),
+        )
     }
 }

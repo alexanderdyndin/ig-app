@@ -8,4 +8,5 @@ interface AddLocalMediaGateway {
     fun addGalleryUri():MutableList<GalleryModel>
     fun addVideoUri():MutableList<VideoModel>
     fun addAudioUri():MutableList<AudioInAddFileModel>
+    fun addColors():MutableList<Int>
 }

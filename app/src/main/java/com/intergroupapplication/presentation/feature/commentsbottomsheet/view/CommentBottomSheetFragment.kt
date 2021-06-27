@@ -79,7 +79,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var iconPanel:LinearLayout
     private lateinit var pushUpDown:Button
     private lateinit var answerLayout:LinearLayout
-    private lateinit var panelAddFile:LinearLayout
     private lateinit var responseToUser:TextView
     private lateinit var textAnswer:TextView
     private lateinit var horizontalGuideCenter:LinearLayout
@@ -159,7 +158,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         iconPanel = viewBinding.iconPanel
         pushUpDown = viewBinding.pushUpDown
         answerLayout = viewBinding.answerLayout
-        panelAddFile = viewBinding.panelAddFile
         responseToUser = viewBinding.responseToUser
         textAnswer = viewBinding.textAnswer
         horizontalGuideCenter = viewBinding.horizontalGuideCenter
@@ -255,16 +253,25 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun startChooseColorText() {
-
+        super.startChooseColorText()
+        richEditor.gone()
+        answerLayout.gone()
     }
 
     override fun endChooseColorText() {
-
+        super.endChooseColorText()
+        if (answerLayout.isActivated) answerLayout.show()
+        richEditor.run {
+            show()
+        }
     }
 
     override fun changeTextColor(color: Int) {
-        richEditor.setTextColor(color)
-        richEditor.showKeyBoard()
+        endChooseColorText()
+        richEditor.run {
+            setTextColor(color)
+            showKeyBoard()
+        }
     }
 
     override fun setupLeftGravity() {

@@ -14,6 +14,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.presentation.exstension.dpToPx
+import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -341,6 +342,7 @@ class RichEditor
             request: WebResourceRequest?
         ): Boolean {
             request?.let {
+                Timber.tag("tut_url").d(it.url.toString())
                 val decode: String
                 var reCallback = ""
                 var reState = ""
