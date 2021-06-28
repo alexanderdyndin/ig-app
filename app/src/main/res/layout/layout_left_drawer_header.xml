@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/mainBlack">
+
+    <FrameLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/drawer_header_background"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="start|top"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_settings_blue" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="end|top"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_roll_up_menu" />
+
+        <com.github.florent37.shapeofview.ShapeOfView
+            android:id="@+id/currentUserAvatar"
+            android:layout_width="127dp"
+            android:layout_height="127dp"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="16dp">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/currentUserHolder"
+                android:layout_width="127dp"
+                android:layout_height="127dp"
+                app:placeholderImage="@drawable/avatar_fill" />
+
+        </com.github.florent37.shapeofview.ShapeOfView>
+
+        <TextView
+            android:id="@+id/countDislikesTxt"
+            style="@style/TextDislike16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="13dp"
+            android:drawableStart="@drawable/icon_dislike_active"
+            android:drawablePadding="4dp"
+            tools:text="150" />
+
+        <TextView
+            style="@style/TextAccent16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="12dp"
+            android:text="Репутация" />
+
+        <TextView
+            android:id="@+id/countLikesTxt"
+            style="@style/TextLike16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="13dp"
+            android:drawableStart="@drawable/icon_like_active"
+            android:drawablePadding="4dp"
+            tools:text="999k" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/nameTxt"
+        style="@style/TextAccent14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerContainer"
+        tools:text="ОченьДлинноеИмя" />
+
+    <TextView
+        android:id="@+id/surNameTxt"
+        style="@style/TextAccent14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameTxt"
+        tools:text="ОченьДлиннаяФамилия" />
+
+    <TextView
+        style="@style/TextNoActive10sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:drawableStart="@drawable/ic_male"
+        android:drawablePadding="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nameTxt"
+        tools:text="33 года" />
+
+    <TextView
+        android:id="@+id/publicationsTxt"
+        style="@style/TextNoActive12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/icon_posts"
+        android:drawablePadding="4dp"
+        android:text="Публикации:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surNameTxt" />
+
+    <TextView
+        android:id="@+id/countPublicationsTxt"
+        style="@style/TextAccent14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/publicationsTxt"
+        app:layout_constraintStart_toEndOf="@id/publicationsTxt"
+        app:layout_constraintTop_toTopOf="@+id/publicationsTxt"
+        tools:text="999м" />
+
+    <TextView
+        android:id="@+id/commentsTxt"
+        style="@style/TextNoActive12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawableStart="@drawable/icon_comments"
+        android:drawablePadding="4dp"
+        android:text="Комментарии:"
+        app:layout_constraintStart_toEndOf="@id/countPublicationsTxt"
+        app:layout_constraintTop_toTopOf="@+id/publicationsTxt" />
+
+    <TextView
+        android:id="@+id/countCommentsTxt"
+        style="@style/TextAccent14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/commentsTxt"
+        app:layout_constraintStart_toEndOf="@+id/commentsTxt"
+        app:layout_constraintTop_toTopOf="@+id/commentsTxt"
+        tools:text="14k" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -171,6 +171,7 @@
     <string name="forbidden_error">У вас нет соответствующих прав доступа</string>
     <string name="post_pinned">Закреплено</string>
     <string name="post_unpinned">Откреплено</string>
+    <string name="reputation">Репутация</string>
 
     <string name="followers">Все</string>
     <string name="blocked">Черный список</string>
