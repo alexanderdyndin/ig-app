@@ -296,15 +296,27 @@
 
     </LinearLayout>
 
+
+    <Button
+        android:id="@+id/send_comment_button"
+        android:layout_width="30dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/answer_layout"
+        android:background="@drawable/ic_send"
+        />
     <com.intergroupapplication.presentation.customview.RichEditor
         android:id="@+id/rich_editor"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorInput"
         android:autoLink="web|email"
         app:layout_constraintTop_toBottomOf="@id/answer_layout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/send_comment_button"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView

@@ -47,7 +47,7 @@ class RichEditor
 
     private var isReady = false
     private var content: String? = null
-    private var textChangeListener: OnTextChangeListener? = null
+    var textChangeListener: OnTextChangeListener? = null
     var decorationStateListener:OnDecorationStateListener? = null
     private var loadListener: AfterInitialLoadListener? = null
 
@@ -71,10 +71,6 @@ class RichEditor
     constructor(context: Context, attrs: AttributeSet? = null) : this(context, attrs,
         R.attr.webViewStyle
     )
-
-    fun setOnTextChangeListener(listener: OnTextChangeListener?) {
-        textChangeListener = listener
-    }
 
 
     fun setOnInitialLoadListener(listener: AfterInitialLoadListener?) {

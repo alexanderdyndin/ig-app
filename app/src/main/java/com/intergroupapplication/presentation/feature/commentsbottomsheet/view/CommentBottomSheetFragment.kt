@@ -31,6 +31,7 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoP
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -76,6 +77,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun getSnackBarCoordinator() = viewBinding.bottomSheetCoordinator
 
     private lateinit var richEditor: RichEditor
+    private lateinit var sendButton: Button
     private lateinit var iconPanel:LinearLayout
     private lateinit var pushUpDown:Button
     private lateinit var answerLayout:LinearLayout
@@ -154,7 +156,19 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     }
                 }
             }
+            textChangeListener = object : RichEditor.OnTextChangeListener{
+                override fun onTextChange(text: String?) {
+                    if(text?.replace("<br>","")?.isNotEmpty() == true){
+                        sendButton.show()
+                    }
+                    else{
+                        sendButton.hide()
+                    }
+                    Timber.tag("tut_text").d("t ${text?.replace("<br>","")}")
+                }
+            }
         }
+        sendButton = viewBinding.sendCommentButton
         iconPanel = viewBinding.iconPanel
         pushUpDown = viewBinding.pushUpDown
         answerLayout = viewBinding.answerLayout
@@ -182,7 +196,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachFileNotActivated() {
-        //createCommentCustomView.show()
         richEditor.show()
         panelAddFile.gone()
         btnAdd.gone()
@@ -393,7 +406,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 chooseMedia.duration)
             loadingViews[chooseMedia.url] = createAudioPlayerView(audioEntity)
             richEditor.insertAudio(chooseMedia.url)
-           // createCommentCustomView.addMusic(audioEntity,loadingViews[chooseMedia.url] as DownloadAudioPlayerView)
         }
         else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
                 || chooseMedia.url.contains(".png")){
@@ -402,7 +414,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             loadingViews[chooseMedia.url] =
                     createImageView(fileEntity)
             richEditor.insertImage(chooseMedia.url, "alt")
-            //loadingViews[chooseMedia.url]?.let { createCommentCustomView.addImage(fileEntity, it) }
         }
         else {
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
@@ -410,18 +421,9 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 chooseMedia.urlPreview, chooseMedia.duration)
             loadingViews[chooseMedia.url] = createVideoPlayerView(fileEntity)
             richEditor.insertVideo(chooseMedia.url)
-            //createCommentCustomView.addVideo(fileEntity,
-               // loadingViews[chooseMedia.url] as DownloadVideoPlayerView)
         }
-        //createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
-          //     null, null)
         prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
         imageUploadingStarted(loadingViews[chooseMedia.url])
-
-        /*if (loadingViews.size == chooseMedias.size && createCommentCustomView.currentContainerIsLast()){
-            createCommentCustomView.createAllMainView()
-            controlCommentEditTextChanges()
-        }*/
     }
 
     private fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
@@ -506,9 +508,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             }
         }
         if (!countUpload || loadingViews.isNotEmpty()){
-            /*createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
-            setUpRightDrawableListener()*/
+            sendButton.show()
         }
     }
 
