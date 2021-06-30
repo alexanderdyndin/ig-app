@@ -86,7 +86,7 @@
     <color name="purple_3">#8E39EF</color>
     <color name="purple_4">#742DB8</color>
     <color name="purple_5">#5C259A</color>
-    <color name="purple_6">#491D79</color>
+    <color name="purple_6">#5C259A</color>
     <color name="purple_7">#491D79</color>
     <color name="purple_8">#351558</color>
     
@@ -101,12 +101,12 @@
 
     <color name="orange_1">#F5CFA9</color>
     <color name="orange_2">#F0B77A</color>
-    <color name="orange_3">#EC9f4A</color>
+    <color name="orange_3">#EC9F4A</color>
     <color name="orange_4">#EA9225</color>
     <color name="orange_5">#C16F1C</color>
-    <color name="orange_6">#6E4010</color>
+    <color name="orange_6">#985916</color>
     <color name="orange_7">#6E4010</color>
-    <color name="orange_8">#502f0c</color>
+    <color name="orange_8">#502F0C</color>
 
     <color name="green_1">#DAE8B6</color>
     <color name="green_2">#C6DD8F</color>
@@ -114,6 +114,6 @@
     <color name="green_4">#9ABA4C</color>
     <color name="green_5">#829B40</color>
     <color name="green_6">#667932</color>
-    <color name="green_7">#4a5824</color>
-    <color name="green_8">#36401a</color>
+    <color name="green_7">#4A5824</color>
+    <color name="green_8">#36401A</color>
 </resources>

@@ -45,6 +45,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         const val ANSWER_COMMENT_CREATED_DATA = 4
         const val SHOW_COMMENT_UPLOADING_DATA = 5
         const val HIDE_SWIPE_DATA = 6
+        private const val START_AUDIO = "<audio src=\""
+        private const val START_VIDEO = "<video src=\""
+        private const val START_IMAGE = "<img src=\""
+        private const val END_AUDIO = "\" controls=\"\"></audio>"
+        private const val END_VIDEO = "controls=\"\"></video>"
+        private const val END_IMAGE = "\" alt=\"alt\">"
     }
 
     private val viewBinding by viewBinding(FragmentCommentBottomSheetBinding::bind)
@@ -83,6 +89,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var textAnswer:TextView
     private lateinit var horizontalGuideCenter:LinearLayout
     private lateinit var horizontalGuideEnd:LinearLayout
+    private val namesMap = mutableMapOf<String,String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,9 +176,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
         sendButton = viewBinding.sendCommentButton.apply {
             setOnClickListener {
-                //CommentsViewModel.publishSubject
-                  //  .onNext(Pair(CREATE_COMMENT_DATA,Pair(createFinalText(),
-                    //    presenter)))
+                CommentsViewModel.publishSubject
+                    .onNext(Pair(CREATE_COMMENT_DATA,Pair(createFinalText(),
+                        presenter)))
+                createFinalText()
                 loadingViews.clear()
                 chooseMedias.clear()
                 richEditor.html = null
@@ -189,7 +197,72 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     private fun createFinalText(): String {
         var finalTextComment = ""
+        val listWithTextAndMediaName =listWithTextAfterSplittingHtml()
+        listWithTextAndMediaName.filter{it.isNotEmpty() && it != "</div>" && it != "<div>"}
+            .forEachIndexed { index,string->
+            if (string.contains(".mp3") || string.contains(".mpeg") ||
+                string.contains(".wav") || string.contains(".flac") ||
+                string.contains(".jpeg") || string.contains(".jpg")
+                || string.contains(".png")){
+                finalTextComment+= namesMap[string].plus(",")
+                if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
+            }
+            else if(string.contains(".mp4") || string.contains("/storage/") ||
+                string.contains("/data/")){
+                finalTextComment += namesMap[string.substringBefore("\"")].plus(",")
+                if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
+            }
+            else{
+                if (index !=0) finalTextComment+="}~~"
+                finalTextComment += string
+                if (index != listWithTextAndMediaName.size -1) finalTextComment += "~~{"
+            }
+        }
+        Timber.tag("tut_final_text").d(finalTextComment)
         return finalTextComment
+    }
+
+    private fun listWithTextAfterSplittingHtml(): MutableList<String> {
+        val firstList = mutableListOf<String>()
+        firstList.addAll(
+            richEditor.html?.replace("<br>", "")
+                ?.replaceAfter("re-state://", "")
+                ?.replace("re-state://", "")?.split(START_IMAGE) ?: emptyList()
+        )
+        val secondList = mutableListOf<String>()
+        splitHtml(firstList, secondList, END_IMAGE)
+        addAllText(secondList, firstList, START_AUDIO)
+        splitHtml(firstList, secondList, END_AUDIO)
+        addAllText(secondList, firstList, START_VIDEO)
+        secondList.clear()
+        splitHtml(firstList, secondList, END_VIDEO)
+        return secondList
+    }
+
+    private fun splitHtml(
+        firstList: MutableList<String>,
+        secondList: MutableList<String>,
+        prefix: String
+    ) {
+        firstList.forEach {
+            if (it.contains(prefix)) {
+                secondList.addAll(it.split(prefix))
+            } else {
+                secondList.add(it)
+            }
+        }
+        firstList.clear()
+    }
+
+    private fun addAllText(
+        secondList: MutableList<String>,
+        firstList: MutableList<String>,
+        prefix: String
+    ) {
+        secondList.filter { it.isNotEmpty() && it != "</div>" && it != "<div>"}.forEach {
+            firstList.addAll(it.split(prefix))
+        }
+        secondList.clear()
     }
 
     fun answerComment(comment:CommentEntity.Comment){
@@ -423,6 +496,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 chooseMedia.name,chooseMedia.authorMusic,"",0,0,
                 chooseMedia.duration)
             loadingViews[chooseMedia.url] = createAudioPlayerView(audioEntity)
+            namesMap[chooseMedia.url] = chooseMedia.name
             richEditor.insertAudio(chooseMedia.url)
         }
         else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
@@ -431,6 +505,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 chooseMedia.url.substringAfterLast("/"),0,0)
             loadingViews[chooseMedia.url] =
                     createImageView(fileEntity)
+            namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertImage(chooseMedia.url, "alt")
         }
         else {
@@ -438,6 +513,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 chooseMedia.url.substringAfterLast("/"),0,0,
                 chooseMedia.urlPreview, chooseMedia.duration)
             loadingViews[chooseMedia.url] = createVideoPlayerView(fileEntity)
+            namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertVideo(chooseMedia.url)
         }
         prepareListeners(loadingViews[chooseMedia.url], chooseMedia)

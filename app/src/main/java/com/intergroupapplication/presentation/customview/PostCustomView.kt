@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.customview
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -50,7 +51,7 @@ class PostCustomView @JvmOverloads constructor(context:Context,
             }
             else{
                 val textView = view.findViewById<TextView>(R.id.postText)
-                textView.text = text
+                textView.text = Html.fromHtml(text,Html.FROM_HTML_MODE_LEGACY)
             }
             addView(view)
         }
