@@ -60,6 +60,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     .crop(cropOptions)
                     .usingCamera()
                     .map {
+                        Timber.tag("tut_load").d(it.data()?.file?.path)
                         val path = it.data()?.file?.path
                         lastAttachedImagePath = path
                         lastPhotoUrl = ""
@@ -111,7 +112,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 //                    paths
                     val path = response.data()?.file?.path
                     path?.let {
-                        videoPaths.add(it)
+                        audioPaths.add(it)
                         listOf(it)
                     } ?: emptyList()
                 }

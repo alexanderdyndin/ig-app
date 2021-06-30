@@ -338,7 +338,6 @@ class RichEditor
             request: WebResourceRequest?
         ): Boolean {
             request?.let {
-                Timber.tag("tut_url").d(it.url.toString())
                 val decode: String
                 var reCallback = ""
                 var reState = ""

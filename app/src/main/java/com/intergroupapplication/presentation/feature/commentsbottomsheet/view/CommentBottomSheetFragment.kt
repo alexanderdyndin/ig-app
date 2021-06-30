@@ -63,9 +63,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
-    private val heightEditTextWithFiveLine by lazy { requireContext().dpToPx(180) }
     private val heightEditText by lazy { requireContext().dpToPx(53) }
-    private val heightLineInEditText by lazy { requireContext().dpToPx(16) }
     private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
     private val heightTextStylePanel by lazy { requireContext().dpToPx(39) }
 
@@ -89,7 +87,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
-        parentFragmentManager.setFragmentResultListener(CommentsAdapter.EDIT_COMMENT_REQUEST, this,
+        parentFragmentManager.setFragmentResultListener(CommentsAdapter.EDIT_COMMENT_REQUEST,
+            this,
             { _, result ->
                 val comment: CommentEntity.Comment? = result
                                                     .getParcelable(CommentsAdapter.COMMENT_KEY)
@@ -164,11 +163,20 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     else{
                         sendButton.hide()
                     }
-                    Timber.tag("tut_text").d("t ${text?.replace("<br>","")}")
+                    Timber.tag("tut_text").d(text)
                 }
             }
         }
-        sendButton = viewBinding.sendCommentButton
+        sendButton = viewBinding.sendCommentButton.apply {
+            setOnClickListener {
+                //CommentsViewModel.publishSubject
+                  //  .onNext(Pair(CREATE_COMMENT_DATA,Pair(createFinalText(),
+                    //    presenter)))
+                loadingViews.clear()
+                chooseMedias.clear()
+                richEditor.html = null
+            }
+        }
         iconPanel = viewBinding.iconPanel
         pushUpDown = viewBinding.pushUpDown
         answerLayout = viewBinding.answerLayout
@@ -177,6 +185,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         horizontalGuideCenter = viewBinding.horizontalGuideCenter
         horizontalGuideEnd = viewBinding.horizontalGuideEnd
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun createFinalText(): String {
+        var finalTextComment = ""
+        return finalTextComment
     }
 
     fun answerComment(comment:CommentEntity.Comment){
@@ -196,7 +209,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachFileNotActivated() {
-        richEditor.show()
+        richEditor.run  {
+            show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true){
+                sendButton.show()
+            }
+        }
         panelAddFile.gone()
         btnAdd.gone()
         amountFiles.gone()
@@ -207,6 +225,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachFileActivated() {
+        sendButton.gone()
         richEditor.gone()
         answerLayout.gone()
         panelAddFile.show()
@@ -268,6 +287,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun startChooseColorText() {
         super.startChooseColorText()
         richEditor.gone()
+        sendButton.gone()
         answerLayout.gone()
     }
 
@@ -330,18 +350,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         amountFiles.gone()
         btnAdd.gone()
         if (answerLayout.isActivated) answerLayout.show()
-        //createCommentCustomView.show()
-        richEditor.show()
+        richEditor.run  {
+            show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true){
+                sendButton.show()
+            }
+        }
     }
 
     override fun closeKeyboard() {
-        /*try {
-            createCommentCustomView.listEditText.forEach {editText->
-                editText.dismissKeyboard()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }*/
+        richEditor.hideKeyboard()
     }
 
     override fun stateSettling() {
@@ -572,7 +590,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private fun restoreAllViewForCollapsedState() {
         if (answerLayout.isActivated) answerLayout.show()
         panelAddFile.gone()
-        richEditor.show()
+        richEditor.run  {
+            show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true){
+                sendButton.show()
+            }
+        }
         pushUpDown.background = context?.
                     let { ContextCompat.getDrawable(it, R.drawable.btn_push_down) }
     }
@@ -634,7 +657,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createAudioPlayerViewForEditComment(audioEntity)
                 audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
-                //createCommentCustomView.namesAudio.add(Pair(name,loadingViews[url]))
                 return@fillingView
             }
         }
@@ -643,7 +665,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 val url = "/groups/0/comments/${imageEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createImageViewForEditComment(imageEntity)
                 loadingViews[url]?.let { imageContainer.addImage(it) }
-                //createCommentCustomView.namesImage.add(Pair(name, loadingViews[url]))
                 return@fillingView
             }
         }
@@ -652,7 +673,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 val url = "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createVideoPlayerViewForEditComment(videoEntity)
                 videoContainer.addVideo(videoEntity, loadingViews[url] as DownloadVideoPlayerView)
-              //  createCommentCustomView.namesVideo.add(Pair(name, loadingViews[url]))
                 return@fillingView
             }
         }

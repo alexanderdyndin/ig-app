@@ -554,6 +554,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     override fun attachPhoto() {
         attachFromCamera()
         changeStateViewAfterAddMedia()
+        galleryButton.changeActivated(false, videoButton, musicButton, playlistButton)
     }
 
 }
