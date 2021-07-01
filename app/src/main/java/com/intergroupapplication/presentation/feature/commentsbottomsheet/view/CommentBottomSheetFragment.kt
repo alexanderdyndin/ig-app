@@ -45,6 +45,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         const val ANSWER_COMMENT_CREATED_DATA = 4
         const val SHOW_COMMENT_UPLOADING_DATA = 5
         const val HIDE_SWIPE_DATA = 6
+        private const val MAIN_IC_EDIT_COLOR_DRAWABLE = 228
         private const val START_AUDIO = "<audio src=\""
         private const val START_VIDEO = "<video src=\""
         private const val START_IMAGE = "<img src=\""
@@ -90,6 +91,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var horizontalGuideCenter:LinearLayout
     private lateinit var horizontalGuideEnd:LinearLayout
     private val namesMap = mutableMapOf<String,String>()
+    private val finalNamesMedia = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,19 +172,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     else{
                         sendButton.hide()
                     }
-                    Timber.tag("tut_text").d(text)
                 }
             }
         }
         sendButton = viewBinding.sendCommentButton.apply {
             setOnClickListener {
-                CommentsViewModel.publishSubject
-                    .onNext(Pair(CREATE_COMMENT_DATA,Pair(createFinalText(),
-                        presenter)))
-                createFinalText()
-                loadingViews.clear()
-                chooseMedias.clear()
-                richEditor.html = null
+                sendComment()
             }
         }
         iconPanel = viewBinding.iconPanel
@@ -195,6 +190,28 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun sendComment() {
+        CommentsViewModel.publishSubject
+            .onNext(
+                Pair(
+                    CREATE_COMMENT_DATA, Triple(
+                        createFinalText(),
+                        presenter, finalNamesMedia
+                    )
+                )
+            )
+        loadingViews.clear()
+        chooseMedias.clear()
+        richEditor.html = null
+        panelStyleText.gone()
+        panelGravityText.gone()
+        icEditColor.activated(false)
+        icEditAlign.activated(false)
+        icEditText.activated(false)
+        icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(
+            MAIN_IC_EDIT_COLOR_DRAWABLE))
+    }
+
     private fun createFinalText(): String {
         var finalTextComment = ""
         val listWithTextAndMediaName = listWithTextAfterSplittingHtml()
@@ -204,12 +221,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 string.contains(".wav") || string.contains(".flac") ||
                 string.contains(".jpeg") || string.contains(".jpg")
                 || string.contains(".png")){
-                finalTextComment+= namesMap[string].plus(",")
+                val nameMedia = namesMap[string]?:""
+                finalNamesMedia.add(nameMedia)
+                finalTextComment+= nameMedia.plus(",")
                 if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
             }
             else if(string.contains(".mp4") || string.contains("/storage/") ||
                 string.contains("/data/")){
-                finalTextComment += namesMap[string.substringBefore("\"")].plus(",")
+                val nameMedia = namesMap[string.substringBefore("\"")]?:""
+                finalNamesMedia.add(nameMedia)
+                finalTextComment += nameMedia.plus(",")
                 if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
             }
             else{
@@ -395,18 +416,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachGallery() {
-        presenter.attachMedia(galleryAdapter.getChoosePhotosFromObservable(), presenter::loadImage,
-                loadingViews)
+        presenter.attachMedia(galleryAdapter.getChoosePhotosFromObservable(), presenter::loadImage)
     }
 
     override fun attachVideo() {
-        presenter.attachMedia(videoAdapter.getChooseVideosFromObservable(), presenter::loadVideo,
-                loadingViews)
+        presenter.attachMedia(videoAdapter.getChooseVideosFromObservable(), presenter::loadVideo)
     }
 
     override fun attachAudio() {
-        presenter.attachMedia(audioAdapter.getChooseAudiosFromObservable(), presenter::loadAudio,
-                loadingViews)
+        presenter.attachMedia(audioAdapter.getChooseAudiosFromObservable(), presenter::loadAudio)
     }
 
     override fun attachFromCamera() {
@@ -465,9 +483,9 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         restoreAllViewForCollapsedState()
         //CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
         chooseMedias.clear()
-        chooseMedias.addAll(loadingViews.keys.map {
-            ChooseMedia(it)
-        })
+        //chooseMedias.addAll(loadingViews.keys.map {
+          //  ChooseMedia(it)
+        //})
         super.stateCollapsed()
     }
 

@@ -160,8 +160,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                 CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA->
                     changeStateBottomSheet(it.second as Int)
                 CommentBottomSheetFragment.CREATE_COMMENT_DATA-> {
-                    val data = it.second as Pair<String,CommentBottomSheetPresenter>
-                    createComment(data.first,data.second)
+                    val data = it.second as Triple<String,CommentBottomSheetPresenter,List<String>>
+                    createComment(data.first,data.second,data.third)
                 }
                 CommentBottomSheetFragment.HIDE_SWIPE_DATA -> hideSwipeLayout()
                 CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA ->
@@ -344,13 +344,15 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
     }
 
-    private fun createComment(textComment: String, commentBottomPresenter: CommentBottomSheetPresenter) {
+    private fun createComment(textComment: String, commentBottomPresenter: CommentBottomSheetPresenter,
+                              finalNameMedia:List<String>) {
         if (commentHolder.childCount > 1) {
             lastRepliedComment?.let {
-                commentBottomPresenter.createAnswerToComment(it.id, textComment)
+                commentBottomPresenter.createAnswerToComment(it.id, textComment,finalNameMedia)
             }
         } else {
-            commentBottomPresenter.createComment(groupPostEntity?.id.toString(), textComment)
+            commentBottomPresenter.createComment(groupPostEntity?.id.toString(), textComment,
+                finalNameMedia)
         }
     }
 

@@ -14,6 +14,7 @@ import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import timber.log.Timber
 
 class PostCustomView @JvmOverloads constructor(context:Context,
                                                private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0)
@@ -51,7 +52,8 @@ class PostCustomView @JvmOverloads constructor(context:Context,
             }
             else{
                 val textView = view.findViewById<TextView>(R.id.postText)
-                textView.text = Html.fromHtml(text,Html.FROM_HTML_MODE_LEGACY)
+                textView.text = Html.fromHtml(text.replace("text-align: right",
+                    "text-align: end"),Html.FROM_HTML_MODE_COMPACT)
             }
             addView(view)
         }
@@ -66,12 +68,15 @@ class PostCustomView @JvmOverloads constructor(context:Context,
             addFileByName(imageUrl, videoUrl, audioUrl, nameMedia)
         }
         if (imageUrl.isNotEmpty()) {
+            Timber.tag("tut_image").d("tut")
             createImageGalleryView(imageUrl,view.findViewById(R.id.imageBody))
         }
         if (audioUrl.isNotEmpty()) {
+            Timber.tag("tut_audio").d("tut")
             createAudioGalleryView(audioUrl,view.findViewById(R.id.audioBody))
         }
         if (videoUrl.isNotEmpty()) {
+            Timber.tag("tut_video").d("tut")
             createVideoGalleryView(videoUrl,view.findViewById(R.id.videoBody))
         }
     }

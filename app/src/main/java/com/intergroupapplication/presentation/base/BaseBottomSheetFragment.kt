@@ -66,9 +66,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     protected lateinit var mediaRecyclerView:RecyclerView
     protected lateinit var icAttachFile:ImageView
-    private lateinit var icEditText:ImageView
-    private lateinit var icEditColor:ImageView
-    private lateinit var icEditAlign:ImageView
+    protected lateinit var icEditText:ImageView
+    protected lateinit var icEditColor:ImageView
+    protected lateinit var icEditAlign:ImageView
     protected lateinit var panelStyleText:LinearLayout
     protected lateinit var panelGravityText:RadioGroup
     protected lateinit var panelAddFile:LinearLayout
@@ -276,6 +276,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             }
             galleryButton.changeActivated(false, videoButton, musicButton, playlistButton)
             changeStateViewAfterAddMedia()
+            chooseMedias.clear()
         }
 
         playlistButton.setOnClickListener {

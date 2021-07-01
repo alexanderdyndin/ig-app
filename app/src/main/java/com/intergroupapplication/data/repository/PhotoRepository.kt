@@ -165,7 +165,8 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                       //  AndroidNetworking.cancelAll()
                     }
                             .doOnComplete {
-                                audioUrls.add(ChooseMedia(it.fields.key,name = chooseMedia.name,
+                                audioUrls.addMediaIfNotContains(ChooseMedia(it.fields.key,
+                                    name = chooseMedia.name,
                                 authorMusic = chooseMedia.authorMusic,duration = chooseMedia.duration ))
                                 fileToUrl[chooseMedia.url] = it.fields.key
                                 myFile.delete()
@@ -186,7 +187,8 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                         //AndroidNetworking.cancelAll()
                             }
                             .doOnComplete {
-                                videoUrls.add(ChooseMedia(it.fields.key,urlPreview = chooseMedia.urlPreview
+                                videoUrls.addMediaIfNotContains(ChooseMedia(it.fields.key,
+                                    urlPreview = chooseMedia.urlPreview
                                         ,duration = chooseMedia.duration,
                                         name = chooseMedia.url.substringAfterLast("/")))
                                 fileToUrl[chooseMedia.url] = it.fields.key
@@ -217,12 +219,19 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                         //AndroidNetworking.cancelAll()
                     }
                             .doOnComplete {
-                                imageUrls.add(ChooseMedia(url = it.fields.key,
+                                imageUrls.addMediaIfNotContains(ChooseMedia(url = it.fields.key,
                                         name = path.substringAfterLast("/")))
                                 fileToUrl[path] = it.fields.key
                             }
                     //.doOnError { lastPhotoUrl = "" }
                 }
+    }
+
+    private fun MutableList<ChooseMedia>.addMediaIfNotContains(newChooseMedia: ChooseMedia){
+        this.forEach {chooseMedia ->
+            if (chooseMedia.name == newChooseMedia.name)return@addMediaIfNotContains
+        }
+        this.add(newChooseMedia)
     }
 
     override fun uploadImage(path: String, groupId: String?, upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>): Observable<String> {

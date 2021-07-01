@@ -33,11 +33,11 @@ import java.io.*
 //два сомнительных по архитектуре момента, но лучше пока не придумал
 val chooseMedias = mutableSetOf<ChooseMedia>()
 fun MutableSet<ChooseMedia>.addChooseMedia(chooseMedia: ChooseMedia){
-    this.forEach {
+    /*this.forEach {
         if (it.url == chooseMedia.url){
             return
         }
-    }
+    }*/
     this.add(chooseMedia)
 }
 fun MutableSet<ChooseMedia>.removeChooseMedia(url:String){
@@ -144,7 +144,7 @@ sealed class MediaAdapter<T>: RecyclerView.Adapter<BaseHolder<T>>(){
                         setOnClickListener {
                             data.run {
                                 if(!isChoose && chooseMedias.size<10 &&
-                                    !chooseMedias.containsMedia(url)){
+                                    !chooseMedias.contains(url)){
                                     isChoose = true
                                     chooseMedias.addChooseMedia(ChooseMedia(url))
                                 } else if (isChoose) {

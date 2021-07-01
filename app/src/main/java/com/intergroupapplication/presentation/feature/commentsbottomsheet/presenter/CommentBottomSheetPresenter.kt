@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter
 
-import android.view.View
 import android.webkit.MimeTypeMap
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.network.AppApi
@@ -38,26 +37,46 @@ class CommentBottomSheetPresenter @Inject constructor(private val commentGateway
     var postId: String? = null
     private val processes: MutableMap<String, Disposable> = mutableMapOf()
 
-    fun createComment(postId: String, textComment: String) {
+    fun createComment(postId: String, textComment: String,finalNamesMedia:List<String>) {
         compositeDisposable.add(Single.zip(photoGateway.getImageUrls(),photoGateway.getAudioUrls(),
                 photoGateway.getVideoUrls(),
                 object : Function3<List<ChooseMedia>, List<ChooseMedia>, List<ChooseMedia>, CreateCommentEntity> {
-                    override fun invoke(photos: List<ChooseMedia>, audios: List<ChooseMedia>, videos: List<ChooseMedia>)
-                                : CreateCommentEntity{
-                        val create =CreateCommentEntity(textComment,
-                                photos.map { FileRequestEntity(file = it.url, description = null,
-                                        title = it.name) },
-                                audios.map { AudioRequestEntity(it.url, null,
-                                        it.name, it.authorMusic, null, duration = it.duration) },
-                                videos.map { FileRequestEntity(file = it.url, description = null, title =
-                                        it.name,it.urlPreview,
-                                duration = it.duration) },
+                    override fun invoke(
+                        photos: List<ChooseMedia>,
+                        audios: List<ChooseMedia>,
+                        videos: List<ChooseMedia>
+                    )
+                            : CreateCommentEntity {
+                        return CreateCommentEntity(
+                            textComment,
+                            photos.filter { finalNamesMedia.contains(it.name) }
+                                .map {
+                                    FileRequestEntity(
+                                        file = it.url, description = null,
+                                        title = it.name
+                                    )
+                                },
+                            audios.filter { finalNamesMedia.contains(it.name) }
+                                .map {
+                                    AudioRequestEntity(
+                                        it.url, null,
+                                        it.name, it.authorMusic, null, duration = it.duration
+                                    )
+                                },
+                            videos.filter { finalNamesMedia.contains(it.name) }
+                                .map {
+                                    FileRequestEntity(
+                                        file = it.url, description = null, title =
+                                        it.name, it.urlPreview,
+                                        duration = it.duration
+                                    )
+                                },
                         )
-                        return create
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .flatMap {commentEntity->
+                    Timber.tag("tut_com_photo").d(commentEntity.images.toString())
                     commentGateway.createComment(postId,commentEntity)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,18 +91,22 @@ class CommentBottomSheetPresenter @Inject constructor(private val commentGateway
                 }))
     }
 
-    fun createAnswerToComment(answerToCommentId: String, textComment:String) {
+    fun createAnswerToComment(answerToCommentId: String, textComment:String
+                              ,finalNamesMedia: List<String>) {
         compositeDisposable.add(Single.zip(photoGateway.getImageUrls(),photoGateway.getAudioUrls(),
                 photoGateway.getVideoUrls(),
                 object : Function3<List<ChooseMedia>, List<ChooseMedia>, List<ChooseMedia>, CreateCommentEntity> {
                     override fun invoke(photos: List<ChooseMedia>, audios: List<ChooseMedia>, videos: List<ChooseMedia>): CreateCommentEntity {
                         return CreateCommentEntity(textComment,
-                                photos.map { FileRequestEntity(file = it.url, description = null,
+                                photos.filter { finalNamesMedia.contains(it.name) }
+                                    .map { FileRequestEntity(file = it.url, description = null,
                                         title = it.name) },
-                                audios.map { AudioRequestEntity(it.url, null,
+                                audios.filter { finalNamesMedia.contains(it.name) }
+                                    .map { AudioRequestEntity(it.url, null,
                                         it.name, it.authorMusic, null,
                                 duration = it.duration) },
-                                videos.map { FileRequestEntity(file = it.url, description = null,
+                                videos.filter { finalNamesMedia.contains(it.name) }
+                                    .map { FileRequestEntity(file = it.url, description = null,
                                         title = it.name,it.urlPreview,
                                 duration = it.duration) },
                         )
@@ -105,16 +128,14 @@ class CommentBottomSheetPresenter @Inject constructor(private val commentGateway
 
     fun attachMedia(mediasObservable: Observable<ChooseMedia>,
                     loadMedia:(chooseMedia:ChooseMedia)->Unit,
-                    loadingView:Map<String, View?>) {
+                    ) {
         mediaDisposable.add(mediasObservable
-                .filter { !loadingView.containsKey(it.url) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                         loadMedia(it)
                 }, {
                     it.printStackTrace()
-                    //errorHandler.handle(CanNotUploadPhoto())
                 }
             )
         )
@@ -224,10 +245,12 @@ class CommentBottomSheetPresenter @Inject constructor(private val commentGateway
                             it.printStackTrace()
                             errorHandler.handle(CanNotUploadVideo())
                             viewState.showImageUploadingError(chooseMedia.url)
-                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS) viewState.showImageUploaded(chooseMedia.url) })
+                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                            viewState.showImageUploaded(chooseMedia.url) })
             }
             else -> {
-                processes[chooseMedia.url] = photoGateway.uploadImageToAws(chooseMedia.url, postId, appApi::uploadCommentsMedia)
+                processes[chooseMedia.url] = photoGateway.uploadImageToAws(chooseMedia.url,
+                    postId, appApi::uploadCommentsMedia)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
@@ -243,11 +266,6 @@ class CommentBottomSheetPresenter @Inject constructor(private val commentGateway
         processes[chooseMedia.url]?.let {
             mediaDisposable.add(it)
         }
-    }
-
-
-    fun stopImageUploading() {
-        uploadingDisposable?.dispose()
     }
 
     fun addMediaUrl(commentEntity: CommentEntity.Comment){
