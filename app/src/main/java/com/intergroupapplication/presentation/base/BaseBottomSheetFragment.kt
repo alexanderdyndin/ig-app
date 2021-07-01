@@ -19,6 +19,7 @@ import com.intergroupapplication.data.model.AudioInAddFileModel
 import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
 import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
+import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
@@ -54,6 +55,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     @Inject
     lateinit var colorAdapter: MediaAdapter.ColorAdapter
+
+    @Inject
+    lateinit var colorDrawableGateway: ColorDrawableGateway
 
     @NotEmpty(messageResId = R.string.comment_should_contain_text)
     lateinit var commentEditText: AppCompatEditText
@@ -293,6 +297,10 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     protected open fun showPanelGravityText(){
         panelGravityText.show()
+    }
+
+    override fun changeTextColor(color: Int) {
+        icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(color))
     }
 
     private fun setupPanelStyleText() {

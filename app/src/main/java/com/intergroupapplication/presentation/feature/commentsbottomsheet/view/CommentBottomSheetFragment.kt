@@ -197,7 +197,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     private fun createFinalText(): String {
         var finalTextComment = ""
-        val listWithTextAndMediaName =listWithTextAfterSplittingHtml()
+        val listWithTextAndMediaName = listWithTextAfterSplittingHtml()
         listWithTextAndMediaName.filter{it.isNotEmpty() && it != "</div>" && it != "<div>"}
             .forEachIndexed { index,string->
             if (string.contains(".mp3") || string.contains(".mpeg") ||
@@ -306,7 +306,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun gonePanelStyleText() {
         super.gonePanelStyleText()
-        var height = calculateHeight()
+        val height = calculateHeight()
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
     }
 
@@ -326,7 +326,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun gonePanelGravityText() {
         super.gonePanelGravityText()
-        var height = calculateHeight()
+        val height = calculateHeight()
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
     }
 
@@ -369,11 +369,13 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (answerLayout.isActivated) answerLayout.show()
         richEditor.run {
             show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
         }
     }
 
     override fun changeTextColor(color: Int) {
         endChooseColorText()
+        super.changeTextColor(color)
         richEditor.run {
             setTextColor(color)
             showKeyBoard()
