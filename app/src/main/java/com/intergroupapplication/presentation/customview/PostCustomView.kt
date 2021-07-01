@@ -68,15 +68,12 @@ class PostCustomView @JvmOverloads constructor(context:Context,
             addFileByName(imageUrl, videoUrl, audioUrl, nameMedia)
         }
         if (imageUrl.isNotEmpty()) {
-            Timber.tag("tut_image").d("tut")
             createImageGalleryView(imageUrl,view.findViewById(R.id.imageBody))
         }
         if (audioUrl.isNotEmpty()) {
-            Timber.tag("tut_audio").d("tut")
             createAudioGalleryView(audioUrl,view.findViewById(R.id.audioBody))
         }
         if (videoUrl.isNotEmpty()) {
-            Timber.tag("tut_video").d("tut")
             createVideoGalleryView(videoUrl,view.findViewById(R.id.videoBody))
         }
     }

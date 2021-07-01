@@ -285,7 +285,7 @@ class RichEditor
 
     fun insertVideo(url: String) {
         exec("javascript:RE.prepareInsert();")
-        val width = context.dpToPx(130)
+        val width = context.dpToPx(115)
         exec("javascript:RE.insertVideo('$url', '$width');")
     }
 

@@ -76,7 +76,6 @@ class CommentBottomSheetPresenter @Inject constructor(private val commentGateway
                 })
                 .subscribeOn(Schedulers.io())
                 .flatMap {commentEntity->
-                    Timber.tag("tut_com_photo").d(commentEntity.images.toString())
                     commentGateway.createComment(postId,commentEntity)
                 }
                 .observeOn(AndroidSchedulers.mainThread())

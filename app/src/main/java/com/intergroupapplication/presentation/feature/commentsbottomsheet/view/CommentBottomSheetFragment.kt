@@ -155,6 +155,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                                     TextType.JUSTIFYRIGHT->{
                                         rightGravityButton.isChecked = true
                                     }
+                                    else -> Timber.tag("else_type").d(type.name)
                                 }
                             }
                         }
@@ -166,12 +167,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             }
             textChangeListener = object : RichEditor.OnTextChangeListener{
                 override fun onTextChange(text: String?) {
-                    if(text?.replace("<br>","")?.isNotEmpty() == true){
+                    if(text?.replace("<br>","")?.isNotEmpty() == true
+                        && allViewsIsUpload){
                         sendButton.show()
                     }
                     else{
                         sendButton.hide()
                     }
+                    Timber.tag("tut_text").d(text)
                 }
             }
         }
@@ -445,7 +448,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (answerLayout.isActivated) answerLayout.show()
         richEditor.run  {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true){
+            if (html?.replace("<br>","")?.isNotEmpty() == true
+                && allViewsIsUpload){
                 sendButton.show()
             }
         }
@@ -601,6 +605,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
     }
 
+    private var allViewsIsUpload = true
     override fun showImageUploaded(path: String) {
         loadingViews[path]?.apply {
             val darkCard = findViewById<TextView>(R.id.darkCard)
@@ -612,16 +617,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             imageUploadingProgressBar?.hide()
             detachImage?.show()
         }
-        var countUpload = false
         loadingViews.values.forEach{ view ->
             val imageUploadingProgressBar = view
                 ?.findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
             if (imageUploadingProgressBar?.progress?:0.0f<100){
-                countUpload = true
+                allViewsIsUpload = false
                 return@forEach
             }
         }
-        if (!countUpload || loadingViews.isNotEmpty()){
+        if (allViewsIsUpload || loadingViews.isNotEmpty()){
             sendButton.show()
         }
     }
