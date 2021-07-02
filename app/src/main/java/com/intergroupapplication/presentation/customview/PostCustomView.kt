@@ -14,6 +14,7 @@ import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import timber.log.Timber
 
 class PostCustomView @JvmOverloads constructor(context:Context,
@@ -22,6 +23,13 @@ class PostCustomView @JvmOverloads constructor(context:Context,
 
     companion object{
         const val PARSE_SYMBOL = "~~"
+        const val MEDIA_PREFIX = "(MEDIA)"
+        private const val START_AUDIO = "<audio src=\""
+        private const val START_VIDEO = "<video src=\""
+        private const val START_IMAGE = "<img src=\""
+        private const val END_AUDIO = "\" controls=\"\"></audio>"
+        private const val END_VIDEO = "controls=\"\"></video>"
+        private const val END_IMAGE = "\" alt=\"alt\">"
     }
 
     init {
@@ -40,8 +48,70 @@ class PostCustomView @JvmOverloads constructor(context:Context,
         parsingTextInPost()
     }
 
+    private fun createFinalText(text:String): String {
+        var finalTextComment = ""
+        val listWithTextAndMediaName = listWithTextAfterSplittingHtml(text)
+        listWithTextAndMediaName.filter{it.isNotEmpty() && it != "</div>" && it != "<div>"}
+            .forEachIndexed { index,string->
+            if (string.contains(MEDIA_PREFIX)){
+                finalTextComment +=string.substringBefore(MEDIA_PREFIX).plus(",")
+                if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
+            }
+            else{
+                if (index !=0) finalTextComment+="}~~"
+                finalTextComment += string
+                if (index != listWithTextAndMediaName.size -1) finalTextComment += "~~{"
+            }
+        }
+        Timber.tag("tut_text_before_parse").d(finalTextComment)
+        return finalTextComment
+    }
+
+    private fun listWithTextAfterSplittingHtml(text: String): MutableList<String> {
+        val firstList = mutableListOf<String>()
+        firstList.addAll(
+            text.replace("<br>", "")
+            .split(START_IMAGE)
+        )
+        val secondList = mutableListOf<String>()
+        splitHtml(firstList, secondList, END_IMAGE)
+        addAllText(secondList, firstList, START_AUDIO)
+        splitHtml(firstList, secondList, END_AUDIO)
+        addAllText(secondList, firstList, START_VIDEO)
+        secondList.clear()
+        splitHtml(firstList, secondList, END_VIDEO)
+        return secondList
+    }
+
+    private fun splitHtml(
+        firstList: MutableList<String>,
+        secondList: MutableList<String>,
+        prefix: String
+    ) {
+        firstList.forEach {
+            if (it.contains(prefix)) {
+                secondList.addAll(it.split(prefix))
+            } else {
+                secondList.add(it)
+            }
+        }
+        firstList.clear()
+    }
+
+    private fun addAllText(
+        secondList: MutableList<String>,
+        firstList: MutableList<String>,
+        prefix: String
+    ) {
+        secondList.filter { it.isNotEmpty() && it != "</div>" && it != "<div>"}.forEach {
+            firstList.addAll(it.split(prefix))
+        }
+        secondList.clear()
+    }
+
     private fun parsingTextInPost(){
-        val textAfterParse = markupModel.text.split(PARSE_SYMBOL)
+        //val textAfterParse = markupModel.text.split(PARSE_SYMBOL)
+        val textAfterParse = createFinalText(markupModel.text).split(PARSE_SYMBOL)
         textAfterParse.forEach { text->
             val view = LayoutInflater.from(context)
                     .inflate(R.layout.layout_post_custom_view,this,false)

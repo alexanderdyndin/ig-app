@@ -29,12 +29,15 @@ import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
+import kotlinx.android.synthetic.main.fragment_create_user_profile.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-
+//TODO подумать как сделать редактирование(либо отправлять строку html на сервак отдельно,
+// либо вместо обычного текста и на месте парсить), начать переделывать создание поста
+// потом надо будет подумать как сделать кнопку загрузить заново, если не удалось загрузить и все это в вебвью
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
@@ -167,6 +170,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             }
             textChangeListener = object : RichEditor.OnTextChangeListener{
                 override fun onTextChange(text: String?) {
+                    Timber.tag("tut_allViews").d(allViewsIsUpload.toString())
                     if(text?.replace("<br>","")?.isNotEmpty() == true
                         && allViewsIsUpload){
                         sendButton.show()
@@ -216,77 +220,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     private fun createFinalText(): String {
-        var finalTextComment = ""
-        val listWithTextAndMediaName = listWithTextAfterSplittingHtml()
-        listWithTextAndMediaName.filter{it.isNotEmpty() && it != "</div>" && it != "<div>"}
-            .forEachIndexed { index,string->
-            if (string.contains(".mp3") || string.contains(".mpeg") ||
-                string.contains(".wav") || string.contains(".flac") ||
-                string.contains(".jpeg") || string.contains(".jpg")
-                || string.contains(".png")){
-                val nameMedia = namesMap[string]?:""
-                finalNamesMedia.add(nameMedia)
-                finalTextComment+= nameMedia.plus(",")
-                if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
-            }
-            else if(string.contains(".mp4") || string.contains("/storage/") ||
-                string.contains("/data/")){
-                val nameMedia = namesMap[string.substringBefore("\"")]?:""
-                finalNamesMedia.add(nameMedia)
-                finalTextComment += nameMedia.plus(",")
-                if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
-            }
-            else{
-                if (index !=0) finalTextComment+="}~~"
-                finalTextComment += string
-                if (index != listWithTextAndMediaName.size -1) finalTextComment += "~~{"
+        var text = richEditor.html?.substringBeforeLast("re-state://")?:""
+        namesMap.forEach { (key,value)->
+            if (text.contains(key)){
+                finalNamesMedia.add(value)
+                text = text.substringBefore(key)+"$value${PostCustomView.MEDIA_PREFIX}"+
+                        text.substringAfter(key)
             }
         }
-        Timber.tag("tut_final_text").d(finalTextComment)
-        return finalTextComment
-    }
-
-    private fun listWithTextAfterSplittingHtml(): MutableList<String> {
-        val firstList = mutableListOf<String>()
-        firstList.addAll(
-            richEditor.html?.replace("<br>", "")
-                ?.replaceAfter("re-state://", "")
-                ?.replace("re-state://", "")?.split(START_IMAGE) ?: emptyList()
-        )
-        val secondList = mutableListOf<String>()
-        splitHtml(firstList, secondList, END_IMAGE)
-        addAllText(secondList, firstList, START_AUDIO)
-        splitHtml(firstList, secondList, END_AUDIO)
-        addAllText(secondList, firstList, START_VIDEO)
-        secondList.clear()
-        splitHtml(firstList, secondList, END_VIDEO)
-        return secondList
-    }
-
-    private fun splitHtml(
-        firstList: MutableList<String>,
-        secondList: MutableList<String>,
-        prefix: String
-    ) {
-        firstList.forEach {
-            if (it.contains(prefix)) {
-                secondList.addAll(it.split(prefix))
-            } else {
-                secondList.add(it)
-            }
-        }
-        firstList.clear()
-    }
-
-    private fun addAllText(
-        secondList: MutableList<String>,
-        firstList: MutableList<String>,
-        prefix: String
-    ) {
-        secondList.filter { it.isNotEmpty() && it != "</div>" && it != "<div>"}.forEach {
-            firstList.addAll(it.split(prefix))
-        }
-        secondList.clear()
+        Timber.tag("tut_final_text").d(text)
+        return text
     }
 
     fun answerComment(comment:CommentEntity.Comment){
@@ -621,6 +564,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             val imageUploadingProgressBar = view
                 ?.findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
             if (imageUploadingProgressBar?.progress?:0.0f<100){
+                Timber.tag("tut_if").d(view.toString()+" "+imageUploadingProgressBar?.progress.toString())
                 allViewsIsUpload = false
                 return@forEach
             }
