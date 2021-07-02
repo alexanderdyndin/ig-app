@@ -63,7 +63,7 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
     }
 
     private fun parsingTextInPost(){
-        val textAfterParse = mutableListOf<Pair<String,String>>()
+        /*val textAfterParse = mutableListOf<Pair<String,String>>()
         val splitList = groupPost?.postText?.split(PostCustomView.PARSE_SYMBOL)?: emptyList()
         splitList.forEachIndexed { index, s:String ->
             if (index %2 == 1){
@@ -84,10 +84,10 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
                 setupMediaViews(text.second, imageContainer,audioContainer,videoContainer, groupPost)
                 val textView = container.findViewById<AppCompatEditText>(R.id.postText)
                 textView.setText(text.first)
-                createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer, videoContainer)
-                createPostCustomView.addView(container)
+              //  createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer, videoContainer)
+                //createPostCustomView.addView(container)
             }
-        createPostCustomView.createAllMainView()
+        //createPostCustomView.createAllMainView()*/
     }
 
     override fun firstCreateView() {
@@ -113,7 +113,7 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
                 val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createAudioPlayerView(audioEntity)
                 audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
-                createPostCustomView.namesAudio.add(Pair(name,loadingViews[url]))
+                //createPostCustomView.namesAudio.add(Pair(name,loadingViews[url]))
                 return@fillingView
             }
         }
@@ -122,7 +122,7 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
                 val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createImageView(fileEntity)
                 loadingViews[url]?.let { imageContainer.addImage(it) }
-                createPostCustomView.namesImage.add(Pair(name, loadingViews[url]))
+                //createPostCustomView.namesImage.add(Pair(name, loadingViews[url]))
                 return@fillingView
             }
         }
@@ -131,7 +131,7 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
                 val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
                 loadingViews[url] = createVideoPlayerView(fileEntity)
                 videoContainer.addVideo(fileEntity, loadingViews[url] as DownloadVideoPlayerView)
-                createPostCustomView.namesVideo.add(Pair(name, loadingViews[url]))
+               // createPostCustomView.namesVideo.add(Pair(name, loadingViews[url]))
                 return@fillingView
             }
         }

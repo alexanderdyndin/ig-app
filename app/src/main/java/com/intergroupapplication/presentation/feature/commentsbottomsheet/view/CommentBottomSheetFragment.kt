@@ -35,8 +35,7 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-// TODO начать переделывать создание поста
-//  потом надо будет подумать как сделать кнопку загрузить заново, если не удалось загрузить и все это в вебвью
+
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
@@ -192,7 +191,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             .onNext(
                 Pair(
                     CREATE_COMMENT_DATA, Triple(
-                        createFinalText(),
+                        richEditor.createFinalText(namesMap,finalNamesMedia),
                         presenter, finalNamesMedia
                     )
                 )
@@ -207,19 +206,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         icEditText.activated(false)
         icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(
             MAIN_IC_EDIT_COLOR_DRAWABLE))
-    }
-
-    private fun createFinalText(): String {
-        var text = richEditor.html?.substringBeforeLast("re-state://")?:""
-        namesMap.forEach { (key,value)->
-            if (text.contains(key)){
-                finalNamesMedia.add(value)
-                text = text.substringBefore(key)+"$value${PostCustomView.MEDIA_PREFIX}"+
-                        text.substringAfter(key)
-            }
-        }
-        Timber.tag("tut_final_text").d(text)
-        return text
     }
 
     fun answerComment(comment:CommentEntity.Comment){
@@ -295,22 +281,18 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun setupBoldText() {
-        richEditor.clearAndFocusEditor()
         richEditor.setBold()
     }
 
     override fun setupItalicText() {
-        richEditor.clearAndFocusEditor()
         richEditor.setItalic()
     }
 
     override fun setupStrikeText() {
-        richEditor.clearAndFocusEditor()
         richEditor.setStrikeThrough()
     }
 
     override fun setupUnderlineText() {
-        richEditor.clearAndFocusEditor()
         richEditor.setUnderline()
     }
 
@@ -554,7 +536,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             val imageUploadingProgressBar = view
                 ?.findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
             if (imageUploadingProgressBar?.progress?:0.0f<100){
-                Timber.tag("tut_if").d(view.toString()+" "+imageUploadingProgressBar?.progress.toString())
                 allViewsIsUpload = false
                 return@forEach
             }
@@ -637,185 +618,28 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private fun setupEditComment(comment: CommentEntity.Comment) {
         answerLayout.activated(false)
         answerLayout.gone()
-        //parsingTextInComment(comment)
-        val htmlText = changeNameOnUrl(comment)
-        Timber.tag("tut_html").d(htmlText)
-        richEditor.html = htmlText
+        richEditor.html = changeNameOnUrl(comment)
         presenter.addMediaUrl(comment)
-    }
-
-    private fun parsingTextInComment(comment: CommentEntity.Comment) {
-        //TODO сначала заменить в тексте все имена на ссылки, а потом засетить с html
-
-       /* createCommentCustomView.removeAllViewsAndContainer()
-        val textAfterParse = mutableListOf<Pair<String,String>>()
-        val splitList = comment.text.split(PostCustomView.PARSE_SYMBOL)
-        splitList.forEachIndexed { index, s:String ->
-            if (index %2 == 1){
-                textAfterParse.add(Pair(splitList[index-1],s))
-            }
-            if (splitList.size-1 < index +1){
-                textAfterParse.add(Pair(s,""))
-            }
-        }
-        textAfterParse.filter { pair-> pair.second.isNotEmpty() || pair.first.trim().isNotEmpty() }
-            .forEach { text:Pair<String,String>->
-                val container: LinearLayout = LayoutInflater.from(context)
-                    .inflate(R.layout.layout_create_post_view, createCommentCustomView, false)
-                        as LinearLayout
-                val imageContainer = container.findViewById<CreateImageGalleryView>(R.id.createImageContainer)
-                val audioContainer = container.findViewById<CreateAudioGalleryView>(R.id.createAudioContainer)
-                val videoContainer = container.findViewById<CreateVideoGalleryView>(R.id.createVideoContainer)
-                setupMediaViews(text.second, imageContainer,audioContainer,videoContainer, comment)
-                val textView = container.findViewById<AppCompatEditText>(R.id.postText)
-                textView.setText(text.first)
-                createCommentCustomView.addViewInEditPost(textView,imageContainer, audioContainer, videoContainer)
-                createCommentCustomView.addView(container)
-            }
-        createCommentCustomView.createAllMainView()
-        controlCommentEditTextChanges()
-        setUpRightDrawableListener()*/
-    }
-
-    private fun setupMediaViews(text: String,imageContainer: CreateImageGalleryView,
-                    audioContainer: CreateAudioGalleryView, videoContainer:CreateVideoGalleryView
-                                ,comment: CommentEntity.Comment) {
-        if (text.length>3) {
-            val newText = text.substring(1, text.length - 2).split(",")
-            newText.forEach { nameMedia ->
-                fillingView(comment, nameMedia, imageContainer, audioContainer, videoContainer)
-            }
-        }
     }
 
     private fun changeNameOnUrl(comment:CommentEntity.Comment):String{
         var text = comment.text
-        Timber.tag("tut_start_text").d(text)
         comment.audios.forEach {
             if (text.contains(it.song)){
-                Timber.tag("tut_audio").d(it.song)
                 text = text.substringBefore(it.song)+it.file+text.substringAfter(it.song+PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.images.forEach {
             if (text.contains(it.title)){
-                Timber.tag("tut_image").d(it.title)
                 text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.videos.forEach {
             if (text.contains(it.title)){
-                Timber.tag("tut_video").d(it.title)
                 text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }
         return text
-        /*return if (text.contains(PostCustomView.MEDIA_PREFIX)){
-            val name = text.substringBefore(PostCustomView.MEDIA_PREFIX).substringAfterLast("\"")
-            var url = ""
-            comment.images.forEach {
-                if (it.title == name){
-                    url = it.file
-                    return@forEach
-                }
-            }
-            comment.audios.forEach {
-                if (it.song == name){
-                    url = it.file
-                    return@forEach
-                }
-            }
-            comment.videos.forEach {
-                if (it.title == name){
-                    url = it.file
-                    return@forEach
-                }
-            }
-            val newText = text.substringBefore(name)+ url +
-                    text.substringAfter(name)
-            changeNameOnUrl(newText,comment)
-        }
-        else{
-            text
-        }*/
-    }
-
-    private fun fillingView(comment: CommentEntity.Comment, name:String,
-                            imageContainer:CreateImageGalleryView, audioContainer:CreateAudioGalleryView,
-                            videoContainer: CreateVideoGalleryView){
-        comment.audios.forEach {audioEntity->
-            if (audioEntity.song == name) {
-                val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = createAudioPlayerViewForEditComment(audioEntity)
-                audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
-                return@fillingView
-            }
-        }
-        comment.images.forEach{imageEntity ->
-            if (imageEntity.title == name) {
-                val url = "/groups/0/comments/${imageEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = createImageViewForEditComment(imageEntity)
-                loadingViews[url]?.let { imageContainer.addImage(it) }
-                return@fillingView
-            }
-        }
-        comment.videos.forEach { videoEntity ->
-            if (videoEntity.title == name) {
-                val url = "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = createVideoPlayerViewForEditComment(videoEntity)
-                videoContainer.addVideo(videoEntity, loadingViews[url] as DownloadVideoPlayerView)
-                return@fillingView
-            }
-        }
-    }
-
-    private fun createAudioPlayerViewForEditComment(audioEntity: AudioEntity):DownloadAudioPlayerView{
-        val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
-        return DownloadAudioPlayerView(requireContext()).apply {
-            trackName = audioEntity.song
-            trackOwner = "Загрузил (ID:${audioEntity.owner})"
-            durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
-           findViewById<ImageView>(R.id.detachImage).apply {
-               show()
-               setOnClickListener {
-                   presenter.removeContent(url)
-                   detachMedia(url)
-               }
-           }
-        }
-    }
-
-    private fun createImageViewForEditComment(imageEntity: FileEntity):View{
-        val url = "/groups/0/comments/${imageEntity.file.substringAfterLast("/")}"
-        val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
-        val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
-        imageLoadingDelegate.loadImageFromUrl(imageEntity.file, pic)
-        image.run {
-            findViewById<ImageView>(R.id.detachImage).apply {
-                show()
-                setOnClickListener {
-                    presenter.removeContent(url)
-                    detachMedia(url)
-                }
-            }
-        }
-        return image
-    }
-
-    private fun createVideoPlayerViewForEditComment(videoEntity:FileEntity):DownloadVideoPlayerView{
-        val url = "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}"
-        return DownloadVideoPlayerView(requireContext()).apply {
-            imageLoadingDelegate.loadImageFromUrl(videoEntity.preview, previewForVideo)
-            durationVideo.text = if (videoEntity.duration != "") videoEntity.duration else "00:00"
-            nameVideo.text = videoEntity.title
-            findViewById<ImageView>(R.id.detachImage).apply {
-                show()
-                setOnClickListener {
-                    presenter.removeContent(url)
-                    detachMedia(url)
-                }
-            }
-        }
     }
 
 }

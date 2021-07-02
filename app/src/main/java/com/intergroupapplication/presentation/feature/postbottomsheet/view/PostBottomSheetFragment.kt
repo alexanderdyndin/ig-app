@@ -11,6 +11,7 @@ import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.base.ImageUploadingView
+import com.intergroupapplication.presentation.exstension.activated
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.PostBottomSheetPresenter
 import moxy.presenter.InjectPresenter
@@ -36,55 +37,70 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btnAdd.isEnabled = false
-        parentFragmentManager.setFragmentResultListener(CreatePostFragment.MEDIA_INTERACTION_REQUEST_CODE, this) { _, bundle ->
-            val chooseMedia: ChooseMedia = bundle.getParcelable(CreatePostFragment.CHOOSE_MEDIA_KEY)?: ChooseMedia("")
+        parentFragmentManager.setFragmentResultListener(
+                CreatePostFragment.MEDIA_INTERACTION_REQUEST_CODE, this) { _, bundle ->
+            val chooseMedia: ChooseMedia = bundle.getParcelable(CreatePostFragment.CHOOSE_MEDIA_KEY)
+                ?: ChooseMedia("")
             when (bundle.getInt(CreatePostFragment.METHOD_KEY)){
                 CreatePostFragment.RETRY_LOADING_METHOD_CODE-> presenter.retryLoading(chooseMedia)
-                CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> presenter.cancelUploading(chooseMedia.url)
-                CreatePostFragment.REMOVE_CONTENT_METHOD_CODE -> {presenter.removeContent(chooseMedia.url)
+                CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> {presenter.
+                    cancelUploading(chooseMedia.url)}
+                CreatePostFragment.REMOVE_CONTENT_METHOD_CODE -> {presenter.
+                    removeContent(chooseMedia.url)}
+                CreatePostFragment.ACTIVATED_BOLD -> boldText.activated(true)
+                CreatePostFragment.ACTIVATED_ITALIC -> italicText.activated(true)
+                CreatePostFragment.ACTIVATED_UNDERLINE -> underlineText.activated(true)
+                CreatePostFragment.ACTIVATED_STRIKETHROUGH -> strikeText.activated(true)
+                CreatePostFragment.NOT_ACTIVATED_ALL_BUTTONS -> notActivatedAllButtons()
+                CreatePostFragment.SET_JUSTIFY_LEFT -> leftGravityButton.isChecked = true
+                CreatePostFragment.SET_JUSTIFY_CENTER -> centerGravityButton.isChecked = true
+                CreatePostFragment.SET_JUSTIFY_RIGHT -> rightGravityButton.isChecked = true
+                CreatePostFragment.CHANGE_COLOR -> {
+                    val color = bundle.getInt(CreatePostFragment.COLOR_KEY)
+                    icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(color))
                 }
             }
         }
     }
 
-    override fun setupBoldText() {
+    private fun notActivatedAllButtons() {
+        boldText.activated(false)
+        italicText.activated(false)
+        underlineText.activated(false)
+        strikeText.activated(false)
+    }
 
+    override fun setupBoldText() {
+        callback.setUpBoldText()
     }
 
     override fun setupItalicText() {
-
+        callback.setUpItalicText()
     }
 
     override fun setupStrikeText() {
-
+        callback.setupStrikeText()
     }
 
     override fun setupUnderlineText() {
-
-    }
-
-    override fun startChooseColorText() {
-
-    }
-
-    override fun endChooseColorText() {
-
+        callback.setupUnderlineText()
     }
 
     override fun changeTextColor(color: Int) {
-
+        endChooseColorText()
+        super.changeTextColor(color)
     }
 
     override fun setupLeftGravity() {
-
+        callback.setAlignLeft()
     }
 
     override fun setupCenterGravity() {
-
+        callback.setAlignCenter()
     }
 
     override fun setupRightGravity() {
-
+        callback.setAlignRight()
     }
 
     override fun attachFileNotActivated() {
@@ -171,5 +187,12 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         fun changeStateBottomSheet(newState: Int)
         fun getLoadingView():Map<String,View?>
         fun closeKeyboard()
+        fun setUpBoldText()
+        fun setUpItalicText()
+        fun setupStrikeText()
+        fun setupUnderlineText()
+        fun setAlignLeft()
+        fun setAlignCenter()
+        fun setAlignRight()
     }
 }

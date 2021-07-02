@@ -208,10 +208,12 @@ class RichEditor
     }
 
     fun setBold() {
+        clearAndFocusEditor()
         exec("javascript:RE.setBold();")
     }
 
     fun setItalic() {
+        clearAndFocusEditor()
         exec("javascript:RE.setItalic();")
     }
 
@@ -224,10 +226,12 @@ class RichEditor
     }
 
     fun setStrikeThrough() {
+        clearAndFocusEditor()
         exec("javascript:RE.setStrikeThrough();")
     }
 
     fun setUnderline() {
+        clearAndFocusEditor()
         exec("javascript:RE.setUnderline();")
     }
 
@@ -306,8 +310,21 @@ class RichEditor
         exec("javascript:RE.blurFocus();")
     }
 
-    fun clearAndFocusEditor() {
+    private fun clearAndFocusEditor() {
         exec("javascript:RE.clearAndFocusEditor();")
+    }
+
+    fun createFinalText(namesMap: Map<String,String>, finalNamesMedia:MutableList<String>):String{
+        var text = html?.substringBeforeLast("re-state://")?:""
+        namesMap.forEach { (key,value)->
+            if (text.contains(key)){
+                finalNamesMedia.add(value)
+                text = text.substringBefore(key)+"$value${PostCustomView.MEDIA_PREFIX}"+
+                        text.substringAfter(key)
+            }
+        }
+        Timber.tag("tut_final_text").d(text)
+        return text
     }
 
     private fun convertHexColorString(color: Int): String {
