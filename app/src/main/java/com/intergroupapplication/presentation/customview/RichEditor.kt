@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.customview
 import android.R
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -88,22 +89,24 @@ class RichEditor
             toUpperCase(Locale.ENGLISH)
         val types: MutableList<TextType> = mutableListOf()
         TextType.values().forEach { type ->
-            if (type.r == -1) {
+            if (type.color == -1) {
                 if (TextUtils.indexOf(state, type.name) != -1) {
                     types.add(type)
                 }
             } else {
-                val color: String
                 if (type.name.contains("FONT_COLOR")) {
-                    color = "FONT_COLOR_RGB(" + type.r + ", " + type.g + ", " + type.b + ")"
-                    if (TextUtils.indexOf(state, color) != -1) {
-                        types.add(type)
-                    }
-                } else if (type.name.contains("BACKGROUND_COLOR")) {
-                    color = "BACKGROUND_COLOR_RGB(" + type.r + ", " + type.g + ", " + type.b + ")"
-                    if (TextUtils.indexOf(state, color) != -1) {
-                        types.add(type)
-                    }
+                    val (r,g,b) = state.substringAfter("FONT_COLOR_RGB(")
+                        .substringBefore(")").split(" ")
+
+                    var firstColor = Integer.toHexString(r.substringBefore(",").toInt())
+                    var secondColor = Integer.toHexString(g.substringBefore(",").toInt())
+                    var thirdColor = Integer.toHexString(b.substringBefore(",").toInt())
+                    if(firstColor.length == 1) firstColor = "0$firstColor"
+                    if(secondColor.length == 1) secondColor = "0$secondColor"
+                    if(thirdColor.length == 1) thirdColor = "0$thirdColor"
+                    val hex = "#$firstColor$secondColor$thirdColor"
+                    type.color = Color.parseColor(hex)
+                    types.add(type)
                 }
             }
         }

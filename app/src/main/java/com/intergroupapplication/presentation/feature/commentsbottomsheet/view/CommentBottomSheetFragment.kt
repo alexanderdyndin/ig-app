@@ -35,9 +35,8 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-//TODO подумать как сделать редактирование(либо отправлять строку html на сервак отдельно,
-// либо вместо обычного текста и на месте парсить), начать переделывать создание поста
-// потом надо будет подумать как сделать кнопку загрузить заново, если не удалось загрузить и все это в вебвью
+// TODO начать переделывать создание поста
+//  потом надо будет подумать как сделать кнопку загрузить заново, если не удалось загрузить и все это в вебвью
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
@@ -49,12 +48,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         const val SHOW_COMMENT_UPLOADING_DATA = 5
         const val HIDE_SWIPE_DATA = 6
         private const val MAIN_IC_EDIT_COLOR_DRAWABLE = 228
-        private const val START_AUDIO = "<audio src=\""
-        private const val START_VIDEO = "<video src=\""
-        private const val START_IMAGE = "<img src=\""
-        private const val END_AUDIO = "\" controls=\"\"></audio>"
-        private const val END_VIDEO = "controls=\"\"></video>"
-        private const val END_IMAGE = "\" alt=\"alt\">"
     }
 
     private val viewBinding by viewBinding(FragmentCommentBottomSheetBinding::bind)
@@ -126,10 +119,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     types.forEach { type ->
                         when {
                             type.name.contains("FONT_COLOR") -> {
-
-                            }
-                            type.name.contains("BACKGROUND_COLOR") -> {
-
+                                icEditColor.setImageDrawable(colorDrawableGateway.
+                                        getDrawableByColor(type.color))
                             }
                             else -> {
                                 when(type){
@@ -170,7 +161,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             }
             textChangeListener = object : RichEditor.OnTextChangeListener{
                 override fun onTextChange(text: String?) {
-                    Timber.tag("tut_allViews").d(allViewsIsUpload.toString())
+                    Timber.tag("tut_text").d(text?.substringBefore("re-state://"))
                     if(text?.replace("<br>","")?.isNotEmpty() == true
                         && allViewsIsUpload){
                         sendButton.show()
@@ -178,7 +169,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     else{
                         sendButton.hide()
                     }
-                    Timber.tag("tut_text").d(text)
                 }
             }
         }
@@ -647,11 +637,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private fun setupEditComment(comment: CommentEntity.Comment) {
         answerLayout.activated(false)
         answerLayout.gone()
-        parsingTextInComment(comment)
+        //parsingTextInComment(comment)
+        val htmlText = changeNameOnUrl(comment)
+        Timber.tag("tut_html").d(htmlText)
+        richEditor.html = htmlText
         presenter.addMediaUrl(comment)
     }
 
     private fun parsingTextInComment(comment: CommentEntity.Comment) {
+        //TODO сначала заменить в тексте все имена на ссылки, а потом засетить с html
+
        /* createCommentCustomView.removeAllViewsAndContainer()
         val textAfterParse = mutableListOf<Pair<String,String>>()
         val splitList = comment.text.split(PostCustomView.PARSE_SYMBOL)
@@ -691,6 +686,58 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 fillingView(comment, nameMedia, imageContainer, audioContainer, videoContainer)
             }
         }
+    }
+
+    private fun changeNameOnUrl(comment:CommentEntity.Comment):String{
+        var text = comment.text
+        Timber.tag("tut_start_text").d(text)
+        comment.audios.forEach {
+            if (text.contains(it.song)){
+                Timber.tag("tut_audio").d(it.song)
+                text = text.substringBefore(it.song)+it.file+text.substringAfter(it.song+PostCustomView.MEDIA_PREFIX)
+            }
+        }
+        comment.images.forEach {
+            if (text.contains(it.title)){
+                Timber.tag("tut_image").d(it.title)
+                text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
+            }
+        }
+        comment.videos.forEach {
+            if (text.contains(it.title)){
+                Timber.tag("tut_video").d(it.title)
+                text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
+            }
+        }
+        return text
+        /*return if (text.contains(PostCustomView.MEDIA_PREFIX)){
+            val name = text.substringBefore(PostCustomView.MEDIA_PREFIX).substringAfterLast("\"")
+            var url = ""
+            comment.images.forEach {
+                if (it.title == name){
+                    url = it.file
+                    return@forEach
+                }
+            }
+            comment.audios.forEach {
+                if (it.song == name){
+                    url = it.file
+                    return@forEach
+                }
+            }
+            comment.videos.forEach {
+                if (it.title == name){
+                    url = it.file
+                    return@forEach
+                }
+            }
+            val newText = text.substringBefore(name)+ url +
+                    text.substringAfter(name)
+            changeNameOnUrl(newText,comment)
+        }
+        else{
+            text
+        }*/
     }
 
     private fun fillingView(comment: CommentEntity.Comment, name:String,
