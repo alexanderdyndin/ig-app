@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
@@ -67,7 +68,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     private val heightEditText by lazy { requireContext().dpToPx(53) }
     private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
-    private val heightTextStylePanel by lazy { requireContext().dpToPx(39) }
 
     @ProvidePresenter
     fun providePresenter(): CommentBottomSheetPresenter = presenter
@@ -83,10 +83,9 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var answerLayout:LinearLayout
     private lateinit var responseToUser:TextView
     private lateinit var textAnswer:TextView
-    private lateinit var horizontalGuideCenter:LinearLayout
-    private lateinit var horizontalGuideEnd:LinearLayout
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
+    private val viewLGJ by viewModels<CommentsViewModel> { modelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,7 +118,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                         when {
                             type.name.contains("FONT_COLOR") -> {
                                 icEditColor.setImageDrawable(colorDrawableGateway.
-                                        getDrawableByColor(type.color))
+                                getDrawableByColor(type.color))
                             }
                             else -> {
                                 when(type){
@@ -181,8 +180,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         answerLayout = viewBinding.answerLayout
         responseToUser = viewBinding.responseToUser
         textAnswer = viewBinding.textAnswer
-        horizontalGuideCenter = viewBinding.horizontalGuideCenter
-        horizontalGuideEnd = viewBinding.horizontalGuideEnd
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -255,16 +252,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
-        var height = calculateHeight()
-        height += heightTextStylePanel
+        val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
-    }
-
-    private fun calculateHeight(): Int {
-        var height = iconPanel.height + pushUpDown.height / 2 + heightEditText
-        if (answerLayout.isVisible())
-            height += heightAnswerPanel
-        return height
     }
 
     override fun gonePanelGravityText() {
@@ -275,9 +264,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
-        var height = calculateHeight()
-        height += heightTextStylePanel
+        val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+    }
+
+    override fun calculateHeight(): Int {
+        var height = iconPanel.height + pushUpDown.height / 2 + heightEditText
+        if (answerLayout.isVisible())
+            height += heightAnswerPanel
+        return height
     }
 
     override fun setupBoldText() {

@@ -1,7 +1,9 @@
 package com.intergroupapplication.presentation.feature.postbottomsheet.view
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
@@ -12,6 +14,8 @@ import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.exstension.activated
+import com.intergroupapplication.presentation.exstension.dpToPx
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.PostBottomSheetPresenter
 import moxy.presenter.InjectPresenter
@@ -22,6 +26,7 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     lateinit var callback: Callback
     private val editPostBottomBinding by viewBinding(FragmentEditPostBottomSheetBinding::bind)
+    private val heightOverallPanel by lazy { context?.dpToPx(40)?:0 }
 
     @Inject
     @InjectPresenter
@@ -34,19 +39,21 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     override fun getSnackBarCoordinator() = editPostBottomBinding.bottomSheetCoordinator
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        btnAdd.isEnabled = false
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         parentFragmentManager.setFragmentResultListener(
-                CreatePostFragment.MEDIA_INTERACTION_REQUEST_CODE, this) { _, bundle ->
+            CreatePostFragment.MEDIA_INTERACTION_REQUEST_CODE, viewLifecycleOwner) { _, bundle ->
             val chooseMedia: ChooseMedia = bundle.getParcelable(CreatePostFragment.CHOOSE_MEDIA_KEY)
                 ?: ChooseMedia("")
             when (bundle.getInt(CreatePostFragment.METHOD_KEY)){
                 CreatePostFragment.RETRY_LOADING_METHOD_CODE-> presenter.retryLoading(chooseMedia)
                 CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> {presenter.
-                    cancelUploading(chooseMedia.url)}
+                cancelUploading(chooseMedia.url)}
                 CreatePostFragment.REMOVE_CONTENT_METHOD_CODE -> {presenter.
-                    removeContent(chooseMedia.url)}
+                removeContent(chooseMedia.url)}
                 CreatePostFragment.ACTIVATED_BOLD -> boldText.activated(true)
                 CreatePostFragment.ACTIVATED_ITALIC -> italicText.activated(true)
                 CreatePostFragment.ACTIVATED_UNDERLINE -> underlineText.activated(true)
@@ -61,6 +68,12 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
                 }
             }
         }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun viewCreated() {
+        super.viewCreated()
+        btnAdd.isEnabled = false
     }
 
     private fun notActivatedAllButtons() {
@@ -69,6 +82,30 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         underlineText.activated(false)
         strikeText.activated(false)
     }
+
+    override fun gonePanelStyleText() {
+        super.gonePanelStyleText()
+        callback.changeHeight(calculateHeight())
+    }
+
+    override fun showPanelStyleText() {
+        super.showPanelStyleText()
+        val height = calculateHeight() + heightTextStylePanel
+        callback.changeHeight(height)
+    }
+
+    override fun gonePanelGravityText() {
+        super.gonePanelGravityText()
+        callback.changeHeight(calculateHeight())
+    }
+
+    override fun showPanelGravityText() {
+        super.showPanelGravityText()
+        val height = calculateHeight() + heightTextStylePanel
+        callback.changeHeight(height)
+    }
+
+    override fun calculateHeight() = heightOverallPanel
 
     override fun setupBoldText() {
         callback.setUpBoldText()
@@ -89,6 +126,11 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     override fun changeTextColor(color: Int) {
         endChooseColorText()
         super.changeTextColor(color)
+        callback.run {
+            changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+            showKeyboard()
+            changeTextColor(color)
+        }
     }
 
     override fun setupLeftGravity() {
@@ -133,6 +175,7 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         if (callback.getState() == BottomSheetBehavior.STATE_COLLAPSED){
             callback.changeStateBottomSheet(BottomSheetBehavior.STATE_HALF_EXPANDED)
         }
+        panelAddFile.show()
     }
 
     override fun changeStateViewAfterAddMedia() {
@@ -144,12 +187,14 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     }
 
     override fun stateSettling() {
+        changeBottomConstraintForRecyclerView(horizontalGuideEnd.id)
     }
 
     override fun stateExpanded() {
     }
 
     override fun stateHalfExpanded() {
+        changeBottomConstraintForRecyclerView(horizontalGuideCenter.id)
     }
 
     override fun stateDragging() {
@@ -183,10 +228,13 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     fun addImagesInPhotosUrl(images:List<FileEntity>) = presenter.addImagesInPhotosUrl(images)
 
     interface Callback:ImageUploadingView{
+        fun changeHeight(height:Int)
         fun getState():Int
         fun changeStateBottomSheet(newState: Int)
         fun getLoadingView():Map<String,View?>
         fun closeKeyboard()
+        fun showKeyboard()
+        fun changeTextColor(color:Int)
         fun setUpBoldText()
         fun setUpItalicText()
         fun setupStrikeText()

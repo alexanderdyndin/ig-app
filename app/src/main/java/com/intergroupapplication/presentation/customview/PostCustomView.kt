@@ -63,7 +63,6 @@ class PostCustomView @JvmOverloads constructor(context:Context,
                 if (index != listWithTextAndMediaName.size -1) finalTextComment += "~~{"
             }
         }
-        Timber.tag("tut_text_before_parse").d(finalTextComment)
         return finalTextComment
     }
 

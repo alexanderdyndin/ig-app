@@ -5,7 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
@@ -85,34 +87,18 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var leftGravityButton:RadioButton
     protected lateinit var centerGravityButton:RadioButton
     protected lateinit var rightGravityButton:RadioButton
+    protected lateinit var horizontalGuideCenter:LinearLayout
+    protected lateinit var horizontalGuideEnd:LinearLayout
+    protected val heightTextStylePanel by lazy { context?.dpToPx(39)?:0 }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        chooseMedias.clear()
-        mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
-        icAttachFile = view.findViewById(R.id.icAttachFile)
-        icEditText = view.findViewById(R.id.icEditText)
-        icEditColor = view.findViewById(R.id.icEditColor)
-        icEditAlign = view.findViewById(R.id.icEditAlign)
-        panelStyleText = view.findViewById(R.id.panelStyleText)
-        panelGravityText = view.findViewById(R.id.panelGravityText)
-        panelAddFile = view.findViewById(R.id.panelAddFile)
-        galleryButton = view.findViewById(R.id.galleryButton)
-        musicButton = view.findViewById(R.id.musicButton)
-        videoButton = view.findViewById(R.id.videoButton)
-        playlistButton = view.findViewById(R.id.playlistButton)
-        btnAdd = view.findViewById(R.id.btnAdd)
-        amountFiles = view.findViewById(R.id.amountFiles)
-        boldText = view.findViewById(R.id.selectBoldText)
-        italicText = view.findViewById(R.id.selectItalicText)
-        strikeText = view.findViewById(R.id.selectStrikeText)
-        underlineText = view.findViewById(R.id.selectUnderlineText)
-        leftGravityButton = view.findViewById(R.id.left_gravity_button)
-        centerGravityButton = view.findViewById(R.id.center_gravity_button)
-        rightGravityButton = view.findViewById(R.id.right_gravity_button)
-        mediaRecyclerView.apply {
-            addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
-        }
-        childFragmentManager.setFragmentResultListener(PreviewDialog.ADD_REQUEST_CODE, this) { _, bundle ->
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        childFragmentManager.setFragmentResultListener(PreviewDialog.ADD_REQUEST_CODE,
+                viewLifecycleOwner) { _, bundle ->
             val isPhoto = bundle.getBoolean(PreviewDialog.IS_PHOTO_KEY)
             val result = bundle.getString(PreviewDialog.ADD_URI_KEY)
             val isChoose = bundle.getBoolean(PreviewDialog.IS_CHOOSE_KEY)
@@ -136,6 +122,36 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                     changeCountChooseVideo()
                 }
             }
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        chooseMedias.clear()
+        mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
+        icAttachFile = view.findViewById(R.id.icAttachFile)
+        icEditText = view.findViewById(R.id.icEditText)
+        icEditColor = view.findViewById(R.id.icEditColor)
+        icEditAlign = view.findViewById(R.id.icEditAlign)
+        panelStyleText = view.findViewById(R.id.panelStyleText)
+        panelGravityText = view.findViewById(R.id.panelGravityText)
+        panelAddFile = view.findViewById(R.id.panelAddFile)
+        galleryButton = view.findViewById(R.id.galleryButton)
+        musicButton = view.findViewById(R.id.musicButton)
+        videoButton = view.findViewById(R.id.videoButton)
+        playlistButton = view.findViewById(R.id.playlistButton)
+        btnAdd = view.findViewById(R.id.btnAdd)
+        amountFiles = view.findViewById(R.id.amountFiles)
+        boldText = view.findViewById(R.id.selectBoldText)
+        italicText = view.findViewById(R.id.selectItalicText)
+        strikeText = view.findViewById(R.id.selectStrikeText)
+        underlineText = view.findViewById(R.id.selectUnderlineText)
+        leftGravityButton = view.findViewById(R.id.left_gravity_button)
+        centerGravityButton = view.findViewById(R.id.center_gravity_button)
+        rightGravityButton = view.findViewById(R.id.right_gravity_button)
+        horizontalGuideCenter = view.findViewById(R.id.horizontal_guide_center)
+        horizontalGuideEnd = view.findViewById(R.id.horizontal_guide_end)
+        mediaRecyclerView.apply {
+            addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
         }
         setUpAddFilePanel()
     }
@@ -299,6 +315,8 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected open fun showPanelGravityText(){
         panelGravityText.show()
     }
+
+    abstract fun calculateHeight():Int
 
     override fun changeTextColor(color: Int) {
         icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(color))

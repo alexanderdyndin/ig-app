@@ -42,7 +42,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import javax.inject.Inject
-
+//TODO добавить возможность увеличения height bottom sheet, при открытии панелек для изменения стиля текста
 open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFragment.Callback {
 
     companion object{
@@ -425,6 +425,11 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         findNavController().popBackStack()
     }
 
+    override fun changeHeight(height: Int) {
+        bottomSheetBehaviour.peekHeight = height
+        createPostBinding.mediaHolder.minimumHeight = height
+    }
+
     override fun getState() = bottomSheetBehaviour.state
 
     override fun changeStateBottomSheet(newState: Int) {
@@ -438,6 +443,18 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         }catch (e:Exception){
             e.printStackTrace()
         }
+    }
+
+    override fun showKeyboard() {
+        try {
+            richEditor.showKeyBoard()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
+    override fun changeTextColor(color: Int) {
+        richEditor.setTextColor(color)
     }
 
     override fun setUpBoldText() {

@@ -41,6 +41,7 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
 
     private var groupPost:GroupPostEntity.PostEntity? = null
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         groupPost = arguments?.getParcelable(GROUP_POST_ENTITY_KEY)
         super.onViewCreated(view, savedInstanceState)
