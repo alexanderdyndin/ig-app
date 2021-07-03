@@ -200,28 +200,27 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
 
     fun addAudioInAudiosUrl(audios: List<AudioEntity>) {
         photoGateway.setAudioUrls(audios.map { audioEntity ->
-            val chooseMedia = ChooseMedia("/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
-                    name = audioEntity.song,authorMusic = audioEntity.artist)
-            chooseMedias.addChooseMedia(chooseMedia)
-            return@map chooseMedia
+            return@map ChooseMedia(
+                "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
+                name = audioEntity.song, authorMusic = audioEntity.artist
+            )
         })
     }
 
     fun addVideoInVideosUrl(videos: List<FileEntity>) {
         photoGateway.setVideoUrls(videos.map { videoEntity ->
-            val chooseMedia = ChooseMedia("/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
-            "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}",
-                    name = videoEntity.title)
-            chooseMedias.addChooseMedia(chooseMedia)
-            return@map chooseMedia
+            return@map ChooseMedia(
+                "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
+                "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}",
+                name = videoEntity.title
+            )
         })
     }
 
     fun addImagesInPhotosUrl(images: List<FileEntity>) {
-        photoGateway.setImageUrls(images.map{
+        photoGateway.setImageUrls(images.map {
             val url = "/groups/0/comments/${it.file.substringAfterLast("/")}"
-            val chooseMedia = ChooseMedia(url = url,name = it.title)
-            chooseMedias.addChooseMedia(chooseMedia)
-            return@map chooseMedia})
+            return@map ChooseMedia(url = url, name = it.title)
+        })
     }
 }

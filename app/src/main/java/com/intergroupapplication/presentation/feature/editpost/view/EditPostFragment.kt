@@ -25,6 +25,7 @@ import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioP
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
 
 class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
@@ -46,7 +47,7 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
         groupPost = arguments?.getParcelable(GROUP_POST_ENTITY_KEY)
         super.onViewCreated(view, savedInstanceState)
         publishBtn.text = view.context.getString(R.string.edit_post)
-        parsingTextInPost()
+        groupPost?.let { richEditor.html = changeNameOnUrl(it)}
     }
 
     override fun onResume() {
@@ -63,79 +64,30 @@ class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
         }
     }
 
-    private fun parsingTextInPost(){
-        /*val textAfterParse = mutableListOf<Pair<String,String>>()
-        val splitList = groupPost?.postText?.split(PostCustomView.PARSE_SYMBOL)?: emptyList()
-        splitList.forEachIndexed { index, s:String ->
-            if (index %2 == 1){
-                    textAfterParse.add(Pair(splitList[index-1],s))
-            }
-            if (splitList.size-1 < index +1){
-                textAfterParse.add(Pair(s,""))
+    private fun changeNameOnUrl(groupPost: GroupPostEntity.PostEntity):String{
+        var text = groupPost.postText
+        groupPost.audios.forEach {
+            if (text.contains(it.song)){
+                namesMap[it.file] = it.song
+                text = text.substringBefore(it.song)+it.file+
+                        text.substringAfter(it.song+PostCustomView.MEDIA_PREFIX)
             }
         }
-        textAfterParse.filter { pair-> pair.second.isNotEmpty() || pair.first.trim().isNotEmpty() }
-            .forEachIndexed { index, text:Pair<String,String>->
-                val container: LinearLayout = LayoutInflater.from(context)
-                    .inflate(R.layout.layout_create_post_view, createPostCustomView, false)
-                    as LinearLayout
-                val imageContainer = container.findViewById<CreateImageGalleryView>(R.id.createImageContainer)
-                val audioContainer = container.findViewById<CreateAudioGalleryView>(R.id.createAudioContainer)
-                val videoContainer = container.findViewById<CreateVideoGalleryView>(R.id.createVideoContainer)
-                setupMediaViews(text.second, imageContainer,audioContainer,videoContainer, groupPost)
-                val textView = container.findViewById<AppCompatEditText>(R.id.postText)
-                textView.setText(text.first)
-              //  createPostCustomView.addViewInEditPost(textView,imageContainer, audioContainer, videoContainer)
-                //createPostCustomView.addView(container)
-            }
-        //createPostCustomView.createAllMainView()*/
-    }
-
-    override fun firstCreateView() {
-
-    }
-
-    private fun setupMediaViews(text: String,imageContainer: CreateImageGalleryView,
-                audioContainer: CreateAudioGalleryView, videoContainer:CreateVideoGalleryView
-                                ,postEntity: GroupPostEntity.PostEntity?) {
-        if (text.length>3) {
-            val newText = text.substring(1, text.length - 2).split(",")
-            newText.forEach { nameMedia ->
-                fillingView(postEntity, nameMedia, imageContainer, audioContainer, videoContainer)
+        groupPost.images.forEach {
+            if (text.contains(it.title)){
+                namesMap[it.file] = it.title
+                text = text.substringBefore(it.title)+it.file+
+                        text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }
-    }
-
-    private fun fillingView(postEntity: GroupPostEntity.PostEntity?,name:String,
-                imageContainer:CreateImageGalleryView,audioContainer:CreateAudioGalleryView,
-                            videoContainer: CreateVideoGalleryView){
-        postEntity?.audios?.forEach {audioEntity->
-            if (audioEntity.song == name) {
-                val url = "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = createAudioPlayerView(audioEntity)
-                audioContainer.addAudio(audioEntity, loadingViews[url] as DownloadAudioPlayerView)
-                //createPostCustomView.namesAudio.add(Pair(name,loadingViews[url]))
-                return@fillingView
+        groupPost.videos.forEach {
+            if (text.contains(it.title)){
+                namesMap[it.file] = it.title
+                text = text.substringBefore(it.title)+it.file+
+                        text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }
-        postEntity?.images?.forEach{fileEntity ->
-            if (fileEntity.title == name) {
-                val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = createImageView(fileEntity)
-                loadingViews[url]?.let { imageContainer.addImage(it) }
-                //createPostCustomView.namesImage.add(Pair(name, loadingViews[url]))
-                return@fillingView
-            }
-        }
-        postEntity?.videos?.forEach { fileEntity ->
-            if (fileEntity.title == name) {
-                val url = "/groups/0/comments/${fileEntity.file.substringAfterLast("/")}"
-                loadingViews[url] = createVideoPlayerView(fileEntity)
-                videoContainer.addVideo(fileEntity, loadingViews[url] as DownloadVideoPlayerView)
-               // createPostCustomView.namesVideo.add(Pair(name, loadingViews[url]))
-                return@fillingView
-            }
-        }
+        return text
     }
 
     override fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {

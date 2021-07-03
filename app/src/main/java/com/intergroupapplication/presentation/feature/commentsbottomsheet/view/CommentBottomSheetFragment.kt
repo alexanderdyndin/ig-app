@@ -5,6 +5,7 @@ import android.graphics.Typeface.*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -48,6 +49,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         const val SHOW_COMMENT_UPLOADING_DATA = 5
         const val HIDE_SWIPE_DATA = 6
         private const val MAIN_IC_EDIT_COLOR_DRAWABLE = 228
+        private const val MAIN_COLOR = "#12161E"
     }
 
     private val viewBinding by viewBinding(FragmentCommentBottomSheetBinding::bind)
@@ -61,8 +63,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
-
-    private lateinit var viewModel: CommentsViewModel
 
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
@@ -85,20 +85,22 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var textAnswer:TextView
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
-    private val viewLGJ by viewModels<CommentsViewModel> { modelFactory }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         parentFragmentManager.setFragmentResultListener(CommentsAdapter.EDIT_COMMENT_REQUEST,
-            this,
+            viewLifecycleOwner,
             { _, result ->
                 val comment: CommentEntity.Comment? = result
-                                                    .getParcelable(CommentsAdapter.COMMENT_KEY)
+                    .getParcelable(CommentsAdapter.COMMENT_KEY)
                 if (comment != null){
                     setupEditComment(comment)
                 }
             })
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -108,7 +110,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             setEditorPadding(padding, padding, padding, padding)
             setEditorFontColor(ContextCompat.getColor(view.context, R.color.whiteTextColor))
             setPlaceholder(context.getString(R.string.add_photo_or_text))
-            setBackgroundColor(Color.parseColor("#12161E"))
+            setBackgroundColor(Color.parseColor(MAIN_COLOR))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             decorationStateListener = object :RichEditor.OnDecorationStateListener{
 
@@ -618,19 +620,23 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     private fun changeNameOnUrl(comment:CommentEntity.Comment):String{
+        namesMap.clear()
         var text = comment.text
         comment.audios.forEach {
             if (text.contains(it.song)){
+                namesMap[it.file] = it.song
                 text = text.substringBefore(it.song)+it.file+text.substringAfter(it.song+PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.images.forEach {
             if (text.contains(it.title)){
+                namesMap[it.file] = it.title
                 text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.videos.forEach {
             if (text.contains(it.title)){
+                namesMap[it.file] = it.title
                 text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }

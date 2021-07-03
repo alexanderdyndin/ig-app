@@ -42,7 +42,7 @@ import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import javax.inject.Inject
-//TODO добавить возможность увеличения height bottom sheet, при открытии панелек для изменения стиля текста
+
 open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFragment.Callback {
 
     companion object{
@@ -84,7 +84,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     override fun layoutRes() = R.layout.fragment_create_post
 
     protected val loadingViews: MutableMap<String, View?> = mutableMapOf()
-    private val namesMap = mutableMapOf<String,String>()
+    protected val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createPostBinding.createPostCoordinator
@@ -288,10 +288,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
             durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
             nameVideo.text = fileEntity.title
         }
-    }
-
-    protected open fun firstCreateView() {
-        //createPostCustomView.createAllMainView()
     }
 
     override fun showImageUploaded(path: String) {

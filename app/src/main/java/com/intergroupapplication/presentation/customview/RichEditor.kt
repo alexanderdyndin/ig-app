@@ -313,12 +313,16 @@ class RichEditor
     }
 
     fun createFinalText(namesMap: Map<String,String>, finalNamesMedia:MutableList<String>):String{
+        Timber.tag("tut_create").d(namesMap.toString())
         var text = html?.substringBeforeLast("re-state://")?:""
         namesMap.forEach { (key,value)->
+            Timber.tag("tut_key").d(key)
             if (text.contains(key)){
+                Timber.tag("tut_contains").d("tut")
                 finalNamesMedia.add(value)
                 text = text.substringBefore(key)+"$value${PostCustomView.MEDIA_PREFIX}"+
                         text.substringAfter(key)
+
             }
         }
         Timber.tag("tut_final_text").d(text)

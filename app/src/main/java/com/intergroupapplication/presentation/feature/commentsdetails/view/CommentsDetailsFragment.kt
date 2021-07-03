@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -97,7 +98,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     @Named("footer")
     lateinit var adapterFooter: PagingLoadingAdapter
 
-    lateinit var viewModel: CommentsViewModel
+    private val viewModel: CommentsViewModel by viewModels { modelFactory }
 
     private var infoForCommentEntity: InfoForCommentEntity? = null
 
@@ -143,7 +144,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, modelFactory)[CommentsViewModel::class.java]
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
         postId = arguments?.getString(POST_ID)
@@ -160,8 +160,9 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                 CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA->
                     changeStateBottomSheet(it.second as Int)
                 CommentBottomSheetFragment.CREATE_COMMENT_DATA-> {
-                    val data = it.second as Triple<String,CommentBottomSheetPresenter,List<String>>
-                    createComment(data.first,data.second,data.third)
+                    val data = it.second as Triple<*, *, *>
+                    createComment(data.first as String,data.second as CommentBottomSheetPresenter,
+                        data.third as List<String>)
                 }
                 CommentBottomSheetFragment.HIDE_SWIPE_DATA -> hideSwipeLayout()
                 CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA ->
