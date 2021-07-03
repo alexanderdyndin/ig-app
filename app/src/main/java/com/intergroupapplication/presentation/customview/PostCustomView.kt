@@ -54,6 +54,7 @@ class PostCustomView @JvmOverloads constructor(context:Context,
         listWithTextAndMediaName.filter{it.isNotEmpty() && it != "</div>" && it != "<div>"}
             .forEachIndexed { index,string->
             if (string.contains(MEDIA_PREFIX)){
+                if (index ==0) finalTextComment += "~~{"
                 finalTextComment +=string.substringBefore(MEDIA_PREFIX).plus(",")
                 if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
             }

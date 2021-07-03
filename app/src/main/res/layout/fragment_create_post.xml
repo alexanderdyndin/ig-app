@@ -17,22 +17,6 @@
             android:id="@+id/navigationToolbar"
             layout="@layout/creategroup_toolbar_layout" />
 
-        <!--<ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            style="@style/ScrollBar"
-            app:layout_constraintBottom_toTopOf="@+id/mediaHolder"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/navigationToolbar">
-
-            <com.intergroupapplication.presentation.customview.CreatePostCustomView
-                android:id="@+id/createPostCustomView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-        </ScrollView>!-->
         <com.intergroupapplication.presentation.customview.RichEditor
             android:id="@+id/rich_editor"
             android:layout_width="match_parent"

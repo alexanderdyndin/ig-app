@@ -625,19 +625,22 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         comment.audios.forEach {
             if (text.contains(it.song)){
                 namesMap[it.file] = it.song
-                text = text.substringBefore(it.song)+it.file+text.substringAfter(it.song+PostCustomView.MEDIA_PREFIX)
+                text = text.substringBefore(it.song)+it.file+text.
+                    substringAfter(it.song+PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.images.forEach {
             if (text.contains(it.title)){
                 namesMap[it.file] = it.title
-                text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
+                text = text.substringBefore(it.title)+it.file+text.
+                    substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.videos.forEach {
             if (text.contains(it.title)){
                 namesMap[it.file] = it.title
-                text = text.substringBefore(it.title)+it.file+text.substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
+                text = text.substringBefore(it.title)+it.file+text.
+                    substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
             }
         }
         return text

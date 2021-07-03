@@ -202,7 +202,8 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
         photoGateway.setAudioUrls(audios.map { audioEntity ->
             return@map ChooseMedia(
                 "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
-                name = audioEntity.song, authorMusic = audioEntity.artist
+                name = audioEntity.song, authorMusic = audioEntity.artist,
+                duration = audioEntity.duration
             )
         })
     }
@@ -212,7 +213,7 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
             return@map ChooseMedia(
                 "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
                 "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}",
-                name = videoEntity.title
+                name = videoEntity.title,duration = videoEntity.duration
             )
         })
     }

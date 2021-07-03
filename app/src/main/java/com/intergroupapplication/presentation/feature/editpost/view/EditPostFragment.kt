@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.os.bundleOf
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
@@ -13,9 +11,6 @@ import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.presentation.customview.CreateAudioGalleryView
-import com.intergroupapplication.presentation.customview.CreateImageGalleryView
-import com.intergroupapplication.presentation.customview.CreateVideoGalleryView
 import com.intergroupapplication.presentation.customview.PostCustomView
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment

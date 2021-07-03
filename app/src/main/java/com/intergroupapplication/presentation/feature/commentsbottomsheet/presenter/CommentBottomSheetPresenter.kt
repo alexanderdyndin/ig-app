@@ -22,7 +22,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
-import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -276,29 +275,34 @@ class CommentBottomSheetPresenter @Inject constructor(private val commentGateway
 
     private fun addAudioInAudiosUrl(audios: List<AudioEntity>) {
         photoGateway.setAudioUrls(audios.map { audioEntity ->
-            val chooseMedia = ChooseMedia("/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
-                name = audioEntity.song,authorMusic = audioEntity.artist)
-            chooseMedias.addChooseMedia(chooseMedia)
-            return@map chooseMedia
+            return@map ChooseMedia(
+                "/groups/0/comments/${
+                    audioEntity.file.substringAfterLast("/")
+                }",
+                name = audioEntity.song, authorMusic = audioEntity.artist,
+                duration = audioEntity.duration
+            )
         })
     }
 
     private fun addVideoInVideosUrl(videos: List<FileEntity>) {
         photoGateway.setVideoUrls(videos.map { videoEntity ->
-            val chooseMedia = ChooseMedia("/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
+            return@map ChooseMedia(
+                "/groups/0/comments/${
+                    videoEntity.file.substringAfterLast("/")
+                }",
                 "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}",
-                name = videoEntity.title)
-            chooseMedias.addChooseMedia(chooseMedia)
-            return@map chooseMedia
+                name = videoEntity.title,
+                duration = videoEntity.duration
+            )
         })
     }
 
     private fun addImagesInPhotosUrl(images: List<FileEntity>) {
-        photoGateway.setImageUrls(images.map{
+        photoGateway.setImageUrls(images.map {
             val url = "/groups/0/comments/${it.file.substringAfterLast("/")}"
-            val chooseMedia = ChooseMedia(url = url,name = it.title)
-            chooseMedias.addChooseMedia(chooseMedia)
-            return@map chooseMedia})
+            return@map ChooseMedia(url = url, name = it.title)
+        })
     }
 
     fun removeContent(path: String) {
