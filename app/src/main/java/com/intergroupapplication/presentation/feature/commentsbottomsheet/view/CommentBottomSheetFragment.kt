@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -83,6 +84,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var answerLayout:LinearLayout
     private lateinit var responseToUser:TextView
     private lateinit var textAnswer:TextView
+    private lateinit var horizontalGuideCollapsed: Guideline
+    private lateinit var containerRichEditor:LinearLayout
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
 
@@ -182,6 +185,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         answerLayout = viewBinding.answerLayout
         responseToUser = viewBinding.responseToUser
         textAnswer = viewBinding.textAnswer
+        horizontalGuideCollapsed = viewBinding.horizontalGuideCollapsed
+        containerRichEditor = viewBinding.containerForRichEditorAndSendButton
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -404,9 +409,9 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun changeBottomConstraintForView(id: Int) {
         super.changeBottomConstraintForView(id)
-        val paramsRichEditor = richEditor.layoutParams as ConstraintLayout.LayoutParams
+        val paramsRichEditor = containerRichEditor.layoutParams as ConstraintLayout.LayoutParams
         paramsRichEditor.bottomToTop = id
-        richEditor.layoutParams = paramsRichEditor
+        containerRichEditor.layoutParams = paramsRichEditor
     }
 
     override fun stateHidden() {
@@ -414,10 +419,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun stateCollapsed() {
-        //var height = calculateHeight()
-        //if (icEditColor.isActivated || icEditText.isActivated) height += heightTextStylePanel
+        changeBottomConstraintForView(horizontalGuideCollapsed.id)
         restoreAllViewForCollapsedState()
-        //CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
         chooseMedias.clear()
         super.stateCollapsed()
     }

@@ -259,25 +259,19 @@
             app:layout_constraintBottom_toBottomOf="@+id/horizontal_guide_end"
             />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_guide_center"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="120dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:orientation="horizontal" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_guide_end"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:orientation="horizontal" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

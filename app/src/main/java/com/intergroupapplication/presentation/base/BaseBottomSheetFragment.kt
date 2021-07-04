@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -84,8 +85,8 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var leftGravityButton:RadioButton
     protected lateinit var centerGravityButton:RadioButton
     protected lateinit var rightGravityButton:RadioButton
-    protected lateinit var horizontalGuideCenter:LinearLayout
-    protected lateinit var horizontalGuideEnd:LinearLayout
+    protected lateinit var horizontalGuideCenter:Guideline
+    protected lateinit var horizontalGuideEnd:Guideline
     protected val heightTextStylePanel by lazy { context?.dpToPx(39)?:0 }
 
 
