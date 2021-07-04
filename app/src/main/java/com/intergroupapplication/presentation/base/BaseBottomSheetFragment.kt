@@ -87,6 +87,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var rightGravityButton:RadioButton
     protected lateinit var horizontalGuideCenter:Guideline
     protected lateinit var horizontalGuideEnd:Guideline
+    protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
     protected val heightTextStylePanel by lazy { context?.dpToPx(39)?:0 }
 
 
@@ -481,6 +482,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     }
 
     fun changeState(state: Int){
+        currentState = state
         when(state){
             BottomSheetBehavior.STATE_EXPANDED -> {
                 stateExpanded()

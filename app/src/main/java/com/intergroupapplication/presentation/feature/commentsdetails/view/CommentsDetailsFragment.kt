@@ -138,7 +138,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     private lateinit var commentHolder: LinearLayout
     private lateinit var commentLoader: ProgressBar
 
-    private lateinit var disposable:Disposable
+    private var disposable:Disposable? = null
 
     @SuppressLint("CheckResult")
     @ExperimentalCoroutinesApi
@@ -220,7 +220,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.dispose()
+        disposable?.dispose()
     }
     private fun newPaging() {
         commentsList.adapter = adapterAd

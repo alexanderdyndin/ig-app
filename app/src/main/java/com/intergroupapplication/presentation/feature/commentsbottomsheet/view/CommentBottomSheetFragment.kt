@@ -1,15 +1,18 @@
 package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
 
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.Typeface.*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
@@ -32,6 +35,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_create_user_profile.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -67,7 +71,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     private val loadingViews: MutableMap<String, View?> = mutableMapOf()
 
-    private val heightEditText by lazy { requireContext().dpToPx(53) }
+    private val heightEditText by lazy { requireContext().dpToPx(70) }
     private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
 
     @ProvidePresenter
@@ -85,9 +89,31 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var responseToUser:TextView
     private lateinit var textAnswer:TextView
     private lateinit var horizontalGuideCollapsed: Guideline
+    private lateinit var horizontalGuideCollapsedWithPanelStyle: Guideline
     private lateinit var containerRichEditor:LinearLayout
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
+    private var isKeyboardShowing = false
+    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
+        val r = Rect()
+        viewBinding.root.getWindowVisibleDisplayFrame(r)
+        val screenHeight = viewBinding.root.height
+        val keypadHeight = screenHeight - r.bottom
+
+        Timber.tag("tut_keyboard").d("listener")
+        if (keypadHeight > screenHeight * 0.15) {
+            if (!isKeyboardShowing) {
+                isKeyboardShowing = true
+                Timber.tag("tut_keyboard").d("show")
+            }
+        }
+        else {
+            if (isKeyboardShowing) {
+                isKeyboardShowing = false
+                Timber.tag("tut_keyboard").d("hide")
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,6 +133,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewBinding.root.viewTreeObserver.addOnGlobalLayoutListener { keyboardListener }
         richEditor = viewBinding.richEditor.apply {
             setEditorFontSize(18)
             val padding = context.dpToPx(4)
@@ -186,8 +213,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         responseToUser = viewBinding.responseToUser
         textAnswer = viewBinding.textAnswer
         horizontalGuideCollapsed = viewBinding.horizontalGuideCollapsed
+        horizontalGuideCollapsedWithPanelStyle = viewBinding.horizontalGuideCollapsedWithPanelStyle
         containerRichEditor = viewBinding.containerForRichEditorAndSendButton
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewBinding.root.viewTreeObserver.removeOnGlobalLayoutListener { keyboardListener }
     }
 
     private fun sendComment() {
@@ -259,6 +292,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         super.gonePanelStyleText()
         val height = calculateHeight()
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
+            changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
     }
 
     override fun showPanelStyleText() {
@@ -269,12 +304,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
         val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
+            changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
     }
 
     override fun gonePanelGravityText() {
         super.gonePanelGravityText()
         val height = calculateHeight()
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
+            changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
     }
 
     override fun showPanelGravityText() {
@@ -285,6 +324,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
         val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
+            changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
     }
 
     override fun calculateHeight(): Int {
@@ -409,6 +450,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun changeBottomConstraintForView(id: Int) {
         super.changeBottomConstraintForView(id)
+        changeBottomConstraintRichEditor(id)
+    }
+
+    private fun changeBottomConstraintRichEditor(id: Int) {
         val paramsRichEditor = containerRichEditor.layoutParams as ConstraintLayout.LayoutParams
         paramsRichEditor.bottomToTop = id
         containerRichEditor.layoutParams = paramsRichEditor
@@ -419,7 +464,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun stateCollapsed() {
-        changeBottomConstraintForView(horizontalGuideCollapsed.id)
+        if (panelGravityText.isVisible || panelStyleText.isVisible){
+            changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+        }
+        else {
+            changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+        }
         restoreAllViewForCollapsedState()
         chooseMedias.clear()
         super.stateCollapsed()
