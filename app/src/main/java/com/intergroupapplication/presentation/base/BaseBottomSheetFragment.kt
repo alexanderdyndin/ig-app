@@ -17,9 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
-import com.intergroupapplication.data.model.AudioInAddFileModel
-import com.intergroupapplication.data.model.GalleryModel
-import com.intergroupapplication.data.model.VideoModel
 import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -306,6 +303,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     protected open fun showPanelStyleText() {
         panelStyleText.show()
+        panelGravityText.gone()
+        icEditAlign.activated(false)
+        goneViewWhenShowPanelStyleText()
     }
 
     protected open fun gonePanelGravityText(){
@@ -314,6 +314,16 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     protected open fun showPanelGravityText(){
         panelGravityText.show()
+        panelStyleText.gone()
+        icEditText.activated(false)
+        goneViewWhenShowPanelStyleText()
+    }
+
+    private fun goneViewWhenShowPanelStyleText() {
+        mediaRecyclerView.gone()
+        panelAddFile.gone()
+        icAttachFile.activated(false)
+        galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
     }
 
     abstract fun calculateHeight():Int
@@ -367,11 +377,17 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     protected open fun startChooseColorText(){
         icEditColor.activated(true)
-        closeKeyboard()
+        //closeKeyboard()
         changeStateToHalfExpanded()
+        panelStyleText.gone()
+        icEditText.activated(false)
+        panelGravityText.gone()
+        icEditAlign.activated(false)
         panelAddFile.gone()
         amountFiles.gone()
         btnAdd.gone()
+        galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+        icAttachFile.activated(false)
         mediaRecyclerView.run {
             show()
             adapter = colorAdapter
@@ -507,7 +523,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         btnAdd.isEnabled = false
     }
 
-    protected fun changeBottomConstraintForRecyclerView(id:Int) {
+    protected open fun changeBottomConstraintForView(id:Int) {
         val params = mediaRecyclerView.layoutParams as ConstraintLayout.LayoutParams
         params.bottomToTop = id
         mediaRecyclerView.layoutParams = params

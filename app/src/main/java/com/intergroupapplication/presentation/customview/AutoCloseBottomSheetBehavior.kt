@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class AutoCloseBottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) : BottomSheetBehavior<V>(context, attrs) {
 
-    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V, event: MotionEvent): Boolean {
+    /*override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V, event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN &&
                 state == STATE_HALF_EXPANDED) {
             val outRect = Rect()
@@ -22,7 +22,7 @@ class AutoCloseBottomSheetBehavior<V : View>(context: Context, attrs: AttributeS
         }
 
         return super.onInterceptTouchEvent(parent, child, event)
-    }
+    }*/
 
     override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V, directTargetChild: View, target: View, axes: Int, type: Int): Boolean {
         return if (state == STATE_HALF_EXPANDED){

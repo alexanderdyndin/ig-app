@@ -187,14 +187,14 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     }
 
     override fun stateSettling() {
-        changeBottomConstraintForRecyclerView(horizontalGuideEnd.id)
+        changeBottomConstraintForView(horizontalGuideEnd.id)
     }
 
     override fun stateExpanded() {
     }
 
     override fun stateHalfExpanded() {
-        changeBottomConstraintForRecyclerView(horizontalGuideCenter.id)
+        changeBottomConstraintForView(horizontalGuideCenter.id)
     }
 
     override fun stateDragging() {

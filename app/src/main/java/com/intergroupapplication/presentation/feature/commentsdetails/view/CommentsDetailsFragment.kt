@@ -185,7 +185,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
             bottomSheetBehaviour.run {
                 peekHeight = requireContext().dpToPx(110)
                 commentHolder.minimumHeight = peekHeight
-                halfExpandedRatio = 0.6f
+                halfExpandedRatio = 0.5f
                 isFitToContents = false
                 addBottomSheetCallback(object : BottomSheetCallback() {
                     override fun onStateChanged(bottomSheet: View, newState: Int) {

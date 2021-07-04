@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.budiyev.android.circularprogressbar.CircularProgressBar
@@ -244,6 +244,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         richEditor.gone()
         answerLayout.gone()
         panelAddFile.show()
+        panelStyleText.gone()
+        icEditText.activated(false)
+        panelGravityText.gone()
+        icEditAlign.activated(false)
     }
 
     override fun gonePanelStyleText() {
@@ -254,6 +258,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
+        richEditor.run {
+            show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
+        }
         val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
     }
@@ -266,6 +274,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
+        richEditor.run {
+            show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
+        }
         val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
     }
@@ -373,7 +385,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun stateSettling() {
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
-        changeBottomConstraintForRecyclerView(horizontalGuideEnd.id)
+        changeBottomConstraintForView(horizontalGuideEnd.id)
     }
 
     override fun stateExpanded() {
@@ -382,12 +394,19 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun stateHalfExpanded() {
         if (answerLayout.isActivated) answerLayout.show()
-        changeBottomConstraintForRecyclerView(horizontalGuideCenter.id)
+        changeBottomConstraintForView(horizontalGuideCenter.id)
     }
 
     override fun stateDragging() {
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
-        changeBottomConstraintForRecyclerView(horizontalGuideEnd.id)
+        changeBottomConstraintForView(horizontalGuideEnd.id)
+    }
+
+    override fun changeBottomConstraintForView(id: Int) {
+        super.changeBottomConstraintForView(id)
+        val paramsRichEditor = richEditor.layoutParams as ConstraintLayout.LayoutParams
+        paramsRichEditor.bottomToTop = id
+        richEditor.layoutParams = paramsRichEditor
     }
 
     override fun stateHidden() {
@@ -395,13 +414,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun stateCollapsed() {
-        //val height = restoreHeightEditText()
+        //var height = calculateHeight()
+        //if (icEditColor.isActivated || icEditText.isActivated) height += heightTextStylePanel
         restoreAllViewForCollapsedState()
         //CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
         chooseMedias.clear()
-        //chooseMedias.addAll(loadingViews.keys.map {
-          //  ChooseMedia(it)
-        //})
         super.stateCollapsed()
     }
 
