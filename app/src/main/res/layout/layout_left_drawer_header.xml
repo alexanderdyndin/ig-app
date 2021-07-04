@@ -10,36 +10,45 @@
         android:id="@+id/headerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/drawer_header_background"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
+            android:src="@drawable/drawer_header_background"/>
+
+        <ImageView
+            android:id="@+id/drawerSettings"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="start|top"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="40dp"
             android:src="@drawable/ic_settings_blue" />
 
         <ImageView
+            android:id="@+id/drawerArrow"
             android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|top"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_roll_up_menu" />
 
         <com.github.florent37.shapeofview.ShapeOfView
             android:id="@+id/currentUserAvatar"
-            android:layout_width="127dp"
-            android:layout_height="127dp"
+            android:layout_width="136dp"
+            android:layout_height="136dp"
+            app:shape_clip_drawable="@drawable/ava_group_create"
             android:layout_gravity="center|top"
             android:layout_marginTop="16dp">
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/currentUserHolder"
-                android:layout_width="127dp"
-                android:layout_height="127dp"
+            <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+                android:id="@+id/profileAvatarHolder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 app:placeholderImage="@drawable/avatar_fill" />
 
         </com.github.florent37.shapeofview.ShapeOfView>
@@ -80,7 +89,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/nameTxt"
+        android:id="@+id/profileName"
         style="@style/TextAccent14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,17 +100,18 @@
         tools:text="ОченьДлинноеИмя" />
 
     <TextView
-        android:id="@+id/surNameTxt"
+        android:id="@+id/profileSurName"
         style="@style/TextAccent14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nameTxt"
+        app:layout_constraintTop_toBottomOf="@id/profileName"
         tools:text="ОченьДлиннаяФамилия" />
 
     <TextView
+        android:id="@+id/ageText"
         style="@style/TextNoActive10sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -109,7 +119,7 @@
         android:drawableStart="@drawable/ic_male"
         android:drawablePadding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nameTxt"
+        app:layout_constraintTop_toTopOf="@+id/profileName"
         tools:text="33 года" />
 
     <TextView
@@ -123,7 +133,7 @@
         android:drawablePadding="4dp"
         android:text="Публикации:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/surNameTxt" />
+        app:layout_constraintTop_toBottomOf="@+id/profileSurName" />
 
     <TextView
         android:id="@+id/countPublicationsTxt"
@@ -158,4 +168,12 @@
         app:layout_constraintStart_toEndOf="@+id/commentsTxt"
         app:layout_constraintTop_toTopOf="@+id/commentsTxt"
         tools:text="14k" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/navigationRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_drawer_menu"
+        app:layout_constraintTop_toBottomOf="@+id/countCommentsTxt"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

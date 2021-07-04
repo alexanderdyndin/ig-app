@@ -18,21 +18,23 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.android.billingclient.api.*
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.domain.exception.*
-import com.intergroupapplication.domain.usecase.AvatarUploadingUseCase
 import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.initializators.InitializerLocal
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.feature.mainActivity.adapter.NavigationAdapter
+import com.intergroupapplication.presentation.feature.mainActivity.other.NavigationEntity
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
@@ -55,8 +57,14 @@ import java.io.File
 import java.io.IOException
 import java.net.ConnectException
 import java.net.UnknownHostException
+import java.text.DateFormat
+import java.util.*
+import java.util.Calendar.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.coroutines.suspendCoroutine
+import kotlin.math.abs
 
 
 class MainActivity : FragmentActivity() {
@@ -100,7 +108,13 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var cropOptions: UCrop.Options
 
+    @Inject
+    @DashDateFormatter
+    lateinit var dateFormatter: DateFormat
+
     lateinit var drawer: Drawer
+
+    private val navigationAdapter = NavigationAdapter()
 
     lateinit var profileAvatarHolder: AvatarImageUploadingView
 
@@ -161,7 +175,8 @@ class MainActivity : FragmentActivity() {
     }
 
     fun createDrawer() {
-        val viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, findViewById(R.id.navigationCoordinator), false)
+        navController.navigate(R.id.action_global_newsFragment2)
+        val viewDrawer = layoutInflater.inflate(R.layout.layout_left_drawer_header, findViewById(R.id.navigationCoordinator), false)
         viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
             if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                 || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
@@ -169,14 +184,33 @@ class MainActivity : FragmentActivity() {
                     mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
             }
         }
+        val navRecycler = viewDrawer.findViewById<RecyclerView>(R.id.navigationRecycler)
+        navRecycler.adapter = navigationAdapter
+        navRecycler.itemAnimator = null
+        navigationAdapter.items = listOf(
+                NavigationEntity(R.string.news, R.drawable.ic_bell_menu, {
+                    navController.navigate(R.id.action_global_newsFragment2)
+                    drawer.closeDrawer()}, checked = true),
+                NavigationEntity(R.string.groups, R.drawable.ic_groups, {
+                    navController.navigate(R.id.action_global_groupListFragment2)
+                    drawer.closeDrawer()}),
+                NavigationEntity(R.string.buy_premium, R.drawable.icon_like, {
+                    bill()
+                    drawer.closeDrawer()}, null),
+                NavigationEntity(R.string.logout, 0, {
+                    userSession.logout()
+                    navController.navigate(R.id.action_global_loginActivity)
+                    drawer.closeDrawer()
+                }, null),
+        )
         profileAvatarHolder = viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
         drawer = drawer {
-            sliderBackgroundColorRes = R.color.profileTabColor
+            sliderBackgroundColorRes = R.color.mainBlack
             headerView = viewDrawer
-            actionBarDrawerToggleEnabled = true
-            translucentStatusBar = true
+            actionBarDrawerToggleEnabled = false
+            translucentStatusBar = false
             viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                     || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
@@ -184,30 +218,30 @@ class MainActivity : FragmentActivity() {
                         mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
                 }
             }
-            drawerItem = primaryItem(getString(R.string.news)) {
-                icon = R.drawable.ic_news
-                selectedIcon = R.drawable.ic_news_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-                onClick { _ ->
-                    navController.navigate(R.id.action_global_newsFragment2)
-                    false
-                }
-            }
-            primaryItem(getString(R.string.groups)) {
-                icon = R.drawable.ic_groups
-                selectedIcon = R.drawable.ic_groups_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-                onClick { _ ->
-                    navController.navigate(R.id.action_global_groupListFragment2)
-                    false
-                }
-            }
+//            drawerItem = primaryItem(getString(R.string.news)) {
+//                icon = R.drawable.ic_news
+//                selectedIcon = R.drawable.ic_news_blue
+//                textColorRes = R.color.whiteTextColor
+//                selectedColorRes = R.color.profileTabColor
+//                selectedTextColorRes = R.color.selectedItemTabColor
+//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+//                onClick { _ ->
+//                    navController.navigate(R.id.action_global_newsFragment2)
+//                    false
+//                }
+//            }
+//            primaryItem(getString(R.string.groups)) {
+//                icon = R.drawable.ic_groups
+//                selectedIcon = R.drawable.ic_groups_blue
+//                textColorRes = R.color.whiteTextColor
+//                selectedColorRes = R.color.profileTabColor
+//                selectedTextColorRes = R.color.selectedItemTabColor
+//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+//                onClick { _ ->
+//                    navController.navigate(R.id.action_global_groupListFragment2)
+//                    false
+//                }
+//            }
 //            primaryItem(getString(R.string.music)) {
 //                icon = R.drawable.ic_music
 //                selectedIcon = R.drawable.ic_music_act
@@ -221,40 +255,57 @@ class MainActivity : FragmentActivity() {
 //                    false
 //                }
 //            }
-            primaryItem(getString(R.string.buy_premium)) {
-                icon = R.drawable.icon_like
-                selectedIcon = R.drawable.icon_like
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-                selectable = false
-                onClick { _ ->
-                    bill()
-                    false
-                }
-            }
-            primaryItem(getString(R.string.logout)) {
-                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { _ ->
-                    userSession.logout()
-                    navController.navigate(R.id.action_global_loginActivity)
-                    false
-                }
-            }
+//            primaryItem(getString(R.string.buy_premium)) {
+//                icon = R.drawable.icon_like
+//                selectedIcon = R.drawable.icon_like
+//                textColorRes = R.color.whiteTextColor
+//                selectedColorRes = R.color.profileTabColor
+//                selectedTextColorRes = R.color.selectedItemTabColor
+//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+//                selectable = false
+//                onClick { _ ->
+//                    bill()
+//                    false
+//                }
+//            }
+//            primaryItem(getString(R.string.logout)) {
+//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
+//                textColorRes = R.color.whiteTextColor
+//                selectedColorRes = R.color.profileTabColor
+//                selectedTextColorRes = R.color.selectedItemTabColor
+//                onClick { _ ->
+//                    userSession.logout()
+//                    navController.navigate(R.id.action_global_loginActivity)
+//                    false
+//                }
+//            }
         }.apply {
-            setSelection(drawerItem)
+//            setSelection(drawerItem)
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
         }
         compositeDisposable.add(viewModel.getUserProfile()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ userEntity ->
-                val userName = userEntity.firstName + " " + userEntity.surName
-                viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
+                val date = dateFormatter.parse(userEntity.birthday)
+                val current = Date()
+                date?.let {
+                    viewDrawer.findViewById<TextView>(R.id.ageText).text = getString(R.string.years, getDiffYears(it, current).toString())
+                }
+                when (userEntity.gender) {
+                    "male" ->
+                        viewDrawer.findViewById<TextView>(R.id.ageText)
+                                .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_male, 0, 0, 0)
+                    "female" ->
+                        viewDrawer.findViewById<TextView>(R.id.ageText)
+                                .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_male, 0, 0, 0)
+                }
+                viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
+                viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
+                viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text = "0"
+                viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text = "0"
+                viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text = "0"
+                viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text = "0"
                 doOrIfNull(userEntity.avatar,
                     { profileAvatarHolder.showAvatar(it) },
                     { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
@@ -513,5 +564,22 @@ class MainActivity : FragmentActivity() {
                 }
             }
         )
+    }
+
+    fun getDiffYears(first: Date, last: Date): Int {
+        val a: Calendar = getCalendar(first)
+        val b: Calendar = getCalendar(last)
+        var diff: Int = b.get(YEAR) - a.get(YEAR)
+        if (a.get(MONTH) > b.get(MONTH) ||
+                a.get(MONTH) == b.get(MONTH) && a.get(DATE) > b.get(DATE)) {
+            diff--
+        }
+        return diff
+    }
+
+    fun getCalendar(date: Date): Calendar {
+        val cal: Calendar = Calendar.getInstance(Locale.US)
+        cal.time = date
+        return cal
     }
 }

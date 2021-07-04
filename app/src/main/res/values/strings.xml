@@ -196,7 +196,6 @@
 
     <string name="publications">Publications</string>
     <string name="comments">Comments</string>
-    <string name="reputation">Reputation</string>
 
     <string name="filter_group">Filter group</string>
     <string name="by_age">By age</string>
@@ -220,4 +219,5 @@
     </string-array>
     <string name="reset_filter">Reset</string>
     <string name="apply_filter">Apply</string>
+    <string name="years">Age: %1$s</string>
 </resources>
