@@ -86,8 +86,10 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var centerGravityButton:RadioButton
     protected lateinit var rightGravityButton:RadioButton
     protected lateinit var horizontalGuideCenter:Guideline
+    protected lateinit var horizontalGuideEndWithKeyboard:Guideline
     protected lateinit var horizontalGuideEnd:Guideline
     protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
+    protected var stateBeforeChooseColor = BottomSheetBehavior.STATE_COLLAPSED
     protected val heightTextStylePanel by lazy { context?.dpToPx(39)?:0 }
 
 
@@ -148,8 +150,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         centerGravityButton = view.findViewById(R.id.center_gravity_button)
         rightGravityButton = view.findViewById(R.id.right_gravity_button)
         horizontalGuideCenter = view.findViewById(R.id.horizontal_guide_center)
+        horizontalGuideEndWithKeyboard = view.findViewById(R.id.horizontal_guide_end_with_keyboard)
         horizontalGuideEnd = view.findViewById(R.id.horizontal_guide_end)
-        mediaRecyclerView.apply {
+        mediaRecyclerView.run {
             addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
         }
         setUpAddFilePanel()
@@ -379,7 +382,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     protected open fun startChooseColorText(){
         icEditColor.activated(true)
-        //closeKeyboard()
         changeStateToHalfExpanded()
         panelStyleText.gone()
         icEditText.activated(false)

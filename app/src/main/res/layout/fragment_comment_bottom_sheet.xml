@@ -399,6 +399,13 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontal_guide_end_with_keyboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.53" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_guide_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

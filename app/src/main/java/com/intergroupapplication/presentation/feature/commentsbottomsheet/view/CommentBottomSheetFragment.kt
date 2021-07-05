@@ -1,13 +1,11 @@
 package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
 
 import android.graphics.Color
-import android.graphics.Rect
 import android.graphics.Typeface.*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -22,6 +20,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
+import com.intergroupapplication.domain.KeyboardVisibilityEvent
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.FileEntity
@@ -35,13 +34,12 @@ import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
-import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_create_user_profile.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+
 
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
@@ -93,27 +91,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var containerRichEditor:LinearLayout
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
-    private var isKeyboardShowing = false
-    private val keyboardListener = ViewTreeObserver.OnGlobalLayoutListener {
-        val r = Rect()
-        viewBinding.root.getWindowVisibleDisplayFrame(r)
-        val screenHeight = viewBinding.root.height
-        val keypadHeight = screenHeight - r.bottom
-
-        Timber.tag("tut_keyboard").d("listener")
-        if (keypadHeight > screenHeight * 0.15) {
-            if (!isKeyboardShowing) {
-                isKeyboardShowing = true
-                Timber.tag("tut_keyboard").d("show")
-            }
-        }
-        else {
-            if (isKeyboardShowing) {
-                isKeyboardShowing = false
-                Timber.tag("tut_keyboard").d("hide")
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -129,11 +106,25 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     setupEditComment(comment)
                 }
             })
+        activity?.let {
+            KeyboardVisibilityEvent.setEventListener(
+                it,
+                viewLifecycleOwner,
+                { isVisible->
+                    if (currentState == BottomSheetBehavior.STATE_EXPANDED){
+                        if (isVisible){
+                            changeBottomConstraintForView(horizontalGuideEndWithKeyboard.id)
+                        }
+                        else{
+                            changeBottomConstraintForView(horizontalGuideEnd.id)
+                        }
+                    }
+                })
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewBinding.root.viewTreeObserver.addOnGlobalLayoutListener { keyboardListener }
         richEditor = viewBinding.richEditor.apply {
             setEditorFontSize(18)
             val padding = context.dpToPx(4)
@@ -220,7 +211,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewBinding.root.viewTreeObserver.removeOnGlobalLayoutListener { keyboardListener }
     }
 
     private fun sendComment() {
@@ -352,6 +342,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun startChooseColorText() {
+        stateBeforeChooseColor = currentState
         super.startChooseColorText()
         richEditor.gone()
         sendButton.gone()
@@ -364,6 +355,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         richEditor.run {
             show()
             if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
+        }
+        if (stateBeforeChooseColor == BottomSheetBehavior.STATE_COLLAPSED ||
+            stateBeforeChooseColor == BottomSheetBehavior.STATE_SETTLING){
+            CommentsViewModel.publishSubject.onNext(CHANGE_STATE_BOTTOM_SHEET_DATA to
+                    BottomSheetBehavior.STATE_COLLAPSED)
         }
     }
 
