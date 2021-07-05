@@ -49,6 +49,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
@@ -370,8 +371,11 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     }
 
     private fun addHeightContainer(height: Int) {
+        Timber.tag("tut_height").d(height.toString())
         bottomSheetBehaviour.peekHeight = height
         commentHolder.minimumHeight = height
+        Timber.tag("tut_mediaHolder").d(commentHolder.height.toString())
+        Timber.tag("tut_mediaHolder_min").d(commentHolder.minimumHeight.toString())
     }
 
     private fun setErrorHandler() {

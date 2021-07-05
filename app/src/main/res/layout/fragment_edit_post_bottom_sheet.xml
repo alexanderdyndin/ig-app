@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorInput">
+        android:background="@color/mainBlack">
 
         <LinearLayout
             android:id="@+id/overall_panel_style_text"
@@ -19,7 +19,8 @@
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/little_margin">
             <LinearLayout
                 android:id="@+id/panelStyleText"
                 android:layout_width="wrap_content"
@@ -27,6 +28,7 @@
                 android:background="@drawable/bg_colorinput_radius_2dp"
                 android:orientation="horizontal"
                 android:padding="4dp"
+                android:layout_marginStart="@dimen/small_margin"
                 android:visibility="gone"
                 android:layout_marginBottom="3dp"
                 >
@@ -137,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_align_center" />
+                android:src="@drawable/selector_ic_edit_gravity" />
 
             <ImageView
                 android:id="@+id/icMicro"
@@ -253,6 +255,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="gone"
+            android:background="@color/colorInput"
             app:layout_constraintTop_toBottomOf="@id/amountFiles"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -264,7 +267,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.6" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_guide_end"

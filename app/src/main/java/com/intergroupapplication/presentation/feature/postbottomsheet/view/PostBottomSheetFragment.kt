@@ -26,7 +26,7 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     lateinit var callback: Callback
     private val editPostBottomBinding by viewBinding(FragmentEditPostBottomSheetBinding::bind)
-    private val heightOverallPanel by lazy { context?.dpToPx(40)?:0 }
+    private val heightIconPanel by lazy { context?.dpToPx(40)?:0 }
 
     @Inject
     @InjectPresenter
@@ -105,7 +105,7 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         callback.changeHeight(height)
     }
 
-    override fun calculateHeight() = heightOverallPanel
+    override fun calculateHeight() = heightIconPanel
 
     override fun setupBoldText() {
         callback.setUpBoldText()

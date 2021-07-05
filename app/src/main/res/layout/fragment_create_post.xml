@@ -19,7 +19,7 @@
 
         <com.intergroupapplication.presentation.customview.RichEditor
             android:id="@+id/rich_editor"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/mediaHolder"
             app:layout_constraintEnd_toEndOf="parent"
@@ -28,13 +28,29 @@
         <LinearLayout
             android:id="@+id/mediaHolder"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
 
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_end_with_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.53" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout

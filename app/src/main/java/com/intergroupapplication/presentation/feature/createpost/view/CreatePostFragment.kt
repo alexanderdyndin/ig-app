@@ -4,11 +4,13 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -21,6 +23,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCreatePostBinding
+import com.intergroupapplication.domain.KeyboardVisibilityEvent
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -93,6 +96,26 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     protected lateinit var publishBtn:TextView
 
     private lateinit var groupId: String
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        activity?.let{
+            KeyboardVisibilityEvent.setEventListener(it,viewLifecycleOwner){ isVisible ->
+                Timber.tag("tut_keyboard").d(isVisible.toString())
+                if (isVisible){
+                    changeBottomConstraintMediaHolder(createPostBinding.
+                        horizontalGuideEndWithKeyboard.id)
+                }
+                else{
+                    changeBottomConstraintMediaHolder(createPostBinding.horizontalGuideEnd.id)
+                }
+            }
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun viewCreated() {
         richEditor = createPostBinding.richEditor.apply {
@@ -188,7 +211,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
             bottomSheetBehaviour = BottomSheetBehavior.from(createPostBinding.containerBottomSheet)
                     as AutoCloseBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
-                peekHeight = requireContext().dpToPx(35)
+                peekHeight = requireContext().dpToPx(37)
                 halfExpandedRatio = 0.6f
                 isFitToContents = false
                 addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -213,6 +236,13 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         createPostBinding.navigationToolbar.
             toolbarBackAction.setOnClickListener { onResultCancel() }
         setErrorHandler()
+    }
+
+    private fun changeBottomConstraintMediaHolder(id: Int) {
+        val paramsRichEditor = createPostBinding.mediaHolder.layoutParams
+                as ConstraintLayout.LayoutParams
+        paramsRichEditor.bottomToTop = id
+        createPostBinding.mediaHolder.layoutParams = paramsRichEditor
     }
 
     private fun setFragmentResult(bundle: Bundle){
@@ -422,8 +452,11 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     }
 
     override fun changeHeight(height: Int) {
+        Timber.tag("tut_height").d(height.toString())
         bottomSheetBehaviour.peekHeight = height
         createPostBinding.mediaHolder.minimumHeight = height
+        Timber.tag("tut_mediaHolder").d(createPostBinding.mediaHolder.height.toString())
+        Timber.tag("tut_mediaHolder_min").d(createPostBinding.mediaHolder.minimumHeight.toString())
     }
 
     override fun getState() = bottomSheetBehaviour.state

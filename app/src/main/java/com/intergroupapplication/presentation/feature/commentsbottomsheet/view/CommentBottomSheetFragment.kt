@@ -88,6 +88,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var textAnswer:TextView
     private lateinit var horizontalGuideCollapsed: Guideline
     private lateinit var horizontalGuideCollapsedWithPanelStyle: Guideline
+    private lateinit var horizontalGuideEndWithKeyboard:Guideline
     private lateinit var containerRichEditor:LinearLayout
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
@@ -206,11 +207,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         horizontalGuideCollapsed = viewBinding.horizontalGuideCollapsed
         horizontalGuideCollapsedWithPanelStyle = viewBinding.horizontalGuideCollapsedWithPanelStyle
         containerRichEditor = viewBinding.containerForRichEditorAndSendButton
+        horizontalGuideEndWithKeyboard = viewBinding.horizontalGuideEndWithKeyboard
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 
     private fun sendComment() {
@@ -635,34 +633,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     private fun detachMedia(path: String) {
-        /*loadingViews[path].let {view->
-            when(view){
-                is DownloadVideoPlayerView->{
-                    view.exoPlayer.player?.pause()
-                    createCommentCustomView.listVideoContainers.forEach { container->
-                        container.removeVideoView(loadingViews[path])
-                    }
-                }
-                is DownloadAudioPlayerView->{
-                    view.exoPlayer.player?.pause()
-                    createCommentCustomView.listAudioContainers.forEach {container->
-                        container.removeAudioView(loadingViews[path])
-                    }
-                }
-                else ->{
-                    createCommentCustomView.listImageContainers.forEach {container->
-                        container.removeImageView(loadingViews[path])
-                    }
-                }
-            }
-        }
-        createCommentCustomView.deleteName(loadingViews[path])
-        loadingViews.remove(path)
-        chooseMedias.removeChooseMedia(path)
-        if(loadingViews.isEmpty() && createCommentCustomView.allTextIsEmpty()){
-            createCommentCustomView.textPost.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                    null, null)
-        }*/
+
     }
 
     private fun restoreAllViewForCollapsedState() {
