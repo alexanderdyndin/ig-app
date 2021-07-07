@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -30,6 +29,7 @@ import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
+import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.customview.RichEditor
@@ -54,17 +54,14 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         const val METHOD_KEY = "method_key"
         const val CHOOSE_MEDIA_KEY = "choose_media_key"
         const val COLOR_KEY = "color_key"
+        const val ACTIVATED_KEY = "activated_key"
         const val RETRY_LOADING_METHOD_CODE = 0
         const val CANCEL_LOADING_METHOD_CODE = 1
         const val REMOVE_CONTENT_METHOD_CODE = 2
-        const val ACTIVATED_BOLD = 3
-        const val ACTIVATED_ITALIC = 4
-        const val ACTIVATED_UNDERLINE = 5
-        const val ACTIVATED_STRIKETHROUGH = 6
-        const val NOT_ACTIVATED_ALL_BUTTONS = 7
-        const val SET_JUSTIFY_LEFT = 8
-        const val SET_JUSTIFY_CENTER = 9
-        const val SET_JUSTIFY_RIGHT = 10
+        const val IC_EDIT_TEXT_METHOD_CODE = 3
+        const val IC_EDIT_ALIGN_METHOD_CODE = 4
+        const val IC_ATTACH_FILE_METHOD_CODE = 5
+        const val IC_EDIT_COLOR_METHOD_CODE = 6
         const val CHANGE_COLOR = 11
     }
 
@@ -77,6 +74,9 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
+
+    @Inject
+    lateinit var colorDrawableGateway: ColorDrawableGateway
 
     private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<FrameLayout>
 
@@ -109,9 +109,11 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
                 if (isVisible){
                     changeBottomConstraintMediaHolder(createPostBinding.
                         horizontalGuideEndWithKeyboard.id)
+                    createPostBinding.mediaHolder.show()
                 }
                 else{
                     changeBottomConstraintMediaHolder(createPostBinding.horizontalGuideEnd.id)
+                    createPostBinding.mediaHolder.hide()
                 }
             }
         }
@@ -130,43 +132,39 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
             decorationStateListener = object :RichEditor.OnDecorationStateListener{
 
                 override fun onStateChangeListener(text: String, types: List<TextType>) {
-                    setFragmentResult(bundleOf(METHOD_KEY
-                            to NOT_ACTIVATED_ALL_BUTTONS))
+                    createPostBinding.selectBoldText.changeActivated(false,
+                        createPostBinding.selectItalicText,createPostBinding.selectStrikeText,
+                        createPostBinding.selectStrikeText)
                     types.forEach { type ->
                         when {
                             type.name.contains("FONT_COLOR") -> {
                                 setFragmentResult(bundleOf(METHOD_KEY to CHANGE_COLOR,
                                     COLOR_KEY to type.color))
+                                createPostBinding.icEditColor.setImageDrawable(colorDrawableGateway.
+                                    getDrawableByColor(type.color))
                             }
                             else -> {
                                 when(type){
                                     TextType.BOLD -> {
-                                        setFragmentResult(bundleOf(METHOD_KEY
-                                                to ACTIVATED_BOLD))
+                                        createPostBinding.selectBoldText.activated(true)
                                     }
                                     TextType.ITALIC ->{
-                                        setFragmentResult(bundleOf(METHOD_KEY
-                                                to ACTIVATED_ITALIC))
+                                        createPostBinding.selectItalicText.activated(true)
                                     }
                                     TextType.UNDERLINE ->{
-                                        setFragmentResult(bundleOf(METHOD_KEY
-                                                to ACTIVATED_UNDERLINE))
+                                        createPostBinding.selectUnderlineText.activated(true)
                                     }
                                     TextType.STRIKETHROUGH ->{
-                                        setFragmentResult(bundleOf(METHOD_KEY
-                                                to ACTIVATED_STRIKETHROUGH))
+                                       createPostBinding.selectStrikeText.activated(true)
                                     }
                                     TextType.JUSTIFYLEFT->{
-                                        setFragmentResult(bundleOf(METHOD_KEY
-                                                to SET_JUSTIFY_LEFT))
+                                        createPostBinding.leftGravityButton.isChecked = true
                                     }
                                     TextType.JUSTIFYCENTER->{
-                                        setFragmentResult(bundleOf(METHOD_KEY
-                                                to SET_JUSTIFY_CENTER))
+                                        createPostBinding.centerGravityButton.isChecked = true
                                     }
                                     TextType.JUSTIFYRIGHT->{
-                                        setFragmentResult(bundleOf(METHOD_KEY
-                                                to SET_JUSTIFY_RIGHT))
+                                        createPostBinding.rightGravityButton.isChecked = true
                                     }
                                     else -> Timber.tag("else_type").d(type.name)
                                 }
@@ -238,8 +236,91 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         createPostBinding.navigationToolbar.
             toolbarBackAction.setOnClickListener { onResultCancel() }
         setErrorHandler()
+        setupIconPanel()
+        setupPanelStyleText()
+        setupPanelGravityText()
     }
 
+    private fun setupIconPanel(){
+        setupIcEditText()
+        setupIcEditAlign()
+        setupIcAttachFile()
+        setupIcEditColor()
+    }
+
+    private fun setupIcEditText() {
+        createPostBinding.icEditText.setOnClickListener {
+            if (it.isActivated) {
+                it.activated(false)
+                gonePanelStyleText()
+                setFragmentResult(
+                    bundleOf(
+                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                        ACTIVATED_KEY to false
+                    )
+                )
+            } else {
+                it.activated(true)
+                showPanelStyleText()
+                setFragmentResult(
+                    bundleOf(
+                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                        ACTIVATED_KEY to true
+                    )
+                )
+                setFragmentResult(
+                    bundleOf(
+                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
+                        ACTIVATED_KEY to false
+                    )
+                )
+            }
+        }
+    }
+
+    private fun setupIcEditAlign() {
+        createPostBinding.icEditAlign.setOnClickListener {
+            if (it.isActivated) {
+                it.activated(false)
+                gonePanelGravity()
+                setFragmentResult(
+                    bundleOf(
+                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
+                        ACTIVATED_KEY to false
+                    )
+                )
+            } else {
+                it.activated(true)
+                showPanelGravity()
+                setFragmentResult(
+                    bundleOf(
+                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
+                        ACTIVATED_KEY to true
+                    )
+                )
+                setFragmentResult(
+                    bundleOf(
+                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                        ACTIVATED_KEY to false
+                    )
+                )
+            }
+        }
+    }
+
+    private fun setupIcEditColor(){
+        createPostBinding.icEditColor.setOnClickListener {
+            setFragmentResult(bundleOf(METHOD_KEY to IC_EDIT_COLOR_METHOD_CODE))
+        }
+        createPostBinding.mediaHolder.hide()
+    }
+
+    private fun setupIcAttachFile(){
+        createPostBinding.icAttachFile.setOnClickListener {
+            setFragmentResult(bundleOf(METHOD_KEY to IC_ATTACH_FILE_METHOD_CODE))
+        }
+        createPostBinding.mediaHolder.hide()
+    }
     private fun changeBottomConstraintMediaHolder(id: Int) {
         val paramsRichEditor = createPostBinding.mediaHolder.layoutParams
                 as ConstraintLayout.LayoutParams
@@ -453,11 +534,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         findNavController().popBackStack()
     }
 
-    override fun changeHeight(height: Int) {
-        bottomSheetBehaviour.peekHeight = height
-        createPostBinding.mediaHolder.minimumHeight = height
-    }
-
     override fun getState() = bottomSheetBehaviour.state
 
     override fun changeStateBottomSheet(newState: Int) {
@@ -485,32 +561,88 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         richEditor.setTextColor(color)
     }
 
-    override fun setUpBoldText() {
-        richEditor.setBold()
+    override fun showPanelStyleText() {
+        createPostBinding.panelStyleText.show()
+        createPostBinding.panelGravityText.gone()
+        createPostBinding.icEditText.changeActivated(true,createPostBinding.icEditAlign,
+            createPostBinding.icAttachFile)
     }
 
-    override fun setUpItalicText() {
-        richEditor.setItalic()
+    override fun gonePanelStyleText() {
+        createPostBinding.panelStyleText.gone()
+        createPostBinding.icEditText.activated(false)
     }
 
-    override fun setupStrikeText() {
-        richEditor.setStrikeThrough()
+    override fun showPanelGravity() {
+        createPostBinding.panelGravityText.show()
+        createPostBinding.panelStyleText.gone()
+        createPostBinding.icEditAlign.changeActivated(true,createPostBinding.icEditText,
+            createPostBinding.icAttachFile)
     }
 
-    override fun setupUnderlineText() {
-        richEditor.setUnderline()
+    override fun gonePanelGravity() {
+        createPostBinding.panelGravityText.gone()
+        createPostBinding.icEditAlign.activated(false)
     }
 
-    override fun setAlignLeft() {
-        richEditor.setAlignLeft()
+
+    private fun setupPanelStyleText() {
+        setupBoldTextView()
+        setupItalicTextView()
+        setupStrikeTextView()
+        setupUnderlineTextView()
     }
 
-    override fun setAlignCenter() {
-        richEditor.setAlignCenter()
+    private fun setupBoldTextView() {
+        createPostBinding.selectBoldText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setBold()
+        }
     }
 
-    override fun setAlignRight() {
-        richEditor.setAlignRight()
+    private fun setupItalicTextView() {
+        createPostBinding.selectItalicText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setItalic()
+        }
+    }
+
+    private fun setupStrikeTextView() {
+        createPostBinding.selectStrikeText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setStrikeThrough()
+        }
+    }
+
+    private fun setupUnderlineTextView() {
+        createPostBinding.selectUnderlineText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setUnderline()
+        }
+    }
+
+    private fun setupPanelGravityText(){
+        setupLeftGravityView()
+        setupCenterGravityView()
+        setupRightGravityView()
+    }
+
+    private fun setupLeftGravityView(){
+        createPostBinding.leftGravityButton.setOnClickListener {
+            richEditor.setAlignLeft()
+        }
+    }
+
+    private fun setupCenterGravityView(){
+        createPostBinding.centerGravityButton.setOnClickListener {
+            richEditor.setAlignCenter()
+        }
+    }
+
+    private fun setupRightGravityView(){
+        createPostBinding.rightGravityButton.setOnClickListener {
+            richEditor.setAlignRight()
+        }
     }
 
     override fun onPause() {

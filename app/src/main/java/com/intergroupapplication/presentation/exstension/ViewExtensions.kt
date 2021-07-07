@@ -55,3 +55,10 @@ fun View.clicks(time: Long = 600): Observable<Any> {
 fun View.activated(isActivated:Boolean){
     this.isActivated = isActivated
 }
+
+fun View.changeActivated(thisActivated:Boolean, vararg views:View){
+    this.activated(thisActivated)
+    views.forEach { view->
+        view.activated(false)
+    }
+}

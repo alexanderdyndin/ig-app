@@ -36,23 +36,9 @@ fun TextView.setLinkClickable(action: () -> (Unit)) {
             .build()
 }
 
-fun TextView.showKeyboard() {
-    requestFocus()
-    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-            .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-}
-
-fun View.dismissKeyboard(){
-    requestFocus()
-    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-            .hideSoftInputFromWindow(this.windowToken,0)
-}
-
-fun TextView.changeActivated(thisActivated:Boolean, view1:TextView, view2:TextView, view3:TextView){
-    this.activated(thisActivated)
-    view1.activated(false)
-    view2.activated(false)
-    view3.activated(false)
+fun TextView.changeActivatedTextView(thisActivated:Boolean, view1:TextView, view2:TextView,
+                                        view3:TextView){
+    this.changeActivated(thisActivated, view1, view2, view3)
     this.setTextColor(if (thisActivated)resources.getColor(R.color.pingForButton, null)
     else resources.getColor(R.color.colorAccent, null) )
     view1.setTextColor(resources.getColor(R.color.colorAccent, null))

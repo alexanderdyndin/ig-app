@@ -69,8 +69,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var icEditText:ImageView
     protected lateinit var icEditColor:ImageView
     protected lateinit var icEditAlign:ImageView
-    protected lateinit var panelStyleText:LinearLayout
-    protected lateinit var panelGravityText:RadioGroup
     protected lateinit var panelAddFile:LinearLayout
     private lateinit var galleryButton:TextView
     private lateinit var musicButton: TextView
@@ -78,13 +76,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     private lateinit var playlistButton: TextView
     protected lateinit var btnAdd: TextView
     protected lateinit var amountFiles: TextView
-    protected lateinit var boldText:ImageView
-    protected lateinit var italicText:ImageView
-    protected lateinit var strikeText:ImageView
-    protected lateinit var underlineText:ImageView
-    protected lateinit var leftGravityButton:RadioButton
-    protected lateinit var centerGravityButton:RadioButton
-    protected lateinit var rightGravityButton:RadioButton
     protected lateinit var horizontalGuideCenter:Guideline
     protected lateinit var horizontalGuideEnd:Guideline
     protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
@@ -132,8 +123,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         icEditText = view.findViewById(R.id.icEditText)
         icEditColor = view.findViewById(R.id.icEditColor)
         icEditAlign = view.findViewById(R.id.icEditAlign)
-        panelStyleText = view.findViewById(R.id.panelStyleText)
-        panelGravityText = view.findViewById(R.id.panelGravityText)
         panelAddFile = view.findViewById(R.id.panelAddFile)
         galleryButton = view.findViewById(R.id.galleryButton)
         musicButton = view.findViewById(R.id.musicButton)
@@ -141,13 +130,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         playlistButton = view.findViewById(R.id.playlistButton)
         btnAdd = view.findViewById(R.id.btnAdd)
         amountFiles = view.findViewById(R.id.amountFiles)
-        boldText = view.findViewById(R.id.selectBoldText)
-        italicText = view.findViewById(R.id.selectItalicText)
-        strikeText = view.findViewById(R.id.selectStrikeText)
-        underlineText = view.findViewById(R.id.selectUnderlineText)
-        leftGravityButton = view.findViewById(R.id.left_gravity_button)
-        centerGravityButton = view.findViewById(R.id.center_gravity_button)
-        rightGravityButton = view.findViewById(R.id.right_gravity_button)
         horizontalGuideCenter = view.findViewById(R.id.horizontal_guide_center)
         horizontalGuideEnd = view.findViewById(R.id.horizontal_guide_end)
         mediaRecyclerView.run {
@@ -206,7 +188,8 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                 if (isActivated) {
                     activated(false)
                     attachFileNotActivated()
-                    galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+                    galleryButton.changeActivatedTextView(false, musicButton,
+                        videoButton, playlistButton)
                     galleryAdapter.photos.cancelChoose()
                     videoAdapter.videos.cancelChoose()
                     audioAdapter.audios.cancelChoose()
@@ -218,16 +201,14 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             }
         }
 
-        setupPanelStyleText()
-        setupPanelGravityText()
-
         galleryButton.setOnClickListener {
             mediaRecyclerView.run {
                 adapter = galleryAdapter
                 layoutManager = GridLayoutManager(context, 3)
             }
             setVisibilityForAddFiles()
-            (it as TextView).changeActivated(true, musicButton, videoButton, playlistButton)
+            (it as TextView).changeActivatedTextView(true, musicButton, videoButton,
+                playlistButton)
             changeCountChooseImage()
         }
 
@@ -237,7 +218,8 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                 layoutManager = LinearLayoutManager(context)
             }
             setVisibilityForAddFiles()
-            (it as TextView).changeActivated(true, galleryButton, videoButton, playlistButton)
+            (it as TextView).changeActivatedTextView(true, galleryButton, videoButton,
+                playlistButton)
             changeCountChooseAudio()
         }
 
@@ -247,7 +229,8 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                 layoutManager = GridLayoutManager(context, 3)
             }
             setVisibilityForAddFiles()
-            (it as TextView).changeActivated(true, galleryButton, musicButton, playlistButton)
+            (it as TextView).changeActivatedTextView(true, galleryButton, musicButton,
+                playlistButton)
             changeCountChooseVideo()
         }
 
@@ -290,7 +273,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                     changeCountChooseAudio()
                 }
             }
-            galleryButton.changeActivated(false, videoButton, musicButton, playlistButton)
+            galleryButton.changeActivatedTextView(false, videoButton, musicButton, playlistButton)
             changeStateViewAfterAddMedia()
             chooseMedias.clear()
         }
@@ -300,24 +283,16 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         }
     }
 
-    protected open fun gonePanelStyleText() {
-        panelStyleText.gone()
-    }
+    abstract fun gonePanelStyleText()
 
     protected open fun showPanelStyleText() {
-        panelStyleText.show()
-        panelGravityText.gone()
         icEditAlign.activated(false)
         goneViewWhenShowPanelStyleText()
     }
 
-    protected open fun gonePanelGravityText(){
-        panelGravityText.gone()
-    }
+    abstract fun gonePanelGravityText()
 
     protected open fun showPanelGravityText(){
-        panelGravityText.show()
-        panelStyleText.gone()
         icEditText.activated(false)
         goneViewWhenShowPanelStyleText()
     }
@@ -326,7 +301,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         mediaRecyclerView.gone()
         panelAddFile.gone()
         icAttachFile.activated(false)
-        galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+        galleryButton.changeActivatedTextView(false, musicButton, videoButton, playlistButton)
     }
 
     abstract fun calculateHeight():Int
@@ -335,60 +310,15 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(color))
     }
 
-    private fun setupPanelStyleText() {
-        setupBoldTextView()
-        setupItalicTextView()
-        setupStrikeTextView()
-        setupUnderlineTextView()
-    }
-
-    private fun setupBoldTextView() {
-        boldText.setOnClickListener {
-            it.activated(!it.isActivated)
-            setupBoldText()
-        }
-    }
-
-    abstract fun setupBoldText()
-
-    private fun setupItalicTextView() {
-        italicText.setOnClickListener {
-            it.activated(!it.isActivated)
-            setupItalicText()
-        }
-    }
-
-    abstract fun setupItalicText()
-
-    private fun setupStrikeTextView() {
-        strikeText.setOnClickListener {
-            it.activated(!it.isActivated)
-            setupStrikeText()
-        }
-    }
-
-    abstract fun setupStrikeText()
-
-    private fun setupUnderlineTextView() {
-        underlineText.setOnClickListener {
-            it.activated(!it.isActivated)
-            setupUnderlineText()
-        }
-    }
-
-    abstract fun setupUnderlineText()
-
     protected open fun startChooseColorText(){
         icEditColor.activated(true)
         changeStateToHalfExpanded()
-        panelStyleText.gone()
         icEditText.activated(false)
-        panelGravityText.gone()
         icEditAlign.activated(false)
         panelAddFile.gone()
         amountFiles.gone()
         btnAdd.gone()
-        galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+        galleryButton.changeActivatedTextView(false, musicButton, videoButton, playlistButton)
         icAttachFile.activated(false)
         mediaRecyclerView.run {
             show()
@@ -401,36 +331,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         mediaRecyclerView.gone()
         icEditColor.activated(false)
     }
-
-    private fun setupPanelGravityText(){
-        setupLeftGravityView()
-        setupCenterGravityView()
-        setupRightGravityView()
-    }
-
-    private fun setupLeftGravityView(){
-        leftGravityButton.setOnClickListener {
-            setupLeftGravity()
-        }
-    }
-
-    abstract fun setupLeftGravity()
-
-    private fun setupCenterGravityView(){
-        centerGravityButton.setOnClickListener {
-            setupCenterGravity()
-        }
-    }
-
-    abstract fun setupCenterGravity()
-
-    private fun setupRightGravityView(){
-        rightGravityButton.setOnClickListener {
-            setupRightGravity()
-        }
-    }
-
-    abstract fun setupRightGravity()
 
     abstract fun attachFileNotActivated()
 
@@ -451,7 +351,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     abstract fun closeKeyboard()
 
     @SuppressLint("CheckResult")
-    private fun requestPermission() {
+    protected fun requestPermission() {
         permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe({
             if (it) {
@@ -521,7 +421,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         mediaRecyclerView.gone()
         btnAdd.gone()
         amountFiles.gone()
-        galleryButton.changeActivated(false, musicButton, videoButton, playlistButton)
+        galleryButton.changeActivatedTextView(false, musicButton, videoButton, playlistButton)
         icAttachFile.activated(false)
         btnAdd.isEnabled = false
     }
@@ -600,7 +500,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     override fun attachPhoto() {
         attachFromCamera()
         changeStateViewAfterAddMedia()
-        galleryButton.changeActivated(false, videoButton, musicButton, playlistButton)
+        galleryButton.changeActivatedTextView(false, videoButton, musicButton, playlistButton)
     }
 
 }

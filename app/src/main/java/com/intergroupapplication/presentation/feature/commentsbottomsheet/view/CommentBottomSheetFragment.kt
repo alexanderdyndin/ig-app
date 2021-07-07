@@ -90,6 +90,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var horizontalGuideCollapsedWithPanelStyle: Guideline
     private lateinit var horizontalGuideEndWithKeyboard:Guideline
     private lateinit var containerRichEditor:LinearLayout
+    private lateinit var panelStyleText:LinearLayout
+    private lateinit var panelGravityText:RadioGroup
+    private lateinit var boldText:ImageView
+    private lateinit var italicText:ImageView
+    private lateinit var strikeText:ImageView
+    private lateinit var underlineText:ImageView
+    private lateinit var leftGravityButton:RadioButton
+    private lateinit var centerGravityButton:RadioButton
+    private lateinit var rightGravityButton:RadioButton
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
 
@@ -208,6 +217,17 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         horizontalGuideCollapsedWithPanelStyle = viewBinding.horizontalGuideCollapsedWithPanelStyle
         containerRichEditor = viewBinding.containerForRichEditorAndSendButton
         horizontalGuideEndWithKeyboard = viewBinding.horizontalGuideEndWithKeyboard
+        panelStyleText = viewBinding.panelStyleText
+        panelGravityText = viewBinding.panelGravityText
+        boldText = viewBinding.selectBoldText
+        italicText = viewBinding.selectItalicText
+        underlineText = viewBinding.selectUnderlineText
+        strikeText = viewBinding.selectStrikeText
+        leftGravityButton = viewBinding.leftGravityButton
+        centerGravityButton = viewBinding.centerGravityButton
+        rightGravityButton = viewBinding.rightGravityButton
+        setupPanelStyleText()
+        setupPanelGravityText()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -277,7 +297,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun gonePanelStyleText() {
-        super.gonePanelStyleText()
+        panelStyleText.gone()
         val height = calculateHeight()
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
@@ -286,6 +306,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
+        panelStyleText.show()
+        panelGravityText.gone()
         richEditor.run {
             show()
             if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
@@ -297,7 +319,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun gonePanelGravityText() {
-        super.gonePanelGravityText()
+        panelGravityText.gone()
         val height = calculateHeight()
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
@@ -306,6 +328,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
+        panelGravityText.show()
+        panelStyleText.gone()
         richEditor.run {
             show()
             if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
@@ -323,25 +347,46 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         return height
     }
 
-    override fun setupBoldText() {
-        richEditor.setBold()
+    private fun setupPanelStyleText() {
+        setupBoldTextView()
+        setupItalicTextView()
+        setupStrikeTextView()
+        setupUnderlineTextView()
     }
 
-    override fun setupItalicText() {
-        richEditor.setItalic()
+    private fun setupBoldTextView() {
+        boldText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setBold()
+        }
     }
 
-    override fun setupStrikeText() {
-        richEditor.setStrikeThrough()
+    private fun setupItalicTextView() {
+        italicText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setItalic()
+        }
     }
 
-    override fun setupUnderlineText() {
-        richEditor.setUnderline()
+    private fun setupStrikeTextView() {
+        strikeText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setStrikeThrough()
+        }
+    }
+
+    private fun setupUnderlineTextView() {
+        underlineText.setOnClickListener {
+            it.activated(!it.isActivated)
+            richEditor.setUnderline()
+        }
     }
 
     override fun startChooseColorText() {
         stateBeforeChooseColor = currentState
         super.startChooseColorText()
+        panelGravityText.gone()
+        panelStyleText.gone()
         richEditor.gone()
         sendButton.gone()
         answerLayout.gone()
@@ -370,16 +415,28 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
     }
 
-    override fun setupLeftGravity() {
-        richEditor.setAlignLeft()
+    private fun setupPanelGravityText(){
+        setupLeftGravityView()
+        setupCenterGravityView()
+        setupRightGravityView()
     }
 
-    override fun setupCenterGravity() {
-        richEditor.setAlignCenter()
+    private fun setupLeftGravityView(){
+        leftGravityButton.setOnClickListener {
+            richEditor.setAlignLeft()
+        }
     }
 
-    override fun setupRightGravity() {
-        richEditor.setAlignRight()
+    private fun setupCenterGravityView(){
+        centerGravityButton.setOnClickListener {
+            richEditor.setAlignCenter()
+        }
+    }
+
+    private fun setupRightGravityView(){
+        rightGravityButton.setOnClickListener {
+            richEditor.setAlignRight()
+        }
     }
 
     override fun attachGallery() {

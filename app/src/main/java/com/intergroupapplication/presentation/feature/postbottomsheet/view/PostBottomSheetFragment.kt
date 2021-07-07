@@ -53,15 +53,27 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
                 CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> {presenter.
                 cancelUploading(chooseMedia.url)}
                 CreatePostFragment.REMOVE_CONTENT_METHOD_CODE -> {presenter.
-                removeContent(chooseMedia.url)}
-                CreatePostFragment.ACTIVATED_BOLD -> boldText.activated(true)
-                CreatePostFragment.ACTIVATED_ITALIC -> italicText.activated(true)
-                CreatePostFragment.ACTIVATED_UNDERLINE -> underlineText.activated(true)
-                CreatePostFragment.ACTIVATED_STRIKETHROUGH -> strikeText.activated(true)
-                CreatePostFragment.NOT_ACTIVATED_ALL_BUTTONS -> notActivatedAllButtons()
-                CreatePostFragment.SET_JUSTIFY_LEFT -> leftGravityButton.isChecked = true
-                CreatePostFragment.SET_JUSTIFY_CENTER -> centerGravityButton.isChecked = true
-                CreatePostFragment.SET_JUSTIFY_RIGHT -> rightGravityButton.isChecked = true
+                    removeContent(chooseMedia.url)
+                }
+                CreatePostFragment.IC_EDIT_ALIGN_METHOD_CODE->{
+                    val isActivated = bundle.getBoolean(CreatePostFragment.ACTIVATED_KEY)
+                    icEditAlign.activated(isActivated)
+                }
+                CreatePostFragment.IC_EDIT_TEXT_METHOD_CODE->{
+                    val isActivated = bundle.getBoolean(CreatePostFragment.ACTIVATED_KEY)
+                    icEditText.activated(isActivated)
+                }
+                CreatePostFragment.IC_EDIT_COLOR_METHOD_CODE ->{
+                    changeStateToHalfExpanded()
+                    closeKeyboard()
+                    startChooseColorText()
+                }
+                CreatePostFragment.IC_ATTACH_FILE_METHOD_CODE->{
+                    requestPermission()
+                    changeStateToHalfExpanded()
+                    closeKeyboard()
+                    icAttachFile.activated(true)
+                }
                 CreatePostFragment.CHANGE_COLOR -> {
                     val color = bundle.getInt(CreatePostFragment.COLOR_KEY)
                     icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(color))
@@ -76,52 +88,34 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         btnAdd.isEnabled = false
     }
 
-    private fun notActivatedAllButtons() {
+   /* private fun notActivatedAllButtons() {
         boldText.activated(false)
         italicText.activated(false)
         underlineText.activated(false)
         strikeText.activated(false)
-    }
+    }*/
 
     override fun gonePanelStyleText() {
-        super.gonePanelStyleText()
-        callback.changeHeight(calculateHeight())
+        callback.gonePanelStyleText()
     }
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
-        val height = calculateHeight() + heightTextStylePanel
-        callback.changeHeight(height)
+        callback.showPanelStyleText()
     }
 
     override fun gonePanelGravityText() {
-        super.gonePanelGravityText()
-        callback.changeHeight(calculateHeight())
+        callback.gonePanelGravity()
     }
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
-        val height = calculateHeight() + heightTextStylePanel
-        callback.changeHeight(height)
+        callback.showPanelGravity()
     }
 
     override fun calculateHeight() = heightIconPanel
 
-    override fun setupBoldText() {
-        callback.setUpBoldText()
-    }
 
-    override fun setupItalicText() {
-        callback.setUpItalicText()
-    }
-
-    override fun setupStrikeText() {
-        callback.setupStrikeText()
-    }
-
-    override fun setupUnderlineText() {
-        callback.setupUnderlineText()
-    }
 
     override fun changeTextColor(color: Int) {
         endChooseColorText()
@@ -133,16 +127,10 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         }
     }
 
-    override fun setupLeftGravity() {
-        callback.setAlignLeft()
-    }
-
-    override fun setupCenterGravity() {
-        callback.setAlignCenter()
-    }
-
-    override fun setupRightGravity() {
-        callback.setAlignRight()
+    override fun startChooseColorText() {
+        super.startChooseColorText()
+        callback.gonePanelStyleText()
+        callback.gonePanelGravity()
     }
 
     override fun attachFileNotActivated() {
@@ -228,19 +216,15 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     fun addImagesInPhotosUrl(images:List<FileEntity>) = presenter.addImagesInPhotosUrl(images)
 
     interface Callback:ImageUploadingView{
-        fun changeHeight(height:Int)
         fun getState():Int
         fun changeStateBottomSheet(newState: Int)
         fun getLoadingView():Map<String,View?>
         fun closeKeyboard()
         fun showKeyboard()
         fun changeTextColor(color:Int)
-        fun setUpBoldText()
-        fun setUpItalicText()
-        fun setupStrikeText()
-        fun setupUnderlineText()
-        fun setAlignLeft()
-        fun setAlignCenter()
-        fun setAlignRight()
+        fun showPanelStyleText()
+        fun gonePanelStyleText()
+        fun showPanelGravity()
+        fun gonePanelGravity()
     }
 }
