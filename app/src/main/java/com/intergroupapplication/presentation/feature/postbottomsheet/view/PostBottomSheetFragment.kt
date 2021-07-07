@@ -8,7 +8,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.databinding.FragmentEditPostBottomSheetBinding
+import com.intergroupapplication.databinding.FragmentPostBottomSheetBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     lateinit var callback: Callback
-    private val editPostBottomBinding by viewBinding(FragmentEditPostBottomSheetBinding::bind)
+    private val postBottomBinding by viewBinding(FragmentPostBottomSheetBinding::bind)
     private val heightIconPanel by lazy { context?.dpToPx(40)?:0 }
 
     @Inject
@@ -35,9 +35,9 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     @ProvidePresenter
     fun providePresenter(): PostBottomSheetPresenter = presenter
 
-    override fun layoutRes() = R.layout.fragment_edit_post_bottom_sheet
+    override fun layoutRes() = R.layout.fragment_post_bottom_sheet
 
-    override fun getSnackBarCoordinator() = editPostBottomBinding.bottomSheetCoordinator
+    override fun getSnackBarCoordinator() = postBottomBinding.bottomSheetCoordinator
 
     override fun onCreateView(
         inflater: LayoutInflater,

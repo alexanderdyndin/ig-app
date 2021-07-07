@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -212,6 +213,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
                     as AutoCloseBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
                 peekHeight = requireContext().dpToPx(37)
+                createPostBinding.mediaHolder.minimumHeight = peekHeight
                 halfExpandedRatio = 0.6f
                 isFitToContents = false
                 addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -452,11 +454,8 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     }
 
     override fun changeHeight(height: Int) {
-        Timber.tag("tut_height").d(height.toString())
         bottomSheetBehaviour.peekHeight = height
         createPostBinding.mediaHolder.minimumHeight = height
-        Timber.tag("tut_mediaHolder").d(createPostBinding.mediaHolder.height.toString())
-        Timber.tag("tut_mediaHolder_min").d(createPostBinding.mediaHolder.minimumHeight.toString())
     }
 
     override fun getState() = bottomSheetBehaviour.state
