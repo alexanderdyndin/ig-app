@@ -186,7 +186,7 @@ dependencies {
     val junitTestVersion = "1.1.2"
     val espressoVersion = "3.3.0"
 
-    val moxyVersion = "2.2.0"
+    val moxyVersion = "2.2.2"
 
     //networking
     val retrofitVersion = "2.9.0"
@@ -216,7 +216,7 @@ dependencies {
     val loadingLibraryVersion = "2.1.3"
     val constraintVersion = "2.0.4"
     val snackBarVersion = "1.1.1"
-    val materialDrawerVersion = "1.3.7"
+    val materialDrawerVersion = "3.0.0"
     val circleProgressBarVersion = "1.2.2"
     val refreshVersion = "1.2.3@aar"
     val browserVersion = "1.3.0"

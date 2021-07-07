@@ -156,10 +156,11 @@ class MainActivity : FragmentActivity() {
         //Appodeal.setTesting(true)
         viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
         initializerAppodeal.initialize()
+        setTheme(R.style.ActivityTheme)
         setContentView(R.layout.activity_main)
-        val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
-        val file = File("$filepatch.nomedia")
         try {
+            val filepatch = externalCacheDir?.path//externalCacheDir?.path+"/RxPaparazzo/"
+            val file = File("/$filepatch.nomedia")
             if (!file.exists())
                 file.createNewFile()
         } catch (e: IOException) {
@@ -205,12 +206,11 @@ class MainActivity : FragmentActivity() {
         )
         profileAvatarHolder = viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
-        lateinit var drawerItem: PrimaryDrawerItem
         drawer = drawer {
+            fullscreen = false
             sliderBackgroundColorRes = R.color.mainBlack
             headerView = viewDrawer
-            actionBarDrawerToggleEnabled = false
-            translucentStatusBar = false
+            translucentStatusBar = true
             viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                     || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
@@ -218,69 +218,7 @@ class MainActivity : FragmentActivity() {
                         mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
                 }
             }
-//            drawerItem = primaryItem(getString(R.string.news)) {
-//                icon = R.drawable.ic_news
-//                selectedIcon = R.drawable.ic_news_blue
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-//                onClick { _ ->
-//                    navController.navigate(R.id.action_global_newsFragment2)
-//                    false
-//                }
-//            }
-//            primaryItem(getString(R.string.groups)) {
-//                icon = R.drawable.ic_groups
-//                selectedIcon = R.drawable.ic_groups_blue
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-//                onClick { _ ->
-//                    navController.navigate(R.id.action_global_groupListFragment2)
-//                    false
-//                }
-//            }
-//            primaryItem(getString(R.string.music)) {
-//                icon = R.drawable.ic_music
-//                selectedIcon = R.drawable.ic_music_act
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-//                onClick { v ->
-//                    findNavController().navigate(R.id.action_newsFragment2_to_audioListFragment)
-//                    toolbarTittle.text = getString(R.string.groups)
-//                    false
-//                }
-//            }
-//            primaryItem(getString(R.string.buy_premium)) {
-//                icon = R.drawable.icon_like
-//                selectedIcon = R.drawable.icon_like
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-//                selectable = false
-//                onClick { _ ->
-//                    bill()
-//                    false
-//                }
-//            }
-//            primaryItem(getString(R.string.logout)) {
-//                typeface = Typeface.createFromAsset(assets, "roboto.regular.ttf")
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                onClick { _ ->
-//                    userSession.logout()
-//                    navController.navigate(R.id.action_global_loginActivity)
-//                    false
-//                }
-//            }
         }.apply {
-//            setSelection(drawerItem)
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
         }
         compositeDisposable.add(viewModel.getUserProfile()
@@ -558,11 +496,13 @@ class MainActivity : FragmentActivity() {
                 response.data()?.file?.path
             }
             .filter { it.isNotEmpty() }
-            .subscribe {
+            .subscribe({
                 it?.let {
                     viewModel.uploadImageFromGallery(it)
                 }
-            }
+            }, {
+                Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
+            })
         )
     }
 

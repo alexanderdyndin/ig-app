@@ -27,17 +27,6 @@ import okhttp3.OkHttpClient
 @Module
 class AppInitializersModule {
 
-
-//    @Provides
-//    @IntoSet
-//    fun provideRealmInitializer(context: Context): Initializer = object : Initializer {
-//        override fun initialize(app: Application) {
-//            Realm.init(context)
-//            val realmConfiguration = RealmConfiguration.Builder().name("intergroup,database").build()
-//            Realm.setDefaultConfiguration(realmConfiguration)
-//        }
-//    }
-
     @Provides
     @IntoSet
     fun provideAppCompatInitializer(): Initializer = object : Initializer {
@@ -65,14 +54,6 @@ class AppInitializersModule {
             Fresco.initialize(app)
         }
     }
-
-//    @Provides
-//    @IntoSet
-//    fun provideAdMobInitializer(context: Context): Initializer = object : Initializer {
-//        override fun initialize(app: Application) {
-//            MobileAds.initialize(context, "ca-app-pub-1717383973096668~8939439101")
-//        }
-//    }
 
 
     @Provides

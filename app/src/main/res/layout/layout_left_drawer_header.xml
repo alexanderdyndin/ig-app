@@ -39,8 +39,8 @@
 
         <com.github.florent37.shapeofview.ShapeOfView
             android:id="@+id/currentUserAvatar"
-            android:layout_width="136dp"
-            android:layout_height="136dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             app:shape_clip_drawable="@drawable/ava_group_create"
             android:layout_gravity="center|top"
             android:layout_marginTop="16dp">
@@ -154,8 +154,9 @@
         android:layout_marginStart="8dp"
         android:drawableStart="@drawable/icon_comments"
         android:drawablePadding="4dp"
+        android:layout_marginEnd="10dp"
         android:text="Комментарии:"
-        app:layout_constraintStart_toEndOf="@id/countPublicationsTxt"
+        app:layout_constraintEnd_toStartOf="@id/countCommentsTxt"
         app:layout_constraintTop_toTopOf="@+id/publicationsTxt" />
 
     <TextView
@@ -163,9 +164,9 @@
         style="@style/TextAccent14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/commentsTxt"
-        app:layout_constraintStart_toEndOf="@+id/commentsTxt"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/commentsTxt"
         tools:text="14k" />
     <androidx.recyclerview.widget.RecyclerView
