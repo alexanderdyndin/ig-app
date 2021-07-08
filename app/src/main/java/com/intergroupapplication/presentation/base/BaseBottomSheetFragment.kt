@@ -156,7 +156,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             colorAdapter.colors.addAll(addLocalMediaGateway.addColors())
             setOnClickListener {
                 changeStateToHalfExpanded()
-                closeKeyboard()
+                hideKeyboard()
                 if (isActivated){
                     endChooseColorText()
                 }
@@ -182,7 +182,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         icAttachFile.run {
             setOnClickListener {
                 requestPermission()
-                closeKeyboard()
+                hideKeyboard()
                 changeStateToHalfExpanded()
                 if (isActivated) {
                     activated(false)
@@ -346,8 +346,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     abstract fun changeStateToHalfExpanded()
 
     abstract fun changeStateViewAfterAddMedia()
-
-    abstract fun closeKeyboard()
 
     @SuppressLint("CheckResult")
     protected fun requestPermission() {

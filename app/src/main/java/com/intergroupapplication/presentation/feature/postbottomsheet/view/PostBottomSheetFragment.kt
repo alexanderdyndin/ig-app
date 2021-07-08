@@ -65,13 +65,14 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
                 }
                 CreatePostFragment.IC_EDIT_COLOR_METHOD_CODE ->{
                     changeStateToHalfExpanded()
-                    closeKeyboard()
+                    //closeKeyboard()
+                    callback?.closeKeyboard()
                     startChooseColorText()
                 }
                 CreatePostFragment.IC_ATTACH_FILE_METHOD_CODE->{
                     requestPermission()
                     changeStateToHalfExpanded()
-                    closeKeyboard()
+                    callback?.closeKeyboard()
                     icAttachFile.activated(true)
                 }
                 CreatePostFragment.CHANGE_COLOR -> {
@@ -165,10 +166,6 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     override fun changeStateViewAfterAddMedia() {
         callback?.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
-    }
-
-    override fun closeKeyboard() {
-        callback?.closeKeyboard()
     }
 
     override fun stateSettling() {

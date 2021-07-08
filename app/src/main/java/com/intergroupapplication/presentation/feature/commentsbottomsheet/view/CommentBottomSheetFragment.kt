@@ -289,6 +289,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+        iconPanel.changeMargin(8)
     }
 
     override fun showPanelStyleText() {
@@ -304,6 +305,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+        iconPanel.changeMargin(1)
     }
 
     override fun gonePanelGravityText() {
@@ -312,6 +314,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+        iconPanel.changeMargin(8)
     }
 
     override fun showPanelGravityText() {
@@ -327,6 +330,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+        iconPanel.changeMargin(1)
     }
 
     override fun calculateHeight(): Int {
@@ -468,10 +472,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         returnStateToOriginal()
     }
 
-    override fun closeKeyboard() {
-        richEditor.hideKeyboard()
-    }
-
     override fun stateSettling() {
         pushUpDown.background = ContextCompat.getDrawable(requireContext(), R.drawable.btn_push_up)
         changeBottomConstraintForView(horizontalGuideEnd.id)
@@ -569,7 +569,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun showImageUploadingError(path: String) {
-        Timber.tag("tut_error").d(path)
         progressMedias[path] = LoadMediaType.ERROR
     }
 
@@ -641,4 +640,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         return text
     }
 
+
+    private fun LinearLayout.changeMargin(dp:Int){
+        (this.layoutParams as ConstraintLayout.LayoutParams).topMargin = context.dpToPx(dp)
+    }
 }
