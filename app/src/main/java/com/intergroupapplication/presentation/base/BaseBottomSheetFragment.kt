@@ -79,7 +79,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var horizontalGuideCenter:Guideline
     protected lateinit var horizontalGuideEnd:Guideline
     protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
-    protected var stateBeforeChooseColor = BottomSheetBehavior.STATE_COLLAPSED
     protected val heightTextStylePanel by lazy { context?.dpToPx(40)?:0 }
 
 

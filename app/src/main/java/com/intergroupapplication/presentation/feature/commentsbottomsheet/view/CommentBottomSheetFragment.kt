@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
@@ -90,6 +91,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private val finalNamesMedia = mutableListOf<String>()
     private val progressMedias = mutableMapOf<String,LoadMediaType>()
     private var allViewsIsUpload = true
+    private var stateBeforeShowMediaRecycler = BottomSheetBehavior.STATE_COLLAPSED
     private val heightEditText by lazy { requireContext().dpToPx(70) }
     private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
 
@@ -269,6 +271,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachFileActivated() {
+        stateBeforeShowMediaRecycler = currentState
         sendButton.gone()
         richEditor.gone()
         answerLayout.gone()
@@ -368,7 +371,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun startChooseColorText() {
-        stateBeforeChooseColor = currentState
+        stateBeforeShowMediaRecycler = currentState
         super.startChooseColorText()
         panelGravityText.gone()
         panelStyleText.gone()
@@ -385,10 +388,17 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload)
                 sendButton.show()
         }
-        if (stateBeforeChooseColor == BottomSheetBehavior.STATE_COLLAPSED ||
-            stateBeforeChooseColor == BottomSheetBehavior.STATE_SETTLING){
-            CommentsViewModel.publishSubject.onNext(CHANGE_STATE_BOTTOM_SHEET_DATA to
-                    BottomSheetBehavior.STATE_COLLAPSED)
+        returnStateToOriginal()
+    }
+
+    private fun returnStateToOriginal() {
+        if (stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_COLLAPSED ||
+            stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_SETTLING
+        ) {
+            CommentsViewModel.publishSubject.onNext(
+                CHANGE_STATE_BOTTOM_SHEET_DATA to
+                        BottomSheetBehavior.STATE_COLLAPSED
+            )
         }
     }
 
@@ -454,6 +464,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         btnAdd.gone()
         if (answerLayout.isActivated) answerLayout.show()
         richEditor.show()
+        returnStateToOriginal()
     }
 
     override fun closeKeyboard() {
