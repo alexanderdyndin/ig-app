@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
-    lateinit var callback: Callback
+    var callback: Callback? = null
     private val postBottomBinding by viewBinding(FragmentPostBottomSheetBinding::bind)
     private val heightIconPanel by lazy { context?.dpToPx(40)?:0 }
 
@@ -88,29 +88,27 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         btnAdd.isEnabled = false
     }
 
-   /* private fun notActivatedAllButtons() {
-        boldText.activated(false)
-        italicText.activated(false)
-        underlineText.activated(false)
-        strikeText.activated(false)
-    }*/
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback = null
+    }
 
     override fun gonePanelStyleText() {
-        callback.gonePanelStyleText()
+        callback?.gonePanelStyleText()
     }
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
-        callback.showPanelStyleText()
+        callback?.showPanelStyleText()
     }
 
     override fun gonePanelGravityText() {
-        callback.gonePanelGravity()
+        callback?.gonePanelGravity()
     }
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
-        callback.showPanelGravity()
+        callback?.showPanelGravity()
     }
 
     override fun calculateHeight() = heightIconPanel
@@ -120,7 +118,7 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     override fun changeTextColor(color: Int) {
         endChooseColorText()
         super.changeTextColor(color)
-        callback.run {
+        callback?.run {
             changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
             showKeyboard()
             changeTextColor(color)
@@ -129,30 +127,29 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     override fun startChooseColorText() {
         super.startChooseColorText()
-        callback.gonePanelStyleText()
-        callback.gonePanelGravity()
+        callback?.run {
+            gonePanelStyleText()
+            gonePanelGravity()
+        }
     }
 
     override fun attachFileNotActivated() {
-        callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        callback?.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
     }
 
     override fun attachFileActivated() {
     }
 
     override fun attachGallery() {
-        presenter.attachMedia(galleryAdapter.getChoosePhotosFromObservable(), presenter::loadImage,
-        callback.getLoadingView())
+        presenter.attachMedia(galleryAdapter.getChoosePhotosFromObservable(), presenter::loadImage)
     }
 
     override fun attachVideo() {
-        presenter.attachMedia(videoAdapter.getChooseVideosFromObservable(), presenter::loadVideo,
-        callback.getLoadingView())
+        presenter.attachMedia(videoAdapter.getChooseVideosFromObservable(), presenter::loadVideo)
     }
 
     override fun attachAudio() {
-        presenter.attachMedia(audioAdapter.getChooseAudiosFromObservable(), presenter::loadAudio,
-        callback.getLoadingView())
+        presenter.attachMedia(audioAdapter.getChooseAudiosFromObservable(), presenter::loadAudio)
     }
 
     override fun attachFromCamera() {
@@ -160,18 +157,18 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     }
 
     override fun changeStateToHalfExpanded() {
-        if (callback.getState() == BottomSheetBehavior.STATE_COLLAPSED){
-            callback.changeStateBottomSheet(BottomSheetBehavior.STATE_HALF_EXPANDED)
+        if (callback?.getState() == BottomSheetBehavior.STATE_COLLAPSED){
+            callback?.changeStateBottomSheet(BottomSheetBehavior.STATE_HALF_EXPANDED)
         }
         panelAddFile.show()
     }
 
     override fun changeStateViewAfterAddMedia() {
-        callback.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        callback?.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
     }
 
     override fun closeKeyboard() {
-        callback.closeKeyboard()
+        callback?.closeKeyboard()
     }
 
     override fun stateSettling() {
@@ -192,19 +189,19 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        callback.showImageUploadingStarted(chooseMedia)
+        callback?.showImageUploadingStarted(chooseMedia)
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        callback.showImageUploadingProgress(progress,path)
+        callback?.showImageUploadingProgress(progress,path)
     }
 
     override fun showImageUploadingError(path: String) {
-        callback.showImageUploadingError(path)
+        callback?.showImageUploadingError(path)
     }
 
     override fun showImageUploaded(path: String) {
-        callback.showImageUploaded(path)
+        callback?.showImageUploaded(path)
     }
 
     fun getPhotosUrl() = presenter.getPhotosUrl()
@@ -218,7 +215,6 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     interface Callback:ImageUploadingView{
         fun getState():Int
         fun changeStateBottomSheet(newState: Int)
-        fun getLoadingView():Map<String,View?>
         fun closeKeyboard()
         fun showKeyboard()
         fun changeTextColor(color:Int)

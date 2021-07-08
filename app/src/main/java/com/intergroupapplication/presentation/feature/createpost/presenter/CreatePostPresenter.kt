@@ -37,16 +37,20 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
     }
 
     fun createPostWithImage(postText: String, groupId: String,photos:Single<List<ChooseMedia>>,
-            videos:Single<List<ChooseMedia>>,audios:Single<List<ChooseMedia>>) {
+            videos:Single<List<ChooseMedia>>,audios:Single<List<ChooseMedia>>,
+                            finalNamesMedia:List<String>) {
         compositeDisposable.add(Single.zip(photos,
                 videos,
                 audios,
                 object : Function3<List<ChooseMedia>, List<ChooseMedia>, List<ChooseMedia>, CreateGroupPostEntity> {
                     override fun invoke(photo: List<ChooseMedia>, video: List<ChooseMedia>, audio: List<ChooseMedia>): CreateGroupPostEntity {
                         return CreateGroupPostEntity(postText,
-                                photo.map { FileRequestEntity(file = it.url, description = null, title = it.name) },
-                                audio.map { AudioRequestEntity(it.url, null, it.name, it.authorMusic, null,it.duration) },
-                                video.map {
+                                photo.filter { finalNamesMedia.contains(it.name) }
+                                    .map { FileRequestEntity(file = it.url, description = null, title = it.name) },
+                                audio.filter { finalNamesMedia.contains(it.name) }
+                                    .map { AudioRequestEntity(it.url, null, it.name, it.authorMusic, null,it.duration) },
+                                video.filter { finalNamesMedia.contains(it.name) }
+                                    .map {
                                     FileRequestEntity(file = it.url, description = null,
                                             title = it.name, it.urlPreview,it.duration)
                                 },

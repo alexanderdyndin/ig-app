@@ -20,7 +20,8 @@ class EditPostPresenter @Inject constructor(private val groupPostGateway: GroupP
     :BasePresenter<CreatePostView>() {
 
     fun editPost(postText: String, postId: String, photos: Single<List<ChooseMedia>>,
-                            videos: Single<List<ChooseMedia>>, audios: Single<List<ChooseMedia>>) {
+                            videos: Single<List<ChooseMedia>>, audios: Single<List<ChooseMedia>>,
+                            finalNamesMedia:List<String>) {
         compositeDisposable.add(Single.zip(photos,
                 videos,
                 audios,
@@ -29,11 +30,14 @@ class EditPostPresenter @Inject constructor(private val groupPostGateway: GroupP
                     override fun invoke(photo: List<ChooseMedia>, video: List<ChooseMedia>,
                                         audio: List<ChooseMedia>): CreateGroupPostEntity {
                         return CreateGroupPostEntity(postText,
-                                photo.map { FileRequestEntity(file = it.url, description = null,
+                                photo.filter { finalNamesMedia.contains(it.name) }
+                                    .map { FileRequestEntity(file = it.url, description = null,
                                     title = it.name) },
-                                audio.map { AudioRequestEntity(it.url, null, it.name,
+                                audio.filter { finalNamesMedia.contains(it.name) }
+                                    .map { AudioRequestEntity(it.url, null, it.name,
                                     it.authorMusic, null,it.duration) },
-                                video.map {
+                                video.filter { finalNamesMedia.contains(it.name) }
+                                    .map {
                                     FileRequestEntity(file = it.url, description = null,
                                             title = it.name, it.urlPreview,it.duration)
                                 },

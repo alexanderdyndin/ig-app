@@ -13,17 +13,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.budiyev.android.circularprogressbar.CircularProgressBar
-import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
 import com.intergroupapplication.domain.KeyboardVisibilityEvent
-import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.domain.entity.LoadMediaType
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.customview.*
 import com.intergroupapplication.presentation.exstension.*
@@ -31,9 +29,6 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapte
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
-import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
-import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
-import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -62,15 +57,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     lateinit var presenter: CommentBottomSheetPresenter
 
     @Inject
-    lateinit var rightDrawableListener: RightDrawableListener
-
-    @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
-
-    private val loadingViews: MutableMap<String, View?> = mutableMapOf()
-
-    private val heightEditText by lazy { requireContext().dpToPx(70) }
-    private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
 
     @ProvidePresenter
     fun providePresenter(): CommentBottomSheetPresenter = presenter
@@ -101,6 +88,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var rightGravityButton:RadioButton
     private val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
+    private val progressMedias = mutableMapOf<String,LoadMediaType>()
+    private var allViewsIsUpload = true
+    private val heightEditText by lazy { requireContext().dpToPx(70) }
+    private val heightAnswerPanel by lazy { requireContext().dpToPx(35) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -146,7 +137,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             decorationStateListener = object :RichEditor.OnDecorationStateListener{
 
                 override fun onStateChangeListener(text: String, types: List<TextType>) {
-                    val buttons = mutableListOf(boldText,italicText,underlineText,strikeText)
+                    boldText.changeActivated(false,italicText,underlineText,strikeText)
                     types.forEach { type ->
                         when {
                             type.name.contains("FONT_COLOR") -> {
@@ -157,19 +148,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                                 when(type){
                                     TextType.BOLD -> {
                                         boldText.activated(true)
-                                        buttons.remove(boldText)
                                     }
                                     TextType.ITALIC ->{
                                         italicText.activated(true)
-                                        buttons.remove(italicText)
                                     }
                                     TextType.UNDERLINE ->{
                                         underlineText.activated(true)
-                                        buttons.remove(underlineText)
                                     }
                                     TextType.STRIKETHROUGH ->{
                                         strikeText.activated(true)
-                                        buttons.remove(strikeText)
                                     }
                                     TextType.JUSTIFYLEFT->{
                                         leftGravityButton.isChecked = true
@@ -183,9 +170,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                                     else -> Timber.tag("else_type").d(type.name)
                                 }
                             }
-                        }
-                        buttons.forEach { button ->
-                            button.activated(false)
                         }
                     }
                 }
@@ -241,7 +225,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     )
                 )
             )
-        loadingViews.clear()
         chooseMedias.clear()
         richEditor.html = null
         panelStyleText.gone()
@@ -272,7 +255,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun attachFileNotActivated() {
         richEditor.run  {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true){
+            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload){
                 sendButton.show()
             }
         }
@@ -310,7 +293,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelGravityText.gone()
         richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload)
+                sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
@@ -332,7 +316,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelStyleText.gone()
         richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload)
+                sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
         CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
@@ -397,7 +382,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (answerLayout.isActivated) answerLayout.show()
         richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true) sendButton.show()
+            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload)
+                sendButton.show()
         }
         if (stateBeforeChooseColor == BottomSheetBehavior.STATE_COLLAPSED ||
             stateBeforeChooseColor == BottomSheetBehavior.STATE_SETTLING){
@@ -467,13 +453,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         amountFiles.gone()
         btnAdd.gone()
         if (answerLayout.isActivated) answerLayout.show()
-        richEditor.run  {
-            show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true
-                && allViewsIsUpload){
-                sendButton.show()
-            }
-        }
+        richEditor.show()
     }
 
     override fun closeKeyboard() {
@@ -549,10 +529,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
             || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")){
-            val audioEntity = AudioEntity(0,chooseMedia.url,false,"",
-                chooseMedia.name,chooseMedia.authorMusic,"",0,0,
-                chooseMedia.duration)
-            loadingViews[chooseMedia.url] = createAudioPlayerView(audioEntity)
             namesMap[chooseMedia.url] = chooseMedia.name
             richEditor.insertAudio(chooseMedia.url)
         }
@@ -560,8 +536,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 || chooseMedia.url.contains(".png")){
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
                 chooseMedia.url.substringAfterLast("/"),0,0)
-            loadingViews[chooseMedia.url] =
-                    createImageView(fileEntity)
             namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertImage(chooseMedia.url, "alt")
         }
@@ -569,119 +543,38 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
                 chooseMedia.url.substringAfterLast("/"),0,0,
                 chooseMedia.urlPreview, chooseMedia.duration)
-            loadingViews[chooseMedia.url] = createVideoPlayerView(fileEntity)
             namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertVideo(chooseMedia.url)
         }
-        prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
-        imageUploadingStarted(loadingViews[chooseMedia.url])
-    }
-
-    private fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
-        return DownloadAudioPlayerView(requireContext()).apply {
-            trackName = audioEntity.song
-            trackOwner = "Загрузил (ID:${audioEntity.owner})"
-            durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
-        }
-    }
-
-    private fun createImageView(fileEntity: FileEntity): View {
-        val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
-        val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
-        imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
-        return image
-    }
-
-    private fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
-        return DownloadVideoPlayerView(requireContext()).apply {
-            imageLoadingDelegate.loadImageFromFile(fileEntity.preview, previewForVideo)
-            durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
-            nameVideo.text = fileEntity.title
-        }
+        progressMedias[chooseMedia.url] = LoadMediaType.START
+        sendButton.hide()
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        loadingViews[path]?.apply {
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            imageUploadingProgressBar.progress = progress
+        progressMedias[path] = LoadMediaType.PROGRESS.apply {
+            this.progress = progress
         }
     }
 
     override fun showImageUploadingError(path: String) {
-        loadingViews[path]?.apply {
-            val darkCard = findViewById<TextView>(R.id.darkCard)
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
-            darkCard?.show()
-            detachImage?.show()
-            refreshContainer?.show()
-            imageUploadingProgressBar?.hide()
-            stopUploading?.hide()
-        }
+        Timber.tag("tut_error").d(path)
+        progressMedias[path] = LoadMediaType.ERROR
     }
 
-
-    private fun imageUploadingStarted(uploadingView: View?) {
-        uploadingView?.apply {
-            val darkCard = findViewById<TextView>(R.id.darkCard)
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
-            darkCard?.show()
-            imageUploadingProgressBar?.show()
-            stopUploading?.show()
-            detachImage?.hide()
-            refreshContainer?.hide()
-        }
-    }
-
-    private var allViewsIsUpload = true
     override fun showImageUploaded(path: String) {
-        loadingViews[path]?.apply {
-            val darkCard = findViewById<TextView>(R.id.darkCard)
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            darkCard?.hide()
-            stopUploading?.hide()
-            imageUploadingProgressBar?.hide()
-            detachImage?.show()
-        }
-        loadingViews.values.forEach{ view ->
-            val imageUploadingProgressBar = view
-                ?.findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            if (imageUploadingProgressBar?.progress?:0.0f<100){
+        allViewsIsUpload = true
+        progressMedias[path] = LoadMediaType.UPLOAD
+        progressMedias.values.forEach { type->
+            if (type != LoadMediaType.UPLOAD){
                 allViewsIsUpload = false
                 return@forEach
             }
         }
-        if (allViewsIsUpload || loadingViews.isNotEmpty()){
+        if (allViewsIsUpload){
             sendButton.show()
         }
-    }
-
-    private fun prepareListeners(uploadingView: View?, chooseMedia: ChooseMedia) {
-        uploadingView?.apply {
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
-            refreshContainer.setOnClickListener {
-                imageUploadingProgressBar.progress = 0f
-                presenter.retryLoading(chooseMedia)
-                imageUploadingStarted(uploadingView)
-            }
-            stopUploading?.setOnClickListener {
-                presenter.cancelUploading(chooseMedia.url)
-                detachMedia(chooseMedia.url)
-            }
-            detachImage?.setOnClickListener {
-                presenter.removeContent(chooseMedia.url)
-                detachMedia(chooseMedia.url)
-            }
+        else{
+            sendButton.hide()
         }
     }
 
@@ -689,16 +582,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         CommentsViewModel.publishSubject.onNext(Pair(HIDE_SWIPE_DATA, null))
     }
 
-    private fun detachMedia(path: String) {
-
-    }
-
     private fun restoreAllViewForCollapsedState() {
         if (answerLayout.isActivated) answerLayout.show()
         panelAddFile.gone()
         richEditor.run  {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true){
+            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload){
                 sendButton.show()
             }
         }

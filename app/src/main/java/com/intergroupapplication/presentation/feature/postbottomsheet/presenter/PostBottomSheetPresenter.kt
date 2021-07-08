@@ -33,10 +33,8 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
     private val processes: MutableMap<String, Disposable> = mutableMapOf()
 
     fun attachMedia(mediasObservable: Observable<ChooseMedia>,
-                    loadMedia:(chooseMedia:ChooseMedia)->Unit,loadingView:Map<String, View?>) {
+                    loadMedia:(chooseMedia:ChooseMedia)->Unit) {
         mediaDisposable.add(mediasObservable
-                .filter {
-                    !loadingView.containsKey(it.url) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

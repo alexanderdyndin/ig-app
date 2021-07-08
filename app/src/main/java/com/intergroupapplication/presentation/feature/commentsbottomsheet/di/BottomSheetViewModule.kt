@@ -15,7 +15,6 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.C
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
-import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides

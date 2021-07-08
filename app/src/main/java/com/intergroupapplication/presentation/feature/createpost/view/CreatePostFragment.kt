@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -16,17 +14,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.budiyev.android.circularprogressbar.CircularProgressBar
-import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCreatePostBinding
 import com.intergroupapplication.domain.KeyboardVisibilityEvent
-import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.LoadMediaType
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
@@ -39,8 +35,6 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapte
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
 import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
-import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadAudioPlayerView
-import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -87,9 +81,9 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_create_post
 
-    protected val loadingViews: MutableMap<String, View?> = mutableMapOf()
     protected val namesMap = mutableMapOf<String,String>()
     private val finalNamesMedia = mutableListOf<String>()
+    private val loadingMedias = mutableMapOf<String,LoadMediaType>()
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createPostBinding.createPostCoordinator
 
@@ -184,22 +178,22 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
             if (post.isEmpty()){
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
             }
-            else if (loadingViews.isNotEmpty()) {
+            else if (loadingMedias.isNotEmpty()) {
                 var isLoading = false
-                loadingViews.forEach { (_, view) ->
-                    val darkCard = view?.findViewById<TextView>(R.id.darkCard)
-                    if (darkCard?.isVisible() != false) {
-                        isLoading = true
+                loadingMedias.values.forEach {type->
+                    if (type != LoadMediaType.UPLOAD){
+                    isLoading = true
+                    return@forEach
                     }
                 }
                 if (isLoading)
                     dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
                 else {
-                    createPost(post)
+                    createPost(post,finalNamesMedia)
                 }
             }
             else {
-                createPost(post)
+                createPost(post,finalNamesMedia)
             }
         }
 
@@ -218,9 +212,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
                     override fun onStateChanged(bottomSheet: View, newState: Int) {
                         if(newState == BottomSheetBehavior.STATE_COLLAPSED){
                             chooseMedias.clear()
-                            chooseMedias.addAll(loadingViews.keys.map {
-                                ChooseMedia(it)
-                            })
                         }
                         bottomFragment.changeState(newState)
                     }
@@ -333,12 +324,12 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
            bundle)
     }
 
-    protected open fun createPost(post:String) {
+    protected open fun createPost(post:String, finalNamesMedia:List<String>) {
         presenter.createPostWithImage(
                 post,
                 groupId,
                 bottomFragment.getPhotosUrl(), bottomFragment.getVideosUrl(),
-                bottomFragment.getAudiosUrl())
+                bottomFragment.getAudiosUrl(),finalNamesMedia)
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity.PostEntity) {
@@ -352,10 +343,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
             || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")){
-            val audioEntity = AudioEntity(0,chooseMedia.url,false,"",
-                chooseMedia.name,chooseMedia.authorMusic,"",0,0,
-                chooseMedia.duration)
-            loadingViews[chooseMedia.url] = createAudioPlayerView(audioEntity)
             namesMap[chooseMedia.url] = chooseMedia.name
             richEditor.insertAudio(chooseMedia.url)
         }
@@ -363,8 +350,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
             || chooseMedia.url.contains(".png")){
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
                 chooseMedia.url.substringAfterLast("/"),0,0)
-            loadingViews[chooseMedia.url] =
-                    createImageView(fileEntity)
             namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertImage(chooseMedia.url,"alt")
         }
@@ -372,70 +357,24 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
             val fileEntity = FileEntity(0,chooseMedia.url,false,"",
                 chooseMedia.url.substringAfterLast("/"),0,0,
                 chooseMedia.urlPreview, chooseMedia.duration)
-            loadingViews[chooseMedia.url] = createVideoPlayerView(fileEntity)
             namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertVideo(chooseMedia.url)
         }
-        prepareListeners(loadingViews[chooseMedia.url], chooseMedia)
-        imageUploadingStarted(loadingViews[chooseMedia.url])
-    }
-
-    protected open fun createAudioPlayerView(audioEntity: AudioEntity): DownloadAudioPlayerView {
-        return DownloadAudioPlayerView(requireContext()).apply {
-            trackName = audioEntity.song
-            trackOwner = "Загрузил (ID:${audioEntity.owner})"
-            durationTrack.text = if (audioEntity.duration != "") audioEntity.duration else "00:00"
-        }
-    }
-
-    protected open fun createImageView(fileEntity: FileEntity): View{
-        val image = LayoutInflater.from(context).inflate(R.layout.layout_create_pic, null)
-        val pic = image.findViewById<SimpleDraweeView>(R.id.imagePreview)
-        imageLoadingDelegate.loadImageFromFile(fileEntity.file,pic)
-        return image
-    }
-
-    protected open fun createVideoPlayerView(fileEntity: FileEntity): DownloadVideoPlayerView {
-        return DownloadVideoPlayerView(requireContext()).apply {
-            imageLoadingDelegate.loadImageFromFile(fileEntity.preview,previewForVideo)
-            durationVideo.text = if (fileEntity.duration != "") fileEntity.duration else "00:00"
-            nameVideo.text = fileEntity.title
-        }
+        loadingMedias[chooseMedia.url] = LoadMediaType.START
     }
 
     override fun showImageUploaded(path: String) {
-        loadingViews[path]?.apply {
-            val darkCard = findViewById<TextView>(R.id.darkCard)
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            darkCard?.hide()
-            stopUploading?.hide()
-            imageUploadingProgressBar?.hide()
-            detachImage?.show()
-        }
+        loadingMedias[path] = LoadMediaType.UPLOAD
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        loadingViews[path]?.apply {
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            imageUploadingProgressBar?.progress = progress
+        loadingMedias[path] = LoadMediaType.PROGRESS.apply {
+            this.progress = progress
         }
     }
 
     override fun showImageUploadingError(path: String) {
-        loadingViews[path]?.apply {
-            val darkCard = findViewById<TextView>(R.id.darkCard)
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
-            darkCard?.show()
-            detachImage?.show()
-            refreshContainer?.show()
-            imageUploadingProgressBar?.hide()
-            stopUploading?.hide()
-        }
+        loadingMedias[path] = LoadMediaType.ERROR
     }
 
     private fun setErrorHandler() {
@@ -448,79 +387,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
                         }
                     }
                 }
-            }
-        }
-    }
-
-    protected fun detachMedia(path: String) {
-        /*loadingViews[path].let {view->
-            when(view){
-                is DownloadVideoPlayerView->{
-                    view.exoPlayer.player?.pause()
-                    createPostCustomView.listVideoContainers.forEach { container->
-                        container.removeVideoView(loadingViews[path])
-                    }
-                }
-                is DownloadAudioPlayerView->{
-                    view.exoPlayer.player?.pause()
-                    createPostCustomView.listAudioContainers.forEach {container->
-                        container.removeAudioView(loadingViews[path])
-                    }
-                }
-                else ->{
-                    createPostCustomView.listImageContainers.forEach {container->
-                        container.removeImageView(loadingViews[path])
-                    }
-                }
-            }
-        }
-        createPostCustomView.deleteName(loadingViews[path])
-        loadingViews.remove(path)
-        chooseMedias.removeChooseMedia(path)*/
-    }
-
-    private fun imageUploadingStarted(uploadingView: View?) {
-        uploadingView?.apply {
-            val darkCard = findViewById<TextView>(R.id.darkCard)
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
-            darkCard?.show()
-            imageUploadingProgressBar?.show()
-            stopUploading?.show()
-            detachImage?.hide()
-            refreshContainer?.hide()
-        }
-    }
-
-    private fun prepareListeners(uploadingView: View?, chooseMedia: ChooseMedia) {
-        uploadingView?.apply {
-            val stopUploading = findViewById<ImageView>(R.id.stopUploading)
-            val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
-            val detachImage = findViewById<ImageView>(R.id.detachImage)
-            val refreshContainer = findViewById<LinearLayout>(R.id.refreshContainer)
-            refreshContainer.setOnClickListener {
-                imageUploadingProgressBar?.progress = 0f
-                setFragmentResult( bundleOf(METHOD_KEY to RETRY_LOADING_METHOD_CODE,
-                    CHOOSE_MEDIA_KEY to chooseMedia))
-               /* createPostCustomView.listImageContainers.forEach {container->
-                    container.removeView(uploadingView)
-                }
-                createPostCustomView.listAudioContainers.forEach {container->
-                    container.removeView(uploadingView)
-                }*/
-                imageUploadingStarted(uploadingView)
-            }
-            stopUploading?.setOnClickListener {
-                setFragmentResult(bundleOf(METHOD_KEY to  CANCEL_LOADING_METHOD_CODE,
-                    CHOOSE_MEDIA_KEY to chooseMedia))
-                detachMedia(chooseMedia.url)
-            }
-            detachImage?.setOnClickListener {
-                setFragmentResult(bundleOf(METHOD_KEY to REMOVE_CONTENT_METHOD_CODE,
-                    CHOOSE_MEDIA_KEY to chooseMedia))
-                detachMedia(chooseMedia.url)
             }
         }
     }
@@ -540,7 +406,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         bottomSheetBehaviour.state = newState
     }
 
-    override fun getLoadingView() = loadingViews
     override fun closeKeyboard() {
         try {
             richEditor.hideKeyboard()
