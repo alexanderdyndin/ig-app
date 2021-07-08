@@ -85,7 +85,8 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     private val finalNamesMedia = mutableListOf<String>()
     private val loadingMedias = mutableMapOf<String,LoadMediaType>()
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = createPostBinding.createPostCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = createPostBinding
+            .createPostCoordinator
 
     protected lateinit var richEditor:RichEditor
     protected lateinit var publishBtn:TextView
@@ -99,7 +100,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     ): View {
         activity?.let{
             KeyboardVisibilityEvent.setEventListener(it,viewLifecycleOwner){ isVisible ->
-                Timber.tag("tut_keyboard").d(isVisible.toString())
                 if (isVisible){
                     changeBottomConstraintMediaHolder(createPostBinding.
                         horizontalGuideEndWithKeyboard.id)
@@ -392,7 +392,8 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     }
 
     private fun onResultOk(postId: String) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(GroupFragment.POST_ID, postId)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GroupFragment.POST_ID,
+            postId)
         findNavController().popBackStack()
     }
 
@@ -424,6 +425,8 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
 
     override fun changeTextColor(color: Int) {
         richEditor.setTextColor(color)
+        createPostBinding.icEditColor.setImageDrawable(colorDrawableGateway.
+            getDrawableByColor(color))
     }
 
     override fun showPanelStyleText() {

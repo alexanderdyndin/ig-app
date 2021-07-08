@@ -12,7 +12,6 @@ import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
@@ -178,9 +177,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             }
             textChangeListener = object : RichEditor.OnTextChangeListener{
                 override fun onTextChange(text: String?) {
-                    Timber.tag("tut_text").d(text?.substringBefore("re-state://"))
-                    if(text?.replace("<br>","")?.isNotEmpty() == true
-                        && allViewsIsUpload){
+                    val newText = text?.substringBefore("re-state://")
+                        ?.replace(Regex("<div><br></div>|&nbsp;"), "")?.trim()
+                        ?.replace(Regex("<div> *</div>"),"")?:""
+                    Timber.tag("tut_text").d(newText)
+                    if(newText.isNotEmpty() && allViewsIsUpload){
                         sendButton.show()
                     }
                     else{
