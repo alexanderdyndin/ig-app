@@ -28,6 +28,7 @@ import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
+import com.intergroupapplication.presentation.customview.NestedScrollBottomSheetBehavior
 import com.intergroupapplication.presentation.customview.RichEditor
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
@@ -41,7 +42,7 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import javax.inject.Inject
 
-open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFragment.Callback {
+open class CreatePostFragment : BaseFragment(), CreatePostView {
 
     companion object{
         const val MEDIA_INTERACTION_REQUEST_CODE = "media_interaction_request_code"
@@ -109,6 +110,34 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
                     changeBottomConstraintMediaHolder(createPostBinding.horizontalGuideEnd.id)
                     createPostBinding.mediaHolder.hide()
                 }
+            }
+        }
+        childFragmentManager.setFragmentResultListener(
+            PostBottomSheetFragment.VIEW_CHANGE_REQUEST_CODE, viewLifecycleOwner){ _,result->
+            when(result.getInt(PostBottomSheetFragment.METHOD_KEY)){
+                PostBottomSheetFragment.CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE ->
+                    changeStateBottomSheetAfterAddMedia()
+                PostBottomSheetFragment.CHANGE_STATE_METHOD_CODE ->
+                    changeStateBottomSheet(result.getInt(PostBottomSheetFragment.NEW_STATE_KEY))
+                PostBottomSheetFragment.CHANGE_TEXT_COLOR_METHOD_CODE ->
+                    changeTextColor(result.getInt(PostBottomSheetFragment.COLOR_KEY))
+                PostBottomSheetFragment.SHOW_KEYBOARD_METHOD_CODE -> showKeyboard()
+                PostBottomSheetFragment.GONE_PANEL_STYLE_METHOD_CODE -> gonePanelStyleText()
+                PostBottomSheetFragment.SHOW_PANEL_STYLE_METHOD_CODE -> showPanelStyleText()
+                PostBottomSheetFragment.GONE_PANEL_GRAVITY_METHOD_CODE -> gonePanelGravity()
+                PostBottomSheetFragment.SHOW_PANEL_GRAVITY_METHOD_CODE -> showPanelGravity()
+                PostBottomSheetFragment.STARTED_UPLOADED_METHOD_CODE ->
+                    result.getParcelable<ChooseMedia>(PostBottomSheetFragment.CHOOSE_MEDIA_KEY)
+                        ?.let { showImageUploadingStarted(it) }
+                PostBottomSheetFragment.PROGRESS_UPLOADED_METHOD_CODE ->
+                    showImageUploadingProgress(result.getFloat(PostBottomSheetFragment.PROGRESS_KEY),
+                        result.getString(PostBottomSheetFragment.PATH_KEY,""))
+                PostBottomSheetFragment.ERROR_UPLOADED_METHOD_CODE ->
+                    showImageUploadingError(result.
+                        getString(PostBottomSheetFragment.PATH_KEY,""))
+                PostBottomSheetFragment.UPLOAD_METHOD_CODE ->
+                    showImageUploaded(result.
+                        getString(PostBottomSheetFragment.PATH_KEY,""))
             }
         }
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -200,7 +229,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet,
                 bottomFragment).commit()
-            bottomFragment.callback = this
+            //bottomFragment.callback = this
             bottomSheetBehaviour = BottomSheetBehavior.from(createPostBinding.containerBottomSheet)
                     as AutoCloseBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
@@ -210,9 +239,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
                 isFitToContents = false
                 addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        if(newState == BottomSheetBehavior.STATE_COLLAPSED){
-                            chooseMedias.clear()
-                        }
                         bottomFragment.changeState(newState)
                     }
 
@@ -302,15 +328,17 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
     private fun setupIcEditColor(){
         createPostBinding.icEditColor.setOnClickListener {
             setFragmentResult(bundleOf(METHOD_KEY to IC_EDIT_COLOR_METHOD_CODE))
+            createPostBinding.mediaHolder.hide()
         }
-        createPostBinding.mediaHolder.hide()
     }
 
     private fun setupIcAttachFile(){
         createPostBinding.icAttachFile.setOnClickListener {
             setFragmentResult(bundleOf(METHOD_KEY to IC_ATTACH_FILE_METHOD_CODE))
+            gonePanelStyleText()
+            gonePanelGravity()
+            createPostBinding.mediaHolder.hide()
         }
-        createPostBinding.mediaHolder.hide()
     }
     private fun changeBottomConstraintMediaHolder(id: Int) {
         val paramsRichEditor = createPostBinding.mediaHolder.layoutParams
@@ -340,7 +368,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         publishBtn.isEnabled = show
     }
 
-    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+    private fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
             || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")){
             namesMap[chooseMedia.url] = chooseMedia.name
@@ -363,18 +391,18 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         loadingMedias[chooseMedia.url] = LoadMediaType.START
     }
 
-    override fun showImageUploaded(path: String) {
-        loadingMedias[path] = LoadMediaType.UPLOAD
-    }
-
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    private fun showImageUploadingProgress(progress: Float, path: String) {
         loadingMedias[path] = LoadMediaType.PROGRESS.apply {
             this.progress = progress
         }
     }
 
-    override fun showImageUploadingError(path: String) {
+    private fun showImageUploadingError(path: String) {
         loadingMedias[path] = LoadMediaType.ERROR
+    }
+
+    private fun showImageUploaded(path: String) {
+        loadingMedias[path] = LoadMediaType.UPLOAD
     }
 
     private fun setErrorHandler() {
@@ -401,21 +429,19 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         findNavController().popBackStack()
     }
 
-    override fun getState() = bottomSheetBehaviour.state
+    private fun changeStateBottomSheetAfterAddMedia(){
+        changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        createPostBinding.selectBoldText.changeActivated(false,
+            createPostBinding.selectItalicText,createPostBinding.selectStrikeText,
+            createPostBinding.selectStrikeText)
+        createPostBinding.leftGravityButton.isChecked = true
+    }
 
-    override fun changeStateBottomSheet(newState: Int) {
+    private fun changeStateBottomSheet(newState: Int) {
         bottomSheetBehaviour.state = newState
     }
 
-    override fun closeKeyboard() {
-        try {
-            richEditor.hideKeyboard()
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-    }
-
-    override fun showKeyboard() {
+    private fun showKeyboard() {
         try {
             richEditor.showKeyBoard()
         }catch (e:Exception){
@@ -423,32 +449,34 @@ open class CreatePostFragment : BaseFragment(), CreatePostView,PostBottomSheetFr
         }
     }
 
-    override fun changeTextColor(color: Int) {
+    private fun changeTextColor(color: Int) {
         richEditor.setTextColor(color)
         createPostBinding.icEditColor.setImageDrawable(colorDrawableGateway.
             getDrawableByColor(color))
     }
 
-    override fun showPanelStyleText() {
+    private fun showPanelStyleText() {
+        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
         createPostBinding.panelStyleText.show()
         createPostBinding.panelGravityText.gone()
         createPostBinding.icEditText.changeActivated(true,createPostBinding.icEditAlign,
             createPostBinding.icAttachFile)
     }
 
-    override fun gonePanelStyleText() {
+    private fun gonePanelStyleText() {
         createPostBinding.panelStyleText.gone()
         createPostBinding.icEditText.activated(false)
     }
 
-    override fun showPanelGravity() {
+    private fun showPanelGravity() {
+        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
         createPostBinding.panelGravityText.show()
         createPostBinding.panelStyleText.gone()
         createPostBinding.icEditAlign.changeActivated(true,createPostBinding.icEditText,
             createPostBinding.icAttachFile)
     }
 
-    override fun gonePanelGravity() {
+    private fun gonePanelGravity() {
         createPostBinding.panelGravityText.gone()
         createPostBinding.icEditAlign.activated(false)
     }

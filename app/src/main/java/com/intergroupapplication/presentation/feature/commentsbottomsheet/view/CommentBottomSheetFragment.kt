@@ -272,15 +272,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachFileActivated() {
+        super.attachFileActivated()
+        iconPanel.changeMargin(8)
         stateBeforeShowMediaRecycler = currentState
         sendButton.gone()
         richEditor.gone()
         answerLayout.gone()
         panelAddFile.show()
         panelStyleText.gone()
-        icEditText.activated(false)
         panelGravityText.gone()
-        icEditAlign.activated(false)
     }
 
     override fun gonePanelStyleText() {
@@ -376,6 +376,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun startChooseColorText() {
+        iconPanel.changeMargin(8)
         stateBeforeShowMediaRecycler = currentState
         super.startChooseColorText()
         panelGravityText.gone()
@@ -514,7 +515,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
         }
         restoreAllViewForCollapsedState()
-        chooseMedias.clear()
         super.stateCollapsed()
     }
 

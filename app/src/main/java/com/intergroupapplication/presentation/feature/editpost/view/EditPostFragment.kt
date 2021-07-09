@@ -7,12 +7,11 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.customview.PostCustomView
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpost.presenter.EditPostPresenter
-import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
-class EditPostFragment:CreatePostFragment(),PostBottomSheetFragment.Callback {
+class EditPostFragment:CreatePostFragment() {
     companion object{
         const val GROUP_POST_ENTITY_KEY = "group_post_entity_key"
     }

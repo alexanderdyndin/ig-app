@@ -3,7 +3,6 @@ import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.AudioRequestEntity
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
-
 import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.FileRequestEntity
@@ -13,9 +12,6 @@ import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
-
-
 import javax.inject.Inject
 
 @InjectViewState

@@ -30,7 +30,7 @@ import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
-import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
+import com.intergroupapplication.presentation.customview.NestedScrollBottomSheetBehavior
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
@@ -111,7 +111,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     private var commentCreated = false
 
-    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<FrameLayout>
+    private lateinit var bottomSheetBehaviour: NestedScrollBottomSheetBehavior<FrameLayout>
 
     private var groupPostEntity: CommentEntity.PostEntity? = null
     private var lastRepliedComment: CommentEntity.Comment? = null
@@ -182,7 +182,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
             bottomSheetBehaviour = BottomSheetBehavior.from(viewBinding.containerCommentBottomSheet)
-                    as AutoCloseBottomSheetBehavior<FrameLayout>
+                    as NestedScrollBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
                 peekHeight = requireContext().dpToPx(110)
                 commentHolder.minimumHeight = peekHeight

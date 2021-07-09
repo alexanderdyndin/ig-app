@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
@@ -12,19 +13,37 @@ import com.intergroupapplication.databinding.FragmentPostBottomSheetBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
-import com.intergroupapplication.presentation.base.ImageUploadingView
-import com.intergroupapplication.presentation.exstension.activated
-import com.intergroupapplication.presentation.exstension.dpToPx
-import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.PostBottomSheetPresenter
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-
+//TODO change bottomSheetBehavior to custom
 class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
-    var callback: Callback? = null
+    companion object{
+        const val VIEW_CHANGE_REQUEST_CODE = "view_change_request_code"
+        const val METHOD_KEY = "method_key"
+        const val NEW_STATE_KEY = "new_state_key"
+        const val COLOR_KEY = "color_key"
+        const val CHOOSE_MEDIA_KEY = "choose_media_key"
+        const val PATH_KEY = "path_key"
+        const val PROGRESS_KEY = "progress_key"
+        const val CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE = 99
+        const val CHANGE_STATE_METHOD_CODE = 100
+        const val SHOW_KEYBOARD_METHOD_CODE = 101
+        const val CHANGE_TEXT_COLOR_METHOD_CODE = 102
+        const val SHOW_PANEL_STYLE_METHOD_CODE = 103
+        const val GONE_PANEL_STYLE_METHOD_CODE = 104
+        const val SHOW_PANEL_GRAVITY_METHOD_CODE = 105
+        const val GONE_PANEL_GRAVITY_METHOD_CODE = 106
+        const val STARTED_UPLOADED_METHOD_CODE = 107
+        const val PROGRESS_UPLOADED_METHOD_CODE = 108
+        const val ERROR_UPLOADED_METHOD_CODE = 109
+        const val UPLOAD_METHOD_CODE = 110
+    }
+
     private val postBottomBinding by viewBinding(FragmentPostBottomSheetBinding::bind)
     private val heightIconPanel by lazy { context?.dpToPx(40)?:0 }
 
@@ -65,15 +84,18 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
                 }
                 CreatePostFragment.IC_EDIT_COLOR_METHOD_CODE ->{
                     changeStateToHalfExpanded()
-                    //closeKeyboard()
-                    callback?.closeKeyboard()
+                    icEditColor.hideKeyboard()
                     startChooseColorText()
                 }
                 CreatePostFragment.IC_ATTACH_FILE_METHOD_CODE->{
                     requestPermission()
                     changeStateToHalfExpanded()
-                    callback?.closeKeyboard()
-                    icAttachFile.activated(true)
+                    icAttachFile.run {
+                        hideKeyboard()
+                        activated(true)
+                    }
+                    icEditText.activated(false)
+                    icEditAlign.activated(false)
                 }
                 CreatePostFragment.CHANGE_COLOR -> {
                     val color = bundle.getInt(CreatePostFragment.COLOR_KEY)
@@ -89,27 +111,22 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
         btnAdd.isEnabled = false
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        callback = null
-    }
-
     override fun gonePanelStyleText() {
-        callback?.gonePanelStyleText()
+        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE))
     }
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
-        callback?.showPanelStyleText()
+        setFragmentResult(bundleOf(METHOD_KEY to SHOW_PANEL_STYLE_METHOD_CODE))
     }
 
     override fun gonePanelGravityText() {
-        callback?.gonePanelGravity()
+        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE))
     }
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
-        callback?.showPanelGravity()
+        setFragmentResult(bundleOf(METHOD_KEY to SHOW_PANEL_GRAVITY_METHOD_CODE))
     }
 
     override fun calculateHeight() = heightIconPanel
@@ -119,26 +136,28 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     override fun changeTextColor(color: Int) {
         endChooseColorText()
         super.changeTextColor(color)
-        callback?.run {
-            changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
-            showKeyboard()
-            changeTextColor(color)
-        }
+        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_METHOD_CODE,
+            NEW_STATE_KEY to BottomSheetBehavior.STATE_COLLAPSED))
+        setFragmentResult(bundleOf(METHOD_KEY to SHOW_KEYBOARD_METHOD_CODE))
+        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_TEXT_COLOR_METHOD_CODE,
+            COLOR_KEY to color))
     }
 
     override fun startChooseColorText() {
         super.startChooseColorText()
-        callback?.run {
-            gonePanelStyleText()
-            gonePanelGravity()
-        }
+        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE))
+        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE))
     }
 
     override fun attachFileNotActivated() {
-        callback?.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_METHOD_CODE,
+            NEW_STATE_KEY to BottomSheetBehavior.STATE_COLLAPSED))
     }
 
     override fun attachFileActivated() {
+        super.attachFileActivated()
+        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE))
+        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE))
     }
 
     override fun attachGallery() {
@@ -158,14 +177,15 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     }
 
     override fun changeStateToHalfExpanded() {
-        if (callback?.getState() == BottomSheetBehavior.STATE_COLLAPSED){
-            callback?.changeStateBottomSheet(BottomSheetBehavior.STATE_HALF_EXPANDED)
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED){
+            setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_METHOD_CODE,
+                NEW_STATE_KEY to BottomSheetBehavior.STATE_HALF_EXPANDED))
         }
         panelAddFile.show()
     }
 
     override fun changeStateViewAfterAddMedia() {
-        callback?.changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE))
     }
 
     override fun stateSettling() {
@@ -186,19 +206,23 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        callback?.showImageUploadingStarted(chooseMedia)
+        setFragmentResult(bundleOf(METHOD_KEY to STARTED_UPLOADED_METHOD_CODE,
+            CHOOSE_MEDIA_KEY to chooseMedia))
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        callback?.showImageUploadingProgress(progress,path)
+        setFragmentResult(bundleOf(METHOD_KEY to PROGRESS_UPLOADED_METHOD_CODE,
+            PROGRESS_KEY to progress, PATH_KEY to path))
     }
 
     override fun showImageUploadingError(path: String) {
-        callback?.showImageUploadingError(path)
+        setFragmentResult(bundleOf(METHOD_KEY to ERROR_UPLOADED_METHOD_CODE,
+            PATH_KEY to path))
     }
 
     override fun showImageUploaded(path: String) {
-        callback?.showImageUploaded(path)
+        setFragmentResult(bundleOf(METHOD_KEY to UPLOAD_METHOD_CODE,
+            PATH_KEY to path))
     }
 
     fun getPhotosUrl() = presenter.getPhotosUrl()
@@ -209,15 +233,9 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     fun addVideoInVideosUrl(videos:List<FileEntity>) = presenter.addVideoInVideosUrl(videos)
     fun addImagesInPhotosUrl(images:List<FileEntity>) = presenter.addImagesInPhotosUrl(images)
 
-    interface Callback:ImageUploadingView{
-        fun getState():Int
-        fun changeStateBottomSheet(newState: Int)
-        fun closeKeyboard()
-        fun showKeyboard()
-        fun changeTextColor(color:Int)
-        fun showPanelStyleText()
-        fun gonePanelStyleText()
-        fun showPanelGravity()
-        fun gonePanelGravity()
+    private fun setFragmentResult(bundle: Bundle){
+        parentFragmentManager.setFragmentResult(
+            VIEW_CHANGE_REQUEST_CODE,
+            bundle)
     }
 }

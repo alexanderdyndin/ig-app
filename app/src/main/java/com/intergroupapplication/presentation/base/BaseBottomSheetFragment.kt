@@ -333,7 +333,10 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun attachFileNotActivated()
 
-    abstract fun attachFileActivated()
+    protected open fun attachFileActivated(){
+        icEditText.activated(false)
+        icEditAlign.activated(false)
+    }
 
     abstract fun attachGallery()
 
@@ -421,6 +424,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         galleryButton.changeActivatedTextView(false, musicButton, videoButton, playlistButton)
         icAttachFile.activated(false)
         btnAdd.isEnabled = false
+        chooseMedias.clear()
     }
 
     protected open fun changeBottomConstraintForView(id:Int) {
