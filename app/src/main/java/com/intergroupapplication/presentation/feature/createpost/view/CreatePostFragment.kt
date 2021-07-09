@@ -158,6 +158,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                     createPostBinding.selectBoldText.changeActivated(false,
                         createPostBinding.selectItalicText,createPostBinding.selectStrikeText,
                         createPostBinding.selectStrikeText)
+                    Timber.tag("tut_state").d(text)
                     types.forEach { type ->
                         when {
                             type.name.contains("FONT_COLOR") -> {

@@ -19,7 +19,6 @@ import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-//TODO change bottomSheetBehavior to custom
 class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
 
     companion object{
