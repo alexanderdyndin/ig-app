@@ -89,7 +89,7 @@ class RichEditor
             toUpperCase(Locale.ENGLISH)
         val types: MutableList<TextType> = mutableListOf()
         TextType.values().forEach { type ->
-            if (type.name.contains("FONT_COLOR")) {
+            if (type.name.contains("FONT_COLOR") && state.contains("FONT_COLOR_RGB")) {
                 val (r,g,b) = state.substringAfter("FONT_COLOR_RGB(")
                     .substringBefore(")").split(" ")
                 var firstColor = Integer.toHexString(r.substringBefore(",").toInt())
@@ -192,19 +192,6 @@ class RichEditor
         exec("javascript:RE.setInputEnabled($inputEnabled)")
     }
 
-    fun loadCSS(cssFile: String) {
-        val jsCSSImport = ("(function() {" +
-                "    var head  = document.getElementsByTagName(\"head\")[0];" +
-                "    var link  = document.createElement(\"link\");" +
-                "    link.rel  = \"stylesheet\";" +
-                "    link.type = \"text/css\";" +
-                "    link.href = \"" + cssFile + "\";" +
-                "    link.media = \"all\";" +
-                "    head.appendChild(link);" +
-                "}) ();")
-        exec("javascript:$jsCSSImport")
-    }
-
     fun setBold() {
         clearAndFocusEditor()
         exec("javascript:RE.setBold();")
@@ -294,16 +281,6 @@ class RichEditor
         exec("javascript:RE.insertVideo('$url', '$width');")
     }
 
-    fun insertLink(href: String, title: String) {
-        exec("javascript:RE.prepareInsert();")
-        exec("javascript:RE.insertLink('$href', '$title');")
-    }
-
-    fun focusEditor() {
-        requestFocus()
-        exec("javascript:RE.focus();")
-    }
-
     fun clearFocusEditor() {
         exec("javascript:RE.blurFocus();")
     }
@@ -363,6 +340,7 @@ class RichEditor
                 var reState = ""
                 val isRegexFound: Boolean
                 try {
+                    Timber.tag("tut_url").d(it.url.toString())
                     decode = URLDecoder.decode(it.url.toString(), "UTF-8")
                     val pattern = "(re-callback://.*)(re-state://.*)"
                     val m: Matcher
@@ -370,8 +348,8 @@ class RichEditor
                     m = p.matcher(decode)
                     isRegexFound = m.find()
                     if (isRegexFound) {
-                        m.group(1)?.let { reCallback = it }
-                        m.group(2)?.let{ reState = it }
+                        m.group(1)?.let {string -> reCallback = string }
+                        m.group(2)?.let{ string -> reState = string }
                     }
                 } catch (e: UnsupportedEncodingException) {
                     return false

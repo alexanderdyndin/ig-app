@@ -1,19 +1,3 @@
-/**
- * Copyright (C) 2017 Wasabeef
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 var RE = {};
 var backup_color;
 
@@ -27,64 +11,63 @@ RE.editor = document.getElementById('editor');
 
 document.addEventListener("selectionchange", function() { RE.backuprange(); });
 
-// Initializations
+
 RE.callback = function() {
     var re_callback = "re-callback://" + encodeURI(RE.getHtml());
-    // window.location.href = "re-callback://" + encodeURI(RE.getHtml());
 
-        var items = [];
+    var items = [];
 
-        if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color")) {
-            items.push('background_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color").getPropertyValue('background-color'));
-         }
-        if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color")) {
-             items.push('font_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color").getPropertyValue('color'));
-         }
-        if (document.queryCommandState('bold')) {
-            items.push('bold');
-        }
-        if (document.queryCommandState('italic')) {
-            items.push('italic');
-        }
-        if (document.queryCommandState('subscript')) {
-            items.push('subscript');
-        }
-        if (document.queryCommandState('superscript')) {
-            items.push('superscript');
-        }
-        if (document.queryCommandState('strikeThrough')) {
-            items.push('strikeThrough');
-        }
-        if (document.queryCommandState('underline')) {
-            items.push('underline');
-        }
-        if (document.queryCommandState('insertOrderedList')) {
-            items.push('orderedList');
-        }
-        if (document.queryCommandState('insertUnorderedList')) {
-            items.push('unorderedList');
-        }
-        if (document.queryCommandState('justifyCenter')) {
-            items.push('justifyCenter');
-        }
-        if (document.queryCommandState('justifyFull')) {
-            items.push('justifyFull');
-        }
-        if (document.queryCommandState('justifyLeft')) {
-            items.push('justifyLeft');
-        }
-        if (document.queryCommandState('justifyRight')) {
-            items.push('justifyRight');
-        }
-        if (document.queryCommandState('insertHorizontalRule')) {
-            items.push('horizontalRule');
-        }
-        var formatBlock = document.queryCommandValue('formatBlock');
-        if (formatBlock.length > 0) {
-            items.push(formatBlock);
-        }
+    if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color")) {
+        items.push('background_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color").getPropertyValue('background-color'));
+     }
+    if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color")) {
+         items.push('font_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "color").getPropertyValue('color'));
+     }
+    if (document.queryCommandState('bold')) {
+        items.push('bold');
+    }
+    if (document.queryCommandState('italic')) {
+        items.push('italic');
+    }
+    if (document.queryCommandState('subscript')) {
+        items.push('subscript');
+    }
+    if (document.queryCommandState('superscript')) {
+        items.push('superscript');
+    }
+    if (document.queryCommandState('strikeThrough')) {
+        items.push('strikeThrough');
+    }
+    if (document.queryCommandState('underline')) {
+        items.push('underline');
+    }
+    if (document.queryCommandState('insertOrderedList')) {
+        items.push('orderedList');
+    }
+    if (document.queryCommandState('insertUnorderedList')) {
+        items.push('unorderedList');
+    }
+    if (document.queryCommandState('justifyCenter')) {
+        items.push('justifyCenter');
+    }
+    if (document.queryCommandState('justifyFull')) {
+        items.push('justifyFull');
+    }
+    if (document.queryCommandState('justifyLeft')) {
+        items.push('justifyLeft');
+    }
+    if (document.queryCommandState('justifyRight')) {
+        items.push('justifyRight');
+    }
+    if (document.queryCommandState('insertHorizontalRule')) {
+        items.push('horizontalRule');
+    }
+    var formatBlock = document.queryCommandValue('formatBlock');
+    if (formatBlock.length > 0) {
+        items.push(formatBlock);
+    }
 
-        window.location.href = re_callback + "re-state://" + encodeURI(items.join(','));
+    window.location.href = re_callback + "re-state://" + encodeURI(items.join(','));
 
 }
 
@@ -228,7 +211,7 @@ RE.setBlockquote = function() {
 }
 
 RE.insertImage = function(url, alt) {
-    var html = '<img src="' + url + '" alt="' + alt + '" /><br>';
+    var html = '<img src="' + url + '" alt="' + alt + '" />'
     RE.insertHTML(html);
 }
 
@@ -380,7 +363,6 @@ RE.removeFormat = function() {
     document.execCommand('removeFormat', false, null);
 }
 
-// Event Listeners
 RE.editor.addEventListener("input", RE.callback);
 RE.editor.addEventListener("keyup", function(e) {
     var KEY_LEFT = 37, KEY_RIGHT = 39;
