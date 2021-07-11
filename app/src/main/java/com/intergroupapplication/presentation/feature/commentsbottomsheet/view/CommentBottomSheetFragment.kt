@@ -10,12 +10,14 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.data.model.CreateCommentDataModel
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
 import com.intergroupapplication.domain.KeyboardVisibilityEvent
@@ -28,17 +30,19 @@ import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
-import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-
+//TODO пофиксить баг с answer layout и высотой после создания коммента
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
+        const val CALL_METHOD_KEY = "call_method_key"
+        const val METHOD_KEY = "method_key"
+        const val DATA_KEY = "data_key"
         const val CREATE_COMMENT_DATA = 0
         const val CHANGE_STATE_BOTTOM_SHEET_DATA = 1
         const val ADD_HEIGHT_CONTAINER = 2
@@ -132,7 +136,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             val padding = context.dpToPx(4)
             setEditorPadding(padding, padding, padding, padding)
             setEditorFontColor(ContextCompat.getColor(view.context, R.color.whiteTextColor))
-            setPlaceholder(context.getString(R.string.add_photo_or_text))
+            setPlaceholder(context.getString(R.string.write_your_comment))
             setBackgroundColor(Color.parseColor(MAIN_COLOR))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             decorationStateListener = object :RichEditor.OnDecorationStateListener{
@@ -219,15 +223,9 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     private fun sendComment() {
-        CommentsViewModel.publishSubject
-            .onNext(
-                Pair(
-                    CREATE_COMMENT_DATA, Triple(
-                        richEditor.createFinalText(namesMap,finalNamesMedia),
-                        presenter, finalNamesMedia
-                    )
-                )
-            )
+        setFragmentResult(bundleOf(METHOD_KEY to CREATE_COMMENT_DATA, DATA_KEY to
+            CreateCommentDataModel(richEditor.createFinalText(namesMap,finalNamesMedia),
+            presenter, finalNamesMedia)))
         chooseMedias.clear()
         richEditor.html = null
         panelStyleText.gone()
@@ -252,7 +250,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if(panelStyleText.isVisible() || panelGravityText.isVisible()){
             height += heightTextStylePanel
         }
-        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER, height))
+        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
     }
 
     override fun attachFileNotActivated() {
@@ -269,6 +267,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             answerLayout.show()
         }
         mediaRecyclerView.gone()
+        returnStateToOriginal()
     }
 
     override fun attachFileActivated() {
@@ -286,7 +285,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun gonePanelStyleText() {
         panelStyleText.gone()
         val height = calculateHeight()
-        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
         iconPanel.changeMargin(8)
@@ -302,7 +301,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
-        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
         iconPanel.changeMargin(1)
@@ -311,7 +310,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun gonePanelGravityText() {
         panelGravityText.gone()
         val height = calculateHeight()
-        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
         iconPanel.changeMargin(8)
@@ -327,7 +326,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                 sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
-        CommentsViewModel.publishSubject.onNext(Pair(ADD_HEIGHT_CONTAINER,height))
+        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
             changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
         iconPanel.changeMargin(1)
@@ -401,10 +400,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_COLLAPSED ||
             stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_SETTLING
         ) {
-            CommentsViewModel.publishSubject.onNext(
-                CHANGE_STATE_BOTTOM_SHEET_DATA to
-                        BottomSheetBehavior.STATE_COLLAPSED
-            )
+            setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA,
+                DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED))
         }
     }
 
@@ -458,8 +455,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun changeStateToHalfExpanded() {
-        CommentsViewModel.publishSubject
-                .onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA, BottomSheetBehavior.STATE_HALF_EXPANDED))
+        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY
+            to BottomSheetBehavior.STATE_HALF_EXPANDED))
     }
 
     override fun changeStateViewAfterAddMedia() {
@@ -497,6 +494,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         changeBottomConstraintRichEditor(id)
     }
 
+    override fun setFragmentResult(bundle: Bundle) {
+        parentFragmentManager.setFragmentResult(CALL_METHOD_KEY, bundle)
+    }
+
     private fun changeBottomConstraintRichEditor(id: Int) {
         val paramsRichEditor = containerRichEditor.layoutParams as ConstraintLayout.LayoutParams
         paramsRichEditor.bottomToTop = id
@@ -519,23 +520,26 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun commentCreated(commentEntity: CommentEntity) {
-        CommentsViewModel.publishSubject.onNext(Pair(COMMENT_CREATED_DATA, commentEntity))
-        CommentsViewModel.publishSubject.onNext(
-                Pair(ADD_HEIGHT_CONTAINER, heightEditText + iconPanel.height + pushUpDown.height / 2))
-        CommentsViewModel.publishSubject.onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA,BottomSheetBehavior.STATE_COLLAPSED))
+        setFragmentResult(bundleOf(METHOD_KEY to COMMENT_CREATED_DATA))
+        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
+                heightEditText + iconPanel.height + pushUpDown.height / 2))
+        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
+                BottomSheetBehavior.STATE_COLLAPSED))
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        CommentsViewModel.publishSubject.onNext(Pair(ANSWER_COMMENT_CREATED_DATA, commentEntity))
-        CommentsViewModel.publishSubject.onNext(
-                Pair(ADD_HEIGHT_CONTAINER, heightEditText + iconPanel.height + pushUpDown.height / 2))
-        CommentsViewModel.publishSubject.onNext(Pair(CHANGE_STATE_BOTTOM_SHEET_DATA, BottomSheetBehavior.STATE_COLLAPSED))
+        setFragmentResult(bundleOf(METHOD_KEY to ANSWER_COMMENT_CREATED_DATA))
+        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
+                heightEditText + iconPanel.height + pushUpDown.height / 2))
+        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
+                BottomSheetBehavior.STATE_COLLAPSED))
         answerLayout.gone()
         answerLayout.activated(false)
     }
 
     override fun showCommentUploading(show: Boolean) {
-        CommentsViewModel.publishSubject.onNext(Pair(SHOW_COMMENT_UPLOADING_DATA,show))
+        setFragmentResult(bundleOf(METHOD_KEY to SHOW_COMMENT_UPLOADING_DATA, DATA_KEY to
+                show))
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
@@ -590,7 +594,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun hideSwipeLayout() {
-        CommentsViewModel.publishSubject.onNext(Pair(HIDE_SWIPE_DATA, null))
+        setFragmentResult(bundleOf(METHOD_KEY to HIDE_SWIPE_DATA))
     }
 
     private fun restoreAllViewForCollapsedState() {

@@ -1,14 +1,11 @@
 package com.intergroupapplication.presentation.exstension
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.annotation.LayoutRes
-import com.intergroupapplication.R
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -16,8 +13,6 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by abakarmagomedov on 09/08/2018 at project InterGroupApplication.
  */
-
-private const val TRANSFORMATION_DURATION = 300L
 
 fun View.isVisible(): Boolean = this.visibility == View.VISIBLE
 

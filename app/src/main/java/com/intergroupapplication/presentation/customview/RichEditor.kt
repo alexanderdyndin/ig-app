@@ -15,7 +15,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.presentation.exstension.dpToPx
-import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -292,7 +291,6 @@ class RichEditor
     fun createFinalText(namesMap: Map<String,String>, finalNamesMedia:MutableList<String>):String{
         var text = html?.substringBeforeLast("re-state://")?:""
         namesMap.forEach { (key,value)->
-            Timber.tag("tut_key").d(key)
             if (text.contains(key)){
                 finalNamesMedia.add(value)
                 text = text.substringBefore(key)+"$value${PostCustomView.MEDIA_PREFIX}"+
@@ -300,7 +298,6 @@ class RichEditor
 
             }
         }
-        Timber.tag("tut_final_text").d(text)
         return text
     }
 
@@ -340,7 +337,6 @@ class RichEditor
                 var reState = ""
                 val isRegexFound: Boolean
                 try {
-                    Timber.tag("tut_url").d(it.url.toString())
                     decode = URLDecoder.decode(it.url.toString(), "UTF-8")
                     val pattern = "(re-callback://.*)(re-state://.*)"
                     val m: Matcher

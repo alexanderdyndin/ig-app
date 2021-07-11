@@ -504,4 +504,6 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         galleryButton.changeActivatedTextView(false, videoButton, musicButton, playlistButton)
     }
 
+    abstract fun setFragmentResult(bundle: Bundle)
+
 }

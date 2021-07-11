@@ -24,6 +24,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.CreateCommentDataModel
 import com.intergroupapplication.databinding.FragmentCommentsDetailsBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
@@ -45,6 +46,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_create_user_profile.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
@@ -139,8 +141,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     private lateinit var commentHolder: LinearLayout
     private lateinit var commentLoader: ProgressBar
 
-    private var disposable:Disposable? = null
-
     @SuppressLint("CheckResult")
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,26 +150,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         postId = arguments?.getString(POST_ID)
         page = arguments?.getString(COMMENT_PAGE)?:"1"
         commentId = arguments?.getString(COMMENT_ID)?:"1"
-        disposable = CommentsViewModel.publishSubject.subscribe{
-            when(it.first){
-                CommentBottomSheetFragment.ADD_HEIGHT_CONTAINER->
-                    addHeightContainer(it.second as Int)
-                CommentBottomSheetFragment.ANSWER_COMMENT_CREATED_DATA->
-                    answerToCommentCreated()
-                CommentBottomSheetFragment.COMMENT_CREATED_DATA->
-                    commentCreated()
-                CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA->
-                    changeStateBottomSheet(it.second as Int)
-                CommentBottomSheetFragment.CREATE_COMMENT_DATA-> {
-                    val data = it.second as Triple<*, *, *>
-                    createComment(data.first as String,data.second as CommentBottomSheetPresenter,
-                        data.third as List<String>)
-                }
-                CommentBottomSheetFragment.HIDE_SWIPE_DATA -> hideSwipeLayout()
-                CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA ->
-                    showCommentUploading(it.second as Boolean)
-            }
-        }
     }
 
     override fun viewCreated() {
@@ -179,6 +159,34 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         swipeLayout = viewBinding.swipeLayout
         commentHolder = viewBinding.commentHolder
         commentLoader = viewBinding.commentLoader
+        childFragmentManager.setFragmentResultListener(CommentBottomSheetFragment.CALL_METHOD_KEY,
+            viewLifecycleOwner){ _, result ->
+            when(result.getInt(CommentBottomSheetFragment.METHOD_KEY)) {
+                CommentBottomSheetFragment.ADD_HEIGHT_CONTAINER -> {
+                    val height = result.getInt(CommentBottomSheetFragment.DATA_KEY)
+                    addHeightContainer(height)
+                }
+                CommentBottomSheetFragment.ANSWER_COMMENT_CREATED_DATA-> {
+                    answerToCommentCreated()
+                }
+                CommentBottomSheetFragment.COMMENT_CREATED_DATA->
+                    commentCreated()
+                CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA-> {
+                    val state = result.getInt(CommentBottomSheetFragment.DATA_KEY)
+                    changeStateBottomSheet(state)
+                }
+                CommentBottomSheetFragment.CREATE_COMMENT_DATA-> {
+                    val data:CreateCommentDataModel? = result.
+                        getParcelable(CommentBottomSheetFragment.DATA_KEY)
+                    data?.let { createComment(it) }
+                }
+                CommentBottomSheetFragment.HIDE_SWIPE_DATA -> hideSwipeLayout()
+                CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA ->{
+                    val show = result.getBoolean(CommentBottomSheetFragment.DATA_KEY)
+                    showCommentUploading(show)
+                }
+            }
+        }
         try {
             childFragmentManager.beginTransaction().replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
             bottomSheetBehaviour = BottomSheetBehavior.from(viewBinding.containerCommentBottomSheet)
@@ -219,10 +227,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        disposable?.dispose()
-    }
     private fun newPaging() {
         commentsList.adapter = adapterAd
         lifecycleScope.launch {
@@ -346,15 +350,15 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
     }
 
-    private fun createComment(textComment: String, commentBottomPresenter: CommentBottomSheetPresenter,
-                              finalNameMedia:List<String>) {
+    private fun createComment(dataModel: CreateCommentDataModel) {
         if (commentHolder.childCount > 1) {
             lastRepliedComment?.let {
-                commentBottomPresenter.createAnswerToComment(it.id, textComment,finalNameMedia)
+                dataModel.commentBottomSheetPresenter.createAnswerToComment(it.id,
+                    dataModel.textComment,dataModel.finalNameMedia)
             }
         } else {
-            commentBottomPresenter.createComment(groupPostEntity?.id.toString(), textComment,
-                finalNameMedia)
+            dataModel.commentBottomSheetPresenter.createComment(groupPostEntity?.id.toString(),
+                dataModel.textComment, dataModel.finalNameMedia)
         }
     }
 
@@ -371,7 +375,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     }
 
     private fun addHeightContainer(height: Int) {
-        Timber.tag("tut_height").d(height.toString())
         bottomSheetBehaviour.peekHeight = height
         commentHolder.minimumHeight = height
         Timber.tag("tut_mediaHolder").d(commentHolder.height.toString())

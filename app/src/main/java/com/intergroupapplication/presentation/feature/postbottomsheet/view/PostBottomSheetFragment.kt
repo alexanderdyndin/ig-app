@@ -232,7 +232,7 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     fun addVideoInVideosUrl(videos:List<FileEntity>) = presenter.addVideoInVideosUrl(videos)
     fun addImagesInPhotosUrl(images:List<FileEntity>) = presenter.addImagesInPhotosUrl(images)
 
-    private fun setFragmentResult(bundle: Bundle){
+    override fun setFragmentResult(bundle: Bundle){
         parentFragmentManager.setFragmentResult(
             VIEW_CHANGE_REQUEST_CODE,
             bundle)
