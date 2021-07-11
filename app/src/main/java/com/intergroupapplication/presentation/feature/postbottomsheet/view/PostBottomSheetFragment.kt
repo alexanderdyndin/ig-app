@@ -44,7 +44,6 @@ class PostBottomSheetFragment:BaseBottomSheetFragment(),PostBottomSheetView {
     }
 
     private val postBottomBinding by viewBinding(FragmentPostBottomSheetBinding::bind)
-    private val heightIconPanel by lazy { context?.dpToPx(40)?:0 }
 
     @Inject
     @InjectPresenter

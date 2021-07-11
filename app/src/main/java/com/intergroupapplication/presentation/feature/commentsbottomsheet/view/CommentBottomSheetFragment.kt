@@ -36,7 +36,6 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-//TODO пофиксить баг с answer layout и высотой после создания коммента
 class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     companion object{
@@ -79,6 +78,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private lateinit var textAnswer:TextView
     private lateinit var horizontalGuideCollapsed: Guideline
     private lateinit var horizontalGuideCollapsedWithPanelStyle: Guideline
+    private lateinit var horizontalGuideCollapsedWithTwoView: Guideline
     private lateinit var horizontalGuideEndWithKeyboard:Guideline
     private lateinit var containerRichEditor:LinearLayout
     private lateinit var panelStyleText:LinearLayout
@@ -206,6 +206,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         textAnswer = viewBinding.textAnswer
         horizontalGuideCollapsed = viewBinding.horizontalGuideCollapsed
         horizontalGuideCollapsedWithPanelStyle = viewBinding.horizontalGuideCollapsedWithPanelStyle
+        horizontalGuideCollapsedWithTwoView = viewBinding.
+                                    horizontalGuideCollapsedWithPanelStyleAndAnswerLayout
         containerRichEditor = viewBinding.containerForRichEditorAndSendButton
         horizontalGuideEndWithKeyboard = viewBinding.horizontalGuideEndWithKeyboard
         panelStyleText = viewBinding.panelStyleText
@@ -226,7 +228,6 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         setFragmentResult(bundleOf(METHOD_KEY to CREATE_COMMENT_DATA, DATA_KEY to
             CreateCommentDataModel(richEditor.createFinalText(namesMap,finalNamesMedia),
             presenter, finalNamesMedia)))
-        chooseMedias.clear()
         richEditor.html = null
         panelStyleText.gone()
         panelGravityText.gone()
@@ -235,6 +236,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         icEditText.activated(false)
         icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(
             MAIN_IC_EDIT_COLOR_DRAWABLE))
+        changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+        iconPanel.changeMargin(8)
     }
 
     fun answerComment(comment:CommentEntity.Comment){
@@ -245,10 +248,17 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     text = comment.commentOwner?.firstName
                             ?: getString(R.string.unknown_user)
                 }
-        textAnswer.text = comment.text.substringBefore(PostCustomView.PARSE_SYMBOL)
-        var height = iconPanel.height + pushUpDown.height / 2+ heightAnswerPanel
+        textAnswer.text = comment.text.substringBefore("<")
+        var height = heightEditText + heightIconPanel + pushUpDown.height / 2+ heightAnswerPanel
         if(panelStyleText.isVisible() || panelGravityText.isVisible()){
             height += heightTextStylePanel
+            if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
+        }
+        else{
+            if (currentState == BottomSheetBehavior.STATE_COLLAPSED){
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+            }
         }
         setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
     }
@@ -286,8 +296,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelStyleText.gone()
         val height = calculateHeight()
         setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
-        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
-            changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
+            if (answerLayout.isVisible()) {
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+            }
+            else {
+                changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+            }
+        }
         iconPanel.changeMargin(8)
     }
 
@@ -302,8 +318,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
         val height = calculateHeight() + heightTextStylePanel
         setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
-        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
-            changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
+            if (!answerLayout.isVisible()) {
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+            }
+            else{
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
+            }
+        }
         iconPanel.changeMargin(1)
     }
 
@@ -311,8 +333,14 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelGravityText.gone()
         val height = calculateHeight()
         setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
-        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
-            changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
+            if (answerLayout.isVisible()) {
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+            }
+            else {
+                changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
+            }
+        }
         iconPanel.changeMargin(8)
     }
 
@@ -327,13 +355,19 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
         val height = calculateHeight() + heightTextStylePanel
         setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
-        if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
-            changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+        if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
+            if (!answerLayout.isVisible()) {
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
+            }
+            else{
+                changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
+            }
+        }
         iconPanel.changeMargin(1)
     }
 
     override fun calculateHeight(): Int {
-        var height = iconPanel.height + pushUpDown.height / 2 + heightEditText
+        var height = heightIconPanel + pushUpDown.height / 2 + heightEditText
         if (answerLayout.isVisible())
             height += heightAnswerPanel
         return height
@@ -509,7 +543,10 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun stateCollapsed() {
-        if (panelGravityText.isVisible || panelStyleText.isVisible){
+        if ((panelGravityText.isVisible || panelStyleText.isVisible) && answerLayout.isVisible ){
+            changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
+        }
+        else if(panelGravityText.isVisible || panelStyleText.isVisible || answerLayout.isVisible){
             changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
         }
         else {
@@ -522,7 +559,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun commentCreated(commentEntity: CommentEntity) {
         setFragmentResult(bundleOf(METHOD_KEY to COMMENT_CREATED_DATA))
         setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
-                heightEditText + iconPanel.height + pushUpDown.height / 2))
+                heightEditText+ heightIconPanel + pushUpDown.height / 2))
         setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
                 BottomSheetBehavior.STATE_COLLAPSED))
     }
@@ -530,7 +567,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
         setFragmentResult(bundleOf(METHOD_KEY to ANSWER_COMMENT_CREATED_DATA))
         setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
-                heightEditText + iconPanel.height + pushUpDown.height / 2))
+                heightEditText+ heightIconPanel + pushUpDown.height / 2))
         setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
                 BottomSheetBehavior.STATE_COLLAPSED))
         answerLayout.gone()

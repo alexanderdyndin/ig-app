@@ -80,6 +80,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     protected lateinit var horizontalGuideEnd:Guideline
     protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
     protected val heightTextStylePanel by lazy { context?.dpToPx(40)?:0 }
+    protected val heightIconPanel by lazy { context?.dpToPx(40)?:0 }
 
 
     override fun onCreateView(

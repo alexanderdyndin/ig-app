@@ -13,7 +13,6 @@ import com.intergroupapplication.domain.usecase.CommentsUseCase
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import io.reactivex.Flowable
-import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 class CommentsViewModel @Inject constructor(private val commentsUseCase: CommentsUseCase,
