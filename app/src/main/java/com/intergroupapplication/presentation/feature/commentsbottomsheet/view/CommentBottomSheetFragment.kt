@@ -36,9 +36,9 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
+class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
 
-    companion object{
+    companion object {
         const val CALL_METHOD_KEY = "call_method_key"
         const val METHOD_KEY = "method_key"
         const val DATA_KEY = "data_key"
@@ -71,28 +71,28 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     private lateinit var richEditor: RichEditor
     private lateinit var sendButton: Button
-    private lateinit var iconPanel:LinearLayout
-    private lateinit var pushUpDown:Button
-    private lateinit var answerLayout:LinearLayout
-    private lateinit var responseToUser:TextView
-    private lateinit var textAnswer:TextView
+    private lateinit var iconPanel: LinearLayout
+    private lateinit var pushUpDown: Button
+    private lateinit var answerLayout: LinearLayout
+    private lateinit var responseToUser: TextView
+    private lateinit var textAnswer: TextView
     private lateinit var horizontalGuideCollapsed: Guideline
     private lateinit var horizontalGuideCollapsedWithPanelStyle: Guideline
     private lateinit var horizontalGuideCollapsedWithTwoView: Guideline
-    private lateinit var horizontalGuideEndWithKeyboard:Guideline
-    private lateinit var containerRichEditor:LinearLayout
-    private lateinit var panelStyleText:LinearLayout
-    private lateinit var panelGravityText:RadioGroup
-    private lateinit var boldText:ImageView
-    private lateinit var italicText:ImageView
-    private lateinit var strikeText:ImageView
-    private lateinit var underlineText:ImageView
-    private lateinit var leftGravityButton:RadioButton
-    private lateinit var centerGravityButton:RadioButton
-    private lateinit var rightGravityButton:RadioButton
-    private val namesMap = mutableMapOf<String,String>()
+    private lateinit var horizontalGuideEndWithKeyboard: Guideline
+    private lateinit var containerRichEditor: LinearLayout
+    private lateinit var panelStyleText: LinearLayout
+    private lateinit var panelGravityText: RadioGroup
+    private lateinit var boldText: ImageView
+    private lateinit var italicText: ImageView
+    private lateinit var strikeText: ImageView
+    private lateinit var underlineText: ImageView
+    private lateinit var leftGravityButton: RadioButton
+    private lateinit var centerGravityButton: RadioButton
+    private lateinit var rightGravityButton: RadioButton
+    private val namesMap = mutableMapOf<String, String>()
     private val finalNamesMedia = mutableListOf<String>()
-    private val progressMedias = mutableMapOf<String,LoadMediaType>()
+    private val progressMedias = mutableMapOf<String, LoadMediaType>()
     private var allViewsIsUpload = true
     private var stateBeforeShowMediaRecycler = BottomSheetBehavior.STATE_COLLAPSED
     private val heightEditText by lazy { requireContext().dpToPx(70) }
@@ -108,7 +108,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             { _, result ->
                 val comment: CommentEntity.Comment? = result
                     .getParcelable(CommentsAdapter.COMMENT_KEY)
-                if (comment != null){
+                if (comment != null) {
                     setupEditComment(comment)
                 }
             })
@@ -116,12 +116,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             KeyboardVisibilityEvent.setEventListener(
                 it,
                 viewLifecycleOwner,
-                { isVisible->
-                    if (currentState == BottomSheetBehavior.STATE_EXPANDED){
-                        if (isVisible){
+                { isVisible ->
+                    if (currentState == BottomSheetBehavior.STATE_EXPANDED) {
+                        if (isVisible) {
                             changeBottomConstraintForView(horizontalGuideEndWithKeyboard.id)
-                        }
-                        else{
+                        } else {
                             changeBottomConstraintForView(horizontalGuideEnd.id)
                         }
                     }
@@ -139,37 +138,38 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
             setPlaceholder(context.getString(R.string.write_your_comment))
             setBackgroundColor(Color.parseColor(MAIN_COLOR))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
-            decorationStateListener = object :RichEditor.OnDecorationStateListener{
+            decorationStateListener = object : RichEditor.OnDecorationStateListener {
 
                 override fun onStateChangeListener(text: String, types: List<TextType>) {
-                    boldText.changeActivated(false,italicText,underlineText,strikeText)
+                    boldText.changeActivated(false, italicText, underlineText, strikeText)
                     types.forEach { type ->
                         when {
                             type.name.contains("FONT_COLOR") -> {
-                                icEditColor.setImageDrawable(colorDrawableGateway.
-                                getDrawableByColor(type.color))
+                                icEditColor.setImageDrawable(
+                                    colorDrawableGateway.getDrawableByColor(type.color)
+                                )
                             }
                             else -> {
-                                when(type){
+                                when (type) {
                                     TextType.BOLD -> {
                                         boldText.activated(true)
                                     }
-                                    TextType.ITALIC ->{
+                                    TextType.ITALIC -> {
                                         italicText.activated(true)
                                     }
-                                    TextType.UNDERLINE ->{
+                                    TextType.UNDERLINE -> {
                                         underlineText.activated(true)
                                     }
-                                    TextType.STRIKETHROUGH ->{
+                                    TextType.STRIKETHROUGH -> {
                                         strikeText.activated(true)
                                     }
-                                    TextType.JUSTIFYLEFT->{
+                                    TextType.JUSTIFYLEFT -> {
                                         leftGravityButton.isChecked = true
                                     }
-                                    TextType.JUSTIFYCENTER->{
+                                    TextType.JUSTIFYCENTER -> {
                                         centerGravityButton.isChecked = true
                                     }
-                                    TextType.JUSTIFYRIGHT->{
+                                    TextType.JUSTIFYRIGHT -> {
                                         rightGravityButton.isChecked = true
                                     }
                                     else -> Timber.tag("else_type").d(type.name)
@@ -179,16 +179,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
                     }
                 }
             }
-            textChangeListener = object : RichEditor.OnTextChangeListener{
+            textChangeListener = object : RichEditor.OnTextChangeListener {
                 override fun onTextChange(text: String?) {
                     val newText = text?.substringBefore("re-state://")
                         ?.replace(Regex("<div><br></div>|&nbsp;"), "")?.trim()
-                        ?.replace(Regex("<div> *</div>"),"")?:""
+                        ?.replace(Regex("<div> *</div>"), "") ?: ""
                     Timber.tag("tut_text").d(newText)
-                    if(newText.isNotEmpty() && allViewsIsUpload){
+                    if (newText.isNotEmpty() && allViewsIsUpload) {
                         sendButton.show()
-                    }
-                    else{
+                    } else {
                         sendButton.hide()
                     }
                 }
@@ -206,8 +205,8 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         textAnswer = viewBinding.textAnswer
         horizontalGuideCollapsed = viewBinding.horizontalGuideCollapsed
         horizontalGuideCollapsedWithPanelStyle = viewBinding.horizontalGuideCollapsedWithPanelStyle
-        horizontalGuideCollapsedWithTwoView = viewBinding.
-                                    horizontalGuideCollapsedWithPanelStyleAndAnswerLayout
+        horizontalGuideCollapsedWithTwoView =
+            viewBinding.horizontalGuideCollapsedWithPanelStyleAndAnswerLayout
         containerRichEditor = viewBinding.containerForRichEditorAndSendButton
         horizontalGuideEndWithKeyboard = viewBinding.horizontalGuideEndWithKeyboard
         panelStyleText = viewBinding.panelStyleText
@@ -225,38 +224,46 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     private fun sendComment() {
-        setFragmentResult(bundleOf(METHOD_KEY to CREATE_COMMENT_DATA, DATA_KEY to
-            CreateCommentDataModel(richEditor.createFinalText(namesMap,finalNamesMedia),
-            presenter, finalNamesMedia)))
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to CREATE_COMMENT_DATA, DATA_KEY to
+                        CreateCommentDataModel(
+                            richEditor.createFinalText(namesMap, finalNamesMedia),
+                            presenter, finalNamesMedia
+                        )
+            )
+        )
         richEditor.html = null
         panelStyleText.gone()
         panelGravityText.gone()
         icEditColor.activated(false)
         icEditAlign.activated(false)
         icEditText.activated(false)
-        icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(
-            MAIN_IC_EDIT_COLOR_DRAWABLE))
+        icEditColor.setImageDrawable(
+            colorDrawableGateway.getDrawableByColor(
+                MAIN_IC_EDIT_COLOR_DRAWABLE
+            )
+        )
         changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
         iconPanel.changeMargin(8)
     }
 
-    fun answerComment(comment:CommentEntity.Comment){
+    fun answerComment(comment: CommentEntity.Comment) {
         answerLayout.show()
         answerLayout.activated(true)
         responseToUser
-                .apply {
-                    text = comment.commentOwner?.firstName
-                            ?: getString(R.string.unknown_user)
-                }
+            .apply {
+                text = comment.commentOwner?.firstName
+                    ?: getString(R.string.unknown_user)
+            }
         textAnswer.text = comment.text.substringBefore("<")
-        var height = heightEditText + heightIconPanel + pushUpDown.height / 2+ heightAnswerPanel
-        if(panelStyleText.isVisible() || panelGravityText.isVisible()){
+        var height = heightEditText + heightIconPanel + pushUpDown.height / 2 + heightAnswerPanel
+        if (panelStyleText.isVisible() || panelGravityText.isVisible()) {
             height += heightTextStylePanel
             if (currentState == BottomSheetBehavior.STATE_COLLAPSED)
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
-        }
-        else{
-            if (currentState == BottomSheetBehavior.STATE_COLLAPSED){
+        } else {
+            if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
             }
         }
@@ -264,16 +271,16 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun attachFileNotActivated() {
-        richEditor.run  {
+        richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload){
+            if (html?.replace("<br>", "")?.isNotEmpty() == true && allViewsIsUpload) {
                 sendButton.show()
             }
         }
         panelAddFile.gone()
         btnAdd.gone()
         amountFiles.gone()
-        if (answerLayout.isActivated){
+        if (answerLayout.isActivated) {
             answerLayout.show()
         }
         mediaRecyclerView.gone()
@@ -299,8 +306,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
-            }
-            else {
+            } else {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
             }
         }
@@ -313,7 +319,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelGravityText.gone()
         richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload)
+            if (html?.replace("<br>", "")?.isNotEmpty() == true && allViewsIsUpload)
                 sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
@@ -321,8 +327,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (!answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
-            }
-            else{
+            } else {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
             }
         }
@@ -336,8 +341,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
-            }
-            else {
+            } else {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
             }
         }
@@ -350,7 +354,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         panelStyleText.gone()
         richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload)
+            if (html?.replace("<br>", "")?.isNotEmpty() == true && allViewsIsUpload)
                 sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
@@ -358,8 +362,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (!answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
-            }
-            else{
+            } else {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
             }
         }
@@ -424,7 +427,7 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (answerLayout.isActivated) answerLayout.show()
         richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload)
+            if (html?.replace("<br>", "")?.isNotEmpty() == true && allViewsIsUpload)
                 sendButton.show()
         }
         returnStateToOriginal()
@@ -434,8 +437,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         if (stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_COLLAPSED ||
             stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_SETTLING
         ) {
-            setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA,
-                DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED))
+            setFragmentResult(
+                bundleOf(
+                    METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA,
+                    DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED
+                )
+            )
         }
     }
 
@@ -448,25 +455,25 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         }
     }
 
-    private fun setupPanelGravityText(){
+    private fun setupPanelGravityText() {
         setupLeftGravityView()
         setupCenterGravityView()
         setupRightGravityView()
     }
 
-    private fun setupLeftGravityView(){
+    private fun setupLeftGravityView() {
         leftGravityButton.setOnClickListener {
             richEditor.setAlignLeft()
         }
     }
 
-    private fun setupCenterGravityView(){
+    private fun setupCenterGravityView() {
         centerGravityButton.setOnClickListener {
             richEditor.setAlignCenter()
         }
     }
 
-    private fun setupRightGravityView(){
+    private fun setupRightGravityView() {
         rightGravityButton.setOnClickListener {
             richEditor.setAlignRight()
         }
@@ -489,8 +496,12 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun changeStateToHalfExpanded() {
-        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY
-            to BottomSheetBehavior.STATE_HALF_EXPANDED))
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY
+                        to BottomSheetBehavior.STATE_HALF_EXPANDED
+            )
+        )
     }
 
     override fun changeStateViewAfterAddMedia() {
@@ -543,13 +554,11 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     }
 
     override fun stateCollapsed() {
-        if ((panelGravityText.isVisible || panelStyleText.isVisible) && answerLayout.isVisible ){
+        if ((panelGravityText.isVisible || panelStyleText.isVisible) && answerLayout.isVisible) {
             changeBottomConstraintRichEditor(horizontalGuideCollapsedWithTwoView.id)
-        }
-        else if(panelGravityText.isVisible || panelStyleText.isVisible || answerLayout.isVisible){
+        } else if (panelGravityText.isVisible || panelStyleText.isVisible || answerLayout.isVisible) {
             changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
-        }
-        else {
+        } else {
             changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
         }
         restoreAllViewForCollapsedState()
@@ -558,44 +567,68 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
 
     override fun commentCreated(commentEntity: CommentEntity) {
         setFragmentResult(bundleOf(METHOD_KEY to COMMENT_CREATED_DATA))
-        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
-                heightEditText+ heightIconPanel + pushUpDown.height / 2))
-        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
-                BottomSheetBehavior.STATE_COLLAPSED))
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
+                        heightEditText + heightIconPanel + pushUpDown.height / 2
+            )
+        )
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
+                        BottomSheetBehavior.STATE_COLLAPSED
+            )
+        )
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
         setFragmentResult(bundleOf(METHOD_KEY to ANSWER_COMMENT_CREATED_DATA))
-        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
-                heightEditText+ heightIconPanel + pushUpDown.height / 2))
-        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
-                BottomSheetBehavior.STATE_COLLAPSED))
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
+                        heightEditText + heightIconPanel + pushUpDown.height / 2
+            )
+        )
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
+                        BottomSheetBehavior.STATE_COLLAPSED
+            )
+        )
         answerLayout.gone()
         answerLayout.activated(false)
     }
 
     override fun showCommentUploading(show: Boolean) {
-        setFragmentResult(bundleOf(METHOD_KEY to SHOW_COMMENT_UPLOADING_DATA, DATA_KEY to
-                show))
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to SHOW_COMMENT_UPLOADING_DATA, DATA_KEY to
+                        show
+            )
+        )
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
-            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")){
+            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")
+        ) {
             namesMap[chooseMedia.url] = chooseMedia.name
             richEditor.insertAudio(chooseMedia.url)
-        }
-        else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
-                || chooseMedia.url.contains(".png")){
-            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
-                chooseMedia.url.substringAfterLast("/"),0,0)
+        } else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
+            || chooseMedia.url.contains(".png")
+        ) {
+            val fileEntity = FileEntity(
+                0, chooseMedia.url, false, "",
+                chooseMedia.url.substringAfterLast("/"), 0, 0
+            )
             namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertImage(chooseMedia.url, "alt")
-        }
-        else {
-            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
-                chooseMedia.url.substringAfterLast("/"),0,0,
-                chooseMedia.urlPreview, chooseMedia.duration)
+        } else {
+            val fileEntity = FileEntity(
+                0, chooseMedia.url, false, "",
+                chooseMedia.url.substringAfterLast("/"), 0, 0,
+                chooseMedia.urlPreview, chooseMedia.duration
+            )
             namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertVideo(chooseMedia.url)
         }
@@ -616,16 +649,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     override fun showImageUploaded(path: String) {
         allViewsIsUpload = true
         progressMedias[path] = LoadMediaType.UPLOAD
-        progressMedias.values.forEach { type->
-            if (type != LoadMediaType.UPLOAD){
+        progressMedias.values.forEach { type ->
+            if (type != LoadMediaType.UPLOAD) {
                 allViewsIsUpload = false
                 return@forEach
             }
         }
-        if (allViewsIsUpload){
+        if (allViewsIsUpload) {
             sendButton.show()
-        }
-        else{
+        } else {
             sendButton.hide()
         }
     }
@@ -637,14 +669,15 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
     private fun restoreAllViewForCollapsedState() {
         if (answerLayout.isActivated) answerLayout.show()
         panelAddFile.gone()
-        richEditor.run  {
+        richEditor.run {
             show()
-            if (html?.replace("<br>","")?.isNotEmpty() == true && allViewsIsUpload){
+            if (html?.replace("<br>", "")?.isNotEmpty() == true &&
+                    allViewsIsUpload) {
                 sendButton.show()
             }
         }
-        pushUpDown.background = context?.
-                    let { ContextCompat.getDrawable(it, R.drawable.btn_push_down) }
+        pushUpDown.background =
+            context?.let { ContextCompat.getDrawable(it, R.drawable.btn_push_down) }
     }
 
     private fun setupEditComment(comment: CommentEntity.Comment) {
@@ -654,35 +687,38 @@ class CommentBottomSheetFragment: BaseBottomSheetFragment(),BottomSheetView{
         presenter.addMediaUrl(comment)
     }
 
-    private fun changeNameOnUrl(comment:CommentEntity.Comment):String{
+    private fun changeNameOnUrl(comment: CommentEntity.Comment): String {
         namesMap.clear()
         var text = comment.text
         comment.audios.forEach {
-            if (text.contains(it.song)){
+            if (text.contains(it.song)) {
                 namesMap[it.file] = it.song
-                text = text.substringBefore(it.song)+it.file+text.
-                    substringAfter(it.song+PostCustomView.MEDIA_PREFIX)
+                text =
+                    text.substringBefore(it.song) + it.file + text.
+                        substringAfter(it.song + PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.images.forEach {
-            if (text.contains(it.title)){
+            if (text.contains(it.title)) {
                 namesMap[it.file] = it.title
-                text = text.substringBefore(it.title)+it.file+text.
-                    substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
+                text =
+                    text.substringBefore(it.title) + it.file + text.
+                        substringAfter(it.title + PostCustomView.MEDIA_PREFIX)
             }
         }
         comment.videos.forEach {
-            if (text.contains(it.title)){
+            if (text.contains(it.title)) {
                 namesMap[it.file] = it.title
-                text = text.substringBefore(it.title)+it.file+text.
-                    substringAfter(it.title+PostCustomView.MEDIA_PREFIX)
+                text =
+                    text.substringBefore(it.title) + it.file + text.
+                        substringAfter(it.title + PostCustomView.MEDIA_PREFIX)
             }
         }
         return text
     }
 
 
-    private fun LinearLayout.changeMargin(dp:Int){
+    private fun LinearLayout.changeMargin(dp: Int) {
         (this.layoutParams as ConstraintLayout.LayoutParams).topMargin = context.dpToPx(dp)
     }
 }

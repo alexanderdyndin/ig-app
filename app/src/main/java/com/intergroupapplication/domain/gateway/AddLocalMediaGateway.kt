@@ -5,8 +5,8 @@ import com.intergroupapplication.data.model.GalleryModel
 import com.intergroupapplication.data.model.VideoModel
 
 interface AddLocalMediaGateway {
-    fun addGalleryUri():MutableList<GalleryModel>
-    fun addVideoUri():MutableList<VideoModel>
-    fun addAudioUri():MutableList<AudioInAddFileModel>
-    fun addColors():MutableList<Int>
+    fun addGalleryUri():List<GalleryModel>
+    fun addVideoUri():List<VideoModel>
+    fun addAudioUri():List<AudioInAddFileModel>
+    fun addColors():List<Int>
 }

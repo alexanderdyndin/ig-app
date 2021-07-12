@@ -44,7 +44,7 @@ import javax.inject.Inject
 
 open class CreatePostFragment : BaseFragment(), CreatePostView {
 
-    companion object{
+    companion object {
         const val MEDIA_INTERACTION_REQUEST_CODE = "media_interaction_request_code"
         const val METHOD_KEY = "method_key"
         const val CHOOSE_MEDIA_KEY = "choose_media_key"
@@ -82,15 +82,15 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_create_post
 
-    protected val namesMap = mutableMapOf<String,String>()
+    protected val namesMap = mutableMapOf<String, String>()
     private val finalNamesMedia = mutableListOf<String>()
-    private val loadingMedias = mutableMapOf<String,LoadMediaType>()
+    private val loadingMedias = mutableMapOf<String, LoadMediaType>()
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = createPostBinding
-            .createPostCoordinator
+        .createPostCoordinator
 
-    protected lateinit var richEditor:RichEditor
-    protected lateinit var publishBtn:TextView
+    protected lateinit var richEditor: RichEditor
+    protected lateinit var publishBtn: TextView
 
     private lateinit var groupId: String
 
@@ -99,22 +99,23 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.let{
-            KeyboardVisibilityEvent.setEventListener(it,viewLifecycleOwner){ isVisible ->
-                if (isVisible){
-                    changeBottomConstraintMediaHolder(createPostBinding.
-                        horizontalGuideEndWithKeyboard.id)
+        activity?.let {
+            KeyboardVisibilityEvent.setEventListener(it, viewLifecycleOwner) { isVisible ->
+                if (isVisible) {
+                    changeBottomConstraintMediaHolder(
+                        createPostBinding.horizontalGuideEndWithKeyboard.id
+                    )
                     createPostBinding.mediaHolder.show()
-                }
-                else{
+                } else {
                     changeBottomConstraintMediaHolder(createPostBinding.horizontalGuideEnd.id)
                     createPostBinding.mediaHolder.hide()
                 }
             }
         }
         childFragmentManager.setFragmentResultListener(
-            PostBottomSheetFragment.VIEW_CHANGE_REQUEST_CODE, viewLifecycleOwner){ _,result->
-            when(result.getInt(PostBottomSheetFragment.METHOD_KEY)){
+            PostBottomSheetFragment.VIEW_CHANGE_REQUEST_CODE, viewLifecycleOwner
+        ) { _, result ->
+            when (result.getInt(PostBottomSheetFragment.METHOD_KEY)) {
                 PostBottomSheetFragment.CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE ->
                     changeStateBottomSheetAfterAddMedia()
                 PostBottomSheetFragment.CHANGE_STATE_METHOD_CODE ->
@@ -130,14 +131,18 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                     result.getParcelable<ChooseMedia>(PostBottomSheetFragment.CHOOSE_MEDIA_KEY)
                         ?.let { showImageUploadingStarted(it) }
                 PostBottomSheetFragment.PROGRESS_UPLOADED_METHOD_CODE ->
-                    showImageUploadingProgress(result.getFloat(PostBottomSheetFragment.PROGRESS_KEY),
-                        result.getString(PostBottomSheetFragment.PATH_KEY,""))
+                    showImageUploadingProgress(
+                        result.getFloat(PostBottomSheetFragment.PROGRESS_KEY),
+                        result.getString(PostBottomSheetFragment.PATH_KEY, "")
+                    )
                 PostBottomSheetFragment.ERROR_UPLOADED_METHOD_CODE ->
-                    showImageUploadingError(result.
-                        getString(PostBottomSheetFragment.PATH_KEY,""))
+                    showImageUploadingError(
+                        result.getString(PostBottomSheetFragment.PATH_KEY, "")
+                    )
                 PostBottomSheetFragment.UPLOAD_METHOD_CODE ->
-                    showImageUploaded(result.
-                        getString(PostBottomSheetFragment.PATH_KEY,""))
+                    showImageUploaded(
+                        result.getString(PostBottomSheetFragment.PATH_KEY, "")
+                    )
             }
         }
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -152,42 +157,49 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
             setPlaceholder(context.getString(R.string.add_photo_or_text))
             setBackgroundColor(Color.parseColor("#12161E"))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
-            decorationStateListener = object :RichEditor.OnDecorationStateListener{
+            decorationStateListener = object : RichEditor.OnDecorationStateListener {
 
                 override fun onStateChangeListener(text: String, types: List<TextType>) {
-                    createPostBinding.selectBoldText.changeActivated(false,
-                        createPostBinding.selectItalicText,createPostBinding.selectStrikeText,
-                        createPostBinding.selectStrikeText)
+                    createPostBinding.selectBoldText.changeActivated(
+                        false,
+                        createPostBinding.selectItalicText, createPostBinding.selectStrikeText,
+                        createPostBinding.selectStrikeText
+                    )
                     Timber.tag("tut_state").d(text)
                     types.forEach { type ->
                         when {
                             type.name.contains("FONT_COLOR") -> {
-                                setFragmentResult(bundleOf(METHOD_KEY to CHANGE_COLOR,
-                                    COLOR_KEY to type.color))
-                                createPostBinding.icEditColor.setImageDrawable(colorDrawableGateway.
-                                    getDrawableByColor(type.color))
+                                setFragmentResult(
+                                    bundleOf(
+                                        METHOD_KEY to CHANGE_COLOR,
+                                        COLOR_KEY to type.color
+                                    )
+                                )
+                                createPostBinding.icEditColor.setImageDrawable(
+                                    colorDrawableGateway.getDrawableByColor(type.color)
+                                )
                             }
                             else -> {
-                                when(type){
+                                when (type) {
                                     TextType.BOLD -> {
                                         createPostBinding.selectBoldText.activated(true)
                                     }
-                                    TextType.ITALIC ->{
+                                    TextType.ITALIC -> {
                                         createPostBinding.selectItalicText.activated(true)
                                     }
-                                    TextType.UNDERLINE ->{
+                                    TextType.UNDERLINE -> {
                                         createPostBinding.selectUnderlineText.activated(true)
                                     }
-                                    TextType.STRIKETHROUGH ->{
-                                       createPostBinding.selectStrikeText.activated(true)
+                                    TextType.STRIKETHROUGH -> {
+                                        createPostBinding.selectStrikeText.activated(true)
                                     }
-                                    TextType.JUSTIFYLEFT->{
+                                    TextType.JUSTIFYLEFT -> {
                                         createPostBinding.leftGravityButton.isChecked = true
                                     }
-                                    TextType.JUSTIFYCENTER->{
+                                    TextType.JUSTIFYCENTER -> {
                                         createPostBinding.centerGravityButton.isChecked = true
                                     }
-                                    TextType.JUSTIFYRIGHT->{
+                                    TextType.JUSTIFYRIGHT -> {
                                         createPostBinding.rightGravityButton.isChecked = true
                                     }
                                     else -> Timber.tag("else_type").d(type.name)
@@ -205,31 +217,31 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         publishBtn.show()
         publishBtn.setOnClickListener {
             val post = richEditor.createFinalText(namesMap, finalNamesMedia)
-            if (post.isEmpty()){
+            if (post.isEmpty()) {
                 dialogDelegate.showErrorSnackBar(getString(R.string.post_should_contains_text))
-            }
-            else if (loadingMedias.isNotEmpty()) {
+            } else if (loadingMedias.isNotEmpty()) {
                 var isLoading = false
-                loadingMedias.values.forEach {type->
-                    if (type != LoadMediaType.UPLOAD){
-                    isLoading = true
-                    return@forEach
+                loadingMedias.values.forEach { type ->
+                    if (type != LoadMediaType.UPLOAD) {
+                        isLoading = true
+                        return@forEach
                     }
                 }
                 if (isLoading)
                     dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
                 else {
-                    createPost(post,finalNamesMedia)
+                    createPost(post, finalNamesMedia)
                 }
-            }
-            else {
-                createPost(post,finalNamesMedia)
+            } else {
+                createPost(post, finalNamesMedia)
             }
         }
 
         try {
-            childFragmentManager.beginTransaction().replace(R.id.containerBottomSheet,
-                bottomFragment).commit()
+            childFragmentManager.beginTransaction().replace(
+                R.id.containerBottomSheet,
+                bottomFragment
+            ).commit()
             //bottomFragment.callback = this
             bottomSheetBehaviour = BottomSheetBehavior.from(createPostBinding.containerBottomSheet)
                     as AutoCloseBottomSheetBehavior<FrameLayout>
@@ -248,18 +260,17 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                     }
                 })
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-        createPostBinding.navigationToolbar.
-            toolbarBackAction.setOnClickListener { onResultCancel() }
+        createPostBinding.navigationToolbar.toolbarBackAction.setOnClickListener { onResultCancel() }
         setErrorHandler()
         setupIconPanel()
         setupPanelStyleText()
         setupPanelGravityText()
     }
 
-    private fun setupIconPanel(){
+    private fun setupIconPanel() {
         setupIcEditText()
         setupIcEditAlign()
         setupIcAttachFile()
@@ -326,14 +337,14 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun setupIcEditColor(){
+    private fun setupIcEditColor() {
         createPostBinding.icEditColor.setOnClickListener {
             setFragmentResult(bundleOf(METHOD_KEY to IC_EDIT_COLOR_METHOD_CODE))
             createPostBinding.mediaHolder.hide()
         }
     }
 
-    private fun setupIcAttachFile(){
+    private fun setupIcAttachFile() {
         createPostBinding.icAttachFile.setOnClickListener {
             setFragmentResult(bundleOf(METHOD_KEY to IC_ATTACH_FILE_METHOD_CODE))
             gonePanelStyleText()
@@ -341,6 +352,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
             createPostBinding.mediaHolder.hide()
         }
     }
+
     private fun changeBottomConstraintMediaHolder(id: Int) {
         val paramsRichEditor = createPostBinding.mediaHolder.layoutParams
                 as ConstraintLayout.LayoutParams
@@ -348,17 +360,20 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         createPostBinding.mediaHolder.layoutParams = paramsRichEditor
     }
 
-    private fun setFragmentResult(bundle: Bundle){
-        childFragmentManager.setFragmentResult(MEDIA_INTERACTION_REQUEST_CODE,
-           bundle)
+    private fun setFragmentResult(bundle: Bundle) {
+        childFragmentManager.setFragmentResult(
+            MEDIA_INTERACTION_REQUEST_CODE,
+            bundle
+        )
     }
 
-    protected open fun createPost(post:String, finalNamesMedia:List<String>) {
+    protected open fun createPost(post: String, finalNamesMedia: List<String>) {
         presenter.createPostWithImage(
-                post,
-                groupId,
-                bottomFragment.getPhotosUrl(), bottomFragment.getVideosUrl(),
-                bottomFragment.getAudiosUrl(),finalNamesMedia)
+            post,
+            groupId,
+            bottomFragment.getPhotosUrl(), bottomFragment.getVideosUrl(),
+            bottomFragment.getAudiosUrl(), finalNamesMedia
+        )
     }
 
     override fun postCreateSuccessfully(postEntity: GroupPostEntity.PostEntity) {
@@ -371,21 +386,25 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
 
     private fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
-            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")){
+            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")
+        ) {
             namesMap[chooseMedia.url] = chooseMedia.name
             richEditor.insertAudio(chooseMedia.url)
-        }
-        else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
-            || chooseMedia.url.contains(".png")){
-            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
-                chooseMedia.url.substringAfterLast("/"),0,0)
+        } else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
+            || chooseMedia.url.contains(".png")
+        ) {
+            val fileEntity = FileEntity(
+                0, chooseMedia.url, false, "",
+                chooseMedia.url.substringAfterLast("/"), 0, 0
+            )
             namesMap[chooseMedia.url] = fileEntity.title
-            richEditor.insertImage(chooseMedia.url,"alt")
-        }
-        else {
-            val fileEntity = FileEntity(0,chooseMedia.url,false,"",
-                chooseMedia.url.substringAfterLast("/"),0,0,
-                chooseMedia.urlPreview, chooseMedia.duration)
+            richEditor.insertImage(chooseMedia.url, "alt")
+        } else {
+            val fileEntity = FileEntity(
+                0, chooseMedia.url, false, "",
+                chooseMedia.url.substringAfterLast("/"), 0, 0,
+                chooseMedia.urlPreview, chooseMedia.duration
+            )
             namesMap[chooseMedia.url] = fileEntity.title
             richEditor.insertVideo(chooseMedia.url)
         }
@@ -421,8 +440,10 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     private fun onResultOk(postId: String) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(GroupFragment.POST_ID,
-            postId)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            GroupFragment.POST_ID,
+            postId
+        )
         findNavController().popBackStack()
     }
 
@@ -430,11 +451,13 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         findNavController().popBackStack()
     }
 
-    private fun changeStateBottomSheetAfterAddMedia(){
+    private fun changeStateBottomSheetAfterAddMedia() {
         changeStateBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
-        createPostBinding.selectBoldText.changeActivated(false,
-            createPostBinding.selectItalicText,createPostBinding.selectStrikeText,
-            createPostBinding.selectStrikeText)
+        createPostBinding.selectBoldText.changeActivated(
+            false,
+            createPostBinding.selectItalicText, createPostBinding.selectStrikeText,
+            createPostBinding.selectStrikeText
+        )
         createPostBinding.leftGravityButton.isChecked = true
     }
 
@@ -445,23 +468,26 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
     private fun showKeyboard() {
         try {
             richEditor.showKeyBoard()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     private fun changeTextColor(color: Int) {
         richEditor.setTextColor(color)
-        createPostBinding.icEditColor.setImageDrawable(colorDrawableGateway.
-            getDrawableByColor(color))
+        createPostBinding.icEditColor.setImageDrawable(
+            colorDrawableGateway.getDrawableByColor(color)
+        )
     }
 
     private fun showPanelStyleText() {
         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
         createPostBinding.panelStyleText.show()
         createPostBinding.panelGravityText.gone()
-        createPostBinding.icEditText.changeActivated(true,createPostBinding.icEditAlign,
-            createPostBinding.icAttachFile)
+        createPostBinding.icEditText.changeActivated(
+            true, createPostBinding.icEditAlign,
+            createPostBinding.icAttachFile
+        )
     }
 
     private fun gonePanelStyleText() {
@@ -473,8 +499,10 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
         createPostBinding.panelGravityText.show()
         createPostBinding.panelStyleText.gone()
-        createPostBinding.icEditAlign.changeActivated(true,createPostBinding.icEditText,
-            createPostBinding.icAttachFile)
+        createPostBinding.icEditAlign.changeActivated(
+            true, createPostBinding.icEditText,
+            createPostBinding.icAttachFile
+        )
     }
 
     private fun gonePanelGravity() {
@@ -518,25 +546,25 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         }
     }
 
-    private fun setupPanelGravityText(){
+    private fun setupPanelGravityText() {
         setupLeftGravityView()
         setupCenterGravityView()
         setupRightGravityView()
     }
 
-    private fun setupLeftGravityView(){
+    private fun setupLeftGravityView() {
         createPostBinding.leftGravityButton.setOnClickListener {
             richEditor.setAlignLeft()
         }
     }
 
-    private fun setupCenterGravityView(){
+    private fun setupCenterGravityView() {
         createPostBinding.centerGravityButton.setOnClickListener {
             richEditor.setAlignCenter()
         }
     }
 
-    private fun setupRightGravityView(){
+    private fun setupRightGravityView() {
         createPostBinding.rightGravityButton.setOnClickListener {
             richEditor.setAlignRight()
         }

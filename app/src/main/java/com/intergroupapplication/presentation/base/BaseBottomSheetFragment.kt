@@ -32,7 +32,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadingView{
+abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUploadingView {
 
 
     @Inject
@@ -64,23 +64,23 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     private val permissions by lazy { RxPermissions(this) }
 
-    protected lateinit var mediaRecyclerView:RecyclerView
-    protected lateinit var icAttachFile:ImageView
-    protected lateinit var icEditText:ImageView
-    protected lateinit var icEditColor:ImageView
-    protected lateinit var icEditAlign:ImageView
-    protected lateinit var panelAddFile:LinearLayout
-    private lateinit var galleryButton:TextView
+    protected lateinit var mediaRecyclerView: RecyclerView
+    protected lateinit var icAttachFile: ImageView
+    protected lateinit var icEditText: ImageView
+    protected lateinit var icEditColor: ImageView
+    protected lateinit var icEditAlign: ImageView
+    protected lateinit var panelAddFile: LinearLayout
+    private lateinit var galleryButton: TextView
     private lateinit var musicButton: TextView
     private lateinit var videoButton: TextView
     private lateinit var playlistButton: TextView
     protected lateinit var btnAdd: TextView
     protected lateinit var amountFiles: TextView
-    protected lateinit var horizontalGuideCenter:Guideline
-    protected lateinit var horizontalGuideEnd:Guideline
+    protected lateinit var horizontalGuideCenter: Guideline
+    protected lateinit var horizontalGuideEnd: Guideline
     protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
-    protected val heightTextStylePanel by lazy { context?.dpToPx(40)?:0 }
-    protected val heightIconPanel by lazy { context?.dpToPx(40)?:0 }
+    protected val heightTextStylePanel by lazy { context?.dpToPx(40) ?: 0 }
+    protected val heightIconPanel by lazy { context?.dpToPx(40) ?: 0 }
 
 
     override fun onCreateView(
@@ -88,24 +88,25 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        childFragmentManager.setFragmentResultListener(PreviewDialog.ADD_REQUEST_CODE,
-                viewLifecycleOwner) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(
+            PreviewDialog.ADD_REQUEST_CODE,
+            viewLifecycleOwner
+        ) { _, bundle ->
             val isPhoto = bundle.getBoolean(PreviewDialog.IS_PHOTO_KEY)
             val result = bundle.getString(PreviewDialog.ADD_URI_KEY)
             val isChoose = bundle.getBoolean(PreviewDialog.IS_CHOOSE_KEY)
-            result?.let { string->
-                if (isPhoto){
+            result?.let { string ->
+                if (isPhoto) {
                     galleryAdapter.photos.mapIndexed { index, galleryModel ->
-                        if (galleryModel.url == string){
+                        if (galleryModel.url == string) {
                             galleryModel.isChoose = isChoose
                             galleryAdapter.notifyItemChanged(index)
                         }
                     }
                     changeCountChooseImage()
-                }
-                else{
-                    videoAdapter.videos.mapIndexed { index, videoGallery->
-                        if (videoGallery.url == string){
+                } else {
+                    videoAdapter.videos.mapIndexed { index, videoGallery ->
+                        if (videoGallery.url == string) {
                             videoGallery.isChoose = isChoose
                             videoAdapter.notifyItemChanged(index)
                         }
@@ -116,6 +117,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         chooseMedias.clear()
         mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
@@ -133,7 +135,12 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         horizontalGuideCenter = view.findViewById(R.id.horizontal_guide_center)
         horizontalGuideEnd = view.findViewById(R.id.horizontal_guide_end)
         mediaRecyclerView.run {
-            addItemDecoration(ItemOffsetDecoration(context, R.dimen.lb_page_indicator_arrow_shadow_offset))
+            addItemDecoration(
+                ItemOffsetDecoration(
+                    context,
+                    R.dimen.lb_page_indicator_arrow_shadow_offset
+                )
+            )
         }
         setUpAddFilePanel()
     }
@@ -145,8 +152,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                 if (isActivated) {
                     activated(false)
                     gonePanelStyleText()
-                }
-                else {
+                } else {
                     activated(true)
                     showPanelStyleText()
                 }
@@ -158,10 +164,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
             setOnClickListener {
                 changeStateToHalfExpanded()
                 hideKeyboard()
-                if (isActivated){
+                if (isActivated) {
                     endChooseColorText()
-                }
-                else{
+                } else {
                     startChooseColorText()
                 }
             }
@@ -169,11 +174,10 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
         icEditAlign.run {
             setOnClickListener {
-                if (isActivated){
+                if (isActivated) {
                     activated(false)
                     gonePanelGravityText()
-                }
-                else{
+                } else {
                     activated(true)
                     showPanelGravityText()
                 }
@@ -188,8 +192,10 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
                 if (isActivated) {
                     activated(false)
                     attachFileNotActivated()
-                    galleryButton.changeActivatedTextView(false, musicButton,
-                        videoButton, playlistButton)
+                    galleryButton.changeActivatedTextView(
+                        false, musicButton,
+                        videoButton, playlistButton
+                    )
                     galleryAdapter.photos.cancelChoose()
                     videoAdapter.videos.cancelChoose()
                     audioAdapter.audios.cancelChoose()
@@ -202,35 +208,44 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         }
 
         galleryButton.setOnClickListener {
+            chooseMedias.clear()
             mediaRecyclerView.run {
                 adapter = galleryAdapter
                 layoutManager = GridLayoutManager(context, 3)
             }
             setVisibilityForAddFiles()
-            (it as TextView).changeActivatedTextView(true, musicButton, videoButton,
-                playlistButton)
+            (it as TextView).changeActivatedTextView(
+                true, musicButton, videoButton,
+                playlistButton
+            )
             changeCountChooseImage()
         }
 
         musicButton.setOnClickListener {
+            chooseMedias.clear()
             mediaRecyclerView.run {
                 adapter = audioAdapter
                 layoutManager = LinearLayoutManager(context)
             }
             setVisibilityForAddFiles()
-            (it as TextView).changeActivatedTextView(true, galleryButton, videoButton,
-                playlistButton)
+            (it as TextView).changeActivatedTextView(
+                true, galleryButton, videoButton,
+                playlistButton
+            )
             changeCountChooseAudio()
         }
 
         videoButton.setOnClickListener {
+            chooseMedias.clear()
             mediaRecyclerView.run {
                 adapter = videoAdapter
                 layoutManager = GridLayoutManager(context, 3)
             }
             setVisibilityForAddFiles()
-            (it as TextView).changeActivatedTextView(true, galleryButton, musicButton,
-                playlistButton)
+            (it as TextView).changeActivatedTextView(
+                true, galleryButton, musicButton,
+                playlistButton
+            )
             changeCountChooseVideo()
         }
 
@@ -292,7 +307,7 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     abstract fun gonePanelGravityText()
 
-    protected open fun showPanelGravityText(){
+    protected open fun showPanelGravityText() {
         icEditText.activated(false)
         goneViewWhenShowPanelStyleText()
     }
@@ -304,13 +319,13 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         galleryButton.changeActivatedTextView(false, musicButton, videoButton, playlistButton)
     }
 
-    abstract fun calculateHeight():Int
+    abstract fun calculateHeight(): Int
 
     override fun changeTextColor(color: Int) {
         icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(color))
     }
 
-    protected open fun startChooseColorText(){
+    protected open fun startChooseColorText() {
         icEditColor.activated(true)
         changeStateToHalfExpanded()
         icEditText.activated(false)
@@ -323,18 +338,18 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         mediaRecyclerView.run {
             show()
             adapter = colorAdapter
-            layoutManager = GridLayoutManager(context,8)
+            layoutManager = GridLayoutManager(context, 8)
         }
     }
 
-    protected open fun endChooseColorText(){
+    protected open fun endChooseColorText() {
         mediaRecyclerView.gone()
         icEditColor.activated(false)
     }
 
     abstract fun attachFileNotActivated()
 
-    protected open fun attachFileActivated(){
+    protected open fun attachFileActivated() {
         icEditText.activated(false)
         icEditAlign.activated(false)
     }
@@ -353,8 +368,10 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
 
     @SuppressLint("CheckResult")
     protected fun requestPermission() {
-        permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe({
+        permissions.request(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ).subscribe({
             if (it) {
                 if (galleryAdapter.photos.size == 1) {
                     settingAdapter()
@@ -382,9 +399,9 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         }
     }
 
-    fun changeState(state: Int){
+    fun changeState(state: Int) {
         currentState = state
-        when(state){
+        when (state) {
             BottomSheetBehavior.STATE_EXPANDED -> {
                 stateExpanded()
             }
@@ -428,17 +445,25 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
         chooseMedias.clear()
     }
 
-    protected open fun changeBottomConstraintForView(id:Int) {
+    protected open fun changeBottomConstraintForView(id: Int) {
         val params = mediaRecyclerView.layoutParams as ConstraintLayout.LayoutParams
         params.bottomToTop = id
         mediaRecyclerView.layoutParams = params
     }
 
     class ItemOffsetDecoration(private val mItemOffset: Int) : RecyclerView.ItemDecoration() {
-        constructor(context: Context, @DimenRes itemOffsetId: Int) : this(context.resources.getDimensionPixelSize(itemOffsetId))
+        constructor(
+            context: Context,
+            @DimenRes itemOffsetId: Int
+        ) : this(context.resources.getDimensionPixelSize(itemOffsetId))
 
 
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
             super.getItemOffsets(outRect, view, parent, state)
             outRect.set(mItemOffset, mItemOffset, mItemOffset, mItemOffset)
         }
@@ -447,56 +472,50 @@ abstract class BaseBottomSheetFragment:BaseFragment(),MediaCallback,ImageUploadi
     @SuppressLint("CheckResult")
     override fun changeCountChooseImage() {
         Single.just(galleryAdapter.photos.countChoose()).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { count->
-                    if (count>0){
-                        btnAdd.isEnabled = true
-                        val text = when(count) {
-                            1 -> "Выбрано $count фотография"
-                            in 2..4 -> "Выбрано $count фотографии"
-                            else -> "Выбрано $count фотографий"
-                        }
-                        amountFiles.text =text
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { count ->
+                if (count > 0) {
+                    btnAdd.isEnabled = true
+                    amountFiles.text = when (count) {
+                        1 -> context?.getString(R.string.choose_one_photo)
+                        in 2..4 -> context?.getString(R.string.choose_two_photo, count)
+                        else -> context?.getString(R.string.choose_five_photo, count)
                     }
-                    else{
-                        btnAdd.isEnabled = false
-                        amountFiles.text ="Выберите фото"
-                    }
+                } else {
+                    btnAdd.isEnabled = false
+                    amountFiles.text = context?.getString(R.string.choose_photo)
                 }
+            }
     }
 
     @SuppressLint("CheckResult")
     override fun changeCountChooseVideo() {
         Single.just(videoAdapter.videos.countChoose()).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { count->
-                    if (count>0){
-                        btnAdd.isEnabled = true
-                        val text = "Выбрано $count видео"
-                        amountFiles.text =text
-                    }
-                    else{
-                        btnAdd.isEnabled = false
-                        amountFiles.text ="Выберите видео"
-                    }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { count ->
+                if (count > 0) {
+                    btnAdd.isEnabled = true
+                    amountFiles.text = context?.getString(R.string.choose_count_video, count)
+                } else {
+                    btnAdd.isEnabled = false
+                    amountFiles.text = context?.getString(R.string.choose_video)
                 }
+            }
     }
 
     @SuppressLint("CheckResult")
     override fun changeCountChooseAudio() {
         Single.just(audioAdapter.audios.countChoose()).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { count->
-                    if (count>0){
-                        btnAdd.isEnabled = true
-                        val text = "Выбрано $count аудио"
-                        amountFiles.text =text
-                    }
-                    else{
-                        btnAdd.isEnabled = false
-                        amountFiles.text ="Выберите аудио"
-                    }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { count ->
+                if (count > 0) {
+                    btnAdd.isEnabled = true
+                    amountFiles.text = context?.getString(R.string.choose_count_audio, count)
+                } else {
+                    btnAdd.isEnabled = false
+                    amountFiles.text = context?.getString(R.string.choose_audio)
                 }
+            }
     }
 
     override fun attachPhoto() {

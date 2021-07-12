@@ -12,12 +12,13 @@ import javax.inject.Inject
 
 class AddLocalMediaRepository@Inject constructor(private val context: Context):AddLocalMediaGateway {
 
-    override fun addGalleryUri(): MutableList<GalleryModel> {
+    override fun addGalleryUri(): List<GalleryModel> {
         val listUrlImage = mutableListOf<GalleryModel>()
         val mediaConstants = arrayOf(MediaStore.Images.Media.DATA,
-                if(Build.VERSION.SDK_INT > 28) MediaStore.Images.Media.DATE_MODIFIED else MediaStore.Images.Media.DATE_TAKEN)
+                if(Build.VERSION.SDK_INT > 28) MediaStore.Images.Media.DATE_MODIFIED
+                else MediaStore.Images.Media.DATE_TAKEN)
         try {
-            val cursor = context?.contentResolver?.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            val cursor = context.contentResolver?.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     mediaConstants,
                     null,
                     null,
@@ -39,12 +40,13 @@ class AddLocalMediaRepository@Inject constructor(private val context: Context):A
         return listUrlImage
     }
 
-    override fun addVideoUri(): MutableList<VideoModel> {
+    override fun addVideoUri(): List<VideoModel> {
         val listUrlVideo = mutableListOf<VideoModel>()
         val mediaConstants = arrayOf(
                 MediaStore.Video.Media.DATA,
                 MediaStore.Video.Media.DURATION,
-                if(Build.VERSION.SDK_INT > 28) MediaStore.Video.Media.DATE_MODIFIED else MediaStore.Video.Media.DATE_TAKEN
+                if(Build.VERSION.SDK_INT > 28) MediaStore.Video.Media.DATE_MODIFIED
+                else MediaStore.Video.Media.DATE_TAKEN
         )
         try {
             val cursor = context.contentResolver?.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -66,7 +68,8 @@ class AddLocalMediaRepository@Inject constructor(private val context: Context):A
                     val second = if (seconds < 10) "0$seconds" else "$seconds"
                     val hour = if(hours == 0) "" else if(hours < 10) "0$hours:" else "$hours:"
                     val date = cursor.getLong(dateIndex)
-                    listUrlVideo.add(VideoModel(path, "$hour$minute:$second", date,false))
+                    listUrlVideo.add(VideoModel(path, "$hour$minute:$second", date,
+                        false))
                 }
             }
         }catch (e: Exception){
@@ -77,7 +80,7 @@ class AddLocalMediaRepository@Inject constructor(private val context: Context):A
         return listUrlVideo
     }
 
-    override fun addAudioUri(): MutableList<AudioInAddFileModel> {
+    override fun addAudioUri(): List<AudioInAddFileModel> {
         val listUrlAudio = mutableListOf<AudioInAddFileModel>()
         val mediaConstants = arrayOf(
                 MediaStore.Audio.AudioColumns.DATA,
@@ -110,8 +113,8 @@ class AddLocalMediaRepository@Inject constructor(private val context: Context):A
                     val second = if (seconds < 10) "0$seconds" else "$seconds"
                     val hour = if(hours == 0) "" else if(hours < 10) "0$hours:" else "$hours:"
                     if (name != "")
-                        listUrlAudio.add(AudioInAddFileModel(path, name, "$hour$minute:$second",
-                                author,false))
+                        listUrlAudio.add(AudioInAddFileModel(path, name,
+                            "$hour$minute:$second", author,false))
                 }
             }
         }catch (e: Exception){
@@ -121,7 +124,7 @@ class AddLocalMediaRepository@Inject constructor(private val context: Context):A
         return listUrlAudio
     }
 
-    override fun addColors(): MutableList<Int> {
+    override fun addColors(): List<Int> {
         return mutableListOf(
             context.getColor(R.color.blue_1),
             context.getColor(R.color.blue_2),

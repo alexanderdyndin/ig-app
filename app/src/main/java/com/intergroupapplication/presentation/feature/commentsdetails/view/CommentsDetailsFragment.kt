@@ -57,8 +57,8 @@ import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 
-class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineScope,
-        AppBarLayout.OnOffsetChangedListener {
+class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineScope,
+    AppBarLayout.OnOffsetChangedListener {
 
     companion object {
         const val COMMENTS_DETAILS_REQUEST = 0
@@ -73,7 +73,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private var job : Job = Job()
+    private var job: Job = Job()
 
     @Inject
     @InjectPresenter
@@ -109,7 +109,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
 
     private var page: String = "1"
 
-    private var commentId:String = "1"
+    private var commentId: String = "1"
 
     private var commentCreated = false
 
@@ -118,14 +118,14 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     private var groupPostEntity: CommentEntity.PostEntity? = null
     private var lastRepliedComment: CommentEntity.Comment? = null
 
-    private val bottomFragment by lazy {CommentBottomSheetFragment()}
+    private val bottomFragment by lazy { CommentBottomSheetFragment() }
 
-    private val scrollListener = object:RecyclerView.OnScrollListener() {
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             val endPos = (commentsList.layoutManager as LinearLayoutManager)
-                    .findLastCompletelyVisibleItemPosition()
-            swipeLayout.isEnabled = endPos == adapter.itemCount-1
+                .findLastCompletelyVisibleItemPosition()
+            swipeLayout.isEnabled = endPos == adapter.itemCount - 1
         }
     }
 
@@ -148,8 +148,8 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
         postId = arguments?.getString(POST_ID)
-        page = arguments?.getString(COMMENT_PAGE)?:"1"
-        commentId = arguments?.getString(COMMENT_ID)?:"1"
+        page = arguments?.getString(COMMENT_PAGE) ?: "1"
+        commentId = arguments?.getString(COMMENT_ID) ?: "1"
     }
 
     override fun viewCreated() {
@@ -159,36 +159,39 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         swipeLayout = viewBinding.swipeLayout
         commentHolder = viewBinding.commentHolder
         commentLoader = viewBinding.commentLoader
-        childFragmentManager.setFragmentResultListener(CommentBottomSheetFragment.CALL_METHOD_KEY,
-            viewLifecycleOwner){ _, result ->
-            when(result.getInt(CommentBottomSheetFragment.METHOD_KEY)) {
+        childFragmentManager.setFragmentResultListener(
+            CommentBottomSheetFragment.CALL_METHOD_KEY,
+            viewLifecycleOwner
+        ) { _, result ->
+            when (result.getInt(CommentBottomSheetFragment.METHOD_KEY)) {
                 CommentBottomSheetFragment.ADD_HEIGHT_CONTAINER -> {
                     val height = result.getInt(CommentBottomSheetFragment.DATA_KEY)
                     addHeightContainer(height)
                 }
-                CommentBottomSheetFragment.ANSWER_COMMENT_CREATED_DATA-> {
+                CommentBottomSheetFragment.ANSWER_COMMENT_CREATED_DATA -> {
                     answerToCommentCreated()
                 }
-                CommentBottomSheetFragment.COMMENT_CREATED_DATA->
+                CommentBottomSheetFragment.COMMENT_CREATED_DATA ->
                     commentCreated()
-                CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA-> {
+                CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA -> {
                     val state = result.getInt(CommentBottomSheetFragment.DATA_KEY)
                     changeStateBottomSheet(state)
                 }
-                CommentBottomSheetFragment.CREATE_COMMENT_DATA-> {
-                    val data:CreateCommentDataModel? = result.
-                        getParcelable(CommentBottomSheetFragment.DATA_KEY)
+                CommentBottomSheetFragment.CREATE_COMMENT_DATA -> {
+                    val data: CreateCommentDataModel? =
+                        result.getParcelable(CommentBottomSheetFragment.DATA_KEY)
                     data?.let { createComment(it) }
                 }
                 CommentBottomSheetFragment.HIDE_SWIPE_DATA -> hideSwipeLayout()
-                CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA ->{
+                CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA -> {
                     val show = result.getBoolean(CommentBottomSheetFragment.DATA_KEY)
                     showCommentUploading(show)
                 }
             }
         }
         try {
-            childFragmentManager.beginTransaction().replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
+            childFragmentManager.beginTransaction()
+                .replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
             bottomSheetBehaviour = BottomSheetBehavior.from(viewBinding.containerCommentBottomSheet)
                     as NestedScrollBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {
@@ -206,12 +209,15 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                     }
                 })
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         presenter.postId = postId
         val decorator = CommentDividerItemDecorator(requireContext())
-        commentsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        commentsList.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
         commentsList.itemAnimator = null
         commentsList.addItemDecoration(decorator)
         commentsList.addOnScrollListener(scrollListener)
@@ -244,13 +250,14 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                         emptyText.hide()
                         loadingLayout.gone()
                         if (adapter.itemCount == 0) {
-                            adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                            adapterFooter.loadState =
+                                LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        if (swipeLayout.isRefreshing){
-                            commentsList.scrollToPosition(adapter.itemCount-1)
+                        if (swipeLayout.isRefreshing) {
+                            commentsList.scrollToPosition(adapter.itemCount - 1)
                             swipeLayout.isRefreshing = false
                         }
                         if (commentId != "1" && adapter.itemCount != 0) {
@@ -265,7 +272,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                         }
                         loadingLayout.gone()
                         if (commentCreated) {
-                            commentsList.scrollToPosition(adapter.itemCount-1)
+                            commentsList.scrollToPosition(adapter.itemCount - 1)
                             commentCreated = false
                         }
                     }
@@ -302,22 +309,20 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
         this.groupPostEntity = groupPostEntity
         if (infoForCommentEntity != null) {
             compositeDisposable.add(
-                    viewModel.fetchComments(groupPostEntity, page).subscribe {
-                        page = (groupPostEntity.commentsCount.toInt()/20+1).toString()
-                        adapter.submitData(lifecycle, it)
-                    }
+                viewModel.fetchComments(groupPostEntity, page).subscribe {
+                    page = (groupPostEntity.commentsCount.toInt() / 20 + 1).toString()
+                    adapter.submitData(lifecycle, it)
+                }
             )
-        }
-        else if (postId !=null){
+        } else if (postId != null) {
             compositeDisposable.add(
-                    viewModel.fetchComments(groupPostEntity, page).subscribe {
-                        adapter.submitData(lifecycle, it)
-                        page = (groupPostEntity.commentsCount.toInt()/20+1).toString()
-                    }
+                viewModel.fetchComments(groupPostEntity, page).subscribe {
+                    adapter.submitData(lifecycle, it)
+                    page = (groupPostEntity.commentsCount.toInt() / 20 + 1).toString()
+                }
             )
         }
     }
-
 
 
     private fun commentCreated() {
@@ -353,23 +358,26 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     private fun createComment(dataModel: CreateCommentDataModel) {
         if (commentHolder.childCount > 1) {
             lastRepliedComment?.let {
-                dataModel.commentBottomSheetPresenter.createAnswerToComment(it.id,
-                    dataModel.textComment,dataModel.finalNameMedia)
+                dataModel.commentBottomSheetPresenter.createAnswerToComment(
+                    it.id,
+                    dataModel.textComment, dataModel.finalNameMedia
+                )
             }
         } else {
-            dataModel.commentBottomSheetPresenter.createComment(groupPostEntity?.id.toString(),
-                dataModel.textComment, dataModel.finalNameMedia)
+            dataModel.commentBottomSheetPresenter.createComment(
+                groupPostEntity?.id.toString(),
+                dataModel.textComment, dataModel.finalNameMedia
+            )
         }
     }
 
 
     private fun changeStateBottomSheet(newState: Int) {
-        if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED){
-            if (bottomSheetBehaviour.state == BottomSheetBehavior.STATE_COLLAPSED){
+        if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED) {
+            if (bottomSheetBehaviour.state == BottomSheetBehavior.STATE_COLLAPSED) {
                 bottomSheetBehaviour.state = newState
             }
-        }
-        else{
+        } else {
             bottomSheetBehaviour.state = newState
         }
     }
@@ -417,45 +425,49 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
                     commentHolder.removeViewAt(0)
                 }
             }
-           imageClickListener = { list: List<FileEntity>, i: Int ->
+            imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-                findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
+                findNavController().navigate(
+                    R.id.action_commentsDetailsActivity_to_imageFragment,
+                    data
+                )
             }
             complaintListener = { id -> presenter.complaintComment(id) }
             deleteClickListener = { id, pos ->
-                compositeDisposable.add(viewModel.deleteComment(id)
+                compositeDisposable.add(
+                    viewModel.deleteComment(id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ adapter.notifyItemRemoved(pos) },
-                                { errorHandler.handle(it) })
+                            { errorHandler.handle(it) })
                 )
             }
             likeClickListener = { isLike, isDislike, comment, pos ->
-                compositeDisposable.add(viewModel.setCommentReact(isLike, isDislike, comment.id.toInt())
+                compositeDisposable.add(
+                    viewModel.setCommentReact(isLike, isDislike, comment.id.toInt())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
                             comment.reacts = it
                             adapter.notifyItemChanged(pos)
                         },
-                                { errorHandler.handle(it) })
+                            { errorHandler.handle(it) })
                 )
             }
             showPostDetailInfo = ::showPostDetailInfo
             clicksSettingPost = { settingsPost: ImageView ->
                 settingsPost.clicks()
-                        .subscribe { showPopupMenu(settingsPost) }
-                        .also { compositeDisposable.add(it) }
+                    .subscribe { showPopupMenu(settingsPost) }
+                    .also { compositeDisposable.add(it) }
             }
-            changeCountComments = {count ->
+            changeCountComments = { count ->
                 findNavController().previousBackStackEntry?.savedStateHandle
-                        ?.set(COMMENTS_COUNT_VALUE, count.toString())
+                    ?.set(COMMENTS_COUNT_VALUE, count.toString())
             }
-            progressBarVisibility = {visibility ->
-                if (visibility){
+            progressBarVisibility = { visibility ->
+                if (visibility) {
                     viewBinding.progressDownload.show()
-                }
-                else{
+                } else {
                     viewBinding.progressDownload.gone()
                 }
             }
@@ -466,27 +478,40 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineSco
     private fun manageDataFlow(infoForCommentEntity: InfoForCommentEntity?) {
         if (infoForCommentEntity != null) {
             groupPostEntity = mapToCommentEntityPost(infoForCommentEntity.groupPostEntity)
-            groupPostEntity?.let{showPostDetailInfo(it)}
-            /*if (infoForCommentEntity.isFromNewsScreen) {
-                headerPostFromGroup.setOnClickListener {
-                    val data = bundleOf(GROUP_ID to infoForCommentEntity.groupPostEntity.groupInPost.id)
-                    findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, data)
-                }
-            }*/
-        }
-        else if (postId != null){
+            groupPostEntity?.let { showPostDetailInfo(it) }
+        } else if (postId != null) {
             presenter.getPostDetailsInfo(postId!!)
         }
 
     }
 
     private fun mapToCommentEntityPost(postEntity: GroupPostEntity.PostEntity) =
-        CommentEntity.PostEntity(postEntity.id,postEntity.bells,
-            postEntity.groupInPost,postEntity.postText,postEntity.date,postEntity.updated,postEntity.author,
-            postEntity.pin,postEntity.photo,postEntity.commentsCount,postEntity.activeCommentsCount,
-            postEntity.isActive,postEntity.isOffered,postEntity.isPinned,postEntity.reacts,
-            postEntity.idp,postEntity.images,postEntity.audios,postEntity.videos,postEntity.isLoading,postEntity.unreadComments,
-            postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
+        CommentEntity.PostEntity(
+            postEntity.id,
+            postEntity.bells,
+            postEntity.groupInPost,
+            postEntity.postText,
+            postEntity.date,
+            postEntity.updated,
+            postEntity.author,
+            postEntity.pin,
+            postEntity.photo,
+            postEntity.commentsCount,
+            postEntity.activeCommentsCount,
+            postEntity.isActive,
+            postEntity.isOffered,
+            postEntity.isPinned,
+            postEntity.reacts,
+            postEntity.idp,
+            postEntity.images,
+            postEntity.audios,
+            postEntity.videos,
+            postEntity.isLoading,
+            postEntity.unreadComments,
+            postEntity.imagesExpanded,
+            postEntity.audiosExpanded,
+            postEntity.videosExpanded
+        )
 
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)

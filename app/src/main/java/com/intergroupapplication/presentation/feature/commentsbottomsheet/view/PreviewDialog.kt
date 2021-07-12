@@ -19,10 +19,10 @@ import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapte
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.removeChooseMedia
 import kotlin.math.abs
 
-class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
+class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
 
 
-    companion object{
+    companion object {
         const val ADD_REQUEST_CODE = "add_request_code"
         const val ADD_URI_KEY = "add_uri_key"
         const val IS_PHOTO_KEY = "is_photo_key"
@@ -31,10 +31,11 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
         private const val SWIPE_MAX_OFF_PATH = 250
         private const val SWIPE_THRESHOLD_VELOCITY = 100
     }
+
     private lateinit var videoView: VideoView
     private lateinit var gestureDetector: GestureDetector
     private val previewViewBinding by viewBinding(DialogPreviewBinding::bind)
-    lateinit var url:String
+    lateinit var url: String
     var isPhoto = false
     var isChoose = false
 
@@ -49,9 +50,9 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(previewViewBinding){
+        with(previewViewBinding) {
             videoView = videoPlayer
-            gestureDetector = GestureDetector(context,this@PreviewDialog)
+            gestureDetector = GestureDetector(context, this@PreviewDialog)
             setupAllView()
         }
     }
@@ -101,16 +102,24 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
                 isChoose = false
                 it.isActivated = isChoose
                 chooseMedias.removeChooseMedia(url)
-                parentFragmentManager.setFragmentResult(ADD_REQUEST_CODE,
-                        bundleOf(ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
-                                IS_CHOOSE_KEY to isChoose))
+                parentFragmentManager.setFragmentResult(
+                    ADD_REQUEST_CODE,
+                    bundleOf(
+                        ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
+                        IS_CHOOSE_KEY to isChoose
+                    )
+                )
             } else {
                 isChoose = true
                 it.isActivated = isChoose
                 chooseMedias.addChooseMedia(ChooseMedia(url))
-                parentFragmentManager.setFragmentResult(ADD_REQUEST_CODE,
-                        bundleOf(ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
-                                IS_CHOOSE_KEY to isChoose))
+                parentFragmentManager.setFragmentResult(
+                    ADD_REQUEST_CODE,
+                    bundleOf(
+                        ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
+                        IS_CHOOSE_KEY to isChoose
+                    )
+                )
             }
         }
     }
@@ -136,26 +145,38 @@ class PreviewDialog:DialogFragment(),GestureDetector.OnGestureListener {
     }
 
     override fun onSingleTapUp(e: MotionEvent?): Boolean {
-       return false
+        return false
     }
 
-    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-       return false
+    override fun onScroll(
+        e1: MotionEvent?,
+        e2: MotionEvent?,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        return false
     }
 
     override fun onLongPress(e: MotionEvent?) {
 
     }
 
-    override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+    override fun onFling(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
         try {
             if (abs(e1.y - e2.y) > SWIPE_MAX_OFF_PATH) return false
             if (e1.x - e2.x > SWIPE_MIN_DISTANCE
-                    && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        //тут плюс position
+                && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY
+            ) {
+                //тут плюс position
             } else if (e2.x - e1.x > SWIPE_MIN_DISTANCE
-                    && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        //тут минус position
+                && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY
+            ) {
+                //тут минус position
 
             }
         } catch (e: Exception) {
