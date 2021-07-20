@@ -1,12 +1,10 @@
-package com.intergroupapplication.presentation.feature.commentsbottomsheet.view
+package com.intergroupapplication.presentation.dialogs
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import by.kirich1409.viewbindingdelegate.viewBinding

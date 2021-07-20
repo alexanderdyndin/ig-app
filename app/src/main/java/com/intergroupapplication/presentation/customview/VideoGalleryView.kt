@@ -17,7 +17,6 @@ import com.intergroupapplication.presentation.exstension.getActivity
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.mediaPlayer.DownloadVideoPlayerView
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
 import kotlinx.coroutines.CoroutineScope

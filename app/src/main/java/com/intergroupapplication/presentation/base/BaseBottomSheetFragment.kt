@@ -13,17 +13,19 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.PreviewDialog
+import com.intergroupapplication.presentation.dialogs.PreviewDialog
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Single
@@ -34,6 +36,11 @@ import javax.inject.Inject
 
 abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUploadingView {
 
+
+    companion object{
+        const val PROGRESS_KEY = "progress_key"
+        const val PROGRESS_MODEL_KEY = "progress_model_key"
+    }
 
     @Inject
     lateinit var addLocalMediaGateway: AddLocalMediaGateway
@@ -449,6 +456,11 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
         val params = mediaRecyclerView.layoutParams as ConstraintLayout.LayoutParams
         params.bottomToTop = id
         mediaRecyclerView.layoutParams = params
+    }
+
+    protected fun setLoadStateResult(data:ProgressMediaModel){
+        childFragmentManager.setFragmentResult(PROGRESS_KEY, bundleOf(
+            PROGRESS_MODEL_KEY to data))
     }
 
     class ItemOffsetDecoration(private val mItemOffset: Int) : RecyclerView.ItemDecoration() {

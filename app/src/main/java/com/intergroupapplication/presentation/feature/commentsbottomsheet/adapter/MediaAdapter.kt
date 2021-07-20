@@ -72,7 +72,6 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
         private val imageLoadingDelegate: ImageLoadingDelegate,
         private val mediaCallback: MediaCallback,
         private val dialogDelegate: DialogDelegate,
-        private val manager: FragmentManager
     ) : MediaAdapter<GalleryModel>() {
 
         val photos = mutableListOf(GalleryModel("photos", 0, false))
@@ -168,7 +167,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         }
                     }
                     imagePreview.setOnClickListener {
-                        dialogDelegate.showPreviewDialog(true, data.url, data.isChoose, manager)
+                        dialogDelegate.showPreviewDialog(true, data.url, data.isChoose)
                     }
                 }
             }
@@ -239,7 +238,6 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
     class VideoAdapter(
         private val imageLoadingDelegate: ImageLoadingDelegate,
         private val mediaCallback: MediaCallback, private val dialogDelegate: DialogDelegate,
-        private val manager: FragmentManager
     ) : MediaAdapter<VideoModel>() {
         val videos = mutableListOf<VideoModel>()
 
@@ -289,7 +287,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         }
                     }
                     imagePreview.setOnClickListener {
-                        dialogDelegate.showPreviewDialog(false, data.url, data.isChoose, manager)
+                        dialogDelegate.showPreviewDialog(false, data.url, data.isChoose)
                     }
                 }
             }

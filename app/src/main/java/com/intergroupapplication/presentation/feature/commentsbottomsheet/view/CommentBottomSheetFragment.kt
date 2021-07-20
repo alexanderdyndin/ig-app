@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.CreateCommentDataModel
+import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
 import com.intergroupapplication.domain.KeyboardVisibilityEvent
@@ -513,6 +514,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         if (answerLayout.isActivated) answerLayout.show()
         richEditor.show()
         returnStateToOriginal()
+        dialogDelegate.showProgressDialog()
     }
 
     override fun stateSettling() {
@@ -634,19 +636,24 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         }
         progressMedias[chooseMedia.url] = LoadMediaType.START
         sendButton.hide()
+        setLoadStateResult(ProgressMediaModel(chooseMedia.url,LoadMediaType.START))
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
-        progressMedias[path] = LoadMediaType.PROGRESS.apply {
+        val type = LoadMediaType.PROGRESS.apply {
             this.progress = progress
         }
+        progressMedias[path] = type
+        setLoadStateResult(ProgressMediaModel(path,type))
     }
 
     override fun showImageUploadingError(path: String) {
         progressMedias[path] = LoadMediaType.ERROR
+        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.ERROR))
     }
 
     override fun showImageUploaded(path: String) {
+        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.UPLOAD))
         allViewsIsUpload = true
         progressMedias[path] = LoadMediaType.UPLOAD
         progressMedias.values.forEach { type ->

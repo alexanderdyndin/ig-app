@@ -9,9 +9,11 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.databinding.FragmentPostBottomSheetBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
+import com.intergroupapplication.domain.entity.LoadMediaType
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
@@ -228,6 +230,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 CHOOSE_MEDIA_KEY to chooseMedia
             )
         )
+        setLoadStateResult(ProgressMediaModel(chooseMedia.url,LoadMediaType.START))
     }
 
     override fun showImageUploadingProgress(progress: Float, path: String) {
@@ -237,6 +240,9 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 PROGRESS_KEY to progress, PATH_KEY to path
             )
         )
+        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.PROGRESS.apply {
+            this.progress = progress
+        }))
     }
 
     override fun showImageUploadingError(path: String) {
@@ -246,6 +252,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 PATH_KEY to path
             )
         )
+        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.ERROR))
     }
 
     override fun showImageUploaded(path: String) {
@@ -255,6 +262,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 PATH_KEY to path
             )
         )
+        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.UPLOAD))
     }
 
     fun getPhotosUrl() = presenter.getPhotosUrl()

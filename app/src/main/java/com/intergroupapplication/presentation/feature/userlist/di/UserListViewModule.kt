@@ -13,7 +13,7 @@ import com.intergroupapplication.presentation.feature.userlist.adapter.UserListA
 import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddUserBlackListAdapter
 import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.DialogProvider
+import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import dagger.Module
 import dagger.Provides

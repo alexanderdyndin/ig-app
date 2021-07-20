@@ -236,4 +236,5 @@
     <string name="choose_one_photo">Select 1 photo</string>
     <string name="choose_two_photo">Select %1$s photo</string>
     <string name="choose_five_photo">Select %1$s photo</string>
+    <string name="close">Close</string>
 </resources>

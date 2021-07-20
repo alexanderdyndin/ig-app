@@ -178,6 +178,7 @@ class GroupFragment : BaseFragment(), GroupView,
                 createdPostId = id
                 adapter.refresh()
             }
+            //TODO наверное тут надо будет программно пролистать ресайклер вверх
         }
         groupPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         groupPosts.itemAnimator = null

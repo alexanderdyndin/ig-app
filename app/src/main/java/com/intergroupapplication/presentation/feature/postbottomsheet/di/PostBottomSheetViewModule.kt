@@ -13,7 +13,7 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.DialogProvider
+import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.yalantis.ucrop.UCrop
 import dagger.Module
@@ -26,8 +26,7 @@ class PostBottomSheetViewModule {
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate
                               , callback: PostBottomSheetFragment,
                               dialogDelegate: DialogDelegate): MediaAdapter.GalleryAdapter {
-        return MediaAdapter.GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
-                callback.childFragmentManager)
+        return MediaAdapter.GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate)
     }
 
     @PerFragment
@@ -41,8 +40,7 @@ class PostBottomSheetViewModule {
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                             callback: PostBottomSheetFragment,
                             dialogDelegate: DialogDelegate): MediaAdapter.VideoAdapter {
-        return MediaAdapter.VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
-                callback.childFragmentManager)
+        return MediaAdapter.VideoAdapter(imageLoadingDelegate,callback,dialogDelegate)
     }
 
     @PerFragment

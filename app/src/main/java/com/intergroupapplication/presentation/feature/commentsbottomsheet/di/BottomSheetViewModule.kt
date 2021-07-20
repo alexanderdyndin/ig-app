@@ -13,7 +13,7 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.DialogProvider
+import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.yalantis.ucrop.UCrop
 import dagger.Module
@@ -27,8 +27,7 @@ class BottomSheetViewModule {
     fun provideGalleryAdapter(imageLoadingDelegate: ImageLoadingDelegate
                               , callback: CommentBottomSheetFragment,
                               dialogDelegate: DialogDelegate): MediaAdapter.GalleryAdapter {
-        return MediaAdapter.GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate,
-                callback.childFragmentManager)
+        return MediaAdapter.GalleryAdapter(imageLoadingDelegate,callback,dialogDelegate)
     }
 
     @PerFragment
@@ -42,8 +41,7 @@ class BottomSheetViewModule {
     fun provideVideoAdapter(imageLoadingDelegate: ImageLoadingDelegate,
                             callback: CommentBottomSheetFragment,
                             dialogDelegate: DialogDelegate): MediaAdapter.VideoAdapter {
-        return MediaAdapter.VideoAdapter(imageLoadingDelegate,callback,dialogDelegate,
-                callback.childFragmentManager)
+        return MediaAdapter.VideoAdapter(imageLoadingDelegate,callback,dialogDelegate)
     }
 
     @PerFragment
@@ -80,7 +78,7 @@ class BottomSheetViewModule {
     @PerFragment
     @Provides
     fun provideDialogManager(fragmentComment: CommentBottomSheetFragment): DialogManager =
-            DialogManager(fragmentComment.requireActivity().supportFragmentManager)
+            DialogManager(fragmentComment.childFragmentManager)
 
     @PerFragment
     @Provides

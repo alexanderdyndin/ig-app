@@ -5,14 +5,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListAdapter
 import com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
-import com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment
-import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.DialogProvider
+import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import dagger.Module
 import dagger.Provides
