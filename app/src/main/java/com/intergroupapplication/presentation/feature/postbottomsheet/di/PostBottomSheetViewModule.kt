@@ -78,7 +78,7 @@ class PostBottomSheetViewModule {
     @PerFragment
     @Provides
     fun provideDialogManager(fragmentComment: PostBottomSheetFragment): DialogManager =
-            DialogManager(fragmentComment.requireActivity().supportFragmentManager)
+            DialogManager(fragmentComment.childFragmentManager)
 
     @PerFragment
     @Provides

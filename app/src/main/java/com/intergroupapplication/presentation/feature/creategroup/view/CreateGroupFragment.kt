@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.chip.Chip
@@ -178,7 +179,6 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
         }
         groupName = requireView().findViewById(R.id.groupCreate_title)
         viewBinding.createGroup.setOnClickListener {
-            //todo write rules for validator
             validator.validate()
         }
         viewBinding.groupCreateAddAvatar.setOnClickListener {

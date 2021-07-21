@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
@@ -372,6 +373,8 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
     abstract fun changeStateToHalfExpanded()
 
     abstract fun changeStateViewAfterAddMedia()
+
+    abstract fun deleteMediaFromEditor(chooseMedia: ChooseMedia)
 
     @SuppressLint("CheckResult")
     protected fun requestPermission() {

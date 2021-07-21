@@ -13,6 +13,7 @@ import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.dialogs.progress.adapter.MediaProgressAdapter
+import timber.log.Timber
 
 class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
 

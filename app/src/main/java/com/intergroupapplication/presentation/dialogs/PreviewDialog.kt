@@ -112,10 +112,14 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
                 isChoose = true
                 it.isActivated = isChoose
                 if (isPhoto) {
-                    chooseMedias.addChooseMedia(ChooseMedia(url,type = MediaType.IMAGE))
+                    chooseMedias.addChooseMedia(ChooseMedia(url,
+                        name = url.substringAfterLast("/"),
+                        type = MediaType.IMAGE))
                 }
                 else{
-                    chooseMedias.addChooseMedia(ChooseMedia(url,type = MediaType.VIDEO))
+                    chooseMedias.addChooseMedia(ChooseMedia(url,
+                        name = url.substringAfterLast("/"),
+                        type = MediaType.VIDEO))
                 }
                 parentFragmentManager.setFragmentResult(
                     ADD_REQUEST_CODE,

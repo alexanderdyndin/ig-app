@@ -29,7 +29,6 @@ import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
-import com.intergroupapplication.presentation.customview.NestedScrollBottomSheetBehavior
 import com.intergroupapplication.presentation.customview.RichEditor
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
@@ -120,30 +119,35 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                 PostBottomSheetFragment.CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE ->
                     changeStateBottomSheetAfterAddMedia()
                 PostBottomSheetFragment.CHANGE_STATE_METHOD_CODE ->
-                    changeStateBottomSheet(result.getInt(PostBottomSheetFragment.NEW_STATE_KEY))
+                    changeStateBottomSheet(result.getInt(PostBottomSheetFragment.DATA_KEY))
                 PostBottomSheetFragment.CHANGE_TEXT_COLOR_METHOD_CODE ->
-                    changeTextColor(result.getInt(PostBottomSheetFragment.COLOR_KEY))
+                    changeTextColor(result.getInt(PostBottomSheetFragment.DATA_KEY))
                 PostBottomSheetFragment.SHOW_KEYBOARD_METHOD_CODE -> showKeyboard()
                 PostBottomSheetFragment.GONE_PANEL_STYLE_METHOD_CODE -> gonePanelStyleText()
                 PostBottomSheetFragment.SHOW_PANEL_STYLE_METHOD_CODE -> showPanelStyleText()
                 PostBottomSheetFragment.GONE_PANEL_GRAVITY_METHOD_CODE -> gonePanelGravity()
                 PostBottomSheetFragment.SHOW_PANEL_GRAVITY_METHOD_CODE -> showPanelGravity()
                 PostBottomSheetFragment.STARTED_UPLOADED_METHOD_CODE ->
-                    result.getParcelable<ChooseMedia>(PostBottomSheetFragment.CHOOSE_MEDIA_KEY)
+                    result.getParcelable<ChooseMedia>(PostBottomSheetFragment.DATA_KEY)
                         ?.let { showImageUploadingStarted(it) }
                 PostBottomSheetFragment.PROGRESS_UPLOADED_METHOD_CODE ->
                     showImageUploadingProgress(
                         result.getFloat(PostBottomSheetFragment.PROGRESS_KEY),
-                        result.getString(PostBottomSheetFragment.PATH_KEY, "")
+                        result.getString(PostBottomSheetFragment.DATA_KEY, "")
                     )
                 PostBottomSheetFragment.ERROR_UPLOADED_METHOD_CODE ->
                     showImageUploadingError(
-                        result.getString(PostBottomSheetFragment.PATH_KEY, "")
+                        result.getString(PostBottomSheetFragment.DATA_KEY, "")
                     )
                 PostBottomSheetFragment.UPLOAD_METHOD_CODE ->
                     showImageUploaded(
-                        result.getString(PostBottomSheetFragment.PATH_KEY, "")
+                        result.getString(PostBottomSheetFragment.DATA_KEY, "")
                     )
+                PostBottomSheetFragment.DELETE_MEDIA_CODE ->{
+                    result.getString(PostBottomSheetFragment.DATA_KEY)?.let{
+                        richEditor.html = richEditor.html?.replace(it,"")
+                    }
+                }
             }
         }
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -243,7 +247,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                 R.id.containerBottomSheet,
                 bottomFragment
             ).commit()
-            //bottomFragment.callback = this
             bottomSheetBehaviour = BottomSheetBehavior.from(createPostBinding.containerBottomSheet)
                     as AutoCloseBottomSheetBehavior<FrameLayout>
             bottomSheetBehaviour.run {

@@ -149,10 +149,13 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         setOnClickListener {
                             data.run {
                                 if (!isChoose && chooseMedias.size < 10 &&
-                                    !chooseMedias.contains(ChooseMedia(url,type = MediaType.IMAGE))
+                                    !chooseMedias.contains(ChooseMedia(url,
+                                        name = url.substringAfterLast("/"),
+                                        type = MediaType.IMAGE))
                                 ) {
                                     isChoose = true
                                     chooseMedias.addChooseMedia(ChooseMedia(url,
+                                        name = url.substringAfterLast("/"),
                                         type = MediaType.IMAGE))
                                 } else if (isChoose) {
                                     isChoose = false
@@ -266,6 +269,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                                         ChooseMedia(
                                             url,
                                             createFile(imagePreview.drawable),
+                                            name = url.substringAfterLast("/"),
                                             duration = data.duration,
                                             type = MediaType.VIDEO
                                         )

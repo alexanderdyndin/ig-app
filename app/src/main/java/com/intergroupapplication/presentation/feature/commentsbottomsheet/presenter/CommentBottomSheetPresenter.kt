@@ -21,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
+import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -174,7 +175,9 @@ class CommentBottomSheetPresenter @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val chooseMedia = ChooseMedia(it, type = MediaType.IMAGE)
+                val chooseMedia = ChooseMedia(it,
+                    name = it.substringAfterLast("/"),
+                    type = MediaType.IMAGE)
                 chooseMedias.addChooseMedia(chooseMedia)
                 loadImage(chooseMedia)
             }, {
@@ -190,7 +193,9 @@ class CommentBottomSheetPresenter @Inject constructor(
                 .flatMap {
                     photoGateway.uploadVideoToAws(
                         ChooseMedia(
-                            chooseMedia.url, urlPreview = it,
+                            chooseMedia.url,
+                            name = chooseMedia.name,
+                            urlPreview = it,
                             duration = chooseMedia.duration,
                             type = MediaType.VIDEO
                         ), postId, appApi::uploadCommentsMedia
@@ -303,7 +308,9 @@ class CommentBottomSheetPresenter @Inject constructor(
                     .flatMap {
                         photoGateway.uploadVideoToAws(
                             ChooseMedia(
-                                chooseMedia.url, urlPreview = it,
+                                chooseMedia.url,
+                                urlPreview = it,
+                                name = chooseMedia.name,
                                 duration = chooseMedia.duration,
                                 type = chooseMedia.type
                             ), postId, appApi::uploadCommentsMedia

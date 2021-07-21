@@ -49,7 +49,9 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    val chooseMedia = ChooseMedia(it, type = MediaType.IMAGE)
+                    val chooseMedia = ChooseMedia(it,
+                        name = it.substringAfterLast("/"),
+                        type = MediaType.IMAGE)
                     chooseMedias.addChooseMedia(chooseMedia)
                     loadImage(chooseMedia)
                 }, {
@@ -62,6 +64,7 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
                 appApi::uploadCommentsMedia)
                 .flatMap {
                     photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
+                            name = chooseMedia.name,
                             duration = chooseMedia.duration,
                             type = chooseMedia.type), groupId, appApi::uploadCommentsMedia)
                 }.subscribeOn(Schedulers.io())
@@ -141,6 +144,7 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
                     appApi::uploadPhoto)
                         .flatMap {
                             photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
+                                    name = chooseMedia.name,
                                     duration = chooseMedia.duration, type = MediaType.VIDEO),
                                     groupId, appApi::uploadPhoto)
                         }.subscribeOn(Schedulers.io())

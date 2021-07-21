@@ -31,7 +31,9 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
                 .doOnNext {
-                    view.showImageUploadingStarted(ChooseMedia(it,type = MediaType.IMAGE))
+                    view.showImageUploadingStarted(ChooseMedia(it,
+                    name = it.substringAfterLast("/"),
+                    type = MediaType.IMAGE))
                     path = it
                 }
                 .observeOn(Schedulers.io())
@@ -40,12 +42,16 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .subscribe({
                     progress = it
                     view.showImageUploadingProgress(it, ChooseMedia(path,
+                        name = path.substringAfterLast("/"),
                         type = MediaType.IMAGE))
                 }, {
                     errorHandler?.handle(CanNotUploadPhoto())
-                    view.showImageUploadingError(ChooseMedia(path,type = MediaType.IMAGE))
+                    view.showImageUploadingError(ChooseMedia(path,
+                        name = path.substringAfterLast("/"),
+                        type = MediaType.IMAGE))
                 }, { if (progress == FULL_UPLOADED_PROGRESS)
                     view.showImageUploaded(ChooseMedia(path,
+                        name = path.substringAfterLast("/"),
                         type = MediaType.IMAGE)) })
     }
 
@@ -57,7 +63,9 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
                 .doOnNext {
-                    view.showImageUploadingStarted(ChooseMedia(it, type = MediaType.IMAGE))
+                    view.showImageUploadingStarted(ChooseMedia(it,
+                        name = it.substringAfterLast("/"),
+                        type = MediaType.IMAGE))
                     path = it
                 }
                 .observeOn(Schedulers.io())
@@ -65,11 +73,16 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress = it
-                    view.showImageUploadingProgress(it, ChooseMedia(path,type = MediaType.IMAGE))
+                    view.showImageUploadingProgress(it, ChooseMedia(path,
+                        name = path.substringAfterLast("/"),
+                        type = MediaType.IMAGE))
                 }, {
                     errorHandler?.handle(CanNotUploadPhoto())
-                    view.showImageUploadingError(ChooseMedia(path,type = MediaType.IMAGE))
+                    view.showImageUploadingError(ChooseMedia(path,
+                        name = path.substringAfterLast("/"),
+                        type = MediaType.IMAGE))
                 }, { if (progress >= FULL_UPLOADED_PROGRESS) view.showImageUploaded(ChooseMedia(path,
+                    name = path.substringAfterLast("/"),
                         type = MediaType.IMAGE)) })
     }
 

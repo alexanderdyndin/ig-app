@@ -42,6 +42,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
@@ -175,7 +176,6 @@ class GroupFragment : BaseFragment(), GroupView,
                 createdPostId = id
                 adapter.refresh()
             }
-            //TODO наверное тут надо будет программно пролистать ресайклер вверх
         }
         groupPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         groupPosts.itemAnimator = null
@@ -222,6 +222,7 @@ class GroupFragment : BaseFragment(), GroupView,
                         }
                         loading_layout.gone()
                         swipeLayout.isRefreshing = false
+                        groupPosts.scrollToPosition(0)
                     }
                     else ->{ swipeLayout.isRefreshing = false }
                 }

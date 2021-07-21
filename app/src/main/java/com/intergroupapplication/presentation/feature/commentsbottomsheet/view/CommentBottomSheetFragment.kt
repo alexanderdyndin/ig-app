@@ -127,7 +127,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                     }
                 })
         }
-        //TODO после того как удалили из диалога надо удалять и из richEditor
+
         childFragmentManager.setFragmentResultListener(ProgressDialog.CALLBACK_METHOD_KEY,
             viewLifecycleOwner){ _, result:Bundle->
             when(result.getInt(ProgressDialog.METHOD_KEY)){
@@ -153,21 +153,21 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun deleteMediaFromEditor(it: ChooseMedia) {
-        when (it.type) {
+    override fun deleteMediaFromEditor(chooseMedia: ChooseMedia) {
+        when (chooseMedia.type) {
             MediaType.AUDIO -> {
                 richEditor.html = richEditor.html?.replace(
-                    "${ParseConstants.START_AUDIO}${it.url}${ParseConstants.END_AUDIO}",
+                    "${ParseConstants.START_AUDIO}${chooseMedia.url}${ParseConstants.END_AUDIO}",
                     "")
             }
             MediaType.IMAGE -> {
                 richEditor.html = richEditor.html?.replace(
-                    "${ParseConstants.START_IMAGE}${it.url}${ParseConstants.END_IMAGE}",
+                    "${ParseConstants.START_IMAGE}${chooseMedia.url}${ParseConstants.END_IMAGE}",
                     "")
             }
             MediaType.VIDEO -> {
                 richEditor.html = richEditor.html?.replace(
-                    "${ParseConstants.START_VIDEO}${it.url}${ParseConstants.END_VIDEO}",
+                    "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}",
                     "")
             }
         }
@@ -662,7 +662,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
             MediaType.IMAGE -> {
                 val fileEntity = FileEntity(
                     0, chooseMedia.url, false, "",
-                    chooseMedia.url.substringAfterLast("/"), 0, 0
+                    chooseMedia.name, 0, 0
                 )
                 namesMap[chooseMedia.url] = fileEntity.title
                 richEditor.insertImage(chooseMedia.url, "alt")
@@ -671,7 +671,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
             MediaType.VIDEO ->{
                 val fileEntity = FileEntity(
                     0, chooseMedia.url, false, "",
-                    chooseMedia.url.substringAfterLast("/"), 0, 0,
+                    chooseMedia.name, 0, 0,
                     chooseMedia.urlPreview, chooseMedia.duration
                 )
                 namesMap[chooseMedia.url] = fileEntity.title

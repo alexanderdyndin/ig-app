@@ -35,6 +35,7 @@ class MediaProgressAdapter(private val callback: ProgressCallback)
         private val binding by viewBinding(LayoutMediaProgressHolderBinding::bind)
 
         override fun onBind(data: ProgressMediaModel) {
+            Timber.tag("tut_data").d(data.toString())
             binding.nameMedia.text = data.chooseMedia.name
             prepareListeners(data.chooseMedia)
             when(data.type){

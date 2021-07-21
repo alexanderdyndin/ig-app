@@ -11,11 +11,9 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.databinding.FragmentPostBottomSheetBinding
-import com.intergroupapplication.domain.entity.AudioEntity
-import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.domain.entity.LoadMediaType
-import com.intergroupapplication.domain.entity.MediaType
+import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
+import com.intergroupapplication.presentation.dialogs.progress.view.ProgressDialog
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.PostBottomSheetPresenter
@@ -28,10 +26,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     companion object {
         const val VIEW_CHANGE_REQUEST_CODE = "view_change_request_code"
         const val METHOD_KEY = "method_key"
-        const val NEW_STATE_KEY = "new_state_key"
-        const val COLOR_KEY = "color_key"
-        const val CHOOSE_MEDIA_KEY = "choose_media_key"
-        const val PATH_KEY = "path_key"
+        const val DATA_KEY = "data_key"
         const val PROGRESS_KEY = "progress_key"
         const val CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE = 99
         const val CHANGE_STATE_METHOD_CODE = 100
@@ -45,6 +40,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         const val PROGRESS_UPLOADED_METHOD_CODE = 108
         const val ERROR_UPLOADED_METHOD_CODE = 109
         const val UPLOAD_METHOD_CODE = 110
+        const val DELETE_MEDIA_CODE = 111
     }
 
     private val postBottomBinding by viewBinding(FragmentPostBottomSheetBinding::bind)
@@ -69,7 +65,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
             CreatePostFragment.MEDIA_INTERACTION_REQUEST_CODE, viewLifecycleOwner
         ) { _, bundle ->
             val chooseMedia: ChooseMedia = bundle.getParcelable(CreatePostFragment.CHOOSE_MEDIA_KEY)
-                ?: ChooseMedia("",type = MediaType.IMAGE)
+                ?: ChooseMedia("",name = "",type = MediaType.IMAGE)
             when (bundle.getInt(CreatePostFragment.METHOD_KEY)) {
                 CreatePostFragment.RETRY_LOADING_METHOD_CODE -> presenter.retryLoading(chooseMedia)
                 CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> {
@@ -104,6 +100,29 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 CreatePostFragment.CHANGE_COLOR -> {
                     val color = bundle.getInt(CreatePostFragment.COLOR_KEY)
                     icEditColor.setImageDrawable(colorDrawableGateway.getDrawableByColor(color))
+                }
+            }
+        }
+        childFragmentManager.setFragmentResultListener(
+            ProgressDialog.CALLBACK_METHOD_KEY,
+            viewLifecycleOwner){ _, result:Bundle->
+            when(result.getInt(ProgressDialog.METHOD_KEY)){
+                ProgressDialog.RETRY_LOADING_CODE -> {
+                    result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
+                        presenter.retryLoading(it)
+                    }
+                }
+                ProgressDialog.CANCEL_UPLOADING_CODE -> {
+                    result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
+                        presenter.cancelUploading(it)
+                        deleteMediaFromEditor(it)
+                    }
+                }
+                ProgressDialog.REMOVE_CONTENT_CODE -> {
+                    result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
+                        presenter.removeContent(it)
+                        deleteMediaFromEditor(it)
+                    }
                 }
             }
         }
@@ -142,14 +161,14 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to CHANGE_STATE_METHOD_CODE,
-                NEW_STATE_KEY to BottomSheetBehavior.STATE_COLLAPSED
+                DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED
             )
         )
         setFragmentResult(bundleOf(METHOD_KEY to SHOW_KEYBOARD_METHOD_CODE))
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to CHANGE_TEXT_COLOR_METHOD_CODE,
-                COLOR_KEY to color
+                DATA_KEY to color
             )
         )
     }
@@ -164,7 +183,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to CHANGE_STATE_METHOD_CODE,
-                NEW_STATE_KEY to BottomSheetBehavior.STATE_COLLAPSED
+                DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED
             )
         )
     }
@@ -196,7 +215,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
             setFragmentResult(
                 bundleOf(
                     METHOD_KEY to CHANGE_STATE_METHOD_CODE,
-                    NEW_STATE_KEY to BottomSheetBehavior.STATE_HALF_EXPANDED
+                    DATA_KEY to BottomSheetBehavior.STATE_HALF_EXPANDED
                 )
             )
         }
@@ -205,6 +224,31 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
 
     override fun changeStateViewAfterAddMedia() {
         setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE))
+        dialogDelegate.showProgressDialog()
+    }
+
+    override fun deleteMediaFromEditor(chooseMedia: ChooseMedia) {
+        when (chooseMedia.type) {
+            MediaType.AUDIO -> {
+                setFragmentResult(
+                    bundleOf(
+                    METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to
+                    "${ParseConstants.START_AUDIO}${chooseMedia.url}${ParseConstants.END_AUDIO}"))
+            }
+            MediaType.IMAGE -> {
+                setFragmentResult(
+                    bundleOf(
+                    METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to
+                    "${ParseConstants.START_IMAGE}${chooseMedia.url}${ParseConstants.END_IMAGE}"))
+            }
+            MediaType.VIDEO -> {
+                setFragmentResult(
+                    bundleOf(
+                    METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to
+                    "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}"))
+
+            }
+        }
     }
 
     override fun stateSettling() {
@@ -228,7 +272,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to STARTED_UPLOADED_METHOD_CODE,
-                CHOOSE_MEDIA_KEY to chooseMedia
+                DATA_KEY to chooseMedia
             )
         )
         setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.START))
@@ -238,7 +282,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to PROGRESS_UPLOADED_METHOD_CODE,
-                PROGRESS_KEY to progress, PATH_KEY to chooseMedia.url
+                PROGRESS_KEY to progress, DATA_KEY to chooseMedia.url
             )
         )
         setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.PROGRESS.apply {
@@ -250,7 +294,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to ERROR_UPLOADED_METHOD_CODE,
-                PATH_KEY to chooseMedia.url
+                DATA_KEY to chooseMedia.url
             )
         )
         setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
@@ -260,7 +304,7 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to UPLOAD_METHOD_CODE,
-                PATH_KEY to chooseMedia.url
+                DATA_KEY to chooseMedia.url
             )
         )
         setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
