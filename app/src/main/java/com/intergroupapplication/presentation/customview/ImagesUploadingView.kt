@@ -88,8 +88,8 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
         this.addView(container)
     }
 
-    override fun showImageUploaded(path: String) {
-        loadingViews[path]?.apply {
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
+        loadingViews[chooseMedia.url]?.apply {
             val darkCard = findViewById<TextView>(R.id.darkCard)
             val stopUploading = findViewById<ImageView>(R.id.stopUploading)
             val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
@@ -102,16 +102,16 @@ class ImagesUploadingView @JvmOverloads constructor(context: Context,
     }
 
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
-        loadingViews[path]?.apply {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
+        loadingViews[chooseMedia.url]?.apply {
             val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
             imageUploadingProgressBar.progress = progress
         }
     }
 
 
-    override fun showImageUploadingError(path: String) {
-        loadingViews[path]?.apply {
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
+        loadingViews[chooseMedia.url]?.apply {
             val darkCard = findViewById<TextView>(R.id.darkCard)
             val stopUploading = findViewById<ImageView>(R.id.stopUploading)
             val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)

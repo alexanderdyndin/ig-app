@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
 import com.intergroupapplication.presentation.customview.PostCustomView
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpost.presenter.EditPostPresenter
@@ -54,21 +55,21 @@ class EditPostFragment : CreatePostFragment() {
             if (text.contains(it.song)) {
                 namesMap[it.file] = it.song
                 text = text.substringBefore(it.song) + it.file +
-                        text.substringAfter(it.song + PostCustomView.MEDIA_PREFIX)
+                        text.substringAfter(it.song + MEDIA_PREFIX)
             }
         }
         groupPost.images.forEach {
             if (text.contains(it.title)) {
                 namesMap[it.file] = it.title
                 text = text.substringBefore(it.title) + it.file +
-                        text.substringAfter(it.title + PostCustomView.MEDIA_PREFIX)
+                        text.substringAfter(it.title + MEDIA_PREFIX)
             }
         }
         groupPost.videos.forEach {
             if (text.contains(it.title)) {
                 namesMap[it.file] = it.title
                 text = text.substringBefore(it.title) + it.file +
-                        text.substringAfter(it.title + PostCustomView.MEDIA_PREFIX)
+                        text.substringAfter(it.title + MEDIA_PREFIX)
             }
         }
         return text

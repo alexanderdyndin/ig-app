@@ -44,7 +44,7 @@ class CreatePostPresenter @Inject constructor(private val groupPostGateway: Grou
                                 photo.filter { finalNamesMedia.contains(it.name) }
                                     .map { FileRequestEntity(file = it.url, description = null, title = it.name) },
                                 audio.filter { finalNamesMedia.contains(it.name) }
-                                    .map { AudioRequestEntity(it.url, null, it.name, it.authorMusic, null,it.duration) },
+                                    .map { AudioRequestEntity(it.url, null, it.name, it.author, null,it.duration) },
                                 video.filter { finalNamesMedia.contains(it.name) }
                                     .map {
                                     FileRequestEntity(file = it.url, description = null,

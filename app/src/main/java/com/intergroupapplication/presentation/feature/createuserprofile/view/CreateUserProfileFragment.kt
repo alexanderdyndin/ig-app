@@ -129,7 +129,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             android.R.id.home -> findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
@@ -153,16 +153,16 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         userAvatarHolder.showImageUploadingStarted(chooseMedia)
     }
 
-    override fun showImageUploaded(path: String) {
-        userAvatarHolder.showImageUploaded(path)
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
+        userAvatarHolder.showImageUploaded(chooseMedia)
     }
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
-        userAvatarHolder.showImageUploadingProgress(progress)
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
+        userAvatarHolder.showImageUploadingProgress(progress,chooseMedia)
     }
 
-    override fun showImageUploadingError(path: String) {
-        userAvatarHolder.showImageUploadingError(path)
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
+        userAvatarHolder.showImageUploadingError(chooseMedia)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

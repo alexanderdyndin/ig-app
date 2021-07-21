@@ -12,7 +12,6 @@ import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 import javax.inject.Inject
 
 class EditPostPresenter @Inject constructor(private val groupPostGateway: GroupPostGateway,
@@ -35,7 +34,7 @@ class EditPostPresenter @Inject constructor(private val groupPostGateway: GroupP
                                     title = it.name) },
                                 audio.filter { finalNamesMedia.contains(it.name) }
                                     .map { AudioRequestEntity(it.url, null, it.name,
-                                    it.authorMusic, null,it.duration) },
+                                    it.author, null,it.duration) },
                                 video.filter { finalNamesMedia.contains(it.name) }
                                     .map {
                                     FileRequestEntity(file = it.url, description = null,

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.databinding.LayoutMediaProgressHolderBinding
 import com.intergroupapplication.domain.entity.LoadMediaType
@@ -12,8 +13,10 @@ import com.intergroupapplication.presentation.base.BaseHolder
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
+import timber.log.Timber
 
-class MediaProgressAdapter:RecyclerView.Adapter<MediaProgressAdapter.MediaProgressHolder>() {
+class MediaProgressAdapter(private val callback: ProgressCallback)
+    :RecyclerView.Adapter<MediaProgressAdapter.MediaProgressHolder>() {
 
     val progressMedia = mutableListOf<ProgressMediaModel>()
 
@@ -32,22 +35,22 @@ class MediaProgressAdapter:RecyclerView.Adapter<MediaProgressAdapter.MediaProgre
         private val binding by viewBinding(LayoutMediaProgressHolderBinding::bind)
 
         override fun onBind(data: ProgressMediaModel) {
-            binding.nameMedia.text = data.url
+            binding.nameMedia.text = data.chooseMedia.name
+            prepareListeners(data.chooseMedia)
             when(data.type){
-                LoadMediaType.START -> startedState(data.url)
+                LoadMediaType.START -> startedState()
                 LoadMediaType.PROGRESS ->  progressState(data.type.progress)
                 LoadMediaType.ERROR -> errorState()
                 LoadMediaType.UPLOAD -> uploadState()
             }
         }
 
-        private fun startedState(url: String){
+        private fun startedState(){
             with(binding){
                 imageUploadingProgressBar.show()
                 stopUploading.show()
                 refreshContainer.hide()
             }
-            prepareListeners(url)
         }
 
         private fun progressState(progress:Float){
@@ -71,21 +74,29 @@ class MediaProgressAdapter:RecyclerView.Adapter<MediaProgressAdapter.MediaProgre
             }
         }
 
-        private fun prepareListeners(url:String) {
+        private fun prepareListeners(chooseMedia: ChooseMedia) {
             with(binding){
                 refreshContainer.setOnClickListener {
                     imageUploadingProgressBar.progress = 0f
-                    //presenter.retryLoading(chooseMedia)
-                    startedState(url)
+                    callback.retryLoading(chooseMedia)
+                    startedState()
                 }
                 stopUploading.setOnClickListener {
-                    //presenter.cancelUploading(chooseMedia.url)
+                    callback.cancelUploading(chooseMedia)
+                    Timber.tag("tut_cancel").d(chooseMedia.url)
                 }
                 detachMedia.setOnClickListener {
-                    //presenter.removeContent(chooseMedia.url)
+                    callback.removeContent(chooseMedia)
+                    Timber.tag("tut_remove").d(chooseMedia.url)
                 }
             }
         }
+    }
+
+    interface ProgressCallback{
+        fun retryLoading(chooseMedia: ChooseMedia)
+        fun cancelUploading(chooseMedia: ChooseMedia)
+        fun removeContent(chooseMedia: ChooseMedia)
     }
 
 }

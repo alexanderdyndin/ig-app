@@ -22,11 +22,11 @@ import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
 import com.intergroupapplication.domain.KeyboardVisibilityEvent
-import com.intergroupapplication.domain.entity.CommentEntity
-import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.domain.entity.LoadMediaType
+import com.intergroupapplication.domain.entity.*
+import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.customview.*
+import com.intergroupapplication.presentation.dialogs.progress.view.ProgressDialog
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
@@ -127,7 +127,50 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                     }
                 })
         }
+        //TODO после того как удалили из диалога надо удалять и из richEditor
+        childFragmentManager.setFragmentResultListener(ProgressDialog.CALLBACK_METHOD_KEY,
+            viewLifecycleOwner){ _, result:Bundle->
+            when(result.getInt(ProgressDialog.METHOD_KEY)){
+                ProgressDialog.RETRY_LOADING_CODE -> {
+                    result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
+                        presenter.retryLoading(it)
+                    }
+                }
+                ProgressDialog.CANCEL_UPLOADING_CODE -> {
+                    result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
+                        presenter.cancelUploading(it)
+                        deleteMediaFromEditor(it)
+                    }
+                }
+                ProgressDialog.REMOVE_CONTENT_CODE -> {
+                    result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
+                        presenter.removeContent(it)
+                        deleteMediaFromEditor(it)
+                    }
+                }
+            }
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun deleteMediaFromEditor(it: ChooseMedia) {
+        when (it.type) {
+            MediaType.AUDIO -> {
+                richEditor.html = richEditor.html?.replace(
+                    "${ParseConstants.START_AUDIO}${it.url}${ParseConstants.END_AUDIO}",
+                    "")
+            }
+            MediaType.IMAGE -> {
+                richEditor.html = richEditor.html?.replace(
+                    "${ParseConstants.START_IMAGE}${it.url}${ParseConstants.END_IMAGE}",
+                    "")
+            }
+            MediaType.VIDEO -> {
+                richEditor.html = richEditor.html?.replace(
+                    "${ParseConstants.START_VIDEO}${it.url}${ParseConstants.END_VIDEO}",
+                    "")
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -481,15 +524,15 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     override fun attachGallery() {
-        presenter.attachMedia(galleryAdapter.getChoosePhotosFromObservable(), presenter::loadImage)
+        presenter.attachMedia(presenter::loadImage)
     }
 
     override fun attachVideo() {
-        presenter.attachMedia(videoAdapter.getChooseVideosFromObservable(), presenter::loadVideo)
+        presenter.attachMedia(presenter::loadVideo)
     }
 
     override fun attachAudio() {
-        presenter.attachMedia(audioAdapter.getChooseAudiosFromObservable(), presenter::loadAudio)
+        presenter.attachMedia(presenter::loadAudio)
     }
 
     override fun attachFromCamera() {
@@ -611,51 +654,52 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
-            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")
-        ) {
-            namesMap[chooseMedia.url] = chooseMedia.name
-            richEditor.insertAudio(chooseMedia.url)
-        } else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
-            || chooseMedia.url.contains(".png")
-        ) {
-            val fileEntity = FileEntity(
-                0, chooseMedia.url, false, "",
-                chooseMedia.url.substringAfterLast("/"), 0, 0
-            )
-            namesMap[chooseMedia.url] = fileEntity.title
-            richEditor.insertImage(chooseMedia.url, "alt")
-        } else {
-            val fileEntity = FileEntity(
-                0, chooseMedia.url, false, "",
-                chooseMedia.url.substringAfterLast("/"), 0, 0,
-                chooseMedia.urlPreview, chooseMedia.duration
-            )
-            namesMap[chooseMedia.url] = fileEntity.title
-            richEditor.insertVideo(chooseMedia.url)
+        when(chooseMedia.type) {
+            MediaType.AUDIO -> {
+                namesMap[chooseMedia.url] = chooseMedia.name
+                richEditor.insertAudio(chooseMedia.url)
+            }
+            MediaType.IMAGE -> {
+                val fileEntity = FileEntity(
+                    0, chooseMedia.url, false, "",
+                    chooseMedia.url.substringAfterLast("/"), 0, 0
+                )
+                namesMap[chooseMedia.url] = fileEntity.title
+                richEditor.insertImage(chooseMedia.url, "alt")
+
+            }
+            MediaType.VIDEO ->{
+                val fileEntity = FileEntity(
+                    0, chooseMedia.url, false, "",
+                    chooseMedia.url.substringAfterLast("/"), 0, 0,
+                    chooseMedia.urlPreview, chooseMedia.duration
+                )
+                namesMap[chooseMedia.url] = fileEntity.title
+                richEditor.insertVideo(chooseMedia.url)
+            }
         }
         progressMedias[chooseMedia.url] = LoadMediaType.START
         sendButton.hide()
-        setLoadStateResult(ProgressMediaModel(chooseMedia.url,LoadMediaType.START))
+        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.START))
     }
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
         val type = LoadMediaType.PROGRESS.apply {
             this.progress = progress
         }
-        progressMedias[path] = type
-        setLoadStateResult(ProgressMediaModel(path,type))
+        progressMedias[chooseMedia.url] = type
+        setLoadStateResult(ProgressMediaModel(chooseMedia,type))
     }
 
-    override fun showImageUploadingError(path: String) {
-        progressMedias[path] = LoadMediaType.ERROR
-        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.ERROR))
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
+        progressMedias[chooseMedia.url] = LoadMediaType.ERROR
+        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
     }
 
-    override fun showImageUploaded(path: String) {
-        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.UPLOAD))
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
+        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
         allViewsIsUpload = true
-        progressMedias[path] = LoadMediaType.UPLOAD
+        progressMedias[chooseMedia.url] = LoadMediaType.UPLOAD
         progressMedias.values.forEach { type ->
             if (type != LoadMediaType.UPLOAD) {
                 allViewsIsUpload = false
@@ -702,7 +746,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 namesMap[it.file] = it.song
                 text =
                     text.substringBefore(it.song) + it.file + text.
-                        substringAfter(it.song + PostCustomView.MEDIA_PREFIX)
+                        substringAfter(it.song + MEDIA_PREFIX)
             }
         }
         comment.images.forEach {
@@ -710,7 +754,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 namesMap[it.file] = it.title
                 text =
                     text.substringBefore(it.title) + it.file + text.
-                        substringAfter(it.title + PostCustomView.MEDIA_PREFIX)
+                        substringAfter(it.title + MEDIA_PREFIX)
             }
         }
         comment.videos.forEach {
@@ -718,7 +762,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 namesMap[it.file] = it.title
                 text =
                     text.substringBefore(it.title) + it.file + text.
-                        substringAfter(it.title + PostCustomView.MEDIA_PREFIX)
+                        substringAfter(it.title + MEDIA_PREFIX)
             }
         }
         return text

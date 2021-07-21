@@ -13,24 +13,21 @@ import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
+import com.intergroupapplication.domain.entity.ParseConstants
+import com.intergroupapplication.domain.entity.ParseConstants.END_AUDIO
+import com.intergroupapplication.domain.entity.ParseConstants.END_IMAGE
+import com.intergroupapplication.domain.entity.ParseConstants.END_VIDEO
+import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
+import com.intergroupapplication.domain.entity.ParseConstants.PARSE_SYMBOL
+import com.intergroupapplication.domain.entity.ParseConstants.START_AUDIO
+import com.intergroupapplication.domain.entity.ParseConstants.START_IMAGE
+import com.intergroupapplication.domain.entity.ParseConstants.START_VIDEO
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import timber.log.Timber
 
-class PostCustomView @JvmOverloads constructor(context:Context,
-                                               private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0)
-    : LinearLayout(context,attrs,defStyleAttr) {
-
-    companion object{
-        const val PARSE_SYMBOL = "~~"
-        const val MEDIA_PREFIX = "(MEDIA)"
-        private const val START_AUDIO = "<audio src=\""
-        private const val START_VIDEO = "<video src=\""
-        private const val START_IMAGE = "<img src=\""
-        private const val END_AUDIO = "\" controls=\"\"></audio>"
-        private const val END_VIDEO = "controls=\"\"></video>"
-        private const val END_IMAGE = "\" alt=\"alt\">"
-    }
+class PostCustomView @JvmOverloads constructor(context:Context, attrs: AttributeSet? = null,
+       defStyleAttr: Int = 0) : LinearLayout(context,attrs,defStyleAttr) {
 
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -110,7 +107,6 @@ class PostCustomView @JvmOverloads constructor(context:Context,
     }
 
     private fun parsingTextInPost(){
-        //val textAfterParse = markupModel.text.split(PARSE_SYMBOL)
         val textAfterParse = createFinalText(markupModel.text).split(PARSE_SYMBOL)
         textAfterParse.forEach { text->
             val view = LayoutInflater.from(context)

@@ -276,19 +276,19 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
 
 
 
-    override fun showImageUploaded(path: String) {
-        viewBinding.groupAvatarHolder.showImageUploaded()
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploaded(chooseMedia)
         viewBinding.groupCreateLineR.setBackgroundResource(R.drawable.line_addava_act)
     }
 
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
-        viewBinding.groupAvatarHolder.showImageUploadingProgress(progress)
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploadingProgress(progress,chooseMedia)
     }
 
 
-    override fun showImageUploadingError(path: String) {
-        viewBinding.groupAvatarHolder.showImageUploadingError()
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploadingError(chooseMedia)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {

@@ -24,7 +24,6 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
 import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
 import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
@@ -212,23 +211,6 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         }
 
         private fun createShareIntent(context: Context, item: GroupPostEntity.PostEntity, url: String){
-            /*val imagePath = context.cacheDir
-            Single.just(item.videos[0].file)
-                    .map {
-                        URL(it).openStream().readBytes()
-                    }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe { bytes->
-                val newFile = File(imagePath,"images.jpeg")
-                newFile.createNewFile()
-                newFile.writeBytes(bytes)
-                val contentUri: Uri = FileProvider.getUriForFile(context, "com.intergroupapplication.app.file_provider", newFile)
-                val intent = Intent(Intent.ACTION_SEND)
-                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                intent.type = "images/"
-                intent.putExtra(Intent.EXTRA_STREAM,contentUri)
-                context.startActivity(intent)
-            }*/
             val text = url+"/${item.id}"
             val filesUrls = mutableListOf<String>()
             filesUrls.addAll(item.videos.map { it.file })

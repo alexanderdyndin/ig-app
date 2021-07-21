@@ -404,7 +404,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
-    override fun showImageUploaded(path: String) {
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
         presenter.changeUserAvatar()
     }
 
@@ -420,12 +420,12 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     }
 
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
         profileAvatarHolder.showImageUploadingProgress(progress)
     }
 
 
-    override fun showImageUploadingError(path: String) {
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
         profileAvatarHolder.clearUploadingState()
         presenter.showLastUserAvatar()
     }

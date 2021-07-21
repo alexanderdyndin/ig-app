@@ -437,11 +437,10 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
-    override fun showImageUploaded(path: String) {
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
         presenter.changeUserAvatar()
     }
 
@@ -454,11 +453,11 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         profileAvatarHolder.clearUploadingState(lastAvatar)
     }
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
         profileAvatarHolder.showImageUploadingProgress(progress)
     }
 
-    override fun showImageUploadingError(path: String) {
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
         profileAvatarHolder.clearUploadingState()
         presenter.showLastUserAvatar()
     }

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
@@ -20,13 +19,13 @@ import com.intergroupapplication.databinding.ItemColorBinding
 import com.intergroupapplication.databinding.ItemImageForAddFilesBottomSheetBinding
 import com.intergroupapplication.databinding.ItemPhotoForAddFilesBottomSheetBinding
 import com.intergroupapplication.databinding.ItemVideoForAddFilesBottomSheetBinding
+import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.presentation.base.BaseHolder
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.activated
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioForAddFilesBottomSheetPlayerView
-import io.reactivex.Observable
 import java.io.*
 
 
@@ -140,9 +139,6 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
 
         }
 
-        fun getChoosePhotosFromObservable(): Observable<ChooseMedia> =
-            Observable.fromIterable(chooseMedias)
-
         inner class ImageHolder(view: View) : BaseHolder<GalleryModel>(view) {
             val binding by viewBinding(ItemImageForAddFilesBottomSheetBinding::bind)
             override fun onBind(data: GalleryModel) {
@@ -153,10 +149,11 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         setOnClickListener {
                             data.run {
                                 if (!isChoose && chooseMedias.size < 10 &&
-                                    !chooseMedias.contains(ChooseMedia(url))
+                                    !chooseMedias.contains(ChooseMedia(url,type = MediaType.IMAGE))
                                 ) {
                                     isChoose = true
-                                    chooseMedias.addChooseMedia(ChooseMedia(url))
+                                    chooseMedias.addChooseMedia(ChooseMedia(url,
+                                        type = MediaType.IMAGE))
                                 } else if (isChoose) {
                                     isChoose = false
                                     chooseMedias.removeChooseMedia(url)
@@ -188,8 +185,6 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
 
         override fun getItemCount() = audios.size
 
-        fun getChooseAudiosFromObservable() = Observable.fromIterable(chooseMedias)
-
         override fun onViewRecycled(holder: BaseHolder<AudioInAddFileModel>) {
             if (holder is AudioHolder) {
                 holder.view.exoPlayer.player?.pause()
@@ -207,16 +202,15 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         activated(data.isChoose)
                         setOnClickListener {
                             data.run {
-                                if (!isChoose && chooseMedias.size < 10 && !chooseMedias.containsMedia(
-                                        url
-                                    )
-                                ) {
+                                if (!isChoose && chooseMedias.size < 10 &&
+                                    !chooseMedias.containsMedia(url)) {
                                     isChoose = true
                                     chooseMedias.addChooseMedia(
                                         ChooseMedia(
                                             url, name = data.name,
-                                            authorMusic = data.author,
-                                            duration = data.duration
+                                            author = data.author,
+                                            duration = data.duration,
+                                            type = MediaType.AUDIO
                                         )
                                     )
                                 } else if (isChoose) {
@@ -253,8 +247,6 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
 
         override fun getItemCount() = videos.size
 
-        fun getChooseVideosFromObservable() = Observable.fromIterable(chooseMedias)
-
         inner class VideoHolder(view: View) : BaseHolder<VideoModel>(view) {
             private val binding by viewBinding(ItemVideoForAddFilesBottomSheetBinding::bind)
             override fun onBind(data: VideoModel) {
@@ -274,7 +266,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                                         ChooseMedia(
                                             url,
                                             createFile(imagePreview.drawable),
-                                            duration = data.duration
+                                            duration = data.duration,
+                                            type = MediaType.VIDEO
                                         )
                                     )
                                 } else if (isChoose) {

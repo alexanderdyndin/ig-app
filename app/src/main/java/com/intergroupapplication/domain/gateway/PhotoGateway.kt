@@ -2,7 +2,6 @@ package com.intergroupapplication.domain.gateway
 
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ImageUploadDto
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -22,9 +21,6 @@ interface PhotoGateway {
     fun setVideoUrls(videos:List<ChooseMedia>)
     fun setAudioUrls(audios:List<ChooseMedia>)
     fun setImageUrls(images:List<ChooseMedia>)
-    fun loadAudio(): Observable<List<String>>
-    fun loadVideo(): Observable<List<String>>
-    fun loadImagesFromGallery(): Observable<List<String>>
     fun uploadAudioToAws(chooseMedia: ChooseMedia, groupId: String? = null,
                          upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
     fun uploadVideoToAws(chooseMedia: ChooseMedia, groupId: String? = null,
@@ -33,6 +29,6 @@ interface PhotoGateway {
                          upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
     fun uploadImage(path: String, groupId: String? = null,
                     upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<String>
-    fun removeContent(path:String)
+    fun removeContent(chooseMedia: ChooseMedia)
     fun removeAllContent()
 }

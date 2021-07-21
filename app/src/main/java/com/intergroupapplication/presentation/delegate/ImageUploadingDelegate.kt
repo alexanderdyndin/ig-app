@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.delegate
 
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.ImageUploader
@@ -21,7 +22,8 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
     }
 
     override fun uploadFromCamera(view: ImageUploadingView,
-                                  errorHandler: ErrorHandler?, groupId: String?,upload:(String?)->Observable<Float>): Disposable {
+                                  errorHandler: ErrorHandler?, groupId: String?,
+                                  upload:(String?)->Observable<Float>): Disposable {
         var progress = 0f
         var path = ""
         return photoGateway.loadFromCamera()
@@ -29,7 +31,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
                 .doOnNext {
-                    view.showImageUploadingStarted(ChooseMedia(it))
+                    view.showImageUploadingStarted(ChooseMedia(it,type = MediaType.IMAGE))
                     path = it
                 }
                 .observeOn(Schedulers.io())
@@ -37,11 +39,14 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress = it
-                    view.showImageUploadingProgress(it, path)
+                    view.showImageUploadingProgress(it, ChooseMedia(path,
+                        type = MediaType.IMAGE))
                 }, {
                     errorHandler?.handle(CanNotUploadPhoto())
-                    view.showImageUploadingError()
-                }, { if (progress == FULL_UPLOADED_PROGRESS) view.showImageUploaded(path) })
+                    view.showImageUploadingError(ChooseMedia(path,type = MediaType.IMAGE))
+                }, { if (progress == FULL_UPLOADED_PROGRESS)
+                    view.showImageUploaded(ChooseMedia(path,
+                        type = MediaType.IMAGE)) })
     }
 
     override fun uploadFromGallery(view: ImageUploadingView, errorHandler: ErrorHandler?, groupId: String?,upload:(String?)->Observable<Float>): Disposable {
@@ -52,7 +57,7 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !it.isEmpty() }
                 .doOnNext {
-                    view.showImageUploadingStarted(ChooseMedia(it))
+                    view.showImageUploadingStarted(ChooseMedia(it, type = MediaType.IMAGE))
                     path = it
                 }
                 .observeOn(Schedulers.io())
@@ -60,11 +65,12 @@ class ImageUploadingDelegate @Inject constructor(private val photoGateway: Photo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress = it
-                    view.showImageUploadingProgress(it, path)
+                    view.showImageUploadingProgress(it, ChooseMedia(path,type = MediaType.IMAGE))
                 }, {
                     errorHandler?.handle(CanNotUploadPhoto())
-                    view.showImageUploadingError()
-                }, { if (progress >= FULL_UPLOADED_PROGRESS) view.showImageUploaded(path) })
+                    view.showImageUploadingError(ChooseMedia(path,type = MediaType.IMAGE))
+                }, { if (progress >= FULL_UPLOADED_PROGRESS) view.showImageUploaded(ChooseMedia(path,
+                        type = MediaType.IMAGE)) })
     }
 
     override fun getLastPhotoUploadedUrl(): Single<String> =

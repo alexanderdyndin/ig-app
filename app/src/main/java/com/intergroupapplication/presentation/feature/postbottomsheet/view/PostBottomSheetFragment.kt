@@ -14,6 +14,7 @@ import com.intergroupapplication.databinding.FragmentPostBottomSheetBinding
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.LoadMediaType
+import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
@@ -68,14 +69,14 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
             CreatePostFragment.MEDIA_INTERACTION_REQUEST_CODE, viewLifecycleOwner
         ) { _, bundle ->
             val chooseMedia: ChooseMedia = bundle.getParcelable(CreatePostFragment.CHOOSE_MEDIA_KEY)
-                ?: ChooseMedia("")
+                ?: ChooseMedia("",type = MediaType.IMAGE)
             when (bundle.getInt(CreatePostFragment.METHOD_KEY)) {
                 CreatePostFragment.RETRY_LOADING_METHOD_CODE -> presenter.retryLoading(chooseMedia)
                 CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> {
-                    presenter.cancelUploading(chooseMedia.url)
+                    presenter.cancelUploading(chooseMedia)
                 }
                 CreatePostFragment.REMOVE_CONTENT_METHOD_CODE -> {
-                    presenter.removeContent(chooseMedia.url)
+                    presenter.removeContent(chooseMedia)
                 }
                 CreatePostFragment.IC_EDIT_ALIGN_METHOD_CODE -> {
                     val isActivated = bundle.getBoolean(CreatePostFragment.ACTIVATED_KEY)
@@ -175,15 +176,15 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     }
 
     override fun attachGallery() {
-        presenter.attachMedia(galleryAdapter.getChoosePhotosFromObservable(), presenter::loadImage)
+        presenter.attachMedia(presenter::loadImage)
     }
 
     override fun attachVideo() {
-        presenter.attachMedia(videoAdapter.getChooseVideosFromObservable(), presenter::loadVideo)
+        presenter.attachMedia(presenter::loadVideo)
     }
 
     override fun attachAudio() {
-        presenter.attachMedia(audioAdapter.getChooseAudiosFromObservable(), presenter::loadAudio)
+        presenter.attachMedia(presenter::loadAudio)
     }
 
     override fun attachFromCamera() {
@@ -230,39 +231,39 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 CHOOSE_MEDIA_KEY to chooseMedia
             )
         )
-        setLoadStateResult(ProgressMediaModel(chooseMedia.url,LoadMediaType.START))
+        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.START))
     }
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to PROGRESS_UPLOADED_METHOD_CODE,
-                PROGRESS_KEY to progress, PATH_KEY to path
+                PROGRESS_KEY to progress, PATH_KEY to chooseMedia.url
             )
         )
-        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.PROGRESS.apply {
+        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.PROGRESS.apply {
             this.progress = progress
         }))
     }
 
-    override fun showImageUploadingError(path: String) {
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to ERROR_UPLOADED_METHOD_CODE,
-                PATH_KEY to path
+                PATH_KEY to chooseMedia.url
             )
         )
-        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.ERROR))
+        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
     }
 
-    override fun showImageUploaded(path: String) {
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
         setFragmentResult(
             bundleOf(
                 METHOD_KEY to UPLOAD_METHOD_CODE,
-                PATH_KEY to path
+                PATH_KEY to chooseMedia.url
             )
         )
-        setLoadStateResult(ProgressMediaModel(path,LoadMediaType.UPLOAD))
+        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
     }
 
     fun getPhotosUrl() = presenter.getPhotosUrl()

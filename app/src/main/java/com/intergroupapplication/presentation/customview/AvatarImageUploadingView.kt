@@ -98,7 +98,7 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
         state = AvatarUploadingState.UPLOADING
     }
 
-    override fun showImageUploaded(path: String) {
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
         val darkCard = findViewById<TextView>(R.id.darkCard)
         val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         darkCard.hide()
@@ -108,13 +108,13 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
         val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         imageUploadingProgressBar.progress = progress
     }
 
 
-    override fun showImageUploadingError(path: String) {
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
         val errorView = findViewById<TextView>(R.id.errorView)
         val darkCard = findViewById<TextView>(R.id.darkCard)
         val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)

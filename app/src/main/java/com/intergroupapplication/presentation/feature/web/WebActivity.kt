@@ -33,18 +33,12 @@ class WebActivity : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //val name = arguments?.getString(KEY_TITLE, R.string.inter_group)
-        //        supportActionBar?.apply {
-//            setHomeButtonEnabled(true)
-//            setDisplayHomeAsUpEnabled(true)
-//            setTitle(name)
-//        }
         viewBinding.webView.clearCache(true)
         viewBinding.webView.loadUrl(path)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             android.R.id.home -> findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)

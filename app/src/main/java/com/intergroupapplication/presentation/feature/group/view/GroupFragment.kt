@@ -15,13 +15,10 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.viewbinding.ViewBinding
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentGroupBinding
-import com.intergroupapplication.databinding.LayoutAdminCreatePostButtonBinding
-import com.intergroupapplication.databinding.LayoutUserJoinButtonBinding
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
@@ -415,7 +412,7 @@ class GroupFragment : BaseFragment(), GroupView,
         groupAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
-    override fun showImageUploaded(path: String) {
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
         presenter.changeGroupAvatar(groupId)
     }
 
@@ -424,12 +421,12 @@ class GroupFragment : BaseFragment(), GroupView,
         groupAvatarHolder.showImageUploaded()
     }
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
         groupAvatarHolder.showImageUploadingProgress(progress)
     }
 
 
-    override fun showImageUploadingError(path: String) {
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
         groupAvatarHolder.clearUploadingState()
     }
 
@@ -438,7 +435,8 @@ class GroupFragment : BaseFragment(), GroupView,
         goOutFromGroup.show()
         groupStrength.text = followersCount.toString()
         listenButtonClicks()
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupId, groupStrength.text.toString(), true))
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID,
+            GroupInfoEntity(groupId, groupStrength.text.toString(), true))
     }
 
     override fun groupUnfollowed(followersCount: Int) {
@@ -446,25 +444,15 @@ class GroupFragment : BaseFragment(), GroupView,
         joinToGroup.show()
         groupStrength.text = followersCount.toString()
         listenButtonClicks()
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID, GroupInfoEntity(groupId, groupStrength.text.toString(), false))
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID,
+            GroupInfoEntity(groupId, groupStrength.text.toString(), false))
     }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        //super.onActivityResult(requestCode, resultCode, data)
-//        if (resultCode == Activity.RESULT_OK) {
-//            when (requestCode) {
-//                COMMENTS_DETAILS_REQUEST -> presenter.refresh(groupId)
-//                POST_CREATED -> presenter.refresh(data?.getStringExtra(GROUP_ID_VALUE).orEmpty())
-//            }
-//        }
-//    }
 
     override fun showMessage(res: Int) {
         Toast.makeText(requireContext(), res, Toast.LENGTH_SHORT).show()
     }
 
     override fun showMessage(msg: String) {
-        //showToast(msg)
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
@@ -478,9 +466,10 @@ class GroupFragment : BaseFragment(), GroupView,
         }
         groupAvatarHolder.setOnClickListener {
             if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                    || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
+                || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
                 dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                        mapOf(R.id.fromCamera to { presenter.attachFromCamera(groupId) }, R.id.fromGallery to { presenter.attachFromGallery(groupId) }))
+                        mapOf(R.id.fromCamera to { presenter.attachFromCamera(groupId) },
+                            R.id.fromGallery to { presenter.attachFromGallery(groupId) }))
             }
         }
         adapter.isAdmin = isAdmin
@@ -520,13 +509,11 @@ class GroupFragment : BaseFragment(), GroupView,
     private fun openCommentDetails(entity: InfoForCommentEntity) {
         val data = bundleOf("comment_post" to entity)
         findNavController().navigate(R.id.action_groupActivity_to_commentsDetailsActivity, data)
-        //startActivityForResult(CommentsDetailsActivity.getIntent(requireContext(), entity), COMMENTS_DETAILS_REQUEST)
     }
 
     private fun openCreatePost(post: String) {
         val data = bundleOf(GROUP_ID to post)
         findNavController().navigate(R.id.action_groupActivity_to_CreatePostFragment, data)
-        //startActivityForResult(CreatePostFragment.getIntent(requireContext(), post), POST_CREATED)
     }
 
     private fun handleToolbarTitleVisibility(percentage: Float) {

@@ -23,6 +23,7 @@ import com.intergroupapplication.domain.KeyboardVisibilityEvent
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.LoadMediaType
+import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
@@ -385,28 +386,28 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     private fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        if (chooseMedia.url.contains(".mp3") || chooseMedia.url.contains(".mpeg")
-            || chooseMedia.url.contains(".wav") || chooseMedia.url.contains(".flac")
-        ) {
-            namesMap[chooseMedia.url] = chooseMedia.name
-            richEditor.insertAudio(chooseMedia.url)
-        } else if (chooseMedia.url.contains(".jpeg") || chooseMedia.url.contains(".jpg")
-            || chooseMedia.url.contains(".png")
-        ) {
-            val fileEntity = FileEntity(
-                0, chooseMedia.url, false, "",
-                chooseMedia.url.substringAfterLast("/"), 0, 0
-            )
-            namesMap[chooseMedia.url] = fileEntity.title
-            richEditor.insertImage(chooseMedia.url, "alt")
-        } else {
-            val fileEntity = FileEntity(
-                0, chooseMedia.url, false, "",
-                chooseMedia.url.substringAfterLast("/"), 0, 0,
-                chooseMedia.urlPreview, chooseMedia.duration
-            )
-            namesMap[chooseMedia.url] = fileEntity.title
-            richEditor.insertVideo(chooseMedia.url)
+        when(chooseMedia.type){
+            MediaType.AUDIO -> {
+                namesMap[chooseMedia.url] = chooseMedia.name
+                richEditor.insertAudio(chooseMedia.url)
+            }
+            MediaType.IMAGE ->{
+                val fileEntity = FileEntity(
+                    0, chooseMedia.url, false, "",
+                    chooseMedia.url.substringAfterLast("/"), 0, 0
+                )
+                namesMap[chooseMedia.url] = fileEntity.title
+                richEditor.insertImage(chooseMedia.url, "alt")
+            }
+            MediaType.VIDEO -> {
+                val fileEntity = FileEntity(
+                    0, chooseMedia.url, false, "",
+                    chooseMedia.url.substringAfterLast("/"), 0, 0,
+                    chooseMedia.urlPreview, chooseMedia.duration
+                )
+                namesMap[chooseMedia.url] = fileEntity.title
+                richEditor.insertVideo(chooseMedia.url)
+            }
         }
         loadingMedias[chooseMedia.url] = LoadMediaType.START
     }

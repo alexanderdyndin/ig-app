@@ -11,6 +11,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.DialogPreviewBinding
+import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.addChooseMedia
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
@@ -110,7 +111,12 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
             } else {
                 isChoose = true
                 it.isActivated = isChoose
-                chooseMedias.addChooseMedia(ChooseMedia(url))
+                if (isPhoto) {
+                    chooseMedias.addChooseMedia(ChooseMedia(url,type = MediaType.IMAGE))
+                }
+                else{
+                    chooseMedias.addChooseMedia(ChooseMedia(url,type = MediaType.VIDEO))
+                }
                 parentFragmentManager.setFragmentResult(
                     ADD_REQUEST_CODE,
                     bundleOf(

@@ -14,6 +14,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.intergroupapplication.data.model.TextType
+import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
 import com.intergroupapplication.presentation.exstension.dpToPx
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -293,7 +294,7 @@ class RichEditor
         namesMap.forEach { (key,value)->
             if (text.contains(key)){
                 finalNamesMedia.add(value)
-                text = text.substringBefore(key)+"$value${PostCustomView.MEDIA_PREFIX}"+
+                text = text.substringBefore(key)+"$value${MEDIA_PREFIX}"+
                         text.substringAfter(key)
 
             }

@@ -2,11 +2,11 @@ package com.intergroupapplication.data.repository
 
 import android.app.Activity
 import android.graphics.Bitmap
-import android.webkit.MimeTypeMap
 import com.androidnetworking.AndroidNetworking
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ImageUploadDto
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.yalantis.ucrop.UCrop
@@ -16,7 +16,6 @@ import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import id.zelory.compressor.Compressor
-import timber.log.Timber
 import java.io.File
 
 
@@ -99,52 +98,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         }
     }
 
-    override fun loadAudio(): Observable<List<String>> =
-        RxPaparazzo.single(activity)
-                .setMultipleMimeType("audio/mpeg", "audio/aac", "audio/wav")
-                .useInternalStorage()
-                .useDocumentPicker()
-                .usingFiles()
-                .map { response ->
-//                    val paths = response.data()?.map { it.file.path } ?: emptyList()
-//                    audioPaths.addAll(paths)
-//                    paths
-                    val path = response.data()?.file?.path
-                    path?.let {
-                        audioPaths.add(it)
-                        listOf(it)
-                    } ?: emptyList()
-                }
-
-    override fun loadVideo(): Observable<List<String>> =
-        RxPaparazzo.single(activity)
-                .setMultipleMimeType("video/mpeg", "video/mp4", "video/webm", "video/3gpp")
-                .useInternalStorage()
-                .useDocumentPicker()
-                .usingFiles()
-                .map { response ->
-//                    val paths = response.data()?.map { it.file.path } ?: emptyList()
-//                    videoPaths.addAll(paths)
-//                    paths
-                    val path = response.data()?.file?.path
-                    path?.let {
-                        videoPaths.add(it)
-                        listOf(it)
-                    } ?: emptyList()
-                }
-
-    override fun loadImagesFromGallery(): Observable<List<String>> =
-            RxPaparazzo.single(activity)
-                    .crop(cropOptions)
-                    .usingGallery()
-                    .map { response ->
-                        val path = response.data()?.file?.path
-                        path?.let {
-                            imagePaths.add(it)
-                            listOf(it)
-                        } ?: emptyList()
-                    }
-
     private var count = 0
     override fun uploadAudioToAws(chooseMedia: ChooseMedia, groupId: String?,
                                   upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>)
@@ -167,7 +120,8 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                             .doOnComplete {
                                 audioUrls.addMediaIfNotContains(ChooseMedia(it.fields.key,
                                     name = chooseMedia.name,
-                                authorMusic = chooseMedia.authorMusic,duration = chooseMedia.duration ))
+                                author = chooseMedia.author,duration = chooseMedia.duration,
+                                type = chooseMedia.type))
                                 fileToUrl[chooseMedia.url] = it.fields.key
                                 myFile.delete()
                             }
@@ -188,9 +142,10 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                             }
                             .doOnComplete {
                                 videoUrls.addMediaIfNotContains(ChooseMedia(it.fields.key,
-                                    urlPreview = chooseMedia.urlPreview
+                                        urlPreview = chooseMedia.urlPreview
                                         ,duration = chooseMedia.duration,
-                                        name = chooseMedia.url.substringAfterLast("/")))
+                                        name = chooseMedia.url.substringAfterLast("/"),
+                                        type = chooseMedia.type))
                                 fileToUrl[chooseMedia.url] = it.fields.key
                             }
                 }
@@ -207,7 +162,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     else{
                             try {
                                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                        Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                        Compressor(activity).setQuality(75)
+                                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                        .compressToFile(file))
                             }catch (e:Exception){
                                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                         file)
@@ -220,7 +177,8 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     }
                             .doOnComplete {
                                 imageUrls.addMediaIfNotContains(ChooseMedia(url = it.fields.key,
-                                        name = path.substringAfterLast("/")))
+                                        name = path.substringAfterLast("/"),
+                                        type = MediaType.IMAGE))
                                 fileToUrl[path] = it.fields.key
                             }
                     //.doOnError { lastPhotoUrl = "" }
@@ -234,7 +192,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         this.add(newChooseMedia)
     }
 
-    override fun uploadImage(path: String, groupId: String?, upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>): Observable<String> {
+    override fun uploadImage(path: String, groupId: String?,
+                             upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>)
+                            : Observable<String> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
         return upload(file.extension, groupId)
@@ -245,8 +205,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     else{
                         try {
                             awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                    Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP)
-                                            .compressToFile(file))
+                                    Compressor(activity).setQuality(75)
+                                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                        .compressToFile(file))
                         }catch (e:Exception){
                             awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                     file)
@@ -324,18 +285,11 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
     }
 
-    override fun removeContent(path:String) {
-        val type = MimeTypeMap.getFileExtensionFromUrl(path)
-        when (MimeTypeMap.getSingleton().getMimeTypeFromExtension(type) ?: "") {
-            in listOf("audio/mpeg", "audio/aac", "audio/wav") ->{
-                audioUrls.removeMedia(fileToUrl[path]).toString()
-            }
-            in listOf("video/mpeg", "video/mp4", "video/webm", "video/3gpp") -> videoUrls.removeMedia(fileToUrl[path])
-            else ->  {
-                imageUrls.removeMedia(fileToUrl[path])
-                audioUrls.removeMedia(fileToUrl[path])
-                videoUrls.removeMedia(fileToUrl[path])
-            }
+    override fun removeContent(chooseMedia: ChooseMedia) {
+        when (chooseMedia.type) {
+            MediaType.AUDIO -> audioUrls.removeMedia(fileToUrl[chooseMedia.url])
+            MediaType.VIDEO -> videoUrls.removeMedia(fileToUrl[chooseMedia.url])
+            MediaType.IMAGE -> imageUrls.removeMedia(fileToUrl[chooseMedia.url])
         }
     }
 
