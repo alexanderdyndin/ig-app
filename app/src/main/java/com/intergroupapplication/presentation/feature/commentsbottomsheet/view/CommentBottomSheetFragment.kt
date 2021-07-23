@@ -137,6 +137,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                     }
                 }
                 ProgressDialog.CANCEL_UPLOADING_CODE -> {
+                    Timber.tag("tut_cancel_uploading").d("tut")
                     result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
                         presenter.cancelUploading(it)
                         deleteMediaFromEditor(it)
@@ -153,24 +154,21 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    //TODO попробовать сделать через 2 сабстринга
     override fun deleteMediaFromEditor(chooseMedia: ChooseMedia) {
-        when (chooseMedia.type) {
+        val prefix = when (chooseMedia.type) {
             MediaType.AUDIO -> {
-                richEditor.html = richEditor.html?.replace(
-                    "${ParseConstants.START_AUDIO}${chooseMedia.url}${ParseConstants.END_AUDIO}",
-                    "")
+                "${ParseConstants.START_AUDIO}${chooseMedia.url}${ParseConstants.END_AUDIO}"
             }
             MediaType.IMAGE -> {
-                richEditor.html = richEditor.html?.replace(
-                    "${ParseConstants.START_IMAGE}${chooseMedia.url}${ParseConstants.END_IMAGE}",
-                    "")
+                "${ParseConstants.START_IMAGE}${chooseMedia.url}${ParseConstants.END_IMAGE}"
             }
             MediaType.VIDEO -> {
-                richEditor.html = richEditor.html?.replace(
-                    "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}",
-                    "")
+                "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}"
             }
         }
+        richEditor.html = richEditor.html?.replace(prefix, "")
+        Timber.tag("tut_richEditor").d(richEditor.html)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -83,7 +83,9 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
     override fun cancelUploading(chooseMedia: ChooseMedia) {
         setResult(METHOD_KEY to CANCEL_UPLOADING_CODE, DATA_KEY to chooseMedia)
         mediaProgressAdapter.run {
-            progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it) }
+            progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it)
+                Timber.tag("tut_number").d(it.toString())
+            }
         }
     }
 

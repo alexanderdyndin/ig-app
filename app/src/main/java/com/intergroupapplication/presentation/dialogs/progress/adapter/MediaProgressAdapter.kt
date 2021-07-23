@@ -35,7 +35,6 @@ class MediaProgressAdapter(private val callback: ProgressCallback)
         private val binding by viewBinding(LayoutMediaProgressHolderBinding::bind)
 
         override fun onBind(data: ProgressMediaModel) {
-            Timber.tag("tut_data").d(data.toString())
             binding.nameMedia.text = data.chooseMedia.name
             prepareListeners(data.chooseMedia)
             when(data.type){
@@ -51,11 +50,15 @@ class MediaProgressAdapter(private val callback: ProgressCallback)
                 imageUploadingProgressBar.show()
                 stopUploading.show()
                 refreshContainer.hide()
+                detachMedia.hide()
             }
         }
 
         private fun progressState(progress:Float){
-            binding.imageUploadingProgressBar.progress = progress
+            with(binding){
+                imageUploadingProgressBar.progress = progress
+                detachMedia.hide()
+            }
         }
 
         private fun errorState(){
@@ -81,14 +84,14 @@ class MediaProgressAdapter(private val callback: ProgressCallback)
                     imageUploadingProgressBar.progress = 0f
                     callback.retryLoading(chooseMedia)
                     startedState()
+                    Timber.tag("tut_retry").d(chooseMedia.name)
                 }
                 stopUploading.setOnClickListener {
+                    Timber.tag("tut_cancel").d(chooseMedia.name)
                     callback.cancelUploading(chooseMedia)
-                    Timber.tag("tut_cancel").d(chooseMedia.url)
                 }
                 detachMedia.setOnClickListener {
                     callback.removeContent(chooseMedia)
-                    Timber.tag("tut_remove").d(chooseMedia.url)
                 }
             }
         }

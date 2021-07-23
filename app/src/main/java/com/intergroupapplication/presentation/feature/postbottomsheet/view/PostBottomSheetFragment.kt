@@ -228,27 +228,20 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     }
 
     override fun deleteMediaFromEditor(chooseMedia: ChooseMedia) {
-        when (chooseMedia.type) {
+        val prefix = when (chooseMedia.type) {
             MediaType.AUDIO -> {
-                setFragmentResult(
-                    bundleOf(
-                    METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to
-                    "${ParseConstants.START_AUDIO}${chooseMedia.url}${ParseConstants.END_AUDIO}"))
+                "${ParseConstants.START_AUDIO}${chooseMedia.url}${ParseConstants.END_AUDIO}"
             }
             MediaType.IMAGE -> {
-                setFragmentResult(
-                    bundleOf(
-                    METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to
-                    "${ParseConstants.START_IMAGE}${chooseMedia.url}${ParseConstants.END_IMAGE}"))
+                "${ParseConstants.START_IMAGE}${chooseMedia.url}${ParseConstants.END_IMAGE}"
             }
             MediaType.VIDEO -> {
-                setFragmentResult(
-                    bundleOf(
-                    METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to
-                    "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}"))
-
+                "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}"
             }
         }
+        setFragmentResult(
+            bundleOf(
+                METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to prefix))
     }
 
     override fun stateSettling() {

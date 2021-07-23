@@ -51,7 +51,7 @@
 
     <LinearLayout
         android:id="@+id/refreshContainer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,10 +63,11 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_replay" />
+            android:src="@drawable/ic_replay_color_input" />
 
         <TextView
-            style="@style/InterGroupSmallWhiteTextStyle"
+            android:textColor="@color/colorInput"
+            android:textSize="@dimen/big_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/little_margin"

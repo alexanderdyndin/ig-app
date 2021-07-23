@@ -16,6 +16,7 @@ import android.webkit.WebViewClient
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
 import com.intergroupapplication.presentation.exstension.dpToPx
+import timber.log.Timber
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -139,9 +140,11 @@ class RichEditor
                 thisContents = ""
             }
             try {
-                exec("javascript:RE.setHtml('" + URLEncoder.encode(thisContents, "UTF-8") + "');")
+                exec("javascript:RE.setHtml('" + URLEncoder.encode(thisContents,
+                    "UTF-8") + "');")
+                content = thisContents
             } catch (e: UnsupportedEncodingException) {
-
+                Timber.tag("tut_error_set").e(e.message)
             }
         }
 
@@ -279,6 +282,10 @@ class RichEditor
         exec("javascript:RE.prepareInsert();")
         val width = context.dpToPx(115)
         exec("javascript:RE.insertVideo('$url', '$width');")
+    }
+
+    private fun insertHtml(html:String){
+        exec("javascript:RE.insertHTML('$html');")
     }
 
     fun clearFocusEditor() {
