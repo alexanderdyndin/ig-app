@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ProgressMediaModel
+import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -35,7 +36,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUploadingView {
+abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallback, ImageUploadingView {
 
 
     companion object{
@@ -103,20 +104,43 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
             val isPhoto = bundle.getBoolean(PreviewDialog.IS_PHOTO_KEY)
             val result = bundle.getString(PreviewDialog.ADD_URI_KEY)
             val isChoose = bundle.getBoolean(PreviewDialog.IS_CHOOSE_KEY)
-            result?.let { string ->
+            val urlPreview = bundle.getString(PreviewDialog.VIDEO_PREVIEW_KEY)?:""
+            result?.let { url ->
                 if (isPhoto) {
-                    galleryAdapter.photos.mapIndexed { index, galleryModel ->
-                        if (galleryModel.url == string) {
-                            galleryModel.isChoose = isChoose
-                            galleryAdapter.notifyItemChanged(index)
+                    galleryAdapter.run {
+                        photos.mapIndexed { index, galleryModel ->
+                            if (galleryModel.url == url) {
+                                galleryModel.isChoose = isChoose
+                                notifyItemChanged(index)
+                                if (isChoose){
+                                    choosePhoto.addChooseMedia(ChooseMedia(url = galleryModel.url,
+                                        name = galleryModel.url.substringAfterLast("/"),
+                                        type = MediaType.IMAGE))
+                                }
+                                else{
+                                    choosePhoto.removeChooseMedia(galleryModel.url)
+                                }
+                            }
                         }
                     }
                     changeCountChooseImage()
                 } else {
-                    videoAdapter.videos.mapIndexed { index, videoGallery ->
-                        if (videoGallery.url == string) {
-                            videoGallery.isChoose = isChoose
-                            videoAdapter.notifyItemChanged(index)
+                    videoAdapter.run {
+                        videos.mapIndexed { index, videoGallery ->
+                            if (videoGallery.url == url) {
+                                videoGallery.isChoose = isChoose
+                                notifyItemChanged(index)
+                                if (isChoose){
+                                    chooseVideo.addChooseMedia(ChooseMedia(url = videoGallery.url,
+                                        name = videoGallery.url.substringAfterLast("/"),
+                                        urlPreview = urlPreview,
+                                        duration = videoGallery.duration,
+                                        type = MediaType.IMAGE))
+                                }
+                                else{
+                                    chooseVideo.removeChooseMedia(videoGallery.url)
+                                }
+                            }
                         }
                     }
                     changeCountChooseVideo()
@@ -127,7 +151,6 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        chooseMedias.clear()
         mediaRecyclerView = view.findViewById(R.id.mediaRecyclerView)
         icAttachFile = view.findViewById(R.id.icAttachFile)
         icEditText = view.findViewById(R.id.icEditText)
@@ -216,9 +239,10 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
         }
 
         galleryButton.setOnClickListener {
-            chooseMedias.clear()
             mediaRecyclerView.run {
-                adapter = galleryAdapter
+                adapter = galleryAdapter.apply {
+                    choosePhoto.clear()
+                }
                 layoutManager = GridLayoutManager(context, 3)
             }
             setVisibilityForAddFiles()
@@ -230,9 +254,10 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
         }
 
         musicButton.setOnClickListener {
-            chooseMedias.clear()
             mediaRecyclerView.run {
-                adapter = audioAdapter
+                adapter = audioAdapter.apply {
+                    chooseAudio.clear()
+                }
                 layoutManager = LinearLayoutManager(context)
             }
             setVisibilityForAddFiles()
@@ -244,9 +269,10 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
         }
 
         videoButton.setOnClickListener {
-            chooseMedias.clear()
             mediaRecyclerView.run {
-                adapter = videoAdapter
+                adapter = videoAdapter.apply {
+                    chooseVideo.clear()
+                }
                 layoutManager = GridLayoutManager(context, 3)
             }
             setVisibilityForAddFiles()
@@ -298,7 +324,6 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
             }
             galleryButton.changeActivatedTextView(false, videoButton, musicButton, playlistButton)
             changeStateViewAfterAddMedia()
-            chooseMedias.clear()
         }
 
         playlistButton.setOnClickListener {
@@ -452,7 +477,6 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaCallback, ImageUpl
         galleryButton.changeActivatedTextView(false, musicButton, videoButton, playlistButton)
         icAttachFile.activated(false)
         btnAdd.isEnabled = false
-        chooseMedias.clear()
     }
 
     protected open fun changeBottomConstraintForView(id: Int) {

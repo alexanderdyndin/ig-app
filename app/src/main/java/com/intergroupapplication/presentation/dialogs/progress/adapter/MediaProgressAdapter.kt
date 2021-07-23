@@ -15,10 +15,11 @@ import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
 import timber.log.Timber
 
-class MediaProgressAdapter(private val callback: ProgressCallback)
+class MediaProgressAdapter()
     :RecyclerView.Adapter<MediaProgressAdapter.MediaProgressHolder>() {
 
     val progressMedia = mutableListOf<ProgressMediaModel>()
+    var callback: ProgressCallback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaProgressHolder {
         return MediaProgressHolder(parent.inflate(R.layout.layout_media_progress_holder,
@@ -82,16 +83,16 @@ class MediaProgressAdapter(private val callback: ProgressCallback)
             with(binding){
                 refreshContainer.setOnClickListener {
                     imageUploadingProgressBar.progress = 0f
-                    callback.retryLoading(chooseMedia)
+                    callback?.retryLoading(chooseMedia)
                     startedState()
                     Timber.tag("tut_retry").d(chooseMedia.name)
                 }
                 stopUploading.setOnClickListener {
                     Timber.tag("tut_cancel").d(chooseMedia.name)
-                    callback.cancelUploading(chooseMedia)
+                    callback?.cancelUploading(chooseMedia)
                 }
                 detachMedia.setOnClickListener {
-                    callback.removeContent(chooseMedia)
+                    callback?.removeContent(chooseMedia)
                 }
             }
         }

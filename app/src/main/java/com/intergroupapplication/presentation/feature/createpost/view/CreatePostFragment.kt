@@ -32,7 +32,6 @@ import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBeh
 import com.intergroupapplication.presentation.customview.RichEditor
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
 import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
@@ -216,7 +215,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
             }
         }
         publishBtn = createPostBinding.navigationToolbar.publishBtn
-        chooseMedias.clear()
         groupId = arguments?.getString(GROUP_ID)!!
         presenter.groupId = groupId
         publishBtn.show()
@@ -572,10 +570,5 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         createPostBinding.rightGravityButton.setOnClickListener {
             richEditor.setAlignRight()
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        chooseMedias.clear()
     }
 }

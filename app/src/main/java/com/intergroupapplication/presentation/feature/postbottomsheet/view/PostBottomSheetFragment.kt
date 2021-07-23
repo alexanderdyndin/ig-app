@@ -195,15 +195,15 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     }
 
     override fun attachGallery() {
-        presenter.attachMedia(presenter::loadImage)
+        presenter.attachMedia(presenter::loadImage, galleryAdapter.choosePhoto)
     }
 
     override fun attachVideo() {
-        presenter.attachMedia(presenter::loadVideo)
+        presenter.attachMedia(presenter::loadVideo, videoAdapter.chooseVideo)
     }
 
     override fun attachAudio() {
-        presenter.attachMedia(presenter::loadAudio)
+        presenter.attachMedia(presenter::loadAudio, audioAdapter.chooseAudio)
     }
 
     override fun attachFromCamera() {

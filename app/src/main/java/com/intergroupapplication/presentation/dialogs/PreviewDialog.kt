@@ -9,13 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.DialogPreviewBinding
-import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.addChooseMedia
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.removeChooseMedia
 import kotlin.math.abs
 
 class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
@@ -26,6 +21,7 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
         const val ADD_URI_KEY = "add_uri_key"
         const val IS_PHOTO_KEY = "is_photo_key"
         const val IS_CHOOSE_KEY = "is_choose_key"
+        const val VIDEO_PREVIEW_KEY = "video_preview_key"
         private const val SWIPE_MIN_DISTANCE = 120
         private const val SWIPE_MAX_OFF_PATH = 250
         private const val SWIPE_THRESHOLD_VELOCITY = 100
@@ -37,6 +33,7 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
     lateinit var url: String
     var isPhoto = false
     var isChoose = false
+    var previewVideo:String = ""
 
 
     override fun onCreateView(
@@ -97,38 +94,15 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
         val addButton = previewViewBinding.addButton
         addButton.isActivated = isChoose
         addButton.setOnClickListener {
-            if (it.isActivated) {
-                isChoose = false
-                it.isActivated = isChoose
-                chooseMedias.removeChooseMedia(url)
-                parentFragmentManager.setFragmentResult(
-                    ADD_REQUEST_CODE,
-                    bundleOf(
-                        ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
-                        IS_CHOOSE_KEY to isChoose
-                    )
+            isChoose = !it.isActivated
+            it.isActivated = isChoose
+            parentFragmentManager.setFragmentResult(
+                ADD_REQUEST_CODE,
+                bundleOf(
+                    ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
+                    IS_CHOOSE_KEY to isChoose, VIDEO_PREVIEW_KEY to previewVideo
                 )
-            } else {
-                isChoose = true
-                it.isActivated = isChoose
-                if (isPhoto) {
-                    chooseMedias.addChooseMedia(ChooseMedia(url,
-                        name = url.substringAfterLast("/"),
-                        type = MediaType.IMAGE))
-                }
-                else{
-                    chooseMedias.addChooseMedia(ChooseMedia(url,
-                        name = url.substringAfterLast("/"),
-                        type = MediaType.VIDEO))
-                }
-                parentFragmentManager.setFragmentResult(
-                    ADD_REQUEST_CODE,
-                    bundleOf(
-                        ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
-                        IS_CHOOSE_KEY to isChoose
-                    )
-                )
-            }
+            )
         }
     }
 

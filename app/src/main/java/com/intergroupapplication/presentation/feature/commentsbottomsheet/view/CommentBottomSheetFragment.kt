@@ -154,7 +154,6 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    //TODO попробовать сделать через 2 сабстринга
     override fun deleteMediaFromEditor(chooseMedia: ChooseMedia) {
         val prefix = when (chooseMedia.type) {
             MediaType.AUDIO -> {
@@ -168,7 +167,6 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
             }
         }
         richEditor.html = richEditor.html?.replace(prefix, "")
-        Timber.tag("tut_richEditor").d(richEditor.html)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -522,15 +520,15 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     override fun attachGallery() {
-        presenter.attachMedia(presenter::loadImage)
+        presenter.attachMedia(presenter::loadImage, galleryAdapter.getChooseMedias())
     }
 
     override fun attachVideo() {
-        presenter.attachMedia(presenter::loadVideo)
+        presenter.attachMedia(presenter::loadVideo, videoAdapter.getChooseMedias())
     }
 
     override fun attachAudio() {
-        presenter.attachMedia(presenter::loadAudio)
+        presenter.attachMedia(presenter::loadAudio, audioAdapter.getChooseMedias())
     }
 
     override fun attachFromCamera() {

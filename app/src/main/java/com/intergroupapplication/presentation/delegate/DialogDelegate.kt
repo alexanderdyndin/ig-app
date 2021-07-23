@@ -22,27 +22,24 @@ class DialogDelegate(private val dialogManager: DialogManager,
                      private val toastManager: ToastManager,
                      private val context: Context) {
 
-    companion object {
+    private companion object {
         const val INTERGROUP_DIALOG = "inter_group_dialog"
     }
 
     var coordinator: ViewGroup? = null
 
-    fun setCoord(coordinator: ViewGroup) {
-        this.coordinator = coordinator
-    }
-
     fun showDialog(dialogLayout: Int, actionsMap: Map<Int, () -> Unit>) {
-        dialogProvider.newDialog(dialogLayout, actionsMap).show(dialogManager.getManager(), INTERGROUP_DIALOG)
+        dialogProvider.newDialog(dialogLayout, actionsMap).show(dialogManager.getManager(),
+            INTERGROUP_DIALOG)
     }
 
-    fun showPreviewDialog(isPhoto:Boolean, url:String,isChoose:Boolean){
-        dialogProvider.newPreviewDialog(isPhoto,url,isChoose).show(dialogManager.getManager(),
-            null)
+    fun showPreviewDialog(isPhoto:Boolean, url:String,isChoose:Boolean,previewVideo:String = ""){
+        dialogProvider.newPreviewDialog(isPhoto,url,isChoose,previewVideo)
+            .show(dialogManager.getManager(), INTERGROUP_DIALOG)
     }
 
     fun showProgressDialog(){
-        dialogProvider.newProgressDialog().show(dialogManager.getManager(),null)
+        dialogProvider.newProgressDialog().show(dialogManager.getManager(), INTERGROUP_DIALOG)
     }
 
     fun showErrorSnackBar(message: String) {

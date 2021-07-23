@@ -18,11 +18,12 @@ class DialogProvider @Inject constructor() {
         return fragment
     }
 
-    fun newPreviewDialog(isPhoto:Boolean,url:String,isChoose:Boolean): PreviewDialog {
+    fun newPreviewDialog(isPhoto:Boolean,url:String,isChoose:Boolean, previewVideo:String): PreviewDialog {
         return PreviewDialog().apply {
             this.url = url
             this.isChoose = isChoose
             this.isPhoto = isPhoto
+            this.previewVideo = previewVideo
         }
     }
 

@@ -23,50 +23,21 @@ import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.presentation.base.BaseHolder
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.activated
-import com.intergroupapplication.presentation.exstension.inflate
+import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.mediaPlayer.AudioForAddFilesBottomSheetPlayerView
 import java.io.*
 
-
-//два сомнительных по архитектуре момента, но лучше пока не придумал
-val chooseMedias = mutableSetOf<ChooseMedia>()
-fun MutableSet<ChooseMedia>.addChooseMedia(chooseMedia: ChooseMedia) {
-    /*this.forEach {
-        if (it.url == chooseMedia.url){
-            return
-        }
-    }*/
-    this.add(chooseMedia)
-}
-
-fun MutableSet<ChooseMedia>.removeChooseMedia(url: String) {
-    this.forEach {
-        if (it.url == url) {
-            this.remove(it)
-            return
-        }
-    }
-}
-
-fun MutableSet<ChooseMedia>.containsMedia(url: String): Boolean {
-    this.forEach {
-        if (it.url == url) {
-            return true
-        }
-    }
-    return false
-}
-
-interface MediaCallback {
-    fun changeCountChooseImage()
-    fun changeCountChooseVideo()
-    fun changeCountChooseAudio()
-    fun attachPhoto()
-    fun changeTextColor(color: Int)
-}
-
 sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
+    interface MediaCallback {
+        fun changeCountChooseImage()
+        fun changeCountChooseVideo()
+        fun changeCountChooseAudio()
+        fun attachPhoto()
+        fun changeTextColor(color: Int)
+    }
+
+    abstract fun getChooseMedias():Set<ChooseMedia>
+
     class GalleryAdapter(
         private val imageLoadingDelegate: ImageLoadingDelegate,
         private val mediaCallback: MediaCallback,
@@ -74,7 +45,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
     ) : MediaAdapter<GalleryModel>() {
 
         val photos = mutableListOf(GalleryModel("photos", 0, false))
-
+        val choosePhoto = mutableSetOf<ChooseMedia>()
         companion object {
             private const val PHOTO_HOLDER_KEY = 0
             private const val IMAGE_HOLDER_KEY = 1
@@ -113,6 +84,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
             }
         }
 
+        override fun getChooseMedias() = choosePhoto
+
         override fun onViewRecycled(holder: BaseHolder<GalleryModel>) {
             if (holder is ImageHolder) {
                 holder.binding.imagePreview.controller = null
@@ -125,7 +98,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
             override fun onBind(data: GalleryModel) {
                 with(binding) {
                     makePhoto.setOnClickListener {
-                        if (chooseMedias.size < 10) {
+                        if (choosePhoto.size < 10) {
                             mediaCallback.attachPhoto()
                         } else {
                             Toast.makeText(
@@ -148,18 +121,18 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         activated(data.isChoose)
                         setOnClickListener {
                             data.run {
-                                if (!isChoose && chooseMedias.size < 10 &&
-                                    !chooseMedias.contains(ChooseMedia(url,
+                                if (!isChoose && choosePhoto.size < 10 &&
+                                    !choosePhoto.contains(ChooseMedia(url,
                                         name = url.substringAfterLast("/"),
                                         type = MediaType.IMAGE))
                                 ) {
                                     isChoose = true
-                                    chooseMedias.addChooseMedia(ChooseMedia(url,
+                                    choosePhoto.addChooseMedia(ChooseMedia(url,
                                         name = url.substringAfterLast("/"),
                                         type = MediaType.IMAGE))
                                 } else if (isChoose) {
                                     isChoose = false
-                                    chooseMedias.removeChooseMedia(url)
+                                    choosePhoto.removeChooseMedia(url)
                                 }
                                 mediaCallback.changeCountChooseImage()
                                 activated(isChoose)
@@ -173,11 +146,13 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
             }
 
         }
+
     }
 
     class AudioAdapter(private val mediaCallback: MediaCallback) :
         MediaAdapter<AudioInAddFileModel>() {
         val audios = mutableListOf<AudioInAddFileModel>()
+        val chooseAudio = mutableSetOf<ChooseMedia>()
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioHolder {
             return AudioHolder(AudioForAddFilesBottomSheetPlayerView(parent.context))
         }
@@ -196,6 +171,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
             super.onViewRecycled(holder)
         }
 
+        override fun getChooseMedias() = chooseAudio
+
         inner class AudioHolder(val view: AudioForAddFilesBottomSheetPlayerView) :
             BaseHolder<AudioInAddFileModel>(view) {
             override fun onBind(data: AudioInAddFileModel) {
@@ -205,10 +182,10 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         activated(data.isChoose)
                         setOnClickListener {
                             data.run {
-                                if (!isChoose && chooseMedias.size < 10 &&
-                                    !chooseMedias.containsMedia(url)) {
+                                if (!isChoose && chooseAudio.size < 10 &&
+                                    !chooseAudio.containsMedia(url)) {
                                     isChoose = true
-                                    chooseMedias.addChooseMedia(
+                                    chooseAudio.addChooseMedia(
                                         ChooseMedia(
                                             url, name = data.name,
                                             author = data.author,
@@ -218,7 +195,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                                     )
                                 } else if (isChoose) {
                                     isChoose = false
-                                    chooseMedias.removeChooseMedia(url)
+                                    chooseAudio.removeChooseMedia(url)
                                 }
                                 mediaCallback.changeCountChooseAudio()
                                 activated(isChoose)
@@ -237,6 +214,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
         private val mediaCallback: MediaCallback, private val dialogDelegate: DialogDelegate,
     ) : MediaAdapter<VideoModel>() {
         val videos = mutableListOf<VideoModel>()
+        val chooseVideo = mutableSetOf<ChooseMedia>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseHolder<VideoModel> {
             val view = LayoutInflater.from(parent.context)
@@ -250,6 +228,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
 
         override fun getItemCount() = videos.size
 
+        override fun getChooseMedias() = chooseVideo
+
         inner class VideoHolder(view: View) : BaseHolder<VideoModel>(view) {
             private val binding by viewBinding(ItemVideoForAddFilesBottomSheetBinding::bind)
             override fun onBind(data: VideoModel) {
@@ -260,12 +240,12 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         activated(data.isChoose)
                         setOnClickListener {
                             data.run {
-                                if (!isChoose && chooseMedias.size < 10 && !chooseMedias.containsMedia(
+                                if (!isChoose && chooseVideo.size < 10 && !chooseVideo.containsMedia(
                                         url
                                     )
                                 ) {
                                     isChoose = true
-                                    chooseMedias.addChooseMedia(
+                                    chooseVideo.addChooseMedia(
                                         ChooseMedia(
                                             url,
                                             createFile(imagePreview.drawable),
@@ -276,7 +256,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                                     )
                                 } else if (isChoose) {
                                     isChoose = false
-                                    chooseMedias.removeChooseMedia(url)
+                                    chooseVideo.removeChooseMedia(url)
                                 }
                                 mediaCallback.changeCountChooseVideo()
                                 activated(isChoose)
@@ -284,7 +264,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         }
                     }
                     imagePreview.setOnClickListener {
-                        dialogDelegate.showPreviewDialog(false, data.url, data.isChoose)
+                        dialogDelegate.showPreviewDialog(false, data.url, data.isChoose,
+                            createFile(imagePreview.drawable))
                     }
                 }
             }
@@ -309,6 +290,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
             }
 
         }
+
     }
 
     class PlaylistAdapter(imageLoadingDelegate: ImageLoadingDelegate) :
@@ -332,6 +314,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
             }
 
         }
+
+        override fun getChooseMedias() = emptySet<ChooseMedia>()
     }
 
     class ColorAdapter(private val mediaCallback: MediaCallback) : MediaAdapter<Int>() {
@@ -359,6 +343,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                 }
             }
         }
+
+        override fun getChooseMedias(): Set<ChooseMedia> = emptySet()
 
     }
 }

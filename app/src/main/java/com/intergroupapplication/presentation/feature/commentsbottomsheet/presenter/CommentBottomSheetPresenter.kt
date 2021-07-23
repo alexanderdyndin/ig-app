@@ -10,8 +10,6 @@ import com.intergroupapplication.domain.gateway.CommentGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.addChooseMedia
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.chooseMedias
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.BottomSheetView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
@@ -155,7 +153,7 @@ class CommentBottomSheetPresenter @Inject constructor(
     }
 
     fun attachMedia(
-        loadMedia: (chooseMedia: ChooseMedia) -> Unit,
+        loadMedia: (chooseMedia: ChooseMedia) -> Unit, chooseMedias:Set<ChooseMedia>
     ) {
         mediaDisposable.add(Observable.fromIterable(chooseMedias)
             .subscribeOn(Schedulers.io())
@@ -178,7 +176,6 @@ class CommentBottomSheetPresenter @Inject constructor(
                 val chooseMedia = ChooseMedia(it,
                     name = it.substringAfterLast("/"),
                     type = MediaType.IMAGE)
-                chooseMedias.addChooseMedia(chooseMedia)
                 loadImage(chooseMedia)
             }, {
                 errorHandler.handle(CanNotUploadPhoto())

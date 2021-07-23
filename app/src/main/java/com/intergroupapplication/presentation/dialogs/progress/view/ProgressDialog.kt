@@ -26,7 +26,10 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
         const val REMOVE_CONTENT_CODE = 2
     }
 
-    private val mediaProgressAdapter by lazy { MediaProgressAdapter(this) }
+    private val mediaProgressAdapter by lazy { MediaProgressAdapter().apply {
+            callback = this@ProgressDialog
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_progress,null)
@@ -47,6 +50,11 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
             setView(view)
             isCancelable = false
         }.create()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mediaProgressAdapter.callback = null
     }
 
     private fun notifyAdapter(data: ProgressMediaModel){

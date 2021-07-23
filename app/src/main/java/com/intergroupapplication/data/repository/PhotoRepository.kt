@@ -15,6 +15,8 @@ import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
+import com.intergroupapplication.presentation.exstension.addMediaIfNotContains
+import com.intergroupapplication.presentation.exstension.removeMedia
 import id.zelory.compressor.Compressor
 import java.io.File
 
@@ -34,8 +36,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     private var lastPhotoUrl: String = ""
 
     private val imagePaths: MutableList<String> = mutableListOf()
-    private val videoPaths: MutableList<String> = mutableListOf()
-    private val audioPaths: MutableList<String> = mutableListOf()
 
     private val imageUrls: MutableList<ChooseMedia> = mutableListOf()
     private val videoUrls: MutableList<ChooseMedia> = mutableListOf()
@@ -163,7 +163,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                             try {
                                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                         Compressor(activity).setQuality(75)
-                                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                        .setCompressFormat(Bitmap.CompressFormat.WEBP_LOSSY)
                                         .compressToFile(file))
                             }catch (e:Exception){
                                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
@@ -185,13 +185,6 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                 }
     }
 
-    private fun MutableList<ChooseMedia>.addMediaIfNotContains(newChooseMedia: ChooseMedia){
-        this.forEach {chooseMedia ->
-            if (chooseMedia.name == newChooseMedia.name)return@addMediaIfNotContains
-        }
-        this.add(newChooseMedia)
-    }
-
     override fun uploadImage(path: String, groupId: String?,
                              upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>)
                             : Observable<String> {
@@ -206,7 +199,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                         try {
                             awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                     Compressor(activity).setQuality(75)
-                                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                        .setCompressFormat(Bitmap.CompressFormat.WEBP_LOSSY)
                                         .compressToFile(file))
                         }catch (e:Exception){
                             awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
@@ -227,7 +220,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     override fun uploadToAws(groupId: String?): Observable<Float> {
         val subject = PublishSubject.create<Float>()
-        val file = File(lastAttachedImagePath)
+        val file = File(lastAttachedImagePath?:"")
         return appApi.uploadPhoto(file.extension, groupId)
                 .doAfterSuccess {
                     if (file.extension == "gif")
@@ -235,7 +228,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                Compressor(activity).setQuality(75)
+                                    .setCompressFormat(Bitmap.CompressFormat.WEBP_LOSSY)
+                                    .compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
@@ -247,7 +242,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     }
     override fun uploadAvatarUser(groupId: String?): Observable<Float> {
         val subject = PublishSubject.create<Float>()
-        val file = File(lastAttachedImagePath)
+        val file = File(lastAttachedImagePath?:"")
         return appApi.uploadUserAvatar(file.extension, groupId)
                 .doAfterSuccess {
                     if (file.extension == "gif")
@@ -255,7 +250,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                Compressor(activity).setQuality(75)
+                                    .setCompressFormat(Bitmap.CompressFormat.WEBP_LOSSY)
+                                    .compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
@@ -267,7 +264,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
 
     override fun uploadAvatarGroup(groupId: String?): Observable<Float> {
         val subject = PublishSubject.create<Float>()
-        val file = File(lastAttachedImagePath)
+        val file = File(lastAttachedImagePath?:"")
         return appApi.uploadGroupAvatar(file.extension, groupId)
                 .doAfterSuccess {
                     if (file.extension == "gif")
@@ -275,7 +272,9 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                Compressor(activity).setQuality(75)
+                                    .setCompressFormat(Bitmap.CompressFormat.WEBP_LOSSY)
+                                    .compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
@@ -297,15 +296,5 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
         imageUrls.clear()
         audioUrls.clear()
         videoUrls.clear()
-    }
-
-    private fun MutableList<ChooseMedia>.removeMedia(url: String?):Boolean {
-        this.forEach {
-            if (it.url == url) {
-                remove(it)
-                return true
-            }
-        }
-        return false
     }
 }
