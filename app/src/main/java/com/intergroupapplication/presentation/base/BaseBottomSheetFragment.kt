@@ -13,14 +13,12 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
-import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
@@ -90,6 +88,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
     protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
     protected val heightTextStylePanel by lazy { context?.dpToPx(40) ?: 0 }
     protected val heightIconPanel by lazy { context?.dpToPx(40) ?: 0 }
+    private val recyclerPadding by lazy { context?.dpToPx(14)?:0 }
 
 
     override fun onCreateView(
@@ -244,6 +243,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     choosePhoto.clear()
                 }
                 layoutManager = GridLayoutManager(context, 3)
+                setPadding(recyclerPadding,0,recyclerPadding,0)
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivatedTextView(
@@ -259,6 +259,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     chooseAudio.clear()
                 }
                 layoutManager = LinearLayoutManager(context)
+                setPadding(0,0,0,0)
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivatedTextView(
@@ -274,6 +275,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     chooseVideo.clear()
                 }
                 layoutManager = GridLayoutManager(context, 3)
+                setPadding(recyclerPadding,0,recyclerPadding,0)
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivatedTextView(
@@ -348,6 +350,8 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
     private fun goneViewWhenShowPanelStyleText() {
         mediaRecyclerView.gone()
         panelAddFile.gone()
+        amountFiles.gone()
+        btnAdd.gone()
         icAttachFile.activated(false)
         galleryButton.changeActivatedTextView(false, musicButton, videoButton, playlistButton)
     }
@@ -372,6 +376,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
             show()
             adapter = colorAdapter
             layoutManager = GridLayoutManager(context, 8)
+            setPadding(0,0,0,0)
         }
     }
 
