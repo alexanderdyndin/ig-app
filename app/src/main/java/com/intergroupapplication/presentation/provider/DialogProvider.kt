@@ -1,9 +1,8 @@
 package com.intergroupapplication.presentation.provider
 
-import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.presentation.base.BaseDialogResolver
-import com.intergroupapplication.presentation.dialogs.PreviewDialog
-import com.intergroupapplication.presentation.dialogs.progress.view.ProgressDialog
+import com.intergroupapplication.presentation.widgets.PreviewDialog
+import com.intergroupapplication.presentation.widgets.progress.view.ProgressDialog
 import javax.inject.Inject
 
 /**
@@ -23,9 +22,9 @@ class DialogProvider @Inject constructor() {
             this.url = url
             this.isChoose = isChoose
             this.isPhoto = isPhoto
-            this.previewVideo = previewVideo
+            this.urlPreview = previewVideo
         }
     }
 
-    fun newProgressDialog():ProgressDialog = ProgressDialog()
+    fun newProgressDialog(): ProgressDialog = ProgressDialog()
 }

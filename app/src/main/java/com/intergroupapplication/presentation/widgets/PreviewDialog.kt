@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.dialogs
+package com.intergroupapplication.presentation.widgets
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -11,9 +11,8 @@ import com.intergroupapplication.R
 import com.intergroupapplication.databinding.DialogPreviewBinding
 import com.intergroupapplication.presentation.exstension.setResult
 import com.intergroupapplication.presentation.exstension.show
-import kotlin.math.abs
 
-class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
+class PreviewDialog : DialogFragment() {
 
 
     companion object {
@@ -22,18 +21,15 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
         const val IS_PHOTO_KEY = "is_photo_key"
         const val IS_CHOOSE_KEY = "is_choose_key"
         const val VIDEO_PREVIEW_KEY = "video_preview_key"
-        private const val SWIPE_MIN_DISTANCE = 120
-        private const val SWIPE_MAX_OFF_PATH = 250
-        private const val SWIPE_THRESHOLD_VELOCITY = 100
     }
 
     private lateinit var videoView: VideoView
     private lateinit var gestureDetector: GestureDetector
     private val previewViewBinding by viewBinding(DialogPreviewBinding::bind)
-    lateinit var url: String
+    var url: String = ""
     var isPhoto = false
     var isChoose = false
-    var previewVideo:String = ""
+    var urlPreview:String = ""
 
 
     override fun onCreateView(
@@ -48,7 +44,6 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
         super.onViewCreated(view, savedInstanceState)
         with(previewViewBinding) {
             videoView = videoPlayer
-            gestureDetector = GestureDetector(context, this@PreviewDialog)
             setupAllView()
         }
     }
@@ -99,7 +94,7 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
             parentFragmentManager.setResult(
                 ADD_REQUEST_CODE,
                     ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
-                    IS_CHOOSE_KEY to isChoose, VIDEO_PREVIEW_KEY to previewVideo
+                    IS_CHOOSE_KEY to isChoose, VIDEO_PREVIEW_KEY to urlPreview
             )
         }
     }
@@ -114,54 +109,5 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
     override fun onDestroyView() {
         super.onDestroyView()
         videoView.pause()
-    }
-
-
-    override fun onDown(e: MotionEvent?): Boolean {
-        return false
-    }
-
-    override fun onShowPress(e: MotionEvent?) {
-    }
-
-    override fun onSingleTapUp(e: MotionEvent?): Boolean {
-        return false
-    }
-
-    override fun onScroll(
-        e1: MotionEvent?,
-        e2: MotionEvent?,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean {
-        return false
-    }
-
-    override fun onLongPress(e: MotionEvent?) {
-
-    }
-
-    override fun onFling(
-        e1: MotionEvent,
-        e2: MotionEvent,
-        velocityX: Float,
-        velocityY: Float
-    ): Boolean {
-        try {
-            if (abs(e1.y - e2.y) > SWIPE_MAX_OFF_PATH) return false
-            if (e1.x - e2.x > SWIPE_MIN_DISTANCE
-                && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY
-            ) {
-                //тут плюс position
-            } else if (e2.x - e1.x > SWIPE_MIN_DISTANCE
-                && abs(velocityX) > SWIPE_THRESHOLD_VELOCITY
-            ) {
-                //тут минус position
-
-            }
-        } catch (e: Exception) {
-            return true
-        }
-        return true
     }
 }

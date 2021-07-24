@@ -25,7 +25,7 @@ import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
-import com.intergroupapplication.presentation.dialogs.PreviewDialog
+import com.intergroupapplication.presentation.widgets.PreviewDialog
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Single

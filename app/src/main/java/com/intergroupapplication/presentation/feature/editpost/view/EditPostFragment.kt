@@ -5,7 +5,6 @@ import android.view.View
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
-import com.intergroupapplication.presentation.customview.PostCustomView
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.editpost.presenter.EditPostPresenter
 import moxy.presenter.InjectPresenter

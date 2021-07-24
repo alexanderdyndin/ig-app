@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.dialogs.progress.view
+package com.intergroupapplication.presentation.widgets.progress.view
 
 import android.app.Dialog
 import android.os.Bundle
@@ -12,10 +12,10 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
-import com.intergroupapplication.presentation.dialogs.progress.adapter.MediaProgressAdapter
+import com.intergroupapplication.presentation.widgets.progress.adapter.MediaProgressAdapter
 import com.intergroupapplication.presentation.exstension.setResult
 
-class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
+class ProgressDialog:DialogFragment(), MediaProgressAdapter.ProgressCallback {
 
     companion object{
         const val CALLBACK_METHOD_KEY = "callback_method_key"
@@ -97,12 +97,14 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
     }
 
     override fun retryLoading(chooseMedia: ChooseMedia) {
-        parentFragmentManager.setResult(CALLBACK_METHOD_KEY,
+        parentFragmentManager.setResult(
+            CALLBACK_METHOD_KEY,
             METHOD_KEY to RETRY_LOADING_CODE, DATA_KEY to chooseMedia)
     }
 
     override fun cancelUploading(chooseMedia: ChooseMedia) {
-        parentFragmentManager.setResult(CALLBACK_METHOD_KEY,
+        parentFragmentManager.setResult(
+            CALLBACK_METHOD_KEY,
             METHOD_KEY to CANCEL_UPLOADING_CODE, DATA_KEY to chooseMedia)
         mediaProgressAdapter.run {
             progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it) }
@@ -110,7 +112,8 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
     }
 
     override fun removeContent(chooseMedia: ChooseMedia) {
-        parentFragmentManager.setResult(CALLBACK_METHOD_KEY,
+        parentFragmentManager.setResult(
+            CALLBACK_METHOD_KEY,
             METHOD_KEY to REMOVE_CONTENT_CODE, DATA_KEY to chooseMedia)
         mediaProgressAdapter.run {
             progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it) }

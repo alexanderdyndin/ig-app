@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.dialogs.progress.adapter
+package com.intergroupapplication.presentation.widgets.progress.adapter
 
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +13,8 @@ import com.intergroupapplication.presentation.base.BaseHolder
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import timber.log.Timber
 
-class MediaProgressAdapter()
-    :RecyclerView.Adapter<MediaProgressAdapter.MediaProgressHolder>() {
+class MediaProgressAdapter :RecyclerView.Adapter<MediaProgressAdapter.MediaProgressHolder>() {
 
     val progressMedia = mutableListOf<ProgressMediaModel>()
     var callback: ProgressCallback? = null

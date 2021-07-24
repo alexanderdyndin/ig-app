@@ -25,7 +25,7 @@ import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.customview.*
-import com.intergroupapplication.presentation.dialogs.progress.view.ProgressDialog
+import com.intergroupapplication.presentation.widgets.progress.view.ProgressDialog
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
@@ -127,7 +127,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 })
         }
 
-        childFragmentManager.setFragmentResultListener(ProgressDialog.CALLBACK_METHOD_KEY,
+        childFragmentManager.setFragmentResultListener(
+            ProgressDialog.CALLBACK_METHOD_KEY,
             viewLifecycleOwner){ _, result:Bundle->
             when(result.getInt(ProgressDialog.METHOD_KEY)){
                 ProgressDialog.RETRY_LOADING_CODE -> {

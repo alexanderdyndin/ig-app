@@ -12,7 +12,7 @@ import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.databinding.FragmentPostBottomSheetBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
-import com.intergroupapplication.presentation.dialogs.progress.view.ProgressDialog
+import com.intergroupapplication.presentation.widgets.progress.view.ProgressDialog
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.PostBottomSheetPresenter
@@ -60,11 +60,17 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setParentFragmentResultListener()
+        setChildFragmentResultListener()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setParentFragmentResultListener() {
         parentFragmentManager.setFragmentResultListener(
             CreatePostFragment.MEDIA_INTERACTION_REQUEST_CODE, viewLifecycleOwner
         ) { _, bundle ->
             val chooseMedia: ChooseMedia = bundle.getParcelable(CreatePostFragment.CHOOSE_MEDIA_KEY)
-                ?: ChooseMedia("",name = "",type = MediaType.IMAGE)
+                ?: ChooseMedia("", name = "", type = MediaType.IMAGE)
             when (bundle.getInt(CreatePostFragment.METHOD_KEY)) {
                 CreatePostFragment.RETRY_LOADING_METHOD_CODE -> presenter.retryLoading(chooseMedia)
                 CreatePostFragment.CANCEL_LOADING_METHOD_CODE -> {
@@ -102,10 +108,14 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 }
             }
         }
+    }
+
+    private fun setChildFragmentResultListener() {
         childFragmentManager.setFragmentResultListener(
             ProgressDialog.CALLBACK_METHOD_KEY,
-            viewLifecycleOwner){ _, result:Bundle->
-            when(result.getInt(ProgressDialog.METHOD_KEY)){
+            viewLifecycleOwner
+        ) { _, result: Bundle ->
+            when (result.getInt(ProgressDialog.METHOD_KEY)) {
                 ProgressDialog.RETRY_LOADING_CODE -> {
                     result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
                         presenter.retryLoading(it)
@@ -124,15 +134,16 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                     }
                 }
                 ProgressDialog.REMOVE_ALL_CONTENT_CODE -> {
-                    result.getParcelableArrayList<ProgressMediaModel>(ProgressDialog.DATA_KEY)?.let {
-                        it.forEach { media->
-                            deleteMediaFromEditor(media.chooseMedia)
+                    result.getParcelableArrayList<ProgressMediaModel>(ProgressDialog.DATA_KEY)
+                        ?.let {
+                            presenter.removeAllContents()
+                            it.forEach { media ->
+                                deleteMediaFromEditor(media.chooseMedia)
+                            }
                         }
-                    }
                 }
             }
         }
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun viewCreated() {
@@ -164,7 +175,6 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     }
 
     override fun calculateHeight() = heightIconPanel
-
 
     override fun changeTextColor(color: Int) {
         endChooseColorText()
