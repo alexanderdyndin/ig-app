@@ -405,6 +405,14 @@ class CommentBottomSheetPresenter @Inject constructor(
         processes.remove(chooseMedia.url)
     }
 
+    fun removeAllContents(){
+        processes.values.forEach{ disposable->
+            disposable.dispose()
+            mediaDisposable.remove(disposable)
+        }
+        processes.clear()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         commentsDisposable.clear()

@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.dialogs.progress.view
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -24,6 +25,7 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
         const val RETRY_LOADING_CODE = 0
         const val CANCEL_UPLOADING_CODE = 1
         const val REMOVE_CONTENT_CODE = 2
+        const val REMOVE_ALL_CONTENT_CODE = 3
     }
 
     private val mediaProgressAdapter by lazy { MediaProgressAdapter().apply {
@@ -38,10 +40,19 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
             result.getParcelable<ProgressMediaModel>(BaseBottomSheetFragment.PROGRESS_MODEL_KEY)
                 ?.let {notifyAdapter(it)}
         }
-        val recyclerView = view.findViewById<RecyclerView>(R.id.progressMedia)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.progress_media)
         recyclerView.run {
             adapter = mediaProgressAdapter
             layoutManager = LinearLayoutManager(context)
+        }
+        val deleteAll = view.findViewById<Button>(R.id.delete_all)
+        deleteAll.setOnClickListener {
+            setResult(METHOD_KEY to REMOVE_ALL_CONTENT_CODE, DATA_KEY to mediaProgressAdapter
+                .progressMedia)
+            mediaProgressAdapter.run {
+                progressMedia.clear()
+                notifyDataSetChanged()
+            }
         }
         return AlertDialog.Builder(requireContext()).apply {
             setPositiveButton(context.getString(R.string.close)) { _,_ ->
@@ -91,9 +102,7 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
     override fun cancelUploading(chooseMedia: ChooseMedia) {
         setResult(METHOD_KEY to CANCEL_UPLOADING_CODE, DATA_KEY to chooseMedia)
         mediaProgressAdapter.run {
-            progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it)
-                Timber.tag("tut_number").d(it.toString())
-            }
+            progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it) }
         }
     }
 

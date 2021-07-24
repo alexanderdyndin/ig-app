@@ -206,4 +206,5 @@
     <string name="choose_two_photo">Выбрано %1$s фотографии</string>
     <string name="choose_five_photo">Выбрано %1$s фотографий</string>
     <string name="close">Закрыть</string>
+    <string name="delete_all">Удалить всё</string>
 </resources>

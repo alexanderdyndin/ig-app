@@ -137,7 +137,6 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                     }
                 }
                 ProgressDialog.CANCEL_UPLOADING_CODE -> {
-                    Timber.tag("tut_cancel_uploading").d("tut")
                     result.getParcelable<ChooseMedia>(ProgressDialog.DATA_KEY)?.let {
                         presenter.cancelUploading(it)
                         deleteMediaFromEditor(it)
@@ -148,6 +147,14 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                         presenter.removeContent(it)
                         deleteMediaFromEditor(it)
                     }
+                }
+                ProgressDialog.REMOVE_ALL_CONTENT_CODE -> {
+                    result.getParcelableArrayList<ProgressMediaModel>(ProgressDialog.DATA_KEY)?.let {
+                        it.forEach { media ->
+                            deleteMediaFromEditor(media.chooseMedia)
+                        }
+                    }
+                    presenter.removeAllContents()
                 }
             }
         }
