@@ -5,11 +5,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.*
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.DialogPreviewBinding
+import com.intergroupapplication.presentation.exstension.setResult
 import com.intergroupapplication.presentation.exstension.show
 import kotlin.math.abs
 
@@ -96,12 +96,10 @@ class PreviewDialog : DialogFragment(), GestureDetector.OnGestureListener {
         addButton.setOnClickListener {
             isChoose = !it.isActivated
             it.isActivated = isChoose
-            parentFragmentManager.setFragmentResult(
+            parentFragmentManager.setResult(
                 ADD_REQUEST_CODE,
-                bundleOf(
                     ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
                     IS_CHOOSE_KEY to isChoose, VIDEO_PREVIEW_KEY to previewVideo
-                )
             )
         }
     }

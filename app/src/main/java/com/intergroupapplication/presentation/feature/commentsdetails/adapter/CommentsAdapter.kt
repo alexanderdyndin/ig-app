@@ -408,8 +408,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     R.id.complaint -> complaintListener.invoke(item.id.toInt())
                     R.id.edit -> {
                         deleteAnswerLayout.invoke()
-                        manager.setFragmentResult(EDIT_COMMENT_REQUEST,
-                            bundleOf(COMMENT_KEY to item))
+                        manager.setResult(EDIT_COMMENT_REQUEST, COMMENT_KEY to item)
                     }
                     R.id.delete -> deleteClickListener.invoke(item.id.toInt(), layoutPosition)
                 }
@@ -485,8 +484,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     R.id.complaint -> complaintListener.invoke(item.id.toInt())
                     R.id.edit -> {
                         deleteAnswerLayout.invoke()
-                        manager.setFragmentResult(EDIT_COMMENT_REQUEST,
-                            bundleOf(COMMENT_KEY to item))
+                        manager.setResult(EDIT_COMMENT_REQUEST, COMMENT_KEY to item)
                     }
                     R.id.delete -> deleteClickListener.invoke(item.id.toInt(), layoutPosition)
                 }

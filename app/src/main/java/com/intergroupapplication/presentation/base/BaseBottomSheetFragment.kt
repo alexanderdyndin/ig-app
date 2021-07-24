@@ -485,11 +485,6 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
         mediaRecyclerView.layoutParams = params
     }
 
-    protected fun setLoadStateResult(data:ProgressMediaModel){
-        childFragmentManager.setFragmentResult(PROGRESS_KEY, bundleOf(
-            PROGRESS_MODEL_KEY to data))
-    }
-
     class ItemOffsetDecoration(private val mItemOffset: Int) : RecyclerView.ItemDecoration() {
         constructor(
             context: Context,
@@ -562,7 +557,5 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
         changeStateViewAfterAddMedia()
         galleryButton.changeActivatedTextView(false, videoButton, musicButton, playlistButton)
     }
-
-    abstract fun setFragmentResult(bundle: Bundle)
 
 }

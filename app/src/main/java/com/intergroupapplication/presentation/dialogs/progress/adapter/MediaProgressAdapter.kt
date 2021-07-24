@@ -85,10 +85,8 @@ class MediaProgressAdapter()
                     imageUploadingProgressBar.progress = 0f
                     callback?.retryLoading(chooseMedia)
                     startedState()
-                    Timber.tag("tut_retry").d(chooseMedia.name)
                 }
                 stopUploading.setOnClickListener {
-                    Timber.tag("tut_cancel").d(chooseMedia.name)
                     callback?.cancelUploading(chooseMedia)
                 }
                 detachMedia.setOnClickListener {

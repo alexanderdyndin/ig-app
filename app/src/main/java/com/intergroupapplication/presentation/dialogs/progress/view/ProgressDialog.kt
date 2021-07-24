@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +13,7 @@ import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.dialogs.progress.adapter.MediaProgressAdapter
-import timber.log.Timber
+import com.intergroupapplication.presentation.exstension.setResult
 
 class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
 
@@ -47,7 +46,9 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
         }
         val deleteAll = view.findViewById<Button>(R.id.delete_all)
         deleteAll.setOnClickListener {
-            setResult(METHOD_KEY to REMOVE_ALL_CONTENT_CODE, DATA_KEY to mediaProgressAdapter
+            parentFragmentManager.setResult(
+                CALLBACK_METHOD_KEY,
+                METHOD_KEY to REMOVE_ALL_CONTENT_CODE, DATA_KEY to mediaProgressAdapter
                 .progressMedia)
             mediaProgressAdapter.run {
                 progressMedia.clear()
@@ -96,24 +97,24 @@ class ProgressDialog:DialogFragment(),MediaProgressAdapter.ProgressCallback {
     }
 
     override fun retryLoading(chooseMedia: ChooseMedia) {
-        setResult(METHOD_KEY to RETRY_LOADING_CODE, DATA_KEY to chooseMedia)
+        parentFragmentManager.setResult(CALLBACK_METHOD_KEY,
+            METHOD_KEY to RETRY_LOADING_CODE, DATA_KEY to chooseMedia)
     }
 
     override fun cancelUploading(chooseMedia: ChooseMedia) {
-        setResult(METHOD_KEY to CANCEL_UPLOADING_CODE, DATA_KEY to chooseMedia)
+        parentFragmentManager.setResult(CALLBACK_METHOD_KEY,
+            METHOD_KEY to CANCEL_UPLOADING_CODE, DATA_KEY to chooseMedia)
         mediaProgressAdapter.run {
             progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it) }
         }
     }
 
     override fun removeContent(chooseMedia: ChooseMedia) {
-        setResult(METHOD_KEY to REMOVE_CONTENT_CODE, DATA_KEY to chooseMedia)
+        parentFragmentManager.setResult(CALLBACK_METHOD_KEY,
+            METHOD_KEY to REMOVE_CONTENT_CODE, DATA_KEY to chooseMedia)
         mediaProgressAdapter.run {
             progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it) }
         }
     }
 
-    private fun setResult(vararg data:Pair<String,Any>){
-        parentFragmentManager.setFragmentResult(CALLBACK_METHOD_KEY, bundleOf(*data))
-    }
 }

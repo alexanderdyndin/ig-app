@@ -10,7 +10,6 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -271,14 +270,13 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     private fun sendComment() {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            CALL_METHOD_KEY,
                 METHOD_KEY to CREATE_COMMENT_DATA, DATA_KEY to
                         CreateCommentDataModel(
                             richEditor.createFinalText(namesMap, finalNamesMedia),
                             presenter, finalNamesMedia
                         )
-            )
         )
         richEditor.html = null
         panelStyleText.gone()
@@ -314,7 +312,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
             }
         }
-        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
+        parentFragmentManager.setResult(CALL_METHOD_KEY,
+            METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height)
     }
 
     override fun attachFileNotActivated() {
@@ -349,7 +348,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     override fun gonePanelStyleText() {
         panelStyleText.gone()
         val height = calculateHeight()
-        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
+        parentFragmentManager.setResult(CALL_METHOD_KEY,
+            METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height)
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
@@ -370,7 +370,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
-        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
+        parentFragmentManager.setResult(CALL_METHOD_KEY,
+            METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height)
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (!answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
@@ -384,7 +385,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     override fun gonePanelGravityText() {
         panelGravityText.gone()
         val height = calculateHeight()
-        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
+        parentFragmentManager.setResult(CALL_METHOD_KEY,
+            METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height)
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
@@ -405,7 +407,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 sendButton.show()
         }
         val height = calculateHeight() + heightTextStylePanel
-        setFragmentResult(bundleOf(METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height))
+        parentFragmentManager.setResult(CALL_METHOD_KEY,
+            METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height)
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
             if (!answerLayout.isVisible()) {
                 changeBottomConstraintRichEditor(horizontalGuideCollapsedWithPanelStyle.id)
@@ -484,11 +487,10 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         if (stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_COLLAPSED ||
             stateBeforeShowMediaRecycler == BottomSheetBehavior.STATE_SETTLING
         ) {
-            setFragmentResult(
-                bundleOf(
+            parentFragmentManager.setResult(
+                CALL_METHOD_KEY,
                     METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA,
                     DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED
-                )
             )
         }
     }
@@ -543,11 +545,10 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     override fun changeStateToHalfExpanded() {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            CALL_METHOD_KEY,
                 METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY
                         to BottomSheetBehavior.STATE_HALF_EXPANDED
-            )
         )
     }
 
@@ -587,10 +588,6 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         changeBottomConstraintRichEditor(id)
     }
 
-    override fun setFragmentResult(bundle: Bundle) {
-        parentFragmentManager.setFragmentResult(CALL_METHOD_KEY, bundle)
-    }
-
     private fun changeBottomConstraintRichEditor(id: Int) {
         val paramsRichEditor = containerRichEditor.layoutParams as ConstraintLayout.LayoutParams
         paramsRichEditor.bottomToTop = id
@@ -614,45 +611,41 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     override fun commentCreated(commentEntity: CommentEntity) {
-        setFragmentResult(bundleOf(METHOD_KEY to COMMENT_CREATED_DATA))
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(CALL_METHOD_KEY,METHOD_KEY to COMMENT_CREATED_DATA)
+        parentFragmentManager.setResult(
+            CALL_METHOD_KEY,
                 METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
                         heightEditText + heightIconPanel + pushUpDown.height / 2
-            )
         )
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            CALL_METHOD_KEY,
                 METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
                         BottomSheetBehavior.STATE_COLLAPSED
-            )
         )
     }
 
     override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        setFragmentResult(bundleOf(METHOD_KEY to ANSWER_COMMENT_CREATED_DATA))
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(CALL_METHOD_KEY,
+            METHOD_KEY to ANSWER_COMMENT_CREATED_DATA)
+        parentFragmentManager.setResult(
+            CALL_METHOD_KEY,
                 METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to
                         heightEditText + heightIconPanel + pushUpDown.height / 2
-            )
         )
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            CALL_METHOD_KEY,
                 METHOD_KEY to CHANGE_STATE_BOTTOM_SHEET_DATA, DATA_KEY to
                         BottomSheetBehavior.STATE_COLLAPSED
-            )
         )
         answerLayout.gone()
         answerLayout.activated(false)
     }
 
     override fun showCommentUploading(show: Boolean) {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            CALL_METHOD_KEY,
                 METHOD_KEY to SHOW_COMMENT_UPLOADING_DATA, DATA_KEY to
                         show
-            )
         )
     }
 
@@ -683,7 +676,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         }
         progressMedias[chooseMedia.url] = LoadMediaType.START
         sendButton.hide()
-        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.START))
+        childFragmentManager.setResult(PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.START))
     }
 
     override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
@@ -691,16 +685,19 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
             this.progress = progress
         }
         progressMedias[chooseMedia.url] = type
-        setLoadStateResult(ProgressMediaModel(chooseMedia,type))
+        childFragmentManager.setResult(PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,type))
     }
 
     override fun showImageUploadingError(chooseMedia: ChooseMedia) {
         progressMedias[chooseMedia.url] = LoadMediaType.ERROR
-        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
+        childFragmentManager.setResult(PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
     }
 
     override fun showImageUploaded(chooseMedia: ChooseMedia) {
-        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
+        childFragmentManager.setResult(PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
         allViewsIsUpload = true
         progressMedias[chooseMedia.url] = LoadMediaType.UPLOAD
         progressMedias.values.forEach { type ->
@@ -717,7 +714,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     override fun hideSwipeLayout() {
-        setFragmentResult(bundleOf(METHOD_KEY to HIDE_SWIPE_DATA))
+        parentFragmentManager.setResult(CALL_METHOD_KEY,
+            METHOD_KEY to HIDE_SWIPE_DATA)
     }
 
     private fun restoreAllViewForCollapsedState() {

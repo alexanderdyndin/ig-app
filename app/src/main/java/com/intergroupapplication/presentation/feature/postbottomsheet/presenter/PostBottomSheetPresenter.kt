@@ -187,6 +187,14 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
         processes.remove(chooseMedia.url)
     }
 
+    fun removeAllContents(){
+        processes.values.forEach{ disposable->
+            disposable.dispose()
+            mediaDisposable.remove(disposable)
+        }
+        processes.clear()
+    }
+
     fun getPhotosUrl() = photoGateway.getImageUrls()
     fun getVideosUrl() = photoGateway.getVideoUrls()
     fun getAudiosUrl() = photoGateway.getAudioUrls()

@@ -11,7 +11,6 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -169,16 +168,13 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                         createPostBinding.selectItalicText, createPostBinding.selectStrikeText,
                         createPostBinding.selectStrikeText
                     )
-                    Timber.tag("tut_state").d(text)
                     types.forEach { type ->
                         when {
                             type.name.contains("FONT_COLOR") -> {
-                                setFragmentResult(
-                                    bundleOf(
+                                childFragmentManager.setResult(
+                                    MEDIA_INTERACTION_REQUEST_CODE,
                                         METHOD_KEY to CHANGE_COLOR,
-                                        COLOR_KEY to type.color
-                                    )
-                                )
+                                        COLOR_KEY to type.color)
                                 createPostBinding.icEditColor.setImageDrawable(
                                     colorDrawableGateway.getDrawableByColor(type.color)
                                 )
@@ -284,27 +280,23 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
             if (it.isActivated) {
                 it.activated(false)
                 gonePanelStyleText()
-                setFragmentResult(
-                    bundleOf(
+                childFragmentManager.setResult(
+                    MEDIA_INTERACTION_REQUEST_CODE,
                         METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
-                        ACTIVATED_KEY to false
-                    )
-                )
+                        ACTIVATED_KEY to false)
             } else {
                 it.activated(true)
                 showPanelStyleText()
-                setFragmentResult(
-                    bundleOf(
-                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
-                        ACTIVATED_KEY to true
-                    )
-                )
-                setFragmentResult(
-                    bundleOf(
-                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
-                        ACTIVATED_KEY to false
-                    )
-                )
+                childFragmentManager.run {
+                    setResult(
+                        MEDIA_INTERACTION_REQUEST_CODE,
+                            METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                            ACTIVATED_KEY to true)
+                    setResult(
+                        MEDIA_INTERACTION_REQUEST_CODE,
+                            METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
+                            ACTIVATED_KEY to false)
+                }
             }
         }
     }
@@ -314,41 +306,38 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
             if (it.isActivated) {
                 it.activated(false)
                 gonePanelGravity()
-                setFragmentResult(
-                    bundleOf(
+                childFragmentManager.setResult(
+                    MEDIA_INTERACTION_REQUEST_CODE,
                         METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
-                        ACTIVATED_KEY to false
-                    )
-                )
+                        ACTIVATED_KEY to false)
             } else {
                 it.activated(true)
                 showPanelGravity()
-                setFragmentResult(
-                    bundleOf(
+                childFragmentManager.run {
+                    setResult(MEDIA_INTERACTION_REQUEST_CODE,
                         METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
-                        ACTIVATED_KEY to true
-                    )
-                )
-                setFragmentResult(
-                    bundleOf(
-                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
-                        ACTIVATED_KEY to false
-                    )
-                )
+                        ACTIVATED_KEY to true)
+                    setResult(
+                        MEDIA_INTERACTION_REQUEST_CODE,
+                            METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                            ACTIVATED_KEY to false)
+                }
             }
         }
     }
 
     private fun setupIcEditColor() {
         createPostBinding.icEditColor.setOnClickListener {
-            setFragmentResult(bundleOf(METHOD_KEY to IC_EDIT_COLOR_METHOD_CODE))
+            childFragmentManager.setResult(MEDIA_INTERACTION_REQUEST_CODE,
+                METHOD_KEY to IC_EDIT_COLOR_METHOD_CODE)
             createPostBinding.mediaHolder.hide()
         }
     }
 
     private fun setupIcAttachFile() {
         createPostBinding.icAttachFile.setOnClickListener {
-            setFragmentResult(bundleOf(METHOD_KEY to IC_ATTACH_FILE_METHOD_CODE))
+            childFragmentManager.setResult(MEDIA_INTERACTION_REQUEST_CODE,
+                METHOD_KEY to IC_ATTACH_FILE_METHOD_CODE)
             gonePanelStyleText()
             gonePanelGravity()
             createPostBinding.mediaHolder.hide()
@@ -360,13 +349,6 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                 as ConstraintLayout.LayoutParams
         paramsRichEditor.bottomToTop = id
         createPostBinding.mediaHolder.layoutParams = paramsRichEditor
-    }
-
-    private fun setFragmentResult(bundle: Bundle) {
-        childFragmentManager.setFragmentResult(
-            MEDIA_INTERACTION_REQUEST_CODE,
-            bundle
-        )
     }
 
     protected open fun createPost(post: String, finalNamesMedia: List<String>) {

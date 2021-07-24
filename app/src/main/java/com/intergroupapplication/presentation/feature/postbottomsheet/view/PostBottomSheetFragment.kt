@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
@@ -124,6 +123,13 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                         deleteMediaFromEditor(it)
                     }
                 }
+                ProgressDialog.REMOVE_ALL_CONTENT_CODE -> {
+                    result.getParcelableArrayList<ProgressMediaModel>(ProgressDialog.DATA_KEY)?.let {
+                        it.forEach { media->
+                            deleteMediaFromEditor(media.chooseMedia)
+                        }
+                    }
+                }
             }
         }
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -135,21 +141,26 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     }
 
     override fun gonePanelStyleText() {
-        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE))
+        parentFragmentManager.setResult(VIEW_CHANGE_REQUEST_CODE,
+            METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE)
     }
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
-        setFragmentResult(bundleOf(METHOD_KEY to SHOW_PANEL_STYLE_METHOD_CODE))
+        parentFragmentManager.setResult(
+            VIEW_CHANGE_REQUEST_CODE,
+            METHOD_KEY to SHOW_PANEL_STYLE_METHOD_CODE)
     }
 
     override fun gonePanelGravityText() {
-        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE))
+        parentFragmentManager.setResult(VIEW_CHANGE_REQUEST_CODE,
+            METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE)
     }
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
-        setFragmentResult(bundleOf(METHOD_KEY to SHOW_PANEL_GRAVITY_METHOD_CODE))
+        parentFragmentManager.setResult(VIEW_CHANGE_REQUEST_CODE,
+            METHOD_KEY to SHOW_PANEL_GRAVITY_METHOD_CODE)
     }
 
     override fun calculateHeight() = heightIconPanel
@@ -158,40 +169,45 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     override fun changeTextColor(color: Int) {
         endChooseColorText()
         super.changeTextColor(color)
-        setFragmentResult(
-            bundleOf(
-                METHOD_KEY to CHANGE_STATE_METHOD_CODE,
-                DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED
+        parentFragmentManager.run {
+            setResult(
+                VIEW_CHANGE_REQUEST_CODE,
+                    METHOD_KEY to CHANGE_STATE_METHOD_CODE,
+                    DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED
             )
-        )
-        setFragmentResult(bundleOf(METHOD_KEY to SHOW_KEYBOARD_METHOD_CODE))
-        setFragmentResult(
-            bundleOf(
-                METHOD_KEY to CHANGE_TEXT_COLOR_METHOD_CODE,
-                DATA_KEY to color
-            )
-        )
+            setResult(VIEW_CHANGE_REQUEST_CODE,
+                METHOD_KEY to SHOW_KEYBOARD_METHOD_CODE)
+            setResult(
+                VIEW_CHANGE_REQUEST_CODE,
+                    METHOD_KEY to CHANGE_TEXT_COLOR_METHOD_CODE,
+                    DATA_KEY to color)
+        }
     }
 
     override fun startChooseColorText() {
         super.startChooseColorText()
-        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE))
-        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE))
+        parentFragmentManager.run {
+            setResult(VIEW_CHANGE_REQUEST_CODE,
+                METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE)
+            setResult(VIEW_CHANGE_REQUEST_CODE,METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE)
+        }
     }
 
     override fun attachFileNotActivated() {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            VIEW_CHANGE_REQUEST_CODE,
                 METHOD_KEY to CHANGE_STATE_METHOD_CODE,
                 DATA_KEY to BottomSheetBehavior.STATE_COLLAPSED
-            )
         )
     }
 
     override fun attachFileActivated() {
         super.attachFileActivated()
-        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE))
-        setFragmentResult(bundleOf(METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE))
+        parentFragmentManager.run {
+            setResult(VIEW_CHANGE_REQUEST_CODE,
+                METHOD_KEY to GONE_PANEL_GRAVITY_METHOD_CODE)
+            setResult(VIEW_CHANGE_REQUEST_CODE,METHOD_KEY to GONE_PANEL_STYLE_METHOD_CODE)
+        }
     }
 
     override fun attachGallery() {
@@ -212,18 +228,18 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
 
     override fun changeStateToHalfExpanded() {
         if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
-            setFragmentResult(
-                bundleOf(
+            parentFragmentManager.setResult(
+                VIEW_CHANGE_REQUEST_CODE,
                     METHOD_KEY to CHANGE_STATE_METHOD_CODE,
                     DATA_KEY to BottomSheetBehavior.STATE_HALF_EXPANDED
-                )
             )
         }
         panelAddFile.show()
     }
 
     override fun changeStateViewAfterAddMedia() {
-        setFragmentResult(bundleOf(METHOD_KEY to CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE))
+        parentFragmentManager.setResult(VIEW_CHANGE_REQUEST_CODE,
+            METHOD_KEY to CHANGE_STATE_AFTER_ADD_MEDIA_METHOD_CODE)
         dialogDelegate.showProgressDialog()
     }
 
@@ -239,9 +255,9 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
                 "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}"
             }
         }
-        setFragmentResult(
-            bundleOf(
-                METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to prefix))
+        parentFragmentManager.setResult(
+            VIEW_CHANGE_REQUEST_CODE,
+                METHOD_KEY to DELETE_MEDIA_CODE, DATA_KEY to prefix)
     }
 
     override fun stateSettling() {
@@ -262,45 +278,49 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            VIEW_CHANGE_REQUEST_CODE,
                 METHOD_KEY to STARTED_UPLOADED_METHOD_CODE,
                 DATA_KEY to chooseMedia
-            )
         )
-        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.START))
+        childFragmentManager.setResult(
+            BaseBottomSheetFragment.PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.START))
     }
 
     override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            VIEW_CHANGE_REQUEST_CODE,
                 METHOD_KEY to PROGRESS_UPLOADED_METHOD_CODE,
                 PROGRESS_KEY to progress, DATA_KEY to chooseMedia.url
-            )
         )
-        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.PROGRESS.apply {
-            this.progress = progress
-        }))
+        childFragmentManager.setResult(
+            BaseBottomSheetFragment.PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.PROGRESS.apply {
+                this.progress = progress
+            }))
     }
 
     override fun showImageUploadingError(chooseMedia: ChooseMedia) {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            VIEW_CHANGE_REQUEST_CODE,
                 METHOD_KEY to ERROR_UPLOADED_METHOD_CODE,
                 DATA_KEY to chooseMedia.url
-            )
         )
-        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
+        childFragmentManager.setResult(
+            BaseBottomSheetFragment.PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
     }
 
     override fun showImageUploaded(chooseMedia: ChooseMedia) {
-        setFragmentResult(
-            bundleOf(
+        parentFragmentManager.setResult(
+            VIEW_CHANGE_REQUEST_CODE,
                 METHOD_KEY to UPLOAD_METHOD_CODE,
                 DATA_KEY to chooseMedia.url
-            )
         )
-        setLoadStateResult(ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
+        childFragmentManager.setResult(
+            BaseBottomSheetFragment.PROGRESS_KEY,
+            PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
     }
 
     fun getPhotosUrl() = presenter.getPhotosUrl()
@@ -310,11 +330,4 @@ class PostBottomSheetFragment : BaseBottomSheetFragment(), PostBottomSheetView {
     fun addAudioInAudiosUrl(audios: List<AudioEntity>) = presenter.addAudioInAudiosUrl(audios)
     fun addVideoInVideosUrl(videos: List<FileEntity>) = presenter.addVideoInVideosUrl(videos)
     fun addImagesInPhotosUrl(images: List<FileEntity>) = presenter.addImagesInPhotosUrl(images)
-
-    override fun setFragmentResult(bundle: Bundle) {
-        parentFragmentManager.setFragmentResult(
-            VIEW_CHANGE_REQUEST_CODE,
-            bundle
-        )
-    }
 }

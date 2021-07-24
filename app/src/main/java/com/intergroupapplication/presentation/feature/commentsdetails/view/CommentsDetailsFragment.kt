@@ -385,8 +385,6 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
     private fun addHeightContainer(height: Int) {
         bottomSheetBehaviour.peekHeight = height
         commentHolder.minimumHeight = height
-        Timber.tag("tut_mediaHolder").d(commentHolder.height.toString())
-        Timber.tag("tut_mediaHolder_min").d(commentHolder.minimumHeight.toString())
     }
 
     private fun setErrorHandler() {
