@@ -385,6 +385,8 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
     protected open fun attachFileActivated() {
         icEditText.activated(false)
         icEditAlign.activated(false)
+        mediaRecyclerView.gone()
+        icEditColor.activated(false)
     }
 
     abstract fun attachGallery()
