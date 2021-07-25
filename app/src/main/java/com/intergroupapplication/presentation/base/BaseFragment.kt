@@ -82,7 +82,9 @@ abstract class BaseFragment : MvpAppCompatFragment() {
                         Action { throwable, _ ->
                 dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())},
                 UnknowServerException::class.java to Action { _, _ ->
-                    createSnackBarAction(R.string.unknown_error)}
+                    createSnackBarAction(R.string.unknown_error)},
+                ConnectionException::class.java to Action {_, _ -> dialogDelegate.
+                    showErrorSnackBar(getString(R.string.no_network_connection))}
                 )
         errorHandlerInitializer = ErrorHandlerInitializer(errorHandler)
         errorHandlerInitializer.initializeErrorHandler(errorMap,

@@ -110,7 +110,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
                 UserNotVerifiedException::class.java to openConfirmationEmail(),
                 ImeiException::class.java to getActionForBlockedImei(),
                 InvalidRefreshException::class.java to openAutorize(),
-                PageNotFoundException::class.java to Action { _, _ -> })
+                PageNotFoundException::class.java to Action { _, _ -> },
+                ConnectionException::class.java to Action {_,_ -> dialogDelegate.showErrorSnackBar(
+                    getString(R.string.no_network_connection)
+                )})
 
         errorHandlerInitializer.initializeErrorHandler(errorMap,
                 createSnackBarAction(R.string.unknown_error))

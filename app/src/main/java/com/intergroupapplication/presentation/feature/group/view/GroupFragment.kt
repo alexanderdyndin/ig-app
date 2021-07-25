@@ -42,7 +42,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
@@ -121,12 +120,12 @@ class GroupFragment : BaseFragment(), GroupView,
     private lateinit var groupStrength: TextView
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var emptyText: TextView
-    private lateinit var loading_layout: FrameLayout
-    private lateinit var id_group: TextView
-    private lateinit var likes_count: TextView
-    private lateinit var dislikes_count: TextView
-    private lateinit var comments_count: TextView
-    private lateinit var posts_count: TextView
+    private lateinit var loadingLayout: FrameLayout
+    private lateinit var idGroup: TextView
+    private lateinit var likesCount: TextView
+    private lateinit var dislikesCount: TextView
+    private lateinit var commentsCount: TextView
+    private lateinit var postsCount: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var joinToGroup: Button
     private lateinit var goOutFromGroup: Button
@@ -160,12 +159,12 @@ class GroupFragment : BaseFragment(), GroupView,
         groupStrength = viewBinding.group.groupStrength
         swipeLayout = viewBinding.swipeLayout
         emptyText = viewBinding.emptyText
-        loading_layout = viewBinding.loadingLayout
-        id_group = viewBinding.group.idGroup
-        likes_count = viewBinding.group.likesCount
-        dislikes_count = viewBinding.group.dislikesCount
-        comments_count = viewBinding.group.commentsCount
-        posts_count = viewBinding.group.postsCount
+        loadingLayout = viewBinding.loadingLayout
+        idGroup = viewBinding.group.idGroup
+        likesCount = viewBinding.group.likesCount
+        dislikesCount = viewBinding.group.dislikesCount
+        commentsCount = viewBinding.group.commentsCount
+        postsCount = viewBinding.group.postsCount
         progressBar = viewBinding.progressBar
         headGroupCreatePostViewStub = viewBinding.group.headGroupCreatePostViewStub
         headGroupJoinViewStub = viewBinding.group.headGroupJoinViewStub
@@ -201,14 +200,14 @@ class GroupFragment : BaseFragment(), GroupView,
                 when(loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
-                            loading_layout.show()
+                            loadingLayout.show()
                         }
                         emptyText.hide()
                     }
                     is LoadState.Error -> {
                         swipeLayout.isRefreshing = false
                         emptyText.hide()
-                        loading_layout.gone()
+                        loadingLayout.gone()
                         if (adapter.itemCount == 0) {
                             footerAdapter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
@@ -220,7 +219,7 @@ class GroupFragment : BaseFragment(), GroupView,
                         } else {
                             emptyText.hide()
                         }
-                        loading_layout.gone()
+                        loadingLayout.gone()
                         swipeLayout.isRefreshing = false
                         groupPosts.scrollToPosition(0)
                     }
@@ -389,11 +388,11 @@ class GroupFragment : BaseFragment(), GroupView,
     override fun showGroupInfo(groupEntity: GroupEntity.Group) {
         toolbarTittle.text = groupEntity.name
         //groupName.text = groupEntity.name
-        id_group.text = getString(R.string.idg, groupEntity.id)
-        likes_count.text = groupEntity.postsLikes
-        dislikes_count.text = groupEntity.postsDislikes
-        comments_count.text = groupEntity.CommentsCount
-        posts_count.text = groupEntity.postsCount
+        idGroup.text = getString(R.string.idg, groupEntity.id)
+        likesCount.text = groupEntity.postsLikes
+        dislikesCount.text = groupEntity.postsDislikes
+        commentsCount.text = groupEntity.CommentsCount
+        postsCount.text = groupEntity.postsCount
         groupStrength.text = groupEntity.followersCount
         doOrIfNull(groupEntity.avatar, {
             groupAvatarHolder.showAvatar(it)
@@ -420,6 +419,11 @@ class GroupFragment : BaseFragment(), GroupView,
     override fun avatarChanged(url: String) {
         groupAvatarHolder.showAvatar(url)
         groupAvatarHolder.showImageUploaded()
+        compositeDisposable.add(
+            viewModel.fetchPosts(groupId)
+                .subscribe {
+                    adapter.submitData(lifecycle, it)
+                })
     }
 
     override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
@@ -549,13 +553,15 @@ class GroupFragment : BaseFragment(), GroupView,
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    presenter.followGroup(groupId, groupStrength.text.toString().split(" ")[0].toInt())
+                    presenter.followGroup(groupId, groupStrength.text.toString()
+                        .split(" ")[0].toInt())
                 }.let { { d: Disposable -> compositeDisposable.add(d) } }
         RxView.clicks(goOutFromGroup)
                 .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    presenter.unfollowGroup(groupId, groupStrength.text.toString().split(" ")[0].toInt())
+                    presenter.unfollowGroup(groupId, groupStrength.text.toString()
+                        .split(" ")[0].toInt())
                 }.let { { d: Disposable -> compositeDisposable.add(d) } }
     }
 

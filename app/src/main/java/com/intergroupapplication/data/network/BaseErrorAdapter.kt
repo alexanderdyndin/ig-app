@@ -4,6 +4,7 @@ import com.intergroupapplication.data.model.ApiErrorElement
 import com.intergroupapplication.domain.exception.*
 import io.reactivex.exceptions.CompositeException
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.Exception
 
@@ -15,6 +16,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
 
     override fun adapt(throwable: Throwable): Throwable {
         return if (throwable is HttpException) {
+            Timber.tag("tut_error_adapter").e(throwable.code().toString())
             val apiError = errorParser.parseError(throwable)
             apiError?.let {
                 when (throwable.code()) {
@@ -68,7 +70,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                 else -> UnknowServerException()
             }
         } else {
-            throwable
+            ConnectionException()
         }
     }
 

@@ -273,7 +273,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                 Compressor(activity).setQuality(75)
-                                    .setCompressFormat(Bitmap.CompressFormat.WEBP_LOSSY)
+                                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                     .compressToFile(file))
                 }
                 .flatMapObservable { it ->
