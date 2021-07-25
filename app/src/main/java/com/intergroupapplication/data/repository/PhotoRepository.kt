@@ -221,7 +221,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     override fun uploadToAws(groupId: String?): Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(lastAttachedImagePath?:"")
-        return appApi.uploadPhoto(file.extension, groupId)
+        return appApi.uploadPostsMedia(file.extension, groupId)
                 .doAfterSuccess {
                     if (file.extension == "gif")
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,

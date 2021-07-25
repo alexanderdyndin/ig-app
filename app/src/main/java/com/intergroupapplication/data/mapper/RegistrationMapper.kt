@@ -19,7 +19,7 @@ class RegistrationMapper @Inject constructor() {
                     passwordConfirm = from.passwordConfirm)
 
 
-    fun mapToDomainEnity(from: RegistrationModel) =
+    fun mapToDomainEntity(from: RegistrationModel) =
             RegistrationEntity(
                     email = from.email,
                     password = from.password,
@@ -35,7 +35,7 @@ class RegistrationMapper @Inject constructor() {
             )
 
 
-    fun mapToDomainEnity(from: RegistrationResponseEntity) =
+    fun mapToDomainEntity(from: RegistrationResponseEntity) =
             RegistrationResponseModel(
                     isActive = from.isActive,
                     email = from.email

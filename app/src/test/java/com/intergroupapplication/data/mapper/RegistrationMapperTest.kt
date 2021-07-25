@@ -28,7 +28,7 @@ class RegistrationMapperTest {
 
     @Test
     fun shouldMapRegistrationModel() {
-        val registrationEntity = registrationMapper.mapToDomainEnity(FakeData.getRegistrationModel())
+        val registrationEntity = registrationMapper.mapToDomainEntity(FakeData.getRegistrationModel())
         Assert.assertEquals(registrationEntity, FakeData.getRegistrationEntity())
     }
 

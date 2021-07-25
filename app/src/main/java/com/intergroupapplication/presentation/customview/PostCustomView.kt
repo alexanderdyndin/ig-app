@@ -12,19 +12,19 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.domain.entity.AudioEntity
 import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.domain.entity.ParseConstants
 import com.intergroupapplication.domain.entity.ParseConstants.END_AUDIO
+import com.intergroupapplication.domain.entity.ParseConstants.END_CONTAINER
 import com.intergroupapplication.domain.entity.ParseConstants.END_IMAGE
+import com.intergroupapplication.domain.entity.ParseConstants.END_MEDIA_PREFIX
 import com.intergroupapplication.domain.entity.ParseConstants.END_VIDEO
 import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
 import com.intergroupapplication.domain.entity.ParseConstants.PARSE_SYMBOL
 import com.intergroupapplication.domain.entity.ParseConstants.START_AUDIO
+import com.intergroupapplication.domain.entity.ParseConstants.START_CONTAINER
 import com.intergroupapplication.domain.entity.ParseConstants.START_IMAGE
+import com.intergroupapplication.domain.entity.ParseConstants.START_MEDIA_PREFIX
 import com.intergroupapplication.domain.entity.ParseConstants.START_VIDEO
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
-import timber.log.Timber
 
 class PostCustomView @JvmOverloads constructor(context:Context, attrs: AttributeSet? = null,
        defStyleAttr: Int = 0) : LinearLayout(context,attrs,defStyleAttr) {
@@ -37,7 +37,7 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
     private lateinit var markupModel: MarkupModel
     var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
     var proxy: HttpProxyCacheServer? = null
-    lateinit var imageLoadingDelegate:ImageLoadingDelegate
+    var imageLoadingDelegate:ImageLoadingDelegate? = null
 
     fun setUpPost(markupModel: MarkupModel){
         this.removeAllViews()
@@ -48,17 +48,18 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
     private fun createFinalText(text:String): String {
         var finalTextComment = ""
         val listWithTextAndMediaName = listWithTextAfterSplittingHtml(text)
-        listWithTextAndMediaName.filter{it.isNotEmpty() && it != "</div>" && it != "<div>"}
+        listWithTextAndMediaName.filter{it.isNotEmpty() &&
+                it != END_CONTAINER && it != START_CONTAINER}
             .forEachIndexed { index,string->
             if (string.contains(MEDIA_PREFIX)){
-                if (index ==0) finalTextComment += "~~{"
+                if (index ==0) finalTextComment += START_MEDIA_PREFIX
                 finalTextComment +=string.substringBefore(MEDIA_PREFIX).plus(",")
-                if (index == listWithTextAndMediaName.size -1) finalTextComment += "}~~"
+                if (index == listWithTextAndMediaName.size -1) finalTextComment += END_MEDIA_PREFIX
             }
             else{
-                if (index !=0) finalTextComment+="}~~"
+                if (index !=0) finalTextComment+= END_MEDIA_PREFIX
                 finalTextComment += string
-                if (index != listWithTextAndMediaName.size -1) finalTextComment += "~~{"
+                if (index != listWithTextAndMediaName.size -1) finalTextComment += START_MEDIA_PREFIX
             }
         }
         return finalTextComment
@@ -100,7 +101,8 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         firstList: MutableList<String>,
         prefix: String
     ) {
-        secondList.filter { it.isNotEmpty() && it != "</div>" && it != "<div>"}.forEach {
+        secondList.filter { it.isNotEmpty() &&
+                it != END_CONTAINER && it != START_CONTAINER}.forEach {
             firstList.addAll(it.split(prefix))
         }
         secondList.clear()
@@ -166,19 +168,22 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         }
     }
 
-    private fun createImageGalleryView(imageUrl: MutableList<FileEntity>,imageGalleryView: ImageGalleryView) {
-        imageGalleryView.setImages(imageUrl, markupModel.imagesExpanded)
+    private fun createImageGalleryView(imageUrl: MutableList<FileEntity>,
+                                       imageGalleryView: ImageGalleryView) {
+        imageGalleryView.setImages(imageUrl, markupModel.imagesExpanded, markupModel.images)
         imageGalleryView.imageClick = imageClickListener
         imageGalleryView.expand = { markupModel.imagesExpanded = it }
     }
 
-    private fun createAudioGalleryView(audioUrl: MutableList<AudioEntity>,audioGalleryView: AudioGalleryView) {
+    private fun createAudioGalleryView(audioUrl: MutableList<AudioEntity>,
+                                       audioGalleryView: AudioGalleryView) {
         audioGalleryView.proxy = proxy
         audioGalleryView.setAudios(audioUrl)
         audioGalleryView.expand = { markupModel.audiosExpanded = it }
     }
 
-    private fun createVideoGalleryView(videoUrl: MutableList<FileEntity>,videoGalleryView: VideoGalleryView) {
+    private fun createVideoGalleryView(videoUrl: MutableList<FileEntity>,
+                                       videoGalleryView: VideoGalleryView) {
         videoGalleryView.proxy = proxy
         videoGalleryView.imageLoadingDelegate = imageLoadingDelegate
         videoGalleryView.setVideos(videoUrl)

@@ -124,7 +124,7 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
         when (chooseMedia.type) {
            MediaType.AUDIO -> {
                 processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia,
-                        groupId, appApi::uploadPhoto)
+                        groupId, appApi::uploadPostsMedia)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {
@@ -138,12 +138,12 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
             }
             MediaType.VIDEO -> {
                 processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,groupId,
-                    appApi::uploadPhoto)
+                    appApi::uploadPostsMedia)
                         .flatMap {
                             photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
                                     name = chooseMedia.name,
                                     duration = chooseMedia.duration, type = MediaType.VIDEO),
-                                    groupId, appApi::uploadPhoto)
+                                    groupId, appApi::uploadPostsMedia)
                         }.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
@@ -159,7 +159,7 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
             }
             MediaType.IMAGE -> {
                 processes[chooseMedia.url] = photoGateway.uploadImageToAws(chooseMedia.url, groupId,
-                    appApi::uploadPhoto)
+                    appApi::uploadPostsMedia)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe( {

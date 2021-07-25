@@ -23,7 +23,8 @@ interface AppApi {
     fun confirmMail(@Body tokenConfirmModel: TokenConfirmModel): Single<TokenModel>
 
     @POST("users/profiles/")
-    fun createUserProfile(@Body userProfileModel: UserProfileModelRequest): Single<UserProfileModelResponse>
+    fun createUserProfile(@Body userProfileModel: UserProfileModelRequest)
+        : Single<UserProfileModelResponse>
 
     @POST("groups/")
     fun createGroup(@Body createGroupModel: CreateGroupModel): Single<GroupModel>
@@ -32,7 +33,8 @@ interface AppApi {
     fun getGroupInformation(@Path("id") groupId: String): Single<GroupModel>
 
     @GET("groups/{group_pk}/posts/")
-    fun getGroupPosts(@Path("group_pk") groupId: String, @Query("page") page: Int): Single<GroupPostsDto>
+    fun getGroupPosts(@Path("group_pk") groupId: String, @Query("page") page: Int)
+        : Single<GroupPostsDto>
 
     @GET("groups/news/")
     fun getNews(@Query("page") page: Int): Single<NewsDto>
@@ -104,22 +106,28 @@ interface AppApi {
     fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowModel>
 
     @GET("s3/groups/posts/")
-    fun uploadPhoto(@Query("ext") imageExt: String, @Query("id") groupId: String? = null): Single<ImageUploadDto>
+    fun uploadPostsMedia(@Query("ext") imageExt: String,
+                         @Query("id") groupId: String? = null): Single<ImageUploadDto>
 
     @GET("s3/users/avatars/")
-    fun uploadUserAvatar(@Query("ext") imageExt: String,@Query("id")groupId: String? = null): Single<ImageUploadDto>
+    fun uploadUserAvatar(@Query("ext") imageExt: String,
+                         @Query("id")groupId: String? = null): Single<ImageUploadDto>
 
     @GET("s3/groups/avatars/")
-    fun uploadGroupAvatar(@Query("ext") imageExt: String,@Query("id")groupId: String? = null): Single<ImageUploadDto>
+    fun uploadGroupAvatar(@Query("ext") imageExt: String,
+                          @Query("id")groupId: String? = null): Single<ImageUploadDto>
 
     @GET("s3/groups/comments/")
-    fun uploadCommentsMedia(@Query("ext") imageExt: String,@Query("id")postId: String? = null): Single<ImageUploadDto>
+    fun uploadCommentsMedia(@Query("ext") imageExt: String,
+                            @Query("id")postId: String? = null): Single<ImageUploadDto>
 
     @PATCH("users/profiles/{user-id}/")
-    fun changeUserAvatar(@Path("user-id") userId: String, @Body avatar: UpdateAvatarModel): Single<UserProfileModelResponse>
+    fun changeUserAvatar(@Path("user-id") userId: String, @Body avatar: UpdateAvatarModel)
+        : Single<UserProfileModelResponse>
 
     @PATCH("groups/{id}/")
-    fun changeGroupAvatar(@Path("id") groupId: String, @Body avatar: UpdateAvatarModel): Single<GroupModel>
+    fun changeGroupAvatar(@Path("id") groupId: String, @Body avatar: UpdateAvatarModel)
+        : Single<GroupModel>
 
     @POST("users/push_token/")
     fun updateToken(@Body deviceModel: DeviceModel): Completable

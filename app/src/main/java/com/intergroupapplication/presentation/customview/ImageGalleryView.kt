@@ -16,11 +16,9 @@ import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
-import kotlin.math.roundToInt
-
 
 class ImageGalleryView @JvmOverloads constructor(context: Context,
-                                                 private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
+        private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
         LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
@@ -38,17 +36,14 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
     }
 
     private var uris: List<FileEntity> = emptyList()
-
+    private var allUrls:List<FileEntity> = emptyList()
     private var isExpanded: Boolean = false
 
-    fun setImages(uris: List<FileEntity>, isExpanded: Boolean = false) {
+    fun setImages(uris: List<FileEntity>, isExpanded: Boolean = false, allUrls:List<FileEntity>) {
         this.uris = uris
         this.isExpanded = isExpanded
+        this.allUrls = allUrls
         parseUrl(uris, isExpanded)
-    }
-
-    fun addImage(view:View){
-        this.addView(view)
     }
 
     private fun parseUrl(urls: List<FileEntity>, isExpanded: Boolean) {
@@ -106,7 +101,7 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
                 .setOldController(pic.controller)
                 .setImageRequest(request)
                 .build()
-        pic.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
+        pic.setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(img)) }
         return image
     }
 
@@ -124,8 +119,4 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
             }
         }
     }
-
-    private fun dpToPx(dp: Int) = (dp * context.resources.displayMetrics.density).roundToInt()
-
-
 }

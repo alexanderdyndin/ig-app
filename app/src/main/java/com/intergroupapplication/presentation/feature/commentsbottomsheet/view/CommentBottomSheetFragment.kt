@@ -22,7 +22,9 @@ import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.databinding.FragmentCommentBottomSheetBinding
 import com.intergroupapplication.domain.KeyboardVisibilityEvent
 import com.intergroupapplication.domain.entity.*
+import com.intergroupapplication.domain.entity.ParseConstants.END_CONTAINER
 import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
+import com.intergroupapplication.domain.entity.ParseConstants.START_CONTAINER
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
 import com.intergroupapplication.presentation.customview.*
 import com.intergroupapplication.presentation.widgets.progress.view.ProgressDialog
@@ -229,8 +231,10 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
             textChangeListener = object : RichEditor.OnTextChangeListener {
                 override fun onTextChange(text: String?) {
                     val newText = text?.substringBefore("re-state://")
-                        ?.replace(Regex("<div><br></div>|&nbsp;"), "")?.trim()
-                        ?.replace(Regex("<div> *</div>"), "") ?: ""
+                        ?.replace(Regex("$START_CONTAINER<br>$END_CONTAINER|&nbsp;"),
+                            "")?.trim()
+                        ?.replace(Regex("$START_CONTAINER *$END_CONTAINER"),
+                            "") ?: ""
                     Timber.tag("tut_text").d(newText)
                     if (newText.isNotEmpty() && allViewsIsUpload) {
                         sendButton.show()
@@ -344,6 +348,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         panelAddFile.show()
         panelStyleText.gone()
         panelGravityText.gone()
+        answerLayout.gone()
     }
 
     override fun gonePanelStyleText() {
@@ -363,6 +368,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
 
     override fun showPanelStyleText() {
         super.showPanelStyleText()
+        if(answerLayout.isActivated) answerLayout.show()
         panelStyleText.show()
         panelGravityText.gone()
         richEditor.run {
@@ -400,6 +406,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
 
     override fun showPanelGravityText() {
         super.showPanelGravityText()
+        if(answerLayout.isActivated) answerLayout.show()
         panelGravityText.show()
         panelStyleText.gone()
         richEditor.run {
@@ -575,7 +582,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     override fun stateHalfExpanded() {
-        if (answerLayout.isActivated) answerLayout.show()
+        if (answerLayout.isActivated && !icAttachFile.isActivated) answerLayout.show()
         changeBottomConstraintForView(horizontalGuideCenter.id)
     }
 
