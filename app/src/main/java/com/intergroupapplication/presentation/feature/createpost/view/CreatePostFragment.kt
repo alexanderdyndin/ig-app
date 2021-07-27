@@ -56,6 +56,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
         const val IC_ATTACH_FILE_METHOD_CODE = 5
         const val IC_EDIT_COLOR_METHOD_CODE = 6
         const val CHANGE_COLOR = 11
+        private const val MAIN_COLOR = "#12161E"
     }
 
     @Inject
@@ -143,6 +144,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                     )
                 PostBottomSheetFragment.DELETE_MEDIA_CODE ->{
                     result.getString(PostBottomSheetFragment.DATA_KEY)?.let{
+                        loadingMedias.remove(it)
                         richEditor.html = richEditor.html?.replace(it,"")
                     }
                 }
@@ -158,7 +160,7 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
             setEditorPadding(padding, padding, padding, padding)
             setEditorFontColor(ContextCompat.getColor(context, R.color.whiteTextColor))
             setPlaceholder(context.getString(R.string.add_photo_or_text))
-            setBackgroundColor(Color.parseColor("#12161E"))
+            setBackgroundColor(Color.parseColor(MAIN_COLOR))
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
             decorationStateListener = object : RichEditor.OnDecorationStateListener {
 

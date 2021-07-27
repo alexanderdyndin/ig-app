@@ -63,7 +63,6 @@
             android:id="@+id/fromWhom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="12dp"
             android:paddingStart="8dp"
             tools:text="Загрузил: (ID:1223456)"
             style="@style/TextNoActive10sp"
@@ -137,24 +136,6 @@
             app:layout_constraintEnd_toEndOf="@+id/exoDuration"
             app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
             app:layout_constraintTop_toTopOf="@id/startLineSeekBar" />
-
-       <!-- <SeekBar
-            android:id="@+id/mySeekBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            style="@style/PostSeekBar"
-            android:secondaryProgressTint="@color/red"
-            app:layout_constraintEnd_toEndOf="@+id/exo_duration"
-            app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
-            app:layout_constraintTop_toTopOf="@id/startLineSeekBar"/>!-->
-        <!--        <View android:id="@id/exo_progress_placeholder"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="26dp"-->
-<!--            app:layout_constraintEnd_toEndOf="@+id/exo_duration"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"-->
-<!--            app:layout_constraintTop_toTopOf="@id/startLineSeekBar"/>-->
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

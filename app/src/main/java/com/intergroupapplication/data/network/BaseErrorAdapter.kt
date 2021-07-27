@@ -16,7 +16,6 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
 
     override fun adapt(throwable: Throwable): Throwable {
         return if (throwable is HttpException) {
-            Timber.tag("tut_error_adapter").e(throwable.code().toString())
             val apiError = errorParser.parseError(throwable)
             apiError?.let {
                 when (throwable.code()) {

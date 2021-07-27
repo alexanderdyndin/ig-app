@@ -94,7 +94,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     private lateinit var rightGravityButton: RadioButton
     private val namesMap = mutableMapOf<String, String>()
     private val finalNamesMedia = mutableListOf<String>()
-    private val progressMedias = mutableMapOf<String, LoadMediaType>()
+    private val loadingMedias = mutableMapOf<String, LoadMediaType>()
     private var allViewsIsUpload = true
     private var stateBeforeShowMediaRecycler = BottomSheetBehavior.STATE_COLLAPSED
     private val heightEditText by lazy { requireContext().dpToPx(70) }
@@ -175,6 +175,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 "${ParseConstants.START_VIDEO}${chooseMedia.url}${ParseConstants.END_VIDEO}"
             }
         }
+        loadingMedias.remove(chooseMedia.url)
         richEditor.html = richEditor.html?.replace(prefix, "")
     }
 
@@ -235,7 +236,6 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                             "")?.trim()
                         ?.replace(Regex("$START_CONTAINER *$END_CONTAINER"),
                             "") ?: ""
-                    Timber.tag("tut_text").d(newText)
                     if (newText.isNotEmpty() && allViewsIsUpload) {
                         sendButton.show()
                     } else {
@@ -682,7 +682,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 richEditor.insertVideo(chooseMedia.url)
             }
         }
-        progressMedias[chooseMedia.url] = LoadMediaType.START
+        loadingMedias[chooseMedia.url] = LoadMediaType.START
         sendButton.hide()
         childFragmentManager.setResult(PROGRESS_KEY,
             PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.START))
@@ -692,13 +692,13 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         val type = LoadMediaType.PROGRESS.apply {
             this.progress = progress
         }
-        progressMedias[chooseMedia.url] = type
+        loadingMedias[chooseMedia.url] = type
         childFragmentManager.setResult(PROGRESS_KEY,
             PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,type))
     }
 
     override fun showImageUploadingError(chooseMedia: ChooseMedia) {
-        progressMedias[chooseMedia.url] = LoadMediaType.ERROR
+        loadingMedias[chooseMedia.url] = LoadMediaType.ERROR
         childFragmentManager.setResult(PROGRESS_KEY,
             PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.ERROR))
     }
@@ -707,8 +707,8 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         childFragmentManager.setResult(PROGRESS_KEY,
             PROGRESS_MODEL_KEY to ProgressMediaModel(chooseMedia,LoadMediaType.UPLOAD))
         allViewsIsUpload = true
-        progressMedias[chooseMedia.url] = LoadMediaType.UPLOAD
-        progressMedias.values.forEach { type ->
+        loadingMedias[chooseMedia.url] = LoadMediaType.UPLOAD
+        loadingMedias.values.forEach { type ->
             if (type != LoadMediaType.UPLOAD) {
                 allViewsIsUpload = false
                 return@forEach

@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.danikula.videocache.HttpProxyCacheServer
@@ -48,8 +47,7 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
     private fun createFinalText(text:String): String {
         var finalTextComment = ""
         val listWithTextAndMediaName = listWithTextAfterSplittingHtml(text)
-        listWithTextAndMediaName.filter{it.isNotEmpty() &&
-                it != END_CONTAINER && it != START_CONTAINER}
+        listWithTextAndMediaName
             .forEachIndexed { index,string->
             if (string.contains(MEDIA_PREFIX)){
                 if (index ==0) finalTextComment += START_MEDIA_PREFIX
@@ -59,7 +57,9 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
             else{
                 if (index !=0) finalTextComment+= END_MEDIA_PREFIX
                 finalTextComment += string
-                if (index != listWithTextAndMediaName.size -1) finalTextComment += START_MEDIA_PREFIX
+                if (index != listWithTextAndMediaName.size -1) {
+                    finalTextComment += START_MEDIA_PREFIX
+                }
             }
         }
         return finalTextComment
@@ -78,7 +78,8 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         addAllText(secondList, firstList, START_VIDEO)
         secondList.clear()
         splitHtml(firstList, secondList, END_VIDEO)
-        return secondList
+        return secondList.filter { it.isNotEmpty() &&
+                it != END_CONTAINER && it != START_CONTAINER }.toMutableList()
     }
 
     private fun splitHtml(
@@ -109,25 +110,34 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
     }
 
     private fun parsingTextInPost(){
-        val textAfterParse = createFinalText(markupModel.text).split(PARSE_SYMBOL)
+        val textAfterParse = createFinalText(markupModel.text).split(PARSE_SYMBOL).filter {
+            it.isNotEmpty()
+        }
         textAfterParse.forEach { text->
             val view = LayoutInflater.from(context)
                     .inflate(R.layout.layout_post_custom_view,this,false)
+                        as LinearLayout
+            val textView = view.findViewById<TextView>(R.id.postText)
             if (text.contains("^\\{".toRegex()) && text.contains("\\}\$".toRegex())){
+                view.removeView(textView)
                 if (text.length > 3){
                     setupMediaViews(text,view)
                 }
             }
             else{
-                val textView = view.findViewById<TextView>(R.id.postText)
                 textView.text = Html.fromHtml(text.replace("text-align: right",
                     "text-align: end"),Html.FROM_HTML_MODE_COMPACT)
+                view.run {
+                    removeView(view.findViewById(R.id.imageBody))
+                    removeView(view.findViewById(R.id.audioBody))
+                    removeView(view.findViewById(R.id.videoBody))
+                }
             }
             addView(view)
         }
     }
 
-    private fun setupMediaViews(text: String,view: View) {
+    private fun setupMediaViews(text: String,view: LinearLayout) {
         val newText = text.substring(1, text.length - 2).split(",")
         val imageUrl = mutableListOf<FileEntity>()
         val videoUrl = mutableListOf<FileEntity>()
@@ -138,11 +148,20 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         if (imageUrl.isNotEmpty()) {
             createImageGalleryView(imageUrl,view.findViewById(R.id.imageBody))
         }
+        else{
+            view.removeView(view.findViewById(R.id.imageBody))
+        }
         if (audioUrl.isNotEmpty()) {
             createAudioGalleryView(audioUrl,view.findViewById(R.id.audioBody))
         }
+        else{
+            view.removeView(view.findViewById(R.id.audioBody))
+        }
         if (videoUrl.isNotEmpty()) {
             createVideoGalleryView(videoUrl,view.findViewById(R.id.videoBody))
+        }
+        else{
+            view.removeView(view.findViewById(R.id.videoBody))
         }
     }
 

@@ -216,12 +216,12 @@ RE.insertImage = function(url, alt) {
 }
 
 RE.insertAudio = function(url, alt) {
-    var html = '<audio src="' + url + '" controls></audio><br>';
+    var html = '<audio src="' + url + '" controls></audio> <br>';
     RE.insertHTML(html);
 }
 
 RE.insertVideo = function(url, width) {
-    var html = '<video src="' + url + '" width="' + width + '" controls></video><br>';
+    var html = '<video src="' + url + '" width="' + width + '" controls></video> <br>';
     RE.insertHTML(html);
 }
 

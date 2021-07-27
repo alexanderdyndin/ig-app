@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorInput"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/detachImage"
+        app:layout_constraintEnd_toStartOf="@+id/detachMedia"
         app:layout_constraintTop_toTopOf="parent"/>
     <ImageView
         android:id="@+id/detachMedia"
