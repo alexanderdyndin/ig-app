@@ -9,5 +9,6 @@ data class GroupPostRemoteKeysModel(
         @PrimaryKey
         @ColumnInfo(name = "group_id")
         val groupId: String,
-        val next: Int?,
+        val prevKey: Int?,
+        val nextKey: Int?
 )

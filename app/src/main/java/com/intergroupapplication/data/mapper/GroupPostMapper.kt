@@ -1,6 +1,5 @@
 package com.intergroupapplication.data.mapper
 
-import androidx.room.PrimaryKey
 import com.intergroupapplication.data.model.*
 import com.intergroupapplication.domain.entity.*
 import javax.inject.Inject
@@ -121,7 +120,7 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
 
     fun mapToDomainEntity(from: GroupPostsDto): GroupPostsEntity {
         return GroupPostsEntity(from.count.toInt(), from.next,
-                from.previous, from.results.map { mapToDomainEntity(it) })
+                from.previous, from.groupPostModels.map { mapToDomainEntity(it) })
     }
 
 

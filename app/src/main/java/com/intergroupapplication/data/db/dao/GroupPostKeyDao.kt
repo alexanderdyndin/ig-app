@@ -11,7 +11,7 @@ import io.reactivex.Single
 @Dao
 interface GroupPostKeyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrReplace(remoteKey: GroupPostRemoteKeysModel?)
+    fun insertKey(remoteKey: GroupPostRemoteKeysModel)
 
     @Query("SELECT * FROM group_post_remote_keys WHERE group_id = :groupId")
     fun getRemoteKey(groupId: String): GroupPostRemoteKeysModel?
