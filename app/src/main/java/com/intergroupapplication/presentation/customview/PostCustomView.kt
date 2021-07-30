@@ -125,7 +125,7 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
                 }
             }
             else{
-                textView.text = Html.fromHtml(text.replace("text-align: right",
+                textView.text = Html.fromHtml(text.trim().replace("text-align: right",
                     "text-align: end"),Html.FROM_HTML_MODE_COMPACT)
                 view.run {
                     removeView(view.findViewById(R.id.imageBody))

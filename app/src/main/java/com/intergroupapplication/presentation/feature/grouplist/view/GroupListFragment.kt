@@ -87,6 +87,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
+    @Named
     private var job : Job = Job()
 
     private lateinit var viewModel: GroupListViewModel

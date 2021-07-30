@@ -50,7 +50,7 @@ img {
   overflow-y: scroll;
 }
 
-#editor[placeholder]:empty:not(:focus):before {
+#editor[placeholder]:empty:before {
   content: attr(placeholder);
   opacity: .5;
 }}
