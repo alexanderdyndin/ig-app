@@ -1,18 +1,15 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import android.text.method.ScrollingMovementMethod
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Scroller
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
+import android.widget.*
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
-import androidx.core.view.postDelayed
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -20,57 +17,44 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.danikula.videocache.HttpProxyCacheServer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.appbar.AppBarLayout
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentCommentsDetailsBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
-import com.intergroupapplication.domain.exception.NotFoundException
 import com.intergroupapplication.domain.exception.TEXT
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.BottomSheetPresenter
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.presenter.CommentsDetailsPresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
-import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
-import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.intergroupapplication.presentation.feature.mediaPlayer.AudioPlayerView
-import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
-import com.intergroupapplication.presentation.feature.mediaPlayer.VideoPlayerView
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
-import com.intergroupapplication.presentation.listeners.RightDrawableListener
-import com.jakewharton.rxbinding2.widget.RxTextView
-import com.mobsandgeeks.saripaar.ValidationError
-import com.mobsandgeeks.saripaar.Validator
-import com.mobsandgeeks.saripaar.annotation.NotEmpty
+import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_comments_details.*
-import kotlinx.android.synthetic.main.fragment_comments_details.emptyText
-import kotlinx.android.synthetic.main.item_group_post.*
-import kotlinx.android.synthetic.main.item_group_post.view.*
-import kotlinx.android.synthetic.main.reply_comment_layout.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-
-import timber.log.Timber
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 
-class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator.ValidationListener,
-        AppBarLayout.OnOffsetChangedListener, CoroutineScope{
+class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView,CoroutineScope,
+        AppBarLayout.OnOffsetChangedListener {
 
     companion object {
         const val COMMENTS_DETAILS_REQUEST = 0
@@ -78,10 +62,12 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         const val GROUP_ID_VALUE = "GROUP_ID"
 
         private const val GROUP_ID = "group_id"
-        private const val COMMENT_ID = "comment_id"
+        const val COMMENT_ID = "comment_id"
         const val POST_ID = "post_id"
         const val COMMENT_PAGE = "page"
     }
+
+    private val viewBinding by viewBinding(FragmentCommentsDetailsBinding::bind)
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -98,13 +84,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
-
-    @Inject
-    lateinit var validator: Validator
-
-    @Inject
-    lateinit var rightDrawableListener: RightDrawableListener
-
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -124,25 +103,47 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     lateinit var viewModel: CommentsViewModel
 
-    var infoForCommentEntity: InfoForCommentEntity? = null
+    private var infoForCommentEntity: InfoForCommentEntity? = null
 
-    var postId: String? = null
+    private var postId: String? = null
 
-    var page: String = "1"
+    private var page: String = "1"
 
-    var commentCreated = false
+    private var comment_id:String = "1"
 
-    @NotEmpty(messageResId = R.string.comment_should_contain_text)
-    lateinit var commentEditText: AppCompatEditText
+    private var commentCreated = false
 
-    private var groupPostEntity: GroupPostEntity.PostEntity? = null
+    private lateinit var bottomSheetBehaviour: AutoCloseBottomSheetBehavior<FrameLayout>
+
+    private var groupPostEntity: CommentEntity.PostEntity? = null
     private var lastRepliedComment: CommentEntity.Comment? = null
+
+    private val bottomFragment by lazy {CommentBottomSheetFragment()}
+
+    private val scrollListener = object:RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            val endPos = (commentsList.layoutManager as LinearLayoutManager)
+                    .findLastCompletelyVisibleItemPosition()
+            swipeLayout.isEnabled = endPos == adapter.itemCount-1
+        }
+    }
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_comments_details
 
-    override fun getSnackBarCoordinator(): ViewGroup? = coordinator
+    override fun getSnackBarCoordinator() = viewBinding.coordinator
 
+    private lateinit var commentsList: RecyclerView
+    private lateinit var swipeLayout: SwipyRefreshLayout
+    private lateinit var loading_layout: FrameLayout
+    private lateinit var emptyText: TextView
+    private lateinit var commentHolder: LinearLayout
+    private lateinit var commentLoader: ProgressBar
+
+    private lateinit var disposable:Disposable
+
+    @SuppressLint("CheckResult")
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,60 +151,81 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         infoForCommentEntity = arguments?.getParcelable(COMMENT_POST_ENTITY)
         postId = arguments?.getString(POST_ID)
-        page = arguments?.getString(COMMENT_PAGE)!!
-        if (infoForCommentEntity != null) {
-            compositeDisposable.add(
-                    viewModel.fetchComments(infoForCommentEntity!!.groupPostEntity.id, page).subscribe {
-                        adapter.submitData(lifecycle, it)
-                    }
-            )
-        } else if (postId != null) {
-            compositeDisposable.add(
-                    viewModel.fetchComments(postId!!, page).subscribe {
-                        adapter.submitData(lifecycle, it)
-                    }
-            )
+        page = arguments?.getString(COMMENT_PAGE)?:"1"
+        comment_id = arguments?.getString(COMMENT_ID)?:"1"
+        disposable = CommentsViewModel.publishSubject.subscribe{
+            when(it.first){
+                CommentBottomSheetFragment.ADD_HEIGHT_CONTAINER->
+                    addHeightContainer(it.second as Int)
+                CommentBottomSheetFragment.ANSWER_COMMENT_CREATED_DATA->
+                    answerToCommentCreated(it.second as CommentEntity)
+                CommentBottomSheetFragment.COMMENT_CREATED_DATA->
+                    commentCreated(it.second as CommentEntity)
+                CommentBottomSheetFragment.CHANGE_STATE_BOTTOM_SHEET_DATA->
+                    changeStateBottomSheet(it.second as Int)
+                CommentBottomSheetFragment.CREATE_COMMENT_DATA-> {
+                    val data = it.second as Pair<String,BottomSheetPresenter>
+                    createComment(data.first,data.second)
+                }
+                CommentBottomSheetFragment.HIDE_SWIPE_DATA -> hideSwipeLayout()
+                CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA ->
+                    showCommentUploading(it.second as Boolean)
+            }
         }
-
     }
 
     override fun viewCreated() {
-        commentEditText = requireView().findViewById(R.id.commentEditText)
+        loading_layout = viewBinding.loadingLayout
+        emptyText = viewBinding.emptyText
+        commentsList = viewBinding.commentsList
+        swipeLayout = viewBinding.swipeLayout
+        commentHolder = viewBinding.commentHolder
+        commentLoader = viewBinding.commentLoader
+        try {
+            childFragmentManager.beginTransaction().replace(R.id.containerCommentBottomSheet, bottomFragment).commit()
+            bottomSheetBehaviour = BottomSheetBehavior.from(viewBinding.containerCommentBottomSheet)
+                    as AutoCloseBottomSheetBehavior<FrameLayout>
+            bottomSheetBehaviour.run {
+                peekHeight = requireContext().dpToPx(100)
+                commentHolder.minimumHeight = peekHeight
+                halfExpandedRatio = 0.6f
+                isFitToContents = false
+                addBottomSheetCallback(object : BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        bottomFragment.changeState(newState)
+                    }
+
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+                    }
+                })
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+        presenter.postId = postId
         val decorator = CommentDividerItemDecorator(requireContext())
-        prepareEditText()
-        //crashing app when provide it by dagger
-        //commentsList.layoutManager = layoutManager
         commentsList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        //commentsList.setHasFixedSize(true)
         commentsList.itemAnimator = null
         commentsList.addItemDecoration(decorator)
+        commentsList.addOnScrollListener(scrollListener)
+        swipeLayout.isEnabled = false
         prepareAdapter()
-        manageDataFlow(infoForCommentEntity)
-        controlCommentEditTextChanges()
-        //setSupportActionBar(toolbar)
-        //supportActionBar?.setDisplayShowTitleEnabled(false)
-        toolbarAction.setOnClickListener { findNavController().popBackStack() }
-        ViewCompat.setNestedScrollingEnabled(commentsList, false)
-        settingsPost.clicks()
-                .subscribe { showPopupMenu(settingsPost) }
-                .also { compositeDisposable.add(it) }
+        viewBinding.toolbarAction.setOnClickListener { findNavController().popBackStack() }
 
-        newpaging()
+        newPaging()
 
         swipeLayout.setOnRefreshListener {
             groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
             adapter.refresh()
         }
-        audioBody.proxy = proxyCacheServer
-        videoBody.proxy = proxyCacheServer
-
-        imageBody.imageClick = { list, index ->
-            val data = bundleOf("images" to list.toTypedArray(), "selectedId" to index)
-            findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
-        }
     }
 
-    fun newpaging() {
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.dispose()
+    }
+    fun newPaging() {
         commentsList.adapter = adapterAd
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
@@ -214,7 +236,6 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                             loading_layout.show()
                         }
                         emptyText.hide()
-                        commentEditText.isEnabled = false
                     }
                     is LoadState.Error -> {
                         swipeLayout.isRefreshing = false
@@ -224,24 +245,27 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                             adapterFooter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
-                        commentEditText.isEnabled = true
                     }
                     is LoadState.NotLoading -> {
+                        if (swipeLayout.isRefreshing){
+                            commentsList.scrollToPosition(adapter.itemCount-1)
+                            swipeLayout.isRefreshing = false
+                        }
+                        if (comment_id != "1" && adapter.itemCount != 0) {
+                            val positionAnswerComment = adapter.positionAnswerComment(comment_id)
+                            commentsList.scrollToPosition(positionAnswerComment)
+                            comment_id = "1"
+                        }
                         if (adapter.itemCount == 0) {
                             emptyText.show()
                         } else {
                             emptyText.hide()
                         }
                         loading_layout.gone()
-                        swipeLayout.isRefreshing = false
                         if (commentCreated) {
-                            nestedScrollComments.postDelayed(250) {
-                                nestedScrollComments.smoothScrollTo(0, commentsList.bottom)
-                            }
+                            commentsList.scrollToPosition(adapter.itemCount-1)
                             commentCreated = false
                         }
-                        commentEditText.isEnabled = true
-                        swipeLayout.isRefreshing = false
                     }
                     else -> {
                         swipeLayout.isRefreshing = false
@@ -258,7 +282,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     override fun onResume() {
         super.onResume()
         job = Job()
-        appbar.addOnOffsetChangedListener(this)
+        manageDataFlow(infoForCommentEntity)
     }
 
     override fun onPause() {
@@ -266,220 +290,89 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
         job.cancel()
     }
 
-    override fun onStop() {
-        appbar.removeOnOffsetChangedListener(this)
-        super.onStop()
-    }
-
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
         swipeLayout.isEnabled = (verticalOffset == 0)
     }
 
-    override fun showPostDetailInfo(groupPostEntity: GroupPostEntity.PostEntity) {
+    override fun showPostDetailInfo(groupPostEntity: CommentEntity.PostEntity) {
         setErrorHandler()
         this.groupPostEntity = groupPostEntity
-
-        compositeDisposable.add(getDateDescribeByString(groupPostEntity.date)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-
-        groupPostEntity.postText.let {
-            if (it.isNotEmpty()) {
-                postText.text = it
-                postText.show()
-            } else {
-                postText.gone()
-            }
+        if (infoForCommentEntity != null) {
+            compositeDisposable.add(
+                    viewModel.fetchComments(groupPostEntity, page).subscribe {
+                        page = (groupPostEntity.commentsCount.toInt()/20+1).toString()
+                        adapter.submitData(lifecycle, it)
+                    }
+            )
         }
-
-        idpGroupPost.text = requireContext().getString(R.string.idp, groupPostEntity.idp.toString())
-        commentBtn.text = groupPostEntity.commentsCount
-        groupName.text = groupPostEntity.groupInPost.name
-        postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
-        postLike.text = groupPostEntity.reacts.likesCount.toString()
-        subCommentBtn.text = groupPostEntity.bells.count.toString()
-
-        if (groupPostEntity.reacts.isLike) {
-            postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
-        } else {
-            postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
-        }
-        if (groupPostEntity.reacts.isDislike) {
-            postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
-        } else {
-            postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
-        }
-
-        doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
-                { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
-
-
-        imageBody.setImages(groupPostEntity.images)
-        videoBody.setVideos(groupPostEntity.videos)
-        audioBody.setAudios(groupPostEntity.audios)
-
-        subCommentBtn.setOnClickListener {
-            if (!groupPostEntity.isLoading) {
-                if (groupPostEntity.bells.isActive) {
-                    compositeDisposable.add(viewModel.deleteBell(groupPostEntity.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe { groupPostEntity.isLoading = true }
-                            .doFinally {
-                                groupPostEntity.isLoading = false
-                                showPostDetailInfo(groupPostEntity)
-                            }
-                            .subscribe({
-                                groupPostEntity.bells.isActive = false
-                                groupPostEntity.bells.count--
-                            }, { exception ->
-                                if (exception is NotFoundException) {
-                                    groupPostEntity.bells.isActive = false
-                                    groupPostEntity.bells.count--
-                                } else
-                                    errorHandler.handle(exception)
-                            }))
-                } else {
-                    compositeDisposable.add(viewModel.setBell(groupPostEntity.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe { groupPostEntity.isLoading = true }
-                            .doFinally {
-                                groupPostEntity.isLoading = false
-                                showPostDetailInfo(groupPostEntity)
-                            }
-                            .subscribe({
-                                groupPostEntity.bells.isActive = true
-                                groupPostEntity.bells.count++
-
-                            }, { exception ->
-                                if (exception is CompositeException) {
-                                    exception.exceptions.forEach { ex ->
-                                        (ex as? FieldException)?.let {
-                                            if (it.field == "post") {
-                                                groupPostEntity.bells.isActive = true
-                                                groupPostEntity.bells.count++
-                                            }
-                                        }
-                                    }
-                                } else
-                                    errorHandler.handle(exception)
-                            }))
-                }
-            }
-        }
-        postLikesClickArea.setOnClickListener {
-            if (!groupPostEntity.isLoading) {
-                compositeDisposable.add(viewModel.setReact(isLike = !groupPostEntity.reacts.isLike,
-                        isDislike = groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {
-                            groupPostEntity.isLoading = true
-                        }
-                        .doFinally {
-                            groupPostEntity.isLoading = false
-                            showPostDetailInfo(groupPostEntity)
-                        }
-                        .subscribe({
-                            groupPostEntity.reacts = it
-                        },
-                                {
-                                    errorHandler.handle(it)
-                                }))
-            }
-        }
-        postDislikesClickArea.setOnClickListener {
-            if (!groupPostEntity.isLoading) {
-                compositeDisposable.add(viewModel.setReact(isLike = groupPostEntity.reacts.isLike,
-                        isDislike = !groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {
-                            groupPostEntity.isLoading = true
-                        }
-                        .doFinally {
-                            groupPostEntity.isLoading = false
-                            showPostDetailInfo(groupPostEntity)
-                        }
-                        .subscribe({
-                            groupPostEntity.reacts = it
-                        },
-                                {
-                                    errorHandler.handle(it)
-                                }))
-            }
+        else if (postId !=null){
+            compositeDisposable.add(
+                    viewModel.fetchComments(groupPostEntity, page).subscribe {
+                        adapter.submitData(lifecycle, it)
+                        page = (groupPostEntity.commentsCount.toInt()/20+1).toString()
+                    }
+            )
         }
     }
 
 
 
-    override fun commentCreated(commentEntity: CommentEntity) {
-        adapter.refresh()
+    private fun commentCreated(commentEntity: CommentEntity) {
         commentCreated = true
         increaseCommentsCounter()
+        groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
+        adapter.refresh()
     }
 
-    override fun answerToCommentCreated(commentEntity: CommentEntity) {
-        adapter.refresh()
+    private fun answerToCommentCreated(commentEntity: CommentEntity) {
         commentCreated = true
         increaseCommentsCounter()
         if (commentHolder.childCount > 1) {
             commentHolder.removeViewAt(0)
         }
+        groupPostEntity?.let { presenter.getPostDetailsInfo(it.id) }
+        adapter.refresh()
     }
 
-//    override fun commentsLoaded(comments: PagedList<CommentEntity>) {
-        //adapter.submitList(comments)
-        //adapter.notifyDataSetChanged()
-        //commentsList.smoothScrollToPosition(adapter.itemCount - 1)
-//    }
 
-    override fun onValidationFailed(errors: MutableList<ValidationError>) {
-        for (error in errors) {
-            val message = error.getCollatedErrorMessage(requireContext())
-            dialogDelegate.showErrorSnackBar(message)
-        }
-    }
-
-    override fun onValidationSucceeded() {
-        if (commentHolder.childCount > 1) {
-            lastRepliedComment?.let {
-                presenter.createAnswerToComment(it.id, CreateCommentEntity(commentEditText.text.toString().trim()))
-            }
-        } else {
-            groupPostEntity?.let { presenter.createComment(it.id, CreateCommentEntity(commentEditText.text.toString().trim())) }
-        }
-    }
-
-//    override fun showLoading(show: Boolean) {
-//        if (show) {
-            //commentEditText.isEnabled = false
-            //swipeLayout.isRefreshing = true
-            //emptyText.hide()
-            //adapter.removeError()
-            //adapter.addLoading()
-//        } else {
-            //commentEditText.isEnabled = true
-            //swipeLayout.isRefreshing = false
-            //adapter.removeLoading()
-//        }
-//    }
-
-    override fun showCommentUploading(show: Boolean) {
+    private fun showCommentUploading(show: Boolean) {
         if (show) {
-            commentEditText.isEnabled = false
             commentLoader.show()
         } else {
             commentLoader.hide()
-            commentEditText.isEnabled = true
         }
     }
 
     override fun showMessage(value: Int) {
         Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun createComment(textComment: String, bottomPresenter: BottomSheetPresenter) {
+        if (commentHolder.childCount > 1) {
+            lastRepliedComment?.let {
+                bottomPresenter.createAnswerToComment(it.id, textComment)
+            }
+        } else {
+            bottomPresenter.createComment(groupPostEntity?.id.toString(), textComment)
+        }
+    }
+
+
+    private fun changeStateBottomSheet(newState: Int) {
+        if (newState == BottomSheetBehavior.STATE_HALF_EXPANDED){
+            if (bottomSheetBehaviour.state == BottomSheetBehavior.STATE_COLLAPSED){
+                bottomSheetBehaviour.state = newState
+            }
+        }
+        else{
+            bottomSheetBehaviour.state = newState
+        }
+    }
+
+    private fun addHeightContainer(height: Int) {
+        bottomSheetBehaviour.peekHeight = height
+        commentHolder.minimumHeight = height
     }
 
     private fun setErrorHandler() {
@@ -497,27 +390,7 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
     }
 
     private fun increaseCommentsCounter() {
-        var commentsCount = commentBtn.text.toString().toInt()
-        commentsCount++
-        commentBtn.text = commentsCount.toString()
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(COMMENTS_COUNT_VALUE, commentsCount.toString())
-    }
-
-    private fun controlCommentEditTextChanges() {
-        RxTextView.afterTextChangeEvents(commentEditText)
-                .subscribe {
-                    val view = it.view()
-                    if (view.text.trim().isEmpty()) {
-                        view.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                null, null)
-                    } else {
-                        view.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                ContextCompat.getDrawable(requireContext(), R.drawable.ic_send), null)
-                    }
-                }
-                .let(compositeDisposable::add)
-        commentEditText.setOnTouchListener(rightDrawableListener)
-        rightDrawableListener.clickListener = { validator.validate() }
+        adapter.postInCommentHolder.increaseCommentsCounter()
     }
 
     private fun prepareAdapter() {
@@ -529,17 +402,13 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                         commentHolder.removeViewAt(0)
                     }
                     commentHolder.addView(view, 0)
-                    view.responseToUser
-                            .apply {
-                                setOnClickListener {
-                                    commentHolder.removeView(view)
-                                }
-                                text = comment.commentOwner?.firstName
-                                        ?: getString(R.string.unknown_user)
-                                lastRepliedComment = comment.copy()
-                            }
-                    commentEditText.showKeyboard()
+                    bottomFragment.answerComment(comment)
+                    lastRepliedComment = comment.copy()
                 }
+            }
+           imageClickListener = { list: List<FileEntity>, i: Int ->
+                val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
+                findNavController().navigate(R.id.action_commentsDetailsActivity_to_imageFragment, data)
             }
             complaintListener = { id -> presenter.complaintComment(id) }
             deleteClickListener = { id, pos ->
@@ -561,27 +430,38 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
                                 { errorHandler.handle(it) })
                 )
             }
+            showPostDetailInfo = ::showPostDetailInfo
+            clicksSettingPost = { settingsPost: ImageView ->
+                settingsPost.clicks()
+                        .subscribe { showPopupMenu(settingsPost) }
+                        .also { compositeDisposable.add(it) }
+            }
+            changeCountComments = {count ->
+                findNavController().previousBackStackEntry?.savedStateHandle
+                        ?.set(COMMENTS_COUNT_VALUE, count.toString())
+            }
+            progressBarVisibility = {visibility ->
+                if (visibility){
+                    viewBinding.progressDownload.show()
+                }
+                else{
+                    viewBinding.progressDownload.gone()
+                }
+            }
             USER_ID = userSession.user?.id?.toInt()
         }
     }
 
-    private fun prepareEditText() {
-        commentEditText.isVerticalScrollBarEnabled = true
-        commentEditText.maxLines = 5
-        commentEditText.setScroller(Scroller(requireContext()))
-        commentEditText.movementMethod = ScrollingMovementMethod()
-    }
-
     private fun manageDataFlow(infoForCommentEntity: InfoForCommentEntity?) {
         if (infoForCommentEntity != null) {
-            groupPostEntity = infoForCommentEntity.groupPostEntity
-            showPostDetailInfo(infoForCommentEntity.groupPostEntity)
-            if (infoForCommentEntity.isFromNewsScreen) {
+            groupPostEntity = mapToCommentEntityPost(infoForCommentEntity.groupPostEntity)
+            groupPostEntity?.let{showPostDetailInfo(it)}
+            /*if (infoForCommentEntity.isFromNewsScreen) {
                 headerPostFromGroup.setOnClickListener {
                     val data = bundleOf(GROUP_ID to infoForCommentEntity.groupPostEntity.groupInPost.id)
                     findNavController().navigate(R.id.action_commentsDetailsActivity_to_groupActivity, data)
                 }
-            }
+            }*/
         }
         else if (postId != null){
             presenter.getPostDetailsInfo(postId!!)
@@ -589,6 +469,13 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
     }
 
+    private fun mapToCommentEntityPost(postEntity: GroupPostEntity.PostEntity) =
+        CommentEntity.PostEntity(postEntity.id,postEntity.bells,
+            postEntity.groupInPost,postEntity.postText,postEntity.date,postEntity.updated,postEntity.author,
+            postEntity.pin,postEntity.photo,postEntity.commentsCount,postEntity.activeCommentsCount,
+            postEntity.isActive,postEntity.isOffered,postEntity.isPinned,postEntity.reacts,
+            postEntity.idp,postEntity.images,postEntity.audios,postEntity.videos,postEntity.isLoading,postEntity.unreadComments,
+            postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
 
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
@@ -605,4 +492,5 @@ class CommentsDetailsFragment() : BaseFragment(), CommentsDetailsView, Validator
 
         popupMenu.show()
     }
+
 }

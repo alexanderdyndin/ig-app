@@ -1,11 +1,14 @@
 package com.intergroupapplication.presentation.exstension
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.intergroupapplication.R
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -48,4 +51,7 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
 
 fun View.clicks(time: Long = 600): Observable<Any> {
     return RxView.clicks(this).throttleFirst(time, TimeUnit.MILLISECONDS)
+}
+fun View.activated(isActivated:Boolean){
+    this.isActivated = isActivated
 }

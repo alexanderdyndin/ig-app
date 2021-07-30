@@ -13,7 +13,8 @@ import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
-import kotlinx.android.synthetic.main.item_subscribers_in_list.view.*
+import com.intergroupapplication.databinding.ItemSubscribersInListBinding
+import by.kirich1409.viewbindingdelegate.viewBinding
 
 enum class TypeUserList {
     ALL, BLOCKED, ADMINISTRATORS
@@ -55,9 +56,11 @@ class UserListAdapter(
 
     inner class UserListViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val viewBinding by viewBinding(ItemSubscribersInListBinding::bind)
+
         @SuppressLint("SetTextI18n")
         fun bind(item: GroupUserEntity) {
-            itemView.run {
+            with (viewBinding) {
                 itemGroupListHeader.text = item.firstName + " " + item.surName
                 idUser.text = "ID: ${item.idProfile}"
                 itemGroupPosts.text = item.postsCount.toString()
@@ -70,14 +73,14 @@ class UserListAdapter(
 
                 if (item.isAdministrator) {
                     bigAngle.visibility = View.VISIBLE
-                    bigAngle.background = ContextCompat.getDrawable(context, R.drawable.bg_angle_admin)
+                    bigAngle.background = ContextCompat.getDrawable(bigAngle.context, R.drawable.bg_angle_admin)
                 } else {
                     bigAngle.visibility = View.GONE
                 }
 
                 if (item.isBlocked) {
                     bigAngle.visibility = View.VISIBLE
-                    bigAngle.background = ContextCompat.getDrawable(context, R.drawable.bg_angle_blocked)
+                    bigAngle.background = ContextCompat.getDrawable(bigAngle.context, R.drawable.bg_angle_blocked)
                 }
 
                 if (isAdmin) {
@@ -86,7 +89,7 @@ class UserListAdapter(
                         TypeUserList.ALL -> {
                             if (!item.isAdministrator) {
                                 settingsBtn.setOnClickListener {
-                                    createPopMenu(resources.getStringArray(R.array.listOfActionFromAll).toList(), context, it,
+                                    createPopMenu(it.resources.getStringArray(R.array.listOfActionFromAll).toList(), it.context, it,
                                             {
                                                 assignToAdminsClickListener.invoke(item, layoutPosition)
                                             },
@@ -96,7 +99,7 @@ class UserListAdapter(
                                 }
                             } else if (!item.isOwner && item.idProfile != currentUserId) {
                                 settingsBtn.setOnClickListener {
-                                    createPopMenu(listOf(resources.getString(R.string.toBlackList)), context, it,
+                                    createPopMenu(listOf(it.resources.getString(R.string.toBlackList)), it.context, it,
                                             {
                                                 banUserClickListener.invoke(item, layoutPosition)
                                             }, {})
@@ -105,7 +108,7 @@ class UserListAdapter(
                         }
                         TypeUserList.BLOCKED -> {
                             settingsBtn.setOnClickListener {
-                                createPopMenu(listOf(resources.getString(R.string.unblock)), context, it, {
+                                createPopMenu(listOf(it.resources.getString(R.string.unblock)), it.context, it, {
                                     deleteBanUserClickListener.invoke(item, layoutPosition)
                                 }, {})
                             }
@@ -113,7 +116,7 @@ class UserListAdapter(
                         TypeUserList.ADMINISTRATORS -> {
                             if (!item.isOwner && item.idProfile != currentUserId) {
                                 settingsBtn.setOnClickListener {
-                                    createPopMenu(resources.getStringArray(R.array.listOfActionFromAdministrators).toList(), context, it,
+                                    createPopMenu(it.resources.getStringArray(R.array.listOfActionFromAdministrators).toList(), it.context, it,
                                             {
                                                 demoteFromAdminsClickListener.invoke(item, layoutPosition)
                                             },

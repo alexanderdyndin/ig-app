@@ -63,6 +63,30 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
         )
     }
 
+    fun mapToPostEntity(from: GroupPostModel):CommentEntity.PostEntity{
+        return CommentEntity.PostEntity(
+                id = from.id,
+                bells = mapToDomainEntity(from.bells),
+                groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost),
+                postText = from.postText,
+                date = from.date,
+                updated = from.updated,
+                author = userProfileMapper.mapToDomainEntity(from.author),
+                photo = from.photo,
+                commentsCount = from.commentsCount,
+                unreadComments = from.unreadComments,
+                activeCommentsCount = from.activeCommentsCount,
+                isPinned = from.isPinned,
+                isActive = from.isActive,
+                isOffered = from.isOffered,
+                pin = from.pin,
+                idp = from.idp,
+                reacts = reactsMapper.mapToDomainEntity(from.reacts),
+                images = from.images.map { mediaMapper.mapToDomainEntity(it) },
+                audios = from.audios.map { mediaMapper.mapToDomainEntity(it) },
+                videos = from.videos.map { mediaMapper.mapToDomainEntity(it) }
+        )
+    }
 
     fun mapNewsListToDomainEntity(from: NewsDto): NewsPostsEntity {
         return NewsPostsEntity(from.count.toInt(), from.next,

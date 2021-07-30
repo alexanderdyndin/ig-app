@@ -8,7 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
@@ -17,15 +17,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
+import by.kirich1409.viewbindingdelegate.viewBinding
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.appodeal.ads.Appodeal
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.databinding.FragmentGroupListBinding
+import com.intergroupapplication.databinding.LayoutAdminCreatePostButtonBinding
+import com.intergroupapplication.databinding.LayoutUserJoinButtonBinding
 import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.FieldException
@@ -45,13 +51,8 @@ import com.intergroupapplication.presentation.feature.mainActivity.view.MainActi
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_group_list.*
-import kotlinx.android.synthetic.main.layout_profile_header.view.*
-import kotlinx.android.synthetic.main.main_toolbar_layout.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
@@ -67,6 +68,8 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     companion object {
         const val CREATED_GROUP_ID = "created_group_id"
     }
+
+    private val viewBinding by viewBinding(FragmentGroupListBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -143,7 +146,15 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun layoutRes() = R.layout.fragment_group_list
 
-    override fun getSnackBarCoordinator(): ViewGroup? = groupListCoordinator
+    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.groupListCoordinator
+
+    private lateinit var pager: ViewPager2
+    private lateinit var slidingCategories: TabLayout
+    private lateinit var swipe_groups: SwipeRefreshLayout
+    private lateinit var createGroup: Button
+    private lateinit var activity_main__btn_filter: ImageButton
+    private lateinit var activity_main__search_input: EditText
+    private lateinit var toolbarMenu: TextView
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -170,11 +181,13 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pager = viewBinding.pager
+        slidingCategories = viewBinding.slidingCategories
+        swipe_groups = viewBinding.swipeGroups
+        createGroup = viewBinding.navigationToolbar.createGroup
+        activity_main__btn_filter = viewBinding.activityMainBtnFilter
+        activity_main__search_input = viewBinding.activityMainSearchInput
 
-//        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
-//        adapterList.add(adapterAllAd)
-//        adapterList.add(adapterSubscribedAd)
-//        adapterList.add(adapterOwnedAd)
         pager.apply {
             adapter = viewPagerAdapter
             val handler = ViewPager2Circular(this, swipe_groups)
@@ -210,8 +223,8 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     fun prepareAdapter() {
         with (GroupListAdapter) {
             userID = userSession.user?.id
-            groupClickListener = {
-                val data = bundleOf(GROUP_ID to it)
+            groupClickListener = { groupId ->
+                val data = bundleOf(GROUP_ID to groupId)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
             //todo не всегда подписка/отписка отображается в UI
@@ -386,7 +399,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
 
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }
@@ -420,15 +433,16 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun showUserInfo(userEntity: UserEntity) {
         val userName = userEntity.firstName + " " + userEntity.surName
-        viewDrawer.profileName.text = userName
+        viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
         doOrIfNull(userEntity.avatar,
                 { profileAvatarHolder.showAvatar(it) },
                 { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
     }
 
     override fun viewCreated() {
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, navigationCoordinator, false)
-        profileAvatarHolder = viewDrawer.profileAvatarHolder
+        toolbarMenu = viewBinding.navigationToolbar.toolbarMenu
+        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, viewBinding.groupListCoordinator, false)
+        profileAvatarHolder = viewDrawer.findViewById(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
         drawer = drawer {                           //FIXME ЧТО ЗА БЛЯДСКИЙ ГОВНОКОД??
@@ -436,7 +450,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
             headerView = viewDrawer
             actionBarDrawerToggleEnabled = true
             translucentStatusBar = true
-            viewDrawer.profileAvatarHolder.setOnClickListener {
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
                 if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
                         || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
                     dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
@@ -452,7 +466,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
                 onClick { v ->
                     findNavController().navigate(R.id.action_groupListFragment2_to_newsFragment2)
-                    toolbarTittle.text = getString(R.string.news)
+                    viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
                 }
             }
@@ -505,10 +519,10 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
             setSelection(drawerItem)
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
                 findNavController().navigate(R.id.action_groupListFragment2_self)
-                toolbarTittle.text = getString(R.string.groups)
+                viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                 false
             }
-            viewDrawer.drawerArrow.setOnClickListener { closeDrawer() }
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
         }
         toolbarMenu.setOnClickListener {
             drawer.openDrawer()

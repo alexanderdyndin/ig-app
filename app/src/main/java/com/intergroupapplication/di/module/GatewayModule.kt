@@ -60,5 +60,6 @@ interface GatewayModule {
     @Binds
     fun provideMediaRepository(mediaRepository: MediaRepository): MediaGateway
 
-
+    @Binds
+    fun provideAddLocalMediaRepository(addLocalMediaRepository: AddLocalMediaRepository):AddLocalMediaGateway
 }

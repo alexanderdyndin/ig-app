@@ -3,21 +3,19 @@ package com.intergroupapplication.presentation.base.adapter
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
+import com.intergroupapplication.R
 import com.intergroupapplication.presentation.exstension.show
-import kotlinx.android.synthetic.main.item_loading.view.*
 
 class ViewHolderLoadingState(itemView: View, retry: () -> Unit) :
     RecyclerView.ViewHolder(itemView) {
 
-    private val errorLayout: ConstraintLayout = itemView.error_layout
-    private val loadingLayout: FrameLayout = itemView.loading_layout
-    private val btnRetry: Button = itemView.buttonRetry
+    private val errorLayout: ConstraintLayout by lazy { itemView.findViewById(R.id.error_layout) }
+    private val loadingLayout: FrameLayout by lazy { itemView.findViewById(R.id.loading_layout) }
+    private val btnRetry: Button by lazy { itemView.findViewById(R.id.buttonRetry) }
 
     init {
         btnRetry.setOnClickListener {

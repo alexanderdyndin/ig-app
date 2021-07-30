@@ -3,6 +3,7 @@ package com.intergroupapplication.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.time.Duration
 
 @Entity
 data class AudioModel(
@@ -14,5 +15,6 @@ data class AudioModel(
         val artist: String,
         val genre: String,
         val post: Int,
-        val owner: Int
+        val owner: Int,
+        val duration: String?
 )

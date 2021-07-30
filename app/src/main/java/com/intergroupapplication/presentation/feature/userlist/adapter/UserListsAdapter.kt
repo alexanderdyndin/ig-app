@@ -13,7 +13,8 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import kotlinx.android.synthetic.main.fragment_user_category.view.*
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.intergroupapplication.databinding.FragmentUserCategoryBinding
 
 class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>) : RecyclerView.Adapter<UserListsAdapter.UserListViewHolder>() {
 
@@ -29,9 +30,11 @@ class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView
 
     class UserListViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        private val list: RecyclerView = view.allUsersList
-        private val emptyState: TextView = view.emptyText
-        private val progress: ProgressBar = view.progressLoading
+        private val viewBinding by viewBinding(FragmentUserCategoryBinding::bind)
+
+        private val list: RecyclerView = viewBinding.allUsersList
+        private val emptyState: TextView = viewBinding.emptyText
+        private val progress: ProgressBar = viewBinding.progressLoading
 
         fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
             list.adapter = adapter

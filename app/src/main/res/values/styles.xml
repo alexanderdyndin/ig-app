@@ -31,6 +31,7 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
+
     <style name="InterGroupLogoTextStyle" parent="BaseStyle">
         <item name="android:textSize">@dimen/high_big_size</item>
         <item name="android:textColor">@color/interGroupLogoTextColor</item>
@@ -387,12 +388,12 @@
     <style name="TextPink12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorPink</item>
-        <item name="android:textSize">@dimen/low_size</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
     </style>
     <style name="TextNoActive12sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorAccent2</item>
-        <item name="android:textSize">@dimen/low_size</item>
+        <item name="android:textSize">@dimen/middle_low_size</item>
     </style>
 
 <!-- Текст 14sp -->
@@ -438,6 +439,11 @@
     </style>
 
 <!-- Текст 16sp -->
+    <style name="TextGrey16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorTextBtnNoActive</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
     <style name="TextDark16sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/mainBlack</item>
@@ -453,6 +459,11 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/big_size</item>
     </style>
+    <style name="TextNoActive16sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/big_size</item>
+    </style>
     <style name="TextDislike16sp">
         <item name="fontFamily">@font/play</item>
         <item name="android:textColor">@color/colorLightBlue</item>
@@ -464,10 +475,99 @@
         <item name="android:textSize">@dimen/big_size</item>
     </style>
     <!-- Текст 18sp -->
+    <style name="TextAccent18sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/title_size</item>
+    </style>
     <style name="TextAccent18spBold">
         <item name="fontFamily">@font/play_bold</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textSize">@dimen/title_size</item>
+    </style>
+    <style name="TextNoActive18sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/title_size</item>
+    </style>
+    <!-- Текс 20sp -->
+    <style name="TextTitleAuth20sp">
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/middle_big_size</item>
+    </style>
+    <!-- Текст 24sp -->
+    <style name="TextAccent24spBold">
+        <item name="fontFamily">@font/play_bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/high_big_size</item>
+    </style>
+
+    <style name="EditTextAuth">
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:padding">@dimen/middle_padding</item>
+        <item name="android:layout_marginStart">@dimen/low_big_margin</item>
+        <item name="android:layout_marginEnd">@dimen/low_big_margin</item>
+        <item name="android:textColorHint">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/big_size</item>
+        <item name="android:background">@drawable/input_dark_336dp</item>
+        <item name="android:fontFamily">@font/play</item>
+    </style>
+    <style name="EditTextError">
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+        <item name="android:padding">@dimen/small_low_padding</item>
+        <item name="android:gravity">center</item>
+        <item name="fontFamily">@font/play</item>
+        <item name="android:textColor">@color/colorPink</item>
+        <item name="android:textSize">@dimen/low_size</item>
+        <item name="android:background">@color/colorInput</item>
+    </style>
+    <style name="EditTextDate">
+        <item name="android:singleLine">true</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:padding">@dimen/middle_padding</item>
+        <item name="android:layout_marginStart">@dimen/small_margin</item>
+        <item name="android:layout_marginEnd">@dimen/small_margin</item>
+        <item name="android:textColorHint">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/big_size</item>
+        <item name="android:background">@drawable/bg_inpt_mini</item>
+        <item name="android:fontFamily">@font/play</item>
+    </style>
+
+    <style name="ImageSeparatorLineMini">
+        <item name="android:background">@drawable/line_input_mini</item>
+        <item name="android:layout_marginTop">1dp</item>
+    </style>
+
+    <style name="EditTextFilter">
+        <item name="android:layout_marginTop">@dimen/little_margin</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:padding">@dimen/middle_padding</item>
+        <item name="android:layout_marginStart">@dimen/middle_margin</item>
+        <item name="android:layout_marginEnd">@dimen/middle_margin</item>
+        <item name="android:textColorHint">@color/colorAccent2</item>
+        <item name="android:textSize">@dimen/middle_high_size</item>
+        <item name="android:background">@drawable/bg_colorinput_radius_2dp</item>
+        <item name="android:fontFamily">@font/play</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:dropDownSelector">@color/colorAccent2</item>
+        <item name="android:inputType">textShortMessage</item>
+    </style>
+
+
+    <style name="TransparentBottomSheetStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/SheetStyle</item>
+    </style>
+
+    <style name="SheetStyle" parent="android:Widget">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="behavior_peekHeight">auto</item>
+        <item name="behavior_hideable">true</item>
+        <item name="behavior_skipCollapsed">false</item>
     </style>
     <style name="BlockByIdDialog" parent="android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>

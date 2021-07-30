@@ -5,8 +5,13 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
+import com.androidadvance.topsnackbar.R.*
 import com.androidadvance.topsnackbar.TSnackbar
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.GalleryModel
+import com.intergroupapplication.data.model.VideoModel
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
@@ -33,12 +38,16 @@ class DialogDelegate(private val dialogManager: DialogManager,
         dialogProvider.newDialog(dialogLayout, actionsMap).show(dialogManager.getManager(), INTERGROUP_DIALOG)
     }
 
+    fun showPreviewDialog(isPhoto:Boolean, url:String,isChoose:Boolean, manager:FragmentManager){
+        dialogProvider.newPreviewDialog(isPhoto,url,isChoose).show(manager,null)
+    }
+
     fun showErrorSnackBar(message: String) {
         coordinator?.let {
             TSnackbar.make(it, message, TSnackbar.LENGTH_SHORT)
                     .apply {
                         view.setBackgroundColor(ContextCompat.getColor(context, R.color.errorSnackBarColor))
-                        view.findViewById<TextView>(com.androidadvance.topsnackbar.R.id.snackbar_text)
+                        view.findViewById<TextView>(id.snackbar_text)
                                 .setTextColor(Color.WHITE)
                     }
                     .show()

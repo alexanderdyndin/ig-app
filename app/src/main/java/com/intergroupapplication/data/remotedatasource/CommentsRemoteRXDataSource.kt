@@ -9,6 +9,7 @@ import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class CommentsRemoteRXDataSource (private val appApi: AppApi,
                                   private val mapper: CommentMapper,
@@ -16,7 +17,7 @@ class CommentsRemoteRXDataSource (private val appApi: AppApi,
                                   private val page: Int = 1): RxPagingSource<Int, CommentEntity>() {
 
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, CommentEntity>> {
-        val key = params.key?: page
+        val key = params.key?:page
         return appApi.getPostComments(postId, key)
                 .subscribeOn(Schedulers.io())
                 .map { mapper.mapToDomainEntity(it) }

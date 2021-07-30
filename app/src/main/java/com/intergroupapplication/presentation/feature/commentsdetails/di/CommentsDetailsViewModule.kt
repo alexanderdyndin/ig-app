@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.commentsdetails.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
+import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
@@ -18,7 +19,6 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
-import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
@@ -41,10 +41,10 @@ class CommentsDetailsViewModule {
 //                                     imageLoadingDelegate: ImageLoadingDelegate): CommentDetailsAdapter =
 //            CommentDetailsAdapter(diffUtil, imageLoadingDelegate)
 
-    @PerFragment
-    @Provides
-    fun provideValidator(fragment: CommentsDetailsFragment): Validator =
-            Validator(fragment).apply { setValidationListener(fragment) }
+    //@PerFragment
+    //@Provides
+    //fun provideValidator(fragment: CommentsDetailsFragment): Validator =
+  //          Validator(fragment).apply { setValidationListener(fragment) }
 
     @PerFragment
     @Provides
@@ -78,7 +78,6 @@ class CommentsDetailsViewModule {
             : DialogDelegate =
             DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-
 //    @PerFragment
 //    @Provides
 //    fun provideLinearLayoutManager(fragment: CommentsDetailsFragment): RecyclerView.LayoutManager =
@@ -87,7 +86,8 @@ class CommentsDetailsViewModule {
     @PerFragment
     @Provides
     fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                           userSession: UserSession): CommentsAdapter {
+                           userSession: UserSession,
+                           proxyCacheServer: HttpProxyCacheServer): CommentsAdapter {
         if (userSession.isAdEnabled) {
             CommentsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsComments ?: 1
             CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
@@ -96,7 +96,7 @@ class CommentsDetailsViewModule {
             CommentsAdapter.AD_FREQ = 999
             CommentsAdapter.AD_FIRST = 999
         }
-        return CommentsAdapter(imageLoadingDelegate)
+        return CommentsAdapter(imageLoadingDelegate,proxyCacheServer)
     }
 
     @PerFragment
@@ -115,7 +115,8 @@ class CommentsDetailsViewModule {
 
     @PerFragment
     @Provides
-    fun provideConcatAdapter(commentsAdapter: CommentsAdapter,
+    fun provideConcatAdapter(
+            commentsAdapter: CommentsAdapter,
                              @Named("footer") footerAdapter: PagingLoadingAdapter,
                              @Named("header") headerAdapter: PagingLoadingAdapter
     ): ConcatAdapter {

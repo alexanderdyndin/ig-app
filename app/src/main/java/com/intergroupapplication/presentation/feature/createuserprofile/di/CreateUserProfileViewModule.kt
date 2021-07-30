@@ -17,11 +17,13 @@ import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.mobsandgeeks.saripaar.Validator
+import com.workable.errorhandler.ErrorHandler
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
 
 import java.util.*
+import javax.inject.Named
 
 @Module
 class CreateUserProfileViewModule {
@@ -74,4 +76,9 @@ class CreateUserProfileViewModule {
     @Provides
     fun provideValidator(fragment: CreateUserProfileFragment): Validator =
             Validator(fragment).apply { setValidationListener(fragment) }
+
+    @PerFragment
+    @Provides
+    @Named("userProfileHandler")
+    fun errorHandler(): ErrorHandler = ErrorHandler.createIsolated()
 }

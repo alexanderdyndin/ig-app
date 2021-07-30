@@ -55,7 +55,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             style="@style/TextAccent14sp"
-            app:layout_constraintEnd_toStartOf="@+id/exo_duration"
+            app:layout_constraintEnd_toStartOf="@+id/exoDuration"
             app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
             app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
 
@@ -71,7 +71,7 @@
             app:layout_constraintTop_toBottomOf="@+id/trackName" />
 
         <TextView
-            android:id="@+id/exo_duration"
+            android:id="@+id/exoDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
@@ -126,17 +126,29 @@
             app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
             app:layout_constraintTop_toBottomOf="@+id/fromWhom" />
 
-        <SeekBar
-            android:id="@+id/exo_progress_placeholder"
-            style="@style/PostSeekBar"
+        <com.intergroupapplication.presentation.customview.CustomTimeBar
+            android:id="@+id/exo_progress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/exo_duration"
+            app:scrubber_color="@color/colorAccent"
+            app:scrubber_drawable="@drawable/ic_post_knob_press"
+            app:played_color="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/exoDuration"
             app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
             app:layout_constraintTop_toTopOf="@id/startLineSeekBar" />
 
-<!--        <View android:id="@id/exo_progress_placeholder"-->
+       <!-- <SeekBar
+            android:id="@+id/mySeekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            style="@style/PostSeekBar"
+            android:secondaryProgressTint="@color/red"
+            app:layout_constraintEnd_toEndOf="@+id/exo_duration"
+            app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
+            app:layout_constraintTop_toTopOf="@id/startLineSeekBar"/>!-->
+        <!--        <View android:id="@id/exo_progress_placeholder"-->
 <!--            android:layout_width="0dp"-->
 <!--            android:layout_height="26dp"-->
 <!--            app:layout_constraintEnd_toEndOf="@+id/exo_duration"-->

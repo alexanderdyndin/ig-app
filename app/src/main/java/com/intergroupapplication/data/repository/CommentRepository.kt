@@ -18,6 +18,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -40,7 +41,8 @@ class CommentRepository @Inject constructor(private val api: AppApi,
 
     override fun createComment(postId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment> =
             api.createComment(postId, commentMapper.mapToDto(createCommentEntity))
-                    .map { commentMapper.mapToDomainEntity(it) }
+                    .map {
+                        commentMapper.mapToDomainEntity(it) }
 
     override fun createAnswerToComment(answerToCommentId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment> =
             api.createAnswerToComment(answerToCommentId, commentMapper.mapToDto(createCommentEntity))

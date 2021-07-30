@@ -16,9 +16,11 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.device.notification.CreatorType
 import com.intergroupapplication.device.notification.NotificationCreatorOptions
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENT_ID
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENT_PAGE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.POST_ID
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import timber.log.Timber
 
 /**
  * Created by abakarmagomedov on 27/09/2018 at project InterGroupApplication.
@@ -54,8 +56,7 @@ class NewCommentNotificationCreator constructor(private val context: Context, no
 
     private fun createPendingIntent(type: CreatorType.Comment): PendingIntent? {
 
-        val bundle = bundleOf(POST_ID to type.postId, COMMENT_PAGE to type.page)
-
+        val bundle = bundleOf(POST_ID to type.postId, COMMENT_PAGE to type.page, COMMENT_ID to type.commentId)
         val pendingIntent = NavDeepLinkBuilder(context)
                 .setComponentName(MainActivity::class.java)
                 .setGraph(R.navigation.nav_graph)

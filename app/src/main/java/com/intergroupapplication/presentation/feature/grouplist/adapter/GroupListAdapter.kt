@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
 import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
 import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
@@ -26,12 +27,11 @@ import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.ItemGroupInListBinding
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
-import kotlinx.android.synthetic.main.item_group_in_list.view.*
 
 
 /**
@@ -43,7 +43,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     companion object {
         var lettersToSpan = ""
         var userID: String? = null
-        var groupClickListener: (groupId: String) -> Unit = {}
+        var groupClickListener: (groupId: String) -> Unit = {_ -> }
         var unsubscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = { _, _ -> }
         var subscribeClickListener: (item: GroupEntity.Group, position: Int) -> Unit = {_, _ -> }
         private const val DEFAULT_HOLDER = 1488
@@ -72,10 +72,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
         var AD_FIRST = 3
     }
 
-    private lateinit var context: Context
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-       context = parent.context
         val view: View
         return when (viewType) {
             AdViewHolder.NATIVE_AD -> {
@@ -116,54 +113,56 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
 
     inner class GroupViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val viewBinding by viewBinding(ItemGroupInListBinding::bind)
+
         val avatar: SimpleDraweeView = itemView.findViewById(R.id.groupAvatarHolder)
 
         fun bind(item: GroupEntity.Group) {
-            with(itemView) {
+            with(viewBinding) {
                 spanLetters(item)
                 //item_group__subscribers.text = context.getGroupFollowersCount(item.followersCount.toInt())
-                item_group__subscribers.text = item.followersCount
-                item_group__posts.text = item.postsCount
-                item_group__comments.text = item.CommentsCount
-                item_group__like.text = item.postsLikes
-                item_group__dislike.text = item.postsDislikes
-                item_group__text_age.text = item.ageRestriction
+                itemGroupSubscribers.text = item.followersCount
+                itemGroupPosts.text = item.postsCount
+                itemGroupComments.text = item.CommentsCount
+                itemGroupLike.text = item.postsLikes
+                itemGroupDislike.text = item.postsDislikes
+                itemGroupTextAge.text = item.ageRestriction
                 when(item.ageRestriction) {
                     "12+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
+                        itemGroupTextAge.setBackgroundResource(R.drawable.bg_age12)
+                        itemGroupTextAge.setTextColor(ContextCompat.getColor(itemView.context, R.color.mainBlack))
                     }
                     "16+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age16)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
+                        itemGroupTextAge.setBackgroundResource(R.drawable.bg_age16)
+                        itemGroupTextAge.setTextColor(ContextCompat.getColor(itemView.context, R.color.mainBlack))
                     }
                     "18+" -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age18)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.whiteTextColor))
+                        itemGroupTextAge.setBackgroundResource(R.drawable.bg_age18)
+                        itemGroupTextAge.setTextColor(ContextCompat.getColor(itemView.context, R.color.whiteTextColor))
                     }
                     else -> {
-                        item_group__text_age.setBackgroundResource(R.drawable.bg_age12)
-                        item_group__text_age.setTextColor(ContextCompat.getColor(context, R.color.mainBlack))
+                        itemGroupTextAge.setBackgroundResource(R.drawable.bg_age12)
+                        itemGroupTextAge.setTextColor(ContextCompat.getColor(itemView.context, R.color.mainBlack))
                     }
                 }
                 if (item.isClosed) {
-                    item_group__lock.setImageResource(R.drawable.icon_close)
-                    item_group__lock.setBackgroundResource(R.drawable.bg_lock)
+                    itemGroupLock.setImageResource(R.drawable.icon_close)
+                    itemGroupLock.setBackgroundResource(R.drawable.bg_lock)
                 } else {
-                    item_group__lock.setImageResource(R.drawable.icon_open)
-                    item_group__lock.setBackgroundResource(R.drawable.bg_unlock)
+                    itemGroupLock.setImageResource(R.drawable.icon_open)
+                    itemGroupLock.setBackgroundResource(R.drawable.bg_unlock)
                 }
                 groupAvatarHolder.setOnClickListener {
                     groupClickListener.invoke(item.id)
                 }
                 if (item.isSubscribing) {
                     subscribingProgressBar.show()
-                    item_group__text_sub.hide()
+                    itemGroupTextSub.hide()
                 } else {
                     subscribingProgressBar.hide()
-                    item_group__text_sub.show()
+                    itemGroupTextSub.show()
                 }
-                with (item_group__text_sub) {
+                with (itemGroupTextSub) {
                     if (item.isFollowing) {
                         setOnClickListener {
                             unsubscribeClickListener.invoke(item, layoutPosition)
@@ -206,7 +205,7 @@ class GroupListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
                     wordToSpan.setSpan(ForegroundColorSpan(Color.CYAN), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     wordToSpan.setSpan(StyleSpan(Typeface.BOLD), it, it + lettersToSpan.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
-                itemView.item_group__list_header.text = wordToSpan
+                viewBinding.itemGroupListHeader.text = wordToSpan
         }
     }
 

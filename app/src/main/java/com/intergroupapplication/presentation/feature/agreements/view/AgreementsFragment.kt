@@ -2,12 +2,19 @@ package com.intergroupapplication.presentation.feature.agreements.view
 
 import android.Manifest
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.AuthLoader2Binding
+import com.intergroupapplication.databinding.FragmentAgreements2Binding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
@@ -16,8 +23,6 @@ import com.intergroupapplication.presentation.feature.agreements.presenter.Agree
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.auth_loader.*
-import kotlinx.android.synthetic.main.fragment_agreements.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -43,6 +48,8 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 
     }
 
+    private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
+
 
     @Inject
     @InjectPresenter
@@ -52,53 +59,35 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     fun providePresenter(): AgreementsPresenter = presenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_agreements
+    override fun layoutRes() = R.layout.fragment_agreements2
+
+    private lateinit var btnNext: AppCompatButton
+    private lateinit var progressBar: ProgressBar
+    private lateinit var cbPP: CheckBox
+    private lateinit var cbRH: CheckBox
+    private lateinit var cbTOU: CheckBox
+    private lateinit var conditionsAgreement: LinearLayout
+    private lateinit var conditionsCopyrightHolders: LinearLayout
+    private lateinit var conditionsPolicy: LinearLayout
 
     override fun viewCreated() {
+        btnNext = viewBinding.btnNext
+        progressBar = viewBinding.loader.progressBar
+        cbPP = viewBinding.cbPP
+        cbRH = viewBinding.cbRH
+        cbTOU = viewBinding.cbTOU
+        conditionsAgreement = viewBinding.conditionsAgreement
+        conditionsCopyrightHolders = viewBinding.conditionsCopyrightHolders
+        conditionsPolicy = viewBinding.conditionsPolicy
         initCheckBox()
         initBtn()
         clicks(btnNext)
                 .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { next() }.let(compositeDisposable::add)
-//        ConsentManager.getInstance(this).requestConsentInfoUpdate(
-//                BuildConfig.APPODEAL_APP_KEY,
-//                object : ConsentInfoUpdateListener {
-//                    override fun onConsentInfoUpdated(consent: Consent?) {}
-//                    override fun onFailedToUpdateConsentInfo(exception: ConsentManagerException) {}
-//                })
-//        val consentManager = ConsentManager.getInstance(this)
-//        val consent = consentManager.consent
-//        val consentZone = consentManager.consentZone
-//        val consentStatus = consentManager.consentStatus
-//        val iabString = consentManager.iabConsentString
-//        val consentFormListener: ConsentFormListener = object : ConsentFormListener {
-//            override fun onConsentFormLoaded() {
-//                // Consent form was loaded. Now you can display consent form as activity or as dialog
-//            }
-//            override fun onConsentFormError(error: ConsentManagerException) {
-//                // Consent form loading or showing failed. More info can be found in 'error' object
-//            }
-//            override fun onConsentFormOpened() {
-//                // Conset form was shown
-//            }
-//            override fun onConsentFormClosed(consent: Consent) {
-//                // Consent form was closed
-//            }
-//        }
-//
-//        val consentForm = ConsentForm.Builder(this as Context)
-//                .withListener(consentFormListener)
-//                .build()
-//        consentForm.load()
-//        btnAppodeal.setOnClickListener {
-//            Timber.d(consentForm.isLoaded.toString())
-//            Timber.d(consentForm.isShowing.toString())
-//            consentForm.showAsActivity()
-//        }
     }
 
-    override fun getSnackBarCoordinator(): ViewGroup? = container
+    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.container
 
     override fun toSplash() {
         findNavController().navigate(R.id.action_AgreementsFragment2_to_splashActivity)
@@ -117,13 +106,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         val textColor = ContextCompat.getColor(requireContext(), if (isChecked) android.R.color.white else R.color.manatee)
         buttonView?.setTextColor(textColor)
-        if (cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked) {
-            btnNext.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_button)
-            btnNext.isEnabled = true
-        } else {
-            btnNext.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_button_disable)
-            btnNext.isEnabled = false
-        }
+        btnNext.isEnabled = cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked
     }
 
     private fun initCheckBox() {
@@ -133,49 +116,24 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     private fun initBtn() {
-        btnPrivacyPolicy.clicks().subscribe {
+        conditionsPolicy.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_PRIVACY_POLICY, KEY_TITLE to RES_ID_PRIVACY_POLICY)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
-        btnRightholders.clicks().subscribe {
+        conditionsAgreement.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_TERMS_OF_USE, KEY_TITLE to RES_ID_TERMS_OF_USE)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
-        btnTermsOfUse.clicks().subscribe {
+        conditionsCopyrightHolders.clicks().subscribe {
             val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
     }
 
     private fun next() {
-//        Appodeal.requestAndroidMPermissions(requireActivity(), object : PermissionsHelper.AppodealPermissionCallbacks {
-//            override fun writeExternalStorageResponse(result: Int) {
-//                if (result == PackageManager.PERMISSION_GRANTED) {
-//                    //showToast("WRITE_EXTERNAL_STORAGE permission was granted")
-//                } else {
-//                    //showToast("WRITE_EXTERNAL_STORAGE permission was NOT granted")
-//                }
-//            }
-//
-//            override fun accessCoarseLocationResponse(result: Int) {
-//                if (result == PackageManager.PERMISSION_GRANTED) {
-//                    //showToast("ACCESS_COARSE_LOCATION permission was granted")
-//                } else {
-//                    //showToast("ACCESS_COARSE_LOCATION permission was NOT granted")
-//                }
-//            }
-//        })
         compositeDisposable.add(
                         RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe({
-//                            if (it) {
-//                                presenter.next()
-//                            } else {
-//                                dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-//                                        mapOf(R.id.permissionOk to {
-//                                            presenter.goToSettingsScreen()
-//                                        }))
-//                            }
                             presenter.next()
                         }, { Timber.e(it) }))
 

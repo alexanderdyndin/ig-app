@@ -59,5 +59,7 @@
     <color name="greyElement">#2C3444</color>
     <color name="darkGreen">#24465B</color>
     <color name="blackout">#CC12161E</color>
+    <color name="GreyElement">#2C3444</color>
+    <color name="pingForButton">#F33657</color>
 
 </resources>

@@ -9,12 +9,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-//import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentGroupCategoryBinding
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import kotlinx.android.synthetic.main.fragment_group_category.view.*
 
 class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<GroupListsAdapter.GroupListViewHolder>() {
 
@@ -23,23 +23,37 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
     }
 
     override fun onBindViewHolder(holder: GroupListViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], position)
     }
 
     override fun getItemCount(): Int {
         return items.count()
     }
 
-    class GroupListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    private data class Coordinate(
+        var elementPosition: Int,
+        var topPadding: Int
+    )
 
-        val list: RecyclerView = view.allGroupsList
-        val emptyState: TextView = view.emptyText
-        val progress: ProgressBar = view.progress_loading
+    private val positionValues = hashMapOf(0 to Coordinate(0, 0),
+        1 to Coordinate(0, 0),
+        2 to Coordinate(0, 0))
 
-        fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+    inner class GroupListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+
+        private val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+        private val viewBinding by viewBinding(FragmentGroupCategoryBinding::bind)
+
+        private val list: RecyclerView = viewBinding.allGroupsList
+        private val emptyState: TextView = viewBinding.emptyText
+        private val progress: ProgressBar = viewBinding.progressLoading
+
+        fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, position: Int) {
             list.adapter = adapter
             list.itemAnimator = null
-            list.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            list.layoutManager = linearLayoutManager
+            addOnScrollListener(position)
+            scrollToPosition(position)
             if (adapter is ConcatAdapter) {
                 adapter.adapters.forEach { adapter ->
                     if (adapter is PagingDataAdapter<*, *> ) {
@@ -67,6 +81,27 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
                         }
                     }
                 }
+            }
+        }
+
+        private fun addOnScrollListener(typeAdapter: Int) {
+            list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    positionValues[typeAdapter]?.apply {
+                        elementPosition = linearLayoutManager.findFirstVisibleItemPosition()
+                        val currentView = linearLayoutManager.getChildAt(0)
+                        currentView?.let { view ->
+                            topPadding = view.top - linearLayoutManager.paddingTop
+                        }
+                    }
+                }
+            })
+        }
+
+        private fun scrollToPosition(typeAdapter: Int) {
+            positionValues[typeAdapter]?.run {
+                linearLayoutManager.scrollToPositionWithOffset(elementPosition, topPadding)
             }
         }
     }

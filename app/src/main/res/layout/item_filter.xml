@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="328dp"
+    android:layout_height="690dp"
+    android:layout_gravity="center"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_filter">
+
+    <TextView
+        android:id="@+id/textView3"
+        style="@style/TextAccent18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_margin"
+        android:text="@string/filter_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/middle_margin"
+        android:padding="@dimen/middle_padding"
+        android:src="@drawable/ic_del_nobg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/filterAge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:background="@drawable/bg_colorinput_radius_2dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/middle_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+        <TextView
+            style="@style/TextNoActive14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/by_age" />
+
+        <RadioGroup
+            android:id="@+id/groupCreate__checkAge"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_gravity="end"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/groupCreate__btnAge12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/middle_margin"
+                android:background="@drawable/gcreate_12age_selector"
+                android:button="@android:color/transparent"
+                android:checked="true"
+                android:fontFamily="@font/play"
+                android:gravity="center_horizontal"
+                android:paddingTop="4dp"
+                android:text="@string/_12"
+                android:textColor="@color/age12_selector_color"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/groupCreate__btnAge16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/middle_margin"
+                android:background="@drawable/gcreate_16age_selector"
+                android:button="@android:color/transparent"
+                android:fontFamily="@font/play"
+                android:gravity="center_horizontal"
+                android:paddingTop="4dp"
+                android:text="@string/_16"
+                android:textColor="@color/age16_selector_color"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/groupCreate__btnAge18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gcreate_18age_selector"
+                android:button="@android:color/transparent"
+                android:fontFamily="@font/play"
+                android:gravity="center_horizontal"
+                android:paddingTop="4dp"
+                android:text="@string/_18"
+                android:textColor="@color/colorPink"
+                android:textSize="16sp" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/lineAge"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterAge"
+        app:layout_constraintStart_toStartOf="@+id/filterAge"
+        app:layout_constraintTop_toBottomOf="@+id/filterAge" />
+
+    <AutoCompleteTextView
+        android:id="@+id/filterCountry"
+        style="@style/EditTextFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/country"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineAge">
+
+    </AutoCompleteTextView>
+
+    <ImageView
+        android:id="@+id/lineCountry"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterCountry"
+        app:layout_constraintStart_toStartOf="@+id/filterCountry"
+        app:layout_constraintTop_toBottomOf="@+id/filterCountry" />
+
+    <AutoCompleteTextView
+        android:id="@+id/filterCity"
+        style="@style/EditTextFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/city"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineCountry">
+
+    </AutoCompleteTextView>
+
+    <ImageView
+        android:id="@+id/lineCity"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterCity"
+        app:layout_constraintStart_toStartOf="@+id/filterCity"
+        app:layout_constraintTop_toBottomOf="@+id/filterCity" />
+
+    <AutoCompleteTextView
+        android:id="@+id/filterLanguage"
+        style="@style/EditTextFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/language"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineCity">
+
+    </AutoCompleteTextView>
+
+    <ImageView
+        android:id="@+id/lineLanguage"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterLanguage"
+        app:layout_constraintStart_toStartOf="@+id/filterLanguage"
+        app:layout_constraintTop_toBottomOf="@+id/filterLanguage" />
+
+    <AutoCompleteTextView
+        android:id="@+id/filterSubject"
+        style="@style/EditTextFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/subject"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineLanguage">
+
+</AutoCompleteTextView>
+
+    <ImageView
+        android:id="@+id/lineSubject"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterSubject"
+        app:layout_constraintStart_toStartOf="@+id/filterSubject"
+        app:layout_constraintTop_toBottomOf="@+id/filterSubject" />
+
+    <LinearLayout
+        android:id="@+id/filterStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginTop="@dimen/little_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:background="@drawable/bg_colorinput_radius_2dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/middle_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineSubject">
+
+        <TextView
+            style="@style/TextNoActive14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/by_status"/>
+
+        <RadioGroup
+            android:id="@+id/groupCreate__radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/groupCreate_btnOpen"
+                style="@style/TextAccent12sp"
+                android:layout_width="99dp"
+                android:layout_height="33dp"
+                android:layout_marginEnd="@dimen/middle_margin"
+                android:layout_weight="1"
+                android:background="@drawable/gcreate_btnopen_selector"
+                android:button="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_open_btn"
+                android:drawablePadding="6dp"
+                android:paddingStart="12dp"
+                android:text="@string/group_open" />
+
+            <RadioButton
+                android:id="@+id/groupCreate_btnClose"
+                android:layout_width="99dp"
+                android:layout_height="33dp"
+                android:layout_weight="1"
+                android:background="@drawable/gcreate_btnclose_selector"
+                android:button="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_close_btn"
+                android:drawablePadding="6dp"
+                android:fontFamily="@font/play"
+                android:paddingLeft="12dp"
+                android:text="@string/group_close"
+                android:textColor="@color/colorPink"
+                android:textSize="12sp" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/lineStatus"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterStatus"
+        app:layout_constraintStart_toStartOf="@+id/filterStatus"
+        app:layout_constraintTop_toBottomOf="@+id/filterStatus" />
+
+    <LinearLayout
+        android:id="@+id/filterVisit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:background="@drawable/bg_colorinput_radius_2dp"
+        android:orientation="vertical"
+        android:padding="@dimen/middle_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineStatus">
+
+        <TextView
+            style="@style/TextNoActive14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/by_visit"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/middle_padding">
+
+            <TextView
+                style="@style/TextNoActive14sp"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/middle_padding"
+                android:text="За всё время"
+                android:drawableEnd="@drawable/ic_arrow_down_blue"
+                android:background="@drawable/bg_greyelement_radius_2dp"
+                />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:layout_gravity="right|center_vertical|end"
+                android:layout_marginStart="@dimen/big_margin"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_margin"
+                    android:background="@drawable/selector_high_low"
+                    android:button="@android:color/transparent" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_low_high"
+                    android:button="@android:color/transparent" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/lineVisit"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterVisit"
+        app:layout_constraintStart_toStartOf="@+id/filterVisit"
+        app:layout_constraintTop_toBottomOf="@+id/filterVisit" />
+
+    <LinearLayout
+        android:id="@+id/filterAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:background="@drawable/bg_colorinput_radius_2dp"
+        android:orientation="vertical"
+        android:padding="@dimen/middle_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineVisit">
+
+        <TextView
+            style="@style/TextNoActive14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/by_amount" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/middle_padding">
+
+            <TextView
+                style="@style/TextNoActive14sp"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/middle_padding"
+                android:text="Подписчиков"
+                android:drawableEnd="@drawable/ic_arrow_down_blue"
+                android:background="@drawable/bg_greyelement_radius_2dp"
+                />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:layout_gravity="right|center_vertical|end"
+                android:layout_marginStart="@dimen/big_margin"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_margin"
+                    android:background="@drawable/selector_high_low"
+                    android:button="@android:color/transparent" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_low_high"
+                    android:button="@android:color/transparent" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/lineAmount"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterAmount"
+        app:layout_constraintStart_toStartOf="@+id/filterAmount"
+        app:layout_constraintTop_toBottomOf="@+id/filterAmount" />
+
+    <LinearLayout
+        android:id="@+id/filterActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:background="@drawable/bg_colorinput_radius_2dp"
+        android:orientation="vertical"
+        android:padding="@dimen/middle_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineAmount">
+
+        <TextView
+            style="@style/TextNoActive14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/by_activity" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/middle_margin"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/small_low_padding"
+                android:button="@drawable/checkbox_selector"
+                android:text="@string/day"
+                style="@style/TextNoActive14sp"/>
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/small_low_padding"
+                android:checked="true"
+                android:button="@drawable/checkbox_selector"
+                android:text="@string/week"
+                style="@style/TextAccent14sp"/>
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/small_low_padding"
+                android:button="@drawable/checkbox_selector"
+                android:text="@string/month"
+                style="@style/TextNoActive14sp"/>
+
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="@dimen/small_low_padding"
+                android:button="@drawable/checkbox_selector"
+                android:text="@string/year"
+                style="@style/TextNoActive14sp"/>
+
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/middle_padding">
+
+            <TextView
+                style="@style/TextNoActive14sp"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/middle_padding"
+                android:text="Подписчиков"
+                android:drawableEnd="@drawable/ic_arrow_down_blue"
+                android:background="@drawable/bg_greyelement_radius_2dp"
+                />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:layout_gravity="right|center_vertical|end"
+                android:layout_marginStart="@dimen/big_margin"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/big_margin"
+                    android:background="@drawable/selector_high_low"
+                    android:button="@android:color/transparent" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_low_high"
+                    android:button="@android:color/transparent" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/lineActivity"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterActivity"
+        app:layout_constraintStart_toStartOf="@+id/filterActivity"
+        app:layout_constraintTop_toBottomOf="@+id/filterActivity" />
+
+    <LinearLayout
+        android:id="@+id/filterDateCreation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/middle_margin"
+        android:layout_marginEnd="@dimen/middle_margin"
+        android:background="@drawable/bg_colorinput_radius_2dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/middle_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineActivity">
+
+    <TextView
+        style="@style/TextNoActive14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="@string/by_date_create" />
+
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_gravity="right|center_vertical|end"
+            android:layout_marginStart="@dimen/big_margin"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:background="@drawable/selector_high_low"
+                android:button="@android:color/transparent" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_low_high"
+                android:button="@android:color/transparent" />
+
+        </RadioGroup>
+
+</LinearLayout>
+
+    <ImageView
+        android:id="@+id/lineDateCreation"
+        style="@style/ImageSeparatorLine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/separateline"
+        app:layout_constraintEnd_toEndOf="@+id/filterDateCreation"
+        app:layout_constraintStart_toStartOf="@+id/filterDateCreation"
+        app:layout_constraintTop_toBottomOf="@+id/filterDateCreation" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineDateCreation">
+
+        <Button
+            android:id="@+id/btnResetFilter"
+            style="@style/TextAccent12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:paddingBottom="2dp"
+            android:layout_marginEnd="@dimen/middle_margin"
+            android:background="@drawable/btn_108dp_blue_stroke"
+            android:text="Сбросить"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btnApplyFilter"
+            style="@style/TextDark12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:paddingBottom="2dp"
+            android:background="@drawable/btn_108dp_blue"
+            android:text="Применить"
+            android:textAllCaps="false" />
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

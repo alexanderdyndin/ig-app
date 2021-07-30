@@ -8,28 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.*
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder
 import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.github.florent37.shapeofview.shapes.CutCornerView
-import com.google.android.material.shape.CornerFamily
-import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.android.material.shape.ShapeAppearanceModel
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
-import kotlinx.android.synthetic.main.layout_2pic.view.*
-import kotlinx.android.synthetic.main.layout_3pic.view.*
-import kotlinx.android.synthetic.main.layout_expand.view.*
-import kotlinx.android.synthetic.main.layout_hide.view.*
-import kotlinx.android.synthetic.main.layout_pic.view.*
-import kotlin.math.exp
 import kotlin.math.roundToInt
 
 
@@ -72,7 +58,8 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
                 1 -> createContainer(urls.subList(urls.size - 1, urls.size))
             }
             val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
-            hider.btnHide.setOnClickListener {
+            val btnHide = hider.findViewById<FrameLayout>(R.id.btnHide)
+            btnHide.setOnClickListener {
                 this.isExpanded = false
                 parseUrl(uris, this.isExpanded)
                 expand.invoke(this.isExpanded)
@@ -81,7 +68,8 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
         } else if (!isExpanded && urls.size > 3) {
             createContainer(urls.subList(0, 3))
             val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
-            expander.btnExpand.setOnClickListener {
+            val btnExpand = expander.findViewById<FrameLayout>(R.id.btnExpand)
+            btnExpand.setOnClickListener {
                 this.isExpanded = true
                 parseUrl(uris, this.isExpanded)
                 expand.invoke(this.isExpanded)
@@ -108,12 +96,13 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
         val request: ImageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(img.file))
             .setResizeOptions(ResizeOptions(500, 500))
             .build()
-        image.pic.controller = Fresco.newDraweeControllerBuilder()
+        val pic = image.findViewById<SimpleDraweeView>(R.id.pic)
+        pic.controller = Fresco.newDraweeControllerBuilder()
                 .setAutoPlayAnimations(true)
-                .setOldController(image.pic.controller)
+                .setOldController(pic.controller)
                 .setImageRequest(request)
                 .build()
-        image.pic.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
+        pic.setOnClickListener { imageClick.invoke(uris, uris.indexOf(img)) }
         return image
     }
 

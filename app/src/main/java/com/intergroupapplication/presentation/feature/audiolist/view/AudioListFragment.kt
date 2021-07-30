@@ -14,8 +14,10 @@ import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentAudiosListBinding
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
@@ -25,11 +27,6 @@ import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioLis
 import com.intergroupapplication.presentation.feature.audiolist.viewModel.AudioListViewModel
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
-import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import dagger.Provides
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
-import kotlinx.android.synthetic.main.fragment_audios_list.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,6 +53,7 @@ class AudioListFragment(): BaseFragment() {
     @Named("header")
     lateinit var adapterHeader: PagingLoadingAdapter
 
+    private val viewBinding by viewBinding(FragmentAudiosListBinding::bind)
 
     private lateinit var viewModel: AudioListViewModel
 
@@ -69,7 +67,7 @@ class AudioListFragment(): BaseFragment() {
 
     override fun layoutRes() = R.layout.fragment_audios_list
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout? = audioListCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout? = viewBinding.audioListCoordinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, modelFactory)[AudioListViewModel::class.java]
@@ -95,8 +93,8 @@ class AudioListFragment(): BaseFragment() {
     }
 
     override fun viewCreated() {
-        toolbarTittle.setText(R.string.music)
-        toolbarBackAction.setOnClickListener {
+        viewBinding.navigationToolbar.toolbarTittle.setText(R.string.music)
+        viewBinding.navigationToolbar.toolbarBackAction.setOnClickListener {
             findNavController().popBackStack()
         }
 
@@ -104,9 +102,9 @@ class AudioListFragment(): BaseFragment() {
         adapterList.add(adapterCon)
         setAdapter(adapter, adapterFooter)
 
-        pager.apply {
+        viewBinding.pager.apply {
             adapter = AudioListsAdapter(adapterList)
-            val handler = ViewPager2Circular(this, swipeLayout)
+            val handler = ViewPager2Circular(this, viewBinding.swipeLayout)
             handler.pageChanged = {
                 currentScreen = it
             }
@@ -116,7 +114,7 @@ class AudioListFragment(): BaseFragment() {
 
         val tabTitles = arrayOf(resources.getString(R.string.music)/*, resources.getString(R.string.my_music)*/)
 
-        TabLayoutMediator(slidingCategories, pager) { tab, position ->
+        TabLayoutMediator(viewBinding.slidingCategories, viewBinding.pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
 
@@ -124,21 +122,21 @@ class AudioListFragment(): BaseFragment() {
     }
 
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
-        swipeLayout.setOnRefreshListener { adapter.refresh() }
+        viewBinding.swipeLayout.setOnRefreshListener { adapter.refresh() }
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
                     }
                     is LoadState.Error -> {
-                        swipeLayout.isRefreshing = false
+                        viewBinding.swipeLayout.isRefreshing = false
                         if (adapter.itemCount == 0) {
                             footer.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        swipeLayout.isRefreshing = false
+                        viewBinding.swipeLayout.isRefreshing = false
                     }
                 }
             }

@@ -10,6 +10,7 @@ import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import io.reactivex.Observer
 import okhttp3.Response
 import java.io.File
+import java.net.URLEncoder
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -40,11 +41,14 @@ class AwsUploadingService @Inject constructor() : AwsUploadingGateway {
                         if (response.isSuccessful) {
                             progressObserver.onComplete()
                         } else {
-                            progressObserver.onError(ImageUploadingException())
+                            val exception = ImageUploadingException()
+                            exception.printStackTrace()
+                            progressObserver.onError(exception)
                         }
                     }
 
                     override fun onError(anError: ANError) {
+                        anError.printStackTrace()
                         progressObserver.onError(anError)
                     }
                 })

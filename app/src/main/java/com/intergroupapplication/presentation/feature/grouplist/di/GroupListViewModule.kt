@@ -2,8 +2,6 @@ package com.intergroupapplication.presentation.feature.grouplist.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession

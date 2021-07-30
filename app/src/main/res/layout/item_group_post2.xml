@@ -22,10 +22,12 @@
             android:id="@+id/bgAvaGroupPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_ava_group_post"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            />
 
             <com.github.florent37.shapeofview.ShapeOfView
                 android:id="@+id/avaGroupPost"
@@ -705,7 +707,7 @@
             app:layout_constraintTop_toBottomOf="@+id/postBody" />
 
         <TextView
-            android:id="@+id/commentBtn"
+            android:id="@+id/countComments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -735,7 +737,7 @@
             android:text="150"
             style="@style/TextAccent14sp"
             android:background="@drawable/btn_sub_comnts"
-            app:layout_constraintStart_toEndOf="@id/commentBtn"
+            app:layout_constraintStart_toEndOf="@id/countComments"
             app:layout_constraintBottom_toBottomOf="@+id/endPost"
             app:layout_constraintTop_toTopOf="@+id/endPost" />
 

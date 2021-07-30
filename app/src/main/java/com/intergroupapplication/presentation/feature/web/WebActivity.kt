@@ -10,8 +10,9 @@ import android.view.ViewGroup
 import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import kotlinx.android.synthetic.main.fragment_web.*
+import com.intergroupapplication.databinding.FragmentWebBinding
 
 class WebActivity : Fragment() {
 
@@ -19,6 +20,8 @@ class WebActivity : Fragment() {
         private const val KEY_PATH = "PATH"
         private const val KEY_TITLE = "TITLE"
     }
+
+    private val viewBinding by viewBinding(FragmentWebBinding::bind)
 
     private lateinit var path: String
     private lateinit var name: String
@@ -36,8 +39,8 @@ class WebActivity : Fragment() {
 //            setDisplayHomeAsUpEnabled(true)
 //            setTitle(name)
 //        }
-        webView.clearCache(true)
-        webView.loadUrl(path)
+        viewBinding.webView.clearCache(true)
+        viewBinding.webView.loadUrl(path)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -3,23 +3,28 @@ package com.intergroupapplication.presentation.feature.confirmationmail.view
 import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentConfirmationMail2Binding
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
+import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.exceptions.CompositeException
-import kotlinx.android.synthetic.main.fragment_confirmation_mail.*
-import kotlinx.android.synthetic.main.auth_loader.*
 
 import javax.inject.Inject
 import javax.inject.Named
@@ -30,36 +35,47 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
         const val REGISTRATION_ENTITY = "REGISTRATION_ENTITY"
     }
 
+    private val viewBinding by viewBinding(FragmentConfirmationMail2Binding::bind)
+
     @Inject
     @InjectPresenter
     lateinit var presenter: ConfirmationMailPresenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_confirmation_mail
+    override fun layoutRes() = R.layout.fragment_confirmation_mail2
 
     @ProvidePresenter
     fun providePresenter(): ConfirmationMailPresenter = presenter
 
-    @Inject
-    @Named("mailHandler")
-    lateinit var errorHandlerLogin: ErrorHandler
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = confirmationCoordinator
+    private lateinit var btnNext: AppCompatButton
+    private lateinit var btnRepeatCode: TextView
+    private lateinit var btnChangeEmail: TextView
+    private lateinit var confirmation: EditText
+    private lateinit var progressBar: ProgressBar
+    private lateinit var emailConfirmation: TextView
 
     override fun viewCreated() {
+        btnNext = viewBinding.btnNext
+        btnRepeatCode = viewBinding.btnRepeatCode
+        btnChangeEmail = viewBinding.btnChangeEmail
+        confirmation = viewBinding.confirmation
+        progressBar = viewBinding.loader.progressBar
+        emailConfirmation = viewBinding.emailConfirmation
+
         presenter.start(arguments?.getString("entity"))
-        initErrorHandler(errorHandlerLogin)
         setErrorHandler()
 
         btnNext.clicks()
                 .subscribe { presenter.confirmMail(confirmation.text.toString()) }
                 .let { compositeDisposable.add(it) }
 
-        btnChangeEmail.clicks()
+        btnRepeatCode.clicks()
                 .subscribe { findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity) }
                 .also { compositeDisposable.add(it) }
 
-        btnRepeatCode.clicks()
+        btnChangeEmail.clicks()
                 .subscribe { presenter.performRegistration() }
                 .also { compositeDisposable.add(it) }
     }
@@ -86,14 +102,18 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     }
 
     override fun fillData(email: String) {
-        val color = ContextCompat.getColor(requireContext(), R.color.cerulean)
-        val descriptionMail1 = getString(R.string.description_email_part_1)
-        val descriptionMail2 = getString(R.string.description_email_part_2)
-        val desc = SpannableString("$descriptionMail1$email$descriptionMail2")
-        val start = descriptionMail1.length
-        val end = descriptionMail1.length + email.length
-        desc.setSpan(ForegroundColorSpan(color), start, end, 0)
-        tvWel.text = desc
+//        val color = ContextCompat.getColor(requireContext(), R.color.cerulean)
+//        val descriptionMail1 = getString(R.string.description_email_part_1)
+//        val descriptionMail2 = getString(R.string.description_email_part_2)
+//        val desc = SpannableString("$descriptionMail1$email$descriptionMail2")
+//        val start = descriptionMail1.length
+//        val end = descriptionMail1.length + email.length
+//        desc.setSpan(ForegroundColorSpan(color), start, end, 0)
+//        tvWel.text = desc
+        if (email.isNotEmpty())
+            emailConfirmation.text = email
+        else
+            emailConfirmation.gone()
     }
 
     override fun completed() {
@@ -105,7 +125,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {

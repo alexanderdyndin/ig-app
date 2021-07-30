@@ -2,6 +2,7 @@ package com.intergroupapplication.data.mapper
 
 import com.intergroupapplication.data.model.*
 import com.intergroupapplication.domain.entity.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -58,31 +59,31 @@ class MediaMapper @Inject constructor() {
             )
 
     fun mapToDto(from: FileRequestEntity): FileRequestModel =
-            FileRequestModel(from.file, from.description.orEmpty(), from.title.orEmpty())
+            FileRequestModel(from.file, from.description.orEmpty(), from.title.orEmpty(), from.preview, from.duration)
 
     fun mapToDto(from: AudioRequestEntity): AudioRequestModel =
-            AudioRequestModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
+            AudioRequestModel(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty(),from.duration.orEmpty())
 
     fun mapToDomainEntity(from: FileRequestModel): FileRequestEntity =
-            FileRequestEntity(from.file, from.description.orEmpty(), from.title.orEmpty())
+            FileRequestEntity(from.file, from.description.orEmpty(), from.title.orEmpty(),from.preview,from.duration)
 
     fun mapToDomainEntity(from: AudioRequestModel): AudioRequestEntity =
-            AudioRequestEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty())
+            AudioRequestEntity(from.file, from.description.orEmpty(), from.song.orEmpty(), from.artist.orEmpty(), from.genre.orEmpty(),from.duration.orEmpty())
 
     fun mapToDto(from: FileEntity): ImageVideoModel {
-        return ImageVideoModel(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner)
+        return ImageVideoModel(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner, from.preview, from.duration)
     }
 
     fun mapToDomainEntity(from: ImageVideoModel): FileEntity {
-        return FileEntity(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner)
+        return FileEntity(from.id, from.file, from.isActive, from.description, from.title, from.post, from.owner,from.preview?:"", from.duration?:"00:00")
     }
 
     fun mapToDto(from: AudioEntity): AudioModel {
-        return AudioModel(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner)
+        return AudioModel(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner,from.duration)
     }
 
     fun mapToDomainEntity(from: AudioModel): AudioEntity {
-        return AudioEntity(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner)
+        return AudioEntity(from.id, from.file, from.isActive, from.description, from.song, from.artist, from.genre, from.post, from.owner,from.duration?:"00:00")
     }
 
 
