@@ -21,8 +21,9 @@ class GroupPostMediatorRXDataSource(
         private val groupId: String
 ) : RxRemoteMediator<Int, GroupPostModel>() {
 
-    companion object {
+    private companion object {
         const val INVALID_PAGE = -1
+        const val EMPTY_MODEL = -2
     }
 
     override fun loadSingle(loadType: LoadType, state: PagingState<Int, GroupPostModel>)
@@ -34,7 +35,7 @@ class GroupPostMediatorRXDataSource(
                         LoadType.REFRESH -> {
                             val model = getRemoteKeyClosestToCurrentPosition(state)
                             Timber.tag("tut_refresh").d(model.toString())
-                            model?.nextKey ?: 1
+                            model?.nextKey?.minus(1) ?: 1
                         }
                         LoadType.PREPEND -> {
                             val groupModel = getRemoteKeyForFirstItem(state)
@@ -44,23 +45,30 @@ class GroupPostMediatorRXDataSource(
                         LoadType.APPEND -> {
                             val model = getRemoteKeyForLastItem(state)
                             Timber.tag("tut_append").d(model.toString())
-                            model?.nextKey ?: INVALID_PAGE
+                            model?: return@map EMPTY_MODEL
+                            model.nextKey ?: INVALID_PAGE
                         }
                     }
                 }
                 .flatMap { page ->
                     Timber.tag("tut_page").d(page.toString())
-                    if (page == INVALID_PAGE) {
-                        Single.just(MediatorResult.Success(true))
-                    } else {
-                        appApi.getGroupPosts(groupId, page)
+                    when (page) {
+                        INVALID_PAGE -> {
+                            Single.just(MediatorResult.Success(true))
+                        }
+                        EMPTY_MODEL -> {
+                            Single.just(MediatorResult.Success(false))
+                        }
+                        else -> {
+                            appApi.getGroupPosts(groupId, page)
                                 .map { data ->
                                     insertToDb(page, loadType, data)
                                 }
                                 .map<MediatorResult> {
                                     MediatorResult.Success(it.next == null)
                                 }
-                            .onErrorReturn{ MediatorResult.Error(it)}
+                                .onErrorReturn{ MediatorResult.Error(it)}
+                        }
                     }
                 }.onErrorReturn { MediatorResult.Error(it) }
     }
@@ -74,8 +82,8 @@ class GroupPostMediatorRXDataSource(
 
         val prevKey = if (page == 1) null else page - 1
         val nextKey = if (data.next == null) null else page + 1
-        val keys = GroupPostRemoteKeysModel(groupId, prevKey, nextKey)
-        appDatabase.groupPostKeyDao().insertKey(keys)
+        val key = GroupPostRemoteKeysModel(groupId, prevKey, nextKey)
+        appDatabase.groupPostKeyDao().insertKey(key)
         appDatabase.groupPostDao().insertAll(
                 data.groupPostModels.map { groupPostModel ->
                     groupPostModel.groupId = groupId
@@ -86,15 +94,15 @@ class GroupPostMediatorRXDataSource(
     }
 
     private fun getRemoteKeyForLastItem(state: PagingState<Int, GroupPostModel>)
-           : GroupPostRemoteKeysModel? {
-        return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { group ->
+            : GroupPostRemoteKeysModel? {
+        return state.lastItemOrNull()?.let {  group ->
             appDatabase.groupPostKeyDao().getRemoteKey(group.groupId)
         }
     }
 
     private fun getRemoteKeyForFirstItem(state: PagingState<Int, GroupPostModel>)
-        : GroupPostRemoteKeysModel? {
-        return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { group ->
+            : GroupPostRemoteKeysModel? {
+        return state.firstItemOrNull()?.let { group ->
             appDatabase.groupPostKeyDao().getRemoteKey(group.groupId)
         }
     }

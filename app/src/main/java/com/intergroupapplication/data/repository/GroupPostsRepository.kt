@@ -55,7 +55,7 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         return Pager(
                 config = PagingConfig(
                         pageSize = PAGE_SIZE,
-                        15),
+                        5),
                 remoteMediator = GroupPostMediatorRXDataSource(api, db, groupId)
         ) {
             groupPostDao.getAllGroupPostsModel(groupId)
@@ -65,14 +65,6 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
             }
         }
     }
-//    override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
-//        return Pager(
-//                config = PagingConfig(
-//                        pageSize = PAGE_SIZE,
-//                        prefetchDistance = 5),
-//                pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
-//        ).flowable
-//    }
 
     override fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity.PostEntity> {
         return api.editPostById(postId, groupPostMapper.mapToDto(createGroupPostEntity))
