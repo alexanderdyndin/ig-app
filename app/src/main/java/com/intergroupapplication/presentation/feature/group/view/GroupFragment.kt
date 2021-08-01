@@ -221,7 +221,10 @@ class GroupFragment : BaseFragment(), GroupView,
                         }
                         loadingLayout.gone()
                         swipeLayout.isRefreshing = false
-                        groupPosts.scrollToPosition(0)
+                        if (createdPostId != null){
+                            groupPosts.scrollToPosition(0)
+                            createdPostId = null
+                        }
                     }
                     else ->{ swipeLayout.isRefreshing = false }
                 }
