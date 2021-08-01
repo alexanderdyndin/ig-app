@@ -264,8 +264,8 @@
         android:name="com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment"
         android:label="AgreementsFragment" >
         <action
-            android:id="@+id/action_AgreementsFragment2_to_webActivity"
-            app:destination="@id/webActivity"
+            android:id="@+id/action_AgreementsFragment2_to_webFragment"
+            app:destination="@id/webFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -281,8 +281,8 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/webActivity"
-        android:name="com.intergroupapplication.presentation.feature.web.WebActivity"
+        android:id="@+id/webFragment"
+        android:name="com.intergroupapplication.presentation.feature.web.WebFragment"
         android:label="WebActivity" >
         <argument
             android:name="PATH"

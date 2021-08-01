@@ -14,21 +14,21 @@ import android.view.MotionEvent;
 /**
  * Tap gesture listener for double tap to zoom / unzoom and double-tap-and-drag to zoom.
  *
- * @see ZoomableDraweeView#setTapListener(GestureDetector.SimpleOnGestureListener)
+ * @see ZoomableDrawerView#setTapListener(GestureDetector.SimpleOnGestureListener)
  */
 
 public class DoubleTapGestureListener extends GestureDetector.SimpleOnGestureListener {
   private static final int DURATION_MS = 300;
   private static final int DOUBLE_TAP_SCROLL_THRESHOLD = 20;
 
-  private final ZoomableDraweeView mDraweeView;
+  private final ZoomableDrawerView mDraweeView;
   private final PointF mDoubleTapViewPoint = new PointF();
   private final PointF mDoubleTapImagePoint = new PointF();
   private float mDoubleTapScale = 1;
   private boolean mDoubleTapScroll = false;
 
-  public DoubleTapGestureListener(ZoomableDraweeView zoomableDraweeView) {
-    mDraweeView = zoomableDraweeView;
+  public DoubleTapGestureListener(ZoomableDrawerView zoomableDrawerView) {
+    mDraweeView = zoomableDrawerView;
   }
 
   @Override

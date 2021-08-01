@@ -21,16 +21,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.gms.auth.api.signin.*
-import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.Scope
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import com.intergroupapplication.BuildConfig
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentRegistration2Binding
 import com.intergroupapplication.domain.entity.RegistrationEntity
@@ -56,12 +49,15 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class RegistrationFragment : BaseFragment(), RegistrationView, Validator.ValidationListener, ActionMode.Callback {
+class RegistrationFragment : BaseFragment(), RegistrationView, Validator.ValidationListener,
+    ActionMode.Callback {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 300L
@@ -82,9 +78,11 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     lateinit var mail: AppCompatEditText
 
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
-    @Password(scheme = Password.Scheme.ALPHA_NUMERIC,
-            min = PASSWORD_REQUIRED_LENGTH,
-            messageResId = R.string.password_minimum_eight_symbols)
+    @Password(
+        scheme = Password.Scheme.ALPHA_NUMERIC,
+        min = PASSWORD_REQUIRED_LENGTH,
+        messageResId = R.string.password_minimum_eight_symbols
+    )
     lateinit var password: AppCompatEditText
 
     @Inject
@@ -92,7 +90,6 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var auth: FirebaseAuth
 
     private var passwordVisible = false
 
@@ -103,7 +100,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     private lateinit var btnSendEmail: AppCompatButton
     private lateinit var textLogin: AppCompatTextView
-    private lateinit var sign_in_button: SignInButton
+    private lateinit var signInButton: SignInButton
     private lateinit var passwordVisibility: TextView
     private lateinit var passwordVisibility2: TextView
     private lateinit var etDoublePassword: AppCompatEditText
@@ -123,13 +120,12 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-        //auth = Firebase.
     }
 
     override fun viewCreated() {
         btnSendEmail = viewBinding.btnSendEmail
         textLogin = viewBinding.textLogin
-        sign_in_button = viewBinding.signInButton
+        signInButton = viewBinding.signInButton
         passwordVisibility = viewBinding.passwordVisibility
         passwordVisibility2 = viewBinding.passwordVisibility2
         etDoublePassword = viewBinding.etDoublePassword
@@ -145,15 +141,19 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         rxPermission = RxPermissions(this)
         listenInputs()
         RxView.clicks(btnSendEmail)
-                .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { validator.validate() }.let(compositeDisposable::add)
+            .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { validator.validate() }.let(compositeDisposable::add)
         setErrorHandler()
 
-        textLogin.clicks().subscribe { findNavController().navigate(R.id.action_registrationActivity_to_loginActivity2) }.also { compositeDisposable.add(it) }
+        textLogin.clicks().subscribe {
+            findNavController()
+                .navigate(R.id.action_registrationActivity_to_loginActivity2)
+        }
+            .also { compositeDisposable.add(it) }
         initValidator()
         initEditText()
-        sign_in_button.setOnClickListener {
+        signInButton.setOnClickListener {
             val intent = mGoogleSignInClient.signInIntent
             startActivityForResult(intent, LoginFragment.RC_SIGN_IN)
         }
@@ -170,14 +170,35 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
             mail.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            etDoublePassword.inputType =
+                InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_visible,
+                0,
+                0,
+                0
+            )
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_visible,
+                0,
+                0,
+                0
+            )
         } else {
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_invisible,
+                0,
+                0,
+                0
+            )
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_invisible,
+                0,
+                0,
+                0
+            )
         }
     }
 
@@ -195,7 +216,11 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Timber.w("signInResult:failed code=%s", e.statusCode)
-                Toast.makeText(requireContext(), GoogleSignInStatusCodes.getStatusCodeString(e.statusCode), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    GoogleSignInStatusCodes.getStatusCodeString(e.statusCode),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -219,21 +244,25 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         return super.onOptionsItemSelected(item)
     }
 
-    fun finish() {
+    private fun finish() {
         findNavController().popBackStack()
     }
 
     override fun deviceInfoExtracted() {
         presenter.performRegistration(
-                RegistrationEntity(mail.text.toString(),
-                        password.text.toString(),
-                        etDoubleMail.text.toString(),
-                        etDoublePassword.text.toString()))
+            RegistrationEntity(
+                mail.text.toString(),
+                password.text.toString(),
+                etDoubleMail.text.toString(),
+                etDoublePassword.text.toString()
+            )
+        )
     }
 
     override fun confirmMail(email: String) {
         val bundle = bundleOf("entity" to email)
-        view?.findNavController()?.navigate(R.id.action_registrationActivity_to_confirmationMailActivity2, bundle)
+        view?.findNavController()
+            ?.navigate(R.id.action_registrationActivity_to_confirmationMailActivity2, bundle)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -265,16 +294,18 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     override fun onValidationSucceeded() {
         compositeDisposable.add(rxPermission.request(Manifest.permission.READ_PHONE_STATE)
-                .subscribe({
-                    if (it) {
-                        presenter.extractDeviceInfo()
-                    } else {
-                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                                mapOf(R.id.permissionOk to {
-                                    presenter.goToSettingsScreen()
-                                }))
-                    }
-                }, { Timber.e(it) }))
+            .subscribe({
+                if (it) {
+                    presenter.extractDeviceInfo()
+                } else {
+                    dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
+                        mapOf(R.id.permissionOk to {
+                            presenter.goToSettingsScreen()
+                        })
+                    )
+                }
+            }, { Timber.e(it) })
+        )
     }
 
     override fun clearViewErrorState() {
@@ -301,13 +332,15 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     override fun onDestroyActionMode(p0: ActionMode?) = Unit
 
     private fun listenInputs() {
-        Observable.merge(RxTextView.afterTextChangeEvents(mail),
-                RxTextView.afterTextChangeEvents(password),
-                RxTextView.afterTextChangeEvents(etDoublePassword),
-                RxTextView.afterTextChangeEvents(etDoubleMail))
-                .subscribe { afterTextChanged ->
-                    handleAfterTextChangeEvents(afterTextChanged)
-                }.let { compositeDisposable.add(it) }
+        Observable.merge(
+            RxTextView.afterTextChangeEvents(mail),
+            RxTextView.afterTextChangeEvents(password),
+            RxTextView.afterTextChangeEvents(etDoublePassword),
+            RxTextView.afterTextChangeEvents(etDoubleMail)
+        )
+            .subscribe { afterTextChanged ->
+                handleAfterTextChangeEvents(afterTextChanged)
+            }.let { compositeDisposable.add(it) }
 
         mail.customSelectionActionModeCallback = this
         etDoubleMail.customSelectionActionModeCallback = this
@@ -366,7 +399,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         validator.put(etDoubleMail, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
-                    getString(R.string.email_not_meeting)
+                getString(R.string.email_not_meeting)
 
 
             override fun isValid(view: TextView?): Boolean {
@@ -380,7 +413,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         validator.put(etDoublePassword, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
-                    getString(R.string.password_not_meeting)
+                getString(R.string.password_not_meeting)
 
             override fun isValid(view: TextView?): Boolean {
                 val mail = view?.text.toString()
@@ -404,7 +437,9 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
         })
@@ -414,12 +449,15 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
                 val textEntered = etDoublePassword.text.toString()
 
                 if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
-                    etDoublePassword.setText(etDoublePassword.text.toString().replace(" ", ""))
+                    etDoublePassword.setText(etDoublePassword.text.toString().replace(" ",
+                        ""))
                     etDoublePassword.setSelection(etDoublePassword.text?.length ?: 0)
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
         })

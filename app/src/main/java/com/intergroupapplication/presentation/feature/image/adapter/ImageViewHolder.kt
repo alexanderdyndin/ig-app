@@ -2,17 +2,16 @@ package com.intergroupapplication.presentation.feature.image.adapter
 
 import android.net.Uri
 import android.view.View
-import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.customview.zoomable.DoubleTapGestureListener
-import com.intergroupapplication.presentation.customview.zoomable.ZoomableDraweeView
+import com.intergroupapplication.presentation.customview.zoomable.ZoomableDrawerView
 
 class ImageViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-    val image = itemView.findViewById<ZoomableDraweeView>(R.id.image)
+    val image = itemView.findViewById<ZoomableDrawerView>(R.id.image)
 
     fun bind(file: FileEntity) {
         val controller = Fresco.newDraweeControllerBuilder()

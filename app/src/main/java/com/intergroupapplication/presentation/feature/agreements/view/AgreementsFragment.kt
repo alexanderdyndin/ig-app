@@ -13,7 +13,6 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.AuthLoader2Binding
 import com.intergroupapplication.databinding.FragmentAgreements2Binding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
@@ -32,20 +31,16 @@ import javax.inject.Inject
 
 class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnCheckedChangeListener {
 
-    companion object {
-        private const val DEBOUNCE_TIMEOUT = 300L
-        private const val KEY_PATH = "PATH"
-        private const val KEY_TITLE = "TITLE"
-        private const val URL_PRIVACY_POLICY = "https://igsn.net/agreement/1.html"
-        private const val URL_TERMS_OF_USE = "https://igsn.net/agreement/2.html"
-        private const val URL_RIGHTHOLDERS = "https://igsn.net/agreement/3.html"
-        private const val URL_APPODEAL = "https://www.appodeal.com/home/privacy-policy/"
-
-        private const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
-        private const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
-        private const val RES_ID_RIGHTHOLDERS = R.string.rightholders
-        private const val RES_ID_APPODEAL = R.string.appodealpolicy
-
+    private companion object {
+        const val DEBOUNCE_TIMEOUT = 300L
+        const val KEY_PATH = "PATH"
+        const val KEY_TITLE = "TITLE"
+        const val URL_PRIVACY_POLICY = "https://igsn.net/agreement/1.html"
+        const val URL_TERMS_OF_USE = "https://igsn.net/agreement/2.html"
+        const val URL_RIGHT_HOLDERS = "https://igsn.net/agreement/3.html"
+        const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
+        const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
+        const val RES_ID_RIGHT_HOLDERS = R.string.rightholders
     }
 
     private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
@@ -82,12 +77,12 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         initCheckBox()
         initBtn()
         clicks(btnNext)
-                .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { next() }.let(compositeDisposable::add)
+            .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { next() }.let(compositeDisposable::add)
     }
 
-    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.container
+    override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
 
     override fun toSplash() {
         findNavController().navigate(R.id.action_AgreementsFragment2_to_splashActivity)
@@ -104,7 +99,10 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        val textColor = ContextCompat.getColor(requireContext(), if (isChecked) android.R.color.white else R.color.manatee)
+        val textColor = ContextCompat.getColor(
+            requireContext(), if (isChecked)
+                android.R.color.white else R.color.manatee
+        )
         buttonView?.setTextColor(textColor)
         btnNext.isEnabled = cbRH.isChecked && cbPP.isChecked && cbTOU.isChecked
     }
@@ -117,25 +115,36 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 
     private fun initBtn() {
         conditionsPolicy.clicks().subscribe {
-            val bundle = bundleOf(KEY_PATH to URL_PRIVACY_POLICY, KEY_TITLE to RES_ID_PRIVACY_POLICY)
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
+            val bundle = bundleOf(
+                KEY_PATH to URL_PRIVACY_POLICY,
+                KEY_TITLE to RES_ID_PRIVACY_POLICY
+            )
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
         conditionsAgreement.clicks().subscribe {
-            val bundle = bundleOf(KEY_PATH to URL_TERMS_OF_USE, KEY_TITLE to RES_ID_TERMS_OF_USE)
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
+            val bundle = bundleOf(
+                KEY_PATH to URL_TERMS_OF_USE,
+                KEY_TITLE to RES_ID_TERMS_OF_USE
+            )
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
         conditionsCopyrightHolders.clicks().subscribe {
-            val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
+            val bundle = bundleOf(
+                KEY_PATH to URL_RIGHT_HOLDERS,
+                KEY_TITLE to RES_ID_RIGHT_HOLDERS
+            )
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
     }
 
     private fun next() {
         compositeDisposable.add(
-                        RxPermissions(this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .subscribe({
-                            presenter.next()
-                        }, { Timber.e(it) }))
+            RxPermissions(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe({
+                    presenter.next()
+                }, { Timber.e(it) })
+        )
 
     }
 

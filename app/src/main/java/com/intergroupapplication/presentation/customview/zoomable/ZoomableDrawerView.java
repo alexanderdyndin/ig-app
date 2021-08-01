@@ -1,10 +1,3 @@
-/*
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 package com.intergroupapplication.presentation.customview.zoomable;
 
 import android.content.Context;
@@ -36,10 +29,10 @@ import com.facebook.drawee.view.DraweeView;
  *
  * <p>Once the image loads, pinch-to-zoom and translation gestures are enabled.
  */
-public class ZoomableDraweeView extends DraweeView<GenericDraweeHierarchy>
+public class ZoomableDrawerView extends DraweeView<GenericDraweeHierarchy>
     implements ScrollingView {
 
-  private static final Class<?> TAG = ZoomableDraweeView.class;
+  private static final Class<?> TAG = ZoomableDrawerView.class;
 
   private static final float HUGE_IMAGE_SCALE_FACTOR_THRESHOLD = 1.1f;
 
@@ -60,12 +53,12 @@ public class ZoomableDraweeView extends DraweeView<GenericDraweeHierarchy>
         @Override
         public void onFinalImageSet(
             String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
-          ZoomableDraweeView.this.onFinalImageSet();
+          ZoomableDrawerView.this.onFinalImageSet();
         }
 
         @Override
         public void onRelease(String id) {
-          ZoomableDraweeView.this.onRelease();
+          ZoomableDrawerView.this.onRelease();
         }
       };
 
@@ -76,7 +69,7 @@ public class ZoomableDraweeView extends DraweeView<GenericDraweeHierarchy>
 
         @Override
         public void onTransformChanged(Matrix transform) {
-          ZoomableDraweeView.this.onTransformChanged(transform);
+          ZoomableDrawerView.this.onTransformChanged(transform);
         }
 
         @Override
@@ -85,25 +78,25 @@ public class ZoomableDraweeView extends DraweeView<GenericDraweeHierarchy>
 
   private final GestureListenerWrapper mTapListenerWrapper = new GestureListenerWrapper();
 
-  public ZoomableDraweeView(Context context, GenericDraweeHierarchy hierarchy) {
+  public ZoomableDrawerView(Context context, GenericDraweeHierarchy hierarchy) {
     super(context);
     setHierarchy(hierarchy);
     init();
   }
 
-  public ZoomableDraweeView(Context context) {
+  public ZoomableDrawerView(Context context) {
     super(context);
     inflateHierarchy(context, null);
     init();
   }
 
-  public ZoomableDraweeView(Context context, AttributeSet attrs) {
+  public ZoomableDrawerView(Context context, AttributeSet attrs) {
     super(context, attrs);
     inflateHierarchy(context, attrs);
     init();
   }
 
-  public ZoomableDraweeView(Context context, AttributeSet attrs, int defStyle) {
+  public ZoomableDrawerView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
     inflateHierarchy(context, attrs);
     init();
