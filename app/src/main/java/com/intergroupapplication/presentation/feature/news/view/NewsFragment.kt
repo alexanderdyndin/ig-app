@@ -17,13 +17,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import com.appodeal.ads.Appodeal
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentNewsBinding
@@ -57,17 +55,15 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import java.io.PrintWriter
-import java.io.StringWriter
-import java.io.Writer
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
-class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
+class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
 
     companion object {
         const val LABEL = "fragment_news"
+        private const val TYPEFACE_TEXT = "roboto.regular.ttf"
     }
 
     private val viewBinding by viewBinding(FragmentNewsBinding::bind)
@@ -78,7 +74,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
 
     @ProvidePresenter
     fun providePresenter(): NewsPresenter = presenter
-    
+
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
@@ -98,7 +94,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private var job : Job = Job()
+    private var job: Job = Job()
 
     private lateinit var viewModel: NewsViewModel
 
@@ -131,14 +127,19 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         setAdapter()
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+        activity?.onBackPressedDispatcher?.addCallback(this,
+            object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (doubleBackToExitPressedOnce) {
                     ExitActivity.exitApplication(requireContext())
                     return
                 }
                 doubleBackToExitPressedOnce = true
-                Toast.makeText(requireContext(),getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.press_again_to_exit),
+                    Toast.LENGTH_SHORT
+                ).show()
                 exitHandler = Handler(Looper.getMainLooper())
                 exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
             }
@@ -172,8 +173,8 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         newsPosts.adapter = concatAdapter
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
-            if (job.isCancelled) return@collectLatest
-                when(loadStates.refresh) {
+                if (job.isCancelled) return@collectLatest
+                when (loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
                             progressBar.show()
@@ -185,7 +186,8 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                         emptyText.hide()
                         progressBar.gone()
                         if (adapter.itemCount == 0) {
-                            footerAdapter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                            footerAdapter.loadState =
+                                LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
@@ -198,12 +200,15 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                         progressBar.gone()
                         newSwipe.isRefreshing = false
                     }
-                    else ->{ newSwipe.isRefreshing = false }
+                    else -> {
+                        newSwipe.isRefreshing = false
+                    }
                 }
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
     private fun setAdapter() {
         NewsAdapter.apply {
             complaintListener = { presenter.complaintPost(it) }
@@ -221,26 +226,32 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
             }
             likeClickListener = { like, dislike, item, position ->
                 if (!item.isLoading) {
-                    compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe {
-                                item.isLoading = true
-                            }
-                            .doFinally {
-                                item.isLoading = false
-                            }
-                            .subscribe({
-                                item.reacts = it
-                                adapter.notifyItemChanged(position)
-                            },
-                                    {
-                                        errorHandler.handle(it)
-                                    }))
+                    compositeDisposable.add(viewModel.setReact(
+                        isLike = like,
+                        isDislike = dislike,
+                        postId = item.id
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {
+                            item.isLoading = true
+                        }
+                        .doFinally {
+                            item.isLoading = false
+                        }
+                        .subscribe({
+                            item.reacts = it
+                            adapter.notifyItemChanged(position)
+                        },
+                            {
+                                errorHandler.handle(it)
+                            })
+                    )
                 }
             }
             deleteClickListener = { id: Int, pos: Int ->
-                compositeDisposable.add(viewModel.deletePost(id)
+                compositeDisposable.add(
+                    viewModel.deletePost(id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
@@ -252,65 +263,66 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 if (!item.isLoading) {
                     if (item.bells.isActive) {
                         compositeDisposable.add(viewModel.deleteBell(item.id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSubscribe { item.isLoading = true }
-                                .doFinally {
-                                    item.isLoading = false
-                                    adapter.notifyItemChanged(pos)
-                                }
-                                .subscribe({
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe { item.isLoading = true }
+                            .doFinally {
+                                item.isLoading = false
+                                adapter.notifyItemChanged(pos)
+                            }
+                            .subscribe({
+                                item.bells.isActive = false
+                                item.bells.count--
+                            }, { exception ->
+                                if (exception is NotFoundException) {
                                     item.bells.isActive = false
                                     item.bells.count--
-                                }, { exception ->
-                                    if (exception is NotFoundException) {
-                                        item.bells.isActive = false
-                                        item.bells.count--
-                                    } else
-                                        errorHandler.handle(exception)
-                                }))
+                                } else
+                                    errorHandler.handle(exception)
+                            })
+                        )
                     } else {
                         compositeDisposable.add(viewModel.setBell(item.id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSubscribe { item.isLoading = true }
-                                .doFinally {
-                                    item.isLoading = false
-                                    adapter.notifyItemChanged(pos)
-                                }
-                                .subscribe({
-                                    item.bells.isActive = true
-                                    item.bells.count++
-                                }, { exception ->
-                                    if (exception is CompositeException) {
-                                        exception.exceptions.forEach { ex ->
-                                            (ex as? FieldException)?.let {
-                                                if (it.field == "post") {
-                                                    item.bells.isActive = true
-                                                    item.bells.count++
-                                                }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe { item.isLoading = true }
+                            .doFinally {
+                                item.isLoading = false
+                                adapter.notifyItemChanged(pos)
+                            }
+                            .subscribe({
+                                item.bells.isActive = true
+                                item.bells.count++
+                            }, { exception ->
+                                if (exception is CompositeException) {
+                                    exception.exceptions.forEach { ex ->
+                                        (ex as? FieldException)?.let {
+                                            if (it.field == "post") {
+                                                item.bells.isActive = true
+                                                item.bells.count++
                                             }
                                         }
-                                    } else
-                                        errorHandler.handle(exception)
-                                }))
+                                    }
+                                } else
+                                    errorHandler.handle(exception)
+                            })
+                        )
                     }
                 }
             }
-            progressBarVisibility = {visibility ->
-                if (visibility){
+            progressBarVisibility = { visibility ->
+                if (visibility) {
                     viewBinding.progressDownload.show()
-                }
-                else{
+                } else {
                     viewBinding.progressDownload.gone()
                 }
             }
             USER_ID = userSession.user?.id?.toInt()
             compositeDisposable.add(
-                    viewModel.getNews()
-                            .subscribe {
-                                adapter.submitData(lifecycle, it)
-                            }
+                viewModel.getNews()
+                    .subscribe {
+                        adapter.submitData(lifecycle, it)
+                    }
             )
         }
     }
@@ -324,27 +336,25 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
     }
 
     override fun onDestroy() {
-        //adapterWrapper.release()
         presenter.unsubscribe()
         super.onDestroy()
     }
 
-    fun openCommentDetails(entity: InfoForCommentEntity) {
+    private fun openCommentDetails(entity: InfoForCommentEntity) {
         val data = bundleOf(GroupViewModule.COMMENT_POST_ENTITY to entity)
         findNavController().navigate(R.id.action_newsFragment2_to_commentsDetailsActivity, data)
     }
 
-
     override fun viewCreated() {
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, viewBinding.newsCoordinator, false)
-        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
-                }
+        viewDrawer = layoutInflater.inflate(
+            R.layout.layout_profile_header,
+            viewBinding.newsCoordinator, false
+        )
+        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+            .setOnClickListener {
+                clickToViewDrawer()
             }
-        profileAvatarHolder = viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+        profileAvatarHolder = viewDrawer.findViewById(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
         drawer = drawer {
@@ -352,20 +362,17 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
             headerView = viewDrawer
             actionBarDrawerToggleEnabled = true
             translucentStatusBar = true
-            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+                .setOnClickListener {
+                    clickToViewDrawer()
                 }
-            }
             drawerItem = primaryItem(getString(R.string.news)) {
                 icon = R.drawable.ic_news
                 selectedIcon = R.drawable.ic_news_blue
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
                 onClick { _ ->
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
@@ -377,33 +384,20 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
                 onClick { _ ->
                     findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                     false
                 }
             }
-//            primaryItem(getString(R.string.music)) {
-//                icon = R.drawable.ic_music
-//                selectedIcon = R.drawable.ic_music_act
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-//                onClick { v ->
-//                    findNavController().navigate(R.id.action_newsFragment2_to_audioListFragment)
-//                    toolbarTittle.text = getString(R.string.groups)
-//                    false
-//                }
-//            }
             primaryItem(getString(R.string.buy_premium)) {
                 icon = R.drawable.icon_like
                 selectedIcon = R.drawable.icon_like
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
                 selectable = false
                 onClick { _ ->
                     (requireActivity() as MainActivity).bill()
@@ -411,7 +405,7 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
                 }
             }
             primaryItem(getString(R.string.logout)) {
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
@@ -423,7 +417,8 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
             }
         }.apply {
             setSelection(drawerItem)
-            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
+                .setOnClickListener { closeDrawer() }
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
                 findNavController().navigate(R.id.action_newsFragment2_self)
                 viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
@@ -434,6 +429,18 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
             drawer.openDrawer()
         }
         presenter.getUserInfo()
+    }
+
+    private fun clickToViewDrawer() {
+        if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+            || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
+        ) {
+            dialogDelegate.showDialog(
+                R.layout.dialog_camera_or_gallery,
+                mapOf(R.id.fromCamera to { presenter.attachFromCamera() },
+                    R.id.fromGallery to { presenter.attachFromGallery() })
+            )
+        }
     }
 
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
@@ -466,19 +473,22 @@ class NewsFragment(): BaseFragment(), NewsView, CoroutineScope{
         val userName = userEntity.firstName + " " + userEntity.surName
         viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
         doOrIfNull(userEntity.avatar,
-                { profileAvatarHolder.showAvatar(it) },
-                { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+            { profileAvatarHolder.showAvatar(it) },
+            { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
     }
 
     override fun openConfirmationEmail() = Action { _, _ ->
         if (findNavController().currentDestination?.label == LABEL) {
             val email = userSession.email?.email.orEmpty()
             val data = bundleOf("entity" to email)
-            findNavController().navigate(R.id.action_newsFragment2_to_confirmationMailActivity, data)
+            findNavController().navigate(
+                R.id.action_newsFragment2_to_confirmationMailActivity,
+                data
+            )
         }
     }
 
-    override fun openCreateProfile()  = Action { _, _ ->
+    override fun openCreateProfile() = Action { _, _ ->
         if (findNavController().currentDestination?.label == LABEL)
             findNavController().navigate(R.id.action_newsFragment2_to_createUserProfileActivity)
     }

@@ -41,14 +41,10 @@ import kotlin.coroutines.suspendCoroutine
 class MainActivity : FragmentActivity() {
 
     companion object {
-        const val DISABLE_ADS_ID = "disable_ads"
-
+        private const val DISABLE_ADS_ID = "disable_ads"
         const val MEDIA_CHANNEL_ID = "IGMediaChannel"
-        const val MEDIA_FILE_URI = "MediaFileUri"
         const val EXIT_DELAY = 2000L
     }
-
-    private val TAG: String = "MainActivity"
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -65,28 +61,35 @@ class MainActivity : FragmentActivity() {
      *  Billing
      */
     private val purchasesUpdatedListener =
-            PurchasesUpdatedListener { billingResult, purchases ->
-                val disableAdsPurchase = purchases?.find { it.sku == DISABLE_ADS_ID }
-                disableAdsPurchase?.let{
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val result = handlePurchase(disableAdsPurchase)
+        PurchasesUpdatedListener { _, purchases ->
+            val disableAdsPurchase = purchases?.find { it.sku == DISABLE_ADS_ID }
+            disableAdsPurchase?.let {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val result = handlePurchase(disableAdsPurchase)
+                    withContext(Main) {
+                        Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
                         withContext(Main) {
-                            Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this@MainActivity, "BILLING RESPONCE OK",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
-                        if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
-                            withContext(Main) {
-                                Toast.makeText(this@MainActivity, "BILLING RESPONCE OK", Toast.LENGTH_LONG).show()
-                            }
+                    }
+                    if (disableAdsPurchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                        withContext(Main) {
+                            Toast.makeText(
+                                this@MainActivity, "DISABLE ADS SUBSCRIBED",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
-                        if (disableAdsPurchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                            withContext(Main) {
-                                Toast.makeText(this@MainActivity, "DISABLE ADS SUBSCRIBED", Toast.LENGTH_LONG).show()
-                            }
-                            userSession.isAdEnabled = false
-                        }
+                        userSession.isAdEnabled = false
                     }
                 }
             }
+        }
 
     private lateinit var billingClient: BillingClient
     private var skuDetails: List<SkuDetails> = listOf()
@@ -94,18 +97,9 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
-        //Appodeal.setTesting(true)
         viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
         initializerAppodeal.initialize()
         setContentView(R.layout.activity_main)
-        val filepatch = Environment.getExternalStorageDirectory().path+"/RxPaparazzo/"
-        val file = File("$filepatch.nomedia")
-        try {
-            if (!file.exists())
-                file.createNewFile()
-        } catch (e: IOException) {
-            Timber.e(e)
-        }
         viewModel.getAdCount()
         createNotificationChannel()
         initBilling()
@@ -113,33 +107,33 @@ class MainActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        //viewModel.checkNewVersionAvaliable(supportFragmentManager)
         settingDeepLink()
     }
 
 
     private fun settingDeepLink() {
         FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(intent)
-                .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
-                    val deepLink: Uri? = pendingDynamicLinkData?.link
-                    if (deepLink != null) {
-                        val postId = deepLink.toString().substringAfterLast("/")
-                        val data = bundleOf(CommentsDetailsFragment.POST_ID to postId)
-                        val commentsDetailsFragment = CommentsDetailsFragment()
-                        commentsDetailsFragment.arguments = data
-                        try {
-                            if (userSession.isLoggedIn())
-                                findNavController(R.id.my_nav_host_fragment).navigate(R.id.commentsDetailsActivity, data)
-                        } catch (e: Exception) {
-                            Timber.tag("tut_error").e(e)
-                        }
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
+                val deepLink: Uri? = pendingDynamicLinkData?.link
+                if (deepLink != null) {
+                    val postId = deepLink.toString().substringAfterLast("/")
+                    val data = bundleOf(CommentsDetailsFragment.POST_ID to postId)
+                    val commentsDetailsFragment = CommentsDetailsFragment()
+                    commentsDetailsFragment.arguments = data
+                    try {
+                        if (userSession.isLoggedIn())
+                            findNavController(R.id.my_nav_host_fragment)
+                                .navigate(R.id.commentsDetailsActivity, data)
+                    } catch (e: Exception) {
+                        Timber.tag("tut_error").e(e)
                     }
                 }
-                .addOnFailureListener(this) { e -> e.printStackTrace() }
+            }
+            .addOnFailureListener(this) { e -> e.printStackTrace() }
     }
 
-    suspend fun bindMediaService():IGMediaService.ServiceBinder? {
+    suspend fun bindMediaService(): IGMediaService.ServiceBinder? {
         return suspendCoroutine {
             /**
              * Create our connection to the service to be used in our bindService call.
@@ -164,23 +158,24 @@ class MainActivity : FragmentActivity() {
             }
 
             val intent = Intent(this, IGMediaService::class.java)
-            //intent.putExtra(IGMediaService.MEDIA_URL, mediaUrl)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
 
     }
 
-    fun createNotificationChannel() {
+    private fun createNotificationChannel() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(MEDIA_CHANNEL_ID, "Media player",
-                    NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(
+                MEDIA_CHANNEL_ID, "Media player",
+                NotificationManager.IMPORTANCE_HIGH
+            )
             val attrs = AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setLegacyStreamType(AudioManager.STREAM_MUSIC)
-                    .build()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+                .build()
             channel.setSound(null, attrs)
 
             channel.description = "Background notification for video and audio player"
@@ -191,9 +186,9 @@ class MainActivity : FragmentActivity() {
 
     fun initBilling() {
         billingClient = BillingClient.newBuilder(applicationContext)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build()
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build()
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -224,7 +219,7 @@ class MainActivity : FragmentActivity() {
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS)
             withContext(Dispatchers.IO) {
-                billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
+                billingClient.querySkuDetailsAsync(params.build()) { _, skuDetailsList ->
                     skuDetails = skuDetailsList ?: listOf()
                     // Process the result.
                 }
@@ -232,15 +227,14 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    suspend fun handlePurchase(purchase: Purchase): BillingResult? {
+    private suspend fun handlePurchase(purchase: Purchase): BillingResult? {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                        .setPurchaseToken(purchase.purchaseToken)
-                val ackPurchaseResult = withContext(Dispatchers.IO) {
+                    .setPurchaseToken(purchase.purchaseToken)
+                return withContext(Dispatchers.IO) {
                     billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
                 }
-                return ackPurchaseResult
             }
         }
         return null
@@ -250,8 +244,8 @@ class MainActivity : FragmentActivity() {
         val disableAdsSubscriptionSku = skuDetails.find { it.sku == DISABLE_ADS_ID }
         disableAdsSubscriptionSku?.let { skuDet ->
             val flowParams = BillingFlowParams.newBuilder()
-                    .setSkuDetails(skuDet)
-                    .build()
+                .setSkuDetails(skuDet)
+                .build()
             val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
         }
     }

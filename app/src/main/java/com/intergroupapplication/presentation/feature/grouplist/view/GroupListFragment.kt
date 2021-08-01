@@ -23,16 +23,11 @@ import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import com.appodeal.ads.Appodeal
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.databinding.FragmentGroupListBinding
-import com.intergroupapplication.databinding.LayoutAdminCreatePostButtonBinding
-import com.intergroupapplication.databinding.LayoutUserJoinButtonBinding
-import com.intergroupapplication.domain.entity.GroupInfoEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.GroupAlreadyFollowingException
@@ -62,11 +57,12 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
-class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
+class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
 
 
     companion object {
         const val CREATED_GROUP_ID = "created_group_id"
+        private const val TYPEFACE_TEXT = "roboto.regular.ttf"
     }
 
     private val viewBinding by viewBinding(FragmentGroupListBinding::bind)
@@ -88,7 +84,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
         get() = Dispatchers.Main + job
 
     @Named
-    private var job : Job = Job()
+    private var job: Job = Job()
 
     private lateinit var viewModel: GroupListViewModel
 
@@ -96,17 +92,15 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     private var doubleBackToExitPressedOnce = false
 
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
+    private val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
     private lateinit var viewDrawer: View
 
-    lateinit var drawer: Drawer
+    private lateinit var drawer: Drawer
 
     private lateinit var profileAvatarHolder: AvatarImageUploadingView
 
-    var groupId: String? = null
-
-    var currentScreen = 0
+    private var currentScreen = 0
 
     @Inject
     @Named("all")
@@ -136,6 +130,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     lateinit var viewPagerAdapter: GroupListsAdapter
 
 
+    @ExperimentalCoroutinesApi
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
             fetchGroups(s.toString())
@@ -147,36 +142,40 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
 
     override fun layoutRes() = R.layout.fragment_group_list
 
-    override fun getSnackBarCoordinator(): ViewGroup? = viewBinding.groupListCoordinator
+    override fun getSnackBarCoordinator(): ViewGroup = viewBinding.groupListCoordinator
 
     private lateinit var pager: ViewPager2
     private lateinit var slidingCategories: TabLayout
-    private lateinit var swipe_groups: SwipeRefreshLayout
+    private lateinit var swipeGroups: SwipeRefreshLayout
     private lateinit var createGroup: Button
-    private lateinit var activity_main__btn_filter: ImageButton
-    private lateinit var activity_main__search_input: EditText
+    private lateinit var activityMainBtnFilter: ImageButton
+    private lateinit var activityMainSearchInput: EditText
     private lateinit var toolbarMenu: TextView
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //Appodeal.cache(requireActivity(), Appodeal.NATIVE, 10)
         viewModel = ViewModelProvider(this, modelFactory)[GroupListViewModel::class.java]
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         fetchGroups()
         prepareAdapter()
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (doubleBackToExitPressedOnce) {
-                    ExitActivity.exitApplication(requireContext())
-                    return
+        activity?.onBackPressedDispatcher?.addCallback(this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (doubleBackToExitPressedOnce) {
+                        ExitActivity.exitApplication(requireContext())
+                        return
+                    }
+                    doubleBackToExitPressedOnce = true
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.press_again_to_exit),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    exitHandler = Handler(Looper.getMainLooper())
+                    exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
                 }
-                doubleBackToExitPressedOnce = true
-                Toast.makeText(requireContext(), getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-                exitHandler = Handler(Looper.getMainLooper())
-                exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
-            }
-        })
+            })
     }
 
 
@@ -184,36 +183,40 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
         pager = viewBinding.pager
         slidingCategories = viewBinding.slidingCategories
-        swipe_groups = viewBinding.swipeGroups
+        swipeGroups = viewBinding.swipeGroups
         createGroup = viewBinding.navigationToolbar.createGroup
-        activity_main__btn_filter = viewBinding.activityMainBtnFilter
-        activity_main__search_input = viewBinding.activityMainSearchInput
+        activityMainBtnFilter = viewBinding.activityMainBtnFilter
+        activityMainSearchInput = viewBinding.activityMainSearchInput
 
         pager.apply {
             adapter = viewPagerAdapter
-            val handler = ViewPager2Circular(this, swipe_groups)
+            val handler = ViewPager2Circular(this, swipeGroups)
             handler.pageChanged = {
                 currentScreen = it
             }
             registerOnPageChangeCallback(handler)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
-        val tabTitles = arrayOf(resources.getString(R.string.allGroups), resources.getString(R.string.subGroups), resources.getString(R.string.admGroups))
+        val tabTitles = arrayOf(
+            resources.getString(R.string.allGroups),
+            resources.getString(R.string.subGroups),
+            resources.getString(R.string.admGroups)
+        )
         TabLayoutMediator(slidingCategories, pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
 
-        activity_main__btn_filter.setOnClickListener {
+        activityMainBtnFilter.setOnClickListener {
             //todo
         }
         createGroup.visibility = View.VISIBLE
         createGroup.setOnClickListener { openCreateGroup() }
 
-        swipe_groups.setOnRefreshListener {
+        swipeGroups.setOnRefreshListener {
             when (currentScreen) {
                 0 -> adapterAll.refresh()
                 1 -> adapterSubscribed.refresh()
-                2-> adapterOwned.refresh()
+                2 -> adapterOwned.refresh()
             }
         }
         setAdapter(adapterAll, adapterFooterAll)
@@ -222,7 +225,7 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     }
 
     fun prepareAdapter() {
-        with (GroupListAdapter) {
+        with(GroupListAdapter) {
             userID = userSession.user?.id
             groupClickListener = { groupId ->
                 val data = bundleOf(GROUP_ID to groupId)
@@ -232,105 +235,107 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
             subscribeClickListener = { group, pos ->
                 if (!group.isSubscribing) {
                     compositeDisposable.add(viewModel.subscribeGroup(group.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe {
-                                group.isSubscribing = true
-                                when (currentScreen) {
-                                    0 -> {
-                                        adapterAll.notifyItemChanged(pos)
-                                    }
-                                    1 -> {
-                                        adapterSubscribed.notifyItemChanged(pos)
-                                    }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {
+                            group.isSubscribing = true
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
                                 }
                             }
-                            .doFinally {
-                                group.isSubscribing = false
-                                when (currentScreen) {
-                                    0 -> {
-                                        adapterAll.notifyItemChanged(pos)
-                                    }
-                                    1 -> {
-                                        adapterSubscribed.notifyItemChanged(pos)
-                                    }
+                        }
+                        .doFinally {
+                            group.isSubscribing = false
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
                                 }
                             }
-                            .subscribe({
-                                group.isFollowing = true
-                                when (currentScreen) {
-                                    0 -> {
-                                        adapterSubscribed.refresh()
-                                    }
-                                    1 -> {
-                                        adapterAll.refresh()
-                                    }
+                        }
+                        .subscribe({
+                            group.isFollowing = true
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterSubscribed.refresh()
                                 }
-                            }, { exception ->
-                                if (exception is CompositeException) {
-                                    exception.exceptions.forEach { ex ->
-                                        (ex as? FieldException)?.let {
-                                            if (it.field == "group") {
-                                                group.isFollowing = !group.isFollowing
-                                            }
+                                1 -> {
+                                    adapterAll.refresh()
+                                }
+                            }
+                        }, { exception ->
+                            if (exception is CompositeException) {
+                                exception.exceptions.forEach { ex ->
+                                    (ex as? FieldException)?.let {
+                                        if (it.field == "group") {
+                                            group.isFollowing = !group.isFollowing
                                         }
                                     }
                                 }
-                                errorHandler.handle(exception)
-                            }))
+                            }
+                            errorHandler.handle(exception)
+                        })
+                    )
                 }
             }
             unsubscribeClickListener = { group, pos ->
                 if (!group.isSubscribing) {
                     compositeDisposable.add(viewModel.unsubscribeGroup(group.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe {
-                                group.isSubscribing = true
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {
+                            group.isSubscribing = true
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
+                            }
+                        }
+                        .doFinally {
+                            group.isSubscribing = false
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterAll.notifyItemChanged(pos)
+                                }
+                                1 -> {
+                                    adapterSubscribed.notifyItemChanged(pos)
+                                }
+                            }
+                        }
+                        .subscribe({
+                            group.isFollowing = false
+                            when (currentScreen) {
+                                0 -> {
+                                    adapterSubscribed.refresh()
+                                }
+                                1 -> {
+                                    adapterAll.refresh()
+                                }
+                            }
+                        }, {
+                            if (it is GroupAlreadyFollowingException) {
+                                group.isFollowing = !group.isFollowing
                                 when (currentScreen) {
                                     0 -> {
-                                        adapterAll.notifyItemChanged(pos)
+                                        adapterAll.notifyDataSetChanged()
                                     }
                                     1 -> {
-                                        adapterSubscribed.notifyItemChanged(pos)
+                                        adapterSubscribed.notifyDataSetChanged()
                                     }
                                 }
                             }
-                            .doFinally {
-                                group.isSubscribing = false
-                                when (currentScreen) {
-                                    0 -> {
-                                        adapterAll.notifyItemChanged(pos)
-                                    }
-                                    1 -> {
-                                        adapterSubscribed.notifyItemChanged(pos)
-                                    }
-                                }
-                            }
-                            .subscribe({
-                                group.isFollowing = false
-                                when (currentScreen) {
-                                    0 -> {
-                                        adapterSubscribed.refresh()
-                                    }
-                                    1 -> {
-                                        adapterAll.refresh()
-                                    }
-                                }
-                            }, {
-                                if (it is GroupAlreadyFollowingException) {
-                                    group.isFollowing = !group.isFollowing
-                                    when (currentScreen) {
-                                        0 -> {
-                                            adapterAll.notifyDataSetChanged()
-                                        }
-                                        1 -> {
-                                            adapterSubscribed.notifyDataSetChanged()
-                                        }
-                                    }
-                                }
-                                errorHandler.handle(it)
-                            }))
+                            errorHandler.handle(it)
+                        })
+                    )
                 }
             }
         }
@@ -342,55 +347,59 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 if (job.isCancelled) return@collectLatest
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
-                        //Appodeal.cache(requireActivity(), Appodeal.NATIVE, GroupListAdapter.AD_FREQ)
+
                     }
                     is LoadState.Error -> {
-                        swipe_groups.isRefreshing = false
+                        swipeGroups.isRefreshing = false
                         if (adapter.itemCount == 0) {
-                            footer.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                            footer.loadState =
+                                LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        swipe_groups.isRefreshing = false
+                        swipeGroups.isRefreshing = false
                     }
                 }
             }
         }
     }
 
+    @ExperimentalCoroutinesApi
     fun fetchGroups(query: String = "") {
         compositeDisposable.clear()
         compositeDisposable.add(
-                viewModel.fetchGroups(query)
-                        .subscribe {
-                            adapterAll.submitData(lifecycle, it)
-                        }
+            viewModel.fetchGroups(query)
+                .subscribe {
+                    adapterAll.submitData(lifecycle, it)
+                }
         )
         compositeDisposable.add(
-                viewModel.fetchSubGroups(query)
-                        .subscribe {
-                            adapterSubscribed.submitData(lifecycle, it)
-                        }
+            viewModel.fetchSubGroups(query)
+                .subscribe {
+                    adapterSubscribed.submitData(lifecycle, it)
+                }
         )
         compositeDisposable.add(
-                viewModel.fetchAdmGroups(query)
-                        .subscribe {
-                            adapterOwned.submitData(lifecycle, it)
-                        }
+            viewModel.fetchAdmGroups(query)
+                .subscribe {
+                    adapterOwned.submitData(lifecycle, it)
+                }
         )
     }
 
 
+    @ExperimentalCoroutinesApi
     override fun onResume() {
         super.onResume()
-        activity_main__search_input.addTextChangedListener(textWatcher)
+        activityMainSearchInput.addTextChangedListener(textWatcher)
         job = Job()
     }
 
+    @ExperimentalCoroutinesApi
     override fun onPause() {
         super.onPause()
-        activity_main__search_input.removeTextChangedListener(textWatcher)
+        activityMainSearchInput.removeTextChangedListener(textWatcher)
         job.cancel()
     }
 
@@ -399,16 +408,13 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
     }
 
 
-
     override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        //profileAvatarHolder.showImageUploadingStarted(path)
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
     override fun showImageUploaded(chooseMedia: ChooseMedia) {
         presenter.changeUserAvatar()
     }
-
 
 
     override fun avatarChanged(url: String) {
@@ -436,13 +442,16 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
         val userName = userEntity.firstName + " " + userEntity.surName
         viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
         doOrIfNull(userEntity.avatar,
-                { profileAvatarHolder.showAvatar(it) },
-                { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+            { profileAvatarHolder.showAvatar(it) },
+            { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
     }
 
     override fun viewCreated() {
         toolbarMenu = viewBinding.navigationToolbar.toolbarMenu
-        viewDrawer = layoutInflater.inflate(R.layout.layout_profile_header, viewBinding.groupListCoordinator, false)
+        viewDrawer = layoutInflater.inflate(
+            R.layout.layout_profile_header,
+            viewBinding.groupListCoordinator, false
+        )
         profileAvatarHolder = viewDrawer.findViewById(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         lateinit var drawerItem: PrimaryDrawerItem
@@ -451,21 +460,26 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
             headerView = viewDrawer
             actionBarDrawerToggleEnabled = true
             translucentStatusBar = true
-            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() }, R.id.fromGallery to { presenter.attachFromGallery() }))
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+                .setOnClickListener {
+                    if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
+                    ) {
+                        dialogDelegate.showDialog(
+                            R.layout.dialog_camera_or_gallery,
+                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() },
+                                R.id.fromGallery to { presenter.attachFromGallery() })
+                        )
+                    }
                 }
-            }
             primaryItem(getString(R.string.news)) {
                 icon = R.drawable.ic_news
                 selectedIcon = R.drawable.ic_news_blue
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-                onClick { v ->
+                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
+                onClick { _ ->
                     findNavController().navigate(R.id.action_groupListFragment2_to_newsFragment2)
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
@@ -477,28 +491,15 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
             }
-//            primaryItem(getString(R.string.music)) {
-//                icon = R.drawable.ic_music
-//                selectedIcon = R.drawable.ic_music_act
-//                textColorRes = R.color.whiteTextColor
-//                selectedColorRes = R.color.profileTabColor
-//                selectedTextColorRes = R.color.selectedItemTabColor
-//                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
-//                onClick { v ->
-//                    findNavController().navigate(R.id.action_groupListFragment2_to_audioListFragment)
-//                    toolbarTittle.text = getString(R.string.groups)
-//                    false
-//                }
-//            }
             primaryItem(getString(R.string.buy_premium)) {
                 icon = R.drawable.icon_like
                 selectedIcon = R.drawable.icon_like
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
                 selectable = false
                 onClick { _ ->
                     (requireActivity() as MainActivity).bill()
@@ -506,11 +507,14 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 }
             }
             primaryItem(getString(R.string.logout)) {
-                typeface = Typeface.createFromAsset(requireActivity().assets, "roboto.regular.ttf")
+                typeface = Typeface.createFromAsset(
+                    requireActivity().assets,
+                    TYPEFACE_TEXT
+                )
                 textColorRes = R.color.whiteTextColor
                 selectedColorRes = R.color.profileTabColor
                 selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { v ->
+                onClick { _ ->
                     presenter.goOutFromProfile()
                     findNavController().navigate(R.id.action_groupListFragment2_to_loginActivity2)
                     false
@@ -523,7 +527,8 @@ class GroupListFragment(): BaseFragment(), GroupListView, CoroutineScope {
                 viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                 false
             }
-            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
+                .setOnClickListener { closeDrawer() }
         }
         toolbarMenu.setOnClickListener {
             drawer.openDrawer()

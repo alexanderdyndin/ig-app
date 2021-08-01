@@ -13,6 +13,7 @@ import com.intergroupapplication.domain.entity.NewsEntity
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import io.reactivex.Flowable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase): View
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
+    @ExperimentalCoroutinesApi
     fun getNews(): Flowable<PagingData<NewsEntity>> {
         return useCase.getNews()
                 .map { pagingData ->

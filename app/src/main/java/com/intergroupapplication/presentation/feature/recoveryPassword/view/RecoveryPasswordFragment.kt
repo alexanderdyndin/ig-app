@@ -1,7 +1,6 @@
 package com.intergroupapplication.presentation.feature.recoveryPassword.view
 
 import android.content.Context
-import android.content.Intent
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -13,11 +12,8 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentRecoveryPassword2Binding
 import com.intergroupapplication.domain.exception.*
@@ -37,7 +33,8 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener,
@@ -53,9 +50,11 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     fun providePresenter(): RecoveryPasswordPresenter = presenter
 
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
-    @Password(scheme = Password.Scheme.ALPHA_NUMERIC,
-            min = PASSWORD_REQUIRED_LENGTH,
-            messageResId = R.string.password_minimum_eight_symbols)
+    @Password(
+        scheme = Password.Scheme.ALPHA_NUMERIC,
+        min = PASSWORD_REQUIRED_LENGTH,
+        messageResId = R.string.password_minimum_eight_symbols
+    )
     lateinit var password: AppCompatEditText
 
     @Inject
@@ -113,25 +112,25 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         initEditText()
 
         btnSave.clicks()
-                .subscribe { validator.validate() }
-                .also { compositeDisposable.add(it) }
+            .subscribe { validator.validate() }
+            .also { compositeDisposable.add(it) }
         btnSend.clicks()
-                .subscribe {
-                    val email = etMail.text.toString()
-                    presenter.sendEmail(email)
-                }.also { compositeDisposable.add(it) }
+            .subscribe {
+                val email = etMail.text.toString()
+                presenter.sendEmail(email)
+            }.also { compositeDisposable.add(it) }
         RxTextView.textChangeEvents(etCode)
-                .subscribe {
-                    val code = etCode.text.toString()
-                    presenter.sendCode(code)
-                }
-                .also { compositeDisposable.add(it) }
+            .subscribe {
+                val code = etCode.text.toString()
+                presenter.sendCode(code)
+            }
+            .also { compositeDisposable.add(it) }
         passwordVisibility.setOnClickListener(this)
         passwordVisibility2.setOnClickListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             android.R.id.home -> findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
@@ -225,13 +224,15 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     }
 
     private fun listenInputs() {
-        Observable.merge(RxTextView.afterTextChangeEvents(etDoublePassword),
-                RxTextView.afterTextChangeEvents(password),
-                RxTextView.afterTextChangeEvents(etMail),
-                RxTextView.afterTextChangeEvents(etCode))
-                .subscribe { afterTextChanged ->
-                    handleAfterTextChangeEvents(afterTextChanged)
-                }.let { compositeDisposable.add(it) }
+        Observable.merge(
+            RxTextView.afterTextChangeEvents(etDoublePassword),
+            RxTextView.afterTextChangeEvents(password),
+            RxTextView.afterTextChangeEvents(etMail),
+            RxTextView.afterTextChangeEvents(etCode)
+        )
+            .subscribe { afterTextChanged ->
+                handleAfterTextChangeEvents(afterTextChanged)
+            }.let { compositeDisposable.add(it) }
     }
 
     private fun handleAfterTextChangeEvents(afterTextChanged: TextViewAfterTextChangeEvent) {
@@ -248,7 +249,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         validator.put(etDoublePassword, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
-                    getString(R.string.password_not_meeting)
+                getString(R.string.password_not_meeting)
 
             override fun isValid(view: TextView?): Boolean {
                 val mail = view?.text.toString()
@@ -299,7 +300,9 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
         })
@@ -314,7 +317,9 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
         })
     }
@@ -326,15 +331,37 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
 
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
-            password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
-            etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            password.inputType =
+                InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_visible,
+                0,
+                0,
+                0
+            )
+            etDoublePassword.inputType =
+                InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_visible,
+                0,
+                0,
+                0
+            )
         } else {
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_invisible,
+                0,
+                0,
+                0
+            )
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                R.drawable.ic_password_invisible,
+                0,
+                0,
+                0
+            )
         }
     }
 
