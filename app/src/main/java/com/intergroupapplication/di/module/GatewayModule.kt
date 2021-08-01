@@ -7,6 +7,7 @@ import com.intergroupapplication.data.service.RegistrationService
 import com.intergroupapplication.domain.gateway.*
 import dagger.Binds
 import dagger.Module
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
@@ -24,6 +25,7 @@ interface GatewayModule {
     @Binds
     fun provideGroupGateway(groupRepository: GroupRepository): GroupGateway
 
+    @ExperimentalCoroutinesApi
     @Binds
     fun provideGroupPostGateway(groupPostRepository: GroupPostsRepository): GroupPostGateway
 
@@ -57,6 +59,7 @@ interface GatewayModule {
     @Binds
     fun provideAppStatusRepository(appStatusRepository: AppStatusRepository): AppStatusGateway
 
+    @ExperimentalCoroutinesApi
     @Binds
     fun provideMediaRepository(mediaRepository: MediaRepository): MediaGateway
 

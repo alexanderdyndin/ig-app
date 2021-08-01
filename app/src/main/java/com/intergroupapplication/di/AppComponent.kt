@@ -23,7 +23,7 @@ import dagger.android.support.AndroidSupportInjectionModule
     (ViewModelModule::class)])
 interface AppComponent : AndroidInjector<App> {
 
-    @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<App>()
+    @Component.Factory
+    abstract class Builder : AndroidInjector.Factory<App>
 
 }

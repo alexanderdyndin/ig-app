@@ -9,7 +9,6 @@ import com.intergroupapplication.data.mapper.FollowersGroupMapper
 import com.intergroupapplication.data.mapper.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
-import com.intergroupapplication.data.model.UserProfileModelResponse
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.data.network.AppApi
@@ -25,6 +24,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -70,6 +70,7 @@ class GroupRepository @Inject constructor(
         return api.unfollowGroup(groupId)
     }
 
+    @ExperimentalCoroutinesApi
     override fun getGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
                 config = PagingConfig(
@@ -80,6 +81,7 @@ class GroupRepository @Inject constructor(
         ).flowable
     }
 
+    @ExperimentalCoroutinesApi
     override fun getAdminGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
                 config = PagingConfig(
@@ -94,6 +96,7 @@ class GroupRepository @Inject constructor(
         ).flowable
     }
 
+    @ExperimentalCoroutinesApi
     override fun getSubscribedGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
                 config = PagingConfig(
@@ -114,6 +117,7 @@ class GroupRepository @Inject constructor(
             prefetchDistance = 1
     )
 
+    @ExperimentalCoroutinesApi
     override fun getFollowers(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
                 config = defaultPagingConfig,
@@ -123,6 +127,7 @@ class GroupRepository @Inject constructor(
         ).flowable
     }
 
+    @ExperimentalCoroutinesApi
     override fun getAdministrators(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
                 config = defaultPagingConfig,
@@ -134,6 +139,7 @@ class GroupRepository @Inject constructor(
         ).flowable
     }
 
+    @ExperimentalCoroutinesApi
     override fun getBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
                 config = defaultPagingConfig,

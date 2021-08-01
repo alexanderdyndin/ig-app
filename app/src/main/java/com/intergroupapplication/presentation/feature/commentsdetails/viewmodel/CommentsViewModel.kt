@@ -13,6 +13,7 @@ import com.intergroupapplication.domain.usecase.CommentsUseCase
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import io.reactivex.Flowable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 class CommentsViewModel @Inject constructor(
@@ -26,6 +27,7 @@ class CommentsViewModel @Inject constructor(
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
+    @ExperimentalCoroutinesApi
     fun fetchComments(
         postEntity: CommentEntity.PostEntity,
         page: String

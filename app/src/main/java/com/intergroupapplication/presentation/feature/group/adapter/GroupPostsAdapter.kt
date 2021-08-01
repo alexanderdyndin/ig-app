@@ -34,15 +34,20 @@ import timber.log.Timber
 import java.io.*
 import java.util.*
 
-class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-                        private val proxyCacheServer: HttpProxyCacheServer)
-    : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
+class GroupPostsAdapter(
+    private val imageLoadingDelegate: ImageLoadingDelegate,
+    private val proxyCacheServer: HttpProxyCacheServer
+) : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     var isAdmin = false
+
     companion object {
         private const val DEFAULT_HOLDER = 1488
         private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntity>() {
-            override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
+            override fun areItemsTheSame(
+                oldItem: GroupPostEntity,
+                newItem: GroupPostEntity
+            ): Boolean {
                 return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
                     oldItem.id == newItem.id
                 } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
@@ -51,7 +56,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
+
+            override fun areContentsTheSame(
+                oldItem: GroupPostEntity,
+                newItem: GroupPostEntity
+            ): Boolean {
                 return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
                     oldItem == newItem
                 } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
@@ -66,14 +75,19 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var AD_FIRST = 3
         var commentClickListener: (groupPostEntity: GroupPostEntity.PostEntity) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
-        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
-        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
-        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
+        var imageClickListener: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
+        var likeClickListener: (
+            isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity,
+            position: Int
+        ) -> Unit = { _, _, _, _ -> }
+        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ -> }
         var editPostClickListener: (postEntity: GroupPostEntity.PostEntity) -> Unit = {}
-        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
-        var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
+        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit =
+            { _, _ -> }
+        var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit =
+            { _, _ -> }
         var isOwner = false
-        var progressBarVisibility:(visibility:Boolean) -> Unit = {_->}
+        var progressBarVisibility: (visibility: Boolean) -> Unit = { _ -> }
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -128,20 +142,41 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 postLike.text = item.reacts.likesCount.toString()
                 postDislike.text = item.reacts.dislikesCount.toString()
                 if (item.reacts.isLike) {
-                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_like_active,
+                        0, 0, 0
+                    )
                 } else {
-                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_like, 0,
+                        0, 0
+                    )
                 }
                 if (item.reacts.isDislike) {
-                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_dislike_active,
+                        0,
+                        0,
+                        0
+                    )
                 } else {
-                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_dislike,
+                        0,
+                        0,
+                        0
+                    )
                 }
                 compositeDisposable.add(getDateDescribeByString(item.date)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                countComments.text = view.context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ postPrescription.text = it }, { Timber.e(it) })
+                )
+                countComments.text = view.context.getString(
+                    R.string.comments_count,
+                    item.commentsCount,
+                    item.unreadComments
+                )
                 postCustomView.proxy = proxyCacheServer
                 postCustomView.imageClickListener = imageClickListener
                 postCustomView.imageLoadingDelegate = imageLoadingDelegate
@@ -150,9 +185,19 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 groupName.text = item.groupInPost.name
                 subCommentBtn.text = item.bells.count.toString()
                 if (item.bells.isActive) {
-                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_blue, 0, 0, 0)
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_sub_comnts_blue,
+                        0,
+                        0,
+                        0
+                    )
                 } else {
-                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_sub_comnts_grey,
+                        0,
+                        0,
+                        0
+                    )
                 }
 
                 anchorBtn.setOnClickListener { pinClickListener.invoke(item, layoutPosition) }
@@ -164,18 +209,34 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     commentClickListener.invoke(item)
                 }
                 postLikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(
+                        !item.reacts.isLike,
+                        item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
                 postDislikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(
+                        item.reacts.isLike,
+                        !item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
                 settingsPost.setOnClickListener {
-                        showPopupMenu(settingsPost, Integer.parseInt(item.id), item) }
+                    showPopupMenu(settingsPost, Integer.parseInt(item.id), item)
+                }
 
                 doOrIfNull(item.groupInPost.avatar, {
                     imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder)
                 },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
+                    {
+                        imageLoadingDelegate.loadImageFromResources(
+                            R.drawable.variant_10,
+                            postAvatarHolder
+                        )
+                    })
 
                 btnRepost.setOnClickListener {
                     sharePost(view.context, item)
@@ -185,10 +246,12 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         }
 
         private fun mapToGroupEntityPost(postEntity: GroupPostEntity.PostEntity) =
-                MarkupModel(postEntity.postText,postEntity.images,postEntity.audios,postEntity.videos,
-                        postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
+            MarkupModel(
+                postEntity.postText, postEntity.images, postEntity.audios, postEntity.videos,
+                postEntity.imagesExpanded, postEntity.audiosExpanded, postEntity.videosExpanded
+            )
 
-        private fun sharePost(context: Context, item: GroupPostEntity.PostEntity){
+        private fun sharePost(context: Context, item: GroupPostEntity.PostEntity) {
             progressBarVisibility.invoke(true)
             /*val link = Firebase.dynamicLinks.dynamicLink {
                 domainUriPrefix = context.getString(R.string.deeplinkDomain)
@@ -199,40 +262,51 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }*/
             FirebaseDynamicLinks.getInstance().createDynamicLink()
                 //.setLongLink(link.uri)
-                .setDomainUriPrefix( context.getString(R.string.deeplinkDomain))
+                .setDomainUriPrefix(context.getString(R.string.deeplinkDomain))
                 .setLink(Uri.parse("https://intergroup.com/post/${item.id}"))
                 .setAndroidParameters(
                     DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
-                    .setMinimumVersion(1).build())
+                        .setMinimumVersion(1).build()
+                )
                 .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
                 .addOnCompleteListener {
-                    createShareIntent(context,item,it.result.previewLink.toString())
+                    createShareIntent(context, item, it.result.previewLink.toString())
                 }
         }
 
-        private fun createShareIntent(context: Context, item: GroupPostEntity.PostEntity, url: String){
-            val text = url+"/${item.id}"
+        private fun createShareIntent(
+            context: Context,
+            item: GroupPostEntity.PostEntity,
+            url: String
+        ) {
+            val text = url + "/${item.id}"
             val filesUrls = mutableListOf<String>()
             filesUrls.addAll(item.videos.map { it.file })
             filesUrls.addAll(item.images.map { it.file })
             OmegaIntentBuilder.from(context)
-                    .share()
-                    .text(text)
-                    .filesUrls(filesUrls)
-                    .download(object : DownloadCallback {
-                        override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
-                            progressBarVisibility.invoke(false)
-                            contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                    .startActivity()
-                        }
-                    })
+                .share()
+                .text(text)
+                .filesUrls(filesUrls)
+                .download(object : DownloadCallback {
+                    override fun onDownloaded(
+                        success: Boolean,
+                        contextIntentHandler: ContextIntentHandler
+                    ) {
+                        progressBarVisibility.invoke(false)
+                        contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            .startActivity()
+                    }
+                })
         }
 
-        private fun showPopupMenu(view: View, id: Int, groupPostEntity: GroupPostEntity.PostEntity) {
+        private fun showPopupMenu(
+            view: View,
+            id: Int,
+            groupPostEntity: GroupPostEntity.PostEntity
+        ) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
             popupMenu.menu.findItem(R.id.edit).isVisible = isAdmin
-//            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)

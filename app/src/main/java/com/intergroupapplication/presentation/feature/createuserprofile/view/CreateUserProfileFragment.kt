@@ -3,8 +3,6 @@ package com.intergroupapplication.presentation.feature.createuserprofile.view
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import androidx.core.content.ContextCompat
-import androidx.core.widget.CompoundButtonCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
@@ -13,10 +11,10 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.core.widget.CompoundButtonCompat
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentCreateUserProfile2Binding
@@ -26,7 +24,10 @@ import com.intergroupapplication.domain.exception.SECOND_NAME
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.exstension.clicks
+import com.intergroupapplication.presentation.exstension.gone
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createuserprofile.presenter.CreateUserProfilePresenter
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.QuickRule
@@ -36,13 +37,14 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Named
 
 
 class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
-        CompoundButton.OnCheckedChangeListener, Validator.ValidationListener {
+    CompoundButton.OnCheckedChangeListener, Validator.ValidationListener {
 
     companion object {
         fun getIntent(context: Context?) = Intent(context, CreateUserProfileFragment::class.java)
@@ -92,7 +94,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     private lateinit var inputMonth: AppCompatEditText
     private lateinit var inputYear: AppCompatEditText
     private lateinit var genderRadioGroup: RadioGroup
-    private lateinit var userCreate__addAvatar: TextView
+    private lateinit var userCreateAddAvatar: TextView
 
     override fun viewCreated() {
         userAvatarHolder = viewBinding.userAvatarHolder
@@ -106,7 +108,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         inputDay = viewBinding.inputDay
         inputMonth = viewBinding.inputMonth
         genderRadioGroup = viewBinding.genderRadioGroup
-        userCreate__addAvatar = viewBinding.userCreateAddAvatar
+        userCreateAddAvatar = viewBinding.userCreateAddAvatar
 
         initErrorHandler(errorHandler)
         name = requireView().findViewById(R.id.name)
@@ -120,8 +122,8 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         listenGenderToggle()
         listenAvatarClicks()
         createGroup.clicks()
-                .subscribe { validator.validate() }
-                .also { compositeDisposable.add(it) }
+            .subscribe { validator.validate() }
+            .also { compositeDisposable.add(it) }
         initRadioButton()
         initValidator()
         setErrorHandler()
@@ -158,7 +160,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
-        userAvatarHolder.showImageUploadingProgress(progress,chooseMedia)
+        userAvatarHolder.showImageUploadingProgress(progress, chooseMedia)
     }
 
     override fun showImageUploadingError(chooseMedia: ChooseMedia) {
@@ -166,8 +168,12 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        buttonView?.setTextColor(ContextCompat.getColor(requireContext(),
-                if (isChecked) R.color.whiteAutorize else R.color.manatee))
+        buttonView?.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                if (isChecked) R.color.whiteAutorize else R.color.manatee
+            )
+        )
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -203,14 +209,16 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     private fun listenEditTexts() {
-        Observable.merge(RxTextView.afterTextChangeEvents(name),
-                RxTextView.afterTextChangeEvents(surName))
-                .subscribe({
-                    when (it.view().id) {
-                        R.id.surName -> tvSurname.gone()
-                        R.id.name -> tvFirstname.gone()
-                    }
-                }, { it.printStackTrace() }).let { compositeDisposable.add(it) }
+        Observable.merge(
+            RxTextView.afterTextChangeEvents(name),
+            RxTextView.afterTextChangeEvents(surName)
+        )
+            .subscribe({
+                when (it.view().id) {
+                    R.id.surName -> tvSurname.gone()
+                    R.id.name -> tvFirstname.gone()
+                }
+            }, { it.printStackTrace() }).let { compositeDisposable.add(it) }
 
     }
 
@@ -221,29 +229,37 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     private fun listenAvatarClicks() {
-        userCreate__addAvatar.clicks().subscribe { openPhoto() }.also { compositeDisposable.add(it) }
+        userCreateAddAvatar.clicks().subscribe { openPhoto() }.also { compositeDisposable.add(it) }
 //        change.setLinkClickable { openPhoto() }
     }
 
     private fun openPhoto() {
-        dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                mapOf(R.id.fromCamera to { presenter.takePhotoFromCamera() },
-                        R.id.fromGallery to { presenter.takePhotoFromGallery() }))
+        dialogDelegate.showDialog(
+            R.layout.dialog_camera_or_gallery,
+            mapOf(R.id.fromCamera to { presenter.takePhotoFromCamera() },
+                R.id.fromGallery to { presenter.takePhotoFromGallery() })
+        )
     }
 
     private fun createUserProfile() {
-        val gender: String = if (genderRadioGroup.indexOfChild(requireView().findViewById
-                (genderRadioGroup.checkedRadioButtonId)) == 0) {
+        val gender: String = if (genderRadioGroup.indexOfChild(
+                requireView().findViewById
+                    (genderRadioGroup.checkedRadioButtonId)
+            ) == 0
+        ) {
             "male"
         } else {
             "female"
         }
         if (userAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
             userAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
-            userAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
+            userAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR
+        ) {
             val birthDay = "${inputDay.text}.${inputMonth.text}.${inputYear.text}"
-            presenter.createUserProfile(name.text.toString().trim(), surName.text.toString(),
-                    birthDay, gender)
+            presenter.createUserProfile(
+                name.text.toString().trim(), surName.text.toString(),
+                birthDay, gender
+            )
         } else {
             dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
         }
@@ -278,7 +294,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         validator.put(inputDay, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
-                    "Неправильная дата"
+                "Неправильная дата"
 
             override fun isValid(view: TextView?): Boolean {
                 if (view?.text.toString().isEmpty()) return false
@@ -290,7 +306,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         validator.put(inputMonth, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
-                    "Неправильная дата"
+                "Неправильная дата"
 
             override fun isValid(view: TextView?): Boolean {
                 if (view?.text.toString().isEmpty()) return false
@@ -302,7 +318,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         validator.put(inputYear, object : QuickRule<TextView>() {
 
             override fun getMessage(context: Context?) =
-                    "Неправильная дата"
+                "Неправильная дата"
 
             override fun isValid(view: TextView?): Boolean {
                 if (view?.text.toString().isEmpty()) return false
@@ -319,7 +335,9 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             override fun afterTextChanged(s: Editable?) {
                 var textEntered = s.toString()
 
-                if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0].isUpperCase()) {
+                if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0]
+                        .isUpperCase()
+                ) {
                     textEntered = s?.toString().orEmpty().toUpperCase()
                     name.setText(textEntered)
                     name.setSelection(name.text?.length ?: 0)
@@ -332,7 +350,9 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
         })
@@ -341,7 +361,9 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             override fun afterTextChanged(s: Editable?) {
                 var textEntered = s.toString()
 
-                if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0].isUpperCase()) {
+                if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0]
+                        .isUpperCase()
+                ) {
                     textEntered = s?.toString().orEmpty().toUpperCase()
                     surName.setText(textEntered)
                     surName.setSelection(surName.text?.length ?: 0)
@@ -354,7 +376,9 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
         })

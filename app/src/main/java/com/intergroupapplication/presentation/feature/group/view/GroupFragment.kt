@@ -1,7 +1,6 @@
 package com.intergroupapplication.presentation.feature.group.view
 
 import android.os.Bundle
-import android.view.View
 import android.view.ViewStub
 import android.widget.*
 import androidx.annotation.LayoutRes
@@ -18,8 +17,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentGroupBinding
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.databinding.FragmentGroupBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
@@ -47,18 +46,14 @@ import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
-
 class GroupFragment : BaseFragment(), GroupView,
-        AppBarLayout.OnOffsetChangedListener, CoroutineScope {
+    AppBarLayout.OnOffsetChangedListener, CoroutineScope {
 
     companion object {
-        private const val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
-        private const val ALPHA_ANIMATIONS_DURATION = 200
         const val GROUP_ID = "group_id"
         const val IS_ADMIN = "is_admin"
         const val POST_ID = "post_id"
-        const val FRAGMENT_RESULT = "fragmentResult"
         const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
 
@@ -98,11 +93,10 @@ class GroupFragment : BaseFragment(), GroupView,
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    private var job : Job = Job()
+    private var job: Job = Job()
 
-    lateinit var viewModel: GroupViewModel
+    private lateinit var viewModel: GroupViewModel
 
-    private var mIsTheTitleVisible = false
     private var mIsTheTitleContainerVisible = true
 
     private var createdPostId: String? = null
@@ -143,10 +137,10 @@ class GroupFragment : BaseFragment(), GroupView,
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         prepareAdapter()
         compositeDisposable.add(
-                viewModel.fetchPosts(groupId)
-                        .subscribe {
-                            adapter.submitData(lifecycle, it)
-                        }
+            viewModel.fetchPosts(groupId)
+                .subscribe {
+                    adapter.submitData(lifecycle, it)
+                }
         )
     }
 
@@ -169,14 +163,17 @@ class GroupFragment : BaseFragment(), GroupView,
         headGroupCreatePostViewStub = viewBinding.group.headGroupCreatePostViewStub
         headGroupJoinViewStub = viewBinding.group.headGroupJoinViewStub
 
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)?.observe(
-                viewLifecycleOwner) { id ->
-            if (createdPostId != id) {
-                createdPostId = id
-                adapter.refresh()
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<String>(POST_ID)
+            ?.observe(viewLifecycleOwner) { id ->
+                if (createdPostId != id) {
+                    createdPostId = id
+                    adapter.refresh()
+                }
             }
-        }
-        groupPosts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        groupPosts.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
         groupPosts.itemAnimator = null
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
@@ -197,7 +194,7 @@ class GroupFragment : BaseFragment(), GroupView,
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 if (job.isCancelled) return@collectLatest
-                when(loadStates.refresh) {
+                when (loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
                             loadingLayout.show()
@@ -209,7 +206,9 @@ class GroupFragment : BaseFragment(), GroupView,
                         emptyText.hide()
                         loadingLayout.gone()
                         if (adapter.itemCount == 0) {
-                            footerAdapter.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                            footerAdapter.loadState = LoadState.Error(
+                                (loadStates.refresh as LoadState.Error).error
+                            )
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
@@ -221,9 +220,14 @@ class GroupFragment : BaseFragment(), GroupView,
                         }
                         loadingLayout.gone()
                         swipeLayout.isRefreshing = false
-                        groupPosts.scrollToPosition(0)
+                        if (createdPostId != null) {
+                            groupPosts.scrollToPosition(0)
+                            createdPostId = null
+                        }
                     }
-                    else ->{ swipeLayout.isRefreshing = false }
+                    else -> {
+                        swipeLayout.isRefreshing = false
+                    }
                 }
             }
         }
@@ -235,35 +239,43 @@ class GroupFragment : BaseFragment(), GroupView,
             complaintListener = { id -> presenter.complaintPost(id) }
             imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-                findNavController().navigate(R.id.action_groupActivity_to_imageFragment,data)
+                findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
             }
             editPostClickListener = {
-                val data = bundleOf(GROUP_ID to it.id, EditPostFragment.GROUP_POST_ENTITY_KEY to it)
-                findNavController().navigate(R.id.action_groupActivity_to_editPostFragment,data)
+                val data = bundleOf(
+                    GROUP_ID to it.id,
+                    EditPostFragment.GROUP_POST_ENTITY_KEY to it
+                )
+                findNavController().navigate(R.id.action_groupActivity_to_editPostFragment, data)
             }
             likeClickListener = { like, dislike, item, position ->
                 if (!item.isLoading) {
-                    compositeDisposable.add(viewModel.setReact(isLike = like, isDislike = dislike, postId = item.id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnSubscribe {
-                                item.isLoading = true
-                                adapter.notifyItemChanged(position)
-                            }
-                            .doFinally {
-                                item.isLoading = false
-                                adapter.notifyItemChanged(position)
-                            }
-                            .subscribe({
-                                item.reacts = it
-                            },
-                                    {
-                                        errorHandler.handle(it)
-                                    }))
+                    compositeDisposable.add(viewModel.setReact(
+                        isLike = like, isDislike = dislike,
+                        postId = item.id
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe {
+                            item.isLoading = true
+                            adapter.notifyItemChanged(position)
+                        }
+                        .doFinally {
+                            item.isLoading = false
+                            adapter.notifyItemChanged(position)
+                        }
+                        .subscribe({
+                            item.reacts = it
+                        },
+                            {
+                                errorHandler.handle(it)
+                            })
+                    )
                 }
             }
             deleteClickListener = { id: Int, pos: Int ->
-                compositeDisposable.add(viewModel.deletePost(id)
+                compositeDisposable.add(
+                    viewModel.deletePost(id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
@@ -275,74 +287,83 @@ class GroupFragment : BaseFragment(), GroupView,
                 if (!item.isLoading) {
                     if (item.bells.isActive) {
                         compositeDisposable.add(viewModel.deleteBell(item.id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSubscribe { item.isLoading = true }
-                                .doFinally {
-                                    item.isLoading = false
-                                    adapter.notifyItemChanged(pos)
-                                }
-                                .subscribe({
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe { item.isLoading = true }
+                            .doFinally {
+                                item.isLoading = false
+                                adapter.notifyItemChanged(pos)
+                            }
+                            .subscribe({
+                                item.bells.isActive = false
+                                item.bells.count--
+                            }, { exception ->
+                                if (exception is NotFoundException) {
                                     item.bells.isActive = false
                                     item.bells.count--
-                                }, { exception ->
-                                    if (exception is NotFoundException) {
-                                        item.bells.isActive = false
-                                        item.bells.count--
-                                    } else
-                                        errorHandler.handle(exception)
-                                }))
+                                } else
+                                    errorHandler.handle(exception)
+                            })
+                        )
                     } else {
                         compositeDisposable.add(viewModel.setBell(item.id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSubscribe { item.isLoading = true }
-                                .doFinally {
-                                    item.isLoading = false
-                                    adapter.notifyItemChanged(pos)
-                                }
-                                .subscribe({
-                                    item.bells.isActive = true
-                                    item.bells.count++
-                                }, { exception ->
-                                    if (exception is CompositeException) {
-                                        exception.exceptions.forEach { ex ->
-                                            (ex as? FieldException)?.let {
-                                                if (it.field == "post") {
-                                                    item.bells.isActive = true
-                                                    item.bells.count++
-                                                }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe { item.isLoading = true }
+                            .doFinally {
+                                item.isLoading = false
+                                adapter.notifyItemChanged(pos)
+                            }
+                            .subscribe({
+                                item.bells.isActive = true
+                                item.bells.count++
+                            }, { exception ->
+                                if (exception is CompositeException) {
+                                    exception.exceptions.forEach { ex ->
+                                        (ex as? FieldException)?.let {
+                                            if (it.field == "post") {
+                                                item.bells.isActive = true
+                                                item.bells.count++
                                             }
                                         }
-                                    } else
-                                        errorHandler.handle(exception)
-                                }))
+                                    }
+                                } else
+                                    errorHandler.handle(exception)
+                            })
+                        )
                     }
                 }
             }
             pinClickListener = { item: GroupPostEntity.PostEntity, pos: Int ->
                 val post = item.copy(isPinned = !item.isPinned)
                 compositeDisposable.add(viewModel.editPost(post)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe {  }
-                        .doFinally { adapter.notifyItemChanged(pos) }
-                        .subscribe({
-                            item.isPinned = !item.isPinned
-                            if (item.isPinned)
-                                Toast.makeText(requireContext(), R.string.post_pinned, Toast.LENGTH_SHORT).show()
-                            else
-                                Toast.makeText(requireContext(), R.string.post_unpinned, Toast.LENGTH_SHORT).show()
-                                   }, {
-                            errorHandler.handle(it)
-                        })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe { }
+                    .doFinally { adapter.notifyItemChanged(pos) }
+                    .subscribe({
+                        item.isPinned = !item.isPinned
+                        if (item.isPinned)
+                            Toast.makeText(
+                                requireContext(),
+                                R.string.post_pinned,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        else
+                            Toast.makeText(
+                                requireContext(),
+                                R.string.post_unpinned,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                    }, {
+                        errorHandler.handle(it)
+                    })
                 )
             }
-            progressBarVisibility = {visibility ->
-                if (visibility){
+            progressBarVisibility = { visibility ->
+                if (visibility) {
                     viewBinding.progressDownload.show()
-                }
-                else{
+                } else {
                     viewBinding.progressDownload.gone()
                 }
             }
@@ -440,8 +461,10 @@ class GroupFragment : BaseFragment(), GroupView,
         goOutFromGroup.show()
         groupStrength.text = followersCount.toString()
         listenButtonClicks()
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID,
-            GroupInfoEntity(groupId, groupStrength.text.toString(), true))
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            GROUP_ID,
+            GroupInfoEntity(groupId, groupStrength.text.toString(), true)
+        )
     }
 
     override fun groupUnfollowed(followersCount: Int) {
@@ -449,8 +472,10 @@ class GroupFragment : BaseFragment(), GroupView,
         joinToGroup.show()
         groupStrength.text = followersCount.toString()
         listenButtonClicks()
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(GROUP_ID,
-            GroupInfoEntity(groupId, groupStrength.text.toString(), false))
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            GROUP_ID,
+            GroupInfoEntity(groupId, groupStrength.text.toString(), false)
+        )
     }
 
     override fun showMessage(res: Int) {
@@ -471,10 +496,13 @@ class GroupFragment : BaseFragment(), GroupView,
         }
         groupAvatarHolder.setOnClickListener {
             if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                        mapOf(R.id.fromCamera to { presenter.attachFromCamera(groupId) },
-                            R.id.fromGallery to { presenter.attachFromGallery(groupId) }))
+                || groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
+            ) {
+                dialogDelegate.showDialog(
+                    R.layout.dialog_camera_or_gallery,
+                    mapOf(R.id.fromCamera to { presenter.attachFromCamera(groupId) },
+                        R.id.fromGallery to { presenter.attachFromGallery(groupId) })
+                )
             }
         }
         adapter.isAdmin = isAdmin
@@ -521,21 +549,6 @@ class GroupFragment : BaseFragment(), GroupView,
         findNavController().navigate(R.id.action_groupActivity_to_CreatePostFragment, data)
     }
 
-    private fun handleToolbarTitleVisibility(percentage: Float) {
-        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
-
-            if (!mIsTheTitleVisible) {
-                startAlphaAnimation(toolbarTittle, ALPHA_ANIMATIONS_DURATION.toLong(), View.VISIBLE)
-                mIsTheTitleVisible = true
-            }
-        } else {
-            if (mIsTheTitleVisible) {
-                startAlphaAnimation(toolbarTittle, ALPHA_ANIMATIONS_DURATION.toLong(), View.INVISIBLE)
-                mIsTheTitleVisible = false
-            }
-        }
-    }
-
     private fun handleAlphaOnTitle(percentage: Float) {
         if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
             if (mIsTheTitleContainerVisible) {
@@ -550,19 +563,23 @@ class GroupFragment : BaseFragment(), GroupView,
 
     private fun listenButtonClicks() {
         RxView.clicks(joinToGroup)
-                .take(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    presenter.followGroup(groupId, groupStrength.text.toString()
-                        .split(" ")[0].toInt())
-                }.let { { d: Disposable -> compositeDisposable.add(d) } }
+            .take(1)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                presenter.followGroup(
+                    groupId, groupStrength.text.toString()
+                        .split(" ")[0].toInt()
+                )
+            }.let { { d: Disposable -> compositeDisposable.add(d) } }
         RxView.clicks(goOutFromGroup)
-                .take(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    presenter.unfollowGroup(groupId, groupStrength.text.toString()
-                        .split(" ")[0].toInt())
-                }.let { { d: Disposable -> compositeDisposable.add(d) } }
+            .take(1)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                presenter.unfollowGroup(
+                    groupId, groupStrength.text.toString()
+                        .split(" ")[0].toInt()
+                )
+            }.let { { d: Disposable -> compositeDisposable.add(d) } }
     }
 
 }
