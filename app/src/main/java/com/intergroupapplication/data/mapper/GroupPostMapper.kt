@@ -10,7 +10,9 @@ import javax.inject.Inject
 class GroupPostMapper @Inject constructor(private val groupMapper: GroupMapper,
                                           private val userProfileMapper: UserProfileMapper,
                                           private val mediaMapper: MediaMapper,
-                                          private val reactsMapper: ReactsMapper) {
+                                          private val reactsMapper: ReactsMapper,
+                                          private val groupInPostMapper: GroupInPostMapper
+) {
 
     fun mapToDto(from: GroupPostEntity.PostEntity): GroupPostModel {
         return GroupPostModel(
@@ -66,7 +68,7 @@ class GroupPostMapper @Inject constructor(private val groupMapper: GroupMapper,
         return CommentEntity.PostEntity(
                 id = from.id,
                 bells = mapToDomainEntity(from.bells),
-                groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost),
+                groupInPost = groupMapper.mapToDomainEntity(from.groupInPost),
                 postText = from.postText,
                 date = from.date,
                 updated = from.updated,

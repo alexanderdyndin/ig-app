@@ -172,6 +172,7 @@ detekt {
 
 dependencies {
 
+    implementation("com.google.firebase:firebase-invites:17.0.0")
     val kotlin_version = project.rootProject.ext["kotlin_version"]
     val nav_version = project.rootProject.ext["nav_version"]
     val jakeWhartonInstaTime = project.rootProject.ext["jakeWhartonInstaTime"]
@@ -383,4 +384,9 @@ dependencies {
 
     // To use only without reflection variants of viewBinding
     implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.6")
+
+    implementation("com.github.Omega-R.OmegaIntentBuilder:core:1.1.5")
+    // For extras
+    implementation("com.github.Omega-R.OmegaIntentBuilder:annotations:1.1.5")
+    kapt("com.github.Omega-R.OmegaIntentBuilder:processor:1.1.5")
 }

@@ -125,6 +125,18 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
         state = AvatarUploadingState.UPLOADING
     }
 
+    fun showImageUploadingStarted(path: String) {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
+        errorView.hide()
+        darkCard.show()
+        imageUploadingProgressBar.show()
+        imageLoaderDelegate?.loadImageFromFile(path, avatar)
+        imageUploadingProgressBar.progress = 0f
+        state = AvatarUploadingState.UPLOADING
+    }
+
     override fun showImageUploaded(path: String) {
         val darkCard = findViewById<TextView>(R.id.darkCard)
         val imageUploadingProgressBar = findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)

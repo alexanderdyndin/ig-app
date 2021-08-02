@@ -153,7 +153,7 @@ class PhotoRepository @Inject constructor(private val activity: Fragment,
                                 : Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(chooseMedia.url)
-        val myFile = File(activity.externalCacheDir,"${chooseMedia.authorMusic}.${file.extension}")
+        val myFile = File(activity.requireActivity().externalCacheDir,"${chooseMedia.authorMusic}.${file.extension}")
         myFile.createNewFile()
         val byteArray = file.readBytes()
         myFile.writeBytes(byteArray)
@@ -207,7 +207,7 @@ class PhotoRepository @Inject constructor(private val activity: Fragment,
                     else{
                             try {
                                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                        Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                        Compressor(activity.requireActivity()).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
                             }catch (e:Exception){
                                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
                                         file)
@@ -238,7 +238,7 @@ class PhotoRepository @Inject constructor(private val activity: Fragment,
                     else{
                         try {
                             awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                    Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP)
+                                    Compressor(activity.requireActivity()).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP)
                                             .compressToFile(file))
                         }catch (e:Exception){
                             awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
@@ -267,7 +267,7 @@ class PhotoRepository @Inject constructor(private val activity: Fragment,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                                Compressor(activity.requireActivity()).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
                 }
                 .flatMapObservable { it ->
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
