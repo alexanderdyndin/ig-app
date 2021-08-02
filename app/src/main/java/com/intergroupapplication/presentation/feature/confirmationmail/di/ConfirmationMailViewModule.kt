@@ -28,6 +28,9 @@ class ConfirmationMailViewModule {
                        context: Context)
             : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-
+    @PerFragment
+    @Provides
+    @Named("ConfirmationProfileHandler")
+    fun errorHandler(): ErrorHandler = ErrorHandler.create()
 
 }

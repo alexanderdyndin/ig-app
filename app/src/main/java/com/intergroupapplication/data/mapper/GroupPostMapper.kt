@@ -7,7 +7,7 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
-class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupInPostMapper,
+class GroupPostMapper @Inject constructor(private val groupMapper: GroupMapper,
                                           private val userProfileMapper: UserProfileMapper,
                                           private val mediaMapper: MediaMapper,
                                           private val reactsMapper: ReactsMapper) {
@@ -16,7 +16,7 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
         return GroupPostModel(
                 id = from.id,
                 bells = mapToDto(from.bells),
-                groupInPost = groupInPostMapper.mapToDto(from.groupInPost),
+                groupInPost = groupMapper.mapToDto(from.groupInPost),
                 postText = from.postText,
                 date = from.date,
                 updated = from.updated,
@@ -41,7 +41,7 @@ class GroupPostMapper @Inject constructor(private val groupInPostMapper: GroupIn
         return GroupPostEntity.PostEntity(
                 id = from.id,
                 bells = mapToDomainEntity(from.bells),
-                groupInPost = groupInPostMapper.mapToDomainEntity(from.groupInPost),
+                groupInPost = groupMapper.mapToDomainEntity(from.groupInPost),
                 postText = from.postText,
                 date = from.date,
                 updated = from.updated,

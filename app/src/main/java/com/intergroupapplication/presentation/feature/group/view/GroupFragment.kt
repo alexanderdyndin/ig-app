@@ -59,10 +59,9 @@ class GroupFragment : BaseFragment(), GroupView,
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         private const val ALPHA_ANIMATIONS_DURATION = 200
         const val GROUP_ID = "group_id"
+        const val GROUP = "group"
         const val IS_ADMIN = "is_admin"
         const val POST_ID = "post_id"
-        const val FRAGMENT_RESULT = "fragmentResult"
-        const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
 
     private val viewBinding by viewBinding(FragmentGroupBinding::bind)
@@ -76,7 +75,8 @@ class GroupFragment : BaseFragment(), GroupView,
 
     private lateinit var groupId: String
 
-    private var isGroupCreatedNow = false
+    private var groupEntity: GroupEntity.Group? = null
+
     private var isAdmin = false
 
     @Inject
@@ -141,7 +141,7 @@ class GroupFragment : BaseFragment(), GroupView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString(GROUP_ID)!!
-        isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
+        groupEntity = arguments?.getParcelable(GROUP)
         viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         prepareAdapter()
@@ -184,6 +184,9 @@ class GroupFragment : BaseFragment(), GroupView,
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
+        groupEntity?.let {
+            showGroupInfo(it)
+        }
         presenter.getGroupDetailInfo(groupId)
         groupStrength.setOnClickListener {
             val data = bundleOf(GROUP_ID to groupId, IS_ADMIN to isAdmin)

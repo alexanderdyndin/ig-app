@@ -32,7 +32,7 @@ class CreateUserProfileViewModule {
     @Provides
     fun providePhotoGateway(fragment: CreateUserProfileFragment, cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragment, cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
@@ -80,5 +80,5 @@ class CreateUserProfileViewModule {
     @PerFragment
     @Provides
     @Named("userProfileHandler")
-    fun errorHandler(): ErrorHandler = ErrorHandler.createIsolated()
+    fun errorHandler(): ErrorHandler = ErrorHandler.create()
 }

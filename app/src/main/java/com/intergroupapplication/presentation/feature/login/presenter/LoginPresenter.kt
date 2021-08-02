@@ -4,7 +4,7 @@ import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.LoginGateway
-import com.intergroupapplication.domain.usecase.GetProfileUseCase
+import com.intergroupapplication.domain.usecase.UserProfileUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
 import com.intergroupapplication.presentation.feature.login.view.LoginView
@@ -20,14 +20,12 @@ class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
                                          private val imeiGateway: ImeiGateway,
                                          @Named("loginHandler")
                                          private val errorHandler: ErrorHandler,
-                                         private val getProfileUseCase: GetProfileUseCase)
+                                         private val userProfileUseCase: UserProfileUseCase)
     : BasePresenter<LoginView>() {
-
-
 
     fun performLogin(loginEntity: LoginEntity) {
         compositeDisposable.add(loginGateway.performLogin(loginEntity)
-                .flatMap { getProfileUseCase.getUserProfile() }
+                .flatMap { userProfileUseCase.getUserProfile() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .handleLoading(viewState)
@@ -41,21 +39,5 @@ class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ viewState.deviceInfoExtracted() }, { errorHandler.handle(it) }))
-    }
-
-    fun goToRegistrationScreen() {
-        //router.newRootScreen(RegistrationScreen())
-    }
-
-    fun goToSettingsScreen() {
-        //router.navigateTo(ActionApplicationDetailsScreen())
-    }
-
-    fun goToRecoveryPassword() {
-        //router.navigateTo(RecoveryPasswordScreen())
-    }
-
-    private fun goToNavigationScreen() {
-        //router.newRootScreen(SplashScreen())
     }
 }

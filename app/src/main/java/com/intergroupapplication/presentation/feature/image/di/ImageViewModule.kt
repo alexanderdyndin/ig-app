@@ -30,7 +30,6 @@ import dagger.Provides
 @Module
 class ImageViewModule {
 
-
     @PerFragment
     @Provides
     fun provideFrescoImageLoader(context: Context): ImageLoader =
@@ -41,18 +40,5 @@ class ImageViewModule {
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
             ImageLoadingDelegate(imageLoader)
 
-
-    @PerFragment
-    @Provides
-    fun provideDialogManager(fragment: ImageFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
-
-
-    @PerFragment
-    @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
-            : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 }

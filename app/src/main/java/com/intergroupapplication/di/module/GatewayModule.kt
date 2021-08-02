@@ -62,4 +62,6 @@ interface GatewayModule {
 
     @Binds
     fun provideAddLocalMediaRepository(addLocalMediaRepository: AddLocalMediaRepository):AddLocalMediaGateway
+    @Binds
+    fun provideAvatarRepository(avatarRepository: AvatarRepository): AvatarGateway
 }

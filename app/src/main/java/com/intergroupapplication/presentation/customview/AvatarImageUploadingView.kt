@@ -8,6 +8,7 @@ import com.budiyev.android.circularprogressbar.CircularProgressBar
 import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.presentation.base.ImageUploadingState
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
@@ -23,6 +24,32 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
         private set
 
     private val avatar by lazy <SimpleDraweeView> { findViewById(R.id.avatar) }
+
+    var imageState: ImageUploadingState? = null
+        set(value) {
+            field = value
+            value?.let {
+                when (it) {
+                    is ImageUploadingState.ImageUploadingStarted -> {
+                        if (it.path.isNotEmpty())
+                            showImageUploadingStarted(it.path)
+                        else
+                            showImageUploadingStartedWithoutFile()
+                    }
+                    is ImageUploadingState.ImageUploadingError -> {
+                        clearUploadingState()
+                        showImageUploadingError(it.path)
+                    }
+                    is ImageUploadingState.ImageUploaded -> {
+                        showAvatar(it.path)
+                        showImageUploaded(it.path)
+                    }
+                    is ImageUploadingState.ImageUploadingProgress ->
+                        showImageUploadingProgress(it.progress, it.path)
+                }
+            }
+
+        }
 
     constructor(context: Context) : super(context) {
         init()
