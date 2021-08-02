@@ -1,16 +1,12 @@
 package com.intergroupapplication.initializators
 
-//import io.realm.Realm
-//import io.realm.RealmConfiguration
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.gsonparserfactory.GsonParserFactory
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.intergroupapplication.di.qualifier.AmazonOkHttpClient
-import com.intergroupapplication.domain.exception.*
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import dagger.Module
@@ -26,17 +22,6 @@ import okhttp3.OkHttpClient
 
 @Module
 class AppInitializersModule {
-
-
-//    @Provides
-//    @IntoSet
-//    fun provideRealmInitializer(context: Context): Initializer = object : Initializer {
-//        override fun initialize(app: Application) {
-//            Realm.init(context)
-//            val realmConfiguration = RealmConfiguration.Builder().name("intergroup,database").build()
-//            Realm.setDefaultConfiguration(realmConfiguration)
-//        }
-//    }
 
     @Provides
     @IntoSet
@@ -57,27 +42,16 @@ class AppInitializersModule {
 
     @Provides
     @IntoSet
-    fun provideFrecoInitializer(): Initializer = object : Initializer {
+    fun provideFrescoInitializer(): Initializer = object : Initializer {
         override fun initialize(app: Application) {
-//            val config: ImagePipelineConfig = ImagePipelineConfig.newBuilder(app)
-//                    .setDownsampleEnabled(true)
-//                    .build()
             Fresco.initialize(app)
         }
     }
 
-//    @Provides
-//    @IntoSet
-//    fun provideAdMobInitializer(context: Context): Initializer = object : Initializer {
-//        override fun initialize(app: Application) {
-//            MobileAds.initialize(context, "ca-app-pub-1717383973096668~8939439101")
-//        }
-//    }
-
 
     @Provides
     @IntoSet
-    fun provideRxPapparazzoInitializer(): Initializer = object : Initializer {
+    fun provideRxPaparazzoInitializer(): Initializer = object : Initializer {
         override fun initialize(app: Application) {
             RxPaparazzo.register(app)
         }
@@ -85,9 +59,11 @@ class AppInitializersModule {
 
     @Provides
     @IntoSet
-    fun provideAndroidNetworkingInitializer(@AmazonOkHttpClient okHttpClient: OkHttpClient,
-                                            context: Context,
-                                            gsonParserFactory: GsonParserFactory) = object : Initializer {
+    fun provideAndroidNetworkingInitializer(
+        @AmazonOkHttpClient okHttpClient: OkHttpClient,
+        context: Context,
+        gsonParserFactory: GsonParserFactory
+    ) = object : Initializer {
         override fun initialize(app: Application) {
             AndroidNetworking.initialize(context, okHttpClient)
             AndroidNetworking.setParserFactory(gsonParserFactory)
