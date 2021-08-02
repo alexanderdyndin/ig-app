@@ -12,11 +12,13 @@ import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.GroupBansRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
-import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
-import com.intergroupapplication.domain.entity.*
+import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupFollowEntity
+import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.gateway.GroupGateway
 import io.reactivex.Completable
@@ -32,29 +34,29 @@ import javax.inject.Inject
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
 class GroupRepository @Inject constructor(
-        private val api: AppApi,
-        private val groupMapper: GroupMapper,
-        private val followersGroupMapper: FollowersGroupMapper,
-        private val bansGroupMapper: BansGroupMapper
+    private val api: AppApi,
+    private val groupMapper: GroupMapper,
+    private val followersGroupMapper: FollowersGroupMapper,
+    private val bansGroupMapper: BansGroupMapper
 ) : GroupGateway {
 
     override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group> =
-            api.changeGroupAvatar(groupId, UpdateAvatarModel(avatar))
-                    .map { groupMapper.mapToDomainEntity(it) }
-                    .doOnError {
-                        if (it is HttpException) {
-                            Completable.error(CanNotUploadPhoto())
-                        } else {
-                            Completable.error(it)
-                        }
-                    }
+        api.changeGroupAvatar(groupId, UpdateAvatarModel(avatar))
+            .map { groupMapper.mapToDomainEntity(it) }
+            .doOnError {
+                if (it is HttpException) {
+                    Completable.error(CanNotUploadPhoto())
+                } else {
+                    Completable.error(it)
+                }
+            }
 
     override fun followersGroup(groupId: String): Single<GroupFollowEntity> {
         return api.followersGroup(groupId)
-                .map { groupMapper.followsToEntity(it) }
-                .doOnError {
-                    Single.error<Throwable>(it)
-                }
+            .map { groupMapper.followsToEntity(it) }
+            .doOnError {
+                Single.error<Throwable>(it)
+            }
     }
 
 
@@ -73,120 +75,143 @@ class GroupRepository @Inject constructor(
     @ExperimentalCoroutinesApi
     override fun getGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = PAGE_SIZE,
-                        initialLoadSize = 20,
-                        prefetchDistance = 1),
-                pagingSourceFactory = { GroupsRemoteRXDataSource(api, groupMapper, searchFilter) }
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                initialLoadSize = 20,
+                prefetchDistance = 1
+            ),
+            pagingSourceFactory = { GroupsRemoteRXDataSource(api, groupMapper, searchFilter) }
         ).flowable
     }
 
     @ExperimentalCoroutinesApi
     override fun getAdminGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = PAGE_SIZE,
-                        initialLoadSize = 20,
-                        prefetchDistance = 1),
-                pagingSourceFactory = {
-                    val ds = GroupsRemoteRXDataSource(api, groupMapper, searchFilter)
-                    ds.applyAdminGroupList()
-                    ds
-                }
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                initialLoadSize = 20,
+                prefetchDistance = 1
+            ),
+            pagingSourceFactory = {
+                val ds = GroupsRemoteRXDataSource(api, groupMapper, searchFilter)
+                ds.applyAdminGroupList()
+                ds
+            }
         ).flowable
     }
 
     @ExperimentalCoroutinesApi
     override fun getSubscribedGroupList(searchFilter: String): Flowable<PagingData<GroupEntity>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = PAGE_SIZE,
-                        initialLoadSize = 20,
-                        prefetchDistance = 1),
-                pagingSourceFactory = {
-                    val ds = GroupsRemoteRXDataSource(api, groupMapper, searchFilter)
-                    ds.applySubscribedGroupList()
-                    ds
-                }
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                initialLoadSize = 20,
+                prefetchDistance = 1
+            ),
+            pagingSourceFactory = {
+                val ds = GroupsRemoteRXDataSource(api, groupMapper, searchFilter)
+                ds.applySubscribedGroupList()
+                ds
+            }
         ).flowable
     }
 
     private val defaultPagingConfig = PagingConfig(
-            pageSize = 20,
-            initialLoadSize = 20,
-            prefetchDistance = 1
+        pageSize = 20,
+        initialLoadSize = 20,
+        prefetchDistance = 1
     )
 
     @ExperimentalCoroutinesApi
-    override fun getFollowers(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
+    override fun getFollowers(
+        groupId: String,
+        searchFilter: String
+    ): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
-                config = defaultPagingConfig,
-                pagingSourceFactory = {
-                    GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, searchFilter)
-                }
+            config = defaultPagingConfig,
+            pagingSourceFactory = {
+                GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, searchFilter)
+            }
         ).flowable
     }
 
     @ExperimentalCoroutinesApi
-    override fun getAdministrators(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
+    override fun getAdministrators(
+        groupId: String,
+        searchFilter: String
+    ): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
-                config = defaultPagingConfig,
-                pagingSourceFactory = {
-                    val followersRemote = GroupFollowersRemoteRXDataSource(api, followersGroupMapper, groupId, searchFilter)
-                    followersRemote.applyAdministratorsList()
-                    followersRemote
-                }
+            config = defaultPagingConfig,
+            pagingSourceFactory = {
+                val followersRemote = GroupFollowersRemoteRXDataSource(
+                    api,
+                    followersGroupMapper,
+                    groupId,
+                    searchFilter
+                )
+                followersRemote.applyAdministratorsList()
+                followersRemote
+            }
         ).flowable
     }
 
     @ExperimentalCoroutinesApi
-    override fun getBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>> {
+    override fun getBans(
+        groupId: String,
+        searchFilter: String
+    ): Flowable<PagingData<GroupUserEntity>> {
         return Pager(
-                config = defaultPagingConfig,
-                pagingSourceFactory = {
-                    GroupBansRemoteRXDataSource(api, bansGroupMapper, groupId, searchFilter)
-                }
+            config = defaultPagingConfig,
+            pagingSourceFactory = {
+                GroupBansRemoteRXDataSource(api, bansGroupMapper, groupId, searchFilter)
+            }
         ).flowable
     }
 
     override fun banUserInGroup(userId: String, reason: String, groupId: String): Completable {
         return api.banUserInGroup(groupId, GroupBanBody(reason, userId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun deleteUserFromBansGroup(userId: String): Completable {
         return api.deleteUserFromBansGroup(userId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun updateGroupAdmin(subscriptionId: String, updateGroupAdmin: UpdateGroupAdmin): Completable {
+    override fun updateGroupAdmin(
+        subscriptionId: String,
+        updateGroupAdmin: UpdateGroupAdmin
+    ): Completable {
         return api.updateGroupAdmin(subscriptionId, updateGroupAdmin)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getAllGroupAdmins(groupId: String): Single<List<String>> {
         return api.getGroupFollowers(groupId, 1, "admins", "")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { groupUserFollowersDto ->
-                    groupUserFollowersDto.results.map {
-                        it.user.id.toString()
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map { groupUserFollowersDto ->
+                groupUserFollowersDto.results.map {
+                    it.user.id.toString()
                 }
+            }
     }
 
-    override fun getGroupFollowersForSearch(groupId: String, searchFilter: String): Single<List<GroupUserEntity>> {
+    override fun getGroupFollowersForSearch(
+        groupId: String,
+        searchFilter: String
+    ): Single<List<GroupUserEntity>> {
         return api.getGroupFollowers(
-                groupId = groupId,
-                page = 1,
-                search = searchFilter
+            groupId = groupId,
+            page = 1,
+            search = searchFilter
         ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map {
-                    followersGroupMapper.mapToListDomainEntity(it)
-                }
+            .observeOn(AndroidSchedulers.mainThread())
+            .map {
+                followersGroupMapper.mapToListDomainEntity(it)
+            }
     }
 }

@@ -1,6 +1,5 @@
 package com.intergroupapplication.domain.gateway
 
-import com.intergroupapplication.domain.entity.AdEntity
 import com.intergroupapplication.domain.entity.CreateUserEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import io.reactivex.Single

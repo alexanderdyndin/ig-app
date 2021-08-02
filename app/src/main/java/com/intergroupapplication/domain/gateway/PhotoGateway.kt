@@ -18,17 +18,29 @@ interface PhotoGateway {
     fun getVideoUrls(): Single<List<ChooseMedia>>
     fun getAudioUrls(): Single<List<ChooseMedia>>
     fun getImageUrls(): Single<List<ChooseMedia>>
-    fun setVideoUrls(videos:List<ChooseMedia>)
-    fun setAudioUrls(audios:List<ChooseMedia>)
-    fun setImageUrls(images:List<ChooseMedia>)
-    fun uploadAudioToAws(chooseMedia: ChooseMedia, groupId: String? = null,
-                         upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
-    fun uploadVideoToAws(chooseMedia: ChooseMedia, groupId: String? = null,
-                         upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
-    fun uploadImageToAws(path: String, groupId: String? = null,
-                         upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<Float>
-    fun uploadImage(path: String, groupId: String? = null,
-                    upload:(imageExs:String,id:String?)-> Single<ImageUploadDto>): Observable<String>
+    fun setVideoUrls(videos: List<ChooseMedia>)
+    fun setAudioUrls(audios: List<ChooseMedia>)
+    fun setImageUrls(images: List<ChooseMedia>)
+    fun uploadAudioToAws(
+        chooseMedia: ChooseMedia, groupId: String? = null,
+        upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>
+    ): Observable<Float>
+
+    fun uploadVideoToAws(
+        chooseMedia: ChooseMedia, groupId: String? = null,
+        upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>
+    ): Observable<Float>
+
+    fun uploadImageToAws(
+        path: String, groupId: String? = null,
+        upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>
+    ): Observable<Float>
+
+    fun uploadImage(
+        path: String, groupId: String? = null,
+        upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>
+    ): Observable<String>
+
     fun removeContent(chooseMedia: ChooseMedia)
     fun removeAllContent()
 }

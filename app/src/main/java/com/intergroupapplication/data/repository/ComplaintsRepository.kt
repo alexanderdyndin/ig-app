@@ -8,8 +8,8 @@ import javax.inject.Inject
 class ComplaintsRepository @Inject constructor(private val api: AppApi) : ComplaintsGateway {
 
     override fun complaintPost(id: Int) =
-            api.complaints(ComplaintModel(post = id))
+        api.complaints(ComplaintModel(post = id))
 
     override fun complaintComment(id: Int) =
-            api.complaints(ComplaintModel(comment = id))
+        api.complaints(ComplaintModel(comment = id))
 }

@@ -4,5 +4,5 @@ import android.graphics.drawable.Drawable
 
 interface ColorDrawableGateway {
 
-    fun getDrawableByColor(color:Int):Drawable?
+    fun getDrawableByColor(color: Int): Drawable?
 }

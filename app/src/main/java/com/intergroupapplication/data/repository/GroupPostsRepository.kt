@@ -11,7 +11,6 @@ import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.GroupNewsRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
 import com.intergroupapplication.domain.entity.*
-import com.intergroupapplication.domain.exception.NoMorePage
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -23,47 +22,58 @@ import javax.inject.Inject
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
 @ExperimentalCoroutinesApi
-class GroupPostsRepository @Inject constructor(private val api: AppApi,
-                                               private val groupPostMapper: GroupPostMapper,
-                                               private val reactsMapper: ReactsMapper
-                                               ): GroupPostGateway {
+class GroupPostsRepository @Inject constructor(
+    private val api: AppApi,
+    private val groupPostMapper: GroupPostMapper,
+    private val reactsMapper: ReactsMapper
+) : GroupPostGateway {
 
     override fun getPostById(postId: String): Single<CommentEntity.PostEntity> {
         return api.getPostById(postId).map { groupPostMapper.mapToPostEntity(it) }
     }
 
-    override fun createPost(createGroupPostEntity: CreateGroupPostEntity,
-                            groupId: String): Single<GroupPostEntity.PostEntity> {
+    override fun createPost(
+        createGroupPostEntity: CreateGroupPostEntity,
+        groupId: String
+    ): Single<GroupPostEntity.PostEntity> {
         return api.createPost(groupPostMapper.mapToDto(createGroupPostEntity), groupId)
-                .map { groupPostMapper.mapToDomainEntity(it) }
+            .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
     override fun getNewsPosts(): Flowable<PagingData<NewsEntity>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = PAGE_SIZE,
-                        prefetchDistance = 5),
-                pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = 5
+            ),
+            pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
         ).flowable
     }
 
     override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
         return Pager(
-                config = PagingConfig(
-                        pageSize = PAGE_SIZE,
-                        prefetchDistance = 5),
-                pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = 5
+            ),
+            pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
         ).flowable
     }
 
-    override fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity.PostEntity> {
+    override fun editPost(
+        createGroupPostEntity: CreateGroupPostEntity,
+        postId: String
+    ): Single<GroupPostEntity.PostEntity> {
         return api.editPostById(postId, groupPostMapper.mapToDto(createGroupPostEntity))
-                .map { groupPostMapper.mapToDomainEntity(it) }
+            .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
-    override fun setReact(reactsEntityRequest: ReactsEntityRequest, postId: String): Single<ReactsEntity> {
+    override fun setReact(
+        reactsEntityRequest: ReactsEntityRequest,
+        postId: String
+    ): Single<ReactsEntity> {
         return api.setReact(reactsMapper.mapToDto(reactsEntityRequest), postId)
-                .map { reactsMapper.mapToDomainEntity(it) }
+            .map { reactsMapper.mapToDomainEntity(it) }
     }
 
     override fun deleteGroupPost(postId: String): Completable {
@@ -79,7 +89,8 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
     }
 
     override fun setPostBell(bellFollowEntity: BellFollowEntity): Single<BellFollowEntity> {
-        return api.setBell(groupPostMapper.mapToDto(bellFollowEntity)).map { groupPostMapper.mapToDomainEntity(it) }
+        return api.setBell(groupPostMapper.mapToDto(bellFollowEntity))
+            .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
     override fun deleteBell(postId: String): Completable {

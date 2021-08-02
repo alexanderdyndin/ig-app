@@ -8,16 +8,18 @@ import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.gateway.ResetPasswordGetaway
 import javax.inject.Inject
 
-class ResetPasswordRepository @Inject constructor(private val api: AppApi,
-                                                  private val tokenCodeMapper: TokenCodeMapper) : ResetPasswordGetaway {
+class ResetPasswordRepository @Inject constructor(
+    private val api: AppApi,
+    private val tokenCodeMapper: TokenCodeMapper
+) : ResetPasswordGetaway {
 
     override fun resetPassword(emailModel: EmailModel) =
-            api.resetPassword(emailModel)
+        api.resetPassword(emailModel)
 
     override fun resetPasswordCode(codeModel: CodeModel) =
-            api.resetPasswordCode(codeModel)
-                    .map { tokenCodeMapper.map(it) }
+        api.resetPasswordCode(codeModel)
+            .map { tokenCodeMapper.map(it) }
 
     override fun newPassword(newPasswordModel: NewPasswordModel) =
-            api.resetPasswordNewpassword(newPasswordModel)
+        api.resetPasswordNewpassword(newPasswordModel)
 }

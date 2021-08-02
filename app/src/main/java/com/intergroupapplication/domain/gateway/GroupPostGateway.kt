@@ -11,10 +11,14 @@ import io.reactivex.Single
  */
 interface GroupPostGateway {
     fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>>
-    fun createPost(createGroupPostEntity: CreateGroupPostEntity, groupId: String): Single<GroupPostEntity.PostEntity>
+    fun createPost(createGroupPostEntity: CreateGroupPostEntity, groupId: String):
+            Single<GroupPostEntity.PostEntity>
+
     fun getPostById(postId: String): Single<CommentEntity.PostEntity>
     fun getNewsPosts(): Flowable<PagingData<NewsEntity>>
-    fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String): Single<GroupPostEntity.PostEntity>
+    fun editPost(createGroupPostEntity: CreateGroupPostEntity, postId: String):
+            Single<GroupPostEntity.PostEntity>
+
     fun setReact(reactsEntityRequest: ReactsEntityRequest, postId: String): Single<ReactsEntity>
     fun deleteGroupPost(postId: String): Completable
     fun deleteNewsPost(postId: String): Completable

@@ -2,7 +2,7 @@ package com.intergroupapplication.domain.gateway
 
 import io.reactivex.Completable
 
-interface PermissionAutorizeGetaway {
+interface PermissionAuthorizeGetaway {
 
     fun isBlocked(): Completable
 

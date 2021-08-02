@@ -42,16 +42,19 @@ interface GatewayModule {
     fun provideAwsUploadingGateway(aswUploadingService: AwsUploadingService): AwsUploadingGateway
 
     @Binds
-    fun provideTokenRepository(fbTokenRepository: FbTokenRepository): FbTokenGetaway
+    fun provideTokenRepository(fbTokenRepository: FbTokenRepository): FbTokenGateway
 
     @Binds
-    fun providePermissionRepository(permissionAutorizeRepository: PermissionAutorizeRepository): PermissionAutorizeGetaway
+    fun providePermissionRepository(permissionAuthorizeRepository: PermissionAuthorizeRepository):
+            PermissionAuthorizeGetaway
 
     @Binds
-    fun provideResendCodeGetawayRepository(resendCodeRepository: ResendCodeRepository): ResendCodeGateway
+    fun provideResendCodeGetawayRepository(resendCodeRepository: ResendCodeRepository):
+            ResendCodeGateway
 
     @Binds
-    fun provideResetPasswordRepository(resendCodeRepository: ResetPasswordRepository): ResetPasswordGetaway
+    fun provideResetPasswordRepository(resendCodeRepository: ResetPasswordRepository):
+            ResetPasswordGetaway
 
     @Binds
     fun provideComplaintsRepository(complaintsRepository: ComplaintsRepository): ComplaintsGateway

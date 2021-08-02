@@ -1,7 +1,6 @@
 package com.intergroupapplication.domain.gateway
 
 import androidx.paging.PagingData
-import com.intergroupapplication.data.model.CreateCommentModel
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.CreateCommentEntity
 import com.intergroupapplication.domain.entity.ReactsEntity
@@ -15,9 +14,19 @@ import io.reactivex.Single
  */
 interface CommentGateway {
     fun getComments(postId: String, page: String): Flowable<PagingData<CommentEntity>>
-    fun createComment(postId: String, createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment>
-    fun createAnswerToComment(answerToCommentId: String,
-                              createCommentEntity: CreateCommentEntity): Single<CommentEntity.Comment>
+    fun createComment(
+        postId: String,
+        createCommentEntity: CreateCommentEntity
+    ): Single<CommentEntity.Comment>
+
+    fun createAnswerToComment(
+        answerToCommentId: String,
+        createCommentEntity: CreateCommentEntity
+    ): Single<CommentEntity.Comment>
+
     fun deleteComment(commentId: String): Completable
-    fun setCommentReact(commentId: String, reactsEntityRequest: ReactsEntityRequest): Single<ReactsEntity>
+    fun setCommentReact(
+        commentId: String,
+        reactsEntityRequest: ReactsEntityRequest
+    ): Single<ReactsEntity>
 }
