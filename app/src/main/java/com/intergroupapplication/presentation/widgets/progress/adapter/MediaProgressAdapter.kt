@@ -14,14 +14,18 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
 
-class MediaProgressAdapter :RecyclerView.Adapter<MediaProgressAdapter.MediaProgressHolder>() {
+class MediaProgressAdapter : RecyclerView.Adapter<MediaProgressAdapter.MediaProgressHolder>() {
 
     val progressMedia = mutableListOf<ProgressMediaModel>()
     var callback: ProgressCallback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaProgressHolder {
-        return MediaProgressHolder(parent.inflate(R.layout.layout_media_progress_holder,
-            false))
+        return MediaProgressHolder(
+            parent.inflate(
+                R.layout.layout_media_progress_holder,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: MediaProgressHolder, position: Int) {
@@ -30,22 +34,22 @@ class MediaProgressAdapter :RecyclerView.Adapter<MediaProgressAdapter.MediaProgr
 
     override fun getItemCount() = progressMedia.size
 
-    inner class MediaProgressHolder(view:View): BaseHolder<ProgressMediaModel>(view){
+    inner class MediaProgressHolder(view: View) : BaseHolder<ProgressMediaModel>(view) {
         private val binding by viewBinding(LayoutMediaProgressHolderBinding::bind)
 
         override fun onBind(data: ProgressMediaModel) {
             binding.nameMedia.text = data.chooseMedia.name
             prepareListeners(data.chooseMedia)
-            when(data.type){
+            when (data.type) {
                 LoadMediaType.START -> startedState()
-                LoadMediaType.PROGRESS ->  progressState(data.type.progress)
+                LoadMediaType.PROGRESS -> progressState(data.type.progress)
                 LoadMediaType.ERROR -> errorState()
                 LoadMediaType.UPLOAD -> uploadState()
             }
         }
 
-        private fun startedState(){
-            with(binding){
+        private fun startedState() {
+            with(binding) {
                 imageUploadingProgressBar.show()
                 stopUploading.show()
                 refreshContainer.hide()
@@ -53,15 +57,15 @@ class MediaProgressAdapter :RecyclerView.Adapter<MediaProgressAdapter.MediaProgr
             }
         }
 
-        private fun progressState(progress:Float){
-            with(binding){
+        private fun progressState(progress: Float) {
+            with(binding) {
                 imageUploadingProgressBar.progress = progress
                 detachMedia.hide()
             }
         }
 
-        private fun errorState(){
-            with(binding){
+        private fun errorState() {
+            with(binding) {
                 imageUploadingProgressBar.hide()
                 detachMedia.show()
                 refreshContainer.show()
@@ -70,7 +74,7 @@ class MediaProgressAdapter :RecyclerView.Adapter<MediaProgressAdapter.MediaProgr
         }
 
         private fun uploadState() {
-            with(binding){
+            with(binding) {
                 imageUploadingProgressBar.hide()
                 detachMedia.show()
                 stopUploading.hide()
@@ -78,7 +82,7 @@ class MediaProgressAdapter :RecyclerView.Adapter<MediaProgressAdapter.MediaProgr
         }
 
         private fun prepareListeners(chooseMedia: ChooseMedia) {
-            with(binding){
+            with(binding) {
                 refreshContainer.setOnClickListener {
                     imageUploadingProgressBar.progress = 0f
                     callback?.retryLoading(chooseMedia)
@@ -94,7 +98,7 @@ class MediaProgressAdapter :RecyclerView.Adapter<MediaProgressAdapter.MediaProgr
         }
     }
 
-    interface ProgressCallback{
+    interface ProgressCallback {
         fun retryLoading(chooseMedia: ChooseMedia)
         fun cancelUploading(chooseMedia: ChooseMedia)
         fun removeContent(chooseMedia: ChooseMedia)

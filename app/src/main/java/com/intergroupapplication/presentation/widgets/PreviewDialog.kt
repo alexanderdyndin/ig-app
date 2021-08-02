@@ -29,7 +29,7 @@ class PreviewDialog : DialogFragment() {
     var url: String = ""
     var isPhoto = false
     var isChoose = false
-    var urlPreview:String = ""
+    var urlPreview: String = ""
 
 
     override fun onCreateView(
@@ -93,8 +93,8 @@ class PreviewDialog : DialogFragment() {
             it.isActivated = isChoose
             parentFragmentManager.setResult(
                 ADD_REQUEST_CODE,
-                    ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
-                    IS_CHOOSE_KEY to isChoose, VIDEO_PREVIEW_KEY to urlPreview
+                ADD_URI_KEY to url, IS_PHOTO_KEY to isPhoto,
+                IS_CHOOSE_KEY to isChoose, VIDEO_PREVIEW_KEY to urlPreview
             )
         }
     }
