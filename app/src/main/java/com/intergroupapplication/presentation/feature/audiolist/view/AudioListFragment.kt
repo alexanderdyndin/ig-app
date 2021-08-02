@@ -1,10 +1,6 @@
 package com.intergroupapplication.presentation.feature.audiolist.view
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -18,21 +14,19 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentAudiosListBinding
-import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
-import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListAdapter
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListsAdapter
 import com.intergroupapplication.presentation.feature.audiolist.viewModel.AudioListViewModel
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-class AudioListFragment(): BaseFragment() {
+class AudioListFragment : BaseFragment() {
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
@@ -57,8 +51,6 @@ class AudioListFragment(): BaseFragment() {
 
     private lateinit var viewModel: AudioListViewModel
 
-    private var exitHandler: Handler? = null
-
     private var doubleBackToExitPressedOnce = false
 
     val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
@@ -67,27 +59,16 @@ class AudioListFragment(): BaseFragment() {
 
     override fun layoutRes() = R.layout.fragment_audios_list
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout? = viewBinding.audioListCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.audioListCoordinator
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(this, modelFactory)[AudioListViewModel::class.java]
-//        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                if (doubleBackToExitPressedOnce) {
-//                    ExitActivity.exitApplication(requireContext())
-//                    return
-//                }
-//                doubleBackToExitPressedOnce = true
-//                Toast.makeText(requireContext(), getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-//                exitHandler = Handler(Looper.getMainLooper())
-//                exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
-//            }
-//        })
         compositeDisposable.add(
-                viewModel.getAudios()
-                        .subscribe {
-                            adapter.submitData(lifecycle, it)
-                        }
+            viewModel.getAudios()
+                .subscribe {
+                    adapter.submitData(lifecycle, it)
+                }
         )
         super.onCreate(savedInstanceState)
     }
@@ -98,7 +79,8 @@ class AudioListFragment(): BaseFragment() {
             findNavController().popBackStack()
         }
 
-        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
+        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> =
+            mutableListOf()
         adapterList.add(adapterCon)
         setAdapter(adapter, adapterFooter)
 
@@ -112,7 +94,8 @@ class AudioListFragment(): BaseFragment() {
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
 
-        val tabTitles = arrayOf(resources.getString(R.string.music)/*, resources.getString(R.string.my_music)*/)
+        val tabTitles =
+            arrayOf(resources.getString(R.string.music)/*, resources.getString(R.string.my_music)*/)
 
         TabLayoutMediator(viewBinding.slidingCategories, viewBinding.pager) { tab, position ->
             tab.text = tabTitles[position]
@@ -131,7 +114,8 @@ class AudioListFragment(): BaseFragment() {
                     is LoadState.Error -> {
                         viewBinding.swipeLayout.isRefreshing = false
                         if (adapter.itemCount == 0) {
-                            footer.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                            footer.loadState =
+                                LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
