@@ -1,4 +1,5 @@
 package com.intergroupapplication.presentation.customview
+
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -17,7 +18,6 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.TimeBar
 import com.google.android.exoplayer2.ui.TimeBar.OnScrubListener
 import com.google.android.exoplayer2.util.Assertions
@@ -29,21 +29,22 @@ import kotlin.math.max
 import kotlin.math.min
 
 class CustomTimeBar @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0,
-        timebarAttrs: AttributeSet? = attrs,
-        defStyleRes: Int = 0) : View(context, attrs, defStyleAttr), TimeBar {
-    private val seekBounds: Rect
-    private val progressBar: Rect
-    private val bufferedBar: Rect
-    private val scrubberBar: Rect
-    private val playedPaint: Paint
-    private val bufferedPaint: Paint
-    private val unplayedPaint: Paint
-    private val adMarkerPaint: Paint
-    private val playedAdMarkerPaint: Paint
-    private val scrubberPaint: Paint
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    timeBarAttrs: AttributeSet? = attrs,
+    defStyleRes: Int = 0
+) : View(context, attrs, defStyleAttr), TimeBar {
+    private val seekBounds: Rect = Rect()
+    private val progressBar: Rect = Rect()
+    private val bufferedBar: Rect = Rect()
+    private val scrubberBar: Rect = Rect()
+    private val playedPaint: Paint = Paint()
+    private val bufferedPaint: Paint = Paint()
+    private val unPlayedPaint: Paint = Paint()
+    private val adMarkerPaint: Paint = Paint()
+    private val playedAdMarkerPaint: Paint = Paint()
+    private val scrubberPaint: Paint = Paint()
     private var scrubberDrawable: Drawable? = null
     private var barHeight = 0
     private var touchTargetHeight = 0
@@ -57,14 +58,12 @@ class CustomTimeBar @JvmOverloads constructor(
     private val formatBuilder: StringBuilder
     private val formatter: Formatter
     private val stopScrubbingRunnable: Runnable
-    private val listeners: CopyOnWriteArraySet<OnScrubListener>
-    private val touchPosition: Point
+    private val listeners: CopyOnWriteArraySet<OnScrubListener> = CopyOnWriteArraySet()
+    private val touchPosition: Point = Point()
     private val density: Float
     private var keyCountIncrement: Int
     private var keyTimeIncrement: Long
     private var lastCoarseScrubXPosition = 0
-
-
     private var lastExclusionRectangle: Rect? = null
     private val scrubberScalingAnimator: ValueAnimator
     private var scrubberScale: Float
@@ -73,16 +72,100 @@ class CustomTimeBar @JvmOverloads constructor(
     private var duration: Long
     private var position: Long = 0
     private var bufferedPosition: Long = 0
-    private var localCacheBufferPosition:Int = 0
+    private var localCacheBufferPosition: Int = 0
     private var adGroupCount = 0
     private var adGroupTimesMs: LongArray? = null
     private var playedAdGroups: BooleanArray? = null
-    /**
-     * Shows the scrubber handle with animation.
-     *
-     * @param showAnimationDurationMs The duration for scrubber showing animation.
-     */
-    /** Shows the scrubber handle.  */
+
+    init {
+        scrubberPaint.isAntiAlias = true
+        val res = context.resources
+        val displayMetrics = res.displayMetrics
+        density = displayMetrics.density
+        fineScrubYThreshold = dpToPx(density, FINE_SCRUB_Y_THRESHOLD_DP)
+        val defaultBarHeight: Int = dpToPx(density, DEFAULT_BAR_HEIGHT_DP)
+        var defaultTouchTargetHeight: Int = dpToPx(density, DEFAULT_TOUCH_TARGET_HEIGHT_DP)
+        val defaultAdMarkerWidth: Int = dpToPx(density, DEFAULT_AD_MARKER_WIDTH_DP)
+        val defaultScrubberEnabledSize: Int = dpToPx(density, DEFAULT_SCRUBBER_ENABLED_SIZE_DP)
+        val defaultScrubberDisabledSize: Int = dpToPx(density, DEFAULT_SCRUBBER_DISABLED_SIZE_DP)
+        val defaultScrubberDraggedSize: Int = dpToPx(density, DEFAULT_SCRUBBER_DRAGGED_SIZE_DP)
+        if (timeBarAttrs != null) {
+            val a = context
+                .theme
+                .obtainStyledAttributes(
+                    timeBarAttrs, R.styleable.DefaultTimeBar, defStyleAttr, defStyleRes
+                )
+            try {
+                scrubberDrawable = a.getDrawable(R.styleable.DefaultTimeBar_scrubber_drawable)
+                scrubberDrawable?.let {
+                    setDrawableLayoutDirection(it)
+                    defaultTouchTargetHeight =
+                        it.minimumHeight.coerceAtLeast(defaultTouchTargetHeight)
+                }
+                barHeight = defaultBarHeight
+                touchTargetHeight = defaultTouchTargetHeight
+                barGravity = a.getInt(R.styleable.DefaultTimeBar_bar_gravity, BAR_GRAVITY_CENTER)
+                adMarkerWidth = defaultAdMarkerWidth
+                scrubberEnabledSize = defaultScrubberEnabledSize
+                scrubberDisabledSize = defaultScrubberDisabledSize
+                scrubberDraggedSize = defaultScrubberDraggedSize
+                val playedColor =
+                    a.getInt(R.styleable.DefaultTimeBar_played_color, DEFAULT_PLAYED_COLOR)
+                val scrubberColor =
+                    a.getInt(R.styleable.DefaultTimeBar_scrubber_color, DEFAULT_SCRUBBER_COLOR)
+                val bufferedColor = DEFAULT_BUFFERED_COLOR
+                val unPlayedColor = DEFAULT_UN_PLAYED_COLOR
+                val adMarkerColor = DEFAULT_AD_MARKER_COLOR
+                val playedAdMarkerColor = DEFAULT_PLAYED_AD_MARKER_COLOR
+                playedPaint.color = playedColor
+                scrubberPaint.color = scrubberColor
+                bufferedPaint.color = bufferedColor
+                unPlayedPaint.color = unPlayedColor
+                adMarkerPaint.color = adMarkerColor
+                playedAdMarkerPaint.color = playedAdMarkerColor
+            } finally {
+                a.recycle()
+            }
+        } else {
+            barHeight = defaultBarHeight
+            touchTargetHeight = defaultTouchTargetHeight
+            barGravity = BAR_GRAVITY_CENTER
+            adMarkerWidth = defaultAdMarkerWidth
+            scrubberEnabledSize = defaultScrubberEnabledSize
+            scrubberDisabledSize = defaultScrubberDisabledSize
+            scrubberDraggedSize = defaultScrubberDraggedSize
+            playedPaint.color = DEFAULT_PLAYED_COLOR
+            scrubberPaint.color = DEFAULT_SCRUBBER_COLOR
+            bufferedPaint.color = DEFAULT_BUFFERED_COLOR
+            unPlayedPaint.color = DEFAULT_UN_PLAYED_COLOR
+            adMarkerPaint.color = DEFAULT_AD_MARKER_COLOR
+            playedAdMarkerPaint.color = DEFAULT_PLAYED_AD_MARKER_COLOR
+            scrubberDrawable = null
+        }
+        formatBuilder = StringBuilder()
+        formatter = Formatter(formatBuilder, Locale.getDefault())
+        stopScrubbingRunnable = Runnable { stopScrubbing( /* canceled= */false) }
+        scrubberPadding = if (scrubberDrawable != null) {
+            (scrubberDrawable!!.minimumWidth + 1) / 2
+        } else {
+            ((max(scrubberDisabledSize, scrubberEnabledSize.coerceAtLeast(scrubberDraggedSize)) + 1)
+                    / 2)
+        }
+        scrubberScale = 1.0f
+        scrubberScalingAnimator = ValueAnimator()
+        scrubberScalingAnimator.addUpdateListener { animation: ValueAnimator ->
+            scrubberScale = animation.animatedValue as Float
+            invalidate()
+        }
+        duration = C.TIME_UNSET
+        keyTimeIncrement = C.TIME_UNSET
+        keyCountIncrement = DEFAULT_INCREMENT_COUNT
+        isFocusable = true
+        if (importantForAccessibility == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
+        }
+    }
+
     @JvmOverloads
     fun showScrubber(showAnimationDurationMs: Long =  /* showAnimationDurationMs= */0) {
         if (scrubberScalingAnimator.isStarted) {
@@ -90,21 +173,6 @@ class CustomTimeBar @JvmOverloads constructor(
         }
         scrubberScalingAnimator.setFloatValues(scrubberScale, SHOWN_SCRUBBER_SCALE)
         scrubberScalingAnimator.duration = showAnimationDurationMs
-        scrubberScalingAnimator.start()
-    }
-    /**
-     * Hides the scrubber handle with animation.
-     *
-     * @param hideAnimationDurationMs The duration for scrubber hiding animation.
-     */
-    /** Hides the scrubber handle.  */
-    @JvmOverloads
-    fun hideScrubber(hideAnimationDurationMs: Long =  /* hideAnimationDurationMs= */0) {
-        if (scrubberScalingAnimator.isStarted) {
-            scrubberScalingAnimator.cancel()
-        }
-        scrubberScalingAnimator.setFloatValues(scrubberScale, HIDDEN_SCRUBBER_SCALE)
-        scrubberScalingAnimator.duration = hideAnimationDurationMs
         scrubberScalingAnimator.start()
     }
 
@@ -116,7 +184,7 @@ class CustomTimeBar @JvmOverloads constructor(
      */
     fun setPlayedColor(@ColorInt playedColor: Int) {
         playedPaint.color = playedColor
-        invalidate(seekBounds)
+        invalidate()
     }
 
     /**
@@ -126,7 +194,7 @@ class CustomTimeBar @JvmOverloads constructor(
      */
     fun setScrubberColor(@ColorInt scrubberColor: Int) {
         scrubberPaint.color = scrubberColor
-        invalidate(seekBounds)
+        invalidate()
     }
 
     /**
@@ -138,28 +206,28 @@ class CustomTimeBar @JvmOverloads constructor(
      */
     fun setBufferedColor(@ColorInt bufferedColor: Int) {
         bufferedPaint.color = bufferedColor
-        invalidate(seekBounds)
+        invalidate()
     }
 
     /**
      * Sets the color for the portion of the time bar after the current played position.
      *
-     * @param unplayedColor The color for the portion of the time bar after the current played
+     * @param unPlayedColor The color for the portion of the time bar after the current played
      * position.
      */
-    fun setUnplayedColor(@ColorInt unplayedColor: Int) {
-        unplayedPaint.color = unplayedColor
-        invalidate(seekBounds)
+    fun setUnPlayedColor(@ColorInt unPlayedColor: Int) {
+        unPlayedPaint.color = unPlayedColor
+        invalidate()
     }
 
     /**
-     * Sets the color for unplayed ad markers.
+     * Sets the color for unPlayed ad markers.
      *
-     * @param adMarkerColor The color for unplayed ad markers.
+     * @param adMarkerColor The color for unPlayed ad markers.
      */
     fun setAdMarkerColor(@ColorInt adMarkerColor: Int) {
         adMarkerPaint.color = adMarkerColor
-        invalidate(seekBounds)
+        invalidate()
     }
 
     /**
@@ -169,7 +237,7 @@ class CustomTimeBar @JvmOverloads constructor(
      */
     fun setPlayedAdMarkerColor(@ColorInt playedAdMarkerColor: Int) {
         playedAdMarkerPaint.color = playedAdMarkerColor
-        invalidate(seekBounds)
+        invalidate()
     }
 
     // TimeBar implementation.
@@ -205,7 +273,7 @@ class CustomTimeBar @JvmOverloads constructor(
         update()
     }
 
-    fun setLocalCacheBufferedPosition(bufferedPosition: Int){
+    fun setLocalCacheBufferedPosition(bufferedPosition: Int) {
         this.localCacheBufferPosition = bufferedPosition
         update()
     }
@@ -220,13 +288,18 @@ class CustomTimeBar @JvmOverloads constructor(
 
     override fun getPreferredUpdateDelay(): Long {
         val timeBarWidthDp: Int = pxToDp(density, progressBar.width())
-        return if (timeBarWidthDp == 0 || duration == 0L || duration == C.TIME_UNSET) Long.MAX_VALUE else duration / timeBarWidthDp
+        return if (timeBarWidthDp == 0 || duration == 0L || duration == C.TIME_UNSET) Long.MAX_VALUE
+            else duration / timeBarWidthDp
     }
 
-    override fun setAdGroupTimesMs(adGroupTimesMs: LongArray?, playedAdGroups: BooleanArray?,
-                                   adGroupCount: Int) {
-        Assertions.checkArgument(adGroupCount == 0
-                || adGroupTimesMs != null && playedAdGroups != null)
+    override fun setAdGroupTimesMs(
+        adGroupTimesMs: LongArray?, playedAdGroups: BooleanArray?,
+        adGroupCount: Int
+    ) {
+        Assertions.checkArgument(
+            adGroupCount == 0
+                    || adGroupTimesMs != null && playedAdGroups != null
+        )
         this.adGroupCount = adGroupCount
         this.adGroupTimesMs = adGroupTimesMs
         this.playedAdGroups = playedAdGroups
@@ -244,7 +317,7 @@ class CustomTimeBar @JvmOverloads constructor(
     public override fun onDraw(canvas: Canvas) {
         canvas.save()
         drawTimeBar(canvas)
-        drawPlayhead(canvas)
+        drawPlayHead(canvas)
         canvas.restore()
     }
 
@@ -315,7 +388,8 @@ class CustomTimeBar @JvmOverloads constructor(
     }
 
     override fun onFocusChanged(
-            gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+        gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?
+    ) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
         if (scrubbing && !gainFocus) {
             stopScrubbing( /* canceled= */false)
@@ -335,7 +409,15 @@ class CustomTimeBar @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-        val height = if (heightMode == MeasureSpec.UNSPECIFIED) touchTargetHeight else if (heightMode == MeasureSpec.EXACTLY) heightSize else Math.min(touchTargetHeight, heightSize)
+        val height =
+            when (heightMode) {
+                MeasureSpec.UNSPECIFIED -> touchTargetHeight
+                MeasureSpec.EXACTLY -> heightSize
+                else -> min(
+                    touchTargetHeight,
+                    heightSize
+                )
+            }
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height)
         updateDrawableState()
     }
@@ -346,24 +428,32 @@ class CustomTimeBar @JvmOverloads constructor(
         val barY = (height - touchTargetHeight) / 2
         val seekLeft = paddingLeft
         val seekRight = width - paddingRight
-        val progressY: Int
-        progressY = if (barGravity == BAR_GRAVITY_BOTTOM) {
-            barY + touchTargetHeight - (paddingBottom + scrubberPadding + barHeight / 2)
-        } else if (barGravity == BAR_GRAVITY_TOP) {
-            barY + paddingTop + scrubberPadding - barHeight / 2
-        } else {
-            barY + (touchTargetHeight - barHeight) / 2
+        val progressY: Int = when (barGravity) {
+            BAR_GRAVITY_BOTTOM -> {
+                barY + touchTargetHeight - (paddingBottom + scrubberPadding + barHeight / 2)
+            }
+            BAR_GRAVITY_TOP -> {
+                barY + paddingTop + scrubberPadding - barHeight / 2
+            }
+            else -> {
+                barY + (touchTargetHeight - barHeight) / 2
+            }
         }
         seekBounds[seekLeft, barY, seekRight] = barY + touchTargetHeight
-        progressBar[seekBounds.left + scrubberPadding, progressY, seekBounds.right - scrubberPadding] = progressY + barHeight
+        progressBar[seekBounds.left + scrubberPadding, progressY, seekBounds.right - scrubberPadding] =
+            progressY + barHeight
         if (Util.SDK_INT >= 29) {
-            setSystemGestureExclusionRectsV29(width, height)
+            setSystemGestureExclusionRectV29(width, height)
         }
         update()
     }
 
     override fun onRtlPropertiesChanged(layoutDirection: Int) {
-        if (scrubberDrawable != null && setDrawableLayoutDirection(scrubberDrawable!!, layoutDirection)) {
+        if (scrubberDrawable != null && setDrawableLayoutDirection(
+                scrubberDrawable!!,
+                layoutDirection
+            )
+        ) {
             invalidate()
         }
     }
@@ -383,13 +473,8 @@ class CustomTimeBar @JvmOverloads constructor(
         if (duration <= 0) {
             return
         }
-        if (Util.SDK_INT >= 21) {
-            info.addAction(AccessibilityAction.ACTION_SCROLL_FORWARD)
-            info.addAction(AccessibilityAction.ACTION_SCROLL_BACKWARD)
-        } else {
-            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
-            info.addAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)
-        }
+        info.addAction(AccessibilityAction.ACTION_SCROLL_FORWARD)
+        info.addAction(AccessibilityAction.ACTION_SCROLL_BACKWARD)
     }
 
     override fun performAccessibilityAction(action: Int, args: Bundle?): Boolean {
@@ -471,7 +556,7 @@ class CustomTimeBar @JvmOverloads constructor(
         scrubberBar.set(progressBar)
         val newScrubberTime = if (scrubbing) scrubPosition else position
         if (duration > 0) {
-            val bufferedPixelWidth = (progressBar.width() * localCacheBufferPosition*0.01).toInt()
+            val bufferedPixelWidth = (progressBar.width() * localCacheBufferPosition * 0.01).toInt()
             bufferedBar.right = min(progressBar.left + bufferedPixelWidth, progressBar.right)
             val scrubberPixelPosition = (progressBar.width() * newScrubberTime / duration).toInt()
             scrubberBar.right = min(progressBar.left + scrubberPixelPosition, progressBar.right)
@@ -479,11 +564,12 @@ class CustomTimeBar @JvmOverloads constructor(
             bufferedBar.right = progressBar.left
             scrubberBar.right = progressBar.left
         }
-        invalidate(seekBounds)
+        invalidate()
     }
 
     private fun positionScrubber(xPosition: Float) {
-        scrubberBar.right = Util.constrainValue(xPosition.toInt(), progressBar.left, progressBar.right)
+        scrubberBar.right =
+            Util.constrainValue(xPosition.toInt(), progressBar.left, progressBar.right)
     }
 
     private fun resolveRelativeTouchPosition(motionEvent: MotionEvent): Point {
@@ -492,7 +578,7 @@ class CustomTimeBar @JvmOverloads constructor(
     }
 
     private val scrubberPosition: Long
-        private get() = if (progressBar.width() <= 0 || duration == C.TIME_UNSET) {
+        get() = if (progressBar.width() <= 0 || duration == C.TIME_UNSET) {
             0
         } else (scrubberBar.width() * duration) / progressBar.width()
 
@@ -505,21 +591,45 @@ class CustomTimeBar @JvmOverloads constructor(
         val barTop = progressBar.centerY() - progressBarHeight / 2
         val barBottom = barTop + progressBarHeight
         if (duration <= 0) {
-            canvas.drawRect(progressBar.left.toFloat(), barTop.toFloat(), progressBar.right.toFloat(), barBottom.toFloat(), unplayedPaint)
+            canvas.drawRect(
+                progressBar.left.toFloat(),
+                barTop.toFloat(),
+                progressBar.right.toFloat(),
+                barBottom.toFloat(),
+                unPlayedPaint
+            )
             return
         }
         var bufferedLeft = bufferedBar.left
         val bufferedRight = bufferedBar.right
         val progressLeft = max(max(progressBar.left, bufferedRight), scrubberBar.right)
         if (progressLeft < progressBar.right) {
-            canvas.drawRect(progressLeft.toFloat(), barTop.toFloat(), progressBar.right.toFloat(), barBottom.toFloat(), unplayedPaint)
+            canvas.drawRect(
+                progressLeft.toFloat(),
+                barTop.toFloat(),
+                progressBar.right.toFloat(),
+                barBottom.toFloat(),
+                unPlayedPaint
+            )
         }
         bufferedLeft = max(bufferedLeft, scrubberBar.right)
         if (bufferedRight > bufferedLeft) {
-            canvas.drawRect(bufferedLeft.toFloat(), barTop.toFloat(), bufferedRight.toFloat(), barBottom.toFloat(), bufferedPaint)
+            canvas.drawRect(
+                bufferedLeft.toFloat(),
+                barTop.toFloat(),
+                bufferedRight.toFloat(),
+                barBottom.toFloat(),
+                bufferedPaint
+            )
         }
         if (scrubberBar.width() > 0) {
-            canvas.drawRect(scrubberBar.left.toFloat(), barTop.toFloat(), scrubberBar.right.toFloat(), barBottom.toFloat(), playedPaint)
+            canvas.drawRect(
+                scrubberBar.left.toFloat(),
+                barTop.toFloat(),
+                scrubberBar.right.toFloat(),
+                barBottom.toFloat(),
+                playedPaint
+            )
         }
         if (adGroupCount == 0) {
             return
@@ -529,47 +639,67 @@ class CustomTimeBar @JvmOverloads constructor(
         val adMarkerOffset = adMarkerWidth / 2
         for (i in 0 until adGroupCount) {
             val adGroupTimeMs = Util.constrainValue(adGroupTimesMs[i], 0, duration)
-            val markerPositionOffset = (progressBar.width() * adGroupTimeMs / duration).toInt() - adMarkerOffset
-            val markerLeft = progressBar.left + min(progressBar.width() - adMarkerWidth,
-                    max(0, markerPositionOffset))
+            val markerPositionOffset =
+                (progressBar.width() * adGroupTimeMs / duration).toInt() - adMarkerOffset
+            val markerLeft = progressBar.left + min(
+                progressBar.width() - adMarkerWidth,
+                max(0, markerPositionOffset)
+            )
             val paint = if (playedAdGroups[i]) playedAdMarkerPaint else adMarkerPaint
-            canvas.drawRect(markerLeft.toFloat(), barTop.toFloat(), (markerLeft + adMarkerWidth).toFloat(), barBottom.toFloat(), paint)
+            canvas.drawRect(
+                markerLeft.toFloat(),
+                barTop.toFloat(),
+                (markerLeft + adMarkerWidth).toFloat(),
+                barBottom.toFloat(),
+                paint
+            )
         }
     }
 
-    private fun drawPlayhead(canvas: Canvas) {
+    private fun drawPlayHead(canvas: Canvas) {
         if (duration <= 0) {
             return
         }
-        val playheadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right)
-        val playheadY = scrubberBar.centerY()
+        val playHeadX = Util.constrainValue(scrubberBar.right, scrubberBar.left, progressBar.right)
+        val playHeadY = scrubberBar.centerY()
         if (scrubberDrawable == null) {
-            val scrubberSize = if (scrubbing || isFocused) scrubberDraggedSize else if (isEnabled) scrubberEnabledSize else scrubberDisabledSize
-            val playheadRadius = (scrubberSize * scrubberScale / 2).toInt()
-            canvas.drawCircle(playheadX.toFloat(), playheadY.toFloat(), playheadRadius.toFloat(), scrubberPaint)
+            val scrubberSize =
+                if (scrubbing || isFocused) scrubberDraggedSize
+                else if (isEnabled) scrubberEnabledSize else scrubberDisabledSize
+            val playHeadRadius = (scrubberSize * scrubberScale / 2).toInt()
+            canvas.drawCircle(
+                playHeadX.toFloat(),
+                playHeadY.toFloat(),
+                playHeadRadius.toFloat(),
+                scrubberPaint
+            )
         } else {
             val scrubberDrawableWidth = (scrubberDrawable!!.intrinsicWidth * scrubberScale).toInt()
-            val scrubberDrawableHeight = (scrubberDrawable!!.intrinsicHeight * scrubberScale).toInt()
+            val scrubberDrawableHeight =
+                (scrubberDrawable!!.intrinsicHeight * scrubberScale).toInt()
             scrubberDrawable!!.setBounds(
-                    playheadX - scrubberDrawableWidth / 2,
-                    playheadY - scrubberDrawableHeight / 2,
-                    playheadX + scrubberDrawableWidth / 2,
-                    playheadY + scrubberDrawableHeight / 2)
+                playHeadX - scrubberDrawableWidth / 2,
+                playHeadY - scrubberDrawableHeight / 2,
+                playHeadX + scrubberDrawableWidth / 2,
+                playHeadY + scrubberDrawableHeight / 2
+            )
             scrubberDrawable!!.draw(canvas)
         }
     }
 
     private fun updateDrawableState() {
         if (scrubberDrawable != null && scrubberDrawable!!.isStateful
-                && scrubberDrawable!!.setState(drawableState)) {
+            && scrubberDrawable!!.setState(drawableState)
+        ) {
             invalidate()
         }
     }
 
     @RequiresApi(29)
-    private fun setSystemGestureExclusionRectsV29(width: Int, height: Int) {
-        if (lastExclusionRectangle != null && lastExclusionRectangle!!.width() == width && lastExclusionRectangle!!.height() == height) {
-            // Allocating inside onLayout is considered a DrawAllocation lint error, so avoid if possible.
+    private fun setSystemGestureExclusionRectV29(width: Int, height: Int) {
+        if (lastExclusionRectangle != null && lastExclusionRectangle!!.width() == width
+            && lastExclusionRectangle!!.height() == height
+        ) {
             return
         }
         lastExclusionRectangle = Rect( /* left= */0,  /* top= */0, width, height)
@@ -577,9 +707,10 @@ class CustomTimeBar @JvmOverloads constructor(
     }
 
     private val progressText: String
-        private get() = Util.getStringForTime(formatBuilder, formatter, position)
+        get() = Util.getStringForTime(formatBuilder, formatter, position)
     private val positionIncrement: Long
-        private get() = if (keyTimeIncrement == C.TIME_UNSET) (if (duration == C.TIME_UNSET) 0 else (duration / keyCountIncrement)) else keyTimeIncrement
+        get() = if (keyTimeIncrement == C.TIME_UNSET) (if (duration == C.TIME_UNSET) 0
+        else (duration / keyCountIncrement)) else keyTimeIncrement
 
     private fun setDrawableLayoutDirection(drawable: Drawable): Boolean {
         return Util.SDK_INT >= 23 && setDrawableLayoutDirection(drawable, layoutDirection)
@@ -607,8 +738,8 @@ class CustomTimeBar @JvmOverloads constructor(
         /** Default color for the played portion of the time bar.  */
         const val DEFAULT_PLAYED_COLOR = -0x1
 
-        /** Default color for the unplayed portion of the time bar.  */
-        const val DEFAULT_UNPLAYED_COLOR = 0x33FFFFFF
+        /** Default color for the unPlayed portion of the time bar.  */
+        const val DEFAULT_UN_PLAYED_COLOR = 0x33FFFFFF
 
         /** Default color for the buffered portion of the time bar.  */
         const val DEFAULT_BUFFERED_COLOR = -0x33000001
@@ -644,7 +775,6 @@ class CustomTimeBar @JvmOverloads constructor(
         private const val STOP_SCRUBBING_TIMEOUT_MS: Long = 1000
         private const val DEFAULT_INCREMENT_COUNT = 20
         private const val SHOWN_SCRUBBER_SCALE = 1.0f
-        private const val HIDDEN_SCRUBBER_SCALE = 0.0f
 
         /**
          * The name of the Android SDK view that most closely resembles this custom view. Used as the
@@ -664,111 +794,4 @@ class CustomTimeBar @JvmOverloads constructor(
         }
     }
 
-    // Suppress warnings due to usage of View methods in the constructor.
-    init {
-        seekBounds = Rect()
-        progressBar = Rect()
-        bufferedBar = Rect()
-        scrubberBar = Rect()
-        playedPaint = Paint()
-        bufferedPaint = Paint()
-        unplayedPaint = Paint()
-        adMarkerPaint = Paint()
-        playedAdMarkerPaint = Paint()
-        scrubberPaint = Paint()
-        scrubberPaint.isAntiAlias = true
-        listeners = CopyOnWriteArraySet()
-        touchPosition = Point()
-
-        // Calculate the dimensions and paints for drawn elements.
-        val res = context.resources
-        val displayMetrics = res.displayMetrics
-        density = displayMetrics.density
-        fineScrubYThreshold = dpToPx(density, FINE_SCRUB_Y_THRESHOLD_DP)
-        val defaultBarHeight: Int = dpToPx(density, DEFAULT_BAR_HEIGHT_DP)
-        var defaultTouchTargetHeight: Int = dpToPx(density, DEFAULT_TOUCH_TARGET_HEIGHT_DP)
-        val defaultAdMarkerWidth: Int = dpToPx(density, DEFAULT_AD_MARKER_WIDTH_DP)
-        val defaultScrubberEnabledSize: Int = dpToPx(density, DEFAULT_SCRUBBER_ENABLED_SIZE_DP)
-        val defaultScrubberDisabledSize: Int = dpToPx(density, DEFAULT_SCRUBBER_DISABLED_SIZE_DP)
-        val defaultScrubberDraggedSize: Int = dpToPx(density, DEFAULT_SCRUBBER_DRAGGED_SIZE_DP)
-        if (timebarAttrs != null) {
-            val a = context
-                    .theme
-                    .obtainStyledAttributes(
-                            timebarAttrs, R.styleable.DefaultTimeBar, defStyleAttr, defStyleRes)
-            try {
-                scrubberDrawable = a.getDrawable(R.styleable.DefaultTimeBar_scrubber_drawable)
-                if (scrubberDrawable != null) {
-                    setDrawableLayoutDirection(scrubberDrawable!!)
-                    defaultTouchTargetHeight = scrubberDrawable!!.minimumHeight.coerceAtLeast(defaultTouchTargetHeight)
-                }
-                barHeight = a.getDimensionPixelSize(R.styleable.DefaultTimeBar_bar_height,
-                        defaultBarHeight)
-                touchTargetHeight = a.getDimensionPixelSize(R.styleable.DefaultTimeBar_touch_target_height,
-                        defaultTouchTargetHeight)
-                barGravity = a.getInt(R.styleable.DefaultTimeBar_bar_gravity, BAR_GRAVITY_CENTER)
-                adMarkerWidth = a.getDimensionPixelSize(R.styleable.DefaultTimeBar_ad_marker_width,
-                        defaultAdMarkerWidth)
-                scrubberEnabledSize = a.getDimensionPixelSize(
-                        R.styleable.DefaultTimeBar_scrubber_enabled_size, defaultScrubberEnabledSize)
-                scrubberDisabledSize = a.getDimensionPixelSize(
-                        R.styleable.DefaultTimeBar_scrubber_disabled_size, defaultScrubberDisabledSize)
-                scrubberDraggedSize = a.getDimensionPixelSize(
-                        R.styleable.DefaultTimeBar_scrubber_dragged_size, defaultScrubberDraggedSize)
-                val playedColor = a.getInt(R.styleable.DefaultTimeBar_played_color, DEFAULT_PLAYED_COLOR)
-                val scrubberColor = a.getInt(R.styleable.DefaultTimeBar_scrubber_color, DEFAULT_SCRUBBER_COLOR)
-                val bufferedColor = a.getInt(R.styleable.DefaultTimeBar_buffered_color, DEFAULT_BUFFERED_COLOR)
-                val unplayedColor = a.getInt(R.styleable.DefaultTimeBar_unplayed_color, DEFAULT_UNPLAYED_COLOR)
-                val adMarkerColor = a.getInt(R.styleable.DefaultTimeBar_ad_marker_color,
-                        DEFAULT_AD_MARKER_COLOR)
-                val playedAdMarkerColor = a.getInt(
-                        R.styleable.DefaultTimeBar_played_ad_marker_color, DEFAULT_PLAYED_AD_MARKER_COLOR)
-                playedPaint.color = playedColor
-                scrubberPaint.color = scrubberColor
-                bufferedPaint.color = bufferedColor
-                unplayedPaint.color = unplayedColor
-                adMarkerPaint.color = adMarkerColor
-                playedAdMarkerPaint.color = playedAdMarkerColor
-            } finally {
-                a.recycle()
-            }
-        } else {
-            barHeight = defaultBarHeight
-            touchTargetHeight = defaultTouchTargetHeight
-            barGravity =BAR_GRAVITY_CENTER
-            adMarkerWidth = defaultAdMarkerWidth
-            scrubberEnabledSize = defaultScrubberEnabledSize
-            scrubberDisabledSize = defaultScrubberDisabledSize
-            scrubberDraggedSize = defaultScrubberDraggedSize
-            playedPaint.color = DEFAULT_PLAYED_COLOR
-            scrubberPaint.color = DEFAULT_SCRUBBER_COLOR
-            bufferedPaint.color = DEFAULT_BUFFERED_COLOR
-            unplayedPaint.color = DEFAULT_UNPLAYED_COLOR
-            adMarkerPaint.color = DEFAULT_AD_MARKER_COLOR
-            playedAdMarkerPaint.color =DEFAULT_PLAYED_AD_MARKER_COLOR
-            scrubberDrawable = null
-        }
-        formatBuilder = StringBuilder()
-        formatter = Formatter(formatBuilder, Locale.getDefault())
-        stopScrubbingRunnable = Runnable { stopScrubbing( /* canceled= */false) }
-        scrubberPadding = if (scrubberDrawable != null) {
-            (scrubberDrawable!!.minimumWidth + 1) / 2
-        } else {
-            ((max(scrubberDisabledSize, scrubberEnabledSize.coerceAtLeast(scrubberDraggedSize)) + 1)
-                    / 2)
-        }
-        scrubberScale = 1.0f
-        scrubberScalingAnimator = ValueAnimator()
-        scrubberScalingAnimator.addUpdateListener { animation: ValueAnimator ->
-            scrubberScale = animation.animatedValue as Float
-            invalidate(seekBounds)
-        }
-        duration = C.TIME_UNSET
-        keyTimeIncrement = C.TIME_UNSET
-        keyCountIncrement = DEFAULT_INCREMENT_COUNT
-        isFocusable = true
-        if (importantForAccessibility == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-            importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
-        }
-    }
 }
