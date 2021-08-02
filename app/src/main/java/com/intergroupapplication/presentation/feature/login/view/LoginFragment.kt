@@ -2,12 +2,13 @@ package com.intergroupapplication.presentation.feature.login.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.text.InputType
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
@@ -108,6 +109,15 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     private lateinit var progressBar: ProgressBar
 
     private var passwordVisible = false
+    private val startForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == RESULT_OK) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn
+                .getSignedInAccountFromIntent(it.data)
+            handleSignInResult(task)
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun viewCreated() {
@@ -131,17 +141,20 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             .subscribe { validator.validate() }
             .also { compositeDisposable.add(it) }
         registration.clicks()
-            .subscribe { findNavController()
-                .navigate(R.id.action_loginActivity_to_registrationActivity) }
+            .subscribe {
+                findNavController()
+                    .navigate(R.id.action_loginActivity_to_registrationActivity)
+            }
             .also { compositeDisposable.add(it) }
         mail.setOnTouchListener(rightDrawableListener)
         recoveryPassword.clicks()
-            .subscribe { findNavController()
-                .navigate(R.id.action_loginActivity_to_recoveryPasswordActivity) }
+            .subscribe {
+                findNavController()
+                    .navigate(R.id.action_loginActivity_to_recoveryPasswordActivity)
+            }
             .also { compositeDisposable.add(it) }
         signInButton.setOnClickListener {
-            val intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(intent, RC_SIGN_IN)
+            startForResult.launch(mGoogleSignInClient.signInIntent)
         }
         passwordVisibility.setOnClickListener {
             visibilityPassword(passwordVisible)
@@ -170,35 +183,17 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
-    }
-
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-
-            // Signed in successfully, show authenticated UI.
-            //updateUI(account)
             Toast.makeText(requireContext(), account.displayName, Toast.LENGTH_SHORT).show()
         } catch (e: ApiException) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Timber.w("signInResult:failed code=%s", e.statusCode)
             Toast.makeText(
                 requireContext(),
                 GoogleSignInStatusCodes.getStatusCodeString(e.statusCode),
                 Toast.LENGTH_SHORT
             ).show()
-            //updateUI(null)
         }
     }
 
@@ -210,12 +205,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
-
     }
 
     override fun onResume() {
@@ -261,18 +250,11 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            .subscribe({
-//                    if (it) {
-//                        presenter.extractDeviceInfo()
-//                    } else {
-//                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-//                                mapOf(R.id.permissionOk to {
-//                                    presenter.goToSettingsScreen()
-//                                }))
-//                    }
-                presenter.extractDeviceInfo()
-            }, { Timber.e(it) })
+        compositeDisposable.add(
+            rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe({
+                    presenter.extractDeviceInfo()
+                }, { Timber.e(it) })
         )
     }
 
