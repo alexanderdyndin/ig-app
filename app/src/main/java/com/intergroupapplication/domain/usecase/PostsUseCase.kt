@@ -6,37 +6,57 @@ import com.intergroupapplication.domain.gateway.GroupPostGateway
 import io.reactivex.Single
 import javax.inject.Inject
 
-class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGateway,
-                                        private val complaintsGateway: ComplaintsGateway) {
+class PostsUseCase @Inject constructor(
+    private val groupPostGateway: GroupPostGateway,
+    private val complaintsGateway: ComplaintsGateway
+) {
 
     fun getNews() = groupPostGateway.getNewsPosts()
 
     fun getGroupPosts(groupId: String) = groupPostGateway.getGroupPosts(groupId)
 
     fun createPost(createGroupPostEntity: CreateGroupPostEntity, groupId: String) =
-            groupPostGateway.createPost(createGroupPostEntity, groupId)
+        groupPostGateway.createPost(createGroupPostEntity, groupId)
 
     fun editPost(groupPostEntity: GroupPostEntity.PostEntity): Single<GroupPostEntity.PostEntity> {
-        val createGroupPostEntity = CreateGroupPostEntity(groupPostEntity.postText,
-                groupPostEntity.images.map { FileRequestEntity(it.file, it.description, it.title) },
-                groupPostEntity.audios.map {
-                    AudioRequestEntity(it.file, it.description, it.song, it.artist, it.genre,it.duration)
-                },
-                groupPostEntity.videos.map { FileRequestEntity(it.file, it.description, it.title,it.preview,it.duration) },
-                groupPostEntity.isPinned, groupPostEntity.pin)
+        val createGroupPostEntity = CreateGroupPostEntity(
+            groupPostEntity.postText,
+            groupPostEntity.images.map { FileRequestEntity(it.file, it.description, it.title) },
+            groupPostEntity.audios.map {
+                AudioRequestEntity(
+                    it.file,
+                    it.description,
+                    it.song,
+                    it.artist,
+                    it.genre,
+                    it.duration
+                )
+            },
+            groupPostEntity.videos.map {
+                FileRequestEntity(
+                    it.file,
+                    it.description,
+                    it.title,
+                    it.preview,
+                    it.duration
+                )
+            },
+            groupPostEntity.isPinned, groupPostEntity.pin
+        )
         return groupPostGateway.editPost(createGroupPostEntity, groupPostEntity.id)
     }
 
-    fun editPost(createGroupPostEntity:CreateGroupPostEntity, postId: String
+    fun editPost(
+        createGroupPostEntity: CreateGroupPostEntity, postId: String
     ): Single<GroupPostEntity.PostEntity> {
         return groupPostGateway.editPost(createGroupPostEntity, postId)
     }
 
     fun getPost(postId: String) =
-            groupPostGateway.getPostById(postId)
+        groupPostGateway.getPostById(postId)
 
     fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
-            groupPostGateway.setReact(ReactsEntityRequest(isLike, isDislike), postId)
+        groupPostGateway.setReact(ReactsEntityRequest(isLike, isDislike), postId)
 
     fun sendComplaint(postId: Int) = complaintsGateway.complaintPost(postId)
 
@@ -49,5 +69,5 @@ class PostsUseCase @Inject constructor(private val groupPostGateway: GroupPostGa
     fun deleteBell(postId: String) = groupPostGateway.deleteBell(postId)
 
     fun setBell(postId: String) =
-            groupPostGateway.setPostBell(BellFollowEntity(null, null, postId.toInt()))
+        groupPostGateway.setPostBell(BellFollowEntity(null, null, postId.toInt()))
 }
