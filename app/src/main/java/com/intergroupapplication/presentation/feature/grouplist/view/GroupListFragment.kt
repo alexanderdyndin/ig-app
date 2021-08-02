@@ -28,6 +28,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentGroupListBinding
+import com.intergroupapplication.di.qualifier.*
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.GroupAlreadyFollowingException
@@ -103,27 +104,27 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
     private var currentScreen = 0
 
     @Inject
-    @Named("all")
+    @All
     lateinit var adapterAll: GroupListAdapter
 
     @Inject
-    @Named("subscribed")
+    @Subscribed
     lateinit var adapterSubscribed: GroupListAdapter
 
     @Inject
-    @Named("owned")
+    @Owned
     lateinit var adapterOwned: GroupListAdapter
 
     @Inject
-    @Named("footerAll")
+    @FooterAll
     lateinit var adapterFooterAll: PagingLoadingAdapter
 
     @Inject
-    @Named("footerSub")
+    @FooterSub
     lateinit var adapterFooterSub: PagingLoadingAdapter
 
     @Inject
-    @Named("footerAdm")
+    @FooterAdm
     lateinit var adapterFooterAdm: PagingLoadingAdapter
 
     @Inject

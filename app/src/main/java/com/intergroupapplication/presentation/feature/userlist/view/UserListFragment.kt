@@ -24,6 +24,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentUserListBinding
+import com.intergroupapplication.di.qualifier.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
@@ -36,7 +37,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
@@ -48,39 +48,39 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     lateinit var modelFactory: ViewModelProvider.Factory
 
     @Inject
-    @Named("all")
+    @All
     lateinit var adapterAll: UserListAdapter
 
     @Inject
-    @Named("blocked")
+    @Blocked
     lateinit var adapterBlocked: UserListAdapter
 
     @Inject
-    @Named("administrators")
+    @Administrators
     lateinit var adapterAdministrators: UserListAdapter
 
     @Inject
-    @Named("footerAll")
+    @FooterAll
     lateinit var adapterFooterAll: PagingLoadingAdapter
 
     @Inject
-    @Named("footerBlocked")
+    @FooterBlocked
     lateinit var adapterFooterBlocked: PagingLoadingAdapter
 
     @Inject
-    @Named("footerAdministrators")
+    @FooterAdministrators
     lateinit var adapterFooterAdministrators: PagingLoadingAdapter
 
     @Inject
-    @Named("all")
+    @All
     lateinit var adapterAllAdd: ConcatAdapter
 
     @Inject
-    @Named("blocked")
+    @Blocked
     lateinit var adapterBlockedAdd: ConcatAdapter
 
     @Inject
-    @Named("administrators")
+    @Administrators
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
     @Inject

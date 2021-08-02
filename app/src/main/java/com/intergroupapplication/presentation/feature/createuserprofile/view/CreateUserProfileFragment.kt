@@ -18,6 +18,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentCreateUserProfile2Binding
+import com.intergroupapplication.di.qualifier.UserProfileHandler
 import com.intergroupapplication.domain.exception.FIRST_NAME
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.SECOND_NAME
@@ -40,7 +41,6 @@ import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Named
 
 
 class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
@@ -69,7 +69,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     lateinit var validator: Validator
 
     @Inject
-    @Named("userProfileHandler")
+    @UserProfileHandler
     lateinit var errorHandlerLogin: ErrorHandler
 
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)

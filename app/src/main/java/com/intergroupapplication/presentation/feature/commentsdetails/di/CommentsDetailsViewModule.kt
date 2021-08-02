@@ -6,6 +6,8 @@ import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.di.qualifier.Footer
+import com.intergroupapplication.di.qualifier.Header
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -17,66 +19,50 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
+import com.intergroupapplication.presentation.provider.DialogProvider
 import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
-
 
 @Module
 class CommentsDetailsViewModule {
 
-//    @PerFragment
-//    @Provides
-//    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<CommentEntity>() {
-//        override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem.id == newItem.id
-//        override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity) = oldItem == newItem
-//    }
-
-//    @PerFragment
-//    @Provides
-//    fun provideCommentDetailsAdapter(diffUtil: DiffUtil.ItemCallback<CommentEntity>,
-//                                     imageLoadingDelegate: ImageLoadingDelegate): CommentDetailsAdapter =
-//            CommentDetailsAdapter(diffUtil, imageLoadingDelegate)
-
-    //@PerFragment
-    //@Provides
-    //fun provideValidator(fragment: CommentsDetailsFragment): Validator =
-  //          Validator(fragment).apply { setValidationListener(fragment) }
-
     @PerFragment
     @Provides
-    fun providePhotoGateway(fragment: CommentsDetailsFragment, cropOptions: UCrop.Options,
-                            api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
+    fun providePhotoGateway(
+        fragment: CommentsDetailsFragment, cropOptions: UCrop.Options,
+        api: AppApi, awsUploadingGateway: AwsUploadingGateway
+    ): PhotoGateway =
+        PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
     @Provides
     fun provideFrescoImageLoader(context: Context): ImageLoader =
-            FrescoImageLoader(context)
+        FrescoImageLoader(context)
 
 
     @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
-            ImageLoadingDelegate(imageLoader)
+        ImageLoadingDelegate(imageLoader)
 
 
     @PerFragment
     @Provides
     fun provideDialogManager(fragment: CommentsDetailsFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
+        DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
     @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
+    fun dialogDelegate(
+        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        context: Context
+    )
             : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 //    @PerFragment
 //    @Provides
@@ -85,10 +71,12 @@ class CommentsDetailsViewModule {
 
     @PerFragment
     @Provides
-    fun provideCommentsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                           userSession: UserSession,
-                           proxyCacheServer: HttpProxyCacheServer,
-                           fragment: CommentsDetailsFragment): CommentsAdapter {
+    fun provideCommentsAdapter(
+        imageLoadingDelegate: ImageLoadingDelegate,
+        userSession: UserSession,
+        proxyCacheServer: HttpProxyCacheServer,
+        fragment: CommentsDetailsFragment
+    ): CommentsAdapter {
         if (userSession.isAdEnabled) {
             CommentsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsComments ?: 1
             CommentsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsComments ?: 7
@@ -97,19 +85,23 @@ class CommentsDetailsViewModule {
             CommentsAdapter.AD_FREQ = 999
             CommentsAdapter.AD_FIRST = 999
         }
-        return CommentsAdapter(imageLoadingDelegate,proxyCacheServer,fragment.childFragmentManager)
+        return CommentsAdapter(
+            imageLoadingDelegate,
+            proxyCacheServer,
+            fragment.childFragmentManager
+        )
     }
 
     @PerFragment
     @Provides
-    @Named("footer")
+    @Footer
     fun provideFooterAdapter(commentsAdapter: CommentsAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { commentsAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("header")
+    @Header
     fun provideHeaderAdapter(commentsAdapter: CommentsAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { commentsAdapter.retry() }
     }
@@ -117,9 +109,9 @@ class CommentsDetailsViewModule {
     @PerFragment
     @Provides
     fun provideConcatAdapter(
-            commentsAdapter: CommentsAdapter,
-                             @Named("footer") footerAdapter: PagingLoadingAdapter,
-                             @Named("header") headerAdapter: PagingLoadingAdapter
+        commentsAdapter: CommentsAdapter,
+        @Footer footerAdapter: PagingLoadingAdapter,
+        @Header headerAdapter: PagingLoadingAdapter
     ): ConcatAdapter {
         return commentsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
     }

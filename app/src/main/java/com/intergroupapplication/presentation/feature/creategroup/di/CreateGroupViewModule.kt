@@ -18,8 +18,8 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
+import com.intergroupapplication.presentation.provider.DialogProvider
 import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
 import dagger.Module
@@ -32,52 +32,57 @@ class CreateGroupViewModule {
     @PerFragment
     @Provides
     fun provideValidator(fragment: CreateGroupFragment): Validator =
-            Validator(fragment).apply { setValidationListener(fragment) }
+        Validator(fragment).apply { setValidationListener(fragment) }
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(fragment: CreateGroupFragment, cropOptions: UCrop.Options,
-                            api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
+    fun providePhotoGateway(
+        fragment: CreateGroupFragment, cropOptions: UCrop.Options,
+        api: AppApi, awsUploadingGateway: AwsUploadingGateway
+    ): PhotoGateway =
+        PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
     @Provides
     fun provideFrescoImageLoader(context: Context): ImageLoader =
-            FrescoImageLoader(context)
+        FrescoImageLoader(context)
 
     @PerFragment
     @Provides
     fun provideImageUploadingDelegate(photoGateway: PhotoGateway): ImageUploader =
-            ImageUploadingDelegate(photoGateway)
+        ImageUploadingDelegate(photoGateway)
 
 
     @PerFragment
     @Provides
-    fun provideCreateGroupGateway(api: AppApi, createGroupMapper: CreateGroupMapper,
-                                  groupMapper: GroupMapper): CreateGroupGateway {
+    fun provideCreateGroupGateway(
+        api: AppApi, createGroupMapper: CreateGroupMapper,
+        groupMapper: GroupMapper
+    ): CreateGroupGateway {
         return CreateGroupService(api, createGroupMapper, groupMapper)
     }
 
     @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
-            ImageLoadingDelegate(imageLoader)
+        ImageLoadingDelegate(imageLoader)
 
 
     @PerFragment
     @Provides
     fun provideDialogManager(fragment: CreateGroupFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
+        DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
     @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
+    fun dialogDelegate(
+        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        context: Context
+    )
             : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
+        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
 
 }

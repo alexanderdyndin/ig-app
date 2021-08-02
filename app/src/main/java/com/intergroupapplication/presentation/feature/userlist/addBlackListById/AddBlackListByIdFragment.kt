@@ -29,6 +29,7 @@ class AddBlackListByIdFragment @Inject constructor(
 
     companion object {
         lateinit var callBack: DialogFragmentCallBack
+        private const val BAN_REASON = "ban reason"
     }
 
     @Inject
@@ -38,7 +39,6 @@ class AddBlackListByIdFragment @Inject constructor(
     private var compositeDisposable = CompositeDisposable()
     private var lastPosition = 0
     private var lastSelectedUser: AddBlackListUserItem? = null
-    private val BAN_REASON = "ban reason"
     private val viewBinding by viewBinding(FragmentDialogAddBlackListByIdBinding::bind)
 
     private lateinit var addBlackListBtn: TextView

@@ -23,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.CreateCommentDataModel
 import com.intergroupapplication.databinding.FragmentCommentsDetailsBinding
+import com.intergroupapplication.di.qualifier.Footer
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TEXT
@@ -47,7 +48,6 @@ import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 
@@ -91,7 +91,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
     lateinit var adapterAd: ConcatAdapter
 
     @Inject
-    @Named("footer")
+    @Footer
     lateinit var adapterFooter: PagingLoadingAdapter
 
     private val viewModel: CommentsViewModel by viewModels { modelFactory }

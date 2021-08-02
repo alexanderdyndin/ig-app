@@ -2,60 +2,65 @@ package com.intergroupapplication.presentation.feature.audiolist.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
+import com.intergroupapplication.di.qualifier.All
+import com.intergroupapplication.di.qualifier.Footer
+import com.intergroupapplication.di.qualifier.Header
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListAdapter
 import com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
+import com.intergroupapplication.presentation.provider.DialogProvider
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module
 class AudioListViewModule {
     @PerFragment
     @Provides
     fun provideDialogManager(fragment: AudioListFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
+        DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
     @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
+    fun dialogDelegate(
+        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        context: Context
+    )
             : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
     @PerFragment
     @Provides
-    @Named("footer")
-    fun provideFooterAdapter(@Named("all") audioListAdapter: AudioListAdapter): PagingLoadingAdapter {
+    @Footer
+    fun provideFooterAdapter(@All audioListAdapter: AudioListAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { audioListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("header")
-    fun provideHeaderAdapter(@Named("all") audioListAdapter: AudioListAdapter): PagingLoadingAdapter {
+    @Header
+    fun provideHeaderAdapter(@All audioListAdapter: AudioListAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { audioListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("all")
+    @All
     fun provideAllMusic(): AudioListAdapter {
         return AudioListAdapter()
     }
 
     @PerFragment
     @Provides
-    @Named("all")
-    fun provideConcatListAll(@Named("all") audioListAdapter: AudioListAdapter,
-                             @Named("footer") pagingFooter: PagingLoadingAdapter,
-                             @Named("header") pagingHeader: PagingLoadingAdapter,
+    @All
+    fun provideConcatListAll(
+        @All audioListAdapter: AudioListAdapter,
+        @Footer pagingFooter: PagingLoadingAdapter,
+        @Header pagingHeader: PagingLoadingAdapter,
     ): ConcatAdapter {
         return audioListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
     }

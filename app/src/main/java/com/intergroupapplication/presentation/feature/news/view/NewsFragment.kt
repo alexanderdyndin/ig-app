@@ -25,6 +25,7 @@ import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentNewsBinding
+import com.intergroupapplication.di.qualifier.Footer
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.entity.InfoForCommentEntity
@@ -56,7 +57,6 @@ import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
@@ -88,7 +88,7 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
     lateinit var concatAdapter: ConcatAdapter
 
     @Inject
-    @Named("footer")
+    @Footer
     lateinit var footerAdapter: PagingLoadingAdapter
 
     override val coroutineContext: CoroutineContext
@@ -129,21 +129,21 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
         setAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this,
             object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (doubleBackToExitPressedOnce) {
-                    ExitActivity.exitApplication(requireContext())
-                    return
+                override fun handleOnBackPressed() {
+                    if (doubleBackToExitPressedOnce) {
+                        ExitActivity.exitApplication(requireContext())
+                        return
+                    }
+                    doubleBackToExitPressedOnce = true
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.press_again_to_exit),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    exitHandler = Handler(Looper.getMainLooper())
+                    exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
                 }
-                doubleBackToExitPressedOnce = true
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.press_again_to_exit),
-                    Toast.LENGTH_SHORT
-                ).show()
-                exitHandler = Handler(Looper.getMainLooper())
-                exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
-            }
-        })
+            })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

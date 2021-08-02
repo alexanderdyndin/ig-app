@@ -14,6 +14,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentAudiosListBinding
+import com.intergroupapplication.di.qualifier.All
+import com.intergroupapplication.di.qualifier.Footer
+import com.intergroupapplication.di.qualifier.Header
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListAdapter
@@ -24,7 +27,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 class AudioListFragment : BaseFragment() {
 
@@ -32,19 +34,19 @@ class AudioListFragment : BaseFragment() {
     lateinit var modelFactory: ViewModelProvider.Factory
 
     @Inject
-    @Named("all")
+    @All
     lateinit var adapter: AudioListAdapter
 
     @Inject
-    @Named("all")
+    @All
     lateinit var adapterCon: ConcatAdapter
 
     @Inject
-    @Named("footer")
+    @Footer
     lateinit var adapterFooter: PagingLoadingAdapter
 
     @Inject
-    @Named("header")
+    @Header
     lateinit var adapterHeader: PagingLoadingAdapter
 
     private val viewBinding by viewBinding(FragmentAudiosListBinding::bind)

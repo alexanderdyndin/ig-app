@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.userlist.di
 
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
+import com.intergroupapplication.di.qualifier.*
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
@@ -13,136 +14,142 @@ import com.intergroupapplication.presentation.feature.userlist.adapter.UserListA
 import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddUserBlackListAdapter
 import com.intergroupapplication.presentation.feature.userlist.view.UserListFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
+import com.intergroupapplication.presentation.provider.DialogProvider
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module
 class UserListViewModule {
     @PerFragment
     @Provides
     fun provideDialogManager(fragment: UserListFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
+        DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
     @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
+    fun dialogDelegate(
+        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        context: Context
+    )
             : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
     @PerFragment
     @Provides
     fun provideFrescoImageLoader(context: Context): ImageLoader =
-            FrescoImageLoader(context)
+        FrescoImageLoader(context)
 
     @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
-            ImageLoadingDelegate(imageLoader)
+        ImageLoadingDelegate(imageLoader)
 
     @PerFragment
     @Provides
-    @Named("all")
+    @All
     fun provideUserListAdapterAll(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
         return UserListAdapter(imageLoadingDelegate, TypeUserList.ALL)
     }
 
     @PerFragment
     @Provides
-    @Named("blocked")
+    @Blocked
     fun provideUserListAdapterBlocked(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
         return UserListAdapter(imageLoadingDelegate, TypeUserList.BLOCKED)
     }
 
     @PerFragment
     @Provides
-    @Named("administrators")
-    fun provideUserListAdapterAdministrators(imageLoadingDelegate: ImageLoadingDelegate): UserListAdapter {
+    @Administrators
+    fun provideUserListAdapterAdministrators(imageLoadingDelegate: ImageLoadingDelegate)
+            : UserListAdapter {
         return UserListAdapter(imageLoadingDelegate, TypeUserList.ADMINISTRATORS)
     }
 
     @PerFragment
     @Provides
-    @Named("headerAll")
-    fun provideHeaderAdapterAll(@Named("all") userListAdapter: UserListAdapter): PagingLoadingAdapter {
+    @HeaderAll
+    fun provideHeaderAdapterAll(@All userListAdapter: UserListAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { userListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("footerAll")
-    fun provideFooterAdapterAll(@Named("all") userListAdapter: UserListAdapter): PagingLoadingAdapter {
+    @FooterAll
+    fun provideFooterAdapterAll(@All userListAdapter: UserListAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { userListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("headerBlocked")
-    fun provideHeaderAdapterBlocked(@Named("blocked") userListAdapter: UserListAdapter): PagingLoadingAdapter {
+    @HeaderBlocked
+    fun provideHeaderAdapterBlocked(@Blocked userListAdapter: UserListAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { userListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("footerBlocked")
-    fun provideFooterAdapterBlocked(@Named("blocked") userListAdapter: UserListAdapter): PagingLoadingAdapter {
+    @FooterBlocked
+    fun provideFooterAdapterBlocked(@Blocked userListAdapter: UserListAdapter)
+            : PagingLoadingAdapter {
         return PagingLoadingAdapter { userListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("headerAdministrators")
-    fun provideHeaderAdapterAdministrators(@Named("administrators") userListAdapter: UserListAdapter): PagingLoadingAdapter {
+    @HeaderAdministrators
+    fun provideHeaderAdapterAdministrators(@Administrators userListAdapter: UserListAdapter)
+            : PagingLoadingAdapter {
         return PagingLoadingAdapter { userListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("footerAdministrators")
-    fun provideFooterAdapterAdministrators(@Named("administrators") userListAdapter: UserListAdapter): PagingLoadingAdapter {
+    @FooterAdministrators
+    fun provideFooterAdapterAdministrators(@Administrators userListAdapter: UserListAdapter)
+            : PagingLoadingAdapter {
         return PagingLoadingAdapter { userListAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("all")
+    @All
     fun provideConcatListAll(
-            @Named("all") userListAdapter: UserListAdapter,
-            @Named("headerAll") pagingHeader: PagingLoadingAdapter,
-            @Named("footerAll") pagingFooter: PagingLoadingAdapter
+        @All userListAdapter: UserListAdapter,
+        @HeaderAll pagingHeader: PagingLoadingAdapter,
+        @FooterAll pagingFooter: PagingLoadingAdapter
     ): ConcatAdapter {
         return userListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
     }
 
     @PerFragment
     @Provides
-    @Named("blocked")
+    @Blocked
     fun provideConcatListBlocked(
-            @Named("blocked") userListAdapter: UserListAdapter,
-            @Named("headerBlocked") pagingHeader: PagingLoadingAdapter,
-            @Named("footerBlocked") pagingFooter: PagingLoadingAdapter
+        @Blocked userListAdapter: UserListAdapter,
+        @HeaderBlocked pagingHeader: PagingLoadingAdapter,
+        @FooterBlocked pagingFooter: PagingLoadingAdapter
     ): ConcatAdapter {
         return userListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
     }
 
     @PerFragment
     @Provides
-    @Named("administrators")
+    @Administrators
     fun provideConcatListAdministrators(
-            @Named("administrators") userListAdapter: UserListAdapter,
-            @Named("headerAdministrators") pagingHeader: PagingLoadingAdapter,
-            @Named("footerAdministrators") pagingFooter: PagingLoadingAdapter
+        @Administrators userListAdapter: UserListAdapter,
+        @HeaderAdministrators pagingHeader: PagingLoadingAdapter,
+        @FooterAdministrators pagingFooter: PagingLoadingAdapter
     ): ConcatAdapter {
         return userListAdapter.withLoadStateHeaderAndFooter(pagingHeader, pagingFooter)
     }
 
     @PerFragment
     @Provides
-    fun provideAddUserBlackListAdapter(imageLoadingDelegate: ImageLoadingDelegate): AddUserBlackListAdapter {
+    fun provideAddUserBlackListAdapter(imageLoadingDelegate: ImageLoadingDelegate)
+            : AddUserBlackListAdapter {
         return AddUserBlackListAdapter(imageLoadingDelegate)
     }
 

@@ -6,6 +6,8 @@ import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.di.qualifier.Footer
+import com.intergroupapplication.di.qualifier.Header
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -91,14 +93,14 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    @Named("footer")
+    @Footer
     fun provideFooterAdapter(newsAdapter: NewsAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { newsAdapter.retry() }
     }
 
     @PerFragment
     @Provides
-    @Named("header")
+    @Header
     fun provideHeaderAdapter(newsAdapter: NewsAdapter): PagingLoadingAdapter {
         return PagingLoadingAdapter { newsAdapter.retry() }
     }
@@ -106,8 +108,8 @@ class NewsViewModule {
     @PerFragment
     @Provides
     fun provideConcatAdapter(newsAdapter: NewsAdapter,
-                             @Named("footer") footerAdapter: PagingLoadingAdapter,
-                             @Named("header") headerAdapter: PagingLoadingAdapter
+                             @Footer footerAdapter: PagingLoadingAdapter,
+                             @Header headerAdapter: PagingLoadingAdapter
                              ): ConcatAdapter {
         return newsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
     }

@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.Task
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentLogin2Binding
+import com.intergroupapplication.di.qualifier.LoginHandler
 import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
@@ -51,8 +52,6 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Named
-
 
 class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
@@ -88,7 +87,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     lateinit var rightDrawableListener: RightDrawableListener
 
     @Inject
-    @Named("loginHandler")
+    @LoginHandler
     lateinit var errorHandlerLogin: ErrorHandler
 
     @LayoutRes

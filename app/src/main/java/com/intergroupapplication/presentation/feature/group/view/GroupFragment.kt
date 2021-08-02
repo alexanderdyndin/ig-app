@@ -19,6 +19,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentGroupBinding
+import com.intergroupapplication.di.qualifier.Footer
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.NotFoundException
@@ -42,7 +43,6 @@ import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
@@ -84,7 +84,7 @@ class GroupFragment : BaseFragment(), GroupView,
     lateinit var adapterAD: ConcatAdapter
 
     @Inject
-    @Named("footer")
+    @Footer
     lateinit var footerAdapter: PagingLoadingAdapter
 
     @Inject
