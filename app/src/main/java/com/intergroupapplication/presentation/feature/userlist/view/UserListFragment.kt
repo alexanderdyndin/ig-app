@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -27,11 +28,11 @@ import com.intergroupapplication.databinding.FragmentUserListBinding
 import com.intergroupapplication.di.qualifier.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.feature.addBlackListById.view.AddBlackListByIdFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListAdapter
 import com.intergroupapplication.presentation.feature.userlist.adapter.UserListsAdapter
-import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdFragment
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -84,7 +85,7 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
     @Inject
-    lateinit var addBlackListDialog: AddBlackListByIdFragment
+    lateinit var addBlackListByIdFragment: AddBlackListByIdFragment
 
     private lateinit var viewModel: UserListViewModel
     private lateinit var groupId: String
@@ -216,11 +217,9 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
             getAllData()
 
             btnAddId.setOnClickListener {
-                val args = Bundle()
-                args.putString(GROUP_ID, groupId)
-                addBlackListDialog.arguments = args
-                addBlackListDialog.show(childFragmentManager, "TAG")
-                addBlackListDialog.lifecycle
+                addBlackListByIdFragment.arguments = bundleOf(GROUP_ID to groupId)
+                addBlackListByIdFragment.show(childFragmentManager, "TAG")
+                addBlackListByIdFragment.lifecycle
             }
         } else {
             getFollowers()

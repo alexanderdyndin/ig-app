@@ -1,6 +1,6 @@
-package com.intergroupapplication.presentation.feature.userlist.addBlackListById
+package com.intergroupapplication.data.model
 
-data class AddBlackListUserItem(
+data class AddBlackListUserModel(
         val fullName: String,
         val avatar: String,
         val idProfile: String,

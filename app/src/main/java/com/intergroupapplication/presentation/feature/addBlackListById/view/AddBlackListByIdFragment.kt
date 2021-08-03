@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.userlist.addBlackListById
+package com.intergroupapplication.presentation.feature.addBlackListById.view
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -10,21 +10,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.AddBlackListUserModel
+import com.intergroupapplication.databinding.FragmentDialogAddBlackListByIdBinding
 import com.intergroupapplication.presentation.base.BaseFragment.Companion.GROUP_ID
+import com.intergroupapplication.presentation.feature.addBlackListById.adapter.AddUserBlackListAdapter
+import com.intergroupapplication.presentation.feature.addBlackListById.viewmodel.AddBlackListByIdViewModel
 import com.intergroupapplication.presentation.feature.userlist.view.DialogFragmentCallBack
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
-import com.intergroupapplication.databinding.FragmentDialogAddBlackListByIdBinding
-import by.kirich1409.viewbindingdelegate.viewBinding
 
 class AddBlackListByIdFragment @Inject constructor(
-        private val modelFactory: ViewModelProvider.Factory
+    private val modelFactory: ViewModelProvider.Factory
 ) : DialogFragment(R.layout.fragment_dialog_add_black_list_by_id) {
 
     companion object {
@@ -34,11 +40,12 @@ class AddBlackListByIdFragment @Inject constructor(
 
     @Inject
     lateinit var userAdapter: AddUserBlackListAdapter
+
     lateinit var viewModel: AddBlackListByIdViewModel
     private var groupId = ""
     private var compositeDisposable = CompositeDisposable()
     private var lastPosition = 0
-    private var lastSelectedUser: AddBlackListUserItem? = null
+    private var lastSelectedUser: AddBlackListUserModel? = null
     private val viewBinding by viewBinding(FragmentDialogAddBlackListByIdBinding::bind)
 
     private lateinit var addBlackListBtn: TextView
@@ -61,10 +68,17 @@ class AddBlackListByIdFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.BlockByIdDialog)
-        viewModel = ViewModelProvider(requireActivity(), modelFactory)[AddBlackListByIdViewModel::class.java]
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            modelFactory
+        )[AddBlackListByIdViewModel::class.java]
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
         dialog?.window?.run {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -80,7 +94,8 @@ class AddBlackListByIdFragment @Inject constructor(
         initViewBinding()
 
         listUsers.run {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             itemAnimator = null
             adapter = userAdapter
         }
@@ -121,56 +136,57 @@ class AddBlackListByIdFragment @Inject constructor(
     private fun getData(searchFilter: String = "") {
         compositeDisposable.clear()
         compositeDisposable.add(
-                viewModel.getUsers(groupId, searchFilter)
-                        .subscribe(
-                                {
-                                    if (it.isEmpty()) {
-                                        listUsers.visibility = View.GONE
-                                    } else {
-                                        listUsers.visibility = View.VISIBLE
-                                    }
-                                    userAdapter.setData(it)
-                                },
-                                {
-                                    it.printStackTrace()
-                                }
-                        ))
+            viewModel.getUsers(groupId, searchFilter)
+                .subscribe(
+                    {
+                        if (it.isEmpty()) {
+                            listUsers.visibility = View.GONE
+                        } else {
+                            listUsers.visibility = View.VISIBLE
+                        }
+                        userAdapter.setData(it)
+                    },
+                    {
+                        it.printStackTrace()
+                    }
+                ))
     }
 
     private fun initAdapterItemClick() {
-        AddUserBlackListAdapter.selectItem = { addBlackListUserItem: AddBlackListUserItem, position: Int ->
-            addBlackListUserItem.isSelected = !addBlackListUserItem.isSelected
-            addBlackListBtn.changeStateAddBlackList(addBlackListUserItem.isSelected)
-            if (addBlackListUserItem.isSelected) {
-                lastSelectedUser?.run {
-                    isSelected = false
-                    userAdapter.notifyItemChanged(lastPosition)
+        AddUserBlackListAdapter.selectItem =
+            { addBlackListUserModel: AddBlackListUserModel, position: Int ->
+                addBlackListUserModel.isSelected = !addBlackListUserModel.isSelected
+                addBlackListBtn.changeStateAddBlackList(addBlackListUserModel.isSelected)
+                if (addBlackListUserModel.isSelected) {
+                    lastSelectedUser?.run {
+                        isSelected = false
+                        userAdapter.notifyItemChanged(lastPosition)
+                    }
+                    lastSelectedUser = addBlackListUserModel
+                    lastPosition = position
+                } else {
+                    lastSelectedUser = null
+                    addBlackListUserModel.isSelected = false
                 }
-                lastSelectedUser = addBlackListUserItem
-                lastPosition = position
-            } else {
-                lastSelectedUser = null
-                addBlackListUserItem.isSelected = false
+                userAdapter.notifyItemChanged(lastPosition)
             }
-            userAdapter.notifyItemChanged(lastPosition)
-        }
     }
 
     @SuppressLint("CheckResult")
     private fun banUser(userId: String) {
         compositeDisposable.add(
-                viewModel.banUserInGroup(userId, BAN_REASON, groupId)
-                        .subscribe(
-                                {
-                                    textNoFoundId.visibility = View.INVISIBLE
-                                    getData(inputBlackListAddId.text.toString())
-                                    Toast.makeText(requireContext(), "ID: $userId", Toast.LENGTH_SHORT).show()
-                                },
-                                {
-                                    textNoFoundId.visibility = View.VISIBLE
-                                    it.printStackTrace()
-                                }
-                        )
+            viewModel.banUserInGroup(userId, BAN_REASON, groupId)
+                .subscribe(
+                    {
+                        textNoFoundId.visibility = View.INVISIBLE
+                        getData(inputBlackListAddId.text.toString())
+                        Toast.makeText(requireContext(), "ID: $userId", Toast.LENGTH_SHORT).show()
+                    },
+                    {
+                        textNoFoundId.visibility = View.VISIBLE
+                        it.printStackTrace()
+                    }
+                )
         )
     }
 

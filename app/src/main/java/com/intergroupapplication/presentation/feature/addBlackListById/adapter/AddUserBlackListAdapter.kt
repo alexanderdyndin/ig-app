@@ -1,4 +1,4 @@
-package com.intergroupapplication.presentation.feature.userlist.addBlackListById
+package com.intergroupapplication.presentation.feature.addBlackListById.adapter
 
 import android.annotation.SuppressLint
 import android.view.View
@@ -10,14 +10,15 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.databinding.ItemAddUserBlackListBinding
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.intergroupapplication.data.model.AddBlackListUserModel
 
 class AddUserBlackListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     : RecyclerView.Adapter<AddUserBlackListAdapter.AddUserBlackListViewHolder>() {
     companion object {
-        var selectItem: (userItem: AddBlackListUserItem, position: Int) -> Unit = { _, _ -> }
+        var selectItem: (userModel: AddBlackListUserModel, position: Int) -> Unit = { _, _ -> }
     }
 
-    private val data = mutableListOf<AddBlackListUserItem>()
+    private val data = mutableListOf<AddBlackListUserModel>()
 
     override fun onBindViewHolder(holder: AddUserBlackListViewHolder, position: Int) {
         holder.bind(data[position])
@@ -31,7 +32,7 @@ class AddUserBlackListAdapter(private val imageLoadingDelegate: ImageLoadingDele
         private val viewBinding by viewBinding(ItemAddUserBlackListBinding::bind)
 
         @SuppressLint("SetTextI18n")
-        fun bind(userEntity: AddBlackListUserItem) {
+        fun bind(userEntity: AddBlackListUserModel) {
             viewBinding.run {
                 nameTxt.text = userEntity.fullName
                 profileIdTxt.text = "ID: ${userEntity.idProfile}"
@@ -55,7 +56,7 @@ class AddUserBlackListAdapter(private val imageLoadingDelegate: ImageLoadingDele
 
     override fun getItemCount(): Int = data.size
 
-    fun setData(newData: List<AddBlackListUserItem>) {
+    fun setData(newData: List<AddBlackListUserModel>) {
         data.clear()
         data.addAll(newData)
         notifyDataSetChanged()

@@ -8,7 +8,7 @@ import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
-import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListUserItem
+import com.intergroupapplication.data.model.AddBlackListUserModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -86,11 +86,11 @@ class GroupUseCase @Inject constructor(
     fun getGroupFollowersForSearch(
         groupId: String,
         searchFilter: String
-    ): Single<List<AddBlackListUserItem>> {
+    ): Single<List<AddBlackListUserModel>> {
         return groupGateway.getGroupFollowersForSearch(groupId, searchFilter)
             .map { listUsers ->
                 listUsers.map { groupUserEntity ->
-                    AddBlackListUserItem(
+                    AddBlackListUserModel(
                         fullName = "${groupUserEntity.firstName} ${groupUserEntity.surName}",
                         avatar = groupUserEntity.avatar,
                         idProfile = groupUserEntity.idProfile,

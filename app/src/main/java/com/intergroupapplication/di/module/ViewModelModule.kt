@@ -10,7 +10,7 @@ import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewM
 import com.intergroupapplication.presentation.feature.grouplist.viewModel.GroupListViewModel
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewModel
-import com.intergroupapplication.presentation.feature.userlist.addBlackListById.AddBlackListByIdViewModel
+import com.intergroupapplication.presentation.feature.addBlackListById.viewmodel.AddBlackListByIdViewModel
 import com.intergroupapplication.presentation.feature.userlist.viewModel.UserListViewModel
 import dagger.Binds
 import dagger.Module
