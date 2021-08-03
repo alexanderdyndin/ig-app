@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.registration.view
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
@@ -34,7 +36,6 @@ import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.login.view.LoginFragment
 import com.intergroupapplication.presentation.feature.registration.presenter.RegistrationPresenter
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -83,7 +84,6 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         min = PASSWORD_REQUIRED_LENGTH,
         messageResId = R.string.password_minimum_eight_symbols
     )
-    lateinit var password: AppCompatEditText
 
     @Inject
     lateinit var validator: Validator
@@ -92,6 +92,13 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     private var passwordVisible = false
+    private val startForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            handleSignInResult(it.data)
+        }
+    }
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_registration2
@@ -110,6 +117,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     private lateinit var tvErrorPassword: TextView
     private lateinit var tvMailError: TextView
     private lateinit var progressBar: ProgressBar
+    private lateinit var password: AppCompatEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,8 +162,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         initValidator()
         initEditText()
         signInButton.setOnClickListener {
-            val intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(intent, LoginFragment.RC_SIGN_IN)
+            startForResult.launch(mGoogleSignInClient.signInIntent)
         }
         passwordVisibility.setOnClickListener {
             visibilityPassword(passwordVisible)
@@ -202,30 +209,20 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == LoginFragment.RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)
-                Toast.makeText(requireContext(), account.givenName, Toast.LENGTH_SHORT).show()
-                //firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Timber.w("signInResult:failed code=%s", e.statusCode)
-                Toast.makeText(
-                    requireContext(),
-                    GoogleSignInStatusCodes.getStatusCodeString(e.statusCode),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private fun handleSignInResult(data: Intent?) {
+        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            Toast.makeText(requireContext(), account.givenName, Toast.LENGTH_SHORT).show()
+        } catch (e: ApiException) {
+            Timber.w("signInResult:failed code=%s", e.statusCode)
+            Toast.makeText(
+                requireContext(),
+                GoogleSignInStatusCodes.getStatusCodeString(e.statusCode),
+                Toast.LENGTH_SHORT
+            ).show()
         }
-
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -293,18 +290,20 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(rxPermission.request(Manifest.permission.READ_PHONE_STATE)
-            .subscribe({
-                if (it) {
-                    presenter.extractDeviceInfo()
-                } else {
-                    dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                        mapOf(R.id.permissionOk to {
-                            presenter.goToSettingsScreen()
-                        })
-                    )
-                }
-            }, { Timber.e(it) })
+        compositeDisposable.add(
+            rxPermission.request(Manifest.permission.READ_PHONE_STATE)
+                .subscribe({
+                    if (it) {
+                        presenter.extractDeviceInfo()
+                    } else {
+                        dialogDelegate.showDialog(
+                            R.layout.dialog_explain_phone_state_permission,
+                            mapOf(R.id.permissionOk to {
+                                presenter.goToSettingsScreen()
+                            })
+                        )
+                    }
+                }, { Timber.e(it) })
         )
     }
 
@@ -449,8 +448,12 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
                 val textEntered = etDoublePassword.text.toString()
 
                 if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
-                    etDoublePassword.setText(etDoublePassword.text.toString().replace(" ",
-                        ""))
+                    etDoublePassword.setText(
+                        etDoublePassword.text.toString().replace(
+                            " ",
+                            ""
+                        )
+                    )
                     etDoublePassword.setSelection(etDoublePassword.text?.length ?: 0)
                 }
             }
