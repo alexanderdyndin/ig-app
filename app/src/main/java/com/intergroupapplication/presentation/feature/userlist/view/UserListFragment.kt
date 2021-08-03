@@ -84,7 +84,7 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
     private lateinit var viewModel: UserListViewModel
-    private lateinit var groupId: String
+    private var groupId: String? = null
 
     private var isAdmin = false
     private var currentScreen = 0
@@ -117,7 +117,7 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        groupId = requireArguments().getString(GROUP_ID)!!
+        groupId = requireArguments().getString(GROUP_ID)
         isAdmin = requireArguments().getBoolean(GroupFragment.IS_ADMIN)
         UserListAdapter.isAdmin = isAdmin
 
@@ -224,16 +224,18 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
     private fun initActionAdmin() {
         UserListAdapter.banUserClickListener = { groupUserEntity, position ->
-            compositeDisposable.add(
-                viewModel.setUserBans(groupUserEntity.idProfile, BAN_REASON, groupId)
-                    .subscribe({
-                        groupUserEntity.isBlocked = true
-                        adapterAll.notifyItemChanged(position)
-                        adapterBlocked.refresh()
-                    }, {
-                        errorHandler.handle(it)
-                    })
-            )
+            groupId?.let { id ->
+                compositeDisposable.add(
+                    viewModel.setUserBans(groupUserEntity.idProfile, BAN_REASON, id)
+                        .subscribe({
+                            groupUserEntity.isBlocked = true
+                            adapterAll.notifyItemChanged(position)
+                            adapterBlocked.refresh()
+                        }, {
+                            errorHandler.handle(it)
+                        })
+                )
+            }
         }
 
         UserListAdapter.deleteBanUserClickListener = { groupUserEntity, position ->
@@ -276,18 +278,20 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
         }
 
         UserListAdapter.banAdminFromAdminsClickListener = { groupUserEntity, position ->
-            compositeDisposable.add(
-                viewModel.setUserBans(groupUserEntity.idProfile, BAN_REASON, groupId)
-                    .subscribe({
-                        groupUserEntity.isBlocked = true
-                        groupUserEntity.isAdministrator = false
-                        adapterAdministrators.notifyItemChanged(position)
-                        adapterBlocked.refresh()
-                        adapterAll.refresh()
-                    }, {
-                        errorHandler.handle(it)
-                    })
-            )
+            groupId?.let { id ->
+                compositeDisposable.add(
+                    viewModel.setUserBans(groupUserEntity.idProfile, BAN_REASON, id)
+                        .subscribe({
+                            groupUserEntity.isBlocked = true
+                            groupUserEntity.isAdministrator = false
+                            adapterAdministrators.notifyItemChanged(position)
+                            adapterBlocked.refresh()
+                            adapterAll.refresh()
+                        }, {
+                            errorHandler.handle(it)
+                        })
+                )
+            }
         }
     }
 
@@ -317,44 +321,45 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     @SuppressLint("CheckResult")
     private fun getFollowers(searchFilter: String = "") {
         compositeDisposable.clear()
-
-        compositeDisposable.add(
-            viewModel.getFollowers(groupId, searchFilter).subscribe(
-                {
-                    adapterAll.submitData(lifecycle, it)
-                },
-                {
-                    errorHandler.handle(it)
-                })
-        )
+        groupId?.let { id ->
+            compositeDisposable.add(
+                viewModel.getFollowers(id, searchFilter).subscribe(
+                    {
+                        adapterAll.submitData(lifecycle, it)
+                    },
+                    {
+                        errorHandler.handle(it)
+                    })
+            )
+        }
     }
 
     @ExperimentalCoroutinesApi
     @SuppressLint("CheckResult")
     private fun getAllData(searchFilter: String = "") {
         getFollowers(searchFilter)
-
-        compositeDisposable.add(
-            viewModel.getBans(groupId, searchFilter).subscribe(
-                {
-                    adapterBlocked.submitData(lifecycle, it)
-                },
-                {
-                    errorHandler.handle(it)
-                }
+        groupId?.let { id ->
+            compositeDisposable.add(
+                viewModel.getBans(id, searchFilter).subscribe(
+                    {
+                        adapterBlocked.submitData(lifecycle, it)
+                    },
+                    {
+                        errorHandler.handle(it)
+                    }
+                )
             )
-        )
-
-        compositeDisposable.add(
-            viewModel.getAdministrators(groupId, searchFilter).subscribe(
-                {
-                    adapterAdministrators.submitData(lifecycle, it)
-                },
-                {
-                    errorHandler.handle(it)
-                }
+            compositeDisposable.add(
+                viewModel.getAdministrators(id, searchFilter).subscribe(
+                    {
+                        adapterAdministrators.submitData(lifecycle, it)
+                    },
+                    {
+                        errorHandler.handle(it)
+                    }
+                )
             )
-        )
+        }
     }
 
     override fun updateList() {
