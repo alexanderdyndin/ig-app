@@ -408,7 +408,6 @@ class GroupFragment : BaseFragment(), GroupView,
 
     override fun showGroupInfo(groupEntity: GroupEntity.Group) {
         toolbarTittle.text = groupEntity.name
-        //groupName.text = groupEntity.name
         idGroup.text = getString(R.string.idg, groupEntity.id)
         likesCount.text = groupEntity.postsLikes
         dislikesCount.text = groupEntity.postsDislikes
@@ -437,6 +436,7 @@ class GroupFragment : BaseFragment(), GroupView,
         presenter.changeGroupAvatar(groupId)
     }
 
+    @ExperimentalCoroutinesApi
     override fun avatarChanged(url: String) {
         groupAvatarHolder.showAvatar(url)
         groupAvatarHolder.showImageUploaded()

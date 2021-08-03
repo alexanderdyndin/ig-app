@@ -43,12 +43,12 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
             list.itemAnimator = null
             list.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             if (adapter is ConcatAdapter) {
-                adapter.adapters.forEach { adapter ->
-                    if (adapter is PagingDataAdapter<*, *> ) {
-                        adapter.addLoadStateListener {
+                adapter.adapters.forEach { pagingAdapter ->
+                    if (pagingAdapter is PagingDataAdapter<*, *> ) {
+                        pagingAdapter.addLoadStateListener {
                             when (it.refresh) {
                                 is LoadState.Loading -> {
-                                    if (adapter.itemCount == 0) {
+                                    if (pagingAdapter.itemCount == 0) {
                                         progress.show()
                                     }
                                     emptyState.hide()
@@ -59,7 +59,7 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
                                 }
                                 is LoadState.NotLoading -> {
                                     progress.hide()
-                                    if (adapter.itemCount == 0) {
+                                    if (pagingAdapter.itemCount == 0) {
                                         emptyState.show()
                                     } else {
                                         emptyState.hide()

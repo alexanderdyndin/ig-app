@@ -12,6 +12,7 @@ import com.intergroupapplication.domain.entity.GroupPostEntity
 import com.intergroupapplication.domain.usecase.PostsUseCase
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import io.reactivex.Flowable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ class GroupViewModel @Inject constructor(private val useCase: PostsUseCase): Vie
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
+    @ExperimentalCoroutinesApi
     fun fetchPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
         return useCase.getGroupPosts(groupId)
                 .map { pagingData ->
