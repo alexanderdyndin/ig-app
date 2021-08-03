@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.createuserprofile.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -46,10 +47,6 @@ import javax.inject.Inject
 class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     CompoundButton.OnCheckedChangeListener, Validator.ValidationListener {
 
-    companion object {
-        fun getIntent(context: Context?) = Intent(context, CreateUserProfileFragment::class.java)
-    }
-
     private val viewBinding by viewBinding(FragmentCreateUserProfile2Binding::bind)
 
     @Inject
@@ -72,9 +69,11 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     @UserProfileHandler
     lateinit var errorHandlerLogin: ErrorHandler
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var surName: AppCompatEditText
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var name: AppCompatEditText
 
@@ -190,13 +189,13 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
                         tvSurname.text = message
                         tvSurname.show()
                     }
-                    R.id.etDD -> {
+                    R.id.inputDay -> {
                         showErrorMessage(message)
                     }
-                    R.id.etMM -> {
+                    R.id.inputMonth -> {
                         showErrorMessage(message)
                     }
-                    R.id.etGGGG -> {
+                    R.id.inputYear -> {
                         showErrorMessage(message)
                     }
                 }

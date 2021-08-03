@@ -42,7 +42,6 @@ import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_create_user_profile.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
