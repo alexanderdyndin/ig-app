@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.addBlackListById.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,22 +28,29 @@ import com.intergroupapplication.presentation.base.BaseFragment.Companion.GROUP_
 import com.intergroupapplication.presentation.feature.addBlackListById.adapter.AddUserBlackListAdapter
 import com.intergroupapplication.presentation.feature.addBlackListById.viewmodel.AddBlackListByIdViewModel
 import com.intergroupapplication.presentation.feature.userlist.view.DialogFragmentCallBack
+import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class AddBlackListByIdFragment @Inject constructor(
-    private val modelFactory: ViewModelProvider.Factory
-) : DialogFragment(R.layout.fragment_dialog_add_black_list_by_id) {
+class AddBlackListByIdFragment : DialogFragment(R.layout.fragment_dialog_add_black_list_by_id) {
 
     companion object {
-        lateinit var callBack: DialogFragmentCallBack
         private const val BAN_REASON = "ban reason"
+        fun newInstance(vararg data: Pair<String, Any?>): AddBlackListByIdFragment {
+            val fragment = AddBlackListByIdFragment()
+            fragment.arguments = bundleOf(*data)
+            return fragment
+        }
     }
 
     @Inject
     lateinit var userAdapter: AddUserBlackListAdapter
 
-    lateinit var viewModel: AddBlackListByIdViewModel
+    @Inject
+    lateinit var modelFactory: ViewModelProvider.Factory
+
+    var callBack: DialogFragmentCallBack? = null
+    private lateinit var viewModel: AddBlackListByIdViewModel
     private var groupId = ""
     private var compositeDisposable = CompositeDisposable()
     private var lastPosition = 0
@@ -63,6 +72,11 @@ class AddBlackListByIdFragment @Inject constructor(
             addBlackListBtn.changeStateAddBlackList(str.isNotEmpty())
             getData(str)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,7 +136,12 @@ class AddBlackListByIdFragment @Inject constructor(
         super.onPause()
         inputBlackListAddId.removeTextChangedListener(textWatcher)
         compositeDisposable.clear()
-        callBack.updateList()
+        callBack?.updateList()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callBack = null
     }
 
     private fun initViewBinding() {

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -84,9 +83,6 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     @Administrators
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
-    @Inject
-    lateinit var addBlackListByIdFragment: AddBlackListByIdFragment
-
     private lateinit var viewModel: UserListViewModel
     private lateinit var groupId: String
 
@@ -127,8 +123,6 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
 
         initViewBinding()
         initPager()
-
-        AddBlackListByIdFragment.callBack = this
 
         toolbarTittle.text = getString(R.string.allUsers)
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
@@ -217,7 +211,9 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
             getAllData()
 
             btnAddId.setOnClickListener {
-                addBlackListByIdFragment.arguments = bundleOf(GROUP_ID to groupId)
+                val addBlackListByIdFragment = AddBlackListByIdFragment
+                    .newInstance(GROUP_ID to groupId)
+                addBlackListByIdFragment.callBack = this
                 addBlackListByIdFragment.show(childFragmentManager, "TAG")
                 addBlackListByIdFragment.lifecycle
             }
