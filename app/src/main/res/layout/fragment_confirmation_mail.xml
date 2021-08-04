@@ -168,7 +168,7 @@
 
                 <include
                     android:id="@+id/loader"
-                    layout="@layout/auth_loader2" />
+                    layout="@layout/layout_auth_loader_small" />
 
             </FrameLayout>
 

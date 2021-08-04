@@ -509,7 +509,7 @@
 
                 <include
                     android:id="@+id/loader"
-                    layout="@layout/auth_loader" />
+                    layout="@layout/layout_auth_loader_big" />
 
                 <Button
                     android:id="@+id/createGroup"

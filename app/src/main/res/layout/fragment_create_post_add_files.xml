@@ -15,7 +15,7 @@
 
         <include
             android:id="@+id/navigationToolbar"
-            layout="@layout/createpost_toolbar_layout" />
+            layout="@layout/layout_create_post_toolbar" />
 
 <!-- Панель редактирование текста -->
 

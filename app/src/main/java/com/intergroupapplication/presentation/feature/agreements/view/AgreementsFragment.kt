@@ -13,7 +13,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentAgreements2Binding
+import com.intergroupapplication.databinding.FragmentAgreementsBinding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
@@ -43,7 +43,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         const val RES_ID_RIGHT_HOLDERS = R.string.rightholders
     }
 
-    private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
+    private val viewBinding by viewBinding(FragmentAgreementsBinding::bind)
 
 
     @Inject
@@ -54,7 +54,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     fun providePresenter(): AgreementsPresenter = presenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_agreements2
+    override fun layoutRes() = R.layout.fragment_agreements
 
     private lateinit var btnNext: AppCompatButton
     private lateinit var progressBar: ProgressBar

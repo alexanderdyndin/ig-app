@@ -2,7 +2,6 @@ package com.intergroupapplication.presentation.feature.createuserprofile.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.databinding.FragmentCreateUserProfile2Binding
+import com.intergroupapplication.databinding.FragmentCreateUserProfileBinding
 import com.intergroupapplication.di.qualifier.UserProfileHandler
 import com.intergroupapplication.domain.exception.FIRST_NAME
 import com.intergroupapplication.domain.exception.FieldException
@@ -47,7 +46,7 @@ import javax.inject.Inject
 class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     CompoundButton.OnCheckedChangeListener, Validator.ValidationListener {
 
-    private val viewBinding by viewBinding(FragmentCreateUserProfile2Binding::bind)
+    private val viewBinding by viewBinding(FragmentCreateUserProfileBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -78,7 +77,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     lateinit var name: AppCompatEditText
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_create_user_profile2
+    override fun layoutRes() = R.layout.fragment_create_user_profile
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.createUserCoordinator
 

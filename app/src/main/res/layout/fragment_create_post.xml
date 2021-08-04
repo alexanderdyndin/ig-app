@@ -16,7 +16,7 @@
 
         <include
             android:id="@+id/navigationToolbar"
-            layout="@layout/creategroup_toolbar_layout" />
+            layout="@layout/layout_create_group_toolbar" />
 
         <com.intergroupapplication.presentation.customview.RichEditor
             android:id="@+id/rich_editor"

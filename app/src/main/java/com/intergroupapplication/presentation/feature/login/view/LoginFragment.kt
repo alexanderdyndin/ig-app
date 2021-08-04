@@ -23,7 +23,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentLogin2Binding
+import com.intergroupapplication.databinding.FragmentLoginBinding
 import com.intergroupapplication.di.qualifier.LoginHandler
 import com.intergroupapplication.domain.entity.LoginEntity
 import com.intergroupapplication.domain.exception.*
@@ -60,7 +60,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         const val RC_SIGN_IN = 123
     }
 
-    private val viewBinding by viewBinding(FragmentLogin2Binding::bind)
+    private val viewBinding by viewBinding(FragmentLoginBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -91,7 +91,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     lateinit var errorHandlerLogin: ErrorHandler
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_login2
+    override fun layoutRes() = R.layout.fragment_login
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.loginCoordinator
 

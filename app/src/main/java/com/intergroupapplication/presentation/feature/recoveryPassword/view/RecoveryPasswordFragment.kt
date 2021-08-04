@@ -15,7 +15,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentRecoveryPassword2Binding
+import com.intergroupapplication.databinding.FragmentRecoveryPasswordBinding
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -40,7 +40,7 @@ import javax.inject.Inject
 class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener,
     View.OnClickListener {
 
-    private val viewBinding by viewBinding(FragmentRecoveryPassword2Binding::bind)
+    private val viewBinding by viewBinding(FragmentRecoveryPasswordBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -60,7 +60,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     @Inject
     lateinit var validator: Validator
 
-    override fun layoutRes() = R.layout.fragment_recovery_password2
+    override fun layoutRes() = R.layout.fragment_recovery_password
 
     override fun getSnackBarCoordinator() = viewBinding.coordinator
 

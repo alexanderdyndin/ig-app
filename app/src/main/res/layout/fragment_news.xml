@@ -16,14 +16,14 @@
             android:orientation="vertical">
             <include
                 android:id="@+id/navigationToolbar"
-                layout="@layout/main_toolbar_layout" />
+                layout="@layout/layout_main_toolbar" />
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <include
                     android:id="@+id/loading_layout"
-                    layout="@layout/auth_loader2"/>
+                    layout="@layout/layout_auth_loader_small"/>
 
                 <TextView
                     android:id="@+id/emptyText"

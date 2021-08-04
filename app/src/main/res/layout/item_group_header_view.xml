@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/mainBlack">
 
-    <include layout="@layout/constraint_loader" />
+    <include layout="@layout/layout_constraint_loader" />
 
     <ImageView
         android:id="@+id/avatarBg"

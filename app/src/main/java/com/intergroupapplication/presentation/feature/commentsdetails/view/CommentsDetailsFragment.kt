@@ -405,7 +405,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
         with(CommentsAdapter) {
             replyListener = { comment ->
                 if (!swipeLayout.isRefreshing) {
-                    val view = layoutInflater.inflate(R.layout.reply_comment_layout, null)
+                    val view = layoutInflater.inflate(R.layout.layout_reply_comment, null)
                     if (commentHolder.childCount > 1) {
                         commentHolder.removeViewAt(0)
                     }

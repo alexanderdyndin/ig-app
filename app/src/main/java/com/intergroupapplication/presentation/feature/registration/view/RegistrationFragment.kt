@@ -27,7 +27,7 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentRegistration2Binding
+import com.intergroupapplication.databinding.FragmentRegistrationBinding
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
@@ -64,7 +64,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         private const val DEBOUNCE_TIMEOUT = 300L
     }
 
-    private val viewBinding by viewBinding(FragmentRegistration2Binding::bind)
+    private val viewBinding by viewBinding(FragmentRegistrationBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -101,7 +101,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_registration2
+    override fun layoutRes() = R.layout.fragment_registration
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.registrationCoordinator
 

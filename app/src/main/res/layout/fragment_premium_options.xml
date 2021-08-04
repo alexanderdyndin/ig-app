@@ -22,7 +22,7 @@
 
             <include
                 android:id="@+id/navigationToolbar"
-                layout="@layout/creategroup_toolbar_layout" />
+                layout="@layout/layout_create_group_toolbar" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/premiumOption1"

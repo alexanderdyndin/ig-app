@@ -24,7 +24,7 @@
 
             <include
                 android:id="@+id/navigationToolbar"
-                layout="@layout/main_toolbar_layout" />
+                layout="@layout/layout_main_toolbar" />
 
             <EditText
             android:id="@+id/activity_main__search_input"

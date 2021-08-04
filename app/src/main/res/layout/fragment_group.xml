@@ -10,7 +10,7 @@
 
     <include
         android:id="@+id/navigationToolbar"
-        layout="@layout/creategroup_toolbar_layout" />
+        layout="@layout/layout_create_group_toolbar" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"
@@ -48,7 +48,7 @@
 
                     <include
                         android:id="@+id/groupLoader"
-                        layout="@layout/auth_loader" />
+                        layout="@layout/layout_auth_loader_big" />
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>

@@ -22,7 +22,7 @@
 
             <include
                 android:id="@+id/navigationToolbar"
-                layout="@layout/creategroup_toolbar_layout" />
+                layout="@layout/layout_create_group_toolbar" />
 
             <LinearLayout
                 android:id="@+id/groupCreate_title_type_container"
@@ -587,7 +587,7 @@
 
                 <include
                     android:id="@+id/loader"
-                    layout="@layout/auth_loader" />
+                    layout="@layout/layout_auth_loader_big" />
 
                 <Button
                     android:id="@+id/createGroup"

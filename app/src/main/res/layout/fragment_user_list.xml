@@ -13,7 +13,7 @@
 
             <include
                 android:id="@+id/navigationToolbar"
-                layout="@layout/blacklist_toolbar_layout" />
+                layout="@layout/layout_blacklist_toolbar" />
 
             <EditText
                 android:id="@+id/searchEditText"

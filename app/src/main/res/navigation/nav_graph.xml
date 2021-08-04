@@ -181,7 +181,7 @@
         android:id="@+id/registrationActivity"
         android:name="com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment"
         android:label="activity_registration"
-        tools:layout="@layout/fragment_registration2" >
+        tools:layout="@layout/fragment_registration" >
         <action
             android:id="@+id/action_registrationActivity_to_loginActivity2"
             app:destination="@id/loginActivity"

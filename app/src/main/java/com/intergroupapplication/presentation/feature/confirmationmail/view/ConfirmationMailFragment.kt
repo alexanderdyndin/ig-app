@@ -1,8 +1,5 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.view
 
-import androidx.core.content.ContextCompat
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -15,7 +12,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentConfirmationMail2Binding
+import com.intergroupapplication.databinding.FragmentConfirmationMailBinding
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
@@ -23,11 +20,9 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
-import com.workable.errorhandler.ErrorHandler
 import io.reactivex.exceptions.CompositeException
 
 import javax.inject.Inject
-import javax.inject.Named
 
 class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
@@ -35,14 +30,14 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
         const val REGISTRATION_ENTITY = "REGISTRATION_ENTITY"
     }
 
-    private val viewBinding by viewBinding(FragmentConfirmationMail2Binding::bind)
+    private val viewBinding by viewBinding(FragmentConfirmationMailBinding::bind)
 
     @Inject
     @InjectPresenter
     lateinit var presenter: ConfirmationMailPresenter
 
     @LayoutRes
-    override fun layoutRes() = R.layout.fragment_confirmation_mail2
+    override fun layoutRes() = R.layout.fragment_confirmation_mail
 
     @ProvidePresenter
     fun providePresenter(): ConfirmationMailPresenter = presenter
