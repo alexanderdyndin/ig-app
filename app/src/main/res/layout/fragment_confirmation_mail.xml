@@ -23,39 +23,39 @@
                 style="@style/TextLight14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/massive_margin"
                 android:layout_marginStart="@dimen/middle_high_big_margin"
+                android:layout_marginTop="@dimen/massive_margin"
                 android:layout_marginEnd="@dimen/middle_high_big_margin"
+                android:text="@string/description_email_part_1"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/description_email_part_1" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/emailConfirmation"
                 style="@style/TextNoActive18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="ivanovivan@mail.ru"
                 android:layout_marginTop="@dimen/middle_margin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textConfirmation1" />
+                app:layout_constraintTop_toBottomOf="@+id/textConfirmation1"
+                tools:text="ivanovivan@mail.ru" />
 
             <TextView
                 android:id="@+id/textConfirmation2"
                 style="@style/TextLight14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/middle_margin"
                 android:layout_marginStart="@dimen/middle_high_big_margin"
+                android:layout_marginTop="@dimen/middle_margin"
                 android:layout_marginEnd="@dimen/middle_high_big_margin"
+                android:text="@string/description_email_part_2"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/emailConfirmation"
-                android:text="@string/description_email_part_2" />
+                app:layout_constraintTop_toBottomOf="@+id/emailConfirmation" />
 
             <EditText
                 android:id="@+id/confirmation"
@@ -92,44 +92,40 @@
                 tools:text="Пример ошибки"
                 tools:visibility="visible" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/btnChangeEmail"
+                style="@style/TextNoActive14sp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/low_big_margin"
                 android:layout_marginTop="@dimen/big_margin"
-                android:layout_marginEnd="@dimen/low_big_margin"
-                android:gravity="center"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="@dimen/small_low_padding"
+                android:text="@string/repeat_code"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/codeError">
+                app:layout_constraintTop_toBottomOf="@+id/codeError" />
 
-                <TextView
-                    android:id="@+id/btnChangeEmail"
-                    style="@style/TextNoActive14sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="@dimen/small_low_padding"
-                    android:text="@string/repeat_code" />
+            <ImageView
+                android:id="@+id/vertical_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/vertical_line_separ"
+                app:layout_constraintStart_toEndOf="@id/btnChangeEmail"
+                app:layout_constraintEnd_toStartOf="@+id/btnRepeatCode"
+                app:layout_constraintTop_toTopOf="@id/btnChangeEmail"
+                tools:ignore="ContentDescription" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/vertical_line_separ" />
-
-                <TextView
-                    android:id="@+id/btnRepeatCode"
-                    style="@style/TextNoActive14sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="@dimen/small_low_padding"
-                    android:gravity="right"
-                    android:text="@string/change_e_mail" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/btnRepeatCode"
+                style="@style/TextNoActive14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_big_margin"
+                android:layout_marginEnd="@dimen/low_big_margin"
+                android:padding="@dimen/small_low_padding"
+                android:text="@string/change_e_mail"
+                android:textAlignment="textEnd"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnChangeEmail" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvWelcome"
@@ -143,43 +139,43 @@
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+                app:layout_constraintTop_toBottomOf="@id/btnChangeEmail" />
 
-            <FrameLayout
-                android:id="@+id/flNext"
-                android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnNext"
+                style="@style/TextGrey16sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/low_big_margin"
                 android:layout_marginTop="@dimen/big_margin"
+                android:layout_marginEnd="@dimen/low_big_margin"
+                android:background="@drawable/selector_btn_big"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="@string/next"
+                android:textAllCaps="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvWelcome">
+                app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnNext"
-                    style="@style/TextGrey16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/low_big_margin"
-                    android:layout_marginEnd="@dimen/low_big_margin"
-                    android:background="@drawable/selector_btn_big"
-                    android:paddingTop="@dimen/middle_padding"
-                    android:text="@string/next"
-                    android:textAllCaps="false"/>
+            <include
+                android:id="@+id/loader"
+                layout="@layout/layout_auth_loader_small"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="@dimen/middle_margin"
+                app:layout_constraintBottom_toBottomOf="@id/btnNext"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnNext" />
 
-                <include
-                    android:id="@+id/loader"
-                    layout="@layout/layout_auth_loader_small" />
-
-            </FrameLayout>
-
-            <LinearLayout
+             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/flNext">
+                app:layout_constraintTop_toBottomOf="@+id/btnNext">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/logo"

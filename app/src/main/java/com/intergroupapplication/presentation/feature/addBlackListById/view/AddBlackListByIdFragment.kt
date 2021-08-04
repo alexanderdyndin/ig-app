@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.AddBlackListUserModel
-import com.intergroupapplication.databinding.FragmentDialogAddBlackListByIdBinding
+import com.intergroupapplication.databinding.DialogAddBlackListByIdBinding
 import com.intergroupapplication.presentation.base.BaseFragment.Companion.GROUP_ID
 import com.intergroupapplication.presentation.feature.addBlackListById.adapter.AddUserBlackListAdapter
 import com.intergroupapplication.presentation.feature.addBlackListById.viewmodel.AddBlackListByIdViewModel
@@ -32,7 +32,7 @@ import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class AddBlackListByIdFragment : DialogFragment(R.layout.fragment_dialog_add_black_list_by_id) {
+class AddBlackListByIdFragment : DialogFragment(R.layout.dialog_add_black_list_by_id) {
 
     companion object {
         private const val BAN_REASON = "ban reason"
@@ -55,7 +55,7 @@ class AddBlackListByIdFragment : DialogFragment(R.layout.fragment_dialog_add_bla
     private var compositeDisposable = CompositeDisposable()
     private var lastPosition = 0
     private var lastSelectedUser: AddBlackListUserModel? = null
-    private val viewBinding by viewBinding(FragmentDialogAddBlackListByIdBinding::bind)
+    private val viewBinding by viewBinding(DialogAddBlackListByIdBinding::bind)
 
     private lateinit var addBlackListBtn: TextView
     private lateinit var listUsers: RecyclerView

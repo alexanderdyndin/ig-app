@@ -239,5 +239,9 @@
     <string name="close">Close</string>
     <string name="delete_all">Delete all</string>
     <string name="playlist">Playlist</string>
-    <string name="add">Добавить</string>
+    <string name="add">Add</string>
+    <string name="add_to_black_list_by_id">Add user into black list by ID</string>
+    <string name="enter_user_id">Enter user ID</string>
+    <string name="user_not_found">User not found</string>
+    <string name="user_can_not_fount_your_group">User will not be able to find your group</string>
 </resources>

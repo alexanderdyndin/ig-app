@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorInput"
-        android:orientation="vertical"
         android:fitsSystemWindows="true"
+        android:orientation="vertical"
         tools:context=".presentation.feature.createpost.view.CreatePostFragment">
 
         <include
@@ -25,21 +25,20 @@
             app:layout_constraintBottom_toTopOf="@+id/mediaHolder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"/>
+            app:layout_constraintTop_toBottomOf="@+id/navigationToolbar" />
 
         <LinearLayout
             android:id="@+id/panelStyleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/bg_colorinput_radius_2dp"
             android:orientation="horizontal"
             android:padding="4dp"
-            android:layout_marginStart="@dimen/small_margin"
             android:visibility="gone"
-            android:layout_marginBottom="3dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/mediaHolder"
-            >
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/selectBoldText"
@@ -48,7 +47,9 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_bold" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_bold"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/selectItalicText"
@@ -57,7 +58,9 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_italic" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_italic"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/selectStrikeText"
@@ -66,7 +69,9 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_strike" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_strike"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/selectUnderlineText"
@@ -74,37 +79,38 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_underline" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_underline"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <RadioGroup
             android:id="@+id/panelGravityText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/bg_colorinput_radius_2dp"
             android:orientation="horizontal"
             android:padding="4dp"
-            android:layout_marginBottom="3dp"
             android:visibility="gone"
-            android:background="@drawable/bg_colorinput_radius_2dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/mediaHolder"
-            >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <RadioButton
                 android:id="@+id/left_gravity_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:layout_weight="1"
-                android:layout_marginRight="16dp"
                 android:button="@drawable/selector_ic_edit_align_left" />
 
             <RadioButton
                 android:id="@+id/center_gravity_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:layout_weight="1"
-                android:layout_marginRight="16dp"
                 android:button="@drawable/selector_ic_edit_align_center" />
 
             <RadioButton
@@ -122,19 +128,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:background="@color/mainBlack"
             android:orientation="horizontal"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/mainBlack">
+            app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
                 android:id="@+id/iconPanel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_post_panel"
                 android:layout_marginTop="1dp"
+                android:background="@drawable/bg_post_panel"
                 android:gravity="bottom"
                 android:orientation="horizontal">
 
@@ -144,7 +150,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:src="@drawable/selector_ic_edit_text" />
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_edit_text"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/icEditColor"
@@ -152,7 +160,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:src="@drawable/selector_ic_edit_color" />
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_edit_color"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/icEditAlign"
@@ -160,7 +170,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:src="@drawable/selector_ic_edit_gravity" />
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_edit_gravity"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/icMicro"
@@ -168,7 +180,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:src="@drawable/selector_ic_micro" />
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_micro"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:id="@+id/icAttachFile"
@@ -176,7 +190,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:src="@drawable/selector_ic_attach" />
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_attach"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
         </LinearLayout>
 
@@ -201,5 +217,5 @@
         android:id="@+id/containerBottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior"/>
+        app:layout_behavior="com.intergroupapplication.presentation.customview.AutoCloseBottomSheetBehavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
