@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -52,7 +52,9 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_bold" />
+                android:src="@drawable/selector_ic_bold"
+                android:focusable="true"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/selectItalicText"
@@ -61,7 +63,9 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_italic" />
+                android:src="@drawable/selector_ic_italic"
+                android:focusable="true"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/selectStrikeText"
@@ -70,7 +74,9 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_strike" />
+                android:src="@drawable/selector_ic_strike"
+                android:focusable="true"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/selectUnderlineText"
@@ -78,7 +84,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_underline" />
+                android:src="@drawable/selector_ic_underline"
+                android:focusable="true"
+                android:contentDescription="@null" />
         </LinearLayout>
 
         <RadioGroup
@@ -97,7 +105,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:button="@drawable/selector_ic_edit_align_left" />
 
             <RadioButton
@@ -105,7 +113,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:button="@drawable/selector_ic_edit_align_center" />
 
             <RadioButton
@@ -128,7 +136,8 @@
         android:layout_marginTop="@dimen/middle_margin"
         app:layout_constraintTop_toBottomOf="@+id/overall_panel_style_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -142,7 +151,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_text" />
+                android:src="@drawable/selector_ic_edit_text"
+                android:focusable="true"
+                tools:ignore="ContentDescription,NestedWeights" />
 
             <ImageView
                 android:id="@+id/icEditColor"
@@ -150,7 +161,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_color" />
+                android:src="@drawable/selector_ic_edit_color"
+                android:focusable="true"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/icEditAlign"
@@ -158,7 +171,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_gravity" />
+                android:src="@drawable/selector_ic_edit_gravity"
+                android:focusable="true"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
 
@@ -174,7 +189,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_stick" />
+                android:src="@drawable/selector_ic_edit_stick"
+                android:focusable="true"
+                tools:ignore="NestedWeights"
+                android:contentDescription="@null"/>
 
             <ImageView
                 android:id="@+id/icMicro"
@@ -182,7 +200,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_micro" />
+                android:src="@drawable/selector_ic_micro"
+                android:focusable="true"
+                android:contentDescription="@null"/>
 
             <ImageView
                 android:id="@+id/icAttachFile"
@@ -190,7 +210,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_attach" />
+                android:src="@drawable/selector_ic_attach"
+                android:focusable="true"
+                android:contentDescription="@null"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -212,10 +234,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/selector_add_files_gallery"
             android:drawablePadding="2dp"
             android:gravity="center"
-            android:text="Галерея" />
+            android:text="@string/from_gallery"
+            app:drawableTopCompat="@drawable/selector_add_files_gallery" />
 
         <TextView
             android:id="@+id/videoButton"
@@ -223,10 +245,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/selector_add_files_video"
             android:drawablePadding="2dp"
             android:gravity="center"
-            android:text="Видео" />
+            android:text="@string/video"
+            app:drawableTopCompat="@drawable/selector_add_files_video" />
 
         <TextView
             android:id="@+id/musicButton"
@@ -234,10 +256,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/selector_add_files_music"
             android:drawablePadding="2dp"
             android:gravity="center"
-            android:text="Музыка" />
+            android:text="@string/music"
+            app:drawableTopCompat="@drawable/selector_add_files_music" />
 
         <TextView
             android:id="@+id/playlistButton"
@@ -245,10 +267,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/selector_add_files_playlist"
             android:drawablePadding="2dp"
             android:gravity="center"
-            android:text="Плейлист" />
+            android:text="@string/playlist"
+            app:drawableTopCompat="@drawable/selector_add_files_playlist" />
 
 
     </LinearLayout>
@@ -272,7 +294,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:src="@drawable/ic_answer_to_user"
-            android:layout_marginEnd="@dimen/big_margin"/>
+            android:layout_marginEnd="@dimen/big_margin"
+            tools:ignore="ContentDescription" />
         <TextView
             style="@style/InterGroupGreyTextStyle"
             android:layout_width="wrap_content"
@@ -348,10 +371,10 @@
         android:background="@drawable/bg_edit_input"
         android:gravity="center_vertical"
         android:paddingStart="16dp"
-        android:text="Выберите фото"
+        android:text="@string/choose_photo"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/answer_layout"
-        />
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/btnAdd"
@@ -361,7 +384,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/selector_btn_add"
         android:gravity="center"
-        android:text="Добавить"
+        android:text="@string/add"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/amountFiles"
         app:layout_constraintEnd_toEndOf="@+id/amountFiles"

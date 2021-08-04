@@ -238,4 +238,6 @@
     <string name="choose_five_photo">Select %1$s photo</string>
     <string name="close">Close</string>
     <string name="delete_all">Delete all</string>
+    <string name="playlist">Playlist</string>
+    <string name="add">Добавить</string>
 </resources>
