@@ -4,15 +4,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/splashActivity">
+    app:startDestination="@id/splashFragment">
 
     <fragment
-        android:id="@+id/groupListFragment2"
+        android:id="@+id/groupListFragment"
         android:name="com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment"
-        android:label="GroupListFragment">
+        android:label="GroupListFragment"
+        tools:layout="@layout/fragment_group_list">
         <action
             android:id="@+id/action_groupListFragment2_to_newsFragment2"
-            app:destination="@id/newsFragment2"
+            app:destination="@id/newsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -21,33 +22,33 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_groupListFragment2_to_createGroupActivity"
-            app:destination="@id/createGroupActivity"
+            app:destination="@id/createGroupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_groupListFragment2_to_groupActivity"
-            app:destination="@id/groupActivity"
+            app:destination="@id/groupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_groupListFragment2_to_commentsDetailsActivity"
-            app:destination="@id/commentsDetailsActivity"
+            app:destination="@id/commentsDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_groupListFragment2_self"
-            app:destination="@id/groupListFragment2"
+            app:destination="@id/groupListFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_groupListFragment2_to_loginActivity2"
-            app:destination="@id/loginActivity"
+            app:destination="@id/loginFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -57,7 +58,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_groupListFragment2_to_confirmationMailActivity"
-            app:destination="@id/confirmationMailActivity"
+            app:destination="@id/confirmationMailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -70,13 +71,13 @@
             app:destination="@id/audioListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/newsFragment2"
+        android:id="@+id/newsFragment"
         android:name="com.intergroupapplication.presentation.feature.news.view.NewsFragment"
-        android:label="fragment_news"
+        android:label="NewsFragment"
         tools:layout="@layout/fragment_news">
         <action
             android:id="@+id/action_newsFragment2_to_groupListFragment2"
-            app:destination="@id/groupListFragment2"
+            app:destination="@id/groupListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -85,21 +86,21 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_newsFragment2_to_groupActivity"
-            app:destination="@id/groupActivity"
+            app:destination="@id/groupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_newsFragment2_to_commentsDetailsActivity"
-            app:destination="@id/commentsDetailsActivity"
+            app:destination="@id/commentsDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_newsFragment2_to_loginActivity"
-            app:destination="@id/loginActivity"
+            app:destination="@id/loginFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -109,12 +110,12 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_newsFragment2_self"
-            app:destination="@id/newsFragment2"
+            app:destination="@id/newsFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_newsFragment2_to_confirmationMailActivity"
-            app:destination="@id/confirmationMailActivity"
+            app:destination="@id/confirmationMailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -124,7 +125,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_newsFragment2_to_createUserProfileActivity"
-            app:destination="@id/createUserProfileActivity"
+            app:destination="@id/createUserProfileFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="false"
@@ -142,13 +143,13 @@
             app:destination="@id/audioListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/splashActivity"
+        android:id="@+id/splashFragment"
         android:name="com.intergroupapplication.presentation.feature.splash.SplashFragment"
-        android:label="activity_splash"
+        android:label="SplashFragment"
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_splashActivity_to_registrationActivity"
-            app:destination="@id/registrationActivity"
+            app:destination="@id/registrationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -158,7 +159,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_splashActivity_to_AgreementsFragment2"
-            app:destination="@id/AgreementsFragment2"
+            app:destination="@id/AgreementsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -168,7 +169,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_splashActivity_to_newsFragment2"
-            app:destination="@id/newsFragment2"
+            app:destination="@id/newsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="true"
@@ -178,18 +179,18 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/registrationActivity"
+        android:id="@+id/registrationFragment"
         android:name="com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment"
-        android:label="activity_registration"
+        android:label="RegistrationFragment"
         tools:layout="@layout/fragment_registration" >
         <action
             android:id="@+id/action_registrationActivity_to_loginActivity2"
-            app:destination="@id/loginActivity"
+            app:destination="@id/loginFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
         <action
             android:id="@+id/action_registrationActivity_to_confirmationMailActivity2"
-            app:destination="@id/confirmationMailActivity"
+            app:destination="@id/confirmationMailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -198,19 +199,20 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/loginActivity"
+        android:id="@+id/loginFragment"
         android:name="com.intergroupapplication.presentation.feature.login.view.LoginFragment"
-        android:label="LoginActivity" >
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginActivity_to_splashActivity"
-            app:destination="@id/splashActivity"
+            app:destination="@id/splashFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_loginActivity_to_registrationActivity"
-            app:destination="@id/registrationActivity"
+            app:destination="@id/registrationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -219,29 +221,30 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_loginActivity_to_recoveryPasswordActivity"
-            app:destination="@id/recoveryPasswordActivity"
+            app:destination="@id/recoveryPasswordFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_loginActivity_to_confirmationMailActivity"
-            app:destination="@id/confirmationMailActivity" />
+            app:destination="@id/confirmationMailFragment" />
         <action
             android:id="@+id/action_loginActivity_to_createUserProfileActivity"
-            app:destination="@id/createUserProfileActivity" />
+            app:destination="@id/createUserProfileFragment" />
     </fragment>
     <fragment
-        android:id="@+id/confirmationMailActivity"
+        android:id="@+id/confirmationMailFragment"
         android:name="com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailFragment"
-        android:label="ConfirmationMailActivity" >
+        android:label="ConfirmationMailFragment"
+        tools:layout="@layout/fragment_confirmation_mail">
         <argument
             android:name="entity"
             app:argType="string"
             app:nullable="true" />
         <action
             android:id="@+id/action_confirmationMailActivity_to_createUserProfileActivity"
-            app:destination="@id/createUserProfileActivity"
+            app:destination="@id/createUserProfileFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -250,7 +253,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_confirmationMailActivity_to_registrationActivity"
-            app:destination="@id/registrationActivity"
+            app:destination="@id/registrationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:launchSingleTop="false"
@@ -260,9 +263,10 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/AgreementsFragment2"
+        android:id="@+id/AgreementsFragment"
         android:name="com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment"
-        android:label="AgreementsFragment" >
+        android:label="AgreementsFragment"
+        tools:layout="@layout/fragment_agreements">
         <action
             android:id="@+id/action_AgreementsFragment2_to_webFragment"
             app:destination="@id/webFragment"
@@ -272,7 +276,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_AgreementsFragment2_to_splashActivity"
-            app:destination="@id/splashActivity"
+            app:destination="@id/splashFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -283,7 +287,8 @@
     <fragment
         android:id="@+id/webFragment"
         android:name="com.intergroupapplication.presentation.feature.web.WebFragment"
-        android:label="WebActivity" >
+        android:label="WebFragment"
+        tools:layout="@layout/fragment_web">
         <argument
             android:name="PATH"
             app:argType="string" />
@@ -292,30 +297,33 @@
             app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/createUserProfileActivity"
+        android:id="@+id/createUserProfileFragment"
         android:name="com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment"
-        android:label="CreateUserProfileActivity" >
+        android:label="CreateUserProfileFragment"
+        tools:layout="@layout/fragment_create_user_profile">
         <action
             android:id="@+id/action_createUserProfileActivity_to_splashActivity"
-            app:destination="@id/splashActivity"
+            app:destination="@id/splashFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/createGroupActivity"
+        android:id="@+id/createGroupFragment"
         android:name="com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupFragment"
-        android:label="activity_group_create"
+        android:label="CreateGroupFragment"
         tools:layout="@layout/fragment_group_create" />
     <fragment
-        android:id="@+id/recoveryPasswordActivity"
+        android:id="@+id/recoveryPasswordFragment"
         android:name="com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordFragment"
-        android:label="RecoveryPasswordActivity" />
+        android:label="RecoveryPasswordFragment"
+        tools:layout="@layout/fragment_recovery_password"/>
     <fragment
-        android:id="@+id/groupActivity"
+        android:id="@+id/groupFragment"
         android:name="com.intergroupapplication.presentation.feature.group.view.GroupFragment"
-        android:label="GroupActivity" >
+        android:label="GroupFragment"
+        tools:layout="@layout/fragment_group">
         <argument
             android:name="groupId"
             app:argType="string" />
@@ -328,7 +336,7 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
             android:id="@+id/action_groupActivity_to_commentsDetailsActivity"
-            app:destination="@id/commentsDetailsActivity"
+            app:destination="@id/commentsDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -362,22 +370,24 @@
     <fragment
         android:id="@+id/CreatePostFragment"
         android:name="com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment"
-        android:label="CreatePostFragment" >
+        android:label="CreatePostFragment"
+        tools:layout="@layout/fragment_create_post">
         <argument
             android:name="group_id"
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/commentsDetailsActivity"
+        android:id="@+id/commentsDetailsFragment"
         android:name="com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment"
-        android:label="CommentsDetailsActivity" >
+        android:label="CommentsDetailsFragment"
+        tools:layout="@layout/fragment_comments_details">
         <argument
             android:name="comment_post"
             app:argType="com.intergroupapplication.domain.entity.GroupPostEntity$PostEntity"
             app:nullable="true" />
         <action
             android:id="@+id/action_commentsDetailsActivity_to_groupActivity"
-            app:destination="@id/groupActivity"
+            app:destination="@id/groupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -397,7 +407,8 @@
     <fragment
         android:id="@+id/userListFragment"
         android:name="com.intergroupapplication.presentation.feature.userlist.view.UserListFragment"
-        android:label="UserListFragment" >
+        android:label="UserListFragment"
+        tools:layout="@layout/fragment_user_list">
         <argument
             android:name="group_id"
             app:argType="string" />
@@ -405,7 +416,8 @@
     <fragment
         android:id="@+id/imageFragment"
         android:name="com.intergroupapplication.presentation.feature.image.view.ImageFragment"
-        android:label="ImageFragment" >
+        android:label="ImageFragment"
+        tools:layout="@layout/fragment_image">
         <argument
             android:name="images"
             app:argType="com.intergroupapplication.domain.entity.FileEntity[]" />
@@ -414,11 +426,12 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
-    <action android:id="@+id/action_global_newsFragment2" app:destination="@id/newsFragment2"/>
+    <action android:id="@+id/action_global_newsFragment2" app:destination="@id/newsFragment"/>
     <fragment
         android:id="@+id/audioListFragment"
         android:name="com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment"
-        android:label="AudioListFragment" >
+        android:label="AudioListFragment"
+        tools:layout="@layout/fragment_audios_list">
         <action
             android:id="@+id/action_audioListFragment_self"
             app:destination="@id/audioListFragment" />
@@ -426,7 +439,8 @@
     <fragment
         android:id="@+id/editPostFragment"
         android:name="com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment"
-        android:label="EditPostFragment" >
+        android:label="EditPostFragment"
+        tools:layout="@layout/fragment_create_post">
         <argument
             android:name="group_id"
             app:argType="string" />

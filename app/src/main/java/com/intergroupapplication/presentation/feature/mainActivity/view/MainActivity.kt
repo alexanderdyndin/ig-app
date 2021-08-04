@@ -32,8 +32,6 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.File
-import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
 
@@ -124,7 +122,7 @@ class MainActivity : FragmentActivity() {
                     try {
                         if (userSession.isLoggedIn())
                             findNavController(R.id.my_nav_host_fragment)
-                                .navigate(R.id.commentsDetailsActivity, data)
+                                .navigate(R.id.commentsDetailsFragment, data)
                     } catch (e: Exception) {
                         Timber.tag("tut_error").e(e)
                     }
