@@ -6,7 +6,7 @@ import com.android.build.gradle.internal.dsl.BuildType
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-android-extensions")
+    id("kotlin-parcelize")
     id("kotlin-kapt")
     id("com.google.firebase.crashlytics")
     id("com.google.gms.google-services")
