@@ -218,11 +218,11 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
             }
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it)
-                findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+                findNavController().navigate(R.id.action_newsFragment_to_groupFragment, data)
             }
             imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-                findNavController().navigate(R.id.action_newsFragment2_to_imageFragment, data)
+                findNavController().navigate(R.id.action_newsFragment_to_imageFragment, data)
             }
             likeClickListener = { like, dislike, item, position ->
                 if (!item.isLoading) {
@@ -342,7 +342,7 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
 
     private fun openCommentDetails(entity: InfoForCommentEntity) {
         val data = bundleOf(GroupViewModule.COMMENT_POST_ENTITY to entity)
-        findNavController().navigate(R.id.action_newsFragment2_to_commentsDetailsActivity, data)
+        findNavController().navigate(R.id.action_newsFragment_to_commentsDetailsFragment, data)
     }
 
     override fun viewCreated() {
@@ -386,7 +386,7 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
                 onClick { _ ->
-                    findNavController().navigate(R.id.action_newsFragment2_to_groupListFragment2)
+                    findNavController().navigate(R.id.action_newsFragment_to_groupListFragment)
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                     false
                 }
@@ -411,7 +411,7 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { _ ->
                     userSession.logout()
-                    findNavController().navigate(R.id.action_newsFragment2_to_loginActivity)
+                    findNavController().navigate(R.id.action_newsFragment_to_loginFragment)
                     false
                 }
             }
@@ -420,7 +420,7 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
                 .setOnClickListener { closeDrawer() }
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
-                findNavController().navigate(R.id.action_newsFragment2_self)
+                findNavController().navigate(R.id.action_newsFragment_self)
                 viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                 false
             }
@@ -482,7 +482,7 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
             val email = userSession.email?.email.orEmpty()
             val data = bundleOf("entity" to email)
             findNavController().navigate(
-                R.id.action_newsFragment2_to_confirmationMailActivity,
+                R.id.action_newsFragment_to_confirmationMailFragment,
                 data
             )
         }
@@ -490,7 +490,7 @@ class NewsFragment : BaseFragment(), NewsView, CoroutineScope {
 
     override fun openCreateProfile() = Action { _, _ ->
         if (findNavController().currentDestination?.label == LABEL)
-            findNavController().navigate(R.id.action_newsFragment2_to_createUserProfileActivity)
+            findNavController().navigate(R.id.action_newsFragment_to_createUserProfileFragment)
     }
 
 }

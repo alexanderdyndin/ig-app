@@ -181,7 +181,7 @@ class GroupFragment : BaseFragment(), GroupView,
         presenter.getGroupDetailInfo(groupId)
         groupStrength.setOnClickListener {
             val data = bundleOf(GROUP_ID to groupId, IS_ADMIN to isAdmin)
-            findNavController().navigate(R.id.action_groupActivity_to_userListFragment, data)
+            findNavController().navigate(R.id.action_groupFragment_to_userListFragment, data)
         }
         newPaging()
     }
@@ -239,14 +239,14 @@ class GroupFragment : BaseFragment(), GroupView,
             complaintListener = { id -> presenter.complaintPost(id) }
             imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
-                findNavController().navigate(R.id.action_groupActivity_to_imageFragment, data)
+                findNavController().navigate(R.id.action_groupFragment_to_imageFragment, data)
             }
             editPostClickListener = {
                 val data = bundleOf(
                     GROUP_ID to it.id,
                     EditPostFragment.GROUP_POST_ENTITY_KEY to it
                 )
-                findNavController().navigate(R.id.action_groupActivity_to_editPostFragment, data)
+                findNavController().navigate(R.id.action_groupFragment_to_editPostFragment, data)
             }
             likeClickListener = { like, dislike, item, position ->
                 if (!item.isLoading) {
@@ -541,12 +541,12 @@ class GroupFragment : BaseFragment(), GroupView,
 
     private fun openCommentDetails(entity: InfoForCommentEntity) {
         val data = bundleOf("comment_post" to entity)
-        findNavController().navigate(R.id.action_groupActivity_to_commentsDetailsActivity, data)
+        findNavController().navigate(R.id.action_groupFragment_to_commentsDetailsFragment, data)
     }
 
     private fun openCreatePost(post: String) {
         val data = bundleOf(GROUP_ID to post)
-        findNavController().navigate(R.id.action_groupActivity_to_CreatePostFragment, data)
+        findNavController().navigate(R.id.action_groupFragment_to_createPostFragment, data)
     }
 
     private fun handleAlphaOnTitle(percentage: Float) {

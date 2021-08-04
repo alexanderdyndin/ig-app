@@ -149,7 +149,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         recoveryPassword.clicks()
             .subscribe {
                 findNavController()
-                    .navigate(R.id.action_loginActivity_to_recoveryPasswordActivity)
+                    .navigate(R.id.action_loginFragment_to_recoveryPasswordFragment)
             }
             .also { compositeDisposable.add(it) }
         signInButton.setOnClickListener {
@@ -226,7 +226,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun login() {
-        findNavController().navigate(R.id.action_loginActivity_to_splashActivity)
+        findNavController().navigate(R.id.action_loginFragment_to_splashFragment)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -312,7 +312,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             val email = mail.text.toString()
             val data = bundleOf("entity" to email)
             findNavController().navigate(
-                R.id.action_loginActivity_to_confirmationMailActivity,
+                R.id.action_loginFragment_to_confirmationMailFragment,
                 data
             )
         }

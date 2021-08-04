@@ -12,7 +12,7 @@
         android:label="GroupListFragment"
         tools:layout="@layout/fragment_group_list">
         <action
-            android:id="@+id/action_groupListFragment2_to_newsFragment2"
+            android:id="@+id/action_groupListFragment_to_newsFragment"
             app:destination="@id/newsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -21,33 +21,33 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_groupListFragment2_to_createGroupActivity"
+            android:id="@+id/action_groupListFragment_to_createGroupFragment"
             app:destination="@id/createGroupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_groupListFragment2_to_groupActivity"
+            android:id="@+id/action_groupListFragment_to_groupFragment"
             app:destination="@id/groupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_groupListFragment2_to_commentsDetailsActivity"
+            android:id="@+id/action_groupListFragment_to_commentsDetailsFragment"
             app:destination="@id/commentsDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_groupListFragment2_self"
+            android:id="@+id/action_groupListFragment_self"
             app:destination="@id/groupListFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_groupListFragment2_to_loginActivity2"
+            android:id="@+id/action_groupListFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -57,7 +57,7 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_groupListFragment2_to_confirmationMailActivity"
+            android:id="@+id/action_groupListFragment_to_confirmationMailFragment"
             app:destination="@id/confirmationMailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -67,7 +67,7 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_groupListFragment2_to_audioListFragment"
+            android:id="@+id/action_groupListFragment_to_audioListFragment"
             app:destination="@id/audioListFragment" />
     </fragment>
     <fragment
@@ -76,7 +76,7 @@
         android:label="NewsFragment"
         tools:layout="@layout/fragment_news">
         <action
-            android:id="@+id/action_newsFragment2_to_groupListFragment2"
+            android:id="@+id/action_newsFragment_to_groupListFragment"
             app:destination="@id/groupListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -85,21 +85,21 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_newsFragment2_to_groupActivity"
+            android:id="@+id/action_newsFragment_to_groupFragment"
             app:destination="@id/groupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_newsFragment2_to_commentsDetailsActivity"
+            android:id="@+id/action_newsFragment_to_commentsDetailsFragment"
             app:destination="@id/commentsDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_newsFragment2_to_loginActivity"
+            android:id="@+id/action_newsFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -109,12 +109,12 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_newsFragment2_self"
+            android:id="@+id/action_newsFragment_self"
             app:destination="@id/newsFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_newsFragment2_to_confirmationMailActivity"
+            android:id="@+id/action_newsFragment_to_confirmationMailFragment"
             app:destination="@id/confirmationMailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -124,7 +124,7 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_newsFragment2_to_createUserProfileActivity"
+            android:id="@+id/action_newsFragment_to_createUserProfileFragment"
             app:destination="@id/createUserProfileFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -134,12 +134,12 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_newsFragment2_to_imageFragment"
+            android:id="@+id/action_newsFragment_to_imageFragment"
             app:destination="@id/imageFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
         <action
-            android:id="@+id/action_newsFragment2_to_audioListFragment"
+            android:id="@+id/action_newsFragment_to_audioListFragment"
             app:destination="@id/audioListFragment" />
     </fragment>
     <fragment
@@ -148,7 +148,7 @@
         android:label="SplashFragment"
         tools:layout="@layout/fragment_splash" >
         <action
-            android:id="@+id/action_splashActivity_to_registrationActivity"
+            android:id="@+id/action_splashFragment_to_registrationFragment"
             app:destination="@id/registrationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -158,7 +158,7 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_splashActivity_to_AgreementsFragment2"
+            android:id="@+id/action_splashFragment_to_AgreementsFragment"
             app:destination="@id/AgreementsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -168,7 +168,7 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_splashActivity_to_newsFragment2"
+            android:id="@+id/action_splashFragment_to_newsFragment"
             app:destination="@id/newsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -184,12 +184,12 @@
         android:label="RegistrationFragment"
         tools:layout="@layout/fragment_registration" >
         <action
-            android:id="@+id/action_registrationActivity_to_loginActivity2"
+            android:id="@+id/action_registrationFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
         <action
-            android:id="@+id/action_registrationActivity_to_confirmationMailActivity2"
+            android:id="@+id/action_registrationFragment_to_confirmationMailFragment"
             app:destination="@id/confirmationMailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -204,7 +204,7 @@
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginActivity_to_splashActivity"
+            android:id="@+id/action_loginFragment_to_splashFragment"
             app:destination="@id/splashFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -220,14 +220,14 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_loginActivity_to_recoveryPasswordActivity"
+            android:id="@+id/action_loginFragment_to_recoveryPasswordFragment"
             app:destination="@id/recoveryPasswordFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_loginActivity_to_confirmationMailActivity"
+            android:id="@+id/action_loginFragment_to_confirmationMailFragment"
             app:destination="@id/confirmationMailFragment" />
         <action
             android:id="@+id/action_loginActivity_to_createUserProfileActivity"
@@ -243,7 +243,7 @@
             app:argType="string"
             app:nullable="true" />
         <action
-            android:id="@+id/action_confirmationMailActivity_to_createUserProfileActivity"
+            android:id="@+id/action_confirmationMailFragment_to_createUserProfileFragment"
             app:destination="@id/createUserProfileFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -252,7 +252,7 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_confirmationMailActivity_to_registrationActivity"
+            android:id="@+id/action_confirmationMailFragment_to_registrationFragment"
             app:destination="@id/registrationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -268,14 +268,14 @@
         android:label="AgreementsFragment"
         tools:layout="@layout/fragment_agreements">
         <action
-            android:id="@+id/action_AgreementsFragment2_to_webFragment"
+            android:id="@+id/action_AgreementsFragment_to_webFragment"
             app:destination="@id/webFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_AgreementsFragment2_to_splashActivity"
+            android:id="@+id/action_AgreementsFragment_to_splashFragment"
             app:destination="@id/splashFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -302,7 +302,7 @@
         android:label="CreateUserProfileFragment"
         tools:layout="@layout/fragment_create_user_profile">
         <action
-            android:id="@+id/action_createUserProfileActivity_to_splashActivity"
+            android:id="@+id/action_createUserProfileFragment_to_splashFragment"
             app:destination="@id/splashFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -328,14 +328,14 @@
             android:name="groupId"
             app:argType="string" />
         <action
-            android:id="@+id/action_groupActivity_to_CreatePostFragment"
+            android:id="@+id/action_groupFragment_to_createPostFragment"
             app:destination="@id/CreatePostFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_groupActivity_to_commentsDetailsActivity"
+            android:id="@+id/action_groupFragment_to_commentsDetailsFragment"
             app:destination="@id/commentsDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -346,14 +346,14 @@
             app:argType="boolean"
             android:defaultValue="false" />
         <action
-            android:id="@+id/action_groupActivity_to_userListFragment"
+            android:id="@+id/action_groupFragment_to_userListFragment"
             app:destination="@id/userListFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_groupActivity_to_imageFragment"
+            android:id="@+id/action_groupFragment_to_imageFragment"
             app:destination="@id/imageFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
@@ -362,7 +362,7 @@
             app:argType="string"
             app:nullable="true" />
         <action
-            android:id="@+id/action_groupActivity_to_editPostFragment"
+            android:id="@+id/action_groupFragment_to_editPostFragment"
             app:destination="@id/editPostFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
@@ -386,7 +386,7 @@
             app:argType="com.intergroupapplication.domain.entity.GroupPostEntity$PostEntity"
             app:nullable="true" />
         <action
-            android:id="@+id/action_commentsDetailsActivity_to_groupActivity"
+            android:id="@+id/action_commentsDetailsFragment_to_groupFragment"
             app:destination="@id/groupFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -397,7 +397,7 @@
             app:argType="string"
             app:nullable="true" />
         <action
-            android:id="@+id/action_commentsDetailsActivity_to_imageFragment"
+            android:id="@+id/action_commentsDetailsFragment_to_imageFragment"
             app:destination="@id/imageFragment" />
         <argument
             android:name="page"

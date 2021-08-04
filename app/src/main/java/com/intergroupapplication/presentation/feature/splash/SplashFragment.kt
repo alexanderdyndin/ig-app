@@ -33,10 +33,10 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         when {
             !userSession.isAcceptTerms() -> findNavController()
-                .navigate(R.id.action_splashActivity_to_AgreementsFragment2)
+                .navigate(R.id.action_splashFragment_to_AgreementsFragment)
             !userSession.isLoggedIn() -> findNavController()
-                .navigate(R.id.action_splashActivity_to_registrationActivity)
-            else -> findNavController().navigate(R.id.action_splashActivity_to_newsFragment2)
+                .navigate(R.id.action_splashFragment_to_registrationFragment)
+            else -> findNavController().navigate(R.id.action_splashFragment_to_newsFragment)
         }
     }
 

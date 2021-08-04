@@ -422,7 +422,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
             imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)
                 findNavController().navigate(
-                    R.id.action_commentsDetailsActivity_to_imageFragment,
+                    R.id.action_commentsDetailsFragment_to_imageFragment,
                     data
                 )
             }

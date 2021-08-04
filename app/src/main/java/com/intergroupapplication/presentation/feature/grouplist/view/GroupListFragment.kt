@@ -230,7 +230,7 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
             userID = userSession.user?.id
             groupClickListener = { groupId ->
                 val data = bundleOf(GROUP_ID to groupId)
-                findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
+                findNavController().navigate(R.id.action_groupListFragment_to_groupFragment, data)
             }
             //todo не всегда подписка/отписка отображается в UI
             subscribeClickListener = { group, pos ->
@@ -405,7 +405,7 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
     }
 
     private fun openCreateGroup() {
-        findNavController().navigate(R.id.action_groupListFragment2_to_createGroupActivity)
+        findNavController().navigate(R.id.action_groupListFragment_to_createGroupFragment)
     }
 
 
@@ -481,7 +481,7 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
                 onClick { _ ->
-                    findNavController().navigate(R.id.action_groupListFragment2_to_newsFragment2)
+                    findNavController().navigate(R.id.action_groupListFragment_to_newsFragment)
                     viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
                     false
                 }
@@ -517,14 +517,14 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
                 selectedTextColorRes = R.color.selectedItemTabColor
                 onClick { _ ->
                     presenter.goOutFromProfile()
-                    findNavController().navigate(R.id.action_groupListFragment2_to_loginActivity2)
+                    findNavController().navigate(R.id.action_groupListFragment_to_loginFragment)
                     false
                 }
             }
         }.apply {
             setSelection(drawerItem)
             drawerItem.withOnDrawerItemClickListener { _, _, _ ->
-                findNavController().navigate(R.id.action_groupListFragment2_self)
+                findNavController().navigate(R.id.action_groupListFragment_self)
                 viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
                 false
             }

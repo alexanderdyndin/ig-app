@@ -85,7 +85,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
 
     override fun toSplash() {
-        findNavController().navigate(R.id.action_AgreementsFragment2_to_splashActivity)
+        findNavController().navigate(R.id.action_AgreementsFragment_to_splashFragment)
     }
 
     override fun showLoading(show: Boolean) {
@@ -119,21 +119,21 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
                 KEY_PATH to URL_PRIVACY_POLICY,
                 KEY_TITLE to RES_ID_PRIVACY_POLICY
             )
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
+            findNavController().navigate(R.id.action_AgreementsFragment_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
         conditionsAgreement.clicks().subscribe {
             val bundle = bundleOf(
                 KEY_PATH to URL_TERMS_OF_USE,
                 KEY_TITLE to RES_ID_TERMS_OF_USE
             )
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
+            findNavController().navigate(R.id.action_AgreementsFragment_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
         conditionsCopyrightHolders.clicks().subscribe {
             val bundle = bundleOf(
                 KEY_PATH to URL_RIGHT_HOLDERS,
                 KEY_TITLE to RES_ID_RIGHT_HOLDERS
             )
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
+            findNavController().navigate(R.id.action_AgreementsFragment_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
     }
 

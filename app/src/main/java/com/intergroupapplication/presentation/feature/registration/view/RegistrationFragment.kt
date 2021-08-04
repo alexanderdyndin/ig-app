@@ -156,7 +156,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
         textLogin.clicks().subscribe {
             findNavController()
-                .navigate(R.id.action_registrationActivity_to_loginActivity2)
+                .navigate(R.id.action_registrationFragment_to_loginFragment)
         }
             .also { compositeDisposable.add(it) }
         initValidator()
@@ -259,7 +259,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     override fun confirmMail(email: String) {
         val bundle = bundleOf("entity" to email)
         view?.findNavController()
-            ?.navigate(R.id.action_registrationActivity_to_confirmationMailActivity2, bundle)
+            ?.navigate(R.id.action_registrationFragment_to_confirmationMailFragment, bundle)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {

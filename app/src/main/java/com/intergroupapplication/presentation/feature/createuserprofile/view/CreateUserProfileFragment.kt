@@ -136,7 +136,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     override fun completed() {
-        findNavController().navigate(R.id.action_createUserProfileActivity_to_splashActivity)
+        findNavController().navigate(R.id.action_createUserProfileFragment_to_splashFragment)
     }
 
     override fun showLoading(show: Boolean) {

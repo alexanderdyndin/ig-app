@@ -67,7 +67,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
                 .let { compositeDisposable.add(it) }
 
         btnRepeatCode.clicks()
-                .subscribe { findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity) }
+                .subscribe { findNavController().navigate(R.id.action_confirmationMailFragment_to_registrationFragment) }
                 .also { compositeDisposable.add(it) }
 
         btnChangeEmail.clicks()
@@ -112,7 +112,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     }
 
     override fun completed() {
-        findNavController().navigate(R.id.action_confirmationMailActivity_to_createUserProfileActivity)
+        findNavController().navigate(R.id.action_confirmationMailFragment_to_createUserProfileFragment)
     }
 
     override fun showMessage(resId: Int) {
