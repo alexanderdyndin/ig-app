@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/registrationCoordinator"
@@ -16,21 +17,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-<!--
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogin"
-                style="@style/ButtonAuthStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginTop="@dimen/large_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:text="@string/already_registered"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
--->
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvRegistration"
@@ -51,8 +37,8 @@
                 android:layout_marginTop="@dimen/middle_high_big_margin"
                 android:hint="@string/your_email"
                 android:imeOptions="actionNext"
-                android:longClickable="false"
                 android:inputType="textEmailAddress"
+                android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvRegistration" />
@@ -88,8 +74,8 @@
                 android:layout_marginTop="@dimen/middle_margin"
                 android:hint="@string/your_double_email"
                 android:imeOptions="actionNext"
-                android:longClickable="false"
                 android:inputType="textEmailAddress"
+                android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMailError" />
@@ -125,8 +111,8 @@
                 android:layout_marginTop="@dimen/middle_margin"
                 android:hint="@string/your_pswd"
                 android:imeOptions="actionNext"
-                android:longClickable="false"
                 android:inputType="textPassword"
+                android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDoubleMailError" />
@@ -135,12 +121,12 @@
                 android:id="@+id/passwordVisibility"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/middle_padding"
                 android:layout_marginEnd="@dimen/middle_margin"
-                android:drawableStart="@drawable/ic_password_visible"
+                android:padding="@dimen/middle_padding"
+                app:drawableStartCompat="@drawable/ic_password_visible"
                 app:layout_constraintBottom_toBottomOf="@+id/etPassword"
                 app:layout_constraintEnd_toEndOf="@+id/etPassword"
-                app:layout_constraintTop_toTopOf="@+id/etPassword"  />
+                app:layout_constraintTop_toTopOf="@+id/etPassword" />
 
             <ImageView
                 android:id="@+id/lineEditText3"
@@ -173,8 +159,8 @@
                 android:layout_marginTop="@dimen/middle_margin"
                 android:hint="@string/your_double_password"
                 android:imeOptions="actionNext"
-                android:longClickable="false"
                 android:inputType="textPassword"
+                android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvErrorPassword" />
@@ -184,9 +170,9 @@
                 android:id="@+id/passwordVisibility2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/middle_padding"
                 android:layout_marginEnd="@dimen/middle_margin"
-                android:drawableStart="@drawable/ic_password_visible"
+                android:padding="@dimen/middle_padding"
+                app:drawableStartCompat="@drawable/ic_password_visible"
                 app:layout_constraintBottom_toBottomOf="@+id/etDoublePassword"
                 app:layout_constraintEnd_toEndOf="@+id/etDoublePassword"
                 app:layout_constraintTop_toTopOf="@+id/etDoublePassword" />
@@ -214,37 +200,33 @@
                 tools:text="Пример ошибки"
                 tools:visibility="visible" />
 
-            <FrameLayout
-                android:id="@+id/flSendEmail"
-                android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSendEmail"
+                style="@style/TextGrey16sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/low_big_margin"
                 android:layout_marginTop="@dimen/big_margin"
+                android:layout_marginEnd="@dimen/low_big_margin"
+                android:background="@drawable/selector_btn_big"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="@string/send_code"
+                android:textAllCaps="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDoublePasswdError">
+                app:layout_constraintTop_toBottomOf="@+id/tvDoublePasswdError" />
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:visibility="invisible"
-                    tools:visibility="visible" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnSendEmail"
-                    style="@style/TextGrey16sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/low_big_margin"
-                    android:layout_marginEnd="@dimen/low_big_margin"
-                    android:background="@drawable/selector_btn_big"
-                    android:paddingTop="@dimen/middle_padding"
-                    android:text="@string/send_code"
-                    android:textAllCaps="false" />
-
-
-            </FrameLayout>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/btnSendEmail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnSendEmail"
+                tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textLogin"
@@ -256,7 +238,7 @@
                 android:text="@string/already_registered"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/flSendEmail" />
+                app:layout_constraintTop_toBottomOf="@id/btnSendEmail" />
 
             <LinearLayout
                 android:id="@+id/logo"
@@ -268,19 +250,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textLogin">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/logo_big_blue" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo_big_blue" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/TextAccent24spBold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/big_margin"
-                android:text="@string/intergroup" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAccent24spBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/big_margin"
+                    android:text="@string/intergroup" />
 
                 <com.google.android.gms.common.SignInButton
                     android:id="@+id/sign_in_button"
@@ -289,12 +271,12 @@
                     android:layout_marginStart="@dimen/large_margin"
                     android:layout_marginTop="@dimen/middle_high_big_margin"
                     android:layout_marginEnd="@dimen/large_margin"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textLogin"
-                    android:visibility="gone"/>
+                    app:layout_constraintTop_toBottomOf="@id/textLogin" />
 
-        </LinearLayout>
+            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

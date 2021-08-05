@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    >
+    android:focusableInTouchMode="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,13 +19,13 @@
             android:id="@+id/iconPanel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
             android:background="@drawable/bg_post_panel"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_marginTop="1dp"
-           app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/icEditText"
@@ -32,7 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_text" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_edit_text"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/icEditColor"
@@ -40,7 +43,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_color" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_edit_color"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/icEditAlign"
@@ -48,7 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_edit_gravity" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_edit_gravity"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/icMicro"
@@ -56,7 +63,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_micro" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_micro"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/icAttachFile"
@@ -64,7 +73,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_attach" />
+                android:focusable="true"
+                android:src="@drawable/selector_ic_attach"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <View
@@ -72,8 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/GreyElement"
-            app:layout_constraintTop_toBottomOf="@+id/iconPanel"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconPanel" />
 
         <LinearLayout
             android:id="@+id/panelAddFile"
@@ -82,8 +93,7 @@
             android:background="@color/colorInput"
             android:orientation="horizontal"
             android:padding="8dp"
-            app:layout_constraintTop_toBottomOf="@id/greyView"
-            >
+            app:layout_constraintTop_toBottomOf="@id/greyView">
 
             <TextView
                 android:id="@+id/galleryButton"
@@ -91,10 +101,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_gallery"
                 android:drawablePadding="2dp"
                 android:gravity="center"
-                android:text="Галерея" />
+                android:text="@string/from_gallery"
+                app:drawableTopCompat="@drawable/selector_add_files_gallery" />
 
             <TextView
                 android:id="@+id/videoButton"
@@ -102,10 +112,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_video"
                 android:drawablePadding="2dp"
                 android:gravity="center"
-                android:text="Видео" />
+                android:text="@string/video"
+                app:drawableTopCompat="@drawable/selector_add_files_video" />
 
             <TextView
                 android:id="@+id/musicButton"
@@ -113,10 +123,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_music"
                 android:drawablePadding="2dp"
                 android:gravity="center"
-                android:text="Музыка" />
+                android:text="@string/music"
+                app:drawableTopCompat="@drawable/selector_add_files_music" />
 
             <TextView
                 android:id="@+id/playlistButton"
@@ -124,10 +134,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/selector_add_files_playlist"
                 android:drawablePadding="2dp"
                 android:gravity="center"
-                android:text="Плейлист" />
+                android:text="@string/playlist"
+                app:drawableTopCompat="@drawable/selector_add_files_playlist" />
 
         </LinearLayout>
 
@@ -138,11 +148,11 @@
             android:layout_height="37dp"
             android:background="@drawable/bg_edit_input"
             android:gravity="center_vertical"
-            android:visibility="gone"
             android:paddingStart="16dp"
-            android:text="Выберите фото"
+            android:text="@string/choose_photo"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/panelAddFile"
-            />
+            tools:ignore="RtlSymmetry" />
 
         <TextView
             android:id="@+id/btnAdd"
@@ -152,8 +162,8 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/selector_btn_add"
             android:gravity="center"
+            android:text="@string/add"
             android:visibility="gone"
-            android:text="Добавить"
             app:layout_constraintBottom_toBottomOf="@+id/amountFiles"
             app:layout_constraintEnd_toEndOf="@+id/amountFiles"
             app:layout_constraintTop_toTopOf="@+id/amountFiles" />
@@ -162,13 +172,12 @@
             android:id="@+id/mediaRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="gone"
             android:background="@color/colorInput"
-            app:layout_constraintTop_toBottomOf="@id/amountFiles"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/horizontal_guide_end"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/amountFiles" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_guide_center"

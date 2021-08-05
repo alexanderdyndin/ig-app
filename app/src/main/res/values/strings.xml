@@ -244,4 +244,17 @@
     <string name="enter_user_id">Enter user ID</string>
     <string name="user_not_found">User not found</string>
     <string name="user_can_not_fount_your_group">User will not be able to find your group</string>
+    <string name="ultimate_all_inclusive">Ultimate - all inclusive</string>
+    <string name="without_advertising">Advertising blocks in the application will be disabled, you can install an animated avatar, write anonymous comments and offer anonymous posts, download audio and video files.</string>
+    <string name="user_advertising_can_not_disable">* Ads posted by users cannot be disabled / removed. Users will still be able to add you to the blacklist.</string>
+    <string name="disabled_all_advertising">Disable all ad units in the app</string>
+    <string name="you_subscribe">You are subscribed</string>
+    <string name="user_advertising_can_not_disable_or_delete">* Ads posted by users cannot be disabled / removed</string>
+    <string name="anim_profile_avatar">Animated profile avatar</string>
+    <string name="you_can_make_anim_avatar">You can install an animated Avatar (GIF) on your profile</string>
+    <string name="anonymous_comments_and_posts">Anonymous comments and suggested posts</string>
+    <string name="you_can_write_anonymous_comments">You will be able to write comments anonymously and offer anonymous posts for publication in groups</string>
+    <string name="user_can_still_add_to_black_list">* Users will still be able to add you to the blacklist</string>
+    <string name="download_audio_and_video">Downloading audio and video files</string>
+    <string name="you_can_download_files">You can download any file from your playlist, publications or comments of other users and groups</string>
 </resources>

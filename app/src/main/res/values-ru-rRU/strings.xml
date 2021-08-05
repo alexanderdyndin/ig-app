@@ -213,4 +213,17 @@
     <string name="enter_user_id">Введите ID пользователя</string>
     <string name="user_not_found">Пользователь не найден</string>
     <string name="user_can_not_fount_your_group">Пользователь не сможет найти вашу группу</string>
+    <string name="ultimate_all_inclusive">Ultimate - всё включено</string>
+    <string name="disabled_all_advertising">Отключить все рекламные блоки в приложении</string>
+    <string name="without_advertising">Рекламные блоки в приложении будут отключены, Вы сможете установить анимированную аватарку, сможете писать анонимные комментарии и предлагать анонимные посты, скачивать аудио и видео файлы.</string>
+    <string name="user_advertising_can_not_disable">*Реклама размещенная пользователями не может быть отключена/удалена. Пользователи все равно смогут добавлять Вас в черный список.</string>
+    <string name="you_subscribe">Вы подписаны</string>
+    <string name="user_advertising_can_not_disable_or_delete">*Реклама размещенная пользователями не может быть отключена/удалена</string>
+    <string name="anim_profile_avatar">Анимированая Аватарка профиля</string>
+    <string name="you_can_make_anim_avatar">Вы сможете установить на свой профиль анимированую Аватарку (GIF)</string>
+    <string name="anonymous_comments_and_posts">Анонимные комментарии и предложенные посты</string>
+    <string name="you_can_write_anonymous_comments">Вы сможете писать комментарии анонимно и предлагать анонимно посты на публикацию в группы</string>
+    <string name="user_can_still_add_to_black_list">*Пользователи все равно смогут добавлять Вас в черный список</string>
+    <string name="download_audio_and_video">Скачивание аудио и видео файлов</string>
+    <string name="you_can_download_files">Вы сможете скачать любой файл из своего плейлиста, публикаций или комментарий других пользователей и групп</string>
 </resources>

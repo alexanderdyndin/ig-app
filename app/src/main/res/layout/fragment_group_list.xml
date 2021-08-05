@@ -1,109 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/groupListCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-<!--        android:id="@+id/swipeLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:background="@color/groupListItemColor"-->
-<!--        app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintLeft_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/activity_main__bg_tabs_shadow"-->
-<!--        android:layout_height="wrap_content">-->
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/mainBlack">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainBlack">
 
-            <include
-                android:id="@+id/navigationToolbar"
-                layout="@layout/layout_main_toolbar" />
+        <include
+            android:id="@+id/navigationToolbar"
+            layout="@layout/layout_main_toolbar" />
 
-            <EditText
+        <EditText
             android:id="@+id/activity_main__search_input"
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:background="@drawable/bg_search"
-            android:paddingLeft="20dp"
-            android:drawableLeft="@drawable/icon_search"
+            android:drawableStart="@drawable/icon_search"
             android:drawablePadding="45dp"
             android:ems="15"
             android:fontFamily="@font/play"
             android:hint="@string/search"
             android:inputType="textShortMessage"
+            android:paddingStart="20dp"
             android:textColor="@color/colorAccent"
             android:textColorHint="@color/NoActiveText"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/activity_main__btn_filter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"/>
+            app:layout_constraintTop_toBottomOf="@+id/navigationToolbar"
+            tools:ignore="Autofill,RtlSymmetry" />
 
 
-            <ImageButton
-                android:id="@+id/activity_main__btn_filter"
+        <ImageButton
+            android:id="@+id/activity_main__btn_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_filter"
+            android:src="@drawable/icon_filter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/activity_main__search_input"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/slidingCategories"
+            android:layout_width="match_parent"
+            android:layout_height="39dp"
+            android:background="@drawable/bg_tabs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main__search_input"
+            app:tabBackground="@android:color/transparent"
+            app:tabGravity="center"
+            app:tabIndicatorColor="@color/colorAccent"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorHeight="2dp"
+            app:tabPaddingBottom="8dp"
+            app:tabSelectedTextColor="@color/mainBlack"
+            app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:tabTextColor="@color/NoActiveText">
+
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_btn_filter"
-                android:src="@drawable/icon_filter"
-                app:layout_constraintTop_toTopOf="@+id/activity_main__search_input"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:text="@string/allGroups" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/slidingCategories"
-                android:layout_width="match_parent"
-                android:layout_height="39dp"
-                android:background="@drawable/bg_tabs"
-                app:tabBackground="@android:color/transparent"
-                app:tabGravity="center"
-                app:tabIndicatorColor="@color/colorAccent"
-                app:tabIndicatorFullWidth="true"
-                app:tabIndicatorHeight="2dp"
-                app:tabPaddingBottom="8dp"
-                app:tabSelectedTextColor="@color/mainBlack"
-                app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
-                app:tabTextColor="@color/NoActiveText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_main__search_input" >
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/allGroups" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/subGroups" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/admGroups" />
-            </com.google.android.material.tabs.TabLayout>
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_groups"
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/slidingCategories">
+                android:layout_height="wrap_content"
+                android:text="@string/subGroups" />
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/pager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/admGroups" />
+        </com.google.android.material.tabs.TabLayout>
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slidingCategories">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
