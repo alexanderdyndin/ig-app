@@ -208,7 +208,7 @@ class GroupPostsAdapter(
                 countComments.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-                postLikesClickArea.setOnClickListener {
+                postLike.setOnClickListener {
                     likeClickListener.invoke(
                         !item.reacts.isLike,
                         item.reacts.isDislike,
@@ -216,7 +216,7 @@ class GroupPostsAdapter(
                         layoutPosition
                     )
                 }
-                postDislikesClickArea.setOnClickListener {
+                postDislike.setOnClickListener {
                     likeClickListener.invoke(
                         item.reacts.isLike,
                         !item.reacts.isDislike,

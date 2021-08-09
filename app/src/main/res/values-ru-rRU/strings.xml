@@ -226,4 +226,7 @@
     <string name="user_can_still_add_to_black_list">*Пользователи все равно смогут добавлять Вас в черный список</string>
     <string name="download_audio_and_video">Скачивание аудио и видео файлов</string>
     <string name="you_can_download_files">Вы сможете скачать любой файл из своего плейлиста, публикаций или комментарий других пользователей и групп</string>
+    <string name="all_time">За всё время</string>
+    <string name="subscribers">Подписчиков</string>
+    <string name="art">Искусство</string>
 </resources>

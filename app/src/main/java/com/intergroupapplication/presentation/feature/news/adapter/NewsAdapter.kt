@@ -157,10 +157,10 @@ class NewsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 headerPostFromGroup.setOnClickListener {
                     groupClickListener.invoke(item.post.groupInPost.id)
                 }
-                postLikesClickArea.setOnClickListener {
+                postLike.setOnClickListener {
                     likeClickListener.invoke(!item.post.reacts.isLike, item.post.reacts.isDislike, item.post, layoutPosition)
                 }
-                postDislikesClickArea.setOnClickListener {
+                postDislike.setOnClickListener {
                     likeClickListener.invoke(item.post.reacts.isLike, !item.post.reacts.isDislike, item.post, layoutPosition)
                 }
                 settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.post.id), item.id, item.post.author.id) }

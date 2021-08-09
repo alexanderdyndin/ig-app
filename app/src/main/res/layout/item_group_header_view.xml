@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/mainBlack">
 
     <include layout="@layout/layout_constraint_loader" />
@@ -13,10 +12,10 @@
         android:id="@+id/avatarBg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="bg"
         android:src="@drawable/bg_group_avatar"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="bg" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,33 +23,34 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
+        android:background="@color/colorInput"
         android:padding="8dp"
         android:paddingStart="@dimen/massive_padding"
-        android:background="@color/colorInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatarBg"
-        app:layout_constraintTop_toTopOf="@+id/avatarBg" >
+        app:layout_constraintTop_toTopOf="@+id/avatarBg"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:id="@+id/groupPosition"
+            style="@style/TextAccent14sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            tools:text="Позиция: 4568935"
-            style="@style/TextAccent14sp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonRaisePosition"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Позиция: 4568935" />
 
         <TextView
             android:id="@+id/id_group"
+            style="@style/TextNoActive10sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="IDG:1234556"
-            style="@style/TextNoActive10sp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonRaisePosition"
-            app:layout_constraintTop_toBottomOf="@+id/groupPosition"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/groupPosition"
+            tools:text="IDG:1234556" />
 
         <ImageButton
             android:id="@+id/buttonRaisePosition"
@@ -70,33 +70,34 @@
 
     <LinearLayout
         android:id="@+id/groupCounts"
+        style="?android:attr/buttonBarStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="?android:attr/buttonBarStyle"
         android:layout_marginTop="5dp"
         android:background="@color/colorInput"
         android:orientation="horizontal"
-        android:paddingStart="96dp"
         android:padding="8dp"
+        android:paddingStart="96dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatarBg"
-        app:layout_constraintTop_toBottomOf="@+id/groupPositionContainer">
+        app:layout_constraintTop_toBottomOf="@+id/groupPositionContainer"
+        tools:ignore="RtlSymmetry">
 
         <Button
             android:id="@+id/groupStrength"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="41dp"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_weight="1"
             android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:background="@drawable/selector_btn_counter"
+            android:drawableTop="@drawable/ic_sub_grey"
             android:drawablePadding="-3dp"
             android:gravity="center"
             android:paddingTop="6dp"
-            tools:text="999m"
             android:textColor="@color/mainBlack"
             android:textSize="12sp"
-            android:drawableTop="@drawable/ic_sub_grey" />
+            tools:text="999m" />
 
         <TextView
             android:id="@+id/posts_count"
@@ -104,8 +105,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_posts_blue"
             android:gravity="center"
+            app:drawableTopCompat="@drawable/ic_posts_blue"
             tools:text="2.5k" />
 
         <TextView
@@ -114,8 +115,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_comnts_blue"
             android:gravity="center"
+            app:drawableTopCompat="@drawable/ic_comnts_blue"
             tools:text="10k" />
 
     </LinearLayout>
@@ -129,30 +130,31 @@
         android:orientation="horizontal"
         android:paddingStart="82dp"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp"
         android:paddingEnd="16dp"
-        app:layout_constraintStart_toEndOf="@id/avatarBg"
+        android:paddingBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/avatarBg"
         app:layout_constraintTop_toBottomOf="@+id/groupCounts">
 
         <TextView
             android:id="@+id/dislikes_count"
+            style="@style/TextDislike16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            tools:text="150"
-            style="@style/TextDislike16sp"
-            android:drawableTop="@drawable/ic_dislike_big" />
+            app:drawableTopCompat="@drawable/ic_dislike_big"
+            tools:text="150" />
+
         <TextView
             android:id="@+id/likes_count"
+            style="@style/TextLike16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            tools:text="2k"
-            style="@style/TextLike16sp"
-            android:drawableTop="@drawable/ic_like_big" />
+            app:drawableTopCompat="@drawable/ic_like_big"
+            tools:text="2k" />
 
 
     </LinearLayout>
@@ -160,25 +162,24 @@
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:background="@color/colorInput"
+        android:gravity="center"
         android:orientation="vertical"
         android:paddingLeft="8dp"
         android:paddingTop="10dp"
         android:paddingRight="8dp"
         android:paddingBottom="12dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bgLikeDislike">
 
 
-
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:visibility="invisible">
             <!--            Когда доделают предложку постов-->
             <Button
                 android:id="@+id/proposedPost"
@@ -186,12 +187,13 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/selector_btn_create"
                 android:enabled="false"
+                android:fontFamily="@font/play"
                 android:gravity="bottom|center_horizontal"
                 android:paddingBottom="9dp"
                 android:text="@string/offered_posts"
-                android:textColor="@color/mainBlack"
-                android:fontFamily="@font/play"
-                android:textAllCaps="false"/>
+                android:textAllCaps="false"
+                android:textColor="@color/mainBlack" />
+
             <TextView
                 android:id="@+id/proposedCount"
                 android:layout_width="wrap_content"
@@ -199,14 +201,14 @@
                 android:layout_gravity="end"
                 android:layout_marginTop="19dp"
                 android:layout_marginEnd="12dp"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
                 android:background="@drawable/bg_count_propos_post"
                 android:fontFamily="@font/play_bold"
                 android:gravity="center_vertical"
-                tools:text="999k"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:textColor="@color/colorAccent"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                tools:text="999k" />
         </FrameLayout>
 
         <ViewStub
@@ -214,7 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout="@layout/layout_admin_create_post_button"/>
+            android:layout="@layout/layout_admin_create_post_button" />
 
         <ViewStub
             android:id="@+id/headGroupJoinViewStub"
@@ -231,9 +233,9 @@
         android:layout_width="@dimen/group_header_profile_view_size"
         android:layout_height="@dimen/group_header_profile_view_size"
         android:layout_marginTop="12dp"
-        app:shape_clip_drawable="@drawable/ava_group_create"
         app:layout_constraintStart_toStartOf="@id/avatarBg"
-        app:layout_constraintTop_toTopOf="@id/avatarBg">
+        app:layout_constraintTop_toTopOf="@id/avatarBg"
+        app:shape_clip_drawable="@drawable/ava_group_create">
 
         <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
             android:id="@+id/groupAvatarHolder"
@@ -246,13 +248,13 @@
         android:id="@+id/settingsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="8dp"
-        android:src="@drawable/ic_settings_blue"
+        android:layout_marginTop="12dp"
         android:background="@android:color/transparent"
+        android:contentDescription="btn"
+        android:src="@drawable/ic_settings_blue"
         app:layout_constraintStart_toStartOf="@+id/avatarBg"
-        app:layout_constraintTop_toTopOf="@+id/avatarBg"
-        android:contentDescription="btn" />
+        app:layout_constraintTop_toTopOf="@+id/avatarBg" />
 
     <TextView
         android:id="@+id/helpBtn"
@@ -264,8 +266,7 @@
         android:gravity="center"
         android:text="@string/question"
         app:layout_constraintBottom_toBottomOf="@+id/avatarBg"
-        app:layout_constraintStart_toStartOf="@id/avatarBg"
-        />
+        app:layout_constraintStart_toStartOf="@id/avatarBg" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/middle_margin"
+    android:background="@color/mainBlack"
     android:paddingStart="4dp"
-    android:paddingEnd="4dp"
-    android:background="@color/mainBlack">
+    android:paddingEnd="4dp">
 
     <ImageButton
         android:id="@+id/btnFilterPost"
@@ -16,9 +15,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_filter"
         android:src="@drawable/ic_filter"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/bgAvaGroupPost"
@@ -27,14 +27,15 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_ava_group_post"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/avaGroupPost"
         android:layout_width="57dp"
         android:layout_height="57dp"
         android:layout_marginTop="2dp"
-        android:layout_marginRight="2dp"
+        android:layout_marginEnd="2dp"
         app:layout_constraintEnd_toEndOf="@+id/bgAvaGroupPost"
         app:layout_constraintTop_toTopOf="@+id/bgAvaGroupPost"
         app:shape_clip_drawable="@drawable/ava_group_post">
@@ -43,7 +44,7 @@
             android:id="@+id/postAvatarHolder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:placeholderImage="@drawable/variant_10"/>
+            app:placeholderImage="@drawable/variant_10" />
 
     </com.github.florent37.shapeofview.ShapeOfView>
 
@@ -52,57 +53,58 @@
         android:id="@+id/headerPostFromGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_post_header"
         android:minHeight="56dp"
-        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bgAvaGroupPost"
         app:layout_constraintTop_toTopOf="@+id/bgAvaGroupPost"
-        android:background="@drawable/bg_post_header">
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:id="@+id/idpGroupPost"
+            style="@style/TextNoActive12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="16dp"
             android:layout_marginTop="8dp"
-            tools:text="IDP:1234789"
-            style="@style/TextNoActive12sp"
+            android:maxHeight="16dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            tools:text="IDP:1234789" />
 
         <TextView
             android:id="@+id/groupName"
+            style="@style/TextAccent12spBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxHeight="16dp"
             android:layout_marginTop="2dp"
-            android:layout_marginRight="8dp"
-            android:maxLines="1"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
-            tools:text="Моё очень длиннное название группы, ТОЛЬКО оxtym"
-            style="@style/TextAccent12spBold"
+            android:maxHeight="16dp"
+            android:maxLines="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settingsPost" />
+            app:layout_constraintTop_toBottomOf="@+id/settingsPost"
+            tools:text="Моё очень длиннное название группы, ТОЛЬКО оxtym" />
 
         <TextView
             android:id="@+id/btnRepost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:gravity="center"
-            android:drawableLeft="@drawable/ic_repost"
-            android:paddingLeft="4dp"
-            android:paddingBottom="4dp"
-            tools:text="999k"
-            android:clickable="true"
-            android:fontFamily="@font/play"
-            android:textSize="12dp"
-            android:textColor="@color/colorAccent"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/btn_repost"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/play"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="12dp"
+            app:drawableLeftCompat="@drawable/ic_repost"
             app:layout_constraintEnd_toStartOf="@+id/settingsPost"
             app:layout_constraintTop_toTopOf="parent"
-            />
+            tools:text="999k" />
 
         <ImageView
             android:id="@+id/settingsPost"
@@ -115,7 +117,8 @@
             android:paddingBottom="9dp"
             android:src="@drawable/ic_settings"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -124,22 +127,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:paddingLeft="8dp"
         android:background="@drawable/bg_post_elements"
+        android:paddingStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerPostFromGroup">
+        app:layout_constraintTop_toBottomOf="@+id/headerPostFromGroup"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:id="@+id/postPrescription"
             style="@style/TextNoActive14sp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="8dp"
-            tools:text="05.05.2020 в 15:00"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="05.05.2020 в 15:00" />
 
         <ImageButton
             android:id="@+id/anchorBtn"
@@ -151,32 +155,25 @@
             android:paddingRight="5dp"
             android:paddingBottom="4dp"
             android:src="@drawable/ic_anchor"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="invisible"
-            tools:visibility="visible"/>
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/postBody"
-        android:layout_width="match_parent"
+
+    <com.intergroupapplication.presentation.customview.PostCustomView
+        android:id="@+id/postCustomView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/colorInput"
         android:orientation="vertical"
         android:padding="4dp"
-        android:background="@color/colorInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postHeader">
-
-
-        <com.intergroupapplication.presentation.customview.PostCustomView
-            android:id="@+id/postCustomView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/postHeader" />
 
 
     <ImageView
@@ -186,98 +183,88 @@
         android:background="@drawable/bg_end_post"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postBody" />
+        app:layout_constraintTop_toBottomOf="@+id/postCustomView"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/countComments"
+        style="@style/TextDark12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:drawableLeft="@drawable/ic_comnts_grey"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/btn_comnts"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
-        android:paddingLeft="12dp"
+        android:paddingStart="12dp"
         android:paddingBottom="3dp"
-        tools:text="900/500"
-        style="@style/TextDark12sp"
-        android:background="@drawable/btn_comnts"
-        app:layout_constraintStart_toStartOf="@+id/endPost"
+        app:drawableLeftCompat="@drawable/ic_comnts_grey"
         app:layout_constraintBottom_toBottomOf="@+id/endPost"
-        app:layout_constraintTop_toTopOf="@+id/endPost" />
+        app:layout_constraintStart_toStartOf="@+id/endPost"
+        app:layout_constraintTop_toTopOf="@+id/endPost"
+        tools:ignore="RtlSymmetry"
+        tools:text="900/500" />
 
     <TextView
         android:id="@+id/subCommentBtn"
+        style="@style/TextAccent14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="12dp"
-        android:paddingBottom="3dp"
         android:layout_marginRight="4dp"
-        android:drawableLeft="@drawable/ic_sub_comnts_blue"
-        android:drawablePadding="5dp"
-        tools:text="150"
-        style="@style/TextAccent14sp"
         android:background="@drawable/btn_sub_comnts"
-        app:layout_constraintStart_toEndOf="@id/countComments"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingBottom="3dp"
+        app:drawableLeftCompat="@drawable/ic_sub_comnts_blue"
         app:layout_constraintBottom_toBottomOf="@+id/endPost"
-        app:layout_constraintTop_toTopOf="@+id/endPost" />
+        app:layout_constraintStart_toEndOf="@id/countComments"
+        app:layout_constraintTop_toTopOf="@+id/endPost"
+        tools:ignore="RtlSymmetry"
+        tools:text="150" />
 
     <ImageView
         android:id="@+id/bgEndPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/bg_likes_end_post"
         app:layout_constraintEnd_toEndOf="@id/endPost"
         app:layout_constraintStart_toEndOf="@+id/subCommentBtn"
-        app:layout_constraintTop_toTopOf="@+id/endPost" />
+        app:layout_constraintTop_toTopOf="@+id/endPost"
+        tools:ignore="ContentDescription" />
 
-    <FrameLayout
-        android:id="@+id/postDislikesClickArea"
+    <TextView
+        android:id="@+id/postDislike"
         android:layout_width="70dp"
-        android:layout_height="0dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="24dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="24dp"
+        android:drawablePadding="4dp"
+        android:textColor="@color/colorLightBlue"
+        android:textSize="14sp"
+        app:drawableStartCompat="@drawable/icon_dislike"
+        app:fontFamily="@font/play"
         app:layout_constraintBottom_toBottomOf="@+id/bgEndPost"
         app:layout_constraintStart_toStartOf="@+id/bgEndPost"
-        app:layout_constraintTop_toTopOf="@+id/bgEndPost">
+        app:layout_constraintTop_toTopOf="@+id/bgEndPost"
+        tools:text="150" />
 
-        <TextView
-            android:id="@+id/postDislike"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawableStart="@drawable/icon_dislike"
-            android:drawablePadding="4dp"
-            tools:text="150"
-            android:textColor="@color/colorLightBlue"
-            android:textSize="14sp"
-            app:fontFamily="@font/play" />
-    </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/postLikesClickArea"
+    <TextView
+        android:id="@+id/postLike"
         android:layout_width="70dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawablePadding="4dp"
+        android:textColor="@color/colorLightPunk"
+        android:textSize="14sp"
+        app:drawableStartCompat="@drawable/icon_like"
+        app:fontFamily="@font/play"
         app:layout_constraintBottom_toBottomOf="@+id/bgEndPost"
         app:layout_constraintEnd_toEndOf="@+id/bgEndPost"
-        app:layout_constraintTop_toTopOf="@+id/bgEndPost">
-
-
-        <TextView
-            android:id="@+id/postLike"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawableStart="@drawable/icon_like"
-            android:drawablePadding="4dp"
-            tools:text="999к"
-            android:textColor="@color/colorLightPunk"
-            android:textSize="14sp"
-            app:fontFamily="@font/play"/>
-    </FrameLayout>
-
+        app:layout_constraintTop_toTopOf="@+id/bgEndPost"
+        tools:text="999к" />
 </androidx.constraintlayout.widget.ConstraintLayout>

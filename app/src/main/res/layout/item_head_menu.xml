@@ -4,28 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="288dp"
     android:layout_height="match_parent"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/mainBlack">
-
 
     <ImageView
         android:id="@+id/bgMenuAva"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/bg_menu_ava"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/group_avatar"
         android:layout_width="@dimen/user_header_menu_view_size"
         android:layout_height="@dimen/user_header_menu_view_size"
         android:layout_marginTop="17dp"
-        app:shape_clip_drawable="@drawable/ava_group_create"
-        app:layout_constraintStart_toStartOf="@id/bgMenuAva"
         app:layout_constraintEnd_toEndOf="@+id/bgMenuAva"
-        app:layout_constraintTop_toTopOf="@id/bgMenuAva">
+        app:layout_constraintStart_toStartOf="@id/bgMenuAva"
+        app:layout_constraintTop_toTopOf="@id/bgMenuAva"
+        app:shape_clip_drawable="@drawable/ava_group_create">
 
         <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
             android:id="@+id/groupAvatarHolder"
@@ -33,13 +32,14 @@
             android:layout_height="@dimen/user_header_menu_view_size" />
 
     </com.github.florent37.shapeofview.ShapeOfView>
+
     <ImageButton
         android:id="@+id/settingsBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/middle_padding"
         android:background="@android:color/transparent"
         android:contentDescription="btn"
+        android:padding="@dimen/middle_padding"
         android:src="@drawable/ic_settings_blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -49,9 +49,9 @@
         android:id="@+id/rollUpMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/middle_padding"
         android:background="@android:color/transparent"
         android:contentDescription="btn"
+        android:padding="@dimen/middle_padding"
         android:src="@drawable/ic_roll_up_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -60,19 +60,19 @@
         android:id="@+id/reputationDislikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/middle_padding"
         android:layout_marginBottom="@dimen/little_margin"
+        android:padding="@dimen/middle_padding"
         app:layout_constraintBottom_toBottomOf="@+id/bgMenuAva"
         app:layout_constraintStart_toStartOf="@+id/bgMenuAva">
 
         <TextView
             android:id="@+id/item_group__dislike"
+            style="@style/TextDislike14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/icon_dislike"
             android:drawablePadding="4dp"
-            tools:text="150"
-            style="@style/TextDislike14sp"/>
+            app:drawableLeftCompat="@drawable/icon_dislike"
+            tools:text="150" />
     </FrameLayout>
 
     <TextView
@@ -90,22 +90,22 @@
         android:id="@+id/reputationLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/middle_padding"
-        android:layout_marginBottom="@dimen/little_margin"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="@dimen/little_margin"
+        android:padding="@dimen/middle_padding"
         app:layout_constraintBottom_toBottomOf="@+id/bgMenuAva"
         app:layout_constraintEnd_toEndOf="@+id/bgMenuAva">
 
 
         <TextView
             android:id="@+id/item_group__like"
+            style="@style/TextLike14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/icon_like"
             android:drawablePadding="4dp"
-            tools:text="999к"
-            style="@style/TextLike14sp"/>
+            app:drawableLeftCompat="@drawable/icon_like"
+            tools:text="999к" />
     </FrameLayout>
 
     <LinearLayout
@@ -114,9 +114,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="@dimen/middle_padding"
-        app:layout_constraintTop_toBottomOf="@+id/bgMenuAva"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/bgMenuAva">
 
         <!-- Если длинное то фамилия переносится на следующую строку -->
         <TextView
@@ -124,15 +124,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Моё имя Моя фамилия"/>
+            tools:text="Моё имя Моя фамилия" />
 
         <TextView
             style="@style/TextNoActive10sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_man"
             android:drawablePadding="@dimen/small_low_padding"
-            android:text="33 года"/>
+            app:drawableStartCompat="@drawable/ic_man"
+            tools:text="33 года" />
 
     </LinearLayout>
 
@@ -142,9 +142,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/middle_padding"
         android:paddingStart="@dimen/middle_padding"
         android:paddingEnd="@dimen/middle_padding"
+        android:paddingBottom="@dimen/middle_padding"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userNameMenu">
@@ -155,8 +155,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/icon_posts"
             android:drawablePadding="4dp"
+            app:drawableLeftCompat="@drawable/icon_posts"
             tools:text="@string/publications" />
 
         <TextView
@@ -164,7 +164,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="999м" />
+            tools:text="999м" />
 
         <TextView
             android:id="@+id/userComments"
@@ -172,8 +172,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/icon_comments"
             android:drawablePadding="4dp"
+            app:drawableLeftCompat="@drawable/icon_comments"
             tools:text="@string/comments" />
 
         <TextView
@@ -181,19 +181,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="194к" />
+            tools:text="194к" />
     </LinearLayout>
 
     <TextView
         style="@style/TextNoActive12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_menu_item"
         android:gravity="center_vertical"
         android:paddingStart="@dimen/high_big_padding"
         android:paddingEnd="@dimen/big_padding"
-        android:background="@drawable/bg_menu_item"
-        android:drawableEnd="@drawable/ic_menu_news"
-        android:text="Новости"
+        android:text="@string/news"
+        app:drawableEndCompat="@drawable/ic_menu_news"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userCounts" />

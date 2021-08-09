@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginVertical="2dp"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/mainBlack">
 
     <View
@@ -15,9 +15,9 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:background="@drawable/bg_colorinput_radius_4dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/item_group__bg_list"
@@ -27,13 +27,6 @@
         android:background="@drawable/bg_list"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bgListResize" />
-
-    <!--com.github.florent37.shapeofview.shapes.PolygonView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:shape_polygon_noOfSides="4">
-
-    </com.github.florent37.shapeofview.shapes.PolygonView-->
 
     <com.github.florent37.shapeofview.ShapeOfView
         android:id="@+id/group_avatar"
@@ -51,67 +44,44 @@
 
     </com.github.florent37.shapeofview.ShapeOfView>
 
-<!--
-    <ImageView
-        android:id="@+id/group_avatar"
-        android:layout_width="@dimen/group_in_list_profile_view_size"
-        android:layout_height="@dimen/group_in_list_profile_view_size"
-        android:src="@drawable/avatar_group_list"
-        android:layout_marginStart="@dimen/small_margin"
-        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"/>
--->
-<!--
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/groupAvatarHolder"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:foreground="@drawable/ava_foreground_l"
-        app:actualImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/variant_10"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/item_group__bg_list"
-        app:layout_constraintStart_toStartOf="@+id/item_group__bg_list"
-        app:layout_constraintTop_toTopOf="@+id/item_group__bg_list"/>
--->
 
     <TextView
         android:id="@+id/item_group__text_age"
+        style="@style/TextDark12spBold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="12+"
-        android:padding="3dp"
-        style="@style/TextDark12spBold"
         android:background="@drawable/bg_age12"
-        app:layout_constraintTop_toTopOf="@+id/bgListResize"
-        app:layout_constraintStart_toStartOf="@+id/bgListResize"/>
+        android:padding="3dp"
+        android:text="@string/_12"
+        app:layout_constraintStart_toStartOf="@+id/bgListResize"
+        app:layout_constraintTop_toTopOf="@+id/bgListResize" />
 
     <ImageView
         android:id="@+id/item_group__lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_open"
+        android:background="@drawable/bg_unlock"
+        android:paddingStart="4dp"
         android:paddingTop="19dp"
         android:paddingEnd="22dp"
         android:paddingBottom="4dp"
-        android:paddingLeft="4dp"
-        android:background="@drawable/bg_unlock"
+        android:src="@drawable/icon_open"
         app:layout_constraintBottom_toBottomOf="@+id/bgListResize"
-        app:layout_constraintStart_toStartOf="@+id/bgListResize" />
+        app:layout_constraintStart_toStartOf="@+id/bgListResize"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/item_group__list_header"
+        style="@style/TextAccent16sp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="8dp"
-        android:text="Искусство"
-        style="@style/TextAccent16sp"
-        android:maxLines="1"
         android:ellipsize="end"
-        app:layout_constraintStart_toEndOf="@+id/group_avatar"
+        android:maxLines="1"
+        android:text="@string/art"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/group_avatar"
         app:layout_constraintTop_toTopOf="@+id/bgListResize" />
 
     <LinearLayout
@@ -127,38 +97,41 @@
 
         <TextView
             android:id="@+id/item_group__subscribers"
+            style="@style/TextNoActive14sp"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/icon_subscribers"
             android:drawablePadding="4dp"
-            android:paddingLeft="4dp"
-            android:text="500"
-            style="@style/TextNoActive14sp"/>
+            android:paddingStart="4dp"
+            app:drawableLeftCompat="@drawable/icon_subscribers"
+            tools:ignore="RtlSymmetry"
+            tools:text="500" />
 
         <TextView
             android:id="@+id/item_group__posts"
+            style="@style/TextNoActive14sp"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/icon_posts"
             android:drawablePadding="4dp"
-            android:paddingLeft="4dp"
-            android:text="1500"
-            style="@style/TextNoActive14sp"/>
+            android:paddingStart="4dp"
+            app:drawableLeftCompat="@drawable/icon_posts"
+            tools:ignore="RtlSymmetry"
+            tools:text="1500" />
 
         <TextView
             android:id="@+id/item_group__comments"
+            style="@style/TextNoActive14sp"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/icon_comments"
             android:drawablePadding="4dp"
-            android:paddingLeft="4dp"
-            android:text="10к"
-            style="@style/TextNoActive14sp" />
+            android:paddingStart="4dp"
+            app:drawableLeftCompat="@drawable/icon_comments"
+            tools:ignore="RtlSymmetry"
+            tools:text="10к" />
     </LinearLayout>
 
     <FrameLayout
@@ -171,13 +144,13 @@
 
         <TextView
             android:id="@+id/item_group__dislike"
+            style="@style/TextDislike14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:drawableLeft="@drawable/icon_dislike"
+            android:layout_marginStart="4dp"
             android:drawablePadding="4dp"
-            android:text="150"
-            style="@style/TextDislike14sp"/>
+            app:drawableLeftCompat="@drawable/icon_dislike"
+            tools:text="150" />
     </FrameLayout>
 
     <FrameLayout
@@ -185,7 +158,7 @@
         android:layout_width="64dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintEnd_toStartOf="@+id/item_group__text_sub"
         app:layout_constraintStart_toEndOf="@+id/item_group__dislikes"
         app:layout_constraintTop_toTopOf="@+id/item_group__dislikes">
@@ -193,24 +166,24 @@
 
         <TextView
             android:id="@+id/item_group__like"
+            style="@style/TextLike14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:drawableLeft="@drawable/icon_like"
+            android:layout_marginStart="4dp"
             android:drawablePadding="4dp"
-            android:text="999к"
-            style="@style/TextLike14sp"/>
+            app:drawableLeftCompat="@drawable/icon_like"
+            tools:text="999к" />
     </FrameLayout>
 
     <TextView
         android:id="@+id/item_group__text_sub"
+        style="@style/TextDark12sp"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/btn_sub"
         android:paddingBottom="3dp"
-        android:layout_marginRight="8dp"
-        android:text="Подписаться"
-        style="@style/TextDark12sp"
+        android:text="@string/subscribe"
         app:layout_constraintBottom_toBottomOf="@+id/bgListResize"
         app:layout_constraintEnd_toEndOf="@+id/item_group__bg_list"
         app:layout_constraintTop_toBottomOf="@+id/item_group__sub" />
@@ -220,10 +193,9 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
-        app:layout_constraintTop_toTopOf="@+id/item_group__text_sub"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/item_group__text_sub"
-        android:visibility="invisible"/>
-
+        app:layout_constraintTop_toTopOf="@+id/item_group__text_sub" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

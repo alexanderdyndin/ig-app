@@ -257,4 +257,7 @@
     <string name="user_can_still_add_to_black_list">* Users will still be able to add you to the blacklist</string>
     <string name="download_audio_and_video">Downloading audio and video files</string>
     <string name="you_can_download_files">You can download any file from your playlist, publications or comments of other users and groups</string>
+    <string name="all_time">During all this time</string>
+    <string name="subscribers">Followers</string>
+    <string name="art">Art</string>
 </resources>
