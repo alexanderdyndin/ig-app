@@ -25,6 +25,7 @@ import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentLogin2Binding
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.SocialAuthEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -176,6 +177,10 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
             // Signed in successfully, show authenticated UI.
             //updateUI(account)
+            account.idToken?.let {
+                presenter.performLogin(SocialAuthEntity(it))
+            }
+            Toast.makeText(requireContext(), account.idToken, Toast.LENGTH_SHORT).show()
             Toast.makeText(requireContext(), account.displayName, Toast.LENGTH_SHORT).show()
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.

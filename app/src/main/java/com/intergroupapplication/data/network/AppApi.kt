@@ -196,4 +196,7 @@ interface AppApi {
     @DELETE("groups/bells/{post__id}/")
     fun deleteBell(@Path("post__id") postId: String): Completable
 
+    @POST("social_auth/google/")
+    fun socialAuth(@Body socialAuthModel: SocialAuthModel): Single<TokenModel>
+
 }

@@ -8,7 +8,7 @@ buildscript {
     }
     val kotlin_version: String by extra
     val nav_version: String by extra
-    val tools_version = "4.2.1"
+    val tools_version = "4.2.2"
     val gms_version = "4.3.5"
     val dokka_version = "0.9.17"
 
