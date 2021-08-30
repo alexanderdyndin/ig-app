@@ -106,8 +106,8 @@ android {
         }
 
         getByName("release") {
-            isMinifyEnabled = true
-            isDebuggable = false
+            isMinifyEnabled = false
+            isDebuggable = true
             proguardFiles.add(getDefaultProguardFile("proguard-android.txt"))
             proguardFiles.add(file("proguard-rules.pro"))
             //proguardFiles.addAll(fileTree("proguard").toMutableList())
@@ -181,23 +181,23 @@ dependencies {
 
     //tests
     val junitVersion = "4.13.2"
-    val mockitoVersion = "2.19.0"
-    val mockitoKotlinVersion = "1.5.0"
-    val assertVersion = "3.19.0"
+    val mockitoVersion = "3.11.2"
+    val mockitoKotlinVersion = "1.6.0"
+    val assertVersion = "3.20.2"
     val junitTestVersion = "1.1.2"
-    val espressoVersion = "3.3.0"
+    val espressoVersion = "3.4.0"
 
     val moxyVersion = "2.2.2"
 
     //networking
     val retrofitVersion = "2.9.0"
-    val loggingInterceptorVersion = "4.9.0"
+    val loggingInterceptorVersion = "5.0.0-alpha.2"
     val androidNetworkingVersion = "1.0.2"
 
     val daggerVersion = "2.37"
 
     //rx
-    val rxJavaVersion = "2.2.6"
+    val rxJavaVersion = "2.2.21"
     val rxAndroidVersion = "2.1.1"
     val rxBindingVersion = "2.2.0"
     val rxPaparazzoVersion = "0.6.1-2.x"
@@ -221,22 +221,22 @@ dependencies {
     val circleProgressBarVersion = "1.2.2"
     val refreshVersion = "1.2.3@aar"
     val browserVersion = "1.3.0"
-    val materialVersion = "1.3.0"
+    val materialVersion = "1.4.0"
 
     val linkBuilderVersion = "2.0.5"
 
-    val firebaseVersion = "18.0.2"
-    val firebaseMessagingVersion = "21.0.1"
+    val firebaseVersion = "19.0.0"
+    val firebaseMessagingVersion = "22.0.0"
 
-    val adsVersion = "19.7.0"
+    val adsVersion = "20.2.0"
     val gmsVersion = "17.2.1"
 
     val compressorVersion = "2.1.0"
 
     val mediaVersion = "1.3.1"
 
-    val activityVersion = "1.3.0-beta01"
-    val fragmentVersion = "1.3.4"
+    val activityVersion = "1.3.0-rc01"
+    val fragmentVersion = "1.3.5"
 
     val lifecycleExtensionsVersion = "2.2.0"
 
@@ -262,7 +262,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertVersion")
 
     //Kotlin
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 
     //Reactive

@@ -42,7 +42,7 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         return Pager(
                 config = PagingConfig(
                         pageSize = PAGE_SIZE,
-                        prefetchDistance = 5),
+                        prefetchDistance = 10),
                 pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
         ).flowable
     }
@@ -51,7 +51,7 @@ class GroupPostsRepository @Inject constructor(private val api: AppApi,
         return Pager(
                 config = PagingConfig(
                         pageSize = PAGE_SIZE,
-                        prefetchDistance = 5),
+                        prefetchDistance = 10),
                 pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
         ).flowable
     }

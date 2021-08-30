@@ -2,6 +2,7 @@ package com.intergroupapplication.presentation.feature.login.presenter
 
 import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.SocialAuthEntity
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.LoginGateway
 import com.intergroupapplication.domain.usecase.UserProfileUseCase
@@ -25,13 +26,27 @@ class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
 
     fun performLogin(loginEntity: LoginEntity) {
         compositeDisposable.add(loginGateway.performLogin(loginEntity)
-                .flatMap { userProfileUseCase.getUserProfile() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe({ viewState.login() }) {
-                    errorHandler.handle(it)
-                })
+            .flatMap { userProfileUseCase.getUserProfile() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+
+            .handleLoading(viewState)
+            .subscribe({ viewState.login() }) {
+                errorHandler.handle(it)
+            })
+    }
+
+    fun performLogin(socialAuthEntity: SocialAuthEntity) {
+        compositeDisposable.add(loginGateway.performLogin(socialAuthEntity)
+            .flatMap { userProfileUseCase.getUserProfile() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .handleLoading(viewState)
+            .subscribe({
+                viewState.login()
+            }) {
+                errorHandler.handle(it)
+            })
     }
 
     fun extractDeviceInfo() {
