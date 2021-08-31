@@ -221,4 +221,6 @@
     </string-array>
     <string name="reset_filter">Reset</string>
     <string name="apply_filter">Apply</string>
+    <string name="user_can_not_fount_your_group">User can not found your group</string>
+    <string name="add">Add</string>
 </resources>

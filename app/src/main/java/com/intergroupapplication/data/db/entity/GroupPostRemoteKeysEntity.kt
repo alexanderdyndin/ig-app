@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "group_post_remote_keys")
-data class GroupPostRemoteKeysModel(
+data class GroupPostRemoteKeysEntity(
         @PrimaryKey
         @ColumnInfo(name = "group_id")
         val groupId: String,
