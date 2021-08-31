@@ -173,6 +173,7 @@ detekt {
 dependencies {
 
     implementation("com.google.firebase:firebase-invites:17.0.0")
+    implementation("com.google.firebase:firebase-dynamic-links-ktx:20.1.1")
     val kotlin_version = project.rootProject.ext["kotlin_version"]
     val nav_version = project.rootProject.ext["nav_version"]
     val jakeWhartonInstaTime = project.rootProject.ext["jakeWhartonInstaTime"]
@@ -365,7 +366,7 @@ dependencies {
 
     implementation("com.github.florent37:shapeofview:1.4.7")
 
-    implementation("androidx.viewpager2:viewpager2:1.1.0-alpha01")
+    implementation("androidx.viewpager2:viewpager2:1.1.0-beta01")
     //appodeal
     implementation("com.appodeal.ads:sdk:2.9.2.+")
     implementation("com.explorestack:consent:1.0.2")
@@ -383,10 +384,12 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     // To use only without reflection variants of viewBinding
-    implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.6")
+    implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.7")
 
     implementation("com.github.Omega-R.OmegaIntentBuilder:core:1.1.5")
     // For extras
     implementation("com.github.Omega-R.OmegaIntentBuilder:annotations:1.1.5")
     kapt("com.github.Omega-R.OmegaIntentBuilder:processor:1.1.5")
+
+    implementation("org.jsoup:jsoup:1.13.1")
 }

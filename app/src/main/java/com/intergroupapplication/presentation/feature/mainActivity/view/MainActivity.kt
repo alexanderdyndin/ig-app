@@ -7,7 +7,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Typeface
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.net.Uri
@@ -22,7 +21,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
-import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import androidx.navigation.findNavController
 import com.android.billingclient.api.*
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
@@ -33,6 +31,7 @@ import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.initializators.InitializerLocal
+import com.intergroupapplication.presentation.base.ImageUploadingState
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -44,7 +43,6 @@ import com.intergroupapplication.presentation.feature.mainActivity.viewModel.Mai
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.mikepenz.materialdrawer.Drawer
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import com.yalantis.ucrop.UCrop
@@ -65,11 +63,9 @@ import java.net.UnknownHostException
 import java.text.DateFormat
 import java.util.*
 import java.util.Calendar.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.coroutines.suspendCoroutine
-import kotlin.math.abs
 
 
 class MainActivity : FragmentActivity() {
@@ -125,6 +121,10 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var navController: NavController
 
+    private lateinit var lifecycleDisposable: CompositeDisposable
+
+    private var lastUploadedAvatar: String? = null
+
     /**
      *  Billing
      */
@@ -158,6 +158,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
+        lifecycleDisposable = CompositeDisposable()
         //Appodeal.setTesting(true)
         viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
         initializerAppodeal.initialize()
@@ -183,13 +184,6 @@ class MainActivity : FragmentActivity() {
     fun createDrawer() {
         navController.navigate(R.id.action_global_newsFragment2)
         val viewDrawer = layoutInflater.inflate(R.layout.layout_left_drawer_header, findViewById(R.id.navigationCoordinator), false)
-        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-            if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                    mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
-            }
-        }
         val navRecycler = viewDrawer.findViewById<RecyclerView>(R.id.navigationRecycler)
         navRecycler.adapter = navigationAdapter
         navRecycler.itemAnimator = null
@@ -216,17 +210,28 @@ class MainActivity : FragmentActivity() {
             sliderBackgroundColorRes = R.color.mainBlack
             headerView = viewDrawer
             translucentStatusBar = true
-            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                    || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                        mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+            profileAvatarHolder.setOnClickListener {
+                when (profileAvatarHolder.state) {
+                    AvatarImageUploadingView.AvatarUploadingState.UPLOADED -> {
+                        dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                            mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+                    }
+                    AvatarImageUploadingView.AvatarUploadingState.ERROR -> {
+                        lastUploadedAvatar?.let {
+                            viewModel.uploadImageFromGallery(it)
+                        }
+                    }
+                    AvatarImageUploadingView.AvatarUploadingState.NONE -> {
+                        dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
+                            mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+                    }
+                    else -> {}
                 }
             }
         }.apply {
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
         }
-        compositeDisposable.add(viewModel.getUserProfile()
+        lifecycleDisposable.add(viewModel.getUserProfile()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ userEntity ->
@@ -245,10 +250,14 @@ class MainActivity : FragmentActivity() {
                 }
                 viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
                 viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
-                viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text = "0"
-                viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text = "0"
-                viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text = "0"
-                viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text = "0"
+                viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text =
+                    userEntity.stats.posts.toString()
+                viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text =
+                    userEntity.stats.comments.toString()
+                viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text =
+                    userEntity.stats.dislikes.toString()
+                viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text =
+                    userEntity.stats.likes.toString()
                 doOrIfNull(userEntity.avatar,
                     { profileAvatarHolder.showAvatar(it) },
                     { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
@@ -256,9 +265,15 @@ class MainActivity : FragmentActivity() {
                 profileAvatarHolder.showImageUploadingError()
                 errorHandler.handle(it)
             }))
-        viewModel.imageUploadingState.observe(this, {
-            profileAvatarHolder.imageState = it
-        })
+        lifecycleDisposable.add(viewModel.imageUploadingState
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                profileAvatarHolder.imageState = it
+            }, {
+                errorHandler.handle(it)
+                profileAvatarHolder.imageState = ImageUploadingState.ImageUploadingError(exception = it)
+            })
+        )
     }
 
     override fun onStart() {
@@ -508,6 +523,7 @@ class MainActivity : FragmentActivity() {
             }
             .filter { it.isNotEmpty() }
             .subscribe {
+                lastUploadedAvatar = it
                 it?.let {
                     viewModel.uploadImageFromGallery(it)
                 }
@@ -524,6 +540,7 @@ class MainActivity : FragmentActivity() {
             }
             .filter { it.isNotEmpty() }
             .subscribe({
+                lastUploadedAvatar = it
                 it?.let {
                     viewModel.uploadImageFromGallery(it)
                 }
@@ -548,5 +565,10 @@ class MainActivity : FragmentActivity() {
         val cal: Calendar = Calendar.getInstance(Locale.US)
         cal.time = date
         return cal
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleDisposable.dispose()
     }
 }

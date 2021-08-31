@@ -85,7 +85,8 @@ FakeData {
     fun getGroupInPostEntity() = GroupInPostEntity("1", "Cloud Nine", null)
 
     fun getUserAdminRole() = UserEntity("1", "dude", "duck", "2018-03-03", "male", "cool@mail.ru",
-            false, false, null)
+            false, false, null, StatsEntity(1,1,1,1)
+    )
 
     fun getGroupForUserAdmin(): GroupEntity.Group = GroupEntity.Group("1", "15", "0",
             "1110", "44440", "9", "",
@@ -152,7 +153,7 @@ FakeData {
 
     fun getUserEntity(): UserEntity =
             UserEntity("0", "dude", "duck", "2018-03-03", "male", "cool@mail.ru",
-                    false, false, null)
+                    false, false, null, StatsEntity(1,1,1,1))
 
     fun getCreateCommentEntity(): CreateCommentEntity =
             CreateCommentEntity("My  New Comment", listOf(), listOf(), listOf())

@@ -11,6 +11,8 @@ import com.intergroupapplication.domain.gateway.AvatarGateway
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.presentation.base.ImageUploadingState
 import id.zelory.compressor.Compressor
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import java.io.File
 
 
@@ -25,7 +27,7 @@ class AvatarRepository @Inject constructor(private val context: Context,
         const val FULL_UPLOADED_PROGRESS = 100F
     }
 
-   override fun uploadToAws(path: String, groupId: String?): Observable<ImageUploadingState> {
+   override fun uploadToAws(path: String, groupId: String?): Flowable<ImageUploadingState> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
         return appApi.uploadPhoto(file.extension, groupId)
@@ -49,7 +51,7 @@ class AvatarRepository @Inject constructor(private val context: Context,
                     }
                 }
                 .doOnDispose { AndroidNetworking.cancelAll() }
-            }
+            }.toFlowable(BackpressureStrategy.LATEST)
         }
 
 

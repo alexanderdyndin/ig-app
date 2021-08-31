@@ -51,7 +51,6 @@ class NetworkModule {
     @TokenInterceptor
     fun provideTokenInterceptor(sessionStorage: UserSession): Interceptor =
             Interceptor { chain ->
-                val token = FirebaseMessaging.getInstance().token.result
                 val imei = sessionStorage.deviceInfoEntity?.imei ?: IMEI
                 val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: SERIAL
                 val builder = chain.request()
@@ -62,7 +61,7 @@ class NetworkModule {
                     builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
                 } else {
                     builder.addHeader(DEVICE_ID, sessionStorage.firebaseToken?.token
-                            ?: token )
+                            ?: FirebaseMessaging.getInstance().token.result )
                 }
                 val newRequest = builder.build()
                 chain.proceed(newRequest)
@@ -193,5 +192,8 @@ class NetworkModule {
             .baseUrl(BuildConfig.BASE_URL)
             .build().create(AppApi::class.java)
 
+    @PerApplication
+    @Provides
+    fun provideAgreementsApi(): AgreementsApi = AgreementsApi()
 
 }

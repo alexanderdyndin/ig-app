@@ -1,12 +1,14 @@
 package com.intergroupapplication.presentation.feature.agreements.view
 
 import android.Manifest
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
@@ -17,9 +19,11 @@ import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.agreements.presenter.AgreementsPresenter
+import com.intergroupapplication.presentation.feature.agreements.viewmodel.AgreementsViewModel
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import timber.log.Timber
@@ -47,13 +51,17 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 
     private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
 
-
     @Inject
-    @InjectPresenter
-    lateinit var presenter: AgreementsPresenter
+    lateinit var modelFactory: ViewModelProvider.Factory
 
-    @ProvidePresenter
-    fun providePresenter(): AgreementsPresenter = presenter
+    private lateinit var viewModel: AgreementsViewModel
+
+//    @Inject
+//    @InjectPresenter
+//    lateinit var presenter: AgreementsPresenter
+
+//    @ProvidePresenter
+//    fun providePresenter(): AgreementsPresenter = presenter
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_agreements2
@@ -70,6 +78,11 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     private lateinit var userAgreement: TextView
     private lateinit var copyrightAgreement: TextView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, modelFactory)[AgreementsViewModel::class.java]
+    }
+
     override fun viewCreated() {
         btnNext = viewBinding.btnNext
         progressBar = viewBinding.loader.progressBar
@@ -82,12 +95,14 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         privacyPolicy = viewBinding.privacyPolicy
         userAgreement = viewBinding.userAgreement
         copyrightAgreement = viewBinding.copyrightAgreement
+        initObservers()
         initCheckBox()
         initBtn()
         clicks(btnNext)
                 .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { presenter.next() }.let(compositeDisposable::add)
+                .subscribe { viewModel.next() }.let(compositeDisposable::add)
+
     }
 
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
@@ -131,6 +146,24 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
             val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
         }.also { compositeDisposable.add(it) }
+    }
+
+    private fun initObservers() {
+        compositeDisposable.add(viewModel.isLoading
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showLoading(it) })
+
+        compositeDisposable.add(viewModel.isNext
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (it) {
+                    toSplash()
+                }
+            }, {
+                errorHandler.handle(it)
+            }))
     }
 
 

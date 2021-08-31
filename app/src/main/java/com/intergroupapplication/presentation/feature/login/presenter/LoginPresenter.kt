@@ -29,7 +29,6 @@ class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
             .flatMap { userProfileUseCase.getUserProfile() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-
             .handleLoading(viewState)
             .subscribe({ viewState.login() }) {
                 errorHandler.handle(it)
