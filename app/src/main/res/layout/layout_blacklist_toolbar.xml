@@ -49,13 +49,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_publish_act"
+            android:drawableRight="@drawable/ic_plus_black"
             android:paddingEnd="4dp"
             android:text="@string/add_by_id"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/toolbarBackAction"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/toolbarBackAction"
-            app:drawableRightCompat="@drawable/ic_plus_black"
             tools:ignore="RtlSymmetry" />
 
 

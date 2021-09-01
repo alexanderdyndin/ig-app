@@ -103,7 +103,7 @@
             android:layout_weight="1"
             android:drawablePadding="4dp"
             android:paddingStart="4dp"
-            app:drawableLeftCompat="@drawable/icon_subscribers"
+            android:drawableLeft="@drawable/icon_subscribers"
             tools:ignore="RtlSymmetry"
             tools:text="500" />
 
@@ -116,7 +116,7 @@
             android:layout_weight="1"
             android:drawablePadding="4dp"
             android:paddingStart="4dp"
-            app:drawableLeftCompat="@drawable/icon_posts"
+            android:drawableLeft="@drawable/icon_posts"
             tools:ignore="RtlSymmetry"
             tools:text="1500" />
 
@@ -129,7 +129,7 @@
             android:layout_weight="1"
             android:drawablePadding="4dp"
             android:paddingStart="4dp"
-            app:drawableLeftCompat="@drawable/icon_comments"
+            android:drawableLeft="@drawable/icon_comments"
             tools:ignore="RtlSymmetry"
             tools:text="10к" />
     </LinearLayout>
@@ -149,7 +149,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:drawablePadding="4dp"
-            app:drawableLeftCompat="@drawable/icon_dislike"
+            android:drawableLeft="@drawable/icon_dislike"
             tools:text="150" />
     </FrameLayout>
 
@@ -171,7 +171,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:drawablePadding="4dp"
-            app:drawableLeftCompat="@drawable/icon_like"
+            android:drawableLeft="@drawable/icon_like"
             tools:text="999к" />
     </FrameLayout>
 

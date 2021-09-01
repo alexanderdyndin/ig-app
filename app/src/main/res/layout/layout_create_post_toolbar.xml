@@ -5,12 +5,13 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="32dp"
     android:background="@color/mainBlack"
+    android:minHeight="32dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:popupTheme="@style/ToolbarPopupTheme"
     app:contentInsetLeft="0dp"
-    app:contentInsetStart="0dp">
+    app:contentInsetStart="0dp"
+    app:popupTheme="@style/ToolbarPopupTheme">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,13 +31,13 @@
             android:id="@+id/toolbarTittle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:text="@string/create_new_post"
+            android:textAlignment="center"
             android:textColor="@color/colorAccent"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textAlignment="center"
             app:fontFamily="@font/play_bold"
-            android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toBottomOf="@+id/toolbarBackAction"
             app:layout_constraintEnd_toStartOf="@+id/btnPublish"
             app:layout_constraintStart_toEndOf="@+id/toolbarBackAction"
@@ -48,11 +49,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_publish"
+            android:drawableRight="@drawable/ic_check_black"
             android:paddingEnd="4dp"
             android:text="@string/publish"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:drawableRightCompat="@drawable/ic_check_black"
             tools:ignore="RtlSymmetry" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

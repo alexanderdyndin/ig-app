@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/registrationCoordinator"
@@ -122,8 +121,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/middle_margin"
+                android:drawableStart="@drawable/ic_password_visible"
                 android:padding="@dimen/middle_padding"
-                app:drawableStartCompat="@drawable/ic_password_visible"
                 app:layout_constraintBottom_toBottomOf="@+id/etPassword"
                 app:layout_constraintEnd_toEndOf="@+id/etPassword"
                 app:layout_constraintTop_toTopOf="@+id/etPassword" />
@@ -171,8 +170,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/middle_margin"
+                android:drawableStart="@drawable/ic_password_visible"
                 android:padding="@dimen/middle_padding"
-                app:drawableStartCompat="@drawable/ic_password_visible"
                 app:layout_constraintBottom_toBottomOf="@+id/etDoublePassword"
                 app:layout_constraintEnd_toEndOf="@+id/etDoublePassword"
                 app:layout_constraintTop_toTopOf="@+id/etDoublePassword" />

@@ -102,6 +102,7 @@
                 android:layout_marginStart="@dimen/very_big_margin"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/selector_add_avatar"
+                android:drawableStart="@drawable/selector_addava_drawleft"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/play"
                 android:gravity="center_vertical"
@@ -110,7 +111,6 @@
                 android:text="@string/add_photo"
                 android:textColor="@color/selector_addava_color"
                 android:textSize="12sp"
-                app:drawableStartCompat="@drawable/selector_addava_drawleft"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/userCreate_bg" />
 
@@ -194,7 +194,7 @@
                 <com.intergroupapplication.presentation.customview.AvatarImageUploadingView
                     android:id="@+id/userAvatarHolder"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </com.github.florent37.shapeofview.ShapeOfView>
 
@@ -404,7 +404,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/cityBg"
                 app:layout_constraintEnd_toEndOf="@+id/cityBg"
                 app:layout_constraintStart_toStartOf="@+id/cityBg"
-                app:layout_constraintTop_toTopOf="@id/cityBg"/>
+                app:layout_constraintTop_toTopOf="@id/cityBg" />
 
             <ImageView
                 android:id="@+id/lineCity"
@@ -437,7 +437,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/langBg"
                 app:layout_constraintEnd_toEndOf="@+id/langBg"
                 app:layout_constraintStart_toStartOf="@+id/langBg"
-                app:layout_constraintTop_toTopOf="@id/langBg"/>
+                app:layout_constraintTop_toTopOf="@id/langBg" />
 
             <ImageView
                 android:id="@+id/lineLang"
@@ -470,7 +470,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/familyBg"
                 app:layout_constraintEnd_toEndOf="@+id/familyBg"
                 app:layout_constraintStart_toStartOf="@+id/familyBg"
-                app:layout_constraintTop_toTopOf="@id/familyBg"/>
+                app:layout_constraintTop_toTopOf="@id/familyBg" />
 
             <ImageView
                 android:id="@+id/lineFamily"
@@ -485,29 +485,29 @@
 
             <include
                 android:id="@+id/loader"
-                android:layout_height="50dp"
-                android:layout_width="50dp"
                 layout="@layout/layout_auth_loader_big"
-                app:layout_constraintTop_toTopOf="@id/createGroup"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 app:layout_constraintBottom_toBottomOf="@id/createGroup"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="@id/createGroup" />
 
             <Button
                 android:id="@+id/createGroup"
                 style="@style/TextGrey16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_btn_big"
-                android:paddingTop="@dimen/middle_padding"
                 android:layout_marginStart="@dimen/low_big_margin"
                 android:layout_marginEnd="@dimen/low_big_margin"
                 android:layout_marginBottom="20dp"
+                android:background="@drawable/selector_btn_big"
+                android:paddingTop="@dimen/middle_padding"
                 android:text="@string/save_settings"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <View
                 android:layout_width="match_parent"

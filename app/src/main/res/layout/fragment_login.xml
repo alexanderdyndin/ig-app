@@ -101,8 +101,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/middle_margin"
+                android:drawableStart="@drawable/ic_password_visible"
                 android:padding="@dimen/middle_padding"
-                app:drawableStartCompat="@drawable/ic_password_visible"
                 app:layout_constraintBottom_toBottomOf="@+id/password"
                 app:layout_constraintEnd_toEndOf="@+id/password"
                 app:layout_constraintTop_toTopOf="@+id/password" />

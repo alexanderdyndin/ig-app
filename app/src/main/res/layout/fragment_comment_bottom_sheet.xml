@@ -237,7 +237,7 @@
             android:drawablePadding="2dp"
             android:gravity="center"
             android:text="@string/from_gallery"
-            app:drawableTopCompat="@drawable/selector_add_files_gallery" />
+            android:drawableTop="@drawable/selector_add_files_gallery" />
 
         <TextView
             android:id="@+id/videoButton"
@@ -248,7 +248,7 @@
             android:drawablePadding="2dp"
             android:gravity="center"
             android:text="@string/video"
-            app:drawableTopCompat="@drawable/selector_add_files_video" />
+            android:drawableTop="@drawable/selector_add_files_video" />
 
         <TextView
             android:id="@+id/musicButton"
@@ -259,7 +259,7 @@
             android:drawablePadding="2dp"
             android:gravity="center"
             android:text="@string/music"
-            app:drawableTopCompat="@drawable/selector_add_files_music" />
+            android:drawableTop="@drawable/selector_add_files_music" />
 
         <TextView
             android:id="@+id/playlistButton"
@@ -270,7 +270,7 @@
             android:drawablePadding="2dp"
             android:gravity="center"
             android:text="@string/playlist"
-            app:drawableTopCompat="@drawable/selector_add_files_playlist" />
+            android:drawableTop="@drawable/selector_add_files_playlist" />
 
 
     </LinearLayout>

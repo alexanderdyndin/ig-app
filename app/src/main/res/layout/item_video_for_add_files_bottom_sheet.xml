@@ -40,11 +40,11 @@
             android:layout_gravity="bottom"
             android:layout_margin="8dp"
             android:background="@drawable/bg_shadow"
+            android:drawableStart="@drawable/ic_video_play_mini"
             android:drawablePadding="4dp"
             android:gravity="center"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
-            app:drawableStartCompat="@drawable/ic_video_play_mini"
             tools:text="01:57" />
 
     </com.github.florent37.shapeofview.shapes.CutCornerView>

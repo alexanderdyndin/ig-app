@@ -104,6 +104,7 @@
                 android:layout_marginStart="@dimen/very_big_margin"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/selector_add_avatar"
+                android:drawableLeft="@drawable/selector_addava_drawleft"
                 android:drawablePadding="8dp"
                 android:fontFamily="@font/play"
                 android:gravity="center_vertical"
@@ -112,7 +113,6 @@
                 android:text="@string/group_avatar_add"
                 android:textColor="@color/selector_addava_color"
                 android:textSize="12sp"
-                app:drawableLeftCompat="@drawable/selector_addava_drawleft"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/groupCreate_bg" />
 
@@ -394,7 +394,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="15dp"
-                        app:drawableLeftCompat="@drawable/selector_btn_plus"
+                        android:drawableLeft="@drawable/selector_btn_plus"
                         tools:ignore="RelativeOverlap" />
 
                 </RelativeLayout>
@@ -441,11 +441,11 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:background="@android:color/transparent"
+                    android:drawableRight="@drawable/ic_write"
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:text="@string/group_description"
-                    app:drawableRightCompat="@drawable/ic_write" />
+                    android:text="@string/group_description" />
 
                 <LinearLayout
                     android:id="@+id/groupCreate__descContainer"
@@ -509,11 +509,11 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:background="@android:color/transparent"
+                    android:drawableRight="@drawable/ic_write"
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:text="@string/group_rules"
-                    app:drawableRightCompat="@drawable/ic_write" />
+                    android:text="@string/group_rules" />
 
                 <LinearLayout
                     android:id="@+id/groupCreate__ruleContainer"

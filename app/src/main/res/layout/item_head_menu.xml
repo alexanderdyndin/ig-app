@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
-            app:drawableLeftCompat="@drawable/icon_dislike"
+            android:drawableLeft="@drawable/icon_dislike"
             tools:text="150" />
     </FrameLayout>
 
@@ -104,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
-            app:drawableLeftCompat="@drawable/icon_like"
+            android:drawableLeft="@drawable/icon_like"
             tools:text="999к" />
     </FrameLayout>
 
@@ -131,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/small_low_padding"
-            app:drawableStartCompat="@drawable/ic_man"
+            android:drawableStart="@drawable/ic_man"
             tools:text="33 года" />
 
     </LinearLayout>
@@ -156,7 +156,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="4dp"
-            app:drawableLeftCompat="@drawable/icon_posts"
+            android:drawableLeft="@drawable/icon_posts"
             tools:text="@string/publications" />
 
         <TextView
@@ -173,7 +173,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawablePadding="4dp"
-            app:drawableLeftCompat="@drawable/icon_comments"
+            android:drawableLeft="@drawable/icon_comments"
             tools:text="@string/comments" />
 
         <TextView
@@ -193,7 +193,7 @@
         android:paddingStart="@dimen/high_big_padding"
         android:paddingEnd="@dimen/big_padding"
         android:text="@string/news"
-        app:drawableEndCompat="@drawable/ic_menu_news"
+        android:drawableEnd="@drawable/ic_menu_news"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userCounts" />
