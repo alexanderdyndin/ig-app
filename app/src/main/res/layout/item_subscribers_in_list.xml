@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/mainBlack">
-
 
     <View
         android:id="@+id/bgListResize"
@@ -68,7 +68,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/bgListResize"
         app:layout_constraintTop_toTopOf="@+id/bgListResize"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="HardcodedText,RtlSymmetry" />
 
     <TextView
         android:id="@+id/itemGroupListHeader"
@@ -104,7 +104,8 @@
         android:layout_marginTop="19dp"
         android:src="@drawable/icon_posts"
         app:layout_constraintStart_toStartOf="@+id/idUser"
-        app:layout_constraintTop_toBottomOf="@+id/idUser" />
+        app:layout_constraintTop_toBottomOf="@+id/idUser"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/itemGroupPosts"
@@ -125,7 +126,8 @@
         android:src="@drawable/icon_comments"
         app:layout_constraintBottom_toBottomOf="@+id/iconPosts"
         app:layout_constraintEnd_toStartOf="@+id/iconDislike"
-        app:layout_constraintStart_toEndOf="@+id/iconPosts" />
+        app:layout_constraintStart_toEndOf="@+id/iconPosts"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/itemGroupComments"
@@ -146,7 +148,8 @@
         android:src="@drawable/icon_dislike"
         app:layout_constraintBottom_toBottomOf="@+id/iconComments"
         app:layout_constraintEnd_toStartOf="@+id/iconLike"
-        app:layout_constraintStart_toEndOf="@+id/iconComments" />
+        app:layout_constraintStart_toEndOf="@+id/iconComments"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/itemGroupDislike"
@@ -166,7 +169,8 @@
         android:layout_marginEnd="50dp"
         android:src="@drawable/icon_like"
         app:layout_constraintBottom_toBottomOf="@+id/iconDislike"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
 
 
     <TextView
@@ -200,7 +204,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_angle_setting_admin"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <ImageButton
             android:id="@+id/delMusic"
@@ -209,7 +214,8 @@
             android:layout_margin="4dp"
             android:background="@drawable/ic_del_nobg"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/nameSub"
@@ -241,9 +247,10 @@
             android:background="@drawable/bg_darkgreen_radius_2dp"
             android:paddingStart="16dp"
             android:paddingTop="12dp"
+            android:text="@string/demote"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/idSub"
-            tools:text="Разжаловать" />
+            tools:ignore="RtlSymmetry" />
 
         <TextView
             android:id="@+id/btnAddBlock"
@@ -254,10 +261,11 @@
             android:layout_marginBottom="@dimen/middle_margin"
             android:paddingStart="16dp"
             android:paddingTop="12dp"
+            android:text="@string/toBlackList"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnAddAdmin"
-            tools:text="Заблокировать" />
+            tools:ignore="RtlSymmetry" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

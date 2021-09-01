@@ -1,11 +1,11 @@
-<Button android:id="@+id/createPost"
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/createPost"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/selector_btn_create"
+    android:fontFamily="@font/play"
     android:gravity="bottom|center_horizontal"
     android:paddingBottom="9dp"
     android:text="@string/create_post"
-    android:textColor="@color/mainBlack"
-    android:fontFamily="@font/play"
     android:textAllCaps="false"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:textColor="@color/mainBlack" />

@@ -100,7 +100,7 @@
             android:paddingStart="4dp"
             android:paddingBottom="4dp"
             android:textColor="@color/colorAccent"
-            android:textSize="12dp"
+            android:textSize="12sp"
             app:drawableLeftCompat="@drawable/ic_repost"
             app:layout_constraintEnd_toStartOf="@+id/settingsPost"
             app:layout_constraintTop_toTopOf="parent"

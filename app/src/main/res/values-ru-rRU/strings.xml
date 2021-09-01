@@ -229,4 +229,6 @@
     <string name="all_time">За всё время</string>
     <string name="subscribers">Подписчиков</string>
     <string name="art">Искусство</string>
+    <string name="add_by_id">Добавить по ID</string>
+    <string name="create_new_post">Создать пост</string>
 </resources>

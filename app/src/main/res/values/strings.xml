@@ -260,4 +260,6 @@
     <string name="all_time">During all this time</string>
     <string name="subscribers">Followers</string>
     <string name="art">Art</string>
+    <string name="add_by_id">Add by ID</string>
+    <string name="create_new_post">Create post</string>
 </resources>

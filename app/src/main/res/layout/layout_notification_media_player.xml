@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@drawable/bg_media_notification">
 
@@ -64,7 +65,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:fontFamily="@font/play"
                     android:text="idUploader"
                     android:textColor="@color/colorAccent2"
@@ -78,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_toStartOf="@+id/removeTrack"
-            android:text="(4:03)" />
+            tools:text="(4:03)" />
 
         <ImageView
             android:id="@+id/removeTrack"
@@ -97,7 +98,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="-12dp"
-            android:text="0:0" />
+            tools:text="0:0" />
 
         <TextView
             android:id="@+id/playerSeekBar"
@@ -111,7 +112,7 @@
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             android:thumbOffset="0dp"
-            android:text="Здесь можно будет перемотать трек"
+            tools:text="Здесь можно будет перемотать трек"
             android:gravity="center"
             android:background="@color/exo_white"/>
 
@@ -124,7 +125,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="-12dp"
-            android:text="12:34"
+            tools:text="12:34"
             app:layout_constraintBottom_toTopOf="@+id/playerSeekBar"
             app:layout_constraintEnd_toEndOf="@+id/playerSeekBar" />
 
@@ -144,50 +145,58 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ic_media_notification_previous_track" />
+                android:src="@drawable/ic_media_notification_previous_track"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/playPause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ic_media_notification_play_mini" />
+                android:src="@drawable/ic_media_notification_play_mini"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ic_media_notification_next_track" />
+                android:src="@drawable/ic_media_notification_next_track"
+                tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_media_notification_repeat_one" />
+                    android:src="@drawable/ic_media_notification_repeat_one"
+                    tools:ignore="ContentDescription" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_media_notification_repeat_all" />
+                    android:src="@drawable/ic_media_notification_repeat_all"
+                    tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ic_media_notification_shuffle" />
+                android:src="@drawable/ic_media_notification_shuffle"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ic_media_notification_expand" />
+                android:src="@drawable/ic_media_notification_expand"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ic_media_notification_cancel" />
+                android:src="@drawable/ic_media_notification_cancel"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
     </RelativeLayout>

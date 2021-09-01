@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="true"
-    android:paddingBottom="@dimen/middle_padding"
-    android:paddingEnd="@dimen/big_padding"
     android:paddingStart="@dimen/big_padding"
-    android:paddingTop="@dimen/middle_padding">
+    android:paddingTop="@dimen/middle_padding"
+    android:paddingEnd="@dimen/big_padding"
+    android:paddingBottom="@dimen/middle_padding">
 
     <TextView
         style="@style/InterGroupGreyTextStyle"

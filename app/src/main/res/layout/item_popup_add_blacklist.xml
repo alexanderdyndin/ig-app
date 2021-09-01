@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorInput">
-
-    <!--com.github.florent37.shapeofview.shapes.PolygonView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:shape_polygon_noOfSides="4">
-
-    </com.github.florent37.shapeofview.shapes.PolygonView-->
-
-
-<!-- Всплывающее окно по нажатию на Добавить по ID -->
 
     <ImageView
         android:layout_width="0dp"
@@ -56,8 +46,7 @@
             android:padding="8dp"
             android:layout_marginStart="70dp"
             android:layout_marginEnd="70dp"
-            android:text="Добавьте в черный список
-пользователя по ID"
+            android:text="@string/add_to_black_list_by_id"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -67,7 +56,7 @@
                 style="@style/InputDark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Введите ID пользователя"
+                android:hint="@string/enter_user_id"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,14 +82,11 @@
             android:background="@color/greyElement"
             android:gravity="center"
             android:padding="3dp"
-            android:text="Пользователь не найден"
+            android:text="@string/user_not_found"
             app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
             app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
             app:layout_constraintTop_toBottomOf="@+id/lineInput" />
 
-<!-- Список пользователей по ID
-При выборе nameUsersAddBlackList фон меняется на bg_colorinput_radius_2dp
-icCheckUser становится ic_check_red-->
         <ScrollView
             android:id="@+id/listUsers"
             style="@style/ScrollBar"
@@ -118,7 +104,8 @@ icCheckUser становится ic_check_red-->
                 android:layout_height="50dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:paddingEnd="8dp">
+                android:paddingEnd="8dp"
+                tools:ignore="RtlSymmetry">
 
 
                 <LinearLayout
@@ -134,19 +121,20 @@ icCheckUser становится ic_check_red-->
                     app:layout_constraintBottom_toBottomOf="@+id/userAddBlackList_avatar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/userAddBlackList_avatar"
-                    app:layout_constraintTop_toTopOf="@+id/userAddBlackList_avatar">
+                    app:layout_constraintTop_toTopOf="@+id/userAddBlackList_avatar"
+                    tools:ignore="RtlSymmetry">
 
                     <TextView
                         style="@style/TextNoActive14sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ID:120541" />
+                        tools:text="ID:120541" />
 
                     <TextView
                         style="@style/TextAccent16sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Мария Попова" />
+                        tools:text="Мария Попова" />
 
                 </LinearLayout>
 
@@ -188,12 +176,11 @@ icCheckUser становится ic_check_red-->
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:text="Пользователь не сможет найти вашу группу"
+            android:text="@string/user_can_not_fount_your_group"
             app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
             app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
             app:layout_constraintTop_toBottomOf="@+id/listUsers" />
 
-<!-- Когда есть выбранный Пользователь фон кнопки меняется на btn_r_down_angle_blue -->
         <TextView
             style="@style/TextHelp12sp"
             android:layout_width="wrap_content"
@@ -203,13 +190,12 @@ icCheckUser становится ic_check_red-->
             android:layout_marginBottom="16dp"
             android:background="@drawable/btn_r_down_angle_grey"
             android:gravity="center"
-            android:text="Добавить"
+            android:text="@string/add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
             app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
             app:layout_constraintTop_toBottomOf="@+id/textPromt" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

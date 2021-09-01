@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="1dp"
-    android:foreground="@drawable/mask_foreground">
+    android:foreground="@drawable/mask_foreground"
+    android:padding="1dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imagePreview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:viewAspectRatio="1.0"/>
+        app:viewAspectRatio="1.0" />
 
     <TextView
         android:id="@+id/darkCard"
@@ -38,8 +38,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:src="@drawable/ic_close_white"
         android:visibility="invisible"
-        android:src="@drawable/ic_close_white" />
+        tools:ignore="ContentDescription" />
 
     <LinearLayout
         android:id="@+id/refreshContainer"
@@ -53,7 +54,8 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_replay" />
+            android:src="@drawable/ic_replay"
+            tools:ignore="ContentDescription" />
 
         <TextView
             style="@style/InterGroupSmallWhiteTextStyle"
@@ -68,11 +70,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
-        android:visibility="invisible"
-        android:src="@drawable/ic_edit_delete"
         android:layout_margin="5dp"
+        android:src="@drawable/ic_edit_delete"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </FrameLayout>

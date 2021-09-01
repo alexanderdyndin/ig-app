@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
     <TextView
         android:id="@+id/postText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
         android:fontFamily="@font/play"
+        android:padding="4dp"
         android:textColor="@color/textLight"
-        android:textSize="14sp"
-      />
+        android:textSize="14sp" />
+
     <com.intergroupapplication.presentation.customview.ImageGalleryView
         android:id="@+id/imageBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <com.intergroupapplication.presentation.customview.VideoGalleryView
         android:id="@+id/videoBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <com.intergroupapplication.presentation.customview.AudioGalleryView
         android:id="@+id/audioBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 </LinearLayout>

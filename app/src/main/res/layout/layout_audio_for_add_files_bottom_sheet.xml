@@ -1,64 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorInput"
     android:orientation="horizontal"
-    android:padding="6dp"
-    android:background="@color/colorInput">
+    android:padding="6dp">
 
     <FrameLayout
         android:id="@+id/playPause"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
 
         <ImageButton
             android:id="@+id/exo_play"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="2dp"
+            android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_post_play"
-            android:background="?attr/selectableItemBackground" />
+            tools:ignore="ContentDescription" />
 
         <ImageButton
             android:id="@+id/exo_pause"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="2dp"
+            android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_post_pause"
-            android:background="?attr/selectableItemBackground" />
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
     <TextView
         android:id="@+id/trackName"
+        style="@style/TextAccent14sp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="5"
-        android:layout_margin="2dp"
-        tools:text="The Anix - Die With You"
         android:layout_gravity="center"
-        style="@style/TextAccent14sp"
+        android:layout_margin="2dp"
+        android:layout_weight="5"
         app:layout_constraintEnd_toStartOf="@+id/exo_duration"
         app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
-        app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+        app:layout_constraintTop_toTopOf="@+id/bgPostMusic"
+        tools:text="The Anix - Die With You" />
 
 
     <TextView
         android:id="@+id/audioDuration"
+        style="@style/TextNoActive12sp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        tools:text="(4:03)"
         android:layout_weight="1"
-        style="@style/TextNoActive12sp"
         app:layout_constraintBottom_toBottomOf="@id/bgPostMusic"
         app:layout_constraintEnd_toStartOf="@+id/playPause"
-        app:layout_constraintTop_toTopOf="@+id/bgPostMusic" />
+        app:layout_constraintTop_toTopOf="@+id/bgPostMusic"
+        tools:text="(4:03)" />
 
     <Button
         android:id="@+id/addAudioButton"
@@ -67,6 +68,5 @@
         android:layout_gravity="center"
         android:layout_margin="8dp"
         android:background="@drawable/selector_choice" />
-
 
 </LinearLayout>

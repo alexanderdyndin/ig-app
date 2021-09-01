@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
-    >
+    android:layout_height="300dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/previewForVideo"
@@ -12,10 +11,11 @@
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:background="@drawable/variant_10"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:id="@+id/playPause"
         android:layout_width="wrap_content"
@@ -23,20 +23,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/exo_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="2dp"
             android:layout_gravity="center"
+            android:layout_marginEnd="2dp"
             android:background="@drawable/bg_play_video"
             android:src="@drawable/ic_play_video"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <ImageButton
             android:id="@+id/exo_pause"
@@ -49,53 +50,55 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
     </FrameLayout>
 
     <com.intergroupapplication.presentation.customview.CustomTimeBar
         android:id="@+id/exo_progress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:scrubber_color="@color/colorAccent"
-        app:scrubber_drawable="@drawable/ic_post_knob_press"
-        app:played_color="@color/colorAccent"
-        android:layout_marginEnd="6dp"
         android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
         app:layout_constraintBottom_toTopOf="@id/nameVideo"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:played_color="@color/colorAccent"
+        app:scrubber_color="@color/colorAccent"
+        app:scrubber_drawable="@drawable/ic_post_knob_press" />
+
+
+    <ImageView
+        android:id="@+id/bgNameVideo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/bg_name_video"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/nameVideo"
+        style="@style/TextLight10sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:maxHeight="16dp"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/exoDuration"
+        app:layout_constraintStart_toStartOf="@+id/bgNameVideo"
+        app:layout_constraintTop_toTopOf="@+id/bgNameVideo" />
+
+    <TextView
+        android:id="@+id/exoDuration"
+        style="@style/TextAccent14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_duration_video"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
-        <ImageView
-            android:id="@+id/bgNameVideo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/bg_name_video"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/nameVideo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:maxHeight="16dp"
-            android:layout_marginStart="16dp"
-            style="@style/TextLight10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/exoDuration"
-            app:layout_constraintStart_toStartOf="@+id/bgNameVideo"
-            app:layout_constraintTop_toTopOf="@+id/bgNameVideo" />
-
-        <TextView
-            android:id="@+id/exoDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_duration_video"
-            android:gravity="center"
-            style="@style/TextAccent14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

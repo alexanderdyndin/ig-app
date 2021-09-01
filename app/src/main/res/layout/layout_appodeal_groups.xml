@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/mainBlack">
+
     <TextView
         android:id="@+id/textViewAD"
         android:layout_width="wrap_content"
@@ -15,17 +16,17 @@
         android:textColor="@color/colorAccent"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/adsCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAD"/>
+        app:layout_constraintTop_toBottomOf="@+id/textViewAD" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
