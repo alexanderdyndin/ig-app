@@ -10,7 +10,7 @@ data class NewsPostDb(
     @PrimaryKey
     val id: Int,
     val postId: String,
-    val groupId: String,
+    val groupId: String?,
     val activeCommentsCount: String,
     @Embedded
     val groupInPost: GroupInPostModel,

@@ -14,7 +14,7 @@ interface NewsPostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(newsPost: List<NewsPostDb>)
 
-    @Query("SELECT * FROM News")
+    @Query("SELECT * FROM News ORDER BY id DESC")
     fun getAllNewsPost(): PagingSource<Int, NewsPostDb>
 
     @Query("DELETE FROM News")
