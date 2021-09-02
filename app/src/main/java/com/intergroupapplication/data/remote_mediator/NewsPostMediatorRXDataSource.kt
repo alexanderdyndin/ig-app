@@ -16,7 +16,7 @@ import io.reactivex.schedulers.Schedulers
 @ExperimentalPagingApi
 class NewsPostMediatorRXDataSource(
     private val appApi: AppApi,
-    private val appDatabase: IgDatabase,
+    private val igDatabase: IgDatabase,
     private val newsModelToDbMapper: NewsModelToNewsPostDbMapper
 ) : RxRemoteMediator<Int, NewsPostDb>() {
 
@@ -30,7 +30,6 @@ class NewsPostMediatorRXDataSource(
         state: PagingState<Int, NewsPostDb>
     ): Single<MediatorResult> {
         return Single.just(loadType)
-            .subscribeOn(Schedulers.io())
             .map {
                 when (it) {
                     LoadType.REFRESH -> {
@@ -68,20 +67,23 @@ class NewsPostMediatorRXDataSource(
                     }
                 }
             }
+            .subscribeOn(Schedulers.io())
             .onErrorReturn { MediatorResult.Error(it) }
     }
 
     private fun insertToDb(page: Int, loadType: LoadType, data: NewsDto): NewsDto {
 
         if (loadType == LoadType.REFRESH) {
-            appDatabase.newsPostDao().clearAllNewsPost()
+            igDatabase.newsPostDao().clearAllNewsPost()
         }
 
         val prevKey = if (page == 1) null else page - 1
         val nextKey = if (data.next == null) null else page + 1
         val key = NewsPostRemoteKeyEntity(prevKey = prevKey, nextKey = nextKey)
-        appDatabase.newsPostKeyDao().insertKey(key)
-        appDatabase.newsPostDao().insertAll(data.news.map(newsModelToDbMapper))
+        if (loadType != LoadType.PREPEND) {
+            igDatabase.newsPostKeyDao().insertKey(key)
+        }
+        igDatabase.newsPostDao().insertAll(data.news.map(newsModelToDbMapper))
         return data
     }
 
@@ -89,22 +91,22 @@ class NewsPostMediatorRXDataSource(
     private fun getRemoteKeyForLastItem(state: PagingState<Int, NewsPostDb>)
             : NewsPostRemoteKeyEntity? {
         return state.lastItemOrNull()?.let { _ ->
-            appDatabase.newsPostKeyDao().getRemoteKey()
+            igDatabase.newsPostKeyDao().getRemoteKey()
         }
     }
 
     private fun getRemoteKeyForFirstItem(state: PagingState<Int, NewsPostDb>)
             : NewsPostRemoteKeyEntity? {
         return state.firstItemOrNull()?.let { _ ->
-            appDatabase.newsPostKeyDao().getRemoteKey()
+            igDatabase.newsPostKeyDao().getRemoteKey()
         }
     }
 
     private fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, NewsPostDb>)
             : NewsPostRemoteKeyEntity? {
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.id?.let { _ ->
-                appDatabase.newsPostKeyDao().getRemoteKey()
+            state.closestItemToPosition(position)?.let { _ ->
+                igDatabase.newsPostKeyDao().getRemoteKey()
             }
         }
     }
