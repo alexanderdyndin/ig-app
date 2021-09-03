@@ -4,18 +4,23 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.media.browse.MediaBrowser
 import android.os.Binder
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.service.media.MediaBrowserService
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import timber.log.Timber
 
 
 class IGMediaService : MediaBrowserService() {
@@ -34,12 +39,59 @@ class IGMediaService : MediaBrowserService() {
     private var mediaFile: MediaFile? = null
     private var notificationTitle: String? = null
     private var notificationSubtitle: String? = null
+    private val audioManager by lazy {
+        applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    }
+    private val afChangeListener by lazy {
+        AudioManager.OnAudioFocusChangeListener { focusChange ->
+            when (focusChange) {
+                AudioManager.AUDIOFOCUS_LOSS -> {
+                    Timber.tag("tut_loss").d("stop")
+                    exoPlayer?.stop()
+                }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                    Timber.tag("tut_loss_transient").d("pause")
+                    exoPlayer?.pause()
+                }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                    Timber.tag("tut_can_suck").d("low_volume")
+                    exoPlayer?.volume = 0.1f
+                }
+                AudioManager.AUDIOFOCUS_GAIN -> {
+                    Timber.tag("tut_gain").d("play")
+                    exoPlayer?.let {
+                        it.volume = 1f
+                        it.play()
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Will be called by our activity to get information about exo player.
      */
     override fun onBind(intent: Intent?): IBinder {
         exoPlayer?.playWhenReady = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioManager.requestAudioFocus(
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                    setAudioAttributes(AudioAttributes.Builder().run {
+                        setUsage(AudioAttributes.USAGE_GAME)
+                        setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        build()
+                    })
+                    setAcceptsDelayedFocusGain(true)
+                    setOnAudioFocusChangeListener(afChangeListener)
+                    build()
+                })
+        } else {
+            audioManager.requestAudioFocus(
+                afChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN
+            )
+        }
         return ServiceBinder()
     }
 
@@ -199,5 +251,12 @@ class IGMediaService : MediaBrowserService() {
         val notification = notificationBuilder.build()
         if (startForeground) startForeground(NOTIFICATION_ID, notification)
         manager.notify(NOTIFICATION_ID, notification)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        exoPlayer = null
+        audioPlayerView = null
+        videoPlayerView = null
     }
 }
