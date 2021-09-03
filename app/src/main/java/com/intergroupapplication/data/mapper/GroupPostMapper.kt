@@ -95,7 +95,6 @@ class GroupPostMapper @Inject constructor(private val groupMapper: GroupMapper,
     }
 
 
-
     fun mapToDto(from: CreateGroupPostEntity): CreateGroupPostModel {
         return CreateGroupPostModel(
                 postText = from.postText,
@@ -115,16 +114,15 @@ class GroupPostMapper @Inject constructor(private val groupMapper: GroupMapper,
                     videos = from.videos.map { mediaMapper.mapToDomainEntity(it) },
                     isPinned = from.isPinned,
                     pinTime = from.pinTime
-                    )
+            )
 
     fun mapListToDomainEntity(from: List<GroupPostModel>): List<GroupPostEntity> =
             from.map { mapToDomainEntity(it) }
 
 
-
     fun mapToDomainEntity(from: GroupPostsDto): GroupPostsEntity {
         return GroupPostsEntity(from.count.toInt(), from.next,
-                from.previous, from.results.map { mapToDomainEntity(it) })
+                from.previous, from.groupPostModels.map { mapToDomainEntity(it) })
     }
 
 

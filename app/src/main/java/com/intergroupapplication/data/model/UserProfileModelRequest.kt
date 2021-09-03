@@ -1,5 +1,6 @@
 package com.intergroupapplication.data.model
 
+import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -7,5 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 class UserProfileModelRequest(@SerializedName("first_name") val firstName: String,
                               @SerializedName("second_name") val surName: String,
-                              val birthday: String?, val gender: String?,
-                              val avatar: String?)
+                              val birthday: String?,
+                              val gender: String?,
+                              @ColumnInfo(name = "user_avatar") val avatar: String?
+)

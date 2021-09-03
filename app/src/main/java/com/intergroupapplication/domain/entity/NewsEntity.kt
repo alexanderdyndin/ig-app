@@ -5,10 +5,10 @@ import com.appodeal.ads.NativeAd
 sealed class NewsEntity {
 
     data class Post(
-            val id: Int,
-            val post: GroupPostEntity.PostEntity,
-            val user: Int
-    ): NewsEntity()
+        val id: Int,
+        val post: GroupPostEntity.PostEntity,
+        val user: Int
+    ) : NewsEntity()
 
     data class AdEntity(val position: Int, val nativeAd: NativeAd?) : NewsEntity() {
         override fun equals(other: Any?): Boolean {
