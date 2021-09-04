@@ -1,8 +1,13 @@
 package com.intergroupapplication.data.mapper
 
-import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.model.AudioModel
+import com.intergroupapplication.data.model.AudioRequestModel
+import com.intergroupapplication.data.model.FileRequestModel
+import com.intergroupapplication.data.model.ImageVideoModel
+import com.intergroupapplication.data.network.dto.AudiosDto
+import com.intergroupapplication.data.network.dto.ImagesDto
+import com.intergroupapplication.data.network.dto.VideosDto
 import com.intergroupapplication.domain.entity.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**

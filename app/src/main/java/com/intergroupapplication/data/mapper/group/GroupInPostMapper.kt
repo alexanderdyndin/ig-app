@@ -1,8 +1,7 @@
-package com.intergroupapplication.data.mapper
+package com.intergroupapplication.data.mapper.group
 
 import com.intergroupapplication.data.model.GroupInPostModel
 import com.intergroupapplication.domain.entity.GroupInPostEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import javax.inject.Inject
 
 /**

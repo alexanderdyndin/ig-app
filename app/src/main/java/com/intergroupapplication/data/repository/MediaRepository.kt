@@ -4,17 +4,16 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
-import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.mapper.MediaMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
-import com.intergroupapplication.data.remotedatasource.*
-import com.intergroupapplication.domain.entity.*
-import com.intergroupapplication.domain.exception.NoMorePage
-import com.intergroupapplication.domain.gateway.GroupPostGateway
+import com.intergroupapplication.data.remotedatasource.AudiosRemoteRXDataSource
+import com.intergroupapplication.data.remotedatasource.ImagesRemoteRXDataSource
+import com.intergroupapplication.data.remotedatasource.VideosRemoteRXDataSource
+import com.intergroupapplication.domain.entity.AudioEntity
+import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.gateway.MediaGateway
 import io.reactivex.Flowable
-import io.reactivex.Single
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 

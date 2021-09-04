@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.intergroupapplication.data.db.entity.NewsPostDb
-import com.intergroupapplication.data.model.NewsModel
 
 @Dao
 interface NewsPostDao {
@@ -14,7 +13,7 @@ interface NewsPostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(newsPost: List<NewsPostDb>)
 
-    @Query("SELECT * FROM News ORDER BY id DESC")
+    @Query("SELECT * FROM News ORDER BY post_id DESC")
     fun getAllNewsPost(): PagingSource<Int, NewsPostDb>
 
     @Query("DELETE FROM News")

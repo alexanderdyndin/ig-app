@@ -1,26 +1,23 @@
 package com.intergroupapplication.data.repository
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.webkit.MimeTypeMap
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.androidnetworking.AndroidNetworking
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.data.model.ImageUploadDto
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.dto.ImageUploadDto
+import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.yalantis.ucrop.UCrop
+import id.zelory.compressor.Compressor
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
-import com.intergroupapplication.domain.gateway.AwsUploadingGateway
-import id.zelory.compressor.Compressor
 import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
 
 /**
@@ -250,7 +247,7 @@ class PhotoRepository @Inject constructor(private val activity: Fragment,
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
                             .doOnComplete{
                                 if (file.exists()) {
-                                    file.delete();
+                                    file.delete()
                                 }
                             }
                     return@flatMapObservable Observable.just(it.fields.key)

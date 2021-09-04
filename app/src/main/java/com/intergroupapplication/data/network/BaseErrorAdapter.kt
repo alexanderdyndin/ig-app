@@ -1,11 +1,10 @@
 package com.intergroupapplication.data.network
 
-import com.intergroupapplication.data.model.ApiErrorElement
+import com.intergroupapplication.data.network.dto.ApiErrorElement
 import com.intergroupapplication.domain.exception.*
 import io.reactivex.exceptions.CompositeException
 import retrofit2.HttpException
 import javax.inject.Inject
-import kotlin.Exception
 
 /**
  * Created by abakarmagomedov on 24/08/2018 at project InterGroupApplication.

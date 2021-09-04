@@ -2,9 +2,8 @@ package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
-import com.intergroupapplication.data.model.group_followers.GroupUserBansDto
-import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
+import com.intergroupapplication.data.network.dto.*
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.http.*
@@ -26,10 +25,10 @@ interface AppApi {
     fun createUserProfile(@Body userProfileModel: UserProfileModelRequest): Single<UserProfileModelResponse>
 
     @POST("groups/")
-    fun createGroup(@Body createGroupModel: CreateGroupModel): Single<GroupModel>
+    fun createGroup(@Body createGroupModel: CreateGroupModel): Single<GroupDto>
 
     @GET("groups/{id}/")
-    fun getGroupInformation(@Path("id") groupId: String): Single<GroupModel>
+    fun getGroupInformation(@Path("id") groupId: String): Single<GroupDto>
 
     @GET("groups/{group_pk}/posts/")
     fun getGroupPosts(@Path("group_pk") groupId: String, @Query("page") page: Int): Single<GroupPostsDto>
@@ -74,19 +73,23 @@ interface AppApi {
                               @Body createCommentModel: CreateCommentModel): Single<CommentModel>
 
     @POST("groups/{group_pk}/posts/")
-    fun createPost(@Body postModel: CreateGroupPostModel,
-                   @Path("group_pk") groupId: String): Single<GroupPostModel>
+    fun createPost(
+        @Body postModel: CreateGroupPostModel,
+        @Path("group_pk") groupId: String
+    ): Single<GroupPostDto>
 
     @POST("groups/posts/{post_pk}/reacts/")
     fun setReact(@Body data: ReactsModelRequest,
                  @Path("post_pk") postId: String): Single<ReactsModel>
 
     @GET("groups/posts/{id}/")
-    fun getPostById(@Path("id") postId: String): Single<GroupPostModel>
+    fun getPostById(@Path("id") postId: String): Single<GroupPostDto>
 
     @PUT("groups/posts/{id}/")
-    fun editPostById(@Path("id") postId: String,
-                     @Body createGroupPostModel: CreateGroupPostModel): Single<GroupPostModel>
+    fun editPostById(
+        @Path("id") postId: String,
+        @Body createGroupPostModel: CreateGroupPostModel
+    ): Single<GroupPostDto>
 
     @GET("users/profiles/me/")
     fun getUserProfile(): Single<UserProfileModelResponse>
@@ -119,7 +122,10 @@ interface AppApi {
     fun changeUserAvatar(@Path("user-id") userId: String, @Body avatar: UpdateAvatarModel): Single<UserProfileModelResponse>
 
     @PATCH("groups/{id}/")
-    fun changeGroupAvatar(@Path("id") groupId: String, @Body avatar: UpdateAvatarModel): Single<GroupModel>
+    fun changeGroupAvatar(
+        @Path("id") groupId: String,
+        @Body avatar: UpdateAvatarModel
+    ): Single<GroupDto>
 
     @POST("users/push_token/")
     fun updateToken(@Body deviceModel: DeviceModel): Completable

@@ -1,11 +1,11 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
 import com.google.gson.annotations.SerializedName
 
 data class ApiErrorDto(
-        @SerializedName("non_field_errors")
+    @SerializedName("non_field_errors")
         val nonFieldError: ApiErrorElement?,
-        @SerializedName("field_errors")
+    @SerializedName("field_errors")
         val fieldError: List<ApiErrorElement>
 )
 

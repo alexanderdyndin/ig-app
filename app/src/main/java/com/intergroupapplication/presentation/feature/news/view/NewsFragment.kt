@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.databinding.FragmentNewsBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
@@ -32,6 +31,7 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.GROUP
@@ -41,11 +41,8 @@ import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewMod
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.collectLatest
-import java.io.PrintWriter
-import java.io.StringWriter
-import java.io.Writer
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -57,7 +54,7 @@ class NewsFragment: BaseFragment() {
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
     @Inject
     lateinit var adapter: NewsAdapter
@@ -69,13 +66,11 @@ class NewsFragment: BaseFragment() {
     @Named("footer")
     lateinit var footerAdapter: PagingLoadingAdapter
 
-    private lateinit var viewModel: NewsViewModel
-
-    private var exitHandler: Handler? = null
-
-    private var doubleBackToExitPressedOnce = false
-
     val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
+
+    private val viewModel: NewsViewModel by viewModels { modelFactory }
+    private var exitHandler: Handler? = null
+    private var doubleBackToExitPressedOnce = false
 
     override fun layoutRes() = R.layout.fragment_news
 
@@ -90,7 +85,6 @@ class NewsFragment: BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, modelFactory)[NewsViewModel::class.java]
         setAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

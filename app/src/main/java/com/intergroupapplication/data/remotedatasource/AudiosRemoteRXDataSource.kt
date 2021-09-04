@@ -2,11 +2,9 @@ package com.intergroupapplication.data.remotedatasource
 
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
-import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.mapper.MediaMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.AudioEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 

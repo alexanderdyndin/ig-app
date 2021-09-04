@@ -1,7 +1,7 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
 import com.google.gson.annotations.SerializedName
-import com.intergroupapplication.domain.entity.CommentEntity
+import com.intergroupapplication.data.model.CommentModel
 
 data class CommentsDto(
         val count: String,

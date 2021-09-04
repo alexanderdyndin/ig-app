@@ -4,14 +4,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.intergroupapplication.data.db.entity.NewsPostRemoteKeyEntity
+import com.intergroupapplication.data.db.entity.NewsPostRemoteKeyDb
 
 @Dao
 interface NewsPostKeyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertKey(remoteKey: NewsPostRemoteKeyEntity)
+    fun insertKey(remoteKey: NewsPostRemoteKeyDb)
 
     @Query("SELECT * FROM news_post_remote_key")
-    fun getRemoteKey(): NewsPostRemoteKeyEntity
+    fun getRemoteKey(): NewsPostRemoteKeyDb
 }

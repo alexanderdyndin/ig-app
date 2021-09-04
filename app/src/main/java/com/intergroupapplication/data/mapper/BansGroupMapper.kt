@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.mapper
 
-import com.intergroupapplication.data.model.group_followers.GroupUserBansDto
+import com.intergroupapplication.data.network.dto.GroupUserBansDto
 import com.intergroupapplication.domain.entity.GroupFollowersListEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import javax.inject.Inject

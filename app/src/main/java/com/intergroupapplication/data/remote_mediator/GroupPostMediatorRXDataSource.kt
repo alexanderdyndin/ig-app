@@ -1,15 +1,16 @@
 package com.intergroupapplication.data.remote_mediator
 
-import com.intergroupapplication.data.model.GroupPostModel
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxRemoteMediator
 import com.intergroupapplication.data.db.IgDatabase
+import com.intergroupapplication.data.db.entity.GroupPostDb
+import com.intergroupapplication.data.db.entity.GroupPostRemoteKeysDb
+import com.intergroupapplication.data.mapper.group.GroupPostDtoToDbMapper
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.dto.GroupPostsDto
 import io.reactivex.Single
-import com.intergroupapplication.data.db.entity.GroupPostRemoteKeysEntity
-import com.intergroupapplication.data.model.GroupPostsDto
 import io.reactivex.schedulers.Schedulers
 
 
@@ -17,15 +18,16 @@ import io.reactivex.schedulers.Schedulers
 class GroupPostMediatorRXDataSource(
     private val appApi: AppApi,
     private val appDatabase: IgDatabase,
-    private val groupId: String
-) : RxRemoteMediator<Int, GroupPostModel>() {
+    private val groupId: String,
+    private val groupPostMapper: GroupPostDtoToDbMapper
+) : RxRemoteMediator<Int, GroupPostDb>() {
 
     private companion object {
         const val INVALID_PAGE = -1
         const val EMPTY_MODEL = -2
     }
 
-    override fun loadSingle(loadType: LoadType, state: PagingState<Int, GroupPostModel>)
+    override fun loadSingle(loadType: LoadType, state: PagingState<Int, GroupPostDb>)
             : Single<MediatorResult> {
         return Single.just(loadType)
             .subscribeOn(Schedulers.io())
@@ -62,11 +64,15 @@ class GroupPostMediatorRXDataSource(
                             .map<MediatorResult> {
                                 MediatorResult.Success(it.next == null)
                             }
-                            .onErrorReturn { MediatorResult.Error(it) }
+                            .onErrorReturn {
+                                MediatorResult.Error(it)
+                            }
                     }
                 }
             }
-            .onErrorReturn { MediatorResult.Error(it) }
+            .onErrorReturn {
+                MediatorResult.Error(it)
+            }
     }
 
     private fun insertToDb(page: Int, loadType: LoadType, data: GroupPostsDto): GroupPostsDto {
@@ -78,35 +84,30 @@ class GroupPostMediatorRXDataSource(
 
         val prevKey = if (page == 1) null else page - 1
         val nextKey = if (data.next == null) null else page + 1
-        val key = GroupPostRemoteKeysEntity(groupId, prevKey, nextKey)
+        val key = GroupPostRemoteKeysDb(groupId, prevKey, nextKey)
         appDatabase.groupPostKeyDao().insertKey(key)
-        appDatabase.groupPostDao().insertAll(
-            data.groupPostModels.map { groupPostModel ->
-                groupPostModel.groupId = groupId
-                groupPostModel
-            }
-        )
+        appDatabase.groupPostDao().insertAll(data.posts.map(groupPostMapper))
         return data
     }
 
-    private fun getRemoteKeyForLastItem(state: PagingState<Int, GroupPostModel>)
-            : GroupPostRemoteKeysEntity? {
+    private fun getRemoteKeyForLastItem(state: PagingState<Int, GroupPostDb>)
+            : GroupPostRemoteKeysDb? {
         return state.lastItemOrNull()?.let { group ->
-            appDatabase.groupPostKeyDao().getRemoteKey(group.groupId)
+            appDatabase.groupPostKeyDao().getRemoteKey(group.groupInPost.id)
         }
     }
 
-    private fun getRemoteKeyForFirstItem(state: PagingState<Int, GroupPostModel>)
-            : GroupPostRemoteKeysEntity? {
+    private fun getRemoteKeyForFirstItem(state: PagingState<Int, GroupPostDb>)
+            : GroupPostRemoteKeysDb? {
         return state.firstItemOrNull()?.let { group ->
-            appDatabase.groupPostKeyDao().getRemoteKey(group.groupId)
+            appDatabase.groupPostKeyDao().getRemoteKey(group.groupInPost.id)
         }
     }
 
-    private fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, GroupPostModel>)
-            : GroupPostRemoteKeysEntity? {
+    private fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, GroupPostDb>)
+            : GroupPostRemoteKeysDb? {
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.groupId?.let { id ->
+            state.closestItemToPosition(position)?.groupInPost?.id?.let { id ->
                 appDatabase.groupPostKeyDao().getRemoteKey(id)
             }
         }

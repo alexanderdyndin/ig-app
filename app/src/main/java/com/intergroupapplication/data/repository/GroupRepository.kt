@@ -6,18 +6,19 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.BansGroupMapper
 import com.intergroupapplication.data.mapper.FollowersGroupMapper
-import com.intergroupapplication.data.mapper.GroupMapper
+import com.intergroupapplication.data.mapper.group.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
-import com.intergroupapplication.data.model.UserProfileModelResponse
 import com.intergroupapplication.data.model.group_followers.GroupBanBody
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.GroupBansRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
-import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
-import com.intergroupapplication.domain.entity.*
+import com.intergroupapplication.domain.entity.GroupEntity
+import com.intergroupapplication.domain.entity.GroupFollowEntity
+import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.gateway.GroupGateway
 import io.reactivex.Completable
@@ -32,10 +33,10 @@ import javax.inject.Inject
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
 class GroupRepository @Inject constructor(
-        private val api: AppApi,
-        private val groupMapper: GroupMapper,
-        private val followersGroupMapper: FollowersGroupMapper,
-        private val bansGroupMapper: BansGroupMapper
+    private val api: AppApi,
+    private val groupMapper: GroupMapper,
+    private val followersGroupMapper: FollowersGroupMapper,
+    private val bansGroupMapper: BansGroupMapper
 ) : GroupGateway {
 
     override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group> =

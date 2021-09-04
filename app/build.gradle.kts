@@ -1,7 +1,8 @@
-import java.io.FileInputStream
-import com.android.build.gradle.internal.dsl.*
-import org.gradle.api.NamedDomainObjectContainer
 import com.android.build.gradle.internal.dsl.BuildType
+import com.android.build.gradle.internal.dsl.DefaultConfig
+import com.android.build.gradle.internal.dsl.ProductFlavor
+import com.android.build.gradle.internal.dsl.SigningConfig
+import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -11,8 +12,8 @@ plugins {
     id("com.google.firebase.crashlytics")
     id("com.google.gms.google-services")
     id("androidx.navigation.safeargs.kotlin")
-    id("com.gladed.androidgitversion") version("0.4.3")
-    id("io.gitlab.arturbosch.detekt") version("1.17.0")
+    id("com.gladed.androidgitversion") version ("0.4.3")
+    id("io.gitlab.arturbosch.detekt") version ("1.17.0")
 }
 
 allprojects {
@@ -43,9 +44,9 @@ android {
         targetSdkVersion(30)
         versionCode = 100004
 //        androidGitVersion.code()
-        versionName ="1.6.0.9"
+        versionName = "1.6.0.9"
 //        androidGitVersion.name()
-        testInstrumentationRunner ="androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     })
 
     java {
@@ -96,7 +97,7 @@ android {
 
     })
 
-    buildTypes (Action<NamedDomainObjectContainer<BuildType>>{
+    buildTypes(Action<NamedDomainObjectContainer<BuildType>> {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
             proguardFiles.add(getDefaultProguardFile("proguard-android.txt"))
@@ -159,14 +160,18 @@ android {
 detekt {
     buildUponDefaultConfig = true // preconfigure defaults
     allRules = false // activate all available (even unstable) rules.
-    config = files("$projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
-    baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
+    config =
+        files("$projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
+    baseline =
+        file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
 
     reports {
         html.enabled = true // observe findings in your browser with structure and code snippets
         xml.enabled = true // checkstyle like format mainly for integrations like Jenkins
-        txt.enabled = true // similar to the console output, contains issue signature to manually edit baseline files
-        sarif.enabled = true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
+        txt.enabled =
+            true // similar to the console output, contains issue signature to manually edit baseline files
+        sarif.enabled =
+            true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
     }
 }
 
@@ -241,6 +246,8 @@ dependencies {
     val lifecycleExtensionsVersion = "2.2.0"
 
     val coroutinesVersion = "1.4.0"
+
+    val roomVersion = "2.3.0"
 
     //Android dependencies
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -389,4 +396,10 @@ dependencies {
     // For extras
     implementation("com.github.Omega-R.OmegaIntentBuilder:annotations:1.1.5")
     kapt("com.github.Omega-R.OmegaIntentBuilder:processor:1.1.5")
+
+    //db
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-rxjava2:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+
 }

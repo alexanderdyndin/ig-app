@@ -2,7 +2,7 @@ package com.intergroupapplication.presentation.feature.creategroup.di
 
 import android.content.Context
 import com.intergroupapplication.data.mapper.CreateGroupMapper
-import com.intergroupapplication.data.mapper.GroupMapper
+import com.intergroupapplication.data.mapper.group.GroupMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.service.CreateGroupService
@@ -54,8 +54,10 @@ class CreateGroupViewModule {
 
     @PerFragment
     @Provides
-    fun provideCreateGroupGateway(api: AppApi, createGroupMapper: CreateGroupMapper,
-                                  groupMapper: GroupMapper): CreateGroupGateway {
+    fun provideCreateGroupGateway(
+        api: AppApi, createGroupMapper: CreateGroupMapper,
+        groupMapper: GroupMapper
+    ): CreateGroupGateway {
         return CreateGroupService(api, createGroupMapper, groupMapper)
     }
 

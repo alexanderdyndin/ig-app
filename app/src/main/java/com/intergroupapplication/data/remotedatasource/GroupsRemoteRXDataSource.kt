@@ -2,10 +2,9 @@ package com.intergroupapplication.data.remotedatasource
 
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
-import com.intergroupapplication.data.mapper.GroupMapper
-import com.intergroupapplication.data.model.GroupsDto
+import com.intergroupapplication.data.mapper.group.GroupMapper
 import com.intergroupapplication.data.network.AppApi
-import com.intergroupapplication.data.network.PAGE_SIZE
+import com.intergroupapplication.data.network.dto.GroupsDto
 import com.intergroupapplication.domain.entity.GroupEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers

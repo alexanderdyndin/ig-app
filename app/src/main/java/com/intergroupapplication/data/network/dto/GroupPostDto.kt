@@ -1,25 +1,20 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.intergroupapplication.data.model.*
 
 /**
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
  */
-@Entity(tableName = "group_post")
-data class GroupPostModel(
-    @PrimaryKey
+data class GroupPostDto(
     val id: String,
     var groupId: String = "",
     @SerializedName("active_comments_count")
     val activeCommentsCount: String,
-    @Embedded
     @SerializedName("group")
-    val groupInPost: GroupInPostModel,
-    @Embedded val bells: BellsModel,
-    @Embedded val reacts: ReactsModel,
+    val groupInPost: GroupDto,
+    val bells: BellsModel,
+    val reacts: ReactsModel,
     val images: List<ImageVideoModel>,
     val audios: List<AudioModel>,
     val videos: List<ImageVideoModel>,
@@ -41,7 +36,6 @@ data class GroupPostModel(
     val isPinned: Boolean,
     @SerializedName("pin_time")
     val pin: String?,
-    @Embedded
     val author: AuthorModel,
     @SerializedName("unread_comments_count")
     val unreadComments: String

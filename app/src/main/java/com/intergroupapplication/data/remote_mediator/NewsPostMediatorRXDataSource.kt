@@ -6,10 +6,10 @@ import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxRemoteMediator
 import com.intergroupapplication.data.db.IgDatabase
 import com.intergroupapplication.data.db.entity.NewsPostDb
-import com.intergroupapplication.data.db.entity.NewsPostRemoteKeyEntity
+import com.intergroupapplication.data.db.entity.NewsPostRemoteKeyDb
 import com.intergroupapplication.data.mapper.NewsModelToNewsPostDbMapper
-import com.intergroupapplication.data.model.NewsDto
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.dto.NewsDto
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
@@ -79,31 +79,31 @@ class NewsPostMediatorRXDataSource(
 
         val prevKey = if (page == 1) null else page - 1
         val nextKey = if (data.next == null) null else page + 1
-        val key = NewsPostRemoteKeyEntity(prevKey = prevKey, nextKey = nextKey)
+        val key = NewsPostRemoteKeyDb(prevKey = prevKey, nextKey = nextKey)
         if (loadType != LoadType.PREPEND) {
             igDatabase.newsPostKeyDao().insertKey(key)
         }
-        igDatabase.newsPostDao().insertAll(data.news.map(newsModelToDbMapper))
+        igDatabase.newsPostDao().insertAll(data.newsPosts.map(newsModelToDbMapper))
         return data
     }
 
 
     private fun getRemoteKeyForLastItem(state: PagingState<Int, NewsPostDb>)
-            : NewsPostRemoteKeyEntity? {
+            : NewsPostRemoteKeyDb? {
         return state.lastItemOrNull()?.let { _ ->
             igDatabase.newsPostKeyDao().getRemoteKey()
         }
     }
 
     private fun getRemoteKeyForFirstItem(state: PagingState<Int, NewsPostDb>)
-            : NewsPostRemoteKeyEntity? {
+            : NewsPostRemoteKeyDb? {
         return state.firstItemOrNull()?.let { _ ->
             igDatabase.newsPostKeyDao().getRemoteKey()
         }
     }
 
     private fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, NewsPostDb>)
-            : NewsPostRemoteKeyEntity? {
+            : NewsPostRemoteKeyDb? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.let { _ ->
                 igDatabase.newsPostKeyDao().getRemoteKey()

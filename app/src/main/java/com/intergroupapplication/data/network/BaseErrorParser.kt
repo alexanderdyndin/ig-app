@@ -2,10 +2,9 @@ package com.intergroupapplication.data.network
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.intergroupapplication.data.model.ApiErrorDto
+import com.intergroupapplication.data.network.dto.ApiErrorDto
 import retrofit2.HttpException
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
