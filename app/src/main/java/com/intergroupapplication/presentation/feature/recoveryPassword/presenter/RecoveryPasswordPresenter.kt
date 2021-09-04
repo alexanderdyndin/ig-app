@@ -13,9 +13,11 @@ import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+import javax.inject.Named
 
 @InjectViewState
 class RecoveryPasswordPresenter @Inject constructor(private val resetPasswordGetaway: ResetPasswordGetaway,
+                                                    @Named("RecoveryHandler")
                                                     private val errorHandler: ErrorHandler)
     : BasePresenter<RecoveryPasswordView>() {
 

@@ -35,10 +35,12 @@ import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
 
 import javax.inject.Inject
+import javax.inject.Named
 
 class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener,
     View.OnClickListener {
@@ -60,6 +62,10 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
 
     @Inject
     lateinit var validator: Validator
+
+    @Inject
+    @Named("RecoveryHandler")
+    override lateinit var errorHandler: ErrorHandler
 
     override fun layoutRes() = R.layout.fragment_recovery_password2
 
@@ -126,6 +132,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
                     presenter.sendCode(code)
                 }
                 .also { compositeDisposable.add(it) }
+        visibilityPassword(!passwordVisible)
         passwordVisibility.setOnClickListener(this)
         passwordVisibility2.setOnClickListener(this)
     }
@@ -327,14 +334,14 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
             password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
         } else {
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
         }
     }
 

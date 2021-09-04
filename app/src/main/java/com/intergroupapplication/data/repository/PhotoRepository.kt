@@ -1,30 +1,28 @@
 package com.intergroupapplication.data.repository
 
-import android.app.Activity
 import android.graphics.Bitmap
+import android.webkit.MimeTypeMap
+import androidx.fragment.app.Fragment
 import com.androidnetworking.AndroidNetworking
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.data.model.ImageUploadDto
 import com.intergroupapplication.data.network.AppApi
-import com.intergroupapplication.domain.entity.MediaType
+import com.intergroupapplication.data.network.dto.ImageUploadDto
+import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.yalantis.ucrop.UCrop
+import id.zelory.compressor.Compressor
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
-import com.intergroupapplication.domain.gateway.AwsUploadingGateway
-import com.intergroupapplication.presentation.exstension.addMediaIfNotContains
-import com.intergroupapplication.presentation.exstension.removeMedia
-import id.zelory.compressor.Compressor
 import java.io.File
+import javax.inject.Inject
 
 
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
-class PhotoRepository @Inject constructor(private val activity: Activity,
+class PhotoRepository @Inject constructor(private val fragment: Fragment,
                                           private val cropOptions: UCrop.Options,
                                           private val appApi: AppApi,
                                           private val awsUploadingGateway: AwsUploadingGateway) : PhotoGateway {
@@ -44,7 +42,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
     private val fileToUrl: MutableMap<String, String> = mutableMapOf()
 
     override fun loadFromGallery(): Observable<String> =
-            RxPaparazzo.single(activity)
+            RxPaparazzo.single(fragment)
                     .crop(cropOptions)
                     .usingGallery()
                     .map {
@@ -55,7 +53,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     }
 
     override fun loadFromCamera(): Observable<String> =
-            RxPaparazzo.single(activity)
+            RxPaparazzo.single(fragment)
                     .crop(cropOptions)
                     .usingCamera()
                     .map {
@@ -104,7 +102,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 : Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(chooseMedia.url)
-        val myFile = File(activity.externalCacheDir,"upload_music_$count.mp3")
+        val myFile = File(fragment.requireActivity().externalCacheDir,"upload_music_$count.mp3")
         myFile.createNewFile()
         val byteArray = file.readBytes()
         myFile.writeBytes(byteArray)
@@ -162,7 +160,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     else{
                             try {
                                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                        Compressor(activity).setQuality(75)
+                                        Compressor(fragment.requireActivity()).setQuality(75)
                                         .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                         .compressToFile(file))
                             }catch (e:Exception){
@@ -198,7 +196,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     else{
                         try {
                             awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                    Compressor(activity).setQuality(75)
+                                    Compressor(fragment.requireActivity()).setQuality(75)
                                         .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                         .compressToFile(file))
                         }catch (e:Exception){
@@ -211,7 +209,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                     subject.doOnDispose { AndroidNetworking.cancelAll() }
                             .doOnComplete{
                                 if (file.exists()) {
-                                    file.delete();
+                                    file.delete()
                                 }
                             }
                     return@flatMapObservable Observable.just(it.fields.key)
@@ -228,7 +226,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75)
+                                Compressor(fragment.requireActivity()).setQuality(75)
                                     .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                     .compressToFile(file))
                 }
@@ -250,7 +248,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75)
+                                Compressor(fragment.requireActivity()).setQuality(75)
                                     .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                     .compressToFile(file))
                 }
@@ -272,7 +270,7 @@ class PhotoRepository @Inject constructor(private val activity: Activity,
                                 file)
                     else
                         awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                                Compressor(activity).setQuality(75)
+                                Compressor(fragment.requireActivity()).setQuality(75)
                                     .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                     .compressToFile(file))
                 }

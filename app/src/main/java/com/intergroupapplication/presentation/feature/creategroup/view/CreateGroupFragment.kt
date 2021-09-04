@@ -24,6 +24,7 @@ import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment.Companion.CREATED_GROUP_ID
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -319,8 +320,10 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     }
 
     override fun goToGroupScreen(id: String) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(CREATED_GROUP_ID, id)
-        findNavController().popBackStack()
+       // findNavController().previousBackStackEntry?.savedStateHandle?.set(CREATED_GROUP_ID, id)
+       // findNavController().popBackStack()
+        val data = bundleOf(GroupFragment.GROUP_ID to id)
+        findNavController().navigate(R.id.action_createGroupActivity_to_groupActivity, data)
     }
 
     override fun showLoading(show: Boolean) {

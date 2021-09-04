@@ -67,4 +67,7 @@ interface GatewayModule {
     @Binds
     fun provideColorDrawableRepository(colorDrawableRepository: ColorDrawableRepository)
         :ColorDrawableGateway
+
+    @Binds
+    fun provideAvatarRepository(avatarRepository: AvatarRepository): AvatarGateway
 }

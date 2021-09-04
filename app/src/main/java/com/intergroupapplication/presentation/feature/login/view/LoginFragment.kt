@@ -33,6 +33,7 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -87,7 +88,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     @Inject
     @Named("loginHandler")
-    lateinit var errorHandlerLogin: ErrorHandler
+    override lateinit var errorHandler: ErrorHandler
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_login2
@@ -119,7 +120,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         tvPasswdError = viewBinding.tvPasswdError
         progressBar = viewBinding.progressBar
 
-        initErrorHandler(errorHandlerLogin)
         rxPermission = RxPermissions(this)
         mail = viewBinding.etMail
         password = viewBinding.password
@@ -140,19 +140,21 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             val intent = mGoogleSignInClient.signInIntent
             startActivityForResult(intent, RC_SIGN_IN)
         }
+        visibilityPassword(!passwordVisible)
         passwordVisibility.setOnClickListener {
             visibilityPassword(passwordVisible)
             passwordVisible = !passwordVisible
         }
+        setErrorHandler()
     }
 
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
             password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
         } else {
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
         }
     }
 
@@ -200,22 +202,12 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        setErrorHandler()
-    }
-
-    override fun onPause() {
-        errorHandlerLogin.clear()
-        super.onPause()
-    }
-
     override fun deviceInfoExtracted() {
         presenter.performLogin(LoginEntity(mail.text.toString().trim(), password.text.toString().trim()))
     }
 
     override fun login() {
-        findNavController().navigate(R.id.action_loginActivity_to_splashActivity)
+        findNavController().navigate(R.id.action_global_splashActivity)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -238,18 +230,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe({
-//                    if (it) {
-//                        presenter.extractDeviceInfo()
-//                    } else {
-//                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-//                                mapOf(R.id.permissionOk to {
-//                                    presenter.goToSettingsScreen()
-//                                }))
-//                    }
-                    presenter.extractDeviceInfo()
-                }, { Timber.e(it) }))
+        presenter.extractDeviceInfo()
     }
 
     override fun clearViewErrorState() {
@@ -288,7 +269,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -303,27 +284,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 }
             }
         }
-        errorHandlerLogin.on(UserNotVerifiedException::class.java) { throwable, _ ->
-            val email = mail.text.toString()
-            val data = bundleOf("entity" to email)
-            findNavController().navigate(R.id.action_loginActivity_to_confirmationMailActivity, data)
-        }
-        errorHandlerLogin.on(UserNotProfileException::class.java) { throwable, _ ->
-            findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
-        }
-        errorHandlerLogin.on(BadRequestException::class.java) { throwable, _ ->
-            dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
-        }
     }
-
-//    override fun openConfirmationEmail() = Action { _, _ ->
-//        val email = mail.text
-//        val data = bundleOf("entity" to email)
-//        findNavController().navigate(R.id.action_loginActivity_to_confirmationMailActivity, data)
-//    }
-//
-//    override fun openCreateProfile()  = Action { _, _ ->
-//        findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
-//    }
 
 }

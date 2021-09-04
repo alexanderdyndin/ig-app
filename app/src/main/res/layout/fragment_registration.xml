@@ -5,8 +5,7 @@
     android:id="@+id/registrationCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_base"
-    tools:context=".presentation.feature.registration.view.RegistrationFragment">
+    android:background="@drawable/background_base">
 
     <ScrollView
         android:layout_width="match_parent"

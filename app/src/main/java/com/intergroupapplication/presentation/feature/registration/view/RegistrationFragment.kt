@@ -53,12 +53,14 @@ import com.mobsandgeeks.saripaar.annotation.Email
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import com.tbruyelle.rxpermissions2.RxPermissions
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Named
 
 
 class RegistrationFragment : BaseFragment(), RegistrationView, Validator.ValidationListener, ActionMode.Callback {
@@ -89,6 +91,10 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     @Inject
     lateinit var validator: Validator
+
+    @Inject
+    @Named("RegistrationHandler")
+    override lateinit var errorHandler: ErrorHandler
 
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -137,7 +143,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         tvDoubleMailError = viewBinding.tvDoubleMailError
         tvDoublePasswdError = viewBinding.tvDoublePasswdError
         tvErrorPassword = viewBinding.tvErrorPassword
-        tvMailError = viewBinding.tvErrorPassword
+        tvMailError = viewBinding.tvMailError
         progressBar = viewBinding.progressBar
         mail = viewBinding.etMail
         password = viewBinding.etPassword
@@ -149,10 +155,13 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { validator.validate() }.let(compositeDisposable::add)
         setErrorHandler()
-
-        textLogin.clicks().subscribe { findNavController().navigate(R.id.action_registrationActivity_to_loginActivity2) }.also { compositeDisposable.add(it) }
+        textLogin.clicks().subscribe {
+            val n = findNavController()
+            n.navigate(R.id.action_registrationActivity_to_loginActivity)
+        }.also { compositeDisposable.add(it) }
         initValidator()
         initEditText()
+        visibilityPassword(!passwordVisible)
         sign_in_button.setOnClickListener {
             val intent = mGoogleSignInClient.signInIntent
             startActivityForResult(intent, LoginFragment.RC_SIGN_IN)
@@ -169,15 +178,15 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
-            mail.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
         } else {
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_invisible, 0, 0, 0)
+            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
+            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_password_visible, 0, 0, 0)
         }
     }
 
@@ -199,17 +208,6 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             }
         }
 
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        setErrorHandler()
-    }
-
-    override fun onPause() {
-        errorHandler.clear()
-        super.onPause()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -264,17 +262,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(rxPermission.request(Manifest.permission.READ_PHONE_STATE)
-                .subscribe({
-                    if (it) {
-                        presenter.extractDeviceInfo()
-                    } else {
-                        dialogDelegate.showDialog(R.layout.dialog_explain_phone_state_permission,
-                                mapOf(R.id.permissionOk to {
-                                    presenter.goToSettingsScreen()
-                                }))
-                    }
-                }, { Timber.e(it) }))
+        presenter.extractDeviceInfo()
     }
 
     override fun clearViewErrorState() {

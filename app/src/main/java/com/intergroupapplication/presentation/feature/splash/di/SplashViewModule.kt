@@ -18,17 +18,5 @@ import dagger.Provides
 @Module
 class SplashViewModule {
 
-    @PerFragment
-    @Provides
-    fun provideDialogManager(fragment: SplashFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
-
-
-    @PerFragment
-    @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
-            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
 
 }

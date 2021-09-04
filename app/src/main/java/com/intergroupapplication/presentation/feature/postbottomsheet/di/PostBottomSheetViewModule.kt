@@ -61,7 +61,7 @@ class PostBottomSheetViewModule {
     fun providePhotoGateway(fragmentComment: PostBottomSheetFragment,
                             cropOptions: UCrop.Options,
                             api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(fragmentComment.requireActivity(), cropOptions, api, awsUploadingGateway)
+            PhotoRepository(fragmentComment, cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides

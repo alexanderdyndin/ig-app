@@ -3,8 +3,8 @@ package com.intergroupapplication.data.remotedatasource
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
 import com.intergroupapplication.data.mapper.FollowersGroupMapper
-import com.intergroupapplication.data.model.group_followers.GroupUserFollowersDto
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.dto.GroupUserFollowersDto
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -22,7 +22,7 @@ class GroupFollowersRemoteRXDataSource (
         appApi.getGroupFollowers(groupId, page, "", searchFilter)
     }
 
-    override fun getRefreshKey(state: PagingState<Int, GroupUserEntity>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, GroupUserEntity>): Int {
         val position = state.anchorPosition ?: 0
         return position / 20 + 1
     }

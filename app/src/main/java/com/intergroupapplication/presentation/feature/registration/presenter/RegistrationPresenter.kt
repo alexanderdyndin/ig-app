@@ -12,10 +12,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 import javax.inject.Inject
+import javax.inject.Named
 
 @InjectViewState
 class RegistrationPresenter @Inject constructor(private val registrationGateway: RegistrationGateway,
                                                 private val imeiGateway: ImeiGateway,
+                                                @Named("RegistrationHandler")
                                                 private val errorHandler: ErrorHandler)
     : BasePresenter<RegistrationView>() {
 
@@ -28,8 +30,7 @@ class RegistrationPresenter @Inject constructor(private val registrationGateway:
                         .subscribe({
                             viewState.confirmMail(entity.email)
                         }) {
-                            errorHandler.always { _, _ -> viewState.clearViewErrorState() }
-                                    .handle(it)
+                            errorHandler.handle(it)
                         })
     }
 
@@ -40,11 +41,6 @@ class RegistrationPresenter @Inject constructor(private val registrationGateway:
                 .subscribe({ viewState.deviceInfoExtracted() }, {
                     errorHandler.handle(it)
                 }))
-    }
-
-
-    fun goToSettingsScreen() {
-        //router.navigateTo(ActionApplicationDetailsScreen())
     }
 
 }

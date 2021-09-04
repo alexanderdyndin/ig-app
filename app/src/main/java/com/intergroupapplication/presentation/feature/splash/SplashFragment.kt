@@ -11,10 +11,12 @@ import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.presentation.base.BaseFragment
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import dagger.android.support.AndroidSupportInjection
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class SplashFragment : Fragment() {
+class SplashFragment : Fragment(R.layout.fragment_splash) {
 
     @Inject
     lateinit var userSession: UserSession
@@ -24,16 +26,17 @@ class SplashFragment : Fragment() {
         AndroidSupportInjection.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_splash, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         when {
-            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_splashActivity_to_AgreementsFragment2)
-            !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_splashActivity_to_registrationActivity)
-            else -> findNavController().navigate(R.id.action_splashActivity_to_newsFragment2)
+            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_global_AgreementsFragment2)
+            !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_global_registrationActivity)
+            else ->  {
+                val activity = requireActivity()
+                if (activity is MainActivity) {
+                    activity.createDrawer()
+                } else throw IllegalStateException("Wrong Activity")
+            }
         }
     }
 

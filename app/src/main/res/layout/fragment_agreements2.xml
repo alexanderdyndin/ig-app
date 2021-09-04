@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainBlack"
-    android:fitsSystemWindows="true">
+    tools:context=".presentation.feature.agreements.view.AgreementsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,7 +15,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -73,6 +74,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
+                    android:id="@+id/privacyPolicy"
                     style="@style/TextNoActive12sp"
                     android:layout_width="143dp"
                     android:layout_height="wrap_content"
@@ -86,17 +88,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:text="@string/terms_accept"
+                    android:padding="6dp"
                     android:button="@drawable/checkbox_selector" />
 
-                <TextView
-                    android:id="@+id/textAgreement1"
-                    style="@style/TextNoActive12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/middle_margin"
-                    android:layout_weight="0"
-                    android:gravity="right"
-                    android:text="@string/terms_accept" />
 
             </LinearLayout>
 
@@ -126,6 +121,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
+                    android:id="@+id/userAgreement"
                     style="@style/TextNoActive12sp"
                     android:layout_width="143dp"
                     android:layout_height="wrap_content"
@@ -139,17 +135,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:padding="6dp"
+                    android:text="@string/terms_accept"
                     android:button="@drawable/checkbox_selector" />
-
-                <TextView
-                    android:id="@+id/textAgreement2"
-                    style="@style/TextNoActive12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/middle_margin"
-                    android:layout_weight="0"
-                    android:gravity="right"
-                    android:text="@string/terms_accept" />
 
             </LinearLayout>
 
@@ -178,6 +166,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
+                    android:id="@+id/copyrightAgreement"
                     style="@style/TextNoActive12sp"
                     android:layout_width="143dp"
                     android:layout_height="wrap_content"
@@ -191,17 +180,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
+                    android:text="@string/terms_accept"
+                    android:padding="6dp"
                     android:button="@drawable/checkbox_selector" />
-
-                <TextView
-                    android:id="@+id/textAgreement3"
-                    style="@style/TextNoActive12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/middle_margin"
-                    android:layout_weight="0"
-                    android:gravity="right"
-                    android:text="@string/terms_accept" />
 
             </LinearLayout>
 
@@ -239,16 +220,11 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnNext"
-                    style="@style/TextGrey16sp"
+                    style="@style/btnBigStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/low_big_margin"
-                    android:layout_marginEnd="@dimen/low_big_margin"
-                    android:background="@drawable/selector_btn_big"
-                    android:paddingTop="@dimen/middle_padding"
                     android:enabled="false"
-                    android:text="@string/next"
-                    android:textAllCaps="false"/>
+                    android:text="@string/next"/>
 
                 <include
                     android:id="@+id/loader"

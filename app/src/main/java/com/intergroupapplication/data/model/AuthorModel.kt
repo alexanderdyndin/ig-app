@@ -1,11 +1,13 @@
 package com.intergroupapplication.data.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import com.google.gson.annotations.SerializedName
 
 data class AuthorModel(
-        val id: Int,
-        val email: String,
+        @ColumnInfo(name = "author_id") val id: Int,
+        @ColumnInfo(name = "author_mail") val email: String,
         @SerializedName("is_blocked") val isBlocked: Boolean,
         @SerializedName("is_verified") val isVerified: Boolean,
         @SerializedName("time_blocked") val timeBlocked: String?,
-        val profile: UserProfileModelRequest)
+        @Embedded val profile: UserProfileModelRequest)

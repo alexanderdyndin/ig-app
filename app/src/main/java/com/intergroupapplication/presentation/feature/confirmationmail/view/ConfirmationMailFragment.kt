@@ -49,12 +49,18 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
+    @Inject
+    @Named("ConfirmationProfileHandler")
+    override lateinit var errorHandler: ErrorHandler
+
     private lateinit var btnNext: AppCompatButton
     private lateinit var btnRepeatCode: TextView
     private lateinit var btnChangeEmail: TextView
     private lateinit var confirmation: EditText
     private lateinit var progressBar: ProgressBar
     private lateinit var emailConfirmation: TextView
+    private lateinit var textConfirmation: TextView
+    private lateinit var textConfirmation2: TextView
 
     override fun viewCreated() {
         btnNext = viewBinding.btnNext
@@ -63,6 +69,8 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
         confirmation = viewBinding.confirmation
         progressBar = viewBinding.loader.progressBar
         emailConfirmation = viewBinding.emailConfirmation
+        textConfirmation = viewBinding.textConfirmation1
+        textConfirmation2 = viewBinding.textConfirmation2
 
         presenter.start(arguments?.getString("entity"))
         setErrorHandler()
@@ -72,7 +80,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
                 .let { compositeDisposable.add(it) }
 
         btnRepeatCode.clicks()
-                .subscribe { findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity) }
+                .subscribe { logOut() }
                 .also { compositeDisposable.add(it) }
 
         btnChangeEmail.clicks()
@@ -80,12 +88,6 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
                 .also { compositeDisposable.add(it) }
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            android.R.id.home -> findNavController().navigate(R.id.action_confirmationMailActivity_to_registrationActivity)
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
 
     override fun clearViewErrorState() {
         confirmation.text?.clear()
@@ -102,18 +104,13 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     }
 
     override fun fillData(email: String) {
-//        val color = ContextCompat.getColor(requireContext(), R.color.cerulean)
-//        val descriptionMail1 = getString(R.string.description_email_part_1)
-//        val descriptionMail2 = getString(R.string.description_email_part_2)
-//        val desc = SpannableString("$descriptionMail1$email$descriptionMail2")
-//        val start = descriptionMail1.length
-//        val end = descriptionMail1.length + email.length
-//        desc.setSpan(ForegroundColorSpan(color), start, end, 0)
-//        tvWel.text = desc
         if (email.isNotEmpty())
             emailConfirmation.text = email
-        else
-            emailConfirmation.gone()
+        else {
+            textConfirmation.hide()
+            textConfirmation.hide()
+            emailConfirmation.hide()
+        }
     }
 
     override fun completed() {

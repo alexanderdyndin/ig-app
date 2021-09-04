@@ -2,10 +2,9 @@ package com.intergroupapplication.data.remotedatasource
 
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
-import com.intergroupapplication.data.mapper.GroupMapper
-import com.intergroupapplication.data.model.GroupsDto
+import com.intergroupapplication.data.mapper.group.GroupMapper
 import com.intergroupapplication.data.network.AppApi
-import com.intergroupapplication.data.network.PAGE_SIZE
+import com.intergroupapplication.data.network.dto.GroupsDto
 import com.intergroupapplication.domain.entity.GroupEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -56,9 +55,13 @@ class GroupsRemoteRXDataSource (private val appApi: AppApi,
     }
 
     override fun getRefreshKey(state: PagingState<Int, GroupEntity>): Int? {
-        val position = state.anchorPosition ?: 0
-        val page = (position / PAGE_SIZE) + 1
-        return page
+        return state.anchorPosition?.let { anchorPosition ->
+            // This loads starting from previous page, but since PagingConfig.initialLoadSize spans
+            // multiple pages, the initial load will still load items centered around
+            // anchorPosition. This also prevents needing to immediately launch prepend due to
+            // prefetchDistance.
+            (state.closestPageToPosition(anchorPosition)?.prevKey ?: 0) + 1
+        }
     }
 
 }

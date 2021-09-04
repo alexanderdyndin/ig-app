@@ -3,7 +3,6 @@ package com.intergroupapplication.presentation.feature.commentsdetails.presenter
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsView
 
-import moxy.InjectViewState
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
@@ -11,8 +10,7 @@ import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-
-
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

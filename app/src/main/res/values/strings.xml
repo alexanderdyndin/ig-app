@@ -59,10 +59,10 @@
     <!--New Design-->
     <string name="intergroup">InterGroup</string>
     <string name="welcome">Welcome!\nOur social network allows to chat, listen to music, read news, view photos and create groups by interests.</string>
-    <string name="privacy_police">Privacy policy</string>
+    <string name="privacy_police"><u>Privacy policy</u></string>
     <string name="terms_accept">Accept conditions\t\t\t</string>
-    <string name="terms_of_use">User agreement</string>
-    <string name="rightholders">To copyright owners</string>
+    <string name="terms_of_use"><u>User agreement</u></string>
+    <string name="rightholders"><u>To copyright owners</u></string>
     <string name="hardware_access">Provide access to soft hardware</string>
     <string name="already_registered">I am authorized user InterGroup</string>
     <string name="your_email">E-mail</string>
@@ -105,6 +105,7 @@
     <string name="admGroups">Management</string>
     <string name="terms_accept_privacy">Accept privacy policy conditions\t \t\t</string>
     <string name="terms_accept_agreement">Accept user agreement conditions\t \t\t</string>
+    <string name="reputation">Reputation</string>
 
     <string-array name="countries">
         <item>Abkhazia</item>
@@ -197,7 +198,6 @@
 
     <string name="publications">Publications</string>
     <string name="comments">Comments</string>
-    <string name="reputation">Reputation</string>
 
     <string name="filter_group">Filter group</string>
     <string name="by_age">By age</string>
@@ -221,6 +221,9 @@
     </string-array>
     <string name="reset_filter">Reset</string>
     <string name="apply_filter">Apply</string>
+    <string name="user_can_not_fount_your_group">User can not found your group</string>
+    <string name="add">Add</string>
+    <string name="years">Age: %1$s</string>
     <string name="answer_comment">answer your comment</string>
     <string name="dislike_your_comment">dislike your comment</string>
     <string name="like_your_comment">like your comment</string>
