@@ -15,5 +15,4 @@ enum class NotificationTypes(val value: String) {
         }
 
     }
-
 }

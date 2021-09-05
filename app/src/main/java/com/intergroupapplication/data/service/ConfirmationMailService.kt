@@ -11,12 +11,14 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
-class ConfirmationMailService @Inject constructor(private val api: AppApi,
-                                                  private val tokenMapper: TokenMapper,
-                                                  private val sessionStorage: UserSession) : ConfirmationMailGateway {
+class ConfirmationMailService @Inject constructor(
+    private val api: AppApi,
+    private val tokenMapper: TokenMapper,
+    private val sessionStorage: UserSession
+) : ConfirmationMailGateway {
 
     override fun confirmMail(confirmCode: String): Completable =
-            api.confirmMail(TokenConfirmModel(confirmCode))
-                    .map { sessionStorage.token = tokenMapper.mapToDomainEntity(it) }
-                    .ignoreElement()
+        api.confirmMail(TokenConfirmModel(confirmCode))
+            .map { sessionStorage.token = tokenMapper.mapToDomainEntity(it) }
+            .ignoreElement()
 }

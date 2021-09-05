@@ -13,17 +13,19 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
-class LoginService @Inject constructor(private val api: AppApi,
-                                       private val loginMapper: LoginMapper,
-                                       private val tokenMapper: TokenMapper,
-                                       private val sessionStorage: UserSession) : LoginGateway {
+class LoginService @Inject constructor(
+    private val api: AppApi,
+    private val loginMapper: LoginMapper,
+    private val tokenMapper: TokenMapper,
+    private val sessionStorage: UserSession
+) : LoginGateway {
 
     override fun performLogin(loginEntity: LoginEntity): Single<TokenEntity> =
-            api.loginUser(loginMapper.mapToDataModel(loginEntity))
-                    .map {
-                        val tokenEntity = tokenMapper.mapToDomainEntity(it)
-                        sessionStorage.token = tokenEntity
-                        tokenEntity
-                    }
+        api.loginUser(loginMapper.mapToDataModel(loginEntity))
+            .map {
+                val tokenEntity = tokenMapper.mapToDomainEntity(it)
+                sessionStorage.token = tokenEntity
+                tokenEntity
+            }
 
 }

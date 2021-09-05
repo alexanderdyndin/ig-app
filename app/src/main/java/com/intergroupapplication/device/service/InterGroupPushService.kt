@@ -1,5 +1,6 @@
 package com.intergroupapplication.device.service
 
+import android.annotation.SuppressLint
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.intergroupapplication.data.model.DeviceModel
@@ -47,6 +48,7 @@ class InterGroupPushService : FirebaseMessagingService() {
 
     }
 
+    @SuppressLint("CheckResult")
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         val idUser = session.user?.id.orEmpty()
@@ -59,5 +61,4 @@ class InterGroupPushService : FirebaseMessagingService() {
             session.firebaseToken = FirebaseTokenEntity(t)
         }
     }
-
 }
