@@ -361,9 +361,9 @@ class CommentBottomSheetPresenter @Inject constructor(
         photoGateway.setAudioUrls(audios.map { audioEntity ->
             return@map ChooseMedia(
                 "/groups/0/comments/${
-                    audioEntity.file.substringAfterLast("/")
+                    audioEntity.urlFile.substringAfterLast("/")
                 }",
-                name = audioEntity.song, author = audioEntity.artist,
+                name = audioEntity.nameSong, author = audioEntity.artist,
                 duration = audioEntity.duration,
                 type = MediaType.AUDIO
             )

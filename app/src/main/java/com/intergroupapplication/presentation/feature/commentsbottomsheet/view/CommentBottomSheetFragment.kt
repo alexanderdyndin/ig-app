@@ -751,11 +751,10 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         namesMap.clear()
         var text = comment.text
         comment.audios.forEach {
-            if (text.contains(it.song)) {
-                namesMap[it.file] = it.song
+            if (text.contains(it.nameSong)) {
+                namesMap[it.urlFile] = it.nameSong
                 text =
-                    text.substringBefore(it.song) + it.file + text.
-                        substringAfter(it.song + MEDIA_PREFIX)
+                    text.substringBefore(it.nameSong) + it.urlFile + text.substringAfter(it.nameSong + MEDIA_PREFIX)
             }
         }
         comment.images.forEach {

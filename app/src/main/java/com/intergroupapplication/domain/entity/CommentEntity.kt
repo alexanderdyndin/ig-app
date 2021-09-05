@@ -2,25 +2,27 @@ package com.intergroupapplication.domain.entity
 
 import android.os.Parcelable
 import com.appodeal.ads.NativeAd
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
 sealed class CommentEntity {
     @Parcelize
-    data class Comment(val id: String,
-                       val commentOwner: CommentUserEntity?,
-                       var reacts: ReactsEntity,
-                       val images: List<FileEntity>,
-                       val audios: List<AudioEntity>,
-                       val videos: List<FileEntity>,
-                       val text: String,
-                       val date: String,
-                       val isActive: Boolean,
-                       val idc: Int,
-                       val post: Int,
-                       val answerTo: Comment?) : CommentEntity(),Parcelable {
+    data class Comment(
+        val id: String,
+        val commentOwner: CommentUserEntity?,
+        var reacts: ReactsEntity,
+        val images: List<FileEntity>,
+        val audios: List<AudioEntity>,
+        val videos: List<FileEntity>,
+        val text: String,
+        val date: String,
+        val isActive: Boolean,
+        val idc: Int,
+        val post: Int,
+        val answerTo: Comment?
+    ) : CommentEntity(), Parcelable {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
@@ -68,29 +70,29 @@ sealed class CommentEntity {
     }
 
     data class PostEntity(
-            val id: String,
-            val bells: BellsEntity,
-            val groupInPost: GroupEntity.Group,
-            val postText: String,
-            val date: String,
-            val updated: String?,
-            val author: AuthorEntity,
-            val pin: String?,
-            val photo: String?,
-            var commentsCount: String,
-            val activeCommentsCount: String,
-            val isActive: Boolean,
-            val isOffered: Boolean,
-            var isPinned: Boolean,
-            var reacts: ReactsEntity,
-            val idp: Int,
-            val images: List<FileEntity>,
-            val audios: List<AudioEntity>,
-            val videos: List<FileEntity>,
-            var isLoading: Boolean = false,
-            val unreadComments: String,
-            var imagesExpanded: Boolean = false,
-            var audiosExpanded: Boolean = false,
-            var videosExpanded: Boolean = false
-    ):CommentEntity()
+        val id: String,
+        val bells: BellsEntity,
+        val groupInPost: GroupEntity.Group,
+        val postText: String,
+        val date: String,
+        val updated: String?,
+        val author: AuthorEntity,
+        val pin: String?,
+        val photo: String?,
+        var commentsCount: String,
+        val activeCommentsCount: String,
+        val isActive: Boolean,
+        val isOffered: Boolean,
+        var isPinned: Boolean,
+        var reacts: ReactsEntity,
+        val idp: Int,
+        val images: List<FileEntity>,
+        val audios: List<AudioEntity>,
+        val videos: List<FileEntity>,
+        var isLoading: Boolean = false,
+        val unreadComments: String,
+        var imagesExpanded: Boolean = false,
+        var audiosExpanded: Boolean = false,
+        var videosExpanded: Boolean = false
+    ) : CommentEntity()
 }

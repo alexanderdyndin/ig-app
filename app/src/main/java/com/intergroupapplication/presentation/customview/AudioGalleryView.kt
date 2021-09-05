@@ -86,11 +86,13 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
                 bindedService?.let {
                     urls.forEach {
                         val playerView = AudioPlayerView(context)
-                        val player = makeAudioPlayer(it, bindedService,playerView)
-                        val trackName = if (it.artist == "") it.song else "${it.artist} - ${it.song}"
+                        val player = makeAudioPlayer(it, bindedService, playerView)
+                        val trackName =
+                            if (it.artist == "") it.nameSong else "${it.artist} - ${it.nameSong}"
                         playerView.trackName = trackName
                         playerView.trackOwner = "Загрузил (ID:${it.owner})"
-                        playerView.durationTrack.text = if (it.duration != "") it.duration else "00:00"
+                        playerView.durationTrack.text =
+                            if (it.duration != "") it.duration else "00:00"
                         playerView.exoPlayer.player = player
                         container.addView(playerView)
                         if (player.playWhenReady) {
@@ -121,9 +123,11 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 if (playWhenReady) {
-                    service.setAudioPlayer(musicPlayer,
-                        IGMediaService.MediaFile(true, audio.id), audio.song,
-                        audio.description,playerView)
+                    service.setAudioPlayer(
+                        musicPlayer,
+                        IGMediaService.MediaFile(true, audio.id), audio.nameSong,
+                        audio.description, playerView
+                    )
                 }
                 service.changeControlButton(playWhenReady)
             }
@@ -137,17 +141,17 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         }
         musicPlayer.addListener(listener)
         proxy?.let {
-            val proxyUrl = it.getProxyUrl(audio.file)
+            val proxyUrl = it.getProxyUrl(audio.urlFile)
             it.registerCacheListener({ _, _, percentsAvailable ->
                 playerView.exoProgress.setLocalCacheBufferedPosition(percentsAvailable)
-            }, audio.file)
-            if (it.isCached(audio.file)){
+            }, audio.urlFile)
+            if (it.isCached(audio.urlFile)) {
                 playerView.exoProgress.setLocalCacheBufferedPosition(100)
             }
             val musicMediaItem: MediaItem = MediaItem.fromUri(proxyUrl)
             musicPlayer.setMediaItem(musicMediaItem)
         } ?: let {
-            val musicMediaItem: MediaItem = MediaItem.fromUri(audio.file)
+            val musicMediaItem: MediaItem = MediaItem.fromUri(audio.urlFile)
             musicPlayer.setMediaItem(musicMediaItem)
         }
         return musicPlayer

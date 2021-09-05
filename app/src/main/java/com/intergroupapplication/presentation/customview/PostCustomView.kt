@@ -180,7 +180,7 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
             }
         }
         markupModel.audios.forEach {
-            if (it.song == name){
+            if (it.nameSong == name) {
                 l3.add(it)
                 return@addFileByName
             }

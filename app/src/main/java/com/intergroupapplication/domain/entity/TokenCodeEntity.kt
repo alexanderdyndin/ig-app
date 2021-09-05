@@ -1,3 +1,5 @@
 package com.intergroupapplication.domain.entity
 
-data class TokenCodeEntity(val token: String)
+data class TokenCodeEntity(
+    val token: String
+)

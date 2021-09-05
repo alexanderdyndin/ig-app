@@ -2,7 +2,7 @@ package com.intergroupapplication.domain.entity
 
 import android.os.Parcelable
 import com.appodeal.ads.NativeAd
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by abakarmagomedov on 27/08/2018 at project InterGroupApplication.

@@ -208,8 +208,8 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
     fun addAudioInAudiosUrl(audios: List<AudioEntity>) {
         photoGateway.setAudioUrls(audios.map { audioEntity ->
             return@map ChooseMedia(
-                "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
-                name = audioEntity.song, author = audioEntity.artist,
+                "/groups/0/comments/${audioEntity.urlFile.substringAfterLast("/")}",
+                name = audioEntity.nameSong, author = audioEntity.artist,
                 duration = audioEntity.duration,
                 type = MediaType.AUDIO
             )

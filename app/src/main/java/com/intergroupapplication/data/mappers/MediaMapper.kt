@@ -74,9 +74,9 @@ class MediaMapper @Inject constructor() {
 
     fun mapToDto(from: AudioRequestEntity): AudioRequestModel =
         AudioRequestModel(
-            from.file,
+            from.urlFile,
             from.description.orEmpty(),
-            from.song.orEmpty(),
+            from.nameSong.orEmpty(),
             from.artist.orEmpty(),
             from.genre.orEmpty(),
             from.duration.orEmpty()
@@ -126,10 +126,10 @@ class MediaMapper @Inject constructor() {
     fun mapToDto(from: AudioEntity): AudioModel {
         return AudioModel(
             from.id,
-            from.file,
+            from.urlFile,
             from.isActive,
             from.description,
-            from.song,
+            from.nameSong,
             from.artist,
             from.genre,
             from.post,

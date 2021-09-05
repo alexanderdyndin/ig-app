@@ -51,10 +51,10 @@ class EditPostFragment : CreatePostFragment() {
     private fun changeNameOnUrl(groupPost: GroupPostEntity.PostEntity): String {
         var text = groupPost.postText
         groupPost.audios.forEach {
-            if (text.contains(it.song)) {
-                namesMap[it.file] = it.song
-                text = text.substringBefore(it.song) + it.file +
-                        text.substringAfter(it.song + MEDIA_PREFIX)
+            if (text.contains(it.nameSong)) {
+                namesMap[it.urlFile] = it.nameSong
+                text = text.substringBefore(it.nameSong) + it.urlFile +
+                        text.substringAfter(it.nameSong + MEDIA_PREFIX)
             }
         }
         groupPost.images.forEach {
