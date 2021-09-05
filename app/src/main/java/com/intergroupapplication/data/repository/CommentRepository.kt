@@ -4,8 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
-import com.intergroupapplication.data.mapper.CommentMapper
-import com.intergroupapplication.data.mapper.ReactsMapper
+import com.intergroupapplication.data.mappers.CommentMapper
+import com.intergroupapplication.data.mappers.ReactsMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.CommentsRemoteRXDataSource

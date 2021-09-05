@@ -185,7 +185,7 @@
       NewLineAtEndOfFile:CreateGroupGateway.kt$com.intergroupapplication.domain.gateway.CreateGroupGateway.kt
     </ID>
     <ID>
-      NewLineAtEndOfFile:CreateGroupMapper.kt$com.intergroupapplication.data.mapper.CreateGroupMapper.kt
+        NewLineAtEndOfFile:CreateGroupMapper.kt$com.intergroupapplication.data.mappers.CreateGroupMapper.kt
     </ID>
     <ID>
       NewLineAtEndOfFile:CreateGroupPostEntity.kt$com.intergroupapplication.domain.entity.CreateGroupPostEntity.kt
@@ -234,7 +234,7 @@
       NewLineAtEndOfFile:GroupInPostEntity.kt$com.intergroupapplication.domain.entity.GroupInPostEntity.kt
     </ID>
     <ID>
-      NewLineAtEndOfFile:GroupInPostMapper.kt$com.intergroupapplication.data.mapper.group.GroupInPostMapper.kt
+      NewLineAtEndOfFile:GroupInPostMapper.kt$com.intergroupapplication.data.mappers.group.GroupInPostMapper.kt
     </ID>
     <ID>
       NewLineAtEndOfFile:GroupInPostModel.kt$com.intergroupapplication.data.model.GroupInPostModel.kt
@@ -246,7 +246,7 @@
       NewLineAtEndOfFile:GroupListView.kt$com.intergroupapplication.presentation.feature.grouplist.view.GroupListView.kt
     </ID>
     <ID>
-      NewLineAtEndOfFile:GroupMapper.kt$com.intergroupapplication.data.mapper.group.GroupMapper.kt
+      NewLineAtEndOfFile:GroupMapper.kt$com.intergroupapplication.data.mappers.group.GroupMapper.kt
     </ID>
     <ID>NewLineAtEndOfFile:GroupModel.kt$com.intergroupapplication.data.network.dto.GroupDto.kt</ID>
     <ID>
@@ -458,7 +458,7 @@
     </ID>
     <ID>UnusedImports:FrescoImageLoader.kt$import com.facebook.imagepipeline.image.ImageInfo</ID>
     <ID>UnusedImports:GatewayModule.kt$import
-      com.intergroupapplication.data.mapper.group.GroupMapper
+      com.intergroupapplication.data.mappers.group.GroupMapper
     </ID>
     <ID>UnusedImports:GatewayModule.kt$import com.intergroupapplication.data.network.AppApi</ID>
     <ID>UnusedImports:GatewayModule.kt$import com.intergroupapplication.di.scope.PerActivity</ID>

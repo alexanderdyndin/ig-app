@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.repository
 
-import com.intergroupapplication.data.mapper.UserProfileMapper
+import com.intergroupapplication.data.mappers.UserProfileMapper
 import com.intergroupapplication.data.model.VersionModel
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.AdEntity

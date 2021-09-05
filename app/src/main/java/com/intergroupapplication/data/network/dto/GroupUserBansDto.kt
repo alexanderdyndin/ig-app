@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.network.dto
 
-import com.intergroupapplication.data.model.group_followers.ResultBan
+import com.intergroupapplication.data.model.groupfollowers.ResultBan
 
 
 data class GroupUserBansDto(

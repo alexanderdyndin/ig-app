@@ -2,7 +2,7 @@ package com.intergroupapplication.data.remotedatasource
 
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
-import com.intergroupapplication.data.mapper.FollowersGroupMapper
+import com.intergroupapplication.data.mappers.FollowersGroupMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.dto.GroupUserFollowersDto
 import com.intergroupapplication.domain.entity.GroupUserEntity

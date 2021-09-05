@@ -7,7 +7,7 @@ import androidx.paging.rxjava2.RxRemoteMediator
 import com.intergroupapplication.data.db.IgDatabase
 import com.intergroupapplication.data.db.entity.NewsPostDb
 import com.intergroupapplication.data.db.entity.NewsPostRemoteKeyDb
-import com.intergroupapplication.data.mapper.NewsModelToNewsPostDbMapper
+import com.intergroupapplication.data.mappers.NewsPostDtoToNewsPostDbMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.dto.NewsDto
 import io.reactivex.Single
@@ -17,7 +17,7 @@ import io.reactivex.schedulers.Schedulers
 class NewsPostMediatorRXDataSource(
     private val appApi: AppApi,
     private val igDatabase: IgDatabase,
-    private val newsModelToDbMapper: NewsModelToNewsPostDbMapper
+    private val newsPostDtoToDbMapper: NewsPostDtoToNewsPostDbMapper
 ) : RxRemoteMediator<Int, NewsPostDb>() {
 
     private companion object {
@@ -83,7 +83,7 @@ class NewsPostMediatorRXDataSource(
         if (loadType != LoadType.PREPEND) {
             igDatabase.newsPostKeyDao().insertKey(key)
         }
-        igDatabase.newsPostDao().insertAll(data.newsPosts.map(newsModelToDbMapper))
+        igDatabase.newsPostDao().insertAll(data.newsPosts.map(newsPostDtoToDbMapper))
         return data
     }
 

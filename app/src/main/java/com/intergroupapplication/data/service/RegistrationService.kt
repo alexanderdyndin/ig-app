@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.service
 
-import com.intergroupapplication.data.mapper.RegistrationMapper
+import com.intergroupapplication.data.mappers.RegistrationMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.EmailEntity

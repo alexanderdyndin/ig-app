@@ -4,12 +4,12 @@ import androidx.paging.*
 import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.db.IgDatabase
 import com.intergroupapplication.data.db.dao.GroupPostDao
-import com.intergroupapplication.data.mapper.NewsModelToNewsPostDbMapper
-import com.intergroupapplication.data.mapper.NewsPostDbToNewsEntity
-import com.intergroupapplication.data.mapper.ReactsMapper
-import com.intergroupapplication.data.mapper.group.GroupPostDbToEntityMapper
-import com.intergroupapplication.data.mapper.group.GroupPostDtoToDbMapper
-import com.intergroupapplication.data.mapper.group.GroupPostMapper
+import com.intergroupapplication.data.mappers.NewsPostDbToNewsEntity
+import com.intergroupapplication.data.mappers.NewsPostDtoToNewsPostDbMapper
+import com.intergroupapplication.data.mappers.ReactsMapper
+import com.intergroupapplication.data.mappers.group.GroupPostDbToEntityMapper
+import com.intergroupapplication.data.mappers.group.GroupPostDtoToDbMapper
+import com.intergroupapplication.data.mappers.group.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remote_mediator.GroupPostMediatorRXDataSource
@@ -33,7 +33,7 @@ class GroupPostsRepository @Inject constructor(
     private val db: IgDatabase,
     private val groupPostDao: GroupPostDao,
     private val newsPostDbToEntity: NewsPostDbToNewsEntity,
-    private val newsModelToDbMapper: NewsModelToNewsPostDbMapper,
+    private val newsPostDtoToDbMapper: NewsPostDtoToNewsPostDbMapper,
     private val groupPostDtoMapper: GroupPostDtoToDbMapper,
     private val groupPostDbToEntityMapper: GroupPostDbToEntityMapper
 ) : GroupPostGateway {
@@ -57,7 +57,7 @@ class GroupPostsRepository @Inject constructor(
                 pageSize = PAGE_SIZE,
                 prefetchDistance = 5
             ),
-            remoteMediator = NewsPostMediatorRXDataSource(api, db, newsModelToDbMapper)
+            remoteMediator = NewsPostMediatorRXDataSource(api, db, newsPostDtoToDbMapper)
         ) {
             db.newsPostDao().getAllNewsPost()
         }.flowable.map { paging ->

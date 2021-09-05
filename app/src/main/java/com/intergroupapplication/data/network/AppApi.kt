@@ -1,8 +1,8 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.*
-import com.intergroupapplication.data.model.group_followers.GroupBanBody
-import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
+import com.intergroupapplication.data.model.groupfollowers.GroupBanBody
+import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdmin
 import com.intergroupapplication.data.network.dto.*
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -13,7 +13,7 @@ const val PAGE_SIZE = 20
 interface AppApi {
 
     @POST("auth/registrations/")
-    fun registerUser(@Body registrationModel: RegistrationModel): Single<RegistrationReesponce>
+    fun registerUser(@Body registrationModel: RegistrationModel): Single<RegistrationResponse>
 
     @POST("auth/login/")
     fun loginUser(@Body loginModel: LoginModel): Single<TokenModel>

@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.network.dto
 
-import com.intergroupapplication.data.model.group_followers.Result
+import com.intergroupapplication.data.model.groupfollowers.Result
 
 
 data class GroupUserFollowersDto(

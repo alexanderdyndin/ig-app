@@ -2,7 +2,7 @@ package com.intergroupapplication.data.remotedatasource
 
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
-import com.intergroupapplication.data.mapper.MediaMapper
+import com.intergroupapplication.data.mappers.MediaMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.FileEntity
 import io.reactivex.Single

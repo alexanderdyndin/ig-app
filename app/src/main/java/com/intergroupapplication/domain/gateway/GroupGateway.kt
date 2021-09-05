@@ -1,7 +1,7 @@
 package com.intergroupapplication.domain.gateway
 
 import androidx.paging.PagingData
-import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
+import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupFollowEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity

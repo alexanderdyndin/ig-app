@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.repository
 
-import com.intergroupapplication.data.mapper.TokenCodeMapper
+import com.intergroupapplication.data.mappers.TokenCodeMapper
 import com.intergroupapplication.data.model.CodeModel
 import com.intergroupapplication.data.model.EmailModel
 import com.intergroupapplication.data.model.NewPasswordModel

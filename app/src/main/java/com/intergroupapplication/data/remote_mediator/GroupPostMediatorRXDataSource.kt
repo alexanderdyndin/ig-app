@@ -7,7 +7,7 @@ import androidx.paging.rxjava2.RxRemoteMediator
 import com.intergroupapplication.data.db.IgDatabase
 import com.intergroupapplication.data.db.entity.GroupPostDb
 import com.intergroupapplication.data.db.entity.GroupPostRemoteKeysDb
-import com.intergroupapplication.data.mapper.group.GroupPostDtoToDbMapper
+import com.intergroupapplication.data.mappers.group.GroupPostDtoToDbMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.dto.GroupPostsDto
 import io.reactivex.Single

@@ -3,7 +3,7 @@ package com.intergroupapplication.domain.usecase
 import android.annotation.SuppressLint
 import androidx.paging.PagingData
 import com.intergroupapplication.data.model.AddBlackListUserModel
-import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
+import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole

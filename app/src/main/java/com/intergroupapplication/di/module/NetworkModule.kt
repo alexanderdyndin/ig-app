@@ -4,7 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intergroupapplication.BuildConfig
-import com.intergroupapplication.data.mapper.TokenMapper
+import com.intergroupapplication.data.mappers.TokenMapper
 import com.intergroupapplication.data.model.RefreshTokenModel
 import com.intergroupapplication.data.model.TokenModel
 import com.intergroupapplication.data.network.*

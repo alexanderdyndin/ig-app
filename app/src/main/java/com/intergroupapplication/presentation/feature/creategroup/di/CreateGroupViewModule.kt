@@ -1,8 +1,8 @@
 package com.intergroupapplication.presentation.feature.creategroup.di
 
 import android.content.Context
-import com.intergroupapplication.data.mapper.CreateGroupMapper
-import com.intergroupapplication.data.mapper.group.GroupMapper
+import com.intergroupapplication.data.mappers.CreateGroupMapper
+import com.intergroupapplication.data.mappers.group.GroupMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.service.CreateGroupService

@@ -1,7 +1,7 @@
 package com.intergroupapplication.data.service
 
-import com.intergroupapplication.data.mapper.CreateGroupMapper
-import com.intergroupapplication.data.mapper.group.GroupMapper
+import com.intergroupapplication.data.mappers.CreateGroupMapper
+import com.intergroupapplication.data.mappers.group.GroupMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.CreateGroupEntity
 import com.intergroupapplication.domain.entity.GroupEntity

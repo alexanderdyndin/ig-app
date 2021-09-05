@@ -137,22 +137,26 @@ FakeData {
 //            CommentUserEntity(0, "Fyodor", "Smolov", "2013-03-03", "male", null), null)
 
     fun getLoginModel(): LoginModel =
-            LoginModel("temp@mail.ru", "112358")
+        LoginModel("temp@mail.ru", "112358")
 
     fun getRegistrationResponseModel(): RegistrationResponseModel =
-            RegistrationResponseModel(true, "temp@mail.ru")
+        RegistrationResponseModel(true, "temp@mail.ru")
 
-    fun getRegistrationResponse(): RegistrationReesponce =
-            RegistrationReesponce( "cool@mail.ru",
-                    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjU3NDk4MjExMiwidHlwZSI6InJlZnJlc2giLCJ1c2VyX2lkIjo2MDAsImlhdCI6MTYwNTA4NzU1NCwiZXhwIjoxNjA3Njc5NTU0fQ.gu8G-CfXhkhyDwkxa4Fmv6kHABrv291oWNUfrl-fIGE",
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ1NTMzNDcyMiwidHlwZSI6ImFjY2VzcyIsInVzZXJfaWQiOjYwMCwiaWF0IjoxNjA1MDg3NTU0LCJleHAiOjE2MDUxNzM5NTR9.WJW3YLfcjnb0y3X5zsZt38wgMzmPfY8gJspovRCGUIs")
+    fun getRegistrationResponse(): RegistrationResponse =
+        RegistrationResponse(
+            "cool@mail.ru",
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjU3NDk4MjExMiwidHlwZSI6InJlZnJlc2giLCJ1c2VyX2lkIjo2MDAsImlhdCI6MTYwNTA4NzU1NCwiZXhwIjoxNjA3Njc5NTU0fQ.gu8G-CfXhkhyDwkxa4Fmv6kHABrv291oWNUfrl-fIGE",
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQ1NTMzNDcyMiwidHlwZSI6ImFjY2VzcyIsInVzZXJfaWQiOjYwMCwiaWF0IjoxNjA1MDg3NTU0LCJleHAiOjE2MDUxNzM5NTR9.WJW3YLfcjnb0y3X5zsZt38wgMzmPfY8gJspovRCGUIs"
+        )
 
     fun getTokenConfirmModel(): TokenConfirmModel =
-            TokenConfirmModel(CONFIRM_MAIL_CODE)
+        TokenConfirmModel(CONFIRM_MAIL_CODE)
 
     fun getUserEntity(): UserEntity =
-            UserEntity("0", "dude", "duck", "2018-03-03", "male", "cool@mail.ru",
-                    false, false, null)
+        UserEntity(
+            "0", "dude", "duck", "2018-03-03", "male", "cool@mail.ru",
+            false, false, null
+        )
 
     fun getCreateCommentEntity(): CreateCommentEntity =
             CreateCommentEntity("My  New Comment", listOf(), listOf(), listOf())
