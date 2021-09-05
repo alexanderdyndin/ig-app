@@ -46,7 +46,7 @@ interface GatewayModule {
 
     @Binds
     fun providePermissionRepository(permissionAuthorizeRepository: PermissionAuthorizeRepository):
-            PermissionAuthorizeGetaway
+            PermissionAuthorizeGateway
 
     @Binds
     fun provideResendCodeGetawayRepository(resendCodeRepository: ResendCodeRepository):
@@ -54,7 +54,7 @@ interface GatewayModule {
 
     @Binds
     fun provideResetPasswordRepository(resendCodeRepository: ResetPasswordRepository):
-            ResetPasswordGetaway
+            ResetPasswordGateway
 
     @Binds
     fun provideComplaintsRepository(complaintsRepository: ComplaintsRepository): ComplaintsGateway

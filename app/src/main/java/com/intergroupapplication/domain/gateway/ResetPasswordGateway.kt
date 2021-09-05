@@ -7,12 +7,11 @@ import com.intergroupapplication.domain.entity.TokenCodeEntity
 import io.reactivex.Completable
 import io.reactivex.Single
 
-interface ResetPasswordGetaway {
+interface ResetPasswordGateway {
 
     fun resetPassword(emailModel: EmailModel): Completable
 
     fun resetPasswordCode(codeModel: CodeModel): Single<TokenCodeEntity>
 
     fun newPassword(newPasswordModel: NewPasswordModel): Completable
-
 }

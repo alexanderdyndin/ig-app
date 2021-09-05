@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-  <Blacklist timestamp="1558355218121"></Blacklist>
+  <Blacklist timestamp="1558355218121" />
   <Whitelist timestamp="1558355243042">
     <ID>CommentOverPrivateProperty:ContextExtensions.kt$/** * Created by abakarmagomedov on 01/08/2018 at project InterGroupApplication. */</ID>
     <ID>CommentOverPrivateProperty:TextViewExtensions.kt$/** * @param action The action performed when link clicked */</ID>
@@ -336,23 +336,51 @@
     <ID>NewLineAtEndOfFile:PagingView.kt$com.intergroupapplication.presentation.base.PagingView.kt
     </ID>
     <ID>NewLineAtEndOfFile:PerService.kt$com.intergroupapplication.di.scope.PerService.kt</ID>
-    <ID>NewLineAtEndOfFile:PhotoUploadFields.kt$com.intergroupapplication.data.model.PhotoUploadFields.kt</ID>
-    <ID>NewLineAtEndOfFile:RefreshOkHttpClient.kt$com.intergroupapplication.di.qualifier.RefreshOkHttpClient.kt</ID>
-    <ID>NewLineAtEndOfFile:RefreshTokenApi.kt$com.intergroupapplication.data.network.RefreshTokenApi.kt</ID>
-    <ID>NewLineAtEndOfFile:RefreshTokenModel.kt$com.intergroupapplication.data.model.RefreshTokenModel.kt</ID>
-    <ID>NewLineAtEndOfFile:RxImageUploadingProgressRequestBody.kt$com.intergroupapplication.data.network.RxImageUploadingProgressRequestBody.kt</ID>
-    <ID>NewLineAtEndOfFile:TokenInterceptor.kt$com.intergroupapplication.di.qualifier.TokenInterceptor.kt</ID>
-    <ID>NewLineAtEndOfFile:UnknowServerException.kt$com.intergroupapplication.domain.exception.UnknowServerException.kt</ID>
-    <ID>NewLineAtEndOfFile:UpdateAvatarModel.kt$com.intergroupapplication.data.model.UpdateAvatarModel.kt</ID>
+    <ID>
+      NewLineAtEndOfFile:PhotoUploadFields.kt$com.intergroupapplication.data.model.PhotoUploadFields.kt
+    </ID>
+    <ID>
+      NewLineAtEndOfFile:RefreshOkHttpClient.kt$com.intergroupapplication.di.qualifier.RefreshOkHttpClient.kt
+    </ID>
+    <ID>
+      NewLineAtEndOfFile:RefreshTokenApi.kt$com.intergroupapplication.data.network.RefreshTokenApi.kt
+    </ID>
+    <ID>
+      NewLineAtEndOfFile:RefreshTokenModel.kt$com.intergroupapplication.data.model.RefreshTokenModel.kt
+    </ID>
+    <ID>
+      NewLineAtEndOfFile:RxImageUploadingProgressRequestBody.kt$com.intergroupapplication.data.network.RxImageUploadingProgressRequestBody.kt
+    </ID>
+    <ID>
+      NewLineAtEndOfFile:TokenInterceptor.kt$com.intergroupapplication.di.qualifier.TokenInterceptor.kt
+    </ID>
+    <ID>
+      NewLineAtEndOfFile:UnknowServerException.kt$com.intergroupapplication.domain.exception.UnknownServerException.kt
+    </ID>
+    <ID>
+      NewLineAtEndOfFile:UpdateAvatarModel.kt$com.intergroupapplication.data.model.UpdateAvatarModel.kt
+    </ID>
     <ID>NewLineAtEndOfFile:UserRole.kt$com.intergroupapplication.domain.entity.UserRole.kt</ID>
-    <ID>NotImplementedDeclaration:GroupListDataSource.kt$GroupListDataSource$TODO("not implemented")</ID>
-    <ID>NotImplementedDeclaration:GroupPostDataSource.kt$GroupPostDataSource$TODO("not implemented")</ID>
+    <ID>NotImplementedDeclaration:GroupListDataSource.kt$GroupListDataSource$TODO("not
+      implemented")
+    </ID>
+    <ID>NotImplementedDeclaration:GroupPostDataSource.kt$GroupPostDataSource$TODO("not
+      implemented")
+    </ID>
     <ID>NotImplementedDeclaration:NewsDataSource.kt$NewsDataSource$TODO("not implemented")</ID>
-    <ID>ReturnCount:CommentDetailsAdapter.kt$CommentDetailsAdapter$override fun getItemViewType(position: Int): Int</ID>
-    <ID>ReturnCount:CommentsDetailsViewModule.kt$CommentsDetailsViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
-    <ID>ReturnCount:DateFunctions.kt$fun translateEnglishStringToRussian(english: String): String</ID>
-    <ID>ReturnCount:GroupAdapter.kt$GroupAdapter$override fun getItemViewType(position: Int): Int</ID>
-    <ID>ReturnCount:GroupListAdapter.kt$GroupListAdapter$override fun getItemViewType(position: Int): Int</ID>
+    <ID>ReturnCount:CommentDetailsAdapter.kt$CommentDetailsAdapter$override fun
+      getItemViewType(position: Int): Int
+    </ID>
+    <ID>ReturnCount:CommentsDetailsViewModule.kt$CommentsDetailsViewModule.&lt;no name provided&gt;$override
+      fun createActivityIntent(screenKey: String?, data: Any?): Intent?
+    </ID>
+    <ID>ReturnCount:DateFunctions.kt$fun translateEnglishStringToRussian(english: String): String
+    </ID>
+    <ID>ReturnCount:GroupAdapter.kt$GroupAdapter$override fun getItemViewType(position: Int): Int
+    </ID>
+    <ID>ReturnCount:GroupListAdapter.kt$GroupListAdapter$override fun getItemViewType(position:
+      Int): Int
+    </ID>
     <ID>ReturnCount:GroupListViewModule.kt$GroupListViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
     <ID>ReturnCount:LoginViewModule.kt$LoginViewModule.&lt;no name provided&gt;$override fun createActivityIntent(screenKey: String?, data: Any?): Intent?</ID>
     <ID>ReturnCount:NavigationViewModule.kt$NavigationViewModule.&lt;no name provided&gt;$override fun createFragment(screenKey: String?, data: Any?): Fragment?</ID>

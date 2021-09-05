@@ -6,5 +6,4 @@ import io.reactivex.Completable
 interface FbTokenGateway {
 
     fun refreshToken(deviceModel: DeviceModel, idUser: String): Completable
-
 }

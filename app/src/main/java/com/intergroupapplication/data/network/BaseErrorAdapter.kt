@@ -28,7 +28,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                             }
                         }
                         it.fieldError.isNotEmpty() -> getListFieldException(it.fieldError)
-                        else -> UnknowServerException()
+                        else -> UnknownServerException()
                     }
                     401 -> InvalidRefreshException()
                     404 -> when {
@@ -45,7 +45,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                             }
                         }
                         it.fieldError.isNotEmpty() -> NotFoundException(it.nonFieldError?.message)
-                        else -> UnknowServerException()
+                        else -> UnknownServerException()
                     }
                     403 -> {
                         when {
@@ -55,7 +55,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                         }
                     }
                     500 -> ServerException()
-                    else -> UnknowServerException()
+                    else -> UnknownServerException()
                 }
             } ?: when (throwable.code()) {
                 500 -> ServerException()
@@ -63,7 +63,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                 403 -> ForbiddenException("Нет доступа")
                 401 -> InvalidRefreshException()
                 400 -> NotFoundException(null)
-                else -> UnknowServerException()
+                else -> UnknownServerException()
             }
         } else {
             ConnectionException()

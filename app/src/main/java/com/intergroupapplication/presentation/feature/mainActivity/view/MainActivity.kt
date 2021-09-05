@@ -471,7 +471,7 @@ class MainActivity : FragmentActivity() {
                     Action { throwable, _ ->
                         dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())
                     },
-            UnknowServerException::class.java to Action { _, _ ->
+            UnknownServerException::class.java to Action { _, _ ->
                 createSnackBarAction(R.string.unknown_error)
             },
             ConnectException::class.java to Action { _, _ ->

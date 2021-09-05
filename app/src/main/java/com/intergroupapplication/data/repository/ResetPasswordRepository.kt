@@ -5,13 +5,13 @@ import com.intergroupapplication.data.model.CodeModel
 import com.intergroupapplication.data.model.EmailModel
 import com.intergroupapplication.data.model.NewPasswordModel
 import com.intergroupapplication.data.network.AppApi
-import com.intergroupapplication.domain.gateway.ResetPasswordGetaway
+import com.intergroupapplication.domain.gateway.ResetPasswordGateway
 import javax.inject.Inject
 
 class ResetPasswordRepository @Inject constructor(
     private val api: AppApi,
     private val tokenCodeMapper: TokenCodeMapper
-) : ResetPasswordGetaway {
+) : ResetPasswordGateway {
 
     override fun resetPassword(emailModel: EmailModel) =
         api.resetPassword(emailModel)
