@@ -28,14 +28,19 @@ class AvatarRepository @Inject constructor(private val context: Context,
    override fun uploadToAws(path: String, groupId: String?): Observable<ImageUploadingState> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
-        return appApi.uploadPhoto(file.extension, groupId)
+        return appApi.uploadPostsMedia(file.extension, groupId)
             .doAfterSuccess {
                 if (file.extension == "gif")
-                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                        file)
+                    awsUploadingGateway.uploadImageToAws(
+                        it.url, subject, it.fields,
+                        file
+                    )
                 else
-                    awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields,
-                        Compressor(context).setQuality(75).setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file))
+                    awsUploadingGateway.uploadImageToAws(
+                        it.url, subject, it.fields,
+                        Compressor(context).setQuality(75)
+                            .setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file)
+                    )
             }
             .flatMapObservable {
                 subject.map { progress ->

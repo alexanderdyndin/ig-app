@@ -3,9 +3,6 @@ package com.intergroupapplication.presentation.feature.commentsdetails.view
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.Toast
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.PopupMenu
@@ -34,7 +31,6 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.NestedScrollBottomSheetBehavior
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.presenter.CommentBottomSheetPresenter
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentDividerItemDecorator
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
@@ -43,15 +39,12 @@ import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.
 import com.intergroupapplication.presentation.feature.group.di.GroupViewModule.Companion.COMMENT_POST_ENTITY
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_create_user_profile.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
