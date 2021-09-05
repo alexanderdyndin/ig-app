@@ -63,4 +63,6 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase) : Vie
 
     fun deleteBell(postId: String) = useCase.deleteBell(postId)
 
+    fun sendComplaint(postId: Int) = useCase.sendComplaint(postId)
+
 }

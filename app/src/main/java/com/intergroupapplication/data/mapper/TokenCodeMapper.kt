@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.mapper
 
-import com.intergroupapplication.data.model.TokenDto
+import com.intergroupapplication.data.network.dto.TokenDto
 import com.intergroupapplication.domain.entity.TokenCodeEntity
 import javax.inject.Inject
 

@@ -26,6 +26,8 @@ import com.yalantis.ucrop.UCrop
 import dagger.Module
 import dagger.Provides
 
+const val GROUPS = "Groups"
+
 @Module
 class GroupListViewModule {
 
@@ -62,8 +64,7 @@ class GroupListViewModule {
     fun dialogDelegate(
         dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
         context: Context
-    )
-            : DialogDelegate =
+    ): DialogDelegate =
         DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
     @PerFragment

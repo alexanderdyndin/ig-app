@@ -2,7 +2,7 @@ package com.intergroupapplication.presentation.feature.creategroup.di
 
 import android.content.Context
 import com.intergroupapplication.data.mapper.CreateGroupMapper
-import com.intergroupapplication.data.mapper.GroupMapper
+import com.intergroupapplication.data.mapper.group.GroupMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.service.CreateGroupService
@@ -80,9 +80,6 @@ class CreateGroupViewModule {
     fun dialogDelegate(
         dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
         context: Context
-    )
-            : DialogDelegate =
+    ): DialogDelegate =
         DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
-
 }

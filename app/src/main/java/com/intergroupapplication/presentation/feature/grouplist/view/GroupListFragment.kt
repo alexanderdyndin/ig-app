@@ -41,7 +41,6 @@ import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListsAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
-import com.intergroupapplication.presentation.feature.grouplist.presenter.GroupListPresenter
 import com.intergroupapplication.presentation.feature.grouplist.viewModel.GroupListViewModel
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.mikepenz.materialdrawer.Drawer
@@ -58,34 +57,15 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
-class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
-
-
-    companion object {
-        const val CREATED_GROUP_ID = "created_group_id"
-        private const val TYPEFACE_TEXT = "roboto.regular.ttf"
-    }
+class GroupListFragment: BaseFragment() {
 
     private val viewBinding by viewBinding(FragmentGroupListBinding::bind)
-
-    @Inject
-    @InjectPresenter
-    lateinit var presenter: GroupListPresenter
-
-    @ProvidePresenter
-    fun providePresenter(): GroupListPresenter = presenter
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    @Named
-    private var job: Job = Job()
 
     private lateinit var viewModel: GroupListViewModel
 
@@ -95,13 +75,9 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
 
     private val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
-    private lateinit var viewDrawer: View
+    var groupId: String? = null
 
-    private lateinit var drawer: Drawer
-
-    private lateinit var profileAvatarHolder: AvatarImageUploadingView
-
-    private var currentScreen = 0
+    var currentScreen = 0
 
     @Inject
     @All
@@ -157,7 +133,6 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, modelFactory)[GroupListViewModel::class.java]
-        lifecycleScope.newCoroutineContext(this.coroutineContext)
         fetchGroups()
         prepareAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this,
@@ -223,6 +198,14 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
         setAdapter(adapterAll, adapterFooterAll)
         setAdapter(adapterSubscribed, adapterFooterSub)
         setAdapter(adapterOwned, adapterFooterAdm)
+
+        viewBinding.navigationToolbar.toolbarTittle.setText(R.string.groups)
+        viewBinding.navigationToolbar.toolbarMenu.setOnClickListener {
+            val activity = requireActivity()
+            if (activity is MainActivity) {
+                activity.drawer.openDrawer()
+            }
+        }
     }
 
     fun prepareAdapter() {
@@ -232,7 +215,6 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
                 val data = bundleOf(GROUP_ID to groupId)
                 findNavController().navigate(R.id.action_groupListFragment2_to_groupActivity, data)
             }
-            //todo не всегда подписка/отписка отображается в UI
             subscribeClickListener = { group, pos ->
                 if (!group.isSubscribing) {
                     compositeDisposable.add(viewModel.subscribeGroup(group.id)
@@ -343,13 +325,10 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
     }
 
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenResumed {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                if (job.isCancelled) return@collectLatest
                 when (loadStates.refresh) {
-                    is LoadState.Loading -> {
-
-                    }
+                    is LoadState.Loading -> { }
                     is LoadState.Error -> {
                         swipeGroups.isRefreshing = false
                         if (adapter.itemCount == 0) {
@@ -394,14 +373,12 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
     override fun onResume() {
         super.onResume()
         activityMainSearchInput.addTextChangedListener(textWatcher)
-        job = Job()
     }
 
     @ExperimentalCoroutinesApi
     override fun onPause() {
         super.onPause()
         activityMainSearchInput.removeTextChangedListener(textWatcher)
-        job.cancel()
     }
 
     private fun openCreateGroup() {
@@ -409,7 +386,8 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
     }
 
 
-    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+
+   /* override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
         profileAvatarHolder.showImageUploadingStartedWithoutFile()
     }
 
@@ -536,5 +514,5 @@ class GroupListFragment : BaseFragment(), GroupListView, CoroutineScope {
         }
         presenter.getUserInfo()
     }
-
+*/
 }

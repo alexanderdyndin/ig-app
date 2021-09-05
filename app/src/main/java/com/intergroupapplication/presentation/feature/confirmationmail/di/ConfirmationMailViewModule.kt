@@ -7,9 +7,11 @@ import com.intergroupapplication.presentation.feature.confirmationmail.view.Conf
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
+import com.intergroupapplication.presentation.provider.DialogProvider
+import com.workable.errorhandler.ErrorHandler
 import dagger.Module
 import dagger.Provides
-
+import javax.inject.Named
 
 @Module
 class ConfirmationMailViewModule {
@@ -25,8 +27,11 @@ class ConfirmationMailViewModule {
     fun dialogDelegate(
         dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
         context: Context
-    )
-            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+    ): DialogDelegate =
+        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-
+    @PerFragment
+    @Provides
+    @Named("ConfirmationProfileHandler")
+    fun errorHandler(): ErrorHandler = ErrorHandler.create()
 }

@@ -1,8 +1,8 @@
 package com.intergroupapplication.data.mapper
 
 import com.intergroupapplication.data.model.CommentModel
-import com.intergroupapplication.data.model.CommentsDto
 import com.intergroupapplication.data.model.CreateCommentModel
+import com.intergroupapplication.data.network.dto.CommentsDto
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.CommentsEntity
 import com.intergroupapplication.domain.entity.CreateCommentEntity

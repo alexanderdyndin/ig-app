@@ -1,10 +1,10 @@
 package com.intergroupapplication.domain.usecase
 
-import com.intergroupapplication.domain.gateway.AppStatusGateway
+import com.intergroupapplication.data.repository.AppStatusRepository
 import javax.inject.Inject
 
-class AppStatusUseCase @Inject constructor(private val appStatusGateway: AppStatusGateway) {
-    fun getAppStatus(version: String) = appStatusGateway.getAppStatus(version)
+class AppStatusUseCase @Inject constructor(private val appStatusRepository: AppStatusRepository) {
+    fun getAppStatus(version: String) = appStatusRepository.getAppStatus(version)
 
-    fun getAdParameters() = appStatusGateway.getAdParameters()
+    fun getAdParameters() = appStatusRepository.getAdParameters()
 }

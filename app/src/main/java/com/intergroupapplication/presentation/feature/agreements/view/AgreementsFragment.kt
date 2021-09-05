@@ -2,10 +2,7 @@ package com.intergroupapplication.presentation.feature.agreements.view
 
 import android.Manifest
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.CompoundButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -64,6 +61,9 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     private lateinit var conditionsAgreement: LinearLayout
     private lateinit var conditionsCopyrightHolders: LinearLayout
     private lateinit var conditionsPolicy: LinearLayout
+    private lateinit var privacyPolicy: TextView
+    private lateinit var userAgreement: TextView
+    private lateinit var copyrightAgreement: TextView
 
     override fun viewCreated() {
         btnNext = viewBinding.btnNext
@@ -74,18 +74,21 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         conditionsAgreement = viewBinding.conditionsAgreement
         conditionsCopyrightHolders = viewBinding.conditionsCopyrightHolders
         conditionsPolicy = viewBinding.conditionsPolicy
+        privacyPolicy = viewBinding.privacyPolicy
+        userAgreement = viewBinding.userAgreement
+        copyrightAgreement = viewBinding.copyrightAgreement
         initCheckBox()
         initBtn()
         clicks(btnNext)
             .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { next() }.let(compositeDisposable::add)
+            .subscribe { presenter.next() }.let(compositeDisposable::add)
     }
 
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
 
     override fun toSplash() {
-        findNavController().navigate(R.id.action_AgreementsFragment2_to_splashActivity)
+        findNavController().navigate(R.id.action_global_splashActivity)
     }
 
     override fun showLoading(show: Boolean) {
@@ -137,15 +140,5 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         }.also { compositeDisposable.add(it) }
     }
 
-    private fun next() {
-        compositeDisposable.add(
-            RxPermissions(this)
-                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe({
-                    presenter.next()
-                }, { Timber.e(it) })
-        )
-
-    }
 
 }

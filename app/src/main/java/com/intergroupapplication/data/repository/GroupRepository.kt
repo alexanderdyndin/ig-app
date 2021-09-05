@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mapper.BansGroupMapper
 import com.intergroupapplication.data.mapper.FollowersGroupMapper
-import com.intergroupapplication.data.mapper.GroupMapper
+import com.intergroupapplication.data.mapper.group.GroupMapper
 import com.intergroupapplication.data.model.FollowGroupModel
 import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.model.group_followers.GroupBanBody

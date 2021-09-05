@@ -47,19 +47,8 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    fun providePhotoGateway(activity: NewsFragment, cropOptions: UCrop.Options,
-                            api: AppApi, awsUploadingGateway: AwsUploadingGateway): PhotoGateway =
-            PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
-
-    @PerFragment
-    @Provides
-    fun provideImageUploader(photoGateway: PhotoGateway): ImageUploader =
-            ImageUploadingDelegate(photoGateway)
-
-    @PerFragment
-    @Provides
-    fun provideDialogManager(activity: NewsFragment): DialogManager =
-            DialogManager(activity.requireActivity().supportFragmentManager)
+    fun provideDialogManager(fragment: NewsFragment): DialogManager =
+            DialogManager(fragment.requireActivity().supportFragmentManager)
 
     @PerFragment
     @Provides

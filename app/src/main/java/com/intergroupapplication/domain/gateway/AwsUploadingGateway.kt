@@ -1,6 +1,7 @@
 package com.intergroupapplication.domain.gateway
 
 import com.intergroupapplication.data.model.PhotoUploadFields
+import com.intergroupapplication.presentation.base.ImageUploadingState
 import io.reactivex.Observer
 import java.io.File
 

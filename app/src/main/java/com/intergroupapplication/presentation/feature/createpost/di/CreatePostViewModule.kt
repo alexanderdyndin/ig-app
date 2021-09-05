@@ -58,8 +58,6 @@ class CreatePostViewModule {
     fun dialogDelegate(
         dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
         context: Context
-    )
-            : DialogDelegate =
+    ): DialogDelegate =
         DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
 }

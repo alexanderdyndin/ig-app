@@ -34,6 +34,7 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -155,10 +156,12 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         signInButton.setOnClickListener {
             startForResult.launch(mGoogleSignInClient.signInIntent)
         }
+        visibilityPassword(!passwordVisible)
         passwordVisibility.setOnClickListener {
             visibilityPassword(passwordVisible)
             passwordVisible = !passwordVisible
         }
+        setErrorHandler()
     }
 
     private fun visibilityPassword(isVisible: Boolean) {
@@ -206,14 +209,10 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
     }
 
-    override fun onResume() {
-        super.onResume()
-        setErrorHandler()
-    }
+    override fun onStart() {
+        super.onStart()
+        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
 
-    override fun onPause() {
-        errorHandlerLogin.clear()
-        super.onPause()
     }
 
     override fun deviceInfoExtracted() {
@@ -226,7 +225,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun login() {
-        findNavController().navigate(R.id.action_loginActivity_to_splashActivity)
+        findNavController().navigate(R.id.action_global_splashActivity)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
@@ -249,12 +248,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(
-            rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe({
-                    presenter.extractDeviceInfo()
-                }, { Timber.e(it) })
-        )
+        presenter.extractDeviceInfo()
     }
 
     override fun clearViewErrorState() {
@@ -293,7 +287,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -307,20 +301,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                     }
                 }
             }
-        }
-        errorHandlerLogin.on(UserNotVerifiedException::class.java) { _, _ ->
-            val email = mail.text.toString()
-            val data = bundleOf("entity" to email)
-            findNavController().navigate(
-                R.id.action_loginActivity_to_confirmationMailActivity,
-                data
-            )
-        }
-        errorHandlerLogin.on(UserNotProfileException::class.java) { _, _ ->
-            findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
-        }
-        errorHandlerLogin.on(BadRequestException::class.java) { throwable, _ ->
-            dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
         }
     }
 

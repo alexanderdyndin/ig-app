@@ -1,15 +1,19 @@
 package com.intergroupapplication.data.repository
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.paging.*
 import androidx.paging.rxjava2.flowable
-import com.intergroupapplication.data.mapper.GroupPostMapper
+import com.intergroupapplication.data.db.IgDatabase
+import com.intergroupapplication.data.db.dao.GroupPostDao
+import com.intergroupapplication.data.mapper.NewsModelToNewsPostDbMapper
+import com.intergroupapplication.data.mapper.NewsPostDbToNewsEntity
 import com.intergroupapplication.data.mapper.ReactsMapper
+import com.intergroupapplication.data.mapper.group.GroupPostDbToEntityMapper
+import com.intergroupapplication.data.mapper.group.GroupPostDtoToDbMapper
+import com.intergroupapplication.data.mapper.group.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
-import com.intergroupapplication.data.remotedatasource.GroupNewsRemoteRXDataSource
-import com.intergroupapplication.data.remotedatasource.NewsRemoteRXDataSource
+import com.intergroupapplication.data.remote_mediator.GroupPostMediatorRXDataSource
+import com.intergroupapplication.data.remote_mediator.NewsPostMediatorRXDataSource
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.domain.gateway.GroupPostGateway
 import io.reactivex.Completable
@@ -25,7 +29,13 @@ import javax.inject.Inject
 class GroupPostsRepository @Inject constructor(
     private val api: AppApi,
     private val groupPostMapper: GroupPostMapper,
-    private val reactsMapper: ReactsMapper
+    private val reactsMapper: ReactsMapper,
+    private val db: IgDatabase,
+    private val groupPostDao: GroupPostDao,
+    private val newsPostDbToEntity: NewsPostDbToNewsEntity,
+    private val newsModelToDbMapper: NewsModelToNewsPostDbMapper,
+    private val groupPostDtoMapper: GroupPostDtoToDbMapper,
+    private val groupPostDbToEntityMapper: GroupPostDbToEntityMapper
 ) : GroupPostGateway {
 
     override fun getPostById(postId: String): Single<CommentEntity.PostEntity> {
@@ -40,24 +50,39 @@ class GroupPostsRepository @Inject constructor(
             .map { groupPostMapper.mapToDomainEntity(it) }
     }
 
+    @ExperimentalPagingApi
     override fun getNewsPosts(): Flowable<PagingData<NewsEntity>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
                 prefetchDistance = 5
             ),
-            pagingSourceFactory = { NewsRemoteRXDataSource(api, groupPostMapper) }
-        ).flowable
+            remoteMediator = NewsPostMediatorRXDataSource(api, db, newsModelToDbMapper)
+        ) {
+            db.newsPostDao().getAllNewsPost()
+        }.flowable.map { paging ->
+            paging.map { newsPostDb ->
+                newsPostDbToEntity(newsPostDb)
+            }
+        }
     }
 
+    // todo db
+    @ExperimentalPagingApi
     override fun getGroupPosts(groupId: String): Flowable<PagingData<GroupPostEntity>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                prefetchDistance = 5
+                5
             ),
-            pagingSourceFactory = { GroupNewsRemoteRXDataSource(api, groupPostMapper, groupId) }
-        ).flowable
+            remoteMediator = GroupPostMediatorRXDataSource(api, db, groupId, groupPostDtoMapper)
+        ) {
+            groupPostDao.getAllGroupPostsModel(groupId)
+        }.flowable.map { paging ->
+            paging.map { groupPostModel ->
+                groupPostDbToEntityMapper(groupPostModel)
+            }
+        }
     }
 
     override fun editPost(

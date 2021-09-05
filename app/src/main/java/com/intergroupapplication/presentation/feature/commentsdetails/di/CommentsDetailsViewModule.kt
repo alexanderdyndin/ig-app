@@ -64,11 +64,6 @@ class CommentsDetailsViewModule {
             : DialogDelegate =
         DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 
-//    @PerFragment
-//    @Provides
-//    fun provideLinearLayoutManager(fragment: CommentsDetailsFragment): RecyclerView.LayoutManager =
-//            LinearLayoutManager(fragment.requireActivity(), LinearLayoutManager.VERTICAL, false)
-
     @PerFragment
     @Provides
     fun provideCommentsAdapter(
@@ -115,5 +110,4 @@ class CommentsDetailsViewModule {
     ): ConcatAdapter {
         return commentsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
     }
-
 }

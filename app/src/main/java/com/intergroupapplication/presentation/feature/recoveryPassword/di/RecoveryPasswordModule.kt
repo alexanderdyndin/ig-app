@@ -8,8 +8,10 @@ import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import com.mobsandgeeks.saripaar.Validator
+import com.workable.errorhandler.ErrorHandler
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 
 @Module
@@ -35,5 +37,10 @@ class RecoveryPasswordModule {
     @Provides
     fun provideValidator(fragment: RecoveryPasswordFragment): Validator =
         Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
+
+    @PerFragment
+    @Provides
+    @Named("RecoveryHandler")
+    fun errorHandler(): ErrorHandler = ErrorHandler.create()
 
 }

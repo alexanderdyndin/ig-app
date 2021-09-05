@@ -4,7 +4,6 @@ import android.content.Context
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
-import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.image.view.ImageFragment
 import com.intergroupapplication.presentation.manager.DialogManager
@@ -17,7 +16,6 @@ import dagger.Provides
 @Module
 class ImageViewModule {
 
-
     @PerFragment
     @Provides
     fun provideFrescoImageLoader(context: Context): ImageLoader =
@@ -29,18 +27,4 @@ class ImageViewModule {
         ImageLoadingDelegate(imageLoader)
 
 
-    @PerFragment
-    @Provides
-    fun provideDialogManager(fragment: ImageFragment): DialogManager =
-        DialogManager(fragment.requireActivity().supportFragmentManager)
-
-
-    @PerFragment
-    @Provides
-    fun dialogDelegate(
-        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-        context: Context
-    )
-            : DialogDelegate =
-        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 }

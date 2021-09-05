@@ -31,6 +31,7 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createuserprofile.presenter.CreateUserProfilePresenter
+import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
@@ -39,6 +40,7 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
+import java.lang.IllegalStateException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
@@ -109,7 +111,6 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         genderRadioGroup = viewBinding.genderRadioGroup
         userCreateAddAvatar = viewBinding.userCreateAddAvatar
 
-        initErrorHandler(errorHandler)
         name = requireView().findViewById(R.id.name)
         surName = requireView().findViewById(R.id.surName)
 
@@ -137,7 +138,10 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     override fun completed() {
-        findNavController().navigate(R.id.action_createUserProfileActivity_to_splashActivity)
+        val activity = requireActivity()
+        if (activity is MainActivity) {
+            activity.createDrawer()
+        } else throw IllegalStateException("Wrong Activity")
     }
 
     override fun showLoading(show: Boolean) {
@@ -271,7 +275,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -334,10 +338,10 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             override fun afterTextChanged(s: Editable?) {
                 var textEntered = s.toString()
 
-                if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0]
-                        .isUpperCase()
+                if (textEntered.length == 1 && textEntered[0].isLetter() &&
+                    !textEntered[0].isUpperCase()
                 ) {
-                    textEntered = s?.toString().orEmpty().toUpperCase()
+                    textEntered = s?.toString().orEmpty().uppercase()
                     name.setText(textEntered)
                     name.setSelection(name.text?.length ?: 0)
                 }
@@ -351,6 +355,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
                 Unit
+
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
@@ -360,8 +365,8 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             override fun afterTextChanged(s: Editable?) {
                 var textEntered = s.toString()
 
-                if (textEntered.length == 1 && textEntered[0].isLetter() && !textEntered[0]
-                        .isUpperCase()
+                if (textEntered.length == 1 && textEntered[0].isLetter() &&
+                    !textEntered[0].isUpperCase()
                 ) {
                     textEntered = s?.toString().orEmpty().toUpperCase()
                     surName.setText(textEntered)
@@ -377,6 +382,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
                 Unit
+
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 

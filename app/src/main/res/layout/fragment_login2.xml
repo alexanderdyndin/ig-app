@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainBlack"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".presentation.feature.login.view.LoginFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -150,15 +151,10 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/next"
-                    style="@style/TextGrey16sp"
+                    style="@style/btnBigStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/low_big_margin"
-                    android:layout_marginEnd="@dimen/low_big_margin"
-                    android:background="@drawable/selector_btn_big"
-                    android:paddingTop="@dimen/middle_padding"
-                    android:text="@string/enter"
-                    android:textAllCaps="false"/>
+                    android:text="@string/enter"/>
 
             </FrameLayout>
 
@@ -176,7 +172,7 @@
 
             <LinearLayout
                 android:id="@+id/logo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -207,8 +203,8 @@
                     android:layout_marginEnd="@dimen/large_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recoveryPassword"
-                    android:visibility="gone"/>
+                    app:layout_constraintTop_toBottomOf="@id/btnRecoveryPassword"
+                    android:visibility="visible"/>
 
             </LinearLayout>
 

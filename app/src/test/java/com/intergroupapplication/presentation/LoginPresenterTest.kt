@@ -3,7 +3,7 @@ package com.intergroupapplication.presentation
 import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.LoginGateway
-import com.intergroupapplication.domain.usecase.GetProfileUseCase
+import com.intergroupapplication.domain.usecase.UserProfileUseCase
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
 import com.intergroupapplication.presentation.feature.login.view.LoginView
 import com.intergroupapplication.testingutils.RxSchedulesRule
@@ -32,7 +32,7 @@ class LoginPresenterTest {
     private val imeiGateway: ImeiGateway = mock()
     private val errorHandler: ErrorHandler = spy(ErrorHandler.defaultErrorHandler())
     private val loginView: LoginView = mock()
-    private val getProfileUseCase: GetProfileUseCase = mock()
+    private val getProfileUseCase: UserProfileUseCase = mock()
 
     @Before
     fun setUp() {

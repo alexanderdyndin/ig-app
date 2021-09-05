@@ -90,6 +90,6 @@ class PostBottomSheetViewModule {
     fun dialogDelegate(
         dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
         context: Context
-    )
-            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+    ): DialogDelegate =
+        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
 }

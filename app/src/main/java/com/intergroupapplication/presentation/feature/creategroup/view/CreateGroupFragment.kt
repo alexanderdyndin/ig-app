@@ -3,19 +3,21 @@ package com.intergroupapplication.presentation.feature.creategroup.view
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.chip.Chip
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentGroupCreateBinding
 import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.databinding.FragmentGroupCreateBinding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -23,7 +25,7 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
-import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment.Companion.CREATED_GROUP_ID
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.mobsandgeeks.saripaar.ValidationError
@@ -319,8 +321,10 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     }
 
     override fun goToGroupScreen(id: String) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(CREATED_GROUP_ID, id)
-        findNavController().popBackStack()
+       // findNavController().previousBackStackEntry?.savedStateHandle?.set(CREATED_GROUP_ID, id)
+       // findNavController().popBackStack()
+        val data = bundleOf(GroupFragment.GROUP_ID to id)
+        findNavController().navigate(R.id.action_createGroupActivity_to_groupActivity, data)
     }
 
     override fun showLoading(show: Boolean) {

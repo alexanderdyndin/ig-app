@@ -3,13 +3,10 @@ package com.intergroupapplication.data.remotedatasource
 import androidx.paging.PagingState
 import androidx.paging.rxjava2.RxPagingSource
 import com.intergroupapplication.data.mapper.CommentMapper
-import com.intergroupapplication.data.mapper.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.domain.entity.CommentEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 
 class CommentsRemoteRXDataSource (private val appApi: AppApi,
                                   private val mapper: CommentMapper,
