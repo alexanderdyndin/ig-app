@@ -11,5 +11,4 @@ class AvatarUploadingUseCase @Inject constructor(
         file: String,
         groupId: String? = null
     ) = avatarGateway.uploadToAws(file, groupId)
-
 }

@@ -9,11 +9,13 @@ import javax.inject.Inject
  */
 class ErrorHandlerInitializer @Inject constructor(private val errorHandler: ErrorHandler) {
 
-    fun initializeErrorHandler(errorMap: Map<Class<out Exception>, Action>, otherWiseAction: Action) {
+    fun initializeErrorHandler(
+        errorMap: Map<Class<out Exception>, Action>,
+        otherWiseAction: Action
+    ) {
         for (mutableEntry in errorMap) {
             errorHandler.on(mutableEntry.key, mutableEntry.value)
         }
         errorHandler.otherwise(otherWiseAction)
     }
-
 }

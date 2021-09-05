@@ -8,5 +8,4 @@ class UserProfileUseCase @Inject constructor(private val userProfileGateway: Use
     fun getUserProfile() = userProfileGateway.getUserProfile()
 
     fun changeAvatar(avatar: String) = userProfileGateway.changeUserProfileAvatar(avatar)
-
 }
