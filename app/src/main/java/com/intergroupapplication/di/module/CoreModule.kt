@@ -29,17 +29,21 @@ class CoreModule {
     @PerApplication
     @Provides
     fun provideBaseEncryptor(encryptionDelegate: EncryptionDelegate): Encryptor =
-            BaseEncryptor(encryptionDelegate)
+        BaseEncryptor(encryptionDelegate)
 
     @PerApplication
     @Provides
     fun provideSharedPreferences(context: Context): SharedPreferences =
-            context.getSharedPreferences(App::class.java.simpleName, Context.MODE_PRIVATE)
+        context.getSharedPreferences(App::class.java.simpleName, Context.MODE_PRIVATE)
 
     @PerApplication
     @Provides
     fun provideRadioButtonColorStateList(context: Context): ColorStateList =
-            ColorStateList(arrayOf(intArrayOf(-attr.state_checked), intArrayOf(attr.state_checked)),
-                    intArrayOf(ContextCompat.getColor(context, R.color.radioButtonCircleColor),
-                            ContextCompat.getColor(context, R.color.colorAccent)))
+        ColorStateList(
+            arrayOf(intArrayOf(-attr.state_checked), intArrayOf(attr.state_checked)),
+            intArrayOf(
+                ContextCompat.getColor(context, R.color.radioButtonCircleColor),
+                ContextCompat.getColor(context, R.color.colorAccent)
+            )
+        )
 }

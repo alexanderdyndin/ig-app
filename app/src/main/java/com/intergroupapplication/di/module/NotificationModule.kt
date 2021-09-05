@@ -23,13 +23,17 @@ class NotificationModule {
     @Provides
     @IntoMap
     @NotificationKey(NotificationTypes.NEW_COMMENT)
-    fun provideNewCommentAction(notificationManager: NotificationManager,
-                                creator: @JvmSuppressWildcards NotificationCreator<CreatorType.Comment>,
-                                context: Context): NotificationAction<RemoteMessage> =
-            OnNewCommentAction(creator, notificationManager, context)
+    fun provideNewCommentAction(
+        notificationManager: NotificationManager,
+        creator: @JvmSuppressWildcards NotificationCreator<CreatorType.Comment>,
+        context: Context
+    ): NotificationAction<RemoteMessage> =
+        OnNewCommentAction(creator, notificationManager, context)
 
     @Provides
-    fun provideNewCommentCreator(context: Context,
-                                 notificationManager: NotificationManager): NotificationCreator<CreatorType.Comment> =
-            NewCommentNotificationCreator(context, notificationManager)
+    fun provideNewCommentCreator(
+        context: Context,
+        notificationManager: NotificationManager
+    ): NotificationCreator<CreatorType.Comment> =
+        NewCommentNotificationCreator(context, notificationManager)
 }

@@ -78,3 +78,16 @@ annotation class Administrators
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Blocked
 
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ConfirmationProfileHandler
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class RecoveryHandler
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class RegistrationHandler
+
+

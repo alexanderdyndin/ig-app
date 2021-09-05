@@ -70,8 +70,10 @@ interface AppBuilderModule {
     fun provideCreateProfileActivityFactory(): CreateUserProfileFragment
 
     @PerFragment
-    @ContributesAndroidInjector(modules = [ConfirmationMailViewModule::class,
-        ConfirmationUserProfileGatewayModule::class])
+    @ContributesAndroidInjector(
+        modules = [ConfirmationMailViewModule::class,
+            ConfirmationUserProfileGatewayModule::class]
+    )
     fun provideConfirmationMailActivityFactory(): ConfirmationMailFragment
 
     @PerFragment

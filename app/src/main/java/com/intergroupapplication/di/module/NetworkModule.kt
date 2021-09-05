@@ -44,101 +44,113 @@ class NetworkModule {
     @PerApplication
     @Provides
     fun providesHttpLoggingInterceptor(): HttpLoggingInterceptor =
-            HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+        HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 
     @PerApplication
     @Provides
     @TokenInterceptor
     fun provideTokenInterceptor(sessionStorage: UserSession): Interceptor =
-            Interceptor { chain ->
-                val imei = sessionStorage.deviceInfoEntity?.imei ?: IMEI
-                val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: SERIAL
-                val builder = chain.request()
-                        .newBuilder()
-                        .addHeader(IMEI, imei)
-                    builder.addHeader(SERIAL, serialNumber)
-                if (sessionStorage.isLoggedIn()) {
-                    builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
-                } else {
-                    builder.addHeader(DEVICE_ID, sessionStorage.firebaseToken?.token
-                            ?: FirebaseMessaging.getInstance().token.result )  //not sure in this command
-                }
-                val newRequest = builder.build()
-                chain.proceed(newRequest)
+        Interceptor { chain ->
+            val imei = sessionStorage.deviceInfoEntity?.imei ?: IMEI
+            val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber ?: SERIAL
+            val builder = chain.request()
+                .newBuilder()
+                .addHeader(IMEI, imei)
+            builder.addHeader(SERIAL, serialNumber)
+            if (sessionStorage.isLoggedIn()) {
+                builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
+            } else {
+                builder.addHeader(
+                    DEVICE_ID, sessionStorage.firebaseToken?.token
+                        ?: FirebaseMessaging.getInstance().token.result
+                )  //not sure in this command
             }
+            val newRequest = builder.build()
+            chain.proceed(newRequest)
+        }
 
     @PerApplication
     @Provides
     @ApplicationOkHttpClient
-    fun provideApplicationOkHttpClient(logging: HttpLoggingInterceptor,
-                                       @TokenInterceptor tokenInterceptor: Interceptor,
-                                       tokenAuthenticator: Authenticator): OkHttpClient =
-            OkHttpClient.Builder().apply {
-                addInterceptor(tokenInterceptor)
-                addInterceptor(logging)
-                authenticator(tokenAuthenticator)
-            }.build()
+    fun provideApplicationOkHttpClient(
+        logging: HttpLoggingInterceptor,
+        @TokenInterceptor tokenInterceptor: Interceptor,
+        tokenAuthenticator: Authenticator
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(tokenInterceptor)
+            addInterceptor(logging)
+            authenticator(tokenAuthenticator)
+        }.build()
 
     @PerApplication
     @Provides
     @AmazonOkHttpClient
     fun provideAmazonOkHttpClient(): OkHttpClient =
-            OkHttpClient.Builder().apply {
-                retryOnConnectionFailure(true)
-            }.build()
+        OkHttpClient.Builder().apply {
+            retryOnConnectionFailure(true)
+        }.build()
 
 
     @PerApplication
     @Provides
     @RefreshOkHttpClient
-    fun provideRefreshOkHttpClient(logging: HttpLoggingInterceptor,
-                                   @TokenInterceptor tokenInterceptor: Interceptor): OkHttpClient =
-            OkHttpClient.Builder().apply {
-                addInterceptor(tokenInterceptor)
-                addInterceptor(logging)
-            }.build()
+    fun provideRefreshOkHttpClient(
+        logging: HttpLoggingInterceptor,
+        @TokenInterceptor tokenInterceptor: Interceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(tokenInterceptor)
+            addInterceptor(logging)
+        }.build()
 
     @PerApplication
     @Provides
-    fun provideTokenAuthenticator(sessionStorage: UserSession, tokenMapper: TokenMapper,
-                                  api: RefreshTokenApi): Authenticator =
-            Authenticator { _, response ->
-                if (responseCount(response) >= 2) {
-                    return@Authenticator null
-                }
-                val refreshResult: TokenModel?
-                try {
-                    refreshResult = sessionStorage.token
-                            ?.refresh
-                            ?.let {
-                                api.refreshAccessToken(RefreshTokenModel("$TOKEN_PREFIX $it"))
-                            }?.execute()?.body()
-                } catch (e: IOException) {
-                    Timber.e(e)
-                    return@Authenticator null
-                } catch (e: HttpException) {
-                    Timber.e(e)
-                    return@Authenticator null
-                } catch (e: Exception) {
-                    Timber.e(e)
-                    return@Authenticator null
-                }
-
-                if (refreshResult != null) {
-                    sessionStorage.token = tokenMapper.mapToDomainEntity(refreshResult)
-                    val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
-                    val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber
-                            ?: ""
-                    response.request.newBuilder()
-                            .header(TOKEN, "JWT " + sessionStorage.token?.access)
-                            .header(IMEI, imei)
-                            .header(SERIAL, serialNumber)
-                            .header(DEVICE_ID, sessionStorage.firebaseToken?.token ?: FirebaseMessaging.getInstance().token.result )
-                            .build()
-                } else {
-                    null
-                }
+    fun provideTokenAuthenticator(
+        sessionStorage: UserSession, tokenMapper: TokenMapper,
+        api: RefreshTokenApi
+    ): Authenticator =
+        Authenticator { _, response ->
+            if (responseCount(response) >= 2) {
+                return@Authenticator null
             }
+            val refreshResult: TokenModel?
+            try {
+                refreshResult = sessionStorage.token
+                    ?.refresh
+                    ?.let {
+                        api.refreshAccessToken(RefreshTokenModel("$TOKEN_PREFIX $it"))
+                    }?.execute()?.body()
+            } catch (e: IOException) {
+                Timber.e(e)
+                return@Authenticator null
+            } catch (e: HttpException) {
+                Timber.e(e)
+                return@Authenticator null
+            } catch (e: Exception) {
+                Timber.e(e)
+                return@Authenticator null
+            }
+
+            if (refreshResult != null) {
+                sessionStorage.token = tokenMapper.mapToDomainEntity(refreshResult)
+                val imei = sessionStorage.deviceInfoEntity?.imei ?: ""
+                val serialNumber = sessionStorage.deviceInfoEntity?.serialNumber
+                    ?: ""
+                response.request.newBuilder()
+                    .header(TOKEN, "JWT " + sessionStorage.token?.access)
+                    .header(IMEI, imei)
+                    .header(SERIAL, serialNumber)
+                    .header(
+                        DEVICE_ID,
+                        sessionStorage.firebaseToken?.token
+                            ?: FirebaseMessaging.getInstance().token.result
+                    )
+                    .build()
+            } else {
+                null
+            }
+        }
 
     private fun responseCount(response: Response): Int {
         var localResponse: Response? = response
@@ -157,40 +169,42 @@ class NetworkModule {
     @PerApplication
     @Provides
     fun provideGson(): Gson = GsonBuilder()
-            .setDateFormat("yyyy-MM-dd")
-            .create()
+        .setDateFormat("yyyy-MM-dd")
+        .create()
 
 
     @PerApplication
     @Provides
     fun provideRefreshTokenApi(@RefreshOkHttpClient httpClient: OkHttpClient, gson: Gson)
             : RefreshTokenApi = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-            .client(httpClient)
-            .baseUrl(BuildConfig.BASE_URL)
-            .build().create(RefreshTokenApi::class.java)
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+        .client(httpClient)
+        .baseUrl(BuildConfig.BASE_URL)
+        .build().create(RefreshTokenApi::class.java)
 
     @PerApplication
     @Provides
-    fun provideAmazonApi(@AmazonOkHttpClient httpClient: OkHttpClient,
-                         gson: Gson): AmazonApi = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-            .client(httpClient)
-            .baseUrl(BuildConfig.AMAZON_BASE_URL)
-            .build().create(AmazonApi::class.java)
+    fun provideAmazonApi(
+        @AmazonOkHttpClient httpClient: OkHttpClient,
+        gson: Gson
+    ): AmazonApi = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+        .client(httpClient)
+        .baseUrl(BuildConfig.AMAZON_BASE_URL)
+        .build().create(AmazonApi::class.java)
 
     @PerApplication
     @Provides
-    fun provideAppApi(@ApplicationOkHttpClient httpClient: OkHttpClient, gson: Gson,
-                      errorAdapter: ErrorAdapter): AppApi = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxErrorCallAdapterFactory.create(errorAdapter))
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-            .client(httpClient)
-            .baseUrl(BuildConfig.BASE_URL)
-            .build().create(AppApi::class.java)
-
-
+    fun provideAppApi(
+        @ApplicationOkHttpClient httpClient: OkHttpClient, gson: Gson,
+        errorAdapter: ErrorAdapter
+    ): AppApi = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .addCallAdapterFactory(RxErrorCallAdapterFactory.create(errorAdapter))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+        .client(httpClient)
+        .baseUrl(BuildConfig.BASE_URL)
+        .build().create(AppApi::class.java)
 }

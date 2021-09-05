@@ -27,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentRegistration2Binding
+import com.intergroupapplication.di.qualifier.RegistrationHandler
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
@@ -55,7 +56,6 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Named
 
 class RegistrationFragment : BaseFragment(), RegistrationView, Validator.ValidationListener,
     ActionMode.Callback {
@@ -89,7 +89,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     lateinit var validator: Validator
 
     @Inject
-    @Named("RegistrationHandler")
+    @RegistrationHandler
     override lateinit var errorHandler: ErrorHandler
 
     private lateinit var rxPermission: RxPermissions

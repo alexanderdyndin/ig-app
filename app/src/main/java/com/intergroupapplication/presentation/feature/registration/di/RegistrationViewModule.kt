@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.registration.di
 
 import android.content.Context
+import com.intergroupapplication.di.qualifier.RegistrationHandler
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.feature.registration.view.RegistrationFragment
@@ -11,7 +12,6 @@ import com.mobsandgeeks.saripaar.Validator
 import com.workable.errorhandler.ErrorHandler
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 
 @Module
@@ -38,7 +38,7 @@ class RegistrationViewModule {
 
     @PerFragment
     @Provides
-    @Named("RegistrationHandler")
+    @RegistrationHandler
     fun errorHandler(): ErrorHandler = ErrorHandler.create()
 
 }

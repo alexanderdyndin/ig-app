@@ -68,11 +68,11 @@ interface GatewayModule {
 
     @Binds
     fun provideAddLocalMediaRepository(addLocalMediaRepository: AddLocalMediaRepository)
-        :AddLocalMediaGateway
+            : AddLocalMediaGateway
 
     @Binds
     fun provideColorDrawableRepository(colorDrawableRepository: ColorDrawableRepository)
-        :ColorDrawableGateway
+            : ColorDrawableGateway
 
     @Binds
     fun provideAvatarRepository(avatarRepository: AvatarRepository): AvatarGateway

@@ -4,6 +4,7 @@ import com.intergroupapplication.data.model.CodeModel
 import com.intergroupapplication.data.model.EmailModel
 import com.intergroupapplication.data.model.NewPasswordModel
 import com.intergroupapplication.di.module.NetworkModule.Companion.TOKEN_PREFIX
+import com.intergroupapplication.di.qualifier.RecoveryHandler
 import com.intergroupapplication.domain.gateway.ResetPasswordGetaway
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
@@ -13,11 +14,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import javax.inject.Inject
-import javax.inject.Named
 
 @InjectViewState
 class RecoveryPasswordPresenter @Inject constructor(private val resetPasswordGetaway: ResetPasswordGetaway,
-                                                    @Named("RecoveryHandler")
+                                                    @RecoveryHandler
                                                     private val errorHandler: ErrorHandler)
     : BasePresenter<RecoveryPasswordView>() {
 

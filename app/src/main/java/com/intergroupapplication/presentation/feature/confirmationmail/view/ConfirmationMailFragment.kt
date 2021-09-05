@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentConfirmationMail2Binding
+import com.intergroupapplication.di.qualifier.ConfirmationProfileHandler
 import com.intergroupapplication.domain.exception.CODE
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.TOKEN
@@ -24,7 +25,6 @@ import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Named
 
 class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
@@ -47,7 +47,7 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
     @Inject
-    @Named("ConfirmationProfileHandler")
+    @ConfirmationProfileHandler
     override lateinit var errorHandler: ErrorHandler
 
     private lateinit var btnNext: AppCompatButton

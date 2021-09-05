@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.presenter
 
 import com.intergroupapplication.R
+import com.intergroupapplication.di.qualifier.ConfirmationProfileHandler
 import com.intergroupapplication.domain.gateway.ConfirmationMailGateway
 import com.intergroupapplication.domain.gateway.ResendCodeGateway
 import com.intergroupapplication.presentation.base.BasePresenter
@@ -11,11 +12,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import javax.inject.Inject
-import javax.inject.Named
 
 @InjectViewState
 class ConfirmationMailPresenter @Inject constructor(private val confirmationMailGateway: ConfirmationMailGateway,
-                                                    @Named("ConfirmationProfileHandler")
+                                                    @ConfirmationProfileHandler
                                                     private val errorHandler: ErrorHandler,
                                                     private val resendCodeGateway: ResendCodeGateway)
     : BasePresenter<ConfirmationMailView>() {

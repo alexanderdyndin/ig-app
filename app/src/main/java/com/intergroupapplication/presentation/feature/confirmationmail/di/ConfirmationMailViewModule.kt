@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.di
 
 import android.content.Context
+import com.intergroupapplication.di.qualifier.ConfirmationProfileHandler
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.feature.confirmationmail.view.ConfirmationMailFragment
@@ -10,7 +11,6 @@ import com.intergroupapplication.presentation.provider.DialogProvider
 import com.workable.errorhandler.ErrorHandler
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module
 class ConfirmationMailViewModule {
@@ -31,6 +31,6 @@ class ConfirmationMailViewModule {
 
     @PerFragment
     @Provides
-    @Named("ConfirmationProfileHandler")
+    @ConfirmationProfileHandler
     fun errorHandler(): ErrorHandler = ErrorHandler.create()
 }

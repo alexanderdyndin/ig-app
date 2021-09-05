@@ -15,9 +15,10 @@ class DatabaseModule {
     @PerApplication
     @Provides
     fun providesRoomDatabase(app: App): IgDatabase {
-        return Room.databaseBuilder(app.applicationContext,
-                IgDatabase::class.java,
-                "ig-app.db"
+        return Room.databaseBuilder(
+            app.applicationContext,
+            IgDatabase::class.java,
+            "ig-app.db"
         ).build()
     }
 

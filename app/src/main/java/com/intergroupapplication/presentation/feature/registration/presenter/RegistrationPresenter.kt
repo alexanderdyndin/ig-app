@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.registration.presenter
 
+import com.intergroupapplication.di.qualifier.RegistrationHandler
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.RegistrationGateway
@@ -11,12 +12,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
 import javax.inject.Inject
-import javax.inject.Named
 
 @InjectViewState
 class RegistrationPresenter @Inject constructor(private val registrationGateway: RegistrationGateway,
                                                 private val imeiGateway: ImeiGateway,
-                                                @Named("RegistrationHandler")
+                                                @RegistrationHandler
                                                 private val errorHandler: ErrorHandler)
     : BasePresenter<RegistrationView>() {
 

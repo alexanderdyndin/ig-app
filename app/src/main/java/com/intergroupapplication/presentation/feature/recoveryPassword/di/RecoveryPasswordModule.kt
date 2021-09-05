@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.recoveryPassword.di
 
 import android.content.Context
+import com.intergroupapplication.di.qualifier.RecoveryHandler
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordFragment
@@ -11,7 +12,6 @@ import com.mobsandgeeks.saripaar.Validator
 import com.workable.errorhandler.ErrorHandler
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 
 @Module
@@ -40,7 +40,7 @@ class RecoveryPasswordModule {
 
     @PerFragment
     @Provides
-    @Named("RecoveryHandler")
+    @RecoveryHandler
     fun errorHandler(): ErrorHandler = ErrorHandler.create()
 
 }

@@ -9,19 +9,23 @@ import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 
 @PerApplication
-@Component(modules = [(AppModule::class),
-    (RxModule::class),
-    (NetworkModule::class),
-    (AppBuilderModule::class),
-    (AndroidSupportInjectionModule::class),
-    (GatewayModule::class),
-    (CoreModule::class),
-    (AppInitializersModule::class),
-    (ListenersModule::class),
-    (NetworkErrorHandlingModule::class),
-    (NotificationModule::class),
-    (ViewModelModule::class),
-    (DatabaseModule::class)])
+@Component(
+    modules = [
+        AppModule::class,
+        RxModule::class,
+        NetworkModule::class,
+        AppBuilderModule::class,
+        AndroidSupportInjectionModule::class,
+        GatewayModule::class,
+        CoreModule::class,
+        AppInitializersModule::class,
+        ListenersModule::class,
+        NetworkErrorHandlingModule::class,
+        NotificationModule::class,
+        ViewModelModule::class,
+        DatabaseModule::class
+    ]
+)
 interface AppComponent : AndroidInjector<App> {
 
     @Component.Factory

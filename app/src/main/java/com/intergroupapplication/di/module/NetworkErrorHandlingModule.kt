@@ -21,5 +21,4 @@ interface NetworkErrorHandlingModule {
     @PerApplication
     @Binds
     fun provideErrorAdapter(baseErrorAdapter: BaseErrorAdapter): ErrorAdapter
-
 }

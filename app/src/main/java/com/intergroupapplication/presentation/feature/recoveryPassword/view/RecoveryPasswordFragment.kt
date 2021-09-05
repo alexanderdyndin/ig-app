@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentRecoveryPassword2Binding
+import com.intergroupapplication.di.qualifier.RecoveryHandler
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -37,7 +38,6 @@ import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
-import javax.inject.Named
 
 class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator.ValidationListener,
     View.OnClickListener {
@@ -63,7 +63,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     lateinit var validator: Validator
 
     @Inject
-    @Named("RecoveryHandler")
+    @RecoveryHandler
     override lateinit var errorHandler: ErrorHandler
 
     override fun layoutRes() = R.layout.fragment_recovery_password2
