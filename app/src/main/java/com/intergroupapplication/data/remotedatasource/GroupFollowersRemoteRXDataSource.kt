@@ -9,12 +9,12 @@ import com.intergroupapplication.domain.entity.GroupUserEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-class GroupFollowersRemoteRXDataSource (
-        private val appApi: AppApi,
-        private val mapper: FollowersGroupMapper,
-        private val groupId: String,
-        private val searchFilter: String
-): RxPagingSource<Int, GroupUserEntity>() {
+class GroupFollowersRemoteRXDataSource(
+    private val appApi: AppApi,
+    private val mapper: FollowersGroupMapper,
+    private val groupId: String,
+    private val searchFilter: String
+) : RxPagingSource<Int, GroupUserEntity>() {
 
     var key: Int = 1
 
@@ -30,25 +30,25 @@ class GroupFollowersRemoteRXDataSource (
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, GroupUserEntity>> {
         key = params.key ?: 1
         return followersList
-                .invoke(key)
-                .subscribeOn(Schedulers.io())
-                .map {
-                    mapper.mapToDomainEntity(it)
-                }
-                .map <LoadResult<Int, GroupUserEntity>> {
-                    LoadResult.Page(
-                            it.users,
-                            if (it.previous != null) key - 1 else null,
-                            if (it.previous != null) key + 1 else null
-                    )
-                }
-                .onErrorReturn { e ->
-                    LoadResult.Error(e)
-                }
+            .invoke(key)
+            .subscribeOn(Schedulers.io())
+            .map {
+                mapper.mapToDomainEntity(it)
+            }
+            .map<LoadResult<Int, GroupUserEntity>> {
+                LoadResult.Page(
+                    it.users,
+                    if (it.previous != null) key - 1 else null,
+                    if (it.previous != null) key + 1 else null
+                )
+            }
+            .onErrorReturn { e ->
+                LoadResult.Error(e)
+            }
     }
 
     fun applyAdministratorsList() {
-        followersList = {page: Int ->
+        followersList = { page: Int ->
             appApi.getGroupFollowers(groupId, page, "admins", searchFilter)
         }
     }

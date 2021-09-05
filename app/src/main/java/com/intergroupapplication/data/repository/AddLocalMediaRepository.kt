@@ -1,5 +1,6 @@
 package com.intergroupapplication.data.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
@@ -13,6 +14,7 @@ import javax.inject.Inject
 class AddLocalMediaRepository @Inject constructor(private val context: Context) :
     AddLocalMediaGateway {
 
+    @SuppressLint("Recycle")
     override fun addGalleryUri(): List<GalleryModel> {
         val listUrlImage = mutableListOf<GalleryModel>()
         val mediaConstants = arrayOf(
@@ -45,6 +47,7 @@ class AddLocalMediaRepository @Inject constructor(private val context: Context) 
         return listUrlImage
     }
 
+    @SuppressLint("Recycle")
     override fun addVideoUri(): List<VideoModel> {
         val listUrlVideo = mutableListOf<VideoModel>()
         val mediaConstants = arrayOf(
@@ -91,6 +94,7 @@ class AddLocalMediaRepository @Inject constructor(private val context: Context) 
         return listUrlVideo
     }
 
+    @SuppressLint("Recycle")
     override fun addAudioUri(): List<AudioInAddFileModel> {
         val listUrlAudio = mutableListOf<AudioInAddFileModel>()
         val mediaConstants = arrayOf(

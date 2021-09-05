@@ -58,6 +58,4 @@ class MediaRepository @Inject constructor(
             pagingSourceFactory = { ImagesRemoteRXDataSource(api, mediaMapper) }
         ).flowable
     }
-
-
 }

@@ -12,10 +12,12 @@ interface AmazonApi {
 
     @Multipart
     @POST("")
-    fun uploadImageToAmazon(@Url url: String,
-                            @Part("AWSAccessKeyId") awsKey: RequestBody,
-                            @Part("key") key: RequestBody,
-                            @Part("policy") policy: RequestBody,
-                            @Part("signature") signature: RequestBody,
-                            @Part filePart: MultipartBody.Part): Completable
+    fun uploadImageToAmazon(
+        @Url url: String,
+        @Part("AWSAccessKeyId") awsKey: RequestBody,
+        @Part("key") key: RequestBody,
+        @Part("policy") policy: RequestBody,
+        @Part("signature") signature: RequestBody,
+        @Part filePart: MultipartBody.Part
+    ): Completable
 }

@@ -1,5 +1,6 @@
 package com.intergroupapplication.data.repository
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.fragment.app.Fragment
 import com.androidnetworking.AndroidNetworking
@@ -30,9 +31,6 @@ class PhotoRepository @Inject constructor(
     private val appApi: AppApi,
     private val awsUploadingGateway: AwsUploadingGateway
 ) : PhotoGateway {
-    companion object {
-        const val CAN_NOT_GET_PICTURE = "Can not get picture"
-    }
 
     private var lastAttachedImagePath: String? = null
     private var lastPhotoUrl: String = ""
@@ -215,6 +213,7 @@ class PhotoRepository @Inject constructor(
             }
     }
 
+    @SuppressLint("CheckResult")
     override fun uploadImage(
         path: String, groupId: String?,
         upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>

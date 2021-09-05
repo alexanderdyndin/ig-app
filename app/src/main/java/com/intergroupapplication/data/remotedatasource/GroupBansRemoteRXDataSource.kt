@@ -9,15 +9,15 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 class GroupBansRemoteRXDataSource(
-        private val appApi: AppApi,
-        private val mapper: BansGroupMapper,
-        private val groupId: String,
-        private val searchFilter: String
+    private val appApi: AppApi,
+    private val mapper: BansGroupMapper,
+    private val groupId: String,
+    private val searchFilter: String
 ) : RxPagingSource<Int, GroupUserEntity>() {
 
     private var key = 1
 
-    override fun getRefreshKey(state: PagingState<Int, GroupUserEntity>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, GroupUserEntity>): Int {
         val position = state.anchorPosition ?: 0
         return position / 20 + 1
     }
@@ -25,20 +25,19 @@ class GroupBansRemoteRXDataSource(
     override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, GroupUserEntity>> {
         key = params.key ?: 1
         return appApi.getGroupBans(groupId, key, searchFilter)
-                .subscribeOn(Schedulers.io())
-                .map {
-                    mapper.mapToDomainEntity(it)
-                }
-                .map <LoadResult<Int, GroupUserEntity>> {
-                    LoadResult.Page(
-                            it.users,
-                            if (it.previous != null) key - 1 else null,
-                            if (it.previous != null) key + 1 else null
-                    )
-                }
-                .onErrorReturn { e ->
-                    LoadResult.Error(e)
-                }
+            .subscribeOn(Schedulers.io())
+            .map {
+                mapper.mapToDomainEntity(it)
+            }
+            .map<LoadResult<Int, GroupUserEntity>> {
+                LoadResult.Page(
+                    it.users,
+                    if (it.previous != null) key - 1 else null,
+                    if (it.previous != null) key + 1 else null
+                )
+            }
+            .onErrorReturn { e ->
+                LoadResult.Error(e)
+            }
     }
-
 }

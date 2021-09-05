@@ -17,14 +17,16 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
-class AvatarRepository @Inject constructor(private val context: Context,
-                                           private val appApi: AppApi,
-                                           private val awsUploadingGateway: AwsUploadingGateway) : AvatarGateway {
+class AvatarRepository @Inject constructor(
+    private val context: Context,
+    private val appApi: AppApi,
+    private val awsUploadingGateway: AwsUploadingGateway
+) : AvatarGateway {
     companion object {
         const val FULL_UPLOADED_PROGRESS = 100F
     }
 
-   override fun uploadToAws(path: String, groupId: String?): Observable<ImageUploadingState> {
+    override fun uploadToAws(path: String, groupId: String?): Observable<ImageUploadingState> {
         val subject = PublishSubject.create<Float>()
         val file = File(path)
         return appApi.uploadPostsMedia(file.extension, groupId)
@@ -52,9 +54,7 @@ class AvatarRepository @Inject constructor(private val context: Context,
                         }
                     }
                 }
-                .doOnDispose { AndroidNetworking.cancelAll() }
+                    .doOnDispose { AndroidNetworking.cancelAll() }
             }
-        }
-
-
+    }
 }

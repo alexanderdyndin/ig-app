@@ -13,7 +13,6 @@ import com.intergroupapplication.data.network.dto.GroupPostsDto
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-
 @ExperimentalPagingApi
 class GroupPostMediatorRXDataSource(
     private val appApi: AppApi,

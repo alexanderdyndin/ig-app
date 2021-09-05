@@ -121,5 +121,4 @@ class GroupPostsRepository @Inject constructor(
     override fun deleteBell(postId: String): Completable {
         return api.deleteBell(postId)
     }
-
 }

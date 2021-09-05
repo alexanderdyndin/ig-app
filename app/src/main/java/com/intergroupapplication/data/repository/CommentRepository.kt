@@ -74,5 +74,4 @@ class CommentRepository @Inject constructor(
         return api.setCommentReact(reactsMapper.mapToDto(reactsEntityRequest), commentId)
             .map { reactsMapper.mapToDomainEntity(it) }
     }
-
 }

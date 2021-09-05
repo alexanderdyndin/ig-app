@@ -1,5 +1,6 @@
 package com.intergroupapplication.data.repository
 
+import android.annotation.SuppressLint
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -40,6 +41,7 @@ class GroupRepository @Inject constructor(
     private val bansGroupMapper: BansGroupMapper
 ) : GroupGateway {
 
+    @SuppressLint("CheckResult")
     override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group> =
         api.changeGroupAvatar(groupId, UpdateAvatarModel(avatar))
             .map { groupMapper.mapToDomainEntity(it) }
@@ -51,6 +53,7 @@ class GroupRepository @Inject constructor(
                 }
             }
 
+    @SuppressLint("CheckResult")
     override fun followersGroup(groupId: String): Single<GroupFollowEntity> {
         return api.followersGroup(groupId)
             .map { groupMapper.followsToEntity(it) }

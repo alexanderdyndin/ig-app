@@ -9,8 +9,7 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 24/08/2018 at project InterGroupApplication.
  */
-class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
-    : ErrorAdapter {
+class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser) : ErrorAdapter {
 
     override fun adapt(throwable: Throwable): Throwable {
         return if (throwable is HttpException) {
@@ -72,9 +71,9 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
     }
 
     private fun getListFieldException(apiErrors: List<ApiErrorElement>): Exception =
-            if (apiErrors[0].uniqueCode == INVALID_REFRESH) {
-                InvalidRefreshException()
-            } else {
-                CompositeException(apiErrors.map { FieldException(it.field.orEmpty(), it.message) })
-            }
+        if (apiErrors[0].uniqueCode == INVALID_REFRESH) {
+            InvalidRefreshException()
+        } else {
+            CompositeException(apiErrors.map { FieldException(it.field.orEmpty(), it.message) })
+        }
 }

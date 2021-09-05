@@ -23,7 +23,7 @@ interface AppApi {
 
     @POST("users/profiles/")
     fun createUserProfile(@Body userProfileModel: UserProfileModelRequest)
-        : Single<UserProfileModelResponse>
+            : Single<UserProfileModelResponse>
 
     @POST("groups/")
     fun createGroup(@Body createGroupModel: CreateGroupModel): Single<GroupDto>
@@ -33,7 +33,7 @@ interface AppApi {
 
     @GET("groups/{group_pk}/posts/")
     fun getGroupPosts(@Path("group_pk") groupId: String, @Query("page") page: Int)
-        : Single<GroupPostsDto>
+            : Single<GroupPostsDto>
 
     @GET("groups/news/")
     fun getNews(@Query("page") page: Int): Single<NewsDto>
@@ -48,31 +48,43 @@ interface AppApi {
     fun getVideos(@Query("page") page: Int): Single<VideosDto>
 
     @GET("groups/")
-    fun getSubscribedGroupList(@Query("page") page: Int, @Query("search") search:String,
-                               @Query("followed") followed:String = "true"/*,
-                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
+    fun getSubscribedGroupList(
+        @Query("page") page: Int, @Query("search") search: String,
+        @Query("followed") followed: String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/
+    ): Single<GroupsDto>
 
     @GET("groups/")
-    fun getGroupList(@Query("page") page: Int,
-                     @Query("search") search:String/*,
-                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
+    fun getGroupList(
+        @Query("page") page: Int,
+        @Query("search") search: String/*,
+                               @Query("ordering") ordering:String = "likes"*/
+    ): Single<GroupsDto>
 
     @GET("groups/")
-    fun getAdminGroupList(@Query("page") page: Int, @Query("search") search:String,
-                          @Query("owned") owned:String = "true"/*,
-                               @Query("ordering") ordering:String = "likes"*/): Single<GroupsDto>
+    fun getAdminGroupList(
+        @Query("page") page: Int, @Query("search") search: String,
+        @Query("owned") owned: String = "true"/*,
+                               @Query("ordering") ordering:String = "likes"*/
+    ): Single<GroupsDto>
 
     @GET("groups/posts/{post_pk}/comments/")
-    fun getPostComments(@Path("post_pk") postId: String,
-                        @Query("page") page: Int): Single<CommentsDto>
+    fun getPostComments(
+        @Path("post_pk") postId: String,
+        @Query("page") page: Int
+    ): Single<CommentsDto>
 
     @POST("groups/posts/{post_pk}/comments/")
-    fun createComment(@Path("post_pk") postId: String,
-                      @Body createCommentModel: CreateCommentModel): Single<CommentModel>
+    fun createComment(
+        @Path("post_pk") postId: String,
+        @Body createCommentModel: CreateCommentModel
+    ): Single<CommentModel>
 
     @POST("groups/comments/{comment_pk}/answers/")
-    fun createAnswerToComment(@Path("comment_pk") answerToCommentId: String,
-                              @Body createCommentModel: CreateCommentModel): Single<CommentModel>
+    fun createAnswerToComment(
+        @Path("comment_pk") answerToCommentId: String,
+        @Body createCommentModel: CreateCommentModel
+    ): Single<CommentModel>
 
     @POST("groups/{group_pk}/posts/")
     fun createPost(
@@ -81,8 +93,10 @@ interface AppApi {
     ): Single<GroupPostDto>
 
     @POST("groups/posts/{post_pk}/reacts/")
-    fun setReact(@Body data: ReactsModelRequest,
-                 @Path("post_pk") postId: String): Single<ReactsModel>
+    fun setReact(
+        @Body data: ReactsModelRequest,
+        @Path("post_pk") postId: String
+    ): Single<ReactsModel>
 
     @GET("groups/posts/{id}/")
     fun getPostById(@Path("id") postId: String): Single<GroupPostDto>
@@ -100,7 +114,7 @@ interface AppApi {
     fun followGroup(@Body followGroupModel: FollowGroupModel): Completable
 
     @POST("auth/app_status/")
-    fun getAppStatus(@Body versionModel:VersionModel): Single<String>
+    fun getAppStatus(@Body versionModel: VersionModel): Single<String>
 
     @DELETE("groups/follows/{group_id}/")
     fun unfollowGroup(@Path("group_id") groupId: String): Completable
@@ -109,24 +123,32 @@ interface AppApi {
     fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowModel>
 
     @GET("s3/groups/posts/")
-    fun uploadPostsMedia(@Query("ext") imageExt: String,
-                         @Query("id") groupId: String? = null): Single<ImageUploadDto>
+    fun uploadPostsMedia(
+        @Query("ext") imageExt: String,
+        @Query("id") groupId: String? = null
+    ): Single<ImageUploadDto>
 
     @GET("s3/users/avatars/")
-    fun uploadUserAvatar(@Query("ext") imageExt: String,
-                         @Query("id")groupId: String? = null): Single<ImageUploadDto>
+    fun uploadUserAvatar(
+        @Query("ext") imageExt: String,
+        @Query("id") groupId: String? = null
+    ): Single<ImageUploadDto>
 
     @GET("s3/groups/avatars/")
-    fun uploadGroupAvatar(@Query("ext") imageExt: String,
-                          @Query("id")groupId: String? = null): Single<ImageUploadDto>
+    fun uploadGroupAvatar(
+        @Query("ext") imageExt: String,
+        @Query("id") groupId: String? = null
+    ): Single<ImageUploadDto>
 
     @GET("s3/groups/comments/")
-    fun uploadCommentsMedia(@Query("ext") imageExt: String,
-                            @Query("id")postId: String? = null): Single<ImageUploadDto>
+    fun uploadCommentsMedia(
+        @Query("ext") imageExt: String,
+        @Query("id") postId: String? = null
+    ): Single<ImageUploadDto>
 
     @PATCH("users/profiles/{user-id}/")
     fun changeUserAvatar(@Path("user-id") userId: String, @Body avatar: UpdateAvatarModel)
-        : Single<UserProfileModelResponse>
+            : Single<UserProfileModelResponse>
 
     @PATCH("groups/{id}/")
     fun changeGroupAvatar(
@@ -160,34 +182,34 @@ interface AppApi {
 
     @GET("groups/{group_id}/followers/")
     fun getGroupFollowers(
-            @Path("group_id") groupId: String,
-            @Query("page") page: Int,
-            @Query("filter") filter: String = "",
-            @Query("search") search: String
+        @Path("group_id") groupId: String,
+        @Query("page") page: Int,
+        @Query("filter") filter: String = "",
+        @Query("search") search: String
     ): Single<GroupUserFollowersDto>
 
     @GET("groups/{group_id}/bans/")
     fun getGroupBans(
-            @Path("group_id") groupId: String,
-            @Query("page") page: Int,
-            @Query("search") search: String
+        @Path("group_id") groupId: String,
+        @Query("page") page: Int,
+        @Query("search") search: String
     ): Single<GroupUserBansDto>
 
     @POST("groups/{group_id}/bans/")
     fun banUserInGroup(
-            @Path("group_id") groupId: String,
-            @Body groupBanBody: GroupBanBody
+        @Path("group_id") groupId: String,
+        @Body groupBanBody: GroupBanBody
     ): Completable
 
     @DELETE("groups/bans/{id}/")
     fun deleteUserFromBansGroup(
-            @Path("id") id: String
+        @Path("id") id: String
     ): Completable
 
     @PATCH("groups/followers/{id}/")
     fun updateGroupAdmin(
-            @Path("id") id: String,
-            @Body updateGroupAdmin: UpdateGroupAdmin
+        @Path("id") id: String,
+        @Body updateGroupAdmin: UpdateGroupAdmin
     ): Completable
 
     @DELETE("groups/posts/{id}/")
@@ -200,8 +222,10 @@ interface AppApi {
     fun deleteComment(@Path("id") commentId: String): Completable
 
     @POST("groups/comments/{comment_pk}/reacts/")
-    fun setCommentReact(@Body data: ReactsModelRequest,
-                 @Path("comment_pk") commentId: String): Single<ReactsModel>
+    fun setCommentReact(
+        @Body data: ReactsModelRequest,
+        @Path("comment_pk") commentId: String
+    ): Single<ReactsModel>
 
     @POST("groups/bells/")
     fun setBell(@Body bellFollowModel: BellFollowModel): Single<BellFollowModel>
@@ -211,5 +235,4 @@ interface AppApi {
 
     @DELETE("groups/bells/{post__id}/")
     fun deleteBell(@Path("post__id") postId: String): Completable
-
 }
