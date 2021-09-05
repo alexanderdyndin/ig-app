@@ -32,7 +32,7 @@ class EditPostViewModule {
         activity: EditPostFragment, cropOptions: UCrop.Options,
         api: AppApi, awsUploadingGateway: AwsUploadingGateway
     ): PhotoGateway =
-        PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
+        PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides

@@ -2,7 +2,6 @@ package com.intergroupapplication.presentation.feature.createuserprofile.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.TextWatcher
@@ -40,9 +39,9 @@ import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
-import java.lang.IllegalStateException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.util.*
 import javax.inject.Inject
 
 
@@ -368,7 +367,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
                 if (textEntered.length == 1 && textEntered[0].isLetter() &&
                     !textEntered[0].isUpperCase()
                 ) {
-                    textEntered = s?.toString().orEmpty().toUpperCase()
+                    textEntered = s?.toString().orEmpty().uppercase(Locale.getDefault())
                     surName.setText(textEntered)
                     surName.setSelection(surName.text?.length ?: 0)
                 }

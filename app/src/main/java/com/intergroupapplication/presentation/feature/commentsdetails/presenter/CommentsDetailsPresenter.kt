@@ -1,11 +1,10 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.presenter
 
-import com.intergroupapplication.presentation.base.BasePresenter
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsView
-
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import com.intergroupapplication.presentation.base.BasePresenter
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

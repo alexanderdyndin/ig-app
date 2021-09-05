@@ -2,8 +2,6 @@ package com.intergroupapplication.initializators
 
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
-import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 /**

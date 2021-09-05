@@ -1,13 +1,11 @@
 package com.intergroupapplication.data.service
 
 import com.intergroupapplication.data.mapper.RegistrationMapper
-import com.intergroupapplication.data.mapper.TokenMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.EmailEntity
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.entity.TokenEntity
-import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.gateway.RegistrationGateway
 import io.reactivex.Completable
 import javax.inject.Inject

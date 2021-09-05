@@ -3,14 +3,9 @@ package com.intergroupapplication.device.notification.notificationcreators
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.intergroupapplication.R
 import com.intergroupapplication.device.notification.NotificationCreatorOptions
 

@@ -32,8 +32,8 @@ import com.intergroupapplication.presentation.customview.RichEditor
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
-import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter

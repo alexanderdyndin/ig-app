@@ -1,9 +1,9 @@
 package com.intergroupapplication.presentation.customview
 
 import android.content.Context
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import androidx.annotation.Nullable
+import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import com.intergroupapplication.R
 

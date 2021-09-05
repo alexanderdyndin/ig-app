@@ -8,7 +8,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +27,7 @@ import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.MediaAdapter
 import com.intergroupapplication.presentation.widgets.PreviewDialog
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.tbruyelle.rxpermissions2.RxPermissions

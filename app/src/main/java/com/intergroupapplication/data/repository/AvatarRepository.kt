@@ -21,7 +21,6 @@ class AvatarRepository @Inject constructor(private val context: Context,
                                            private val appApi: AppApi,
                                            private val awsUploadingGateway: AwsUploadingGateway) : AvatarGateway {
     companion object {
-        const val CAN_NOT_GET_PICTURE = "Can not get picture"
         const val FULL_UPLOADED_PROGRESS = 100F
     }
 
@@ -39,7 +38,7 @@ class AvatarRepository @Inject constructor(private val context: Context,
                     awsUploadingGateway.uploadImageToAws(
                         it.url, subject, it.fields,
                         Compressor(context).setQuality(75)
-                            .setCompressFormat(Bitmap.CompressFormat.WEBP).compressToFile(file)
+                            .setCompressFormat(Bitmap.CompressFormat.JPEG).compressToFile(file)
                     )
             }
             .flatMapObservable {

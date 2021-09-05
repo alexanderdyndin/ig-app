@@ -1,7 +1,6 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.di
 
 import com.intergroupapplication.data.service.ConfirmationMailService
-import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.domain.gateway.ConfirmationMailGateway
 import dagger.Binds

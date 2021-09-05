@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.recoveryPassword.presenter
 
-import moxy.InjectViewState
 import com.intergroupapplication.data.model.CodeModel
 import com.intergroupapplication.data.model.EmailModel
 import com.intergroupapplication.data.model.NewPasswordModel
@@ -12,6 +11,7 @@ import com.intergroupapplication.presentation.feature.recoveryPassword.view.Reco
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
 import javax.inject.Inject
 import javax.inject.Named
 

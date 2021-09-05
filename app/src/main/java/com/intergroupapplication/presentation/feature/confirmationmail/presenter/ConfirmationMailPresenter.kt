@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.presenter
 
-import moxy.InjectViewState
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.gateway.ConfirmationMailGateway
 import com.intergroupapplication.domain.gateway.ResendCodeGateway
@@ -10,7 +9,7 @@ import com.intergroupapplication.presentation.feature.confirmationmail.view.Conf
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-
+import moxy.InjectViewState
 import javax.inject.Inject
 import javax.inject.Named
 

@@ -1,11 +1,11 @@
 package com.intergroupapplication.presentation.feature.group.view
 
-import moxy.MvpView
-import moxy.viewstate.strategy.StateStrategyType
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.presentation.base.ImageUploadingView
+import moxy.MvpView
 import moxy.viewstate.strategy.SkipStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(SkipStrategy::class)
 interface GroupView : MvpView, ImageUploadingView {

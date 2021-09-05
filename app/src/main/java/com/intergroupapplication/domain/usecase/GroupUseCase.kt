@@ -2,13 +2,13 @@ package com.intergroupapplication.domain.usecase
 
 import android.annotation.SuppressLint
 import androidx.paging.PagingData
+import com.intergroupapplication.data.model.AddBlackListUserModel
 import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
-import com.intergroupapplication.data.model.AddBlackListUserModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single

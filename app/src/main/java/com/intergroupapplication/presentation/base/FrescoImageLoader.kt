@@ -1,25 +1,13 @@
 package com.intergroupapplication.presentation.base
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.util.AttributeSet
-import com.facebook.common.references.CloseableReference
 import com.facebook.common.util.UriUtil
-import com.facebook.datasource.BaseDataSubscriber
-import com.facebook.datasource.DataSource
-import com.facebook.datasource.DataSubscriber
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.BytesRange
 import com.facebook.imagepipeline.common.ResizeOptions
-import com.facebook.imagepipeline.image.CloseableBitmap
-import com.facebook.imagepipeline.image.CloseableImage
-import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import java.io.File
-import java.util.concurrent.ExecutorService
 
 
 /**

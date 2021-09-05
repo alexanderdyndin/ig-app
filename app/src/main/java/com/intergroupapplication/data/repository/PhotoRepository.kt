@@ -283,10 +283,10 @@ class PhotoRepository @Inject constructor(
             }
     }
 
-    override fun uploadAvatarUser(groupId: String?): Observable<Float> {
+    override fun uploadAvatarUser(userId: String?): Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(lastAttachedImagePath ?: "")
-        return appApi.uploadUserAvatar(file.extension, groupId)
+        return appApi.uploadUserAvatar(file.extension, userId)
             .doAfterSuccess {
                 if (file.extension == "gif")
                     awsUploadingGateway.uploadImageToAws(

@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.group.presenter
 
-import moxy.InjectViewState
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.exception.ForbiddenException
@@ -17,6 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

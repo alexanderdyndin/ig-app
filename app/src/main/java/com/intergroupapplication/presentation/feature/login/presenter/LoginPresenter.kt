@@ -20,26 +20,27 @@ class LoginPresenter @Inject constructor(
     private val imeiGateway: ImeiGateway,
     @LoginHandler
     private val errorHandler: ErrorHandler,
-    private val getProfileUseCase: GetProfileUseCase
+    private val userProfileUseCase: UserProfileUseCase
 ) : BasePresenter<LoginView>() {
 
 
     fun performLogin(loginEntity: LoginEntity) {
         compositeDisposable.add(loginGateway.performLogin(loginEntity)
-                .flatMap { userProfileUseCase.getUserProfile() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe({ viewState.login() }) {
-                    errorHandler.handle(it)
-                })
+            .flatMap { userProfileUseCase.getUserProfile() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .handleLoading(viewState)
+            .subscribe({ viewState.login() }) {
+                errorHandler.handle(it)
+            })
     }
 
     fun extractDeviceInfo() {
-        compositeDisposable.addAll(imeiGateway.extractDeviceInfo()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ viewState.deviceInfoExtracted() }, { errorHandler.handle(it) })
+        compositeDisposable.addAll(
+            imeiGateway.extractDeviceInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ viewState.deviceInfoExtracted() }, { errorHandler.handle(it) })
         )
     }
 }

@@ -3,12 +3,11 @@ package com.intergroupapplication.data.network
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 
 class RxImageUploadingProgressRequestBody(private val file: File) : RequestBody() {

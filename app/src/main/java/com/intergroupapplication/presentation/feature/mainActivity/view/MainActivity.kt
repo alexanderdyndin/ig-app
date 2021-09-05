@@ -1,17 +1,17 @@
 package com.intergroupapplication.presentation.feature.mainActivity.view
 
-
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Typeface
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -19,11 +19,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import co.zsmb.materialdrawerkt.builders.drawer
-import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import androidx.navigation.findNavController
 import com.android.billingclient.api.*
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
@@ -37,14 +36,13 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.mainActivity.adapter.NavigationAdapter
 import com.intergroupapplication.presentation.feature.mainActivity.other.NavigationEntity
-import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
 import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
 import com.mikepenz.materialdrawer.Drawer
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import com.yalantis.ucrop.UCrop
@@ -65,12 +63,9 @@ import java.net.UnknownHostException
 import java.text.DateFormat
 import java.util.*
 import java.util.Calendar.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.coroutines.suspendCoroutine
-import kotlin.math.abs
-
 
 class MainActivity : FragmentActivity() {
 
@@ -166,8 +161,8 @@ class MainActivity : FragmentActivity() {
         setTheme(R.style.ActivityTheme)
         setContentView(R.layout.activity_main)
         try {
-            val filepatch = externalCacheDir?.path//externalCacheDir?.path+"/RxPaparazzo/"
-            val file = File("/$filepatch.nomedia")
+            val filePatch = externalCacheDir?.path//externalCacheDir?.path+"/RxPaparazzo/"
+            val file = File("/$filePatch.nomedia")
             if (!file.exists())
                 file.createNewFile()
         } catch (e: IOException) {
@@ -177,86 +172,121 @@ class MainActivity : FragmentActivity() {
         createNotificationChannel()
         initBilling()
         initErrorHandler(errorHandler)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
     }
 
     fun createDrawer() {
         navController.navigate(R.id.action_global_newsFragment2)
-        val viewDrawer = layoutInflater.inflate(R.layout.layout_left_drawer_header, findViewById(R.id.navigationCoordinator), false)
-        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-            if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                    mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+        val viewDrawer = layoutInflater.inflate(
+            R.layout.layout_left_drawer_header,
+            findViewById(R.id.navigationCoordinator),
+            false
+        )
+        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+            .setOnClickListener {
+                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                    || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
+                ) {
+                    dialogDelegate.showDialog(
+                        R.layout.dialog_camera_or_gallery,
+                        mapOf(
+                            R.id.fromCamera to { loadFromCamera() },
+                            R.id.fromGallery to { loadFromGallery() })
+                    )
+                }
             }
-        }
         val navRecycler = viewDrawer.findViewById<RecyclerView>(R.id.navigationRecycler)
         navRecycler.adapter = navigationAdapter
         navRecycler.itemAnimator = null
         navigationAdapter.items = listOf(
-                NavigationEntity(R.string.news, R.drawable.ic_bell_menu, {
-                    navController.navigate(R.id.action_global_newsFragment2)
-                    drawer.closeDrawer()}, checked = true),
-                NavigationEntity(R.string.groups, R.drawable.ic_groups, {
-                    navController.navigate(R.id.action_global_groupListFragment2)
-                    drawer.closeDrawer()}),
-                NavigationEntity(R.string.buy_premium, R.drawable.icon_like, {
-                    bill()
-                    drawer.closeDrawer()}, null),
-                NavigationEntity(R.string.logout, 0, {
-                    userSession.logout()
-                    navController.navigate(R.id.action_global_loginActivity)
-                    drawer.closeDrawer()
-                }, null),
+            NavigationEntity(R.string.news, R.drawable.ic_bell_menu, {
+                navController.navigate(R.id.action_global_newsFragment2)
+                drawer.closeDrawer()
+            }, checked = true),
+            NavigationEntity(R.string.groups, R.drawable.ic_groups, {
+                navController.navigate(R.id.action_global_groupListFragment2)
+                drawer.closeDrawer()
+            }),
+            NavigationEntity(R.string.buy_premium, R.drawable.icon_like, {
+                bill()
+                drawer.closeDrawer()
+            }, null),
+            NavigationEntity(R.string.logout, 0, {
+                userSession.logout()
+                navController.navigate(R.id.action_global_loginActivity)
+                drawer.closeDrawer()
+            }, null),
         )
-        profileAvatarHolder = viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+        profileAvatarHolder =
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
         profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         drawer = drawer {
             fullscreen = false
             sliderBackgroundColorRes = R.color.mainBlack
             headerView = viewDrawer
             translucentStatusBar = true
-            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder).setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                    || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE) {
-                    dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                        mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+                .setOnClickListener {
+                    if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
+                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
+                    ) {
+                        dialogDelegate.showDialog(
+                            R.layout.dialog_camera_or_gallery,
+                            mapOf(
+                                R.id.fromCamera to { loadFromCamera() },
+                                R.id.fromGallery to { loadFromGallery() })
+                        )
+                    }
                 }
-            }
         }.apply {
-            viewDrawer.findViewById<ImageView>(R.id.drawerArrow).setOnClickListener { closeDrawer() }
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
+                .setOnClickListener { closeDrawer() }
         }
-        compositeDisposable.add(viewModel.getUserProfile()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ userEntity ->
-                val date = dateFormatter.parse(userEntity.birthday)
-                val current = Date()
-                date?.let {
-                    viewDrawer.findViewById<TextView>(R.id.ageText).text = getString(R.string.years, getDiffYears(it, current).toString())
-                }
-                when (userEntity.gender) {
-                    "male" ->
-                        viewDrawer.findViewById<TextView>(R.id.ageText)
-                                .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_male, 0, 0, 0)
-                    "female" ->
-                        viewDrawer.findViewById<TextView>(R.id.ageText)
-                                .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_male, 0, 0, 0)
-                }
-                viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
-                viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
-                viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text = "0"
-                viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text = "0"
-                viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text = "0"
-                viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text = "0"
-                doOrIfNull(userEntity.avatar,
-                    { profileAvatarHolder.showAvatar(it) },
-                    { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
-            }, {
-                profileAvatarHolder.showImageUploadingError()
-                errorHandler.handle(it)
-            }))
+        compositeDisposable.add(
+            viewModel.getUserProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ userEntity ->
+                    val date = dateFormatter.parse(userEntity.birthday)
+                    val current = Date()
+                    date?.let {
+                        viewDrawer.findViewById<TextView>(R.id.ageText).text =
+                            getString(R.string.years, getDiffYears(it, current).toString())
+                    }
+                    when (userEntity.gender) {
+                        "male" ->
+                            viewDrawer.findViewById<TextView>(R.id.ageText)
+                                .setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.ic_male,
+                                    0,
+                                    0,
+                                    0
+                                )
+                        "female" ->
+                            viewDrawer.findViewById<TextView>(R.id.ageText)
+                                .setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.ic_male,
+                                    0,
+                                    0,
+                                    0
+                                )
+                    }
+                    viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
+                    viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
+                    viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text = "0"
+                    viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text = "0"
+                    viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text = "0"
+                    viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text = "0"
+                    doOrIfNull(userEntity.avatar,
+                        { profileAvatarHolder.showAvatar(it) },
+                        { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+                }, {
+                    profileAvatarHolder.showImageUploadingError()
+                    errorHandler.handle(it)
+                })
+        )
         viewModel.imageUploadingState.observe(this, {
             profileAvatarHolder.imageState = it
         })
@@ -294,6 +324,7 @@ class MainActivity : FragmentActivity() {
             }
             .addOnFailureListener(this) { e -> e.printStackTrace() }
     }
+
     override fun onStop() {
         super.onStop()
         dialogDelegate.coordinator = null
@@ -350,7 +381,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    fun initBilling() {
+    private fun initBilling() {
         billingClient = BillingClient.newBuilder(applicationContext)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
@@ -406,13 +437,12 @@ class MainActivity : FragmentActivity() {
         return null
     }
 
-    fun bill() {
+    private fun bill() {
         val disableAdsSubscriptionSku = skuDetails.find { it.sku == DISABLE_ADS_ID }
         disableAdsSubscriptionSku?.let { skuDet ->
-            val flowParams = BillingFlowParams.newBuilder()
+            BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDet)
                 .build()
-            val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
         }
     }
 
@@ -436,22 +466,26 @@ class MainActivity : FragmentActivity() {
             ForbiddenException::class.java to createSnackBarAction(R.string.forbidden_error),
             ImeiException::class.java to getActionForBlockedImei(),
             InvalidRefreshException::class.java to openAutorize(),
-            GroupAlreadyFollowingException::class.java to Action { _, _ ->},
+            GroupAlreadyFollowingException::class.java to Action { _, _ -> },
             PageNotFoundException::class.java to
                     Action { throwable, _ ->
-                        dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())},
+                        dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())
+                    },
             UnknowServerException::class.java to Action { _, _ ->
-                createSnackBarAction(R.string.unknown_error)},
+                createSnackBarAction(R.string.unknown_error)
+            },
             ConnectException::class.java to Action { _, _ ->
                 dialogDelegate.showErrorSnackBar(this.getString(R.string.no_network_connection))
             }
         )
 
-        errorHandlerInitializer.initializeErrorHandler(errorMap,
-            createSnackBarAction(R.string.unknown_error))
+        errorHandlerInitializer.initializeErrorHandler(
+            errorMap,
+            createSnackBarAction(R.string.unknown_error)
+        )
     }
 
-    private fun getActionForBlockedImei() = Action { throwable, _ ->
+    private fun getActionForBlockedImei() = Action { _, _ ->
         userSession.clearAllData()
         finish()
     }
@@ -471,7 +505,7 @@ class MainActivity : FragmentActivity() {
         navController.popBackStack()
     }
 
-    fun actionForBlockedUser() = Action { _, _ ->
+    private fun actionForBlockedUser() = Action { _, _ ->
         userSession.logout()
         finish()
     }
@@ -501,12 +535,13 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun loadFromCamera() {
-        compositeDisposable.add(RxPaparazzo.single(this)
-            .crop(cropOptions)
-            .usingCamera()
-            .map {response ->
-                response.data()?.file?.path
-            }
+        compositeDisposable.add(
+            RxPaparazzo.single(this)
+                .crop(cropOptions)
+                .usingCamera()
+                .map { response ->
+                    response.data()?.file?.path
+                }
             .filter { it.isNotEmpty() }
             .subscribe {
                 it?.let {
@@ -517,12 +552,13 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun loadFromGallery() {
-        compositeDisposable.add(RxPaparazzo.single(this)
-            .crop(cropOptions)
-            .usingGallery()
-            .map {response ->
-                response.data()?.file?.path
-            }
+        compositeDisposable.add(
+            RxPaparazzo.single(this)
+                .crop(cropOptions)
+                .usingGallery()
+                .map { response ->
+                    response.data()?.file?.path
+                }
             .filter { it.isNotEmpty() }
             .subscribe({
                 it?.let {
@@ -534,19 +570,20 @@ class MainActivity : FragmentActivity() {
         )
     }
 
-    fun getDiffYears(first: Date, last: Date): Int {
+    private fun getDiffYears(first: Date, last: Date): Int {
         val a: Calendar = getCalendar(first)
         val b: Calendar = getCalendar(last)
         var diff: Int = b.get(YEAR) - a.get(YEAR)
         if (a.get(MONTH) > b.get(MONTH) ||
-                a.get(MONTH) == b.get(MONTH) && a.get(DATE) > b.get(DATE)) {
+            a.get(MONTH) == b.get(MONTH) && a.get(DATE) > b.get(DATE)
+        ) {
             diff--
         }
         return diff
     }
 
-    fun getCalendar(date: Date): Calendar {
-        val cal: Calendar = Calendar.getInstance(Locale.US)
+    private fun getCalendar(date: Date): Calendar {
+        val cal: Calendar = getInstance(Locale.US)
         cal.time = date
         return cal
     }

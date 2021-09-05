@@ -2,17 +2,15 @@ package com.intergroupapplication.presentation.delegate
 
 import android.content.Context
 import android.graphics.Color
-import androidx.core.content.ContextCompat
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
-import com.androidadvance.topsnackbar.R.*
+import androidx.core.content.ContextCompat
+import com.androidadvance.topsnackbar.R.id
 import com.androidadvance.topsnackbar.TSnackbar
 import com.intergroupapplication.R
-import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
+import com.intergroupapplication.presentation.provider.DialogProvider
 
 /**
  * Created by abakarmagomedov on 02/08/2018 at project InterGroupApplication.

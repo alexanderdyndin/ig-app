@@ -34,7 +34,7 @@ class CommentsDetailsViewModule {
         fragment: CommentsDetailsFragment, cropOptions: UCrop.Options,
         api: AppApi, awsUploadingGateway: AwsUploadingGateway
     ): PhotoGateway =
-        PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
+        PhotoRepository(fragment, cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment

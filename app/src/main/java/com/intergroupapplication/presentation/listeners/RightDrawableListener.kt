@@ -1,9 +1,8 @@
 package com.intergroupapplication.presentation.listeners
 
-import androidx.appcompat.widget.AppCompatEditText
 import android.view.MotionEvent
 import android.view.View
-import timber.log.Timber
+import androidx.appcompat.widget.AppCompatEditText
 
 /**
  * Created by abakarmagomedov on 22/08/2018 at project InterGroupApplication.

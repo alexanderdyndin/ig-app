@@ -3,30 +3,22 @@ package com.intergroupapplication.presentation.feature.news.di
 import android.content.Context
 import androidx.recyclerview.widget.ConcatAdapter
 import com.danikula.videocache.HttpProxyCacheServer
-import com.intergroupapplication.data.network.AppApi
-import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.qualifier.Footer
 import com.intergroupapplication.di.qualifier.Header
 import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.domain.gateway.AwsUploadingGateway
-import com.intergroupapplication.domain.gateway.PhotoGateway
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
-import com.intergroupapplication.presentation.base.ImageUploader
+import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
-import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.provider.DialogProvider
 import com.intergroupapplication.presentation.manager.ToastManager
-import com.yalantis.ucrop.UCrop
+import com.intergroupapplication.presentation.provider.DialogProvider
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 
 const val NEWS = "News"

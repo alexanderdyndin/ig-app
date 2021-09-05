@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
-import co.zsmb.materialdrawerkt.builders.drawer
-import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentNewsBinding
 import com.intergroupapplication.di.qualifier.Footer
@@ -44,14 +42,12 @@ import com.intergroupapplication.presentation.feature.news.viewmodel.NewsViewMod
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import javax.inject.Named
 
 class NewsFragment: BaseFragment() {
-
-    private val viewBinding by viewBinding(FragmentNewsBinding::bind)
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
@@ -72,6 +68,7 @@ class NewsFragment: BaseFragment() {
     val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
 
     private val viewModel: NewsViewModel by viewModels { modelFactory }
+    private val viewBinding by viewBinding(FragmentNewsBinding::bind)
     private var exitHandler: Handler? = null
     private var doubleBackToExitPressedOnce = false
 
@@ -79,13 +76,14 @@ class NewsFragment: BaseFragment() {
 
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.newsCoordinator
 
-    var clickedPostId: String? = null
+    private var clickedPostId: String? = null
 
     private lateinit var newsPosts: RecyclerView
     private lateinit var newSwipe: SwipeRefreshLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyText: TextView
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAdapter()

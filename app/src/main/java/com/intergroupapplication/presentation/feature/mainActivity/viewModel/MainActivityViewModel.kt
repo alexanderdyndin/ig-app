@@ -5,13 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.exception.NewVersionException
 import com.intergroupapplication.domain.usecase.AppStatusUseCase
 import com.intergroupapplication.domain.usecase.AvatarUploadingUseCase
 import com.intergroupapplication.domain.usecase.UserProfileUseCase
 import com.intergroupapplication.presentation.base.ImageUploadingState
-import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers

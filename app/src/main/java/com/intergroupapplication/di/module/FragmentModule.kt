@@ -1,6 +1,5 @@
 package com.intergroupapplication.di.module
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
 /**

@@ -86,8 +86,7 @@ class RichEditor
     }
 
     private fun stateCheck(text: String) {
-        val state = text.replaceFirst(STATE_SCHEME.toRegex(), "").
-            toUpperCase(Locale.ENGLISH)
+        val state = text.replaceFirst(STATE_SCHEME.toRegex(), "").uppercase(Locale.ENGLISH)
         val types: MutableList<TextType> = mutableListOf()
         TextType.values().forEach { type ->
             if (type.name.contains("FONT_COLOR") && state.contains("FONT_COLOR_RGB")) {

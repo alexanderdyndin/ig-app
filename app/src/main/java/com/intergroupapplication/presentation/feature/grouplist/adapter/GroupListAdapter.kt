@@ -14,7 +14,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.appodeal.ads.*
+import com.appodeal.ads.Appodeal
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.ResizeOptions
@@ -25,7 +25,10 @@ import com.intergroupapplication.databinding.ItemGroupInListBinding
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.inflate
+import com.intergroupapplication.presentation.exstension.show
 
 
 /**

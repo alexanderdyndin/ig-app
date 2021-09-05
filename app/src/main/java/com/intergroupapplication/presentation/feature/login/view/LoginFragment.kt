@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.login.view
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
@@ -14,7 +13,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.gms.auth.api.signin.*
@@ -26,7 +24,9 @@ import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentLogin2Binding
 import com.intergroupapplication.di.qualifier.LoginHandler
 import com.intergroupapplication.domain.entity.LoginEntity
-import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.domain.exception.EMAIL
+import com.intergroupapplication.domain.exception.FieldException
+import com.intergroupapplication.domain.exception.PASSWORD
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
@@ -34,7 +34,6 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
-import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
 import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.widget.RxTextView
@@ -129,8 +128,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         tvMailError = viewBinding.tvMailError
         tvPasswdError = viewBinding.tvPasswdError
         progressBar = viewBinding.progressBar
-
-        initErrorHandler(errorHandlerLogin)
         rxPermission = RxPermissions(this)
         mail = viewBinding.etMail
         password = viewBinding.password

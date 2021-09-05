@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.agreements.view
 
-import android.Manifest
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
@@ -17,11 +16,9 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.agreements.presenter.AgreementsPresenter
 import com.jakewharton.rxbinding2.view.RxView.clicks
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

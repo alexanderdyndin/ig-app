@@ -1,17 +1,17 @@
 package com.intergroupapplication.presentation.feature.createpost.presenter
 import com.intergroupapplication.data.model.ChooseMedia
 import com.intergroupapplication.domain.entity.AudioRequestEntity
-import com.intergroupapplication.presentation.base.BasePresenter
-import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
-import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.CreateGroupPostEntity
 import com.intergroupapplication.domain.entity.FileRequestEntity
 import com.intergroupapplication.domain.gateway.GroupPostGateway
+import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
+import com.intergroupapplication.presentation.feature.createpost.view.CreatePostView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState

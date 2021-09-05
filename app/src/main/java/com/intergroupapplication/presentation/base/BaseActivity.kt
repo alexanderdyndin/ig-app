@@ -1,11 +1,13 @@
 package com.intergroupapplication.presentation.base
 
+//import dagger.android.support.HasSupportFragmentInjector
+
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import moxy.MvpAppCompatActivity
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.exception.*
@@ -16,12 +18,9 @@ import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
-//import dagger.android.support.HasSupportFragmentInjector
 import dagger.android.HasAndroidInjector
 import io.reactivex.disposables.CompositeDisposable
-
-
-
+import moxy.MvpAppCompatActivity
 import java.net.UnknownHostException
 import javax.inject.Inject
 

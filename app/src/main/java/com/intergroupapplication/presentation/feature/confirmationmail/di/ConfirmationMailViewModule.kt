@@ -7,7 +7,6 @@ import com.intergroupapplication.presentation.feature.confirmationmail.view.Conf
 import com.intergroupapplication.presentation.manager.DialogManager
 import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
-import com.intergroupapplication.presentation.provider.DialogProvider
 import com.workable.errorhandler.ErrorHandler
 import dagger.Module
 import dagger.Provides

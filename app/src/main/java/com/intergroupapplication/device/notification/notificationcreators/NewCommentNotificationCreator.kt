@@ -4,12 +4,10 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
-import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.NavDeepLinkBuilder
@@ -20,7 +18,6 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.COMMENT_PAGE
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment.Companion.POST_ID
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import timber.log.Timber
 
 /**
  * Created by abakarmagomedov on 27/09/2018 at project InterGroupApplication.

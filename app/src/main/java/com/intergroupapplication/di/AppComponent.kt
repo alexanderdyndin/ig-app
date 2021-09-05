@@ -4,7 +4,6 @@ import com.intergroupapplication.App
 import com.intergroupapplication.di.module.*
 import com.intergroupapplication.di.scope.PerApplication
 import com.intergroupapplication.initializators.AppInitializersModule
-import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule

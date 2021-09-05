@@ -32,10 +32,10 @@ class CreatePostViewModule {
     @PerFragment
     @Provides
     fun providePhotoGateway(
-        activity: CreatePostFragment, cropOptions: UCrop.Options,
+        fragment: CreatePostFragment, cropOptions: UCrop.Options,
         api: AppApi, awsUploadingGateway: AwsUploadingGateway
     ): PhotoGateway =
-        PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
+        PhotoRepository(fragment, cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides

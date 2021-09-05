@@ -9,12 +9,12 @@ import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.ItemSubscribersInListBinding
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
-import com.intergroupapplication.databinding.ItemSubscribersInListBinding
-import by.kirich1409.viewbindingdelegate.viewBinding
 
 enum class TypeUserList {
     ALL, BLOCKED, ADMINISTRATORS

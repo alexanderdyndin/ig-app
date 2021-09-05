@@ -6,9 +6,8 @@ import android.content.Context
 import com.google.firebase.messaging.RemoteMessage
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.NotificationCommentModel
-import com.intergroupapplication.device.notification.notificationcreators.NotificationCreator
 import com.intergroupapplication.device.notification.CreatorType
-import timber.log.Timber
+import com.intergroupapplication.device.notification.notificationcreators.NotificationCreator
 
 /**
  * Created by abakarmagomedov on 05/09/2018 at project InterGroupApplication.

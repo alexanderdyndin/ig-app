@@ -9,12 +9,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentUserCategoryBinding
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.intergroupapplication.databinding.FragmentUserCategoryBinding
 
 class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>) : RecyclerView.Adapter<UserListsAdapter.UserListViewHolder>() {
 

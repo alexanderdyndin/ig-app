@@ -10,17 +10,11 @@ import androidx.annotation.LayoutRes
 import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.domain.exception.*
-import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.ExitActivity
-import com.workable.errorhandler.Action
 import com.workable.errorhandler.ErrorHandler
 import dagger.android.support.AndroidSupportInjection
 import io.reactivex.disposables.CompositeDisposable
 import moxy.MvpAppCompatFragment
-import timber.log.Timber
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 abstract class BaseFragment : MvpAppCompatFragment() {

@@ -7,11 +7,9 @@ import com.androidnetworking.interfaces.OkHttpResponseListener
 import com.intergroupapplication.data.model.PhotoUploadFields
 import com.intergroupapplication.domain.exception.ImageUploadingException
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
-import com.intergroupapplication.presentation.base.ImageUploadingState
 import io.reactivex.Observer
 import okhttp3.Response
 import java.io.File
-import java.net.URLEncoder
 import java.util.concurrent.Executors
 import javax.inject.Inject
 

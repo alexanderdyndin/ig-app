@@ -1,8 +1,5 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.view
 
-import androidx.core.content.ContextCompat
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -12,20 +9,20 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentConfirmationMail2Binding
-import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.domain.exception.CODE
+import com.intergroupapplication.domain.exception.FieldException
+import com.intergroupapplication.domain.exception.TOKEN
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
-import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.exceptions.CompositeException
-
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 import javax.inject.Named
 

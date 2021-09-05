@@ -1,7 +1,9 @@
 package com.intergroupapplication.data.mapper
 
-import com.intergroupapplication.data.model.*
-import com.intergroupapplication.domain.entity.*
+import com.intergroupapplication.data.model.ReactsModel
+import com.intergroupapplication.data.model.ReactsModelRequest
+import com.intergroupapplication.domain.entity.ReactsEntity
+import com.intergroupapplication.domain.entity.ReactsEntityRequest
 import javax.inject.Inject
 
 /**

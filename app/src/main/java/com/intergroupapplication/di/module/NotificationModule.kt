@@ -3,12 +3,12 @@ package com.intergroupapplication.di.module
 import android.app.NotificationManager
 import android.content.Context
 import com.google.firebase.messaging.RemoteMessage
-import com.intergroupapplication.device.notification.notificationcreators.NotificationCreator
-import com.intergroupapplication.device.notification.NotificationTypes
 import com.intergroupapplication.device.notification.CreatorType
+import com.intergroupapplication.device.notification.NotificationTypes
 import com.intergroupapplication.device.notification.actions.NotificationAction
 import com.intergroupapplication.device.notification.actions.OnNewCommentAction
 import com.intergroupapplication.device.notification.notificationcreators.NewCommentNotificationCreator
+import com.intergroupapplication.device.notification.notificationcreators.NotificationCreator
 import com.intergroupapplication.di.key.NotificationKey
 import dagger.Module
 import dagger.Provides

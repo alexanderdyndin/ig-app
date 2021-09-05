@@ -5,12 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.AddBlackListUserModel
+import com.intergroupapplication.databinding.ItemAddUserBlackListBinding
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.inflate
-import com.intergroupapplication.databinding.ItemAddUserBlackListBinding
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.intergroupapplication.data.model.AddBlackListUserModel
 
 class AddUserBlackListAdapter(private val imageLoadingDelegate: ImageLoadingDelegate)
     : RecyclerView.Adapter<AddUserBlackListAdapter.AddUserBlackListViewHolder>() {

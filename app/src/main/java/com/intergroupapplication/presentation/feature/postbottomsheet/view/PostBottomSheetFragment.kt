@@ -12,10 +12,13 @@ import com.intergroupapplication.data.model.ProgressMediaModel
 import com.intergroupapplication.databinding.FragmentPostBottomSheetBinding
 import com.intergroupapplication.domain.entity.*
 import com.intergroupapplication.presentation.base.BaseBottomSheetFragment
-import com.intergroupapplication.presentation.widgets.progress.view.ProgressDialog
-import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.exstension.activated
+import com.intergroupapplication.presentation.exstension.hideKeyboard
+import com.intergroupapplication.presentation.exstension.setResult
+import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.postbottomsheet.presenter.PostBottomSheetPresenter
+import com.intergroupapplication.presentation.widgets.progress.view.ProgressDialog
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
 import javax.inject.Inject

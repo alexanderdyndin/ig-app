@@ -4,7 +4,6 @@ import com.intergroupapplication.data.network.dto.ApiErrorElement
 import com.intergroupapplication.domain.exception.*
 import io.reactivex.exceptions.CompositeException
 import retrofit2.HttpException
-import timber.log.Timber
 import javax.inject.Inject
 
 /**

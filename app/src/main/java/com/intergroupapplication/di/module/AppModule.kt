@@ -1,13 +1,11 @@
 package com.intergroupapplication.di.module
 
-import android.app.Activity
 import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.androidnetworking.gsonparserfactory.GsonParserFactory
 import com.danikula.videocache.HttpProxyCacheServer
 import com.facebook.common.util.UriUtil

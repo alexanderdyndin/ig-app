@@ -1,17 +1,13 @@
 package com.intergroupapplication.presentation.feature.splash
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
-import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import dagger.android.support.AndroidSupportInjection
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class SplashFragment : Fragment(R.layout.fragment_splash) {

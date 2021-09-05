@@ -1,9 +1,7 @@
 package com.intergroupapplication.presentation.feature.image.view
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +10,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentImageBinding
 import com.intergroupapplication.domain.entity.FileEntity
-import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.isVisible
 import com.intergroupapplication.presentation.exstension.show

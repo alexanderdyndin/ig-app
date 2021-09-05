@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.registration.presenter
 
-import moxy.InjectViewState
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.RegistrationGateway
@@ -10,7 +9,7 @@ import com.intergroupapplication.presentation.feature.registration.view.Registra
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-
+import moxy.InjectViewState
 import javax.inject.Inject
 import javax.inject.Named
 

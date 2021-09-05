@@ -1,14 +1,6 @@
 package com.intergroupapplication.presentation.feature.splash.di
 
-import android.content.Context
-import com.intergroupapplication.di.scope.PerFragment
-import com.intergroupapplication.presentation.delegate.DialogDelegate
-import com.intergroupapplication.presentation.feature.splash.SplashFragment
-import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
-import com.intergroupapplication.presentation.provider.DialogProvider
 import dagger.Module
-import dagger.Provides
 
 
 /**
@@ -16,7 +8,4 @@ import dagger.Provides
  */
 
 @Module
-class SplashViewModule {
-
-
-}
+class SplashViewModule

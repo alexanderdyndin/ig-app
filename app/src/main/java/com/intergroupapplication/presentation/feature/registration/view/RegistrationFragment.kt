@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.registration.view
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -58,7 +57,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
-
 class RegistrationFragment : BaseFragment(), RegistrationView, Validator.ValidationListener,
     ActionMode.Callback {
 
@@ -96,7 +94,6 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var auth: FirebaseAuth
 
     private var passwordVisible = false
     private val startForResult = registerForActivityResult(
@@ -163,7 +160,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
         textLogin.clicks().subscribe {
             findNavController()
-                .navigate(R.id.action_registrationActivity_to_loginActivity2)
+                .navigate(R.id.action_registrationActivity_to_loginActivity)
         }
             .also { compositeDisposable.add(it) }
         initValidator()

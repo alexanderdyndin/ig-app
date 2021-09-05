@@ -11,9 +11,12 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.view.MotionEvent;
+
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
+
 import com.facebook.common.logging.FLog;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -44,7 +47,7 @@ public class DefaultZoomableController
 
   private static final RectF IDENTITY_RECT = new RectF(0, 0, 1, 1);
 
-  private TransformGestureDetector mGestureDetector;
+    private final TransformGestureDetector mGestureDetector;
 
   private @Nullable ImageBoundsListener mImageBoundsListener;
 

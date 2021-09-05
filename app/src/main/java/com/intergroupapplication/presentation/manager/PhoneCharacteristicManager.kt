@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.wifi.WifiManager
-import android.os.Build
-import android.provider.Settings;
-import android.provider.Settings.System;
 import android.telephony.TelephonyManager
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -38,11 +36,10 @@ class PhoneCharacteristicManager @Inject constructor(private val telephonyManage
     fun getMac(): String {
         val manager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val info = manager.connectionInfo
-        return info.macAddress.toUpperCase(java.util.Locale.getDefault())
+        return info.macAddress.uppercase(Locale.getDefault())
     }
 
 
     fun getSerialNumber(): String = "jopa"
-//            UUID.randomUUID().toString()
 
 }
