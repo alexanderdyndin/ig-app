@@ -30,23 +30,16 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.net.ssl.SSLPeerUnverifiedException
 
 
-class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnCheckedChangeListener {
+class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListener {
 
     companion object {
         private const val DEBOUNCE_TIMEOUT = 200L
-        private const val KEY_PATH = "PATH"
-        private const val KEY_TITLE = "TITLE"
-        private const val URL_PRIVACY_POLICY = "https://igsn.net/agreement/1.html"
-        private const val URL_TERMS_OF_USE = "https://igsn.net/agreement/2.html"
-        private const val URL_RIGHTHOLDERS = "https://igsn.net/agreement/3.html"
-        private const val URL_APPODEAL = "https://www.appodeal.com/home/privacy-policy/"
-
         const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
         const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
         const val RES_ID_RIGHTHOLDERS = R.string.rightholders
-
     }
 
     private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
@@ -55,13 +48,6 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
     lateinit var modelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: AgreementsViewModel
-
-//    @Inject
-//    @InjectPresenter
-//    lateinit var presenter: AgreementsPresenter
-
-//    @ProvidePresenter
-//    fun providePresenter(): AgreementsPresenter = presenter
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_agreements2
@@ -107,11 +93,11 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
 
-    override fun toSplash() {
+    private fun toSplash() {
         findNavController().navigate(R.id.action_global_splashActivity)
     }
 
-    override fun showLoading(show: Boolean) {
+    private fun showLoading(show: Boolean) {
         if (show) {
             progressBar.show()
             btnNext.hide()
@@ -157,13 +143,12 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         compositeDisposable.add(viewModel.isNext
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                if (it) {
-                    toSplash()
-                }
-            }, {
-                errorHandler.handle(it)
-            }))
+            .subscribe{ if (it) { toSplash() }})
+
+        compositeDisposable.add(viewModel.errorState
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { errorHandler.handle(it) })
     }
 
 

@@ -21,7 +21,7 @@
                 android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="4dp"
+                android:padding="10dp"
                 android:fontFamily="@font/play"
                 tools:text="Идейные соображения высшего порядка, а также новая модель организационной деятельности играет важную роль в формировании позиций, занимаемых участниками в отношении поставленных задач. Товар.."
                 android:textColor="@color/textLight"

@@ -19,6 +19,7 @@ class AgreementsViewModel @Inject constructor(
 
     val isLoading = PublishSubject.create<Boolean>()
     val isNext = PublishSubject.create<Boolean>()
+    val errorState = PublishSubject.create<Throwable>()
 
     fun next() {
         viewModelDisposable.add(imeiGateway.extractDeviceInfo()
@@ -30,7 +31,7 @@ class AgreementsViewModel @Inject constructor(
             .subscribe({
                 userSession.acceptTerms = TermsEntity(true)
                 isNext.onNext(true)
-            }, { isNext.onError(it) }))
+            }, { errorState.onNext(it) }))
     }
 
 }

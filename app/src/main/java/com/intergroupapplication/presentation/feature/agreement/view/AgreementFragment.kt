@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -20,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
+import javax.net.ssl.SSLPeerUnverifiedException
 
 class AgreementFragment: BaseFragment() {
 
@@ -28,6 +30,7 @@ class AgreementFragment: BaseFragment() {
     }
 
     private val viewBinding by viewBinding(FragmentAgreementBinding::bind)
+    private lateinit var viewModel: AgreementViewModel
 
     override fun layoutRes() = R.layout.fragment_agreement
 
@@ -36,9 +39,9 @@ class AgreementFragment: BaseFragment() {
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: AgreementViewModel
-
     private var resId: Int? = null
+
+    private var retryCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,13 +79,19 @@ class AgreementFragment: BaseFragment() {
         compositeDisposable.add(viewModel.errorState
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                viewBinding.loadingError.errorLayout.show()
+            .subscribe { //todo говнокод из за неправильно настроенного сайта, пофиксить
+                if (it is SSLPeerUnverifiedException && retryCount<4) {
+                    retryCount++
+                    getTermsById(resId)
+                } else {
+                    viewBinding.loadingError.errorLayout.show()
+                }
             })
     }
 
     private fun setListeners() {
         viewBinding.loadingError.buttonRetry.setOnClickListener {
+            retryCount = 0
             getTermsById(resId)
         }
     }

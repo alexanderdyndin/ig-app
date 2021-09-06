@@ -17,8 +17,6 @@ class AgreementsApi {
     }
 
     fun privacyPolicy(): String {
-        val allHostsValid = HostnameVerifier { _, _ -> true }
-        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
         val doc = Jsoup.connect(URL_PRIVACY_POLICY)
             .get()
         return doc.select("body").html()
