@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.agreements.view
 
-import android.Manifest
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.*
@@ -12,25 +11,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.AuthLoader2Binding
 import com.intergroupapplication.databinding.FragmentAgreements2Binding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment.Companion.RES_ID
-import com.intergroupapplication.presentation.feature.agreements.presenter.AgreementsPresenter
 import com.intergroupapplication.presentation.feature.agreements.viewmodel.AgreementsViewModel
 import com.jakewharton.rxbinding2.view.RxView.clicks
-import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.net.ssl.SSLPeerUnverifiedException
 
 
 class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListener {
