@@ -18,6 +18,7 @@ import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment.Companion.RES_ID
 import com.intergroupapplication.presentation.feature.agreements.presenter.AgreementsPresenter
 import com.intergroupapplication.presentation.feature.agreements.viewmodel.AgreementsViewModel
 import com.jakewharton.rxbinding2.view.RxView.clicks
@@ -34,7 +35,7 @@ import javax.inject.Inject
 class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnCheckedChangeListener {
 
     companion object {
-        private const val DEBOUNCE_TIMEOUT = 300L
+        private const val DEBOUNCE_TIMEOUT = 200L
         private const val KEY_PATH = "PATH"
         private const val KEY_TITLE = "TITLE"
         private const val URL_PRIVACY_POLICY = "https://igsn.net/agreement/1.html"
@@ -42,10 +43,9 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         private const val URL_RIGHTHOLDERS = "https://igsn.net/agreement/3.html"
         private const val URL_APPODEAL = "https://www.appodeal.com/home/privacy-policy/"
 
-        private const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
-        private const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
-        private const val RES_ID_RIGHTHOLDERS = R.string.rightholders
-        private const val RES_ID_APPODEAL = R.string.appodealpolicy
+        const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
+        const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
+        const val RES_ID_RIGHTHOLDERS = R.string.rightholders
 
     }
 
@@ -135,16 +135,16 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 
     private fun initBtn() {
         privacyPolicy.clicks().subscribe {
-            val bundle = bundleOf(KEY_PATH to URL_PRIVACY_POLICY, KEY_TITLE to RES_ID_PRIVACY_POLICY)
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
+            val bundle = bundleOf(RES_ID to RES_ID_PRIVACY_POLICY)
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_agreementFragment, bundle)
         }.also { compositeDisposable.add(it) }
         userAgreement.clicks().subscribe {
-            val bundle = bundleOf(KEY_PATH to URL_TERMS_OF_USE, KEY_TITLE to RES_ID_TERMS_OF_USE)
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
+            val bundle = bundleOf(RES_ID to RES_ID_TERMS_OF_USE)
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_agreementFragment, bundle)
         }.also { compositeDisposable.add(it) }
         copyrightAgreement.clicks().subscribe {
-            val bundle = bundleOf(KEY_PATH to URL_RIGHTHOLDERS, KEY_TITLE to RES_ID_RIGHTHOLDERS)
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webActivity, bundle)
+            val bundle = bundleOf(RES_ID to RES_ID_RIGHTHOLDERS)
+            findNavController().navigate(R.id.action_AgreementsFragment2_to_agreementFragment, bundle)
         }.also { compositeDisposable.add(it) }
     }
 

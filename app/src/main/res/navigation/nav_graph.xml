@@ -113,23 +113,12 @@
         android:name="com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment"
         android:label="AgreementsFragment" >
         <action
-            android:id="@+id/action_AgreementsFragment2_to_webActivity"
-            app:destination="@id/webActivity"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
-    <fragment
-        android:id="@+id/webActivity"
-        android:name="com.intergroupapplication.presentation.feature.web.WebActivity"
-        android:label="WebActivity" >
-        <argument
-            android:name="PATH"
-            app:argType="string" />
-        <argument
-            android:name="TITLE"
-            app:argType="integer" />
+            android:id="@+id/action_AgreementsFragment2_to_agreementFragment"
+            app:destination="@id/agreementFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/createUserProfileActivity"
@@ -307,4 +296,12 @@
         android:id="@+id/action_global_loginActivity"
         app:destination="@id/loginActivity"
         app:popUpTo="@id/nav_graph" />
+    <fragment
+        android:id="@+id/agreementFragment"
+        android:name="com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment"
+        android:label="AgreementFragment" >
+        <argument
+            android:name="resId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

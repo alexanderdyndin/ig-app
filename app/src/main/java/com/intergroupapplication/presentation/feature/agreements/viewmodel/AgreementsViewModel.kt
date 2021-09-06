@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.agreements.viewmodel
 
-import androidx.lifecycle.ViewModel
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.TermsEntity
 import com.intergroupapplication.domain.gateway.ImeiGateway
@@ -24,6 +23,7 @@ class AgreementsViewModel @Inject constructor(
     fun next() {
         viewModelDisposable.add(imeiGateway.extractDeviceInfo()
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             //.andThen(permissionGetaway.isBlocked()) //проверку по imei убрали
             .doOnSubscribe { isLoading.onNext(true) }
             .doFinally { isLoading.onNext(false) }
