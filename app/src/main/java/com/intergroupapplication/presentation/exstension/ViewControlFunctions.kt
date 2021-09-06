@@ -7,5 +7,3 @@ import com.intergroupapplication.R
 fun setViewErrorState(editText: AppCompatEditText) {
     editText.setTextColor(ContextCompat.getColor(editText.context, R.color.errorColor))
 }
-
-
