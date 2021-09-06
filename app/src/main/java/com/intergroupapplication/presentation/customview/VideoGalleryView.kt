@@ -58,8 +58,10 @@ class VideoGalleryView @JvmOverloads constructor(
             createVideos(urls)
             container.layoutParams =
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this,
-                false)
+            val hider = LayoutInflater.from(context).inflate(
+                R.layout.layout_hide, this,
+                false
+            )
             val btnHide = hider.findViewById<FrameLayout>(R.id.btnHide)
             btnHide.setOnClickListener {
                 this.isExpanded = false
@@ -71,8 +73,10 @@ class VideoGalleryView @JvmOverloads constructor(
             createVideos(urls.subList(0, 1))
             container.layoutParams =
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-            val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this,
-                false)
+            val expander = LayoutInflater.from(context).inflate(
+                R.layout.layout_expand, this,
+                false
+            )
             val btnExpand = expander.findViewById<FrameLayout>(R.id.btnExpand)
             btnExpand.setOnClickListener {
                 this.isExpanded = true
@@ -133,8 +137,11 @@ class VideoGalleryView @JvmOverloads constructor(
         video: FileEntity, service: IGMediaService.ServiceBinder,
         playerView: VideoPlayerView
     ): SimpleExoPlayer {
-        val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(false,
-                video.id)) {
+        val videoPlayer = if (service.getMediaFile() == IGMediaService.MediaFile(
+                false,
+                video.id
+            )
+        ) {
             val bindPlayer = service.getExoPlayerInstance()
             if (bindPlayer != null) {
                 setUpListener(service, bindPlayer, video, playerView)
@@ -194,6 +201,4 @@ class VideoGalleryView @JvmOverloads constructor(
         }
         videoPlayer.addListener(listener)
     }
-
-
 }

@@ -15,7 +15,6 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import com.mobsandgeeks.saripaar.Validator
 import com.workable.errorhandler.ErrorHandler
@@ -38,8 +37,8 @@ class CreateUserProfileViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-        FrescoImageLoader(context)
+    fun provideFrescoImageLoader(): ImageLoader =
+        FrescoImageLoader()
 
     @PerFragment
     @Provides
@@ -62,11 +61,11 @@ class CreateUserProfileViewModule {
     @PerFragment
     @Provides
     fun dialogDelegate(
-        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        dialogManager: DialogManager, dialogProvider: DialogProvider,
         context: Context
     )
             : DialogDelegate =
-        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+        DialogDelegate(dialogManager, dialogProvider, context)
 
 
     @PerFragment

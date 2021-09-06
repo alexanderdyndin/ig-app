@@ -10,14 +10,17 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 open class NestedScrollBottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
     BottomSheetBehavior<V>(context, attrs) {
 
-    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: V,
-                                     directTargetChild: View, target: View, axes: Int, type: Int):
+    override fun onStartNestedScroll(
+        coordinatorLayout: CoordinatorLayout, child: V,
+        directTargetChild: View, target: View, axes: Int, type: Int
+    ):
             Boolean {
-        return if (state == STATE_HALF_EXPANDED){
+        return if (state == STATE_HALF_EXPANDED) {
             false
-        }
-        else
-            super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes,
-                type)
+        } else
+            super.onStartNestedScroll(
+                coordinatorLayout, child, directTargetChild, target, axes,
+                type
+            )
     }
 }

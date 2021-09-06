@@ -25,8 +25,10 @@ import com.intergroupapplication.domain.entity.ParseConstants.START_MEDIA_PREFIX
 import com.intergroupapplication.domain.entity.ParseConstants.START_VIDEO
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 
-class PostCustomView @JvmOverloads constructor(context:Context, attrs: AttributeSet? = null,
-       defStyleAttr: Int = 0) : LinearLayout(context,attrs,defStyleAttr) {
+class PostCustomView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -36,32 +38,31 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
     private lateinit var markupModel: MarkupModel
     var imageClickListener: (List<FileEntity>, Int) -> Unit = { _, _ -> }
     var proxy: HttpProxyCacheServer? = null
-    var imageLoadingDelegate:ImageLoadingDelegate? = null
+    var imageLoadingDelegate: ImageLoadingDelegate? = null
 
-    fun setUpPost(markupModel: MarkupModel){
+    fun setUpPost(markupModel: MarkupModel) {
         this.removeAllViews()
         this.markupModel = markupModel
         parsingTextInPost()
     }
 
-    private fun createFinalText(text:String): String {
+    private fun createFinalText(text: String): String {
         var finalTextComment = ""
         val listWithTextAndMediaName = listWithTextAfterSplittingHtml(text)
         listWithTextAndMediaName
-            .forEachIndexed { index,string->
-            if (string.contains(MEDIA_PREFIX)){
-                if (index ==0) finalTextComment += START_MEDIA_PREFIX
-                finalTextComment +=string.substringBefore(MEDIA_PREFIX).plus(",")
-                if (index == listWithTextAndMediaName.size -1) finalTextComment += END_MEDIA_PREFIX
-            }
-            else{
-                if (index !=0) finalTextComment+= END_MEDIA_PREFIX
-                finalTextComment += string
-                if (index != listWithTextAndMediaName.size -1) {
-                    finalTextComment += START_MEDIA_PREFIX
+            .forEachIndexed { index, string ->
+                if (string.contains(MEDIA_PREFIX)) {
+                    if (index == 0) finalTextComment += START_MEDIA_PREFIX
+                    finalTextComment += string.substringBefore(MEDIA_PREFIX).plus(",")
+                    if (index == listWithTextAndMediaName.size - 1) finalTextComment += END_MEDIA_PREFIX
+                } else {
+                    if (index != 0) finalTextComment += END_MEDIA_PREFIX
+                    finalTextComment += string
+                    if (index != listWithTextAndMediaName.size - 1) {
+                        finalTextComment += START_MEDIA_PREFIX
+                    }
                 }
             }
-        }
         return finalTextComment
     }
 
@@ -69,7 +70,7 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         val firstList = mutableListOf<String>()
         firstList.addAll(
             text.replace("<br>", "")
-            .split(START_IMAGE)
+                .split(START_IMAGE)
         )
         val secondList = mutableListOf<String>()
         splitHtml(firstList, secondList, END_IMAGE)
@@ -78,8 +79,10 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         addAllText(secondList, firstList, START_VIDEO)
         secondList.clear()
         splitHtml(firstList, secondList, END_VIDEO)
-        return secondList.filter { it.isNotEmpty() &&
-                it != END_CONTAINER && it != START_CONTAINER }.toMutableList()
+        return secondList.filter {
+            it.isNotEmpty() &&
+                    it != END_CONTAINER && it != START_CONTAINER
+        }.toMutableList()
     }
 
     private fun splitHtml(
@@ -102,31 +105,36 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         firstList: MutableList<String>,
         prefix: String
     ) {
-        secondList.filter { it.isNotEmpty() &&
-                it != END_CONTAINER && it != START_CONTAINER}.forEach {
+        secondList.filter {
+            it.isNotEmpty() &&
+                    it != END_CONTAINER && it != START_CONTAINER
+        }.forEach {
             firstList.addAll(it.split(prefix))
         }
         secondList.clear()
     }
 
-    private fun parsingTextInPost(){
+    private fun parsingTextInPost() {
         val textAfterParse = createFinalText(markupModel.text).split(PARSE_SYMBOL).filter {
             it.isNotEmpty()
         }
-        textAfterParse.forEach { text->
+        textAfterParse.forEach { text ->
             val view = LayoutInflater.from(context)
-                    .inflate(R.layout.layout_post_custom_view,this,false)
-                        as LinearLayout
+                .inflate(R.layout.layout_post_custom_view, this, false)
+                    as LinearLayout
             val textView = view.findViewById<TextView>(R.id.postText)
-            if (text.contains("^\\{".toRegex()) && text.contains("\\}\$".toRegex())){
+            if (text.contains("^\\{".toRegex()) && text.contains("\\}\$".toRegex())) {
                 view.removeView(textView)
-                if (text.length > 3){
-                    setupMediaViews(text,view)
+                if (text.length > 3) {
+                    setupMediaViews(text, view)
                 }
-            }
-            else{
-                textView.text = Html.fromHtml(text.trim().replace("text-align: right",
-                    "text-align: end"),Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                textView.text = Html.fromHtml(
+                    text.trim().replace(
+                        "text-align: right",
+                        "text-align: end"
+                    ), Html.FROM_HTML_MODE_COMPACT
+                )
                 view.run {
                     removeView(view.findViewById(R.id.imageBody))
                     removeView(view.findViewById(R.id.audioBody))
@@ -137,7 +145,7 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         }
     }
 
-    private fun setupMediaViews(text: String,view: LinearLayout) {
+    private fun setupMediaViews(text: String, view: LinearLayout) {
         val newText = text.substring(1, text.length - 2).split(",")
         val imageUrl = mutableListOf<FileEntity>()
         val videoUrl = mutableListOf<FileEntity>()
@@ -146,35 +154,34 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
             addFileByName(imageUrl, videoUrl, audioUrl, nameMedia)
         }
         if (imageUrl.isNotEmpty()) {
-            createImageGalleryView(imageUrl,view.findViewById(R.id.imageBody))
-        }
-        else{
+            createImageGalleryView(imageUrl, view.findViewById(R.id.imageBody))
+        } else {
             view.removeView(view.findViewById(R.id.imageBody))
         }
         if (audioUrl.isNotEmpty()) {
-            createAudioGalleryView(audioUrl,view.findViewById(R.id.audioBody))
-        }
-        else{
+            createAudioGalleryView(audioUrl, view.findViewById(R.id.audioBody))
+        } else {
             view.removeView(view.findViewById(R.id.audioBody))
         }
         if (videoUrl.isNotEmpty()) {
-            createVideoGalleryView(videoUrl,view.findViewById(R.id.videoBody))
-        }
-        else{
+            createVideoGalleryView(videoUrl, view.findViewById(R.id.videoBody))
+        } else {
             view.removeView(view.findViewById(R.id.videoBody))
         }
     }
 
-    private fun addFileByName(l1:MutableList<FileEntity>,l2:MutableList<FileEntity>,
-                              l3:MutableList<AudioEntity>, name:String){
+    private fun addFileByName(
+        l1: MutableList<FileEntity>, l2: MutableList<FileEntity>,
+        l3: MutableList<AudioEntity>, name: String
+    ) {
         markupModel.images.forEach {
-            if (it.title == name){
+            if (it.title == name) {
                 l1.add(it)
                 return@addFileByName
             }
         }
         markupModel.videos.forEach {
-            if (it.title == name){
+            if (it.title == name) {
                 l2.add(it)
                 return@addFileByName
             }
@@ -187,26 +194,31 @@ class PostCustomView @JvmOverloads constructor(context:Context, attrs: Attribute
         }
     }
 
-    private fun createImageGalleryView(imageUrl: MutableList<FileEntity>,
-                                       imageGalleryView: ImageGalleryView) {
+    private fun createImageGalleryView(
+        imageUrl: MutableList<FileEntity>,
+        imageGalleryView: ImageGalleryView
+    ) {
         imageGalleryView.setImages(imageUrl, markupModel.imagesExpanded, markupModel.images)
         imageGalleryView.imageClick = imageClickListener
         imageGalleryView.expand = { markupModel.imagesExpanded = it }
     }
 
-    private fun createAudioGalleryView(audioUrl: MutableList<AudioEntity>,
-                                       audioGalleryView: AudioGalleryView) {
+    private fun createAudioGalleryView(
+        audioUrl: MutableList<AudioEntity>,
+        audioGalleryView: AudioGalleryView
+    ) {
         audioGalleryView.proxy = proxy
         audioGalleryView.setAudios(audioUrl)
         audioGalleryView.expand = { markupModel.audiosExpanded = it }
     }
 
-    private fun createVideoGalleryView(videoUrl: MutableList<FileEntity>,
-                                       videoGalleryView: VideoGalleryView) {
+    private fun createVideoGalleryView(
+        videoUrl: MutableList<FileEntity>,
+        videoGalleryView: VideoGalleryView
+    ) {
         videoGalleryView.proxy = proxy
         videoGalleryView.imageLoadingDelegate = imageLoadingDelegate
         videoGalleryView.setVideos(videoUrl)
         videoGalleryView.expand = { markupModel.videosExpanded = it }
     }
-
 }

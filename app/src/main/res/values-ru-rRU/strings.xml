@@ -201,13 +201,13 @@
     <string name="my_video">Моё видео</string>
     <string name="group_name_is_not_empty">Название группы не должно быть пустым</string>
     <string name="choose_audio">Выберите аудио</string>
-    <string name="choose_count_audio">Выбрано %1$s аудио</string>
+    <string name="choose_count_audio">Выбрано %1$i аудио</string>
     <string name="choose_video">Выберите видео</string>
-    <string name="choose_count_video">Выбрано %1$s видео</string>
+    <string name="choose_count_video">Выбрано %1$i видео</string>
     <string name="choose_photo">Выберите фото</string>
     <string name="choose_one_photo">Выбрана 1 фотография</string>
-    <string name="choose_two_photo">Выбрано %1$s фотографии</string>
-    <string name="choose_five_photo">Выбрано %1$s фотографий</string>
+    <string name="choose_two_photo">Выбрано %1$i фотографии</string>
+    <string name="choose_five_photo">Выбрано %1$i фотографий</string>
     <string name="close">Закрыть</string>
     <string name="delete_all">Удалить всё</string>
 </resources>

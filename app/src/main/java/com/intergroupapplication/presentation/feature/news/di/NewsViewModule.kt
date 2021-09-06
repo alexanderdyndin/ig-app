@@ -15,7 +15,6 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
 import com.intergroupapplication.presentation.feature.news.view.NewsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import dagger.Module
 import dagger.Provides
@@ -28,8 +27,8 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-            FrescoImageLoader(context)
+    fun provideFrescoImageLoader(): ImageLoader =
+        FrescoImageLoader()
 
 
     @PerFragment
@@ -44,17 +43,12 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
+    fun dialogDelegate(
+        dialogManager: DialogManager, dialogProvider: DialogProvider,
+        context: Context
+    )
             : DialogDelegate =
-            DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
-//    @PerFragment
-//    @Provides
-//    fun provideGroupPostEntityDiffUtilCallback() = object : DiffUtil.ItemCallback<GroupPostEntity>() {
-//        override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem.id == newItem.id
-//        override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity) = oldItem == newItem
-//    }
+        DialogDelegate(dialogManager, dialogProvider, context)
 
     @PerFragment
     @Provides
@@ -65,7 +59,7 @@ class NewsViewModule {
             NewsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
             NewsAdapter.AD_FIRST = userSession.countAd?.firstAdIndexNews ?: 3
         } else {
-            NewsAdapter.AD_TYPE = 1 //userSession.countAd?.limitOfAdsNews ?: 1
+            NewsAdapter.AD_TYPE = 1
             NewsAdapter.AD_FREQ = 999
             NewsAdapter.AD_FIRST = 999
         }

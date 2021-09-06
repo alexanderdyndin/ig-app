@@ -19,9 +19,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AudioGalleryView @JvmOverloads constructor(context: Context,
-                     attrs: AttributeSet? = null, defStyleAttr: Int = 0):
-        LinearLayout(context, attrs, defStyleAttr) {
+class AudioGalleryView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) :
+    LinearLayout(context, attrs, defStyleAttr) {
     var expand: (isExpanded: Boolean) -> Unit = {}
 
     init {
@@ -50,31 +52,32 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         this.addView(container)
         if (isExpanded && urls.size > 2) {
             createAudios(urls)
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
-            val hider = LayoutInflater.from(context).
-                inflate(R.layout.layout_hide, this, false)
+            container.layoutParams =
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            val hider = LayoutInflater.from(context).inflate(R.layout.layout_hide, this, false)
             val btnHide = hider.findViewById<FrameLayout>(R.id.btnHide)
             btnHide.setOnClickListener {
                 this.isExpanded = false
                 parseUrl(uris, this.isExpanded)
-                expand.invoke(this.isExpanded)
+                expand(this.isExpanded)
             }
             this.addView(hider)
         } else if (!isExpanded && urls.size > 2) {
             createAudios(urls.subList(0, 2))
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
-            val expander = LayoutInflater.from(context).
-                inflate(R.layout.layout_expand, this, false)
+            container.layoutParams =
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            val expander = LayoutInflater.from(context).inflate(R.layout.layout_expand, this, false)
             val btnExpand = expander.findViewById<FrameLayout>(R.id.btnExpand)
             btnExpand.setOnClickListener {
                 this.isExpanded = true
                 parseUrl(uris, this.isExpanded)
-                expand.invoke(this.isExpanded)
+                expand(this.isExpanded)
             }
             this.addView(expander)
         } else if (urls.isNotEmpty()) {
             createAudios(urls)
-            container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
+            container.layoutParams =
+                LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         }
     }
 
@@ -82,11 +85,11 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         val activity = this.getActivity()
         if (activity is MainActivity) {
             CoroutineScope(Dispatchers.Main).launch {
-                val bindedService = activity.bindMediaService()
-                bindedService?.let {
+                val bindService = activity.bindMediaService()
+                bindService?.let {
                     urls.forEach {
                         val playerView = AudioPlayerView(context)
-                        val player = makeAudioPlayer(it, bindedService, playerView)
+                        val player = makeAudioPlayer(it, bindService, playerView)
                         val trackName =
                             if (it.artist == "") it.nameSong else "${it.artist} - ${it.nameSong}"
                         playerView.trackName = trackName
@@ -106,19 +109,19 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         } else throw Exception("Activity is not MainActivity")
     }
 
-    private fun makeAudioPlayer(audio: AudioEntity, service: IGMediaService.ServiceBinder,
-                                playerView: AudioPlayerView): SimpleExoPlayer {
+    private fun makeAudioPlayer(
+        audio: AudioEntity, service: IGMediaService.ServiceBinder,
+        playerView: AudioPlayerView
+    ): SimpleExoPlayer {
 
         val musicPlayer =
             if (service.getMediaFile() == IGMediaService.MediaFile(true, audio.id)) {
-            val bindedPlayer = service.getExoPlayerInstance()
-            if (bindedPlayer != null){
+                val bindPlayer = service.getExoPlayerInstance()
+                if (bindPlayer != null) {
 
-                return bindedPlayer
-            }
-            else SimpleExoPlayer.Builder(context).build()
-        }
-        else SimpleExoPlayer.Builder(context).build()
+                    return bindPlayer
+                } else SimpleExoPlayer.Builder(context).build()
+            } else SimpleExoPlayer.Builder(context).build()
 
         val listener = object : Player.EventListener {
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
@@ -134,7 +137,7 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
 
             override fun onPlaybackStateChanged(state: Int) {
                 super.onPlaybackStateChanged(state)
-                if(state == Player.STATE_ENDED){
+                if (state == Player.STATE_ENDED) {
                     service.changeControlButton(false)
                 }
             }
@@ -156,5 +159,4 @@ class AudioGalleryView @JvmOverloads constructor(context: Context,
         }
         return musicPlayer
     }
-
 }

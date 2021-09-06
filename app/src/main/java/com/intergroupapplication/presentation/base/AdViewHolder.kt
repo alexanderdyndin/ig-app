@@ -15,7 +15,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.show
 
-class AdViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class AdViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
         const val NATIVE_AD = 123
@@ -33,28 +33,48 @@ class AdViewHolder(val view: View): RecyclerView.ViewHolder(view) {
             when (adType) {
                 NATIVE_TYPE_NEWS_FEED -> {
                     val adView = NativeAdViewNewsFeed(itemView.context)
-                    adView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.whiteTextColor))
+                    adView.setBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            R.color.whiteTextColor
+                        )
+                    )
                     adView.setPlacement(placement)
                     adView.setNativeAd(it)
                     container.addView(adView)
                 }
                 NATIVE_TYPE_APP_WALL -> {
                     val adView = NativeAdViewAppWall(itemView.context)
-                    adView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.whiteTextColor))
+                    adView.setBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            R.color.whiteTextColor
+                        )
+                    )
                     adView.setPlacement(placement)
                     adView.setNativeAd(it)
                     container.addView(adView)
                 }
                 NATIVE_TYPE_CONTENT_STREAM -> {
                     val adView = NativeAdViewContentStream(itemView.context)
-                    adView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.whiteTextColor))
+                    adView.setBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            R.color.whiteTextColor
+                        )
+                    )
                     adView.setPlacement(placement)
                     adView.setNativeAd(it)
                     container.addView(adView)
                 }
                 else -> {
                     val adView = NativeAdViewNewsFeed(itemView.context)
-                    adView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.whiteTextColor))
+                    adView.setBackgroundColor(
+                        ContextCompat.getColor(
+                            itemView.context,
+                            R.color.whiteTextColor
+                        )
+                    )
                     adView.setPlacement(placement)
                     adView.setNativeAd(it)
                     container.addView(adView)

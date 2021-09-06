@@ -232,13 +232,13 @@
     <string name="my_video">My video</string>
     <string name="group_name_is_not_empty">Group name must not be empty</string>
     <string name="choose_audio">Select audio</string>
-    <string name="choose_count_audio">Select %1$s audio</string>
+    <string name="choose_count_audio">Select %1$i audio</string>
     <string name="choose_video">Select video</string>
-    <string name="choose_count_video">Select %1$s video</string>
+    <string name="choose_count_video">Select %1$i video</string>
     <string name="choose_photo">Select photo</string>
     <string name="choose_one_photo">Select 1 photo</string>
-    <string name="choose_two_photo">Select %1$s photo</string>
-    <string name="choose_five_photo">Select %1$s photo</string>
+    <string name="choose_two_photo">Select %1$i photo</string>
+    <string name="choose_five_photo">Select %1$i photo</string>
     <string name="close">Close</string>
     <string name="delete_all">Delete all</string>
 </resources>

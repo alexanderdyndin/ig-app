@@ -26,10 +26,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         const val GROUP_ID = "group_id"
     }
 
-    /**
-     *     BaseActivity compatibility
-     */
-
     protected lateinit var compositeDisposable: CompositeDisposable
 
     protected abstract fun getSnackBarCoordinator(): ViewGroup?
@@ -94,5 +90,4 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         userSession.logout()
         findNavController().navigate(R.id.action_global_loginActivity)
     }
-
 }

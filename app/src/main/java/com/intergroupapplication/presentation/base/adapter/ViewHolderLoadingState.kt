@@ -25,7 +25,7 @@ class ViewHolderLoadingState(itemView: View, retry: () -> Unit) :
 
     init {
         btnRetry.setOnClickListener {
-            retry.invoke()
+            retry()
         }
     }
 
@@ -36,5 +36,4 @@ class ViewHolderLoadingState(itemView: View, retry: () -> Unit) :
         loadingLayout.isVisible = loadState is LoadState.Loading
         errorLayout.isVisible = loadState !is LoadState.Loading
     }
-
 }

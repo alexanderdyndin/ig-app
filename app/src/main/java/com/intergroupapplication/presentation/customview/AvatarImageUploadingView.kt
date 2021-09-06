@@ -192,5 +192,4 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
         imageUploadingProgressBar.progress = 0f
         state = AvatarUploadingState.ERROR
     }
-
 }

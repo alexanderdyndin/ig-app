@@ -50,7 +50,7 @@ class RichEditor
     private var isReady = false
     private var content: String? = null
     var textChangeListener: OnTextChangeListener? = null
-    var decorationStateListener:OnDecorationStateListener? = null
+    var decorationStateListener: OnDecorationStateListener? = null
     private var loadListener: AfterInitialLoadListener? = null
 
     companion object {
@@ -70,7 +70,8 @@ class RichEditor
     }
 
     @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null) : this(context, attrs,
+    constructor(context: Context, attrs: AttributeSet? = null) : this(
+        context, attrs,
         R.attr.webViewStyle
     )
 
@@ -90,19 +91,18 @@ class RichEditor
         val types: MutableList<TextType> = mutableListOf()
         TextType.values().forEach { type ->
             if (type.name.contains("FONT_COLOR") && state.contains("FONT_COLOR_RGB")) {
-                val (r,g,b) = state.substringAfter("FONT_COLOR_RGB(")
+                val (r, g, b) = state.substringAfter("FONT_COLOR_RGB(")
                     .substringBefore(")").split(" ")
                 var firstColor = Integer.toHexString(r.substringBefore(",").toInt())
                 var secondColor = Integer.toHexString(g.substringBefore(",").toInt())
                 var thirdColor = Integer.toHexString(b.substringBefore(",").toInt())
-                if(firstColor.length == 1) firstColor = "0$firstColor"
-                if(secondColor.length == 1) secondColor = "0$secondColor"
-                if(thirdColor.length == 1) thirdColor = "0$thirdColor"
+                if (firstColor.length == 1) firstColor = "0$firstColor"
+                if (secondColor.length == 1) secondColor = "0$secondColor"
+                if (thirdColor.length == 1) thirdColor = "0$thirdColor"
                 val hex = "#$firstColor$secondColor$thirdColor"
                 type.color = Color.parseColor(hex)
                 types.add(type)
-            }
-            else {
+            } else {
                 if (TextUtils.indexOf(state, type.name) != -1) {
                     types.add(type)
                 }
@@ -139,8 +139,12 @@ class RichEditor
                 thisContents = ""
             }
             try {
-                exec("javascript:RE.setHtml('" + URLEncoder.encode(thisContents,
-                    "UTF-8") + "');")
+                exec(
+                    "javascript:RE.setHtml('" + URLEncoder.encode(
+                        thisContents,
+                        "UTF-8"
+                    ) + "');"
+                )
                 content = thisContents
             } catch (e: UnsupportedEncodingException) {
                 Timber.tag("tut_error_set").e(e.message)
@@ -283,7 +287,7 @@ class RichEditor
         exec("javascript:RE.insertVideo('$url', '$width');")
     }
 
-    private fun insertHtml(html:String){
+    private fun insertHtml(html: String) {
         exec("javascript:RE.insertHTML('$html');")
     }
 
@@ -295,12 +299,15 @@ class RichEditor
         exec("javascript:RE.clearAndFocusEditor();")
     }
 
-    fun createFinalText(namesMap: Map<String,String>, finalNamesMedia:MutableList<String>):String{
-        var text = html?.substringBeforeLast("re-state://")?:""
-        namesMap.forEach { (key,value)->
-            if (text.contains(key)){
+    fun createFinalText(
+        namesMap: Map<String, String>,
+        finalNamesMedia: MutableList<String>
+    ): String {
+        var text = html?.substringBeforeLast("re-state://") ?: ""
+        namesMap.forEach { (key, value) ->
+            if (text.contains(key)) {
                 finalNamesMedia.add(value)
-                text = text.substringBefore(key)+"$value${MEDIA_PREFIX}"+
+                text = text.substringBefore(key) + "$value${MEDIA_PREFIX}" +
                         text.substringAfter(key)
 
             }
@@ -309,7 +316,7 @@ class RichEditor
     }
 
     private fun convertHexColorString(color: Int): String {
-        return String.format("#%06X", (0xFFFFFF and  color))
+        return String.format("#%06X", (0xFFFFFF and color))
     }
 
     private fun exec(trigger: String) {
@@ -351,8 +358,8 @@ class RichEditor
                     m = p.matcher(decode)
                     isRegexFound = m.find()
                     if (isRegexFound) {
-                        m.group(1)?.let {string -> reCallback = string }
-                        m.group(2)?.let{ string -> reState = string }
+                        m.group(1)?.let { string -> reCallback = string }
+                        m.group(2)?.let { string -> reState = string }
                     }
                 } catch (e: UnsupportedEncodingException) {
                     return false

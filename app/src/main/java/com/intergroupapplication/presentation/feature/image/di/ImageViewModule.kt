@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.image.di
 
-import android.content.Context
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.base.FrescoImageLoader
 import com.intergroupapplication.presentation.base.ImageLoader
@@ -14,8 +13,8 @@ class ImageViewModule {
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-        FrescoImageLoader(context)
+    fun provideFrescoImageLoader(): ImageLoader =
+        FrescoImageLoader()
 
     @PerFragment
     @Provides

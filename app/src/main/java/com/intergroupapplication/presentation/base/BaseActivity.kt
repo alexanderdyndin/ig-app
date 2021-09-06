@@ -1,8 +1,5 @@
 package com.intergroupapplication.presentation.base
 
-//import dagger.android.support.HasSupportFragmentInjector
-
-
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
@@ -49,8 +46,6 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
 
     protected lateinit var compositeDisposable: CompositeDisposable
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -62,12 +57,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
 
     override fun onResume() {
         super.onResume()
-//        navigatorHolder.setNavigator(navigator)
         dialogDelegate.coordinator = getSnackBarCoordinator()
     }
 
     override fun onPause() {
-//        navigatorHolder.removeNavigator()
         dialogDelegate.coordinator = null
         super.onPause()
     }
@@ -91,28 +84,30 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
         dialogDelegate.showErrorSnackBar(message)
     }
 
-    protected fun initErrorHandler() {
+    private fun initErrorHandler() {
         errorHandler.clear()
 
         val errorMap = mapOf(
-                BadRequestException::class.java to
-                        Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message) },
-                UserBlockedException::class.java to getActionForBlockedUser(),
-                ServerException::class.java to
-                        Action { _, _ -> dialogDelegate.showErrorSnackBar(getString(R.string.server_error)) },
-                NotFoundException::class.java to
-                        Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as NotFoundException).message.orEmpty()) },
-                UnknownHostException::class.java to createSnackBarAction(R.string.no_network_connection),
-                CanNotUploadPhoto::class.java to createToast(R.string.can_not_change_avatar),
-                UserNotProfileException::class.java to openCreateProfile(),
-                GroupBlockedException::class.java to getActionForBlockedGroup(),
-                UserNotVerifiedException::class.java to openConfirmationEmail(),
-                ImeiException::class.java to getActionForBlockedImei(),
-                InvalidRefreshException::class.java to openAutorize(),
-                PageNotFoundException::class.java to Action { _, _ -> },
-                ConnectionException::class.java to Action {_,_ -> dialogDelegate.showErrorSnackBar(
+            BadRequestException::class.java to
+                    Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message) },
+            UserBlockedException::class.java to getActionForBlockedUser(),
+            ServerException::class.java to
+                    Action { _, _ -> dialogDelegate.showErrorSnackBar(getString(R.string.server_error)) },
+            NotFoundException::class.java to
+                    Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as NotFoundException).message.orEmpty()) },
+            UnknownHostException::class.java to createSnackBarAction(R.string.no_network_connection),
+            CanNotUploadPhoto::class.java to createToast(R.string.can_not_change_avatar),
+            UserNotProfileException::class.java to openCreateProfile(),
+            GroupBlockedException::class.java to getActionForBlockedGroup(),
+            UserNotVerifiedException::class.java to openConfirmationEmail(),
+            ImeiException::class.java to getActionForBlockedImei(),
+            InvalidRefreshException::class.java to openAuthorization(),
+            PageNotFoundException::class.java to Action { _, _ -> },
+            ConnectionException::class.java to Action { _, _ ->
+                dialogDelegate.showErrorSnackBar(
                     getString(R.string.no_network_connection)
-                )})
+                )
+            })
 
         errorHandlerInitializer.initializeErrorHandler(errorMap,
                 createSnackBarAction(R.string.unknown_error))
@@ -135,14 +130,10 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
     private fun getActionForBlockedGroup() = actionForBlockedGroup
 
     private val actionForBlockedGroup = Action { _, _ ->
-//        startActivity(Intent(this, NavigationActivity::class.java).also
-//        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
     }
 
     private val actionForBlockedUser = Action { _, _ ->
         userSession.clearAllData()
-//        startActivity(Intent(this, AgreementsFragment::class.java).also
-//        { it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) })
     }
 
     private fun createSnackBarAction(message: Int) =
@@ -151,21 +142,14 @@ abstract class BaseActivity : MvpAppCompatActivity(), HasAndroidInjector {
     private fun createToast(message: Int) =
             Action { _, _ -> Toast.makeText(this, getString(message), Toast.LENGTH_SHORT).show() }
 
-    protected fun showToast(message: String) =
-            Action { _, _ -> Toast.makeText(this, message, Toast.LENGTH_SHORT).show() }
-
     private fun openCreateProfile() = Action { _, _ ->
-        //router.newRootScreen(CreateUserProfileScreen())
     }
 
     private fun openConfirmationEmail() = Action { _, _ ->
-        //val email = userSession.email?.email.orEmpty()
-        //router.newRootChain(RegistrationScreen(), ConfirmationMailScreen(email))
     }
 
-    private fun openAutorize() = Action { _, _ ->
+    private fun openAuthorization() = Action { _, _ ->
         userSession.logout()
-        //router.newRootChain(LoginScreen())
     }
 }
 
