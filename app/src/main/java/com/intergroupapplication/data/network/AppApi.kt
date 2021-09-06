@@ -1,8 +1,9 @@
 package com.intergroupapplication.data.network
 
-import com.intergroupapplication.data.model.*
-import com.intergroupapplication.data.model.groupfollowers.GroupBanBody
-import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdmin
+import com.intergroupapplication.data.model.CreateCommentModel
+import com.intergroupapplication.data.model.RegistrationResponse
+import com.intergroupapplication.data.model.groupfollowers.GroupBanDto
+import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdminDto
 import com.intergroupapplication.data.network.dto.*
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -13,20 +14,20 @@ const val PAGE_SIZE = 20
 interface AppApi {
 
     @POST("auth/registrations/")
-    fun registerUser(@Body registrationModel: RegistrationModel): Single<RegistrationResponse>
+    fun registerUser(@Body registrationDto: RegistrationDto): Single<RegistrationResponse>
 
     @POST("auth/login/")
-    fun loginUser(@Body loginModel: LoginModel): Single<TokenModel>
+    fun loginUser(@Body loginDto: LoginDto): Single<TokenAccessDto>
 
     @POST("auth/authorize/")
-    fun confirmMail(@Body tokenConfirmModel: TokenConfirmModel): Single<TokenModel>
+    fun confirmMail(@Body tokenConfirmDto: TokenConfirmDto): Single<TokenAccessDto>
 
     @POST("users/profiles/")
-    fun createUserProfile(@Body userProfileModel: UserProfileModelRequest)
-            : Single<UserProfileModelResponse>
+    fun createUserProfile(@Body userProfileDto: UserProfileDto)
+            : Single<UserProfileResponseDto>
 
     @POST("groups/")
-    fun createGroup(@Body createGroupModel: CreateGroupModel): Single<GroupDto>
+    fun createGroup(@Body createGroupDto: CreateGroupDto): Single<GroupDto>
 
     @GET("groups/{id}/")
     fun getGroupInformation(@Path("id") groupId: String): Single<GroupDto>
@@ -78,25 +79,25 @@ interface AppApi {
     fun createComment(
         @Path("post_pk") postId: String,
         @Body createCommentModel: CreateCommentModel
-    ): Single<CommentModel>
+    ): Single<CommentDto>
 
     @POST("groups/comments/{comment_pk}/answers/")
     fun createAnswerToComment(
         @Path("comment_pk") answerToCommentId: String,
         @Body createCommentModel: CreateCommentModel
-    ): Single<CommentModel>
+    ): Single<CommentDto>
 
     @POST("groups/{group_pk}/posts/")
     fun createPost(
-        @Body postModel: CreateGroupPostModel,
+        @Body postDto: CreateGroupPostDto,
         @Path("group_pk") groupId: String
     ): Single<GroupPostDto>
 
     @POST("groups/posts/{post_pk}/reacts/")
     fun setReact(
-        @Body data: ReactsModelRequest,
+        @Body data: ReactsRequestDto,
         @Path("post_pk") postId: String
-    ): Single<ReactsModel>
+    ): Single<ReactsDto>
 
     @GET("groups/posts/{id}/")
     fun getPostById(@Path("id") postId: String): Single<GroupPostDto>
@@ -104,23 +105,23 @@ interface AppApi {
     @PUT("groups/posts/{id}/")
     fun editPostById(
         @Path("id") postId: String,
-        @Body createGroupPostModel: CreateGroupPostModel
+        @Body createGroupPostDto: CreateGroupPostDto
     ): Single<GroupPostDto>
 
     @GET("users/profiles/me/")
-    fun getUserProfile(): Single<UserProfileModelResponse>
+    fun getUserProfile(): Single<UserProfileResponseDto>
 
     @POST("groups/follows/")
-    fun followGroup(@Body followGroupModel: FollowGroupModel): Completable
+    fun followGroup(@Body followGroupDto: FollowGroupDto): Completable
 
     @POST("auth/app_status/")
-    fun getAppStatus(@Body versionModel: VersionModel): Single<String>
+    fun getAppStatus(@Body versionDto: VersionDto): Single<String>
 
     @DELETE("groups/follows/{group_id}/")
     fun unfollowGroup(@Path("group_id") groupId: String): Completable
 
     @GET("groups/follows/{group_id}/")
-    fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowModel>
+    fun followersGroup(@Path("group_id") groupId: String): Single<GroupFollowDto>
 
     @GET("s3/groups/posts/")
     fun uploadPostsMedia(
@@ -147,17 +148,17 @@ interface AppApi {
     ): Single<ImageUploadDto>
 
     @PATCH("users/profiles/{user-id}/")
-    fun changeUserAvatar(@Path("user-id") userId: String, @Body avatar: UpdateAvatarModel)
-            : Single<UserProfileModelResponse>
+    fun changeUserAvatar(@Path("user-id") userId: String, @Body avatar: UpdateAvatarDto)
+            : Single<UserProfileResponseDto>
 
     @PATCH("groups/{id}/")
     fun changeGroupAvatar(
         @Path("id") groupId: String,
-        @Body avatar: UpdateAvatarModel
+        @Body avatar: UpdateAvatarDto
     ): Single<GroupDto>
 
     @POST("users/push_token/")
-    fun updateToken(@Body deviceModel: DeviceModel): Completable
+    fun updateToken(@Body deviceDto: DeviceDto): Completable
 
     @GET("auth/device_status/")
     fun isBlocked(): Completable
@@ -166,19 +167,19 @@ interface AppApi {
     fun resendCode(): Completable
 
     @POST("users/password_reset/")
-    fun resetPassword(@Body emailModel: EmailModel): Completable
+    fun resetPassword(@Body emailDto: EmailDto): Completable
 
     @POST("users/password_reset/code/")
-    fun resetPasswordCode(@Body codeModel: CodeModel): Single<TokenDto>
+    fun resetPasswordCode(@Body codeDto: CodeDto): Single<TokenDto>
 
     @POST("users/password_reset/new_password/")
-    fun resetPasswordNewpassword(@Body newPasswordModel: NewPasswordModel): Completable
+    fun resetPasswordNewPassword(@Body newPasswordDto: NewPasswordDto): Completable
 
     @POST("complaints/")
-    fun complaints(@Body complaintModel: ComplaintModel): Completable
+    fun complaints(@Body complaintDto: ComplaintDto): Completable
 
     @GET("admin/advertisement/")
-    fun adCountInfo(): Single<AdModel>
+    fun adCountInfo(): Single<AdDto>
 
     @GET("groups/{group_id}/followers/")
     fun getGroupFollowers(
@@ -198,7 +199,7 @@ interface AppApi {
     @POST("groups/{group_id}/bans/")
     fun banUserInGroup(
         @Path("group_id") groupId: String,
-        @Body groupBanBody: GroupBanBody
+        @Body groupBanDto: GroupBanDto
     ): Completable
 
     @DELETE("groups/bans/{id}/")
@@ -209,7 +210,7 @@ interface AppApi {
     @PATCH("groups/followers/{id}/")
     fun updateGroupAdmin(
         @Path("id") id: String,
-        @Body updateGroupAdmin: UpdateGroupAdmin
+        @Body updateGroupAdminDto: UpdateGroupAdminDto
     ): Completable
 
     @DELETE("groups/posts/{id}/")
@@ -223,15 +224,15 @@ interface AppApi {
 
     @POST("groups/comments/{comment_pk}/reacts/")
     fun setCommentReact(
-        @Body data: ReactsModelRequest,
+        @Body data: ReactsRequestDto,
         @Path("comment_pk") commentId: String
-    ): Single<ReactsModel>
+    ): Single<ReactsDto>
 
     @POST("groups/bells/")
-    fun setBell(@Body bellFollowModel: BellFollowModel): Single<BellFollowModel>
+    fun setBell(@Body bellFollowDto: BellFollowDto): Single<BellFollowDto>
 
     @GET("groups/bells/{post__id}/")
-    fun getBell(@Path("post__id") postId: String): Single<BellFollowModel>
+    fun getBell(@Path("post__id") postId: String): Single<BellFollowDto>
 
     @DELETE("groups/bells/{post__id}/")
     fun deleteBell(@Path("post__id") postId: String): Completable

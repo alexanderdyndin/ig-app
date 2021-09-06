@@ -4,7 +4,9 @@ import com.intergroupapplication.data.network.dto.TokenDto
 import com.intergroupapplication.domain.entity.TokenCodeEntity
 import javax.inject.Inject
 
-class TokenCodeMapper @Inject constructor() {
+class TokenCodeMapper @Inject constructor() : (TokenDto) -> TokenCodeEntity {
 
-    fun map(from: TokenDto) = TokenCodeEntity(from.token)
+    override fun invoke(tokenDto: TokenDto): TokenCodeEntity {
+        return TokenCodeEntity(tokenDto.token)
+    }
 }

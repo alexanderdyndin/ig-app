@@ -1,7 +1,8 @@
 package com.intergroupapplication.data.network.dto
 
 import com.google.gson.annotations.SerializedName
-import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.model.AudioModel
+import com.intergroupapplication.data.model.ImageVideoModel
 
 /**
  * Created by abakarmagomedov on 29/08/2018 at project InterGroupApplication.
@@ -13,8 +14,8 @@ data class GroupPostDto(
     val activeCommentsCount: String,
     @SerializedName("group")
     val groupInPost: GroupDto,
-    val bells: BellsModel,
-    val reacts: ReactsModel,
+    val bells: BellsDto,
+    val reacts: ReactsDto,
     val images: List<ImageVideoModel>,
     val audios: List<AudioModel>,
     val videos: List<ImageVideoModel>,
@@ -36,7 +37,7 @@ data class GroupPostDto(
     val isPinned: Boolean,
     @SerializedName("pin_time")
     val pin: String?,
-    val author: AuthorModel,
+    val author: AuthorDto,
     @SerializedName("unread_comments_count")
     val unreadComments: String
 )

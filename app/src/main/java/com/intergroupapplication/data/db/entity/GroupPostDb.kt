@@ -4,7 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.model.AudioModel
+import com.intergroupapplication.data.model.ImageVideoModel
 
 @Entity(tableName = "group_post")
 data class GroupPostDb(
@@ -15,9 +16,9 @@ data class GroupPostDb(
     @Embedded
     val groupInPost: GroupDb,
     @Embedded
-    val bells: BellsModel,
+    val bells: BellsDb,
     @Embedded
-    val reacts: ReactsModel,
+    val reacts: ReactsDb,
     val images: List<ImageVideoModel>,
     val audios: List<AudioModel>,
     val videos: List<ImageVideoModel>,
@@ -32,6 +33,6 @@ data class GroupPostDb(
     val isPinned: Boolean,
     val pin: String?,
     @Embedded
-    val author: AuthorModel,
+    val author: AuthorDb,
     val unreadComments: String
 )

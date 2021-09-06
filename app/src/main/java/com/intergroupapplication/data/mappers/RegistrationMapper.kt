@@ -1,7 +1,7 @@
 package com.intergroupapplication.data.mappers
 
-import com.intergroupapplication.data.model.RegistrationModel
 import com.intergroupapplication.data.model.RegistrationResponseModel
+import com.intergroupapplication.data.network.dto.RegistrationDto
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.entity.RegistrationResponseEntity
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Inject
 class RegistrationMapper @Inject constructor() {
 
     fun mapToDataModel(from: RegistrationEntity) =
-        RegistrationModel(
+        RegistrationDto(
             email = from.email,
             password = from.password,
             emailConfirm = from.emailConfirm,
@@ -20,7 +20,7 @@ class RegistrationMapper @Inject constructor() {
         )
 
 
-    fun mapToDomainEntity(from: RegistrationModel) =
+    fun mapToDomainEntity(from: RegistrationDto) =
         RegistrationEntity(
             email = from.email,
             password = from.password,

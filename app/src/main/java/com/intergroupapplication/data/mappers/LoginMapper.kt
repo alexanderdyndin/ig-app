@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.mappers
 
-import com.intergroupapplication.data.model.LoginModel
+import com.intergroupapplication.data.network.dto.LoginDto
 import com.intergroupapplication.domain.entity.LoginEntity
 import javax.inject.Inject
 
@@ -9,14 +9,14 @@ import javax.inject.Inject
  */
 class LoginMapper @Inject constructor() {
 
-    fun mapToDomainEntity(from: LoginModel) =
+    fun mapToDomainEntity(from: LoginDto) =
         LoginEntity(
             email = from.email,
             password = from.password
         )
 
     fun mapToDataModel(from: LoginEntity) =
-        LoginModel(
+        LoginDto(
             email = from.email,
             password = from.password
         )

@@ -153,7 +153,9 @@
     <ID>
       NewLineAtEndOfFile:CommentGateway.kt$com.intergroupapplication.domain.gateway.CommentGateway.kt
     </ID>
-    <ID>NewLineAtEndOfFile:CommentModel.kt$com.intergroupapplication.data.model.CommentModel.kt</ID>
+    <ID>
+      NewLineAtEndOfFile:CommentModel.kt$com.intergroupapplication.data.network.dto.CommentDto.kt
+    </ID>
     <ID>
       NewLineAtEndOfFile:CommentUserEntity.kt$com.intergroupapplication.domain.entity.CommentUserEntity.kt
     </ID>
@@ -191,7 +193,7 @@
       NewLineAtEndOfFile:CreateGroupPostEntity.kt$com.intergroupapplication.domain.entity.CreateGroupPostEntity.kt
     </ID>
     <ID>
-      NewLineAtEndOfFile:CreateGroupPostModel.kt$com.intergroupapplication.data.model.CreateGroupPostModel.kt
+      NewLineAtEndOfFile:CreateGroupPostModel.kt$com.intergroupapplication.data.network.dto.CreateGroupPostDto.kt
     </ID>
     <ID>
       NewLineAtEndOfFile:CreateGroupService.kt$com.intergroupapplication.data.service.CreateGroupService.kt
@@ -219,7 +221,7 @@
       NewLineAtEndOfFile:FirebaseTokenEntity.kt$com.intergroupapplication.domain.entity.FirebaseTokenEntity.kt
     </ID>
     <ID>
-      NewLineAtEndOfFile:FollowGroupModel.kt$com.intergroupapplication.data.model.FollowGroupModel.kt
+      NewLineAtEndOfFile:FollowGroupModel.kt$com.intergroupapplication.data.network.dto.FollowGroupDto.kt
     </ID>
     <ID>
       NewLineAtEndOfFile:FullGroupModelDto.kt$com.intergroupapplication.data.network.dto.FullGroupModelDto.kt
@@ -358,7 +360,7 @@
       NewLineAtEndOfFile:UnknowServerException.kt$com.intergroupapplication.domain.exception.UnknownServerException.kt
     </ID>
     <ID>
-      NewLineAtEndOfFile:UpdateAvatarModel.kt$com.intergroupapplication.data.model.UpdateAvatarModel.kt
+      NewLineAtEndOfFile:UpdateAvatarModel.kt$com.intergroupapplication.data.network.dto.UpdateAvatarDto.kt
     </ID>
     <ID>NewLineAtEndOfFile:UserRole.kt$com.intergroupapplication.domain.entity.UserRole.kt</ID>
     <ID>NotImplementedDeclaration:GroupListDataSource.kt$GroupListDataSource$TODO("not
@@ -681,7 +683,9 @@
     <ID>UnusedImports:UserEntity.kt$import kotlinx.android.parcel.Parcelize</ID>
     <ID>UnusedImports:UserProfileGateway.kt$import com.intergroupapplication.domain.entity.UserRole</ID>
     <ID>UnusedImports:UserProfileGateway.kt$import io.reactivex.Completable</ID>
-    <ID>UnusedImports:UserProfileMapper.kt$import com.intergroupapplication.data.model.UserModel</ID>
+    <ID>UnusedImports:UserProfileMapper.kt$import
+      com.intergroupapplication.data.network.dto.UserDto
+    </ID>
     <ID>UnusedImports:UserProfileRepository.kt$import com.intergroupapplication.domain.entity.UserRole</ID>
     <ID>UnusedImports:UserProfileRepository.kt$import io.reactivex.ObservableSource</ID>
     <ID>UnusedImports:UserProfileRepository.kt$import io.reactivex.Observer</ID>

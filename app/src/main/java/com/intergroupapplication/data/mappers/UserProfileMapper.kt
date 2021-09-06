@@ -1,6 +1,12 @@
 package com.intergroupapplication.data.mappers
 
-import com.intergroupapplication.data.model.*
+import com.intergroupapplication.data.db.entity.AuthorDb
+import com.intergroupapplication.data.db.entity.UserProfileDb
+import com.intergroupapplication.data.model.CommentUserModel
+import com.intergroupapplication.data.network.dto.AdDto
+import com.intergroupapplication.data.network.dto.AuthorDto
+import com.intergroupapplication.data.network.dto.UserProfileDto
+import com.intergroupapplication.data.network.dto.UserProfileResponseDto
 import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.di.qualifier.PointDateFormatter
 import com.intergroupapplication.domain.entity.*
@@ -16,7 +22,7 @@ class UserProfileMapper @Inject constructor(
 ) {
 
     fun mapToDataModel(from: UserEntity) =
-        UserProfileModelRequest(
+        UserProfileDto(
             firstName = from.firstName,
             surName = from.surName,
             birthday = from.birthday,
@@ -25,7 +31,7 @@ class UserProfileMapper @Inject constructor(
         )
 
     fun mapToDataModel(from: UserProfileEntityRequest) =
-        UserProfileModelRequest(
+        UserProfileDto(
             firstName = from.firstName,
             surName = from.surName,
             birthday = from.birthday,
@@ -33,7 +39,7 @@ class UserProfileMapper @Inject constructor(
             avatar = from.avatar
         )
 
-    fun mapToDomainEntity(from: UserProfileModelRequest) =
+    fun mapToDomainEntity(from: UserProfileDto) =
         UserProfileEntityRequest(
             firstName = from.firstName,
             surName = from.surName,
@@ -42,8 +48,26 @@ class UserProfileMapper @Inject constructor(
             avatar = from.avatar
         )
 
+    private fun mapDbToEntity(from: UserProfileDb) =
+        UserProfileEntityRequest(
+            firstName = from.firstName,
+            surName = from.surName,
+            birthday = from.birthday,
+            gender = from.gender,
+            avatar = from.avatar
+        )
+
+    private fun mapDtoToDb(from: UserProfileDto) =
+        UserProfileDb(
+            firstName = from.firstName,
+            surName = from.surName,
+            birthday = from.birthday,
+            gender = from.gender,
+            avatar = from.avatar
+        )
+
     fun mapToDataModel(from: AuthorEntity) =
-        AuthorModel(
+        AuthorDto(
             from.id,
             from.email,
             from.isBlocked,
@@ -52,7 +76,7 @@ class UserProfileMapper @Inject constructor(
             mapToDataModel(from.profile)
         )
 
-    fun mapToDomainEntity(from: AuthorModel) =
+    fun mapToDomainEntity(from: AuthorDto) =
         AuthorEntity(
             from.id,
             from.email,
@@ -62,9 +86,29 @@ class UserProfileMapper @Inject constructor(
             mapToDomainEntity(from.profile)
         )
 
+    fun mapDtoToDb(from: AuthorDto) =
+        AuthorDb(
+            id = from.id,
+            email = from.email,
+            isBlocked = from.isBlocked,
+            isVerified = from.isVerified,
+            timeBlocked = from.timeBlocked,
+            profile = mapDtoToDb(from.profile)
+        )
+
+    fun mapDbToEntity(from: AuthorDb) =
+        AuthorEntity(
+            id = from.id,
+            email = from.email,
+            isBlocked = from.isBlocked,
+            isVerified = from.isVerified,
+            timeBlocked = from.timeBlocked,
+            profile = mapDbToEntity(from.profile)
+        )
+
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     fun mapToDataModel(from: CreateUserEntity) =
-        UserProfileModelRequest(
+        UserProfileDto(
             firstName = from.firstName,
             surName = from.surName,
             birthday = dashFormatter.format(pointFormatter.parse(from.birthday)),
@@ -94,20 +138,20 @@ class UserProfileMapper @Inject constructor(
             )
         } ?: let { null }
 
-    fun mapToDomainEntity(from: UserProfileModelResponse) =
+    fun mapToDomainEntity(from: UserProfileResponseDto) =
         UserEntity(
-            id = from.userModel.id,
+            id = from.userDto.id,
             firstName = from.firstName,
             surName = from.surName,
             birthday = from.birthday,
             gender = from.gender,
-            email = from.userModel.email,
-            isBlocked = from.userModel.isBlocked,
-            isActive = from.userModel.isActive,
+            email = from.userDto.email,
+            isBlocked = from.userDto.isBlocked,
+            isActive = from.userDto.isActive,
             avatar = from.avatar
         )
 
-    fun mapToDomainEntity(from: AdModel) =
+    fun mapToDomainEntity(from: AdDto) =
         AdEntity(
             from.limitOfAdsGroups,
             from.firstAdIndexGroups,
@@ -121,7 +165,7 @@ class UserProfileMapper @Inject constructor(
         )
 
     fun mapToDataModel(from: AdEntity) =
-        AdModel(
+        AdDto(
             from.limitOfAdsGroups,
             from.firstAdIndexGroups,
             from.noOfDataBetweenAdsGroups,

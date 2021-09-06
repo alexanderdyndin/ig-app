@@ -21,11 +21,11 @@ data class GroupDb(
     val name: String,
     val description: String,
     val rules: String,
-    @ColumnInfo(name = "is_blocked")
+    @ColumnInfo(name = "is_blocked_group")
     val isBlocked: Boolean,
-    @ColumnInfo(name = "time_blocked")
+    @ColumnInfo(name = "time_blocked_group")
     val timeBlocked: String?,
-    @ColumnInfo(name = "is_closed")
+    @ColumnInfo(name = "is_closed_group")
     val isClosed: Boolean,
     @ColumnInfo(name = "age_restriction")
     val ageRestriction: String,

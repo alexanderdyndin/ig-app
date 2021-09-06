@@ -1,8 +1,8 @@
 package com.intergroupapplication.presentation.feature.recoveryPassword.presenter
 
-import com.intergroupapplication.data.model.CodeModel
-import com.intergroupapplication.data.model.EmailModel
-import com.intergroupapplication.data.model.NewPasswordModel
+import com.intergroupapplication.data.network.dto.CodeDto
+import com.intergroupapplication.data.network.dto.EmailDto
+import com.intergroupapplication.data.network.dto.NewPasswordDto
 import com.intergroupapplication.di.module.NetworkModule.Companion.TOKEN_PREFIX
 import com.intergroupapplication.di.qualifier.RecoveryHandler
 import com.intergroupapplication.domain.gateway.ResetPasswordGateway
@@ -27,7 +27,7 @@ class RecoveryPasswordPresenter @Inject constructor(
 
     fun sendEmail(email: String) {
         this.email = email
-        resetPasswordGateway.resetPassword(EmailModel(email))
+        resetPasswordGateway.resetPassword(EmailDto(email))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState?.showLoadingSendEmail(true) }
@@ -45,7 +45,7 @@ class RecoveryPasswordPresenter @Inject constructor(
     fun sendCode(code: String) {
         if (code.length != 4)
             return
-        val codeModel = CodeModel(email.orEmpty(), code)
+        val codeModel = CodeDto(email.orEmpty(), code)
         resetPasswordGateway.resetPasswordCode(codeModel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -62,7 +62,7 @@ class RecoveryPasswordPresenter @Inject constructor(
     }
 
     fun saveSettings(password: String, passwordConfirm: String) {
-        val newPassword = NewPasswordModel(token.orEmpty(), password, passwordConfirm)
+        val newPassword = NewPasswordDto(token.orEmpty(), password, passwordConfirm)
         resetPasswordGateway.newPassword(newPassword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -1,8 +1,8 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class NewPasswordModel(
+data class NewPasswordDto(
     val token: String,
     val password: String,
     @SerializedName("password_confirm")

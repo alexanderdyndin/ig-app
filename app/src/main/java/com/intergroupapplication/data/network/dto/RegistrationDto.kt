@@ -1,8 +1,8 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class RegistrationModel(
+data class RegistrationDto(
     val email: String,
     val password: String,
     @SerializedName("email_confirm")

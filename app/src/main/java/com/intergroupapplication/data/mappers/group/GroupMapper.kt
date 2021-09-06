@@ -1,8 +1,8 @@
 package com.intergroupapplication.data.mappers.group
 
 import com.intergroupapplication.data.db.entity.GroupDb
-import com.intergroupapplication.data.model.GroupFollowModel
 import com.intergroupapplication.data.network.dto.GroupDto
+import com.intergroupapplication.data.network.dto.GroupFollowDto
 import com.intergroupapplication.data.network.dto.GroupsDto
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupFollowEntity
@@ -111,7 +111,7 @@ class GroupMapper @Inject constructor() {
         )
     }
 
-    fun followsToEntity(from: GroupFollowModel): GroupFollowEntity {
+    fun followsToEntity(from: GroupFollowDto): GroupFollowEntity {
         return GroupFollowEntity(from.id, from.is_blocked, from.time_blocked, from.user, from.group)
     }
 

@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.mappers
 
-import com.intergroupapplication.data.model.CreateGroupModel
+import com.intergroupapplication.data.network.dto.CreateGroupDto
 import com.intergroupapplication.domain.entity.CreateGroupEntity
 import javax.inject.Inject
 
@@ -9,8 +9,8 @@ import javax.inject.Inject
  */
 class CreateGroupMapper @Inject constructor() {
 
-    fun mapToDto(from: CreateGroupEntity): CreateGroupModel {
-        return CreateGroupModel(
+    fun mapToDto(from: CreateGroupEntity): CreateGroupDto {
+        return CreateGroupDto(
             name = from.name,
             description = from.description,
             avatar = from.avatar,
@@ -21,7 +21,7 @@ class CreateGroupMapper @Inject constructor() {
         )
     }
 
-    fun mapToDomainEntity(from: CreateGroupModel): CreateGroupEntity {
+    fun mapToDomainEntity(from: CreateGroupDto): CreateGroupEntity {
         return CreateGroupEntity(
             name = from.name,
             description = from.description,

@@ -1,7 +1,7 @@
 package com.intergroupapplication.domain.gateway
 
 import androidx.paging.PagingData
-import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdmin
+import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdminDto
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupFollowEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
@@ -30,7 +30,11 @@ interface GroupGateway {
     fun getBans(groupId: String, searchFilter: String): Flowable<PagingData<GroupUserEntity>>
     fun banUserInGroup(userId: String, reason: String, groupId: String): Completable
     fun deleteUserFromBansGroup(userId: String): Completable
-    fun updateGroupAdmin(subscriptionId: String, updateGroupAdmin: UpdateGroupAdmin): Completable
+    fun updateGroupAdmin(
+        subscriptionId: String,
+        updateGroupAdminDto: UpdateGroupAdminDto
+    ): Completable
+
     fun getAllGroupAdmins(groupId: String): Single<List<String>>
     fun getGroupFollowersForSearch(
         groupId: String,

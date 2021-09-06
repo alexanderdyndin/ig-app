@@ -6,8 +6,8 @@ import com.google.gson.GsonBuilder
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.data.mappers.TokenMapper
 import com.intergroupapplication.data.model.RefreshTokenModel
-import com.intergroupapplication.data.model.TokenModel
 import com.intergroupapplication.data.network.*
+import com.intergroupapplication.data.network.dto.TokenAccessDto
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.di.qualifier.AmazonOkHttpClient
 import com.intergroupapplication.di.qualifier.ApplicationOkHttpClient
@@ -114,7 +114,7 @@ class NetworkModule {
             if (responseCount(response) >= 2) {
                 return@Authenticator null
             }
-            val refreshResult: TokenModel?
+            val refreshResult: TokenAccessDto?
             try {
                 refreshResult = sessionStorage.token
                     ?.refresh

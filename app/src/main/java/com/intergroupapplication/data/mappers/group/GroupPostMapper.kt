@@ -1,15 +1,10 @@
 package com.intergroupapplication.data.mappers.group
 
+import com.intergroupapplication.data.db.entity.BellsDb
 import com.intergroupapplication.data.mappers.MediaMapper
 import com.intergroupapplication.data.mappers.ReactsMapper
 import com.intergroupapplication.data.mappers.UserProfileMapper
-import com.intergroupapplication.data.model.BellFollowModel
-import com.intergroupapplication.data.model.BellsModel
-import com.intergroupapplication.data.model.CreateGroupPostModel
-import com.intergroupapplication.data.network.dto.GroupPostDto
-import com.intergroupapplication.data.network.dto.GroupPostsDto
-import com.intergroupapplication.data.network.dto.NewsDto
-import com.intergroupapplication.data.network.dto.NewsPostDto
+import com.intergroupapplication.data.network.dto.*
 import com.intergroupapplication.domain.entity.*
 import javax.inject.Inject
 
@@ -104,8 +99,8 @@ class GroupPostMapper @Inject constructor(
     }
 
 
-    fun mapToDto(from: CreateGroupPostEntity): CreateGroupPostModel {
-        return CreateGroupPostModel(
+    fun mapToDto(from: CreateGroupPostEntity): CreateGroupPostDto {
+        return CreateGroupPostDto(
             postText = from.postText,
             images = from.images.map { mediaMapper.mapToDto(it) },
             audios = from.audios.map { mediaMapper.mapToDto(it) },
@@ -115,7 +110,7 @@ class GroupPostMapper @Inject constructor(
         )
     }
 
-    fun mapToDomainEntity(from: CreateGroupPostModel): CreateGroupPostEntity =
+    fun mapToDomainEntity(from: CreateGroupPostDto): CreateGroupPostEntity =
         CreateGroupPostEntity(
             postText = from.postText,
             images = from.images.map { mediaMapper.mapToDomainEntity(it) },
@@ -135,13 +130,25 @@ class GroupPostMapper @Inject constructor(
     }
 
 
-    fun mapToDto(from: BellsEntity): BellsModel =
-        BellsModel(
+    fun mapToDto(from: BellsEntity): BellsDto =
+        BellsDto(
             count = from.count,
             isActive = from.isActive
         )
 
-    fun mapToDomainEntity(from: BellsModel): BellsEntity =
+    fun mapDbToEntity(from: BellsDb): BellsEntity =
+        BellsEntity(
+            count = from.count,
+            isActive = from.isActive
+        )
+
+    fun mapDtoToDb(from: BellsDto): BellsDb =
+        BellsDb(
+            count = from.count,
+            isActive = from.isActive
+        )
+
+    fun mapToDomainEntity(from: BellsDto): BellsEntity =
         BellsEntity(
             count = from.count,
             isActive = from.isActive
@@ -161,14 +168,14 @@ class GroupPostMapper @Inject constructor(
             user = from.user
         )
 
-    fun mapToDto(from: BellFollowEntity): BellFollowModel =
-        BellFollowModel(
+    fun mapToDto(from: BellFollowEntity): BellFollowDto =
+        BellFollowDto(
             from.id,
             from.user,
             from.post
         )
 
-    fun mapToDomainEntity(from: BellFollowModel): BellFollowEntity =
+    fun mapToDomainEntity(from: BellFollowDto): BellFollowEntity =
         BellFollowEntity(
             from.id,
             from.user,

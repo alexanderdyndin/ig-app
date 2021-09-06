@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.mappers
 
-import com.intergroupapplication.data.model.TokenModel
+import com.intergroupapplication.data.network.dto.TokenAccessDto
 import com.intergroupapplication.domain.entity.TokenEntity
 import javax.inject.Inject
 
@@ -9,7 +9,7 @@ import javax.inject.Inject
  */
 class TokenMapper @Inject constructor() {
 
-    fun mapToDomainEntity(from: TokenModel) =
+    fun mapToDomainEntity(from: TokenAccessDto) =
         TokenEntity(
             refresh = from.refresh,
             access = from.access
@@ -17,7 +17,7 @@ class TokenMapper @Inject constructor() {
 
 
     fun mapToDataModel(from: TokenEntity) =
-        TokenModel(
+        TokenAccessDto(
             refresh = from.refresh,
             access = from.access
         )

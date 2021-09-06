@@ -1,7 +1,7 @@
 package com.intergroupapplication.data.mappers
 
-import com.intergroupapplication.data.model.CommentModel
 import com.intergroupapplication.data.model.CreateCommentModel
+import com.intergroupapplication.data.network.dto.CommentDto
 import com.intergroupapplication.data.network.dto.CommentsDto
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.CommentsEntity
@@ -17,7 +17,7 @@ class CommentMapper @Inject constructor(
     private val mediaMapper: MediaMapper
 ) {
 
-    fun mapToDomainEntity(from: CommentModel?): CommentEntity.Comment? =
+    fun mapToDomainEntity(from: CommentDto?): CommentEntity.Comment? =
         from?.let {
             CommentEntity.Comment(
                 id = from.id,
@@ -35,9 +35,9 @@ class CommentMapper @Inject constructor(
             )
         } ?: let { null }
 
-    fun mapToDto(from: CommentEntity.Comment?): CommentModel? =
+    fun mapToDto(from: CommentEntity.Comment?): CommentDto? =
         from?.let {
-            CommentModel(
+            CommentDto(
                 id = from.id,
                 commentOwner = if (from.commentOwner != null)
                     userProfileMapper.mapToDataModel(from.commentOwner) else null,

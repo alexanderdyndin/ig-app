@@ -3,7 +3,7 @@ package com.intergroupapplication.device.service
 import android.annotation.SuppressLint
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.intergroupapplication.data.model.DeviceModel
+import com.intergroupapplication.data.network.dto.DeviceDto
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.device.notification.NotificationTypes
 import com.intergroupapplication.device.notification.actions.NotificationAction
@@ -54,7 +54,7 @@ class InterGroupPushService : FirebaseMessagingService() {
         val idUser = session.user?.id.orEmpty()
         //todo при релизе проверить
         token.let { t ->
-            fbTokenRepository.refreshToken(DeviceModel(token), idUser)
+            fbTokenRepository.refreshToken(DeviceDto(token), idUser)
                 .subscribeOn(Schedulers.io())
                 .subscribe({},
                     { it.printStackTrace() })

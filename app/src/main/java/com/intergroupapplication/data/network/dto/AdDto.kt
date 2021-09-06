@@ -1,8 +1,8 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class AdModel(
+data class AdDto(
     //val id: Int = 1,
     @SerializedName("limit_of_ads_groups")
     val limitOfAdsGroups: Int,

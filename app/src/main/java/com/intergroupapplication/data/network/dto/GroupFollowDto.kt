@@ -1,6 +1,6 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
-data class GroupFollowModel(
+data class GroupFollowDto(
     val id: Int,
     val is_blocked: Boolean,
     val time_blocked: String,

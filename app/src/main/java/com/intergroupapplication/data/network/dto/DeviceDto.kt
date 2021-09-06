@@ -1,8 +1,8 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class DeviceModel(
+data class DeviceDto(
     @SerializedName("device_id")
     val deviceId: String?
 )

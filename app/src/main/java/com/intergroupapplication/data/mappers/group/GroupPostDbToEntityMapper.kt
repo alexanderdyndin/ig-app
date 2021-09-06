@@ -18,12 +18,12 @@ class GroupPostDbToEntityMapper @Inject constructor(
     override fun invoke(groupPost: GroupPostDb): GroupPostEntity.PostEntity {
         return GroupPostEntity.PostEntity(
             id = groupPost.id,
-            bells = groupPostMapper.mapToDomainEntity(groupPost.bells),
+            bells = groupPostMapper.mapDbToEntity(groupPost.bells),
             groupInPost = groupMapper.mapDbToEntity(groupPost.groupInPost),
             postText = groupPost.postText,
             date = groupPost.date,
             updated = groupPost.updated,
-            author = userProfileMapper.mapToDomainEntity(groupPost.author),
+            author = userProfileMapper.mapDbToEntity(groupPost.author),
             pin = groupPost.pin,
             photo = groupPost.photo,
             commentsCount = groupPost.commentsCount,
@@ -31,7 +31,7 @@ class GroupPostDbToEntityMapper @Inject constructor(
             isActive = groupPost.isActive,
             isOffered = groupPost.isOffered,
             isPinned = groupPost.isPinned,
-            reacts = reactsMapper.mapToDomainEntity(groupPost.reacts),
+            reacts = reactsMapper.mapDbToEntity(groupPost.reacts),
             idp = groupPost.idp,
             images = groupPost.images.map { mediaMapper.mapToDomainEntity(it) },
             audios = groupPost.audios.map { mediaMapper.mapToDomainEntity(it) },

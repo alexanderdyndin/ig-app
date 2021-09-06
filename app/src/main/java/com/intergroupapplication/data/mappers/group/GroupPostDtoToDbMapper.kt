@@ -1,11 +1,16 @@
 package com.intergroupapplication.data.mappers.group
 
 import com.intergroupapplication.data.db.entity.GroupPostDb
+import com.intergroupapplication.data.mappers.ReactsMapper
+import com.intergroupapplication.data.mappers.UserProfileMapper
 import com.intergroupapplication.data.network.dto.GroupPostDto
 import javax.inject.Inject
 
 class GroupPostDtoToDbMapper @Inject constructor(
-    private val groupMapper: GroupMapper
+    private val groupMapper: GroupMapper,
+    private val reactsMapper: ReactsMapper,
+    private val userProfileMapper: UserProfileMapper,
+    private val groupPostMapper: GroupPostMapper
 ) : (GroupPostDto) -> GroupPostDb {
 
     override fun invoke(groupPost: GroupPostDto): GroupPostDb {
@@ -13,8 +18,8 @@ class GroupPostDtoToDbMapper @Inject constructor(
             id = groupPost.id,
             activeCommentsCount = groupPost.activeCommentsCount,
             groupInPost = groupMapper.mapDtoToDb(groupPost.groupInPost),
-            bells = groupPost.bells,
-            reacts = groupPost.reacts,
+            bells = groupPostMapper.mapDtoToDb(groupPost.bells),
+            reacts = reactsMapper.mapDtoToDb(groupPost.reacts),
             images = groupPost.images,
             audios = groupPost.audios,
             videos = groupPost.videos,
@@ -28,7 +33,7 @@ class GroupPostDtoToDbMapper @Inject constructor(
             idp = groupPost.idp,
             isPinned = groupPost.isPinned,
             pin = groupPost.pin,
-            author = groupPost.author,
+            author = userProfileMapper.mapDtoToDb(groupPost.author),
             unreadComments = groupPost.unreadComments
         )
     }

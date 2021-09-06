@@ -8,12 +8,12 @@ import androidx.paging.rxjava2.flowable
 import com.intergroupapplication.data.mappers.BansGroupMapper
 import com.intergroupapplication.data.mappers.FollowersGroupMapper
 import com.intergroupapplication.data.mappers.group.GroupMapper
-import com.intergroupapplication.data.model.FollowGroupModel
-import com.intergroupapplication.data.model.UpdateAvatarModel
-import com.intergroupapplication.data.model.groupfollowers.GroupBanBody
-import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdmin
+import com.intergroupapplication.data.model.groupfollowers.GroupBanDto
+import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdminDto
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
+import com.intergroupapplication.data.network.dto.FollowGroupDto
+import com.intergroupapplication.data.network.dto.UpdateAvatarDto
 import com.intergroupapplication.data.remotedatasource.GroupBansRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupFollowersRemoteRXDataSource
 import com.intergroupapplication.data.remotedatasource.GroupsRemoteRXDataSource
@@ -43,7 +43,7 @@ class GroupRepository @Inject constructor(
 
     @SuppressLint("CheckResult")
     override fun changeGroupAvatar(groupId: String, avatar: String): Single<GroupEntity.Group> =
-        api.changeGroupAvatar(groupId, UpdateAvatarModel(avatar))
+        api.changeGroupAvatar(groupId, UpdateAvatarDto(avatar))
             .map { groupMapper.mapToDomainEntity(it) }
             .doOnError {
                 if (it is HttpException) {
@@ -68,7 +68,7 @@ class GroupRepository @Inject constructor(
     }
 
     override fun followGroup(groupId: String): Completable {
-        return api.followGroup(FollowGroupModel(groupId))
+        return api.followGroup(FollowGroupDto(groupId))
     }
 
     override fun unfollowGroup(groupId: String): Completable {
@@ -172,7 +172,7 @@ class GroupRepository @Inject constructor(
     }
 
     override fun banUserInGroup(userId: String, reason: String, groupId: String): Completable {
-        return api.banUserInGroup(groupId, GroupBanBody(reason, userId))
+        return api.banUserInGroup(groupId, GroupBanDto(reason, userId))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
@@ -185,9 +185,9 @@ class GroupRepository @Inject constructor(
 
     override fun updateGroupAdmin(
         subscriptionId: String,
-        updateGroupAdmin: UpdateGroupAdmin
+        updateGroupAdminDto: UpdateGroupAdminDto
     ): Completable {
-        return api.updateGroupAdmin(subscriptionId, updateGroupAdmin)
+        return api.updateGroupAdmin(subscriptionId, updateGroupAdminDto)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }

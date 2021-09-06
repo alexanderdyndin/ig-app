@@ -2,8 +2,8 @@ package com.intergroupapplication.data.repository
 
 import android.annotation.SuppressLint
 import com.intergroupapplication.data.mappers.UserProfileMapper
-import com.intergroupapplication.data.model.UpdateAvatarModel
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.dto.UpdateAvatarDto
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.CreateUserEntity
 import com.intergroupapplication.domain.entity.UserEntity
@@ -34,7 +34,7 @@ class UserProfileRepository @Inject constructor(
     @SuppressLint("CheckResult")
     override fun changeUserProfileAvatar(avatar: String): Single<String> =
         getUserProfile()
-            .flatMap { api.changeUserAvatar(it.id, UpdateAvatarModel(avatar)) }
+            .flatMap { api.changeUserAvatar(it.id, UpdateAvatarDto(avatar)) }
             .map { it.avatar }
             .doOnError {
                 if (it is HttpException) {
