@@ -14,5 +14,6 @@ class UserProfileResponseDto(
     val gender: String,
     @SerializedName("user")
     val userDto: UserDto,
-    val avatar: String
+    val avatar: String,
+    val stats: StatsDto
 )

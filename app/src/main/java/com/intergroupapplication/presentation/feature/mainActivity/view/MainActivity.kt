@@ -80,8 +80,6 @@ class MainActivity : FragmentActivity() {
     @Inject
     lateinit var modelFactory: ViewModelFactory
 
-    private val viewModel: MainActivityViewModel by viewModels { modelFactory }
-
     @Inject
     lateinit var initializerAppodeal: InitializerLocal
 
@@ -121,6 +119,8 @@ class MainActivity : FragmentActivity() {
     private lateinit var lifecycleDisposable: CompositeDisposable
 
     private var lastUploadedAvatar: String? = null
+
+    private val viewModel: MainActivityViewModel by viewModels { modelFactory }
 
     /**
      *  Billing
@@ -163,8 +163,6 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
         lifecycleDisposable = CompositeDisposable()
-        //Appodeal.setTesting(true)
-        viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
         initializerAppodeal.initialize()
         setTheme(R.style.ActivityTheme)
         setContentView(R.layout.activity_main)

@@ -1,7 +1,9 @@
 package com.intergroupapplication.data.mappers
 
+import com.intergroupapplication.data.model.SocialAuthModel
 import com.intergroupapplication.data.network.dto.LoginDto
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.SocialAuthEntity
 import javax.inject.Inject
 
 /**
@@ -19,5 +21,15 @@ class LoginMapper @Inject constructor() {
         LoginDto(
             email = from.email,
             password = from.password
+        )
+
+    fun mapToDomainEntity(from: SocialAuthModel) =
+        SocialAuthEntity(
+            authToken = from.authToken
+        )
+
+    fun mapToDataModel(from: SocialAuthEntity) =
+        SocialAuthModel(
+            authToken = from.authToken
         )
 }

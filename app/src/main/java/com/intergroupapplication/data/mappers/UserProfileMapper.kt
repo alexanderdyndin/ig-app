@@ -3,10 +3,7 @@ package com.intergroupapplication.data.mappers
 import com.intergroupapplication.data.db.entity.AuthorDb
 import com.intergroupapplication.data.db.entity.UserProfileDb
 import com.intergroupapplication.data.model.CommentUserModel
-import com.intergroupapplication.data.network.dto.AdDto
-import com.intergroupapplication.data.network.dto.AuthorDto
-import com.intergroupapplication.data.network.dto.UserProfileDto
-import com.intergroupapplication.data.network.dto.UserProfileResponseDto
+import com.intergroupapplication.data.network.dto.*
 import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.di.qualifier.PointDateFormatter
 import com.intergroupapplication.domain.entity.*
@@ -148,7 +145,8 @@ class UserProfileMapper @Inject constructor(
             email = from.userDto.email,
             isBlocked = from.userDto.isBlocked,
             isActive = from.userDto.isActive,
-            avatar = from.avatar
+            avatar = from.avatar,
+            stats = mapToDomainEntity(from.stats)
         )
 
     fun mapToDomainEntity(from: AdDto) =
@@ -175,5 +173,21 @@ class UserProfileMapper @Inject constructor(
             from.limitOfAdsComments,
             from.firstAdIndexComments,
             from.noOfDataBetweenAdsComments
+        )
+
+    fun mapToDataModel(from: StatsEntity): StatsDto =
+        StatsDto(
+            from.posts,
+            from.comments,
+            from.likes,
+            from.dislikes
+        )
+
+    fun mapToDomainEntity(from: StatsDto): StatsEntity =
+        StatsEntity(
+            from.posts,
+            from.comments,
+            from.likes,
+            from.dislikes
         )
 }

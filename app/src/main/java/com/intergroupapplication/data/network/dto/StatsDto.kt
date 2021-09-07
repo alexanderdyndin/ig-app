@@ -1,6 +1,6 @@
-package com.intergroupapplication.data.model
+package com.intergroupapplication.data.network.dto
 
-data class StatsModel(
+data class StatsDto(
     val posts: Int,
     val comments: Int,
     val likes: Int,

@@ -1,12 +1,12 @@
 package com.intergroupapplication.presentation.feature.agreements.view
 
-import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
@@ -15,12 +15,11 @@ import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment.Companion.RES_ID
 import com.intergroupapplication.presentation.feature.agreements.viewmodel.AgreementsViewModel
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -75,7 +74,7 @@ class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
         clicks(btnNext)
             .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { presenter.next() }.let(compositeDisposable::add)
+            .subscribe { viewModel.next() }.let(compositeDisposable::add)
     }
 
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
@@ -110,26 +109,26 @@ class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
     }
 
     private fun initBtn() {
-        conditionsPolicy.clicks().subscribe {
-            val bundle = bundleOf(
-                KEY_PATH to URL_PRIVACY_POLICY,
-                KEY_TITLE to RES_ID_PRIVACY_POLICY
+        privacyPolicy.clicks().subscribe {
+            val bundle = bundleOf(RES_ID to RES_ID_PRIVACY_POLICY)
+            findNavController().navigate(
+                R.id.action_AgreementsFragment2_to_agreementFragment,
+                bundle
             )
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
-        conditionsAgreement.clicks().subscribe {
-            val bundle = bundleOf(
-                KEY_PATH to URL_TERMS_OF_USE,
-                KEY_TITLE to RES_ID_TERMS_OF_USE
+        userAgreement.clicks().subscribe {
+            val bundle = bundleOf(RES_ID to RES_ID_TERMS_OF_USE)
+            findNavController().navigate(
+                R.id.action_AgreementsFragment2_to_agreementFragment,
+                bundle
             )
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
-        conditionsCopyrightHolders.clicks().subscribe {
-            val bundle = bundleOf(
-                KEY_PATH to URL_RIGHT_HOLDERS,
-                KEY_TITLE to RES_ID_RIGHT_HOLDERS
+        copyrightAgreement.clicks().subscribe {
+            val bundle = bundleOf(RES_ID to RES_ID_RIGHTHOLDERS)
+            findNavController().navigate(
+                R.id.action_AgreementsFragment2_to_agreementFragment,
+                bundle
             )
-            findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
     }
 

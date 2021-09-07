@@ -24,6 +24,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentLogin2Binding
 import com.intergroupapplication.di.qualifier.LoginHandler
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.SocialAuthEntity
 import com.intergroupapplication.domain.exception.EMAIL
 import com.intergroupapplication.domain.exception.FieldException
 import com.intergroupapplication.domain.exception.PASSWORD
@@ -69,10 +70,12 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     @ProvidePresenter
     fun providePresenter(): LoginPresenter = presenter
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     @Email(messageResId = R.string.email_not_valid)
     lateinit var mail: AppCompatEditText
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     @Password(
         scheme = Password.Scheme.ALPHA_NUMERIC, min = PASSWORD_REQUIRED_LENGTH,
@@ -207,12 +210,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
-
     }
 
     override fun deviceInfoExtracted() {

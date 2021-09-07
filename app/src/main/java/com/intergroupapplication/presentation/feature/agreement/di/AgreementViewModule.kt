@@ -5,7 +5,6 @@ import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import dagger.Module
 import dagger.Provides
@@ -22,8 +21,10 @@ class AgreementViewModule {
 
     @PerFragment
     @Provides
-    fun dialogDelegate(dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
-                       context: Context)
-            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+    fun dialogDelegate(
+        dialogManager: DialogManager, dialogProvider: DialogProvider,
+        context: Context
+    )
+            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, context)
 
 }

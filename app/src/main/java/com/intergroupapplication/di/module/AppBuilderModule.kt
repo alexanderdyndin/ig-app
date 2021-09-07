@@ -6,6 +6,8 @@ import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.di.scope.PerService
 import com.intergroupapplication.presentation.feature.addBlackListById.di.AddBlackListByIdViewModule
 import com.intergroupapplication.presentation.feature.addBlackListById.view.AddBlackListByIdFragment
+import com.intergroupapplication.presentation.feature.agreement.di.AgreementViewModule
+import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment
 import com.intergroupapplication.presentation.feature.agreements.di.AgreementsViewModule
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.intergroupapplication.presentation.feature.audiolist.di.AudioListViewModule
@@ -25,7 +27,8 @@ import com.intergroupapplication.presentation.feature.createuserprofile.di.Creat
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.feature.editpost.di.EditPostViewModule
 import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
-import com.intergroupapplication.presentation.feature.editpost.di.EditPostViewModule
+import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.image.di.ImageViewModule

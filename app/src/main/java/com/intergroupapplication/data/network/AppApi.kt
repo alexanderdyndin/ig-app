@@ -2,6 +2,7 @@ package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.CreateCommentModel
 import com.intergroupapplication.data.model.RegistrationResponse
+import com.intergroupapplication.data.model.SocialAuthModel
 import com.intergroupapplication.data.model.groupfollowers.GroupBanDto
 import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdminDto
 import com.intergroupapplication.data.network.dto.*
@@ -238,6 +239,6 @@ interface AppApi {
     fun deleteBell(@Path("post__id") postId: String): Completable
 
     @POST("social_auth/google/")
-    fun socialAuth(@Body socialAuthModel: SocialAuthModel): Single<TokenModel>
+    fun socialAuth(@Body socialAuthModel: SocialAuthModel): Single<TokenAccessDto>
 
 }

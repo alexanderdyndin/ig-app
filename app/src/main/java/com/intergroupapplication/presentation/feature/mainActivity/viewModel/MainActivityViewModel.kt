@@ -10,8 +10,8 @@ import com.intergroupapplication.domain.usecase.UserProfileUseCase
 import com.intergroupapplication.presentation.base.BaseViewModel
 import com.intergroupapplication.presentation.base.ImageUploadingState
 import com.intergroupapplication.presentation.feature.newVersionDialog.NewVersionDialog
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
@@ -23,7 +23,7 @@ class MainActivityViewModel @Inject constructor(
     private val userProfileUseCase: UserProfileUseCase,
     private val avatarUploadingUseCase: AvatarUploadingUseCase,
     private val errorHandler: ErrorHandler
-) : ViewModel() {
+) : BaseViewModel() {
 
     val imageUploadingState = PublishSubject.create<ImageUploadingState>()
 
@@ -32,7 +32,8 @@ class MainActivityViewModel @Inject constructor(
             appStatusUseCase.getAppStatus(BuildConfig.VERSION_NAME)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ },
+                .subscribe(
+                    { },
                     {
                         if (it is NewVersionException) {
                             Timber.d(it)
