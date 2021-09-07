@@ -32,8 +32,8 @@ import com.intergroupapplication.presentation.customview.RichEditor
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
 import com.intergroupapplication.presentation.feature.createpost.presenter.CreatePostPresenter
-import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -142,10 +142,10 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                     showImageUploaded(
                         result.getString(PostBottomSheetFragment.DATA_KEY, "")
                     )
-                PostBottomSheetFragment.DELETE_MEDIA_CODE ->{
-                    result.getString(PostBottomSheetFragment.DATA_KEY)?.let{
+                PostBottomSheetFragment.DELETE_MEDIA_CODE -> {
+                    result.getString(PostBottomSheetFragment.DATA_KEY)?.let {
                         loadingMedias.remove(it)
-                        richEditor.html = richEditor.html?.replace(it,"")
+                        richEditor.html = richEditor.html?.replace(it, "")
                     }
                 }
             }
@@ -175,8 +175,9 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                             type.name.contains("FONT_COLOR") -> {
                                 childFragmentManager.setResult(
                                     MEDIA_INTERACTION_REQUEST_CODE,
-                                        METHOD_KEY to CHANGE_COLOR,
-                                        COLOR_KEY to type.color)
+                                    METHOD_KEY to CHANGE_COLOR,
+                                    COLOR_KEY to type.color
+                                )
                                 createPostBinding.icEditColor.setImageDrawable(
                                     colorDrawableGateway.getDrawableByColor(type.color)
                                 )
@@ -284,20 +285,23 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                 gonePanelStyleText()
                 childFragmentManager.setResult(
                     MEDIA_INTERACTION_REQUEST_CODE,
-                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
-                        ACTIVATED_KEY to false)
+                    METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                    ACTIVATED_KEY to false
+                )
             } else {
                 it.activated(true)
                 showPanelStyleText()
                 childFragmentManager.run {
                     setResult(
                         MEDIA_INTERACTION_REQUEST_CODE,
-                            METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
-                            ACTIVATED_KEY to true)
+                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                        ACTIVATED_KEY to true
+                    )
                     setResult(
                         MEDIA_INTERACTION_REQUEST_CODE,
-                            METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
-                            ACTIVATED_KEY to false)
+                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
+                        ACTIVATED_KEY to false
+                    )
                 }
             }
         }
@@ -310,19 +314,23 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
                 gonePanelGravity()
                 childFragmentManager.setResult(
                     MEDIA_INTERACTION_REQUEST_CODE,
-                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
-                        ACTIVATED_KEY to false)
+                    METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
+                    ACTIVATED_KEY to false
+                )
             } else {
                 it.activated(true)
                 showPanelGravity()
                 childFragmentManager.run {
-                    setResult(MEDIA_INTERACTION_REQUEST_CODE,
-                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
-                        ACTIVATED_KEY to true)
                     setResult(
                         MEDIA_INTERACTION_REQUEST_CODE,
-                            METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
-                            ACTIVATED_KEY to false)
+                        METHOD_KEY to IC_EDIT_ALIGN_METHOD_CODE,
+                        ACTIVATED_KEY to true
+                    )
+                    setResult(
+                        MEDIA_INTERACTION_REQUEST_CODE,
+                        METHOD_KEY to IC_EDIT_TEXT_METHOD_CODE,
+                        ACTIVATED_KEY to false
+                    )
                 }
             }
         }
@@ -330,16 +338,20 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
 
     private fun setupIcEditColor() {
         createPostBinding.icEditColor.setOnClickListener {
-            childFragmentManager.setResult(MEDIA_INTERACTION_REQUEST_CODE,
-                METHOD_KEY to IC_EDIT_COLOR_METHOD_CODE)
+            childFragmentManager.setResult(
+                MEDIA_INTERACTION_REQUEST_CODE,
+                METHOD_KEY to IC_EDIT_COLOR_METHOD_CODE
+            )
             createPostBinding.mediaHolder.hide()
         }
     }
 
     private fun setupIcAttachFile() {
         createPostBinding.icAttachFile.setOnClickListener {
-            childFragmentManager.setResult(MEDIA_INTERACTION_REQUEST_CODE,
-                METHOD_KEY to IC_ATTACH_FILE_METHOD_CODE)
+            childFragmentManager.setResult(
+                MEDIA_INTERACTION_REQUEST_CODE,
+                METHOD_KEY to IC_ATTACH_FILE_METHOD_CODE
+            )
             gonePanelStyleText()
             gonePanelGravity()
             createPostBinding.mediaHolder.hide()
@@ -371,12 +383,12 @@ open class CreatePostFragment : BaseFragment(), CreatePostView {
     }
 
     private fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        when(chooseMedia.type){
+        when (chooseMedia.type) {
             MediaType.AUDIO -> {
                 namesMap[chooseMedia.url] = chooseMedia.name
                 richEditor.insertAudio(chooseMedia.url)
             }
-            MediaType.IMAGE ->{
+            MediaType.IMAGE -> {
                 val fileEntity = FileEntity(
                     0, chooseMedia.url, false, "",
                     chooseMedia.url.substringAfterLast("/"), 0, 0

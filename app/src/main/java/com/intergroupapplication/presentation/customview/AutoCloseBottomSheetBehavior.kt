@@ -13,7 +13,8 @@ class AutoCloseBottomSheetBehavior<V : View>(context: Context, attrs: AttributeS
     override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: V, event: MotionEvent):
             Boolean {
         if (event.action == MotionEvent.ACTION_DOWN &&
-                state == STATE_HALF_EXPANDED) {
+            state == STATE_HALF_EXPANDED
+        ) {
             val outRect = Rect()
             child.getGlobalVisibleRect(outRect)
             if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
@@ -23,5 +24,4 @@ class AutoCloseBottomSheetBehavior<V : View>(context: Context, attrs: AttributeS
 
         return super.onInterceptTouchEvent(parent, child, event)
     }
-
 }

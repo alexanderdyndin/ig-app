@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -27,6 +27,7 @@ import com.intergroupapplication.databinding.FragmentUserListBinding
 import com.intergroupapplication.di.qualifier.*
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.addBlackListById.view.AddBlackListByIdFragment
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
@@ -45,7 +46,7 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     }
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
     @Inject
     @All
@@ -83,7 +84,7 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     @Administrators
     lateinit var adapterAdministratorAdd: ConcatAdapter
 
-    private lateinit var viewModel: UserListViewModel
+    private val viewModel: UserListViewModel by viewModels { modelFactory }
     private var groupId: String? = null
 
     private var isAdmin = false
@@ -108,12 +109,6 @@ class UserListFragment : BaseFragment(), DialogFragmentCallBack {
     private lateinit var toolbarBackAction: ImageButton
 
     override fun layoutRes() = R.layout.fragment_user_list
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel =
-            ViewModelProvider(requireActivity(), modelFactory)[UserListViewModel::class.java]
-    }
 
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

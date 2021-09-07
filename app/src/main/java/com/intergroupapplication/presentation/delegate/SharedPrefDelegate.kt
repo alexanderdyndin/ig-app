@@ -8,9 +8,11 @@ import kotlin.reflect.KProperty
 /**
  * Created by abakarmagomedov on 06/08/2018 at project InterGroupApplication.
  */
-class SharedPrefDelegate<O, T>(private val type: Class<T>,
-                               private val gson: Gson,
-                               private val sharedPreferences: SharedPreferences) : ReadWriteProperty<O, T?> {
+class SharedPrefDelegate<O, T>(
+    private val type: Class<T>,
+    private val gson: Gson,
+    private val sharedPreferences: SharedPreferences
+) : ReadWriteProperty<O, T?> {
 
     var value: T? = null
 
@@ -29,5 +31,4 @@ class SharedPrefDelegate<O, T>(private val type: Class<T>,
 
         this.value = value
     }
-
 }

@@ -2,7 +2,6 @@ package com.intergroupapplication.domain
 
 import android.app.Activity
 import android.graphics.Rect
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -14,6 +13,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import java.lang.ref.WeakReference
 
 private const val KEYBOARD_MIN_HEIGHT_RATIO = 0.15
+
 object KeyboardVisibilityEvent {
 
     @Suppress("unused")
@@ -128,14 +128,8 @@ private class SimpleUnregister constructor(
 
         if (null != activity && null != globalLayoutListener) {
             val activityRoot = KeyboardVisibilityEvent.getActivityRoot(activity)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                activityRoot.viewTreeObserver
-                    .removeOnGlobalLayoutListener(globalLayoutListener)
-            } else {
-                @Suppress("DEPRECATION")
-                activityRoot.viewTreeObserver
-                    .removeGlobalOnLayoutListener(globalLayoutListener)
-            }
+            activityRoot.viewTreeObserver
+                .removeOnGlobalLayoutListener(globalLayoutListener)
         }
 
         activityWeakReference.clear()

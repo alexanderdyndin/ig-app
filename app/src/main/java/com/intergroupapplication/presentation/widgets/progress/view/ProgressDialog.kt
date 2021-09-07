@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.widgets.progress.view
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ class ProgressDialog : DialogFragment(), MediaProgressAdapter.ProgressCallback {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged", "InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_progress, null)
         parentFragmentManager.setFragmentResultListener(
@@ -125,5 +127,4 @@ class ProgressDialog : DialogFragment(), MediaProgressAdapter.ProgressCallback {
             progressMedia.removeProgressModel(chooseMedia.url)?.let { notifyItemRemoved(it) }
         }
     }
-
 }

@@ -1,7 +1,7 @@
 package com.intergroupapplication.domain.gateway
 
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.data.model.ImageUploadDto
+import com.intergroupapplication.data.network.dto.ImageUploadDto
 import io.reactivex.Observable
 import io.reactivex.Single
 

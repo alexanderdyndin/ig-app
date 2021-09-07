@@ -167,10 +167,11 @@ class GroupPostsAdapter(
                         0
                     )
                 }
-                compositeDisposable.add(getDateDescribeByString(item.date)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ postPrescription.text = it }, { Timber.e(it) })
+                compositeDisposable.add(
+                    getDateDescribeByString(item.date)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ postPrescription.text = it }, { Timber.e(it) })
                 )
                 countComments.text = view.context.getString(
                     R.string.comments_count,
@@ -324,5 +325,4 @@ class GroupPostsAdapter(
         super.unregisterAdapterDataObserver(observer)
         compositeDisposable.clear()
     }
-
 }

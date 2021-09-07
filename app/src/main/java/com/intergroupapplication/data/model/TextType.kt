@@ -1,7 +1,7 @@
 package com.intergroupapplication.data.model
 
 enum class TextType(
-    var color:Int = -1
+    var color: Int = -1
 ) {
     BOLD,
     ITALIC,

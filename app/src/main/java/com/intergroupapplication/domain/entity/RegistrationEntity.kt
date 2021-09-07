@@ -7,16 +7,17 @@ import android.os.Parcelable
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
 data class RegistrationEntity(
-        val email: String,
-        val password: String,
-        val emailConfirm: String,
-        val passwordConfirm: String):Parcelable {
+    val email: String,
+    val password: String,
+    val emailConfirm: String,
+    val passwordConfirm: String
+) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString()!!,
-            parcel.readString()!!,
-            parcel.readString()!!,
-            parcel.readString()!!) {
-    }
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(email)

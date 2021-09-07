@@ -60,10 +60,10 @@
     <!--New Design-->
     <string name="intergroup">InterGroup</string>
     <string name="welcome">Добро пожаловать!\nНаша социальная сеть предоставляет возможность общаться, слушать хорошую музыку, читать интересные новости, а также создавать группы по интересам.</string>
-    <string name="privacy_police">Политика конфиденциальности</string>
+    <string name="privacy_police"><u>Политика конфиденциальности</u></string>
     <string name="terms_accept">Условия принимаю\t\t\t</string>
-    <string name="terms_of_use">Пользовательское соглашение</string>
-    <string name="rightholders">Правообладателям</string>
+    <string name="terms_of_use"><u>Пользовательское соглашение</u></string>
+    <string name="rightholders"><u>Правообладателям</u></string>
     <string name="hardware_access">Предоставить доступ к аппаратным данным</string>
     <string name="already_registered">Я уже зарегистрирован в InterGroup</string>
     <string name="your_email">Укажите Ваш E-mail</string>
@@ -190,6 +190,9 @@
     <string name="demote">Разжаловать</string>
     <string name="unblock">Разблокировать</string>
     <string name="edit_post">Редактировать</string>
+    <string name="user_can_not_fount_your_group">Пользователь не сможет найти вашу группу</string>
+    <string name="add">Добавить</string>
+    <string name="years">%1$s года</string>
     <string name="answer_comment">ответил на ваш комментарий</string>
     <string name="dislike_your_comment">не понравился ваш</string>
     <string name="like_your_comment">понравился ваш</string>
@@ -198,13 +201,13 @@
     <string name="my_video">Моё видео</string>
     <string name="group_name_is_not_empty">Название группы не должно быть пустым</string>
     <string name="choose_audio">Выберите аудио</string>
-    <string name="choose_count_audio">Выбрано %1$s аудио</string>
+    <string name="choose_count_audio">Выбрано %1$i аудио</string>
     <string name="choose_video">Выберите видео</string>
-    <string name="choose_count_video">Выбрано %1$s видео</string>
+    <string name="choose_count_video">Выбрано %1$i видео</string>
     <string name="choose_photo">Выберите фото</string>
     <string name="choose_one_photo">Выбрана 1 фотография</string>
-    <string name="choose_two_photo">Выбрано %1$s фотографии</string>
-    <string name="choose_five_photo">Выбрано %1$s фотографий</string>
+    <string name="choose_two_photo">Выбрано %1$i фотографии</string>
+    <string name="choose_five_photo">Выбрано %1$i фотографий</string>
     <string name="close">Закрыть</string>
     <string name="delete_all">Удалить всё</string>
     <string name="playlist">Плейлист</string>

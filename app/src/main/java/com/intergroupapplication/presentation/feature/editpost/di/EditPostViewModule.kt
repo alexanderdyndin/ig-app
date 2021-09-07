@@ -12,7 +12,6 @@ import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import com.yalantis.ucrop.UCrop
 import dagger.Module
@@ -32,12 +31,12 @@ class EditPostViewModule {
         activity: EditPostFragment, cropOptions: UCrop.Options,
         api: AppApi, awsUploadingGateway: AwsUploadingGateway
     ): PhotoGateway =
-        PhotoRepository(activity.requireActivity(), cropOptions, api, awsUploadingGateway)
+        PhotoRepository(activity, cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-        FrescoImageLoader(context)
+    fun provideFrescoImageLoader(): ImageLoader =
+        FrescoImageLoader()
 
 
     @PerFragment
@@ -49,9 +48,9 @@ class EditPostViewModule {
     @PerFragment
     @Provides
     fun dialogDelegate(
-        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        dialogManager: DialogManager, dialogProvider: DialogProvider,
         context: Context
     )
             : DialogDelegate =
-        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+        DialogDelegate(dialogManager, dialogProvider, context)
 }

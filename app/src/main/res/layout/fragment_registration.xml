@@ -17,6 +17,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!--
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnLogin"
+                            style="@style/ButtonAuthStyle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/large_margin"
+                            android:layout_marginTop="@dimen/large_margin"
+                            android:layout_marginEnd="@dimen/large_margin"
+                            android:text="@string/already_registered"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+            -->
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvRegistration"
                 style="@style/TextTitleAuth20sp"
@@ -241,7 +256,7 @@
 
             <LinearLayout
                 android:id="@+id/logo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"

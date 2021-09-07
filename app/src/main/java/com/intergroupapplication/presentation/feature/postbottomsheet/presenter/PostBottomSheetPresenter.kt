@@ -20,17 +20,19 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PostBottomSheetPresenter @Inject constructor(private val photoGateway: PhotoGateway,
-                                                   private val errorHandler: ErrorHandler,
-                                                   private val appApi: AppApi)
-: BasePresenter<PostBottomSheetView>() {
+class PostBottomSheetPresenter @Inject constructor(
+    private val photoGateway: PhotoGateway,
+    private val errorHandler: ErrorHandler,
+    private val appApi: AppApi
+) : BasePresenter<PostBottomSheetView>() {
     private var uploadingDisposable: Disposable? = null
     private var mediaDisposable = CompositeDisposable()
     var groupId: String? = null
     private val processes: MutableMap<String, Disposable> = mutableMapOf()
 
-    fun attachMedia(loadMedia:(chooseMedia:ChooseMedia)->Unit, chooseMedias:Set<ChooseMedia>) {
-        mediaDisposable.add(Observable.fromIterable(chooseMedias)
+    fun attachMedia(loadMedia: (chooseMedia: ChooseMedia) -> Unit, chooseMedias: Set<ChooseMedia>) {
+        mediaDisposable.add(
+            Observable.fromIterable(chooseMedias)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -38,138 +40,176 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
                 }, {
                     it.printStackTrace()
                     errorHandler.handle(CanNotUploadPhoto())
-                }))
+                })
+        )
     }
 
     fun attachFromCamera() {
         mediaDisposable.add(photoGateway.loadFromCamera()
-                .filter { it.isNotEmpty() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    val chooseMedia = ChooseMedia(it,
-                        name = it.substringAfterLast("/"),
-                        type = MediaType.IMAGE)
-                    loadImage(chooseMedia)
-                }, {
-                    errorHandler.handle(CanNotUploadPhoto())}))
+            .filter { it.isNotEmpty() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                val chooseMedia = ChooseMedia(
+                    it,
+                    name = it.substringAfterLast("/"),
+                    type = MediaType.IMAGE
+                )
+                loadImage(chooseMedia)
+            }, {
+                errorHandler.handle(CanNotUploadPhoto())
+            })
+        )
     }
 
     fun loadVideo(chooseMedia: ChooseMedia) {
         var progress = 0f
-        processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,groupId,
-                appApi::uploadCommentsMedia)
-                .flatMap {
-                    photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
-                            name = chooseMedia.name,
-                            duration = chooseMedia.duration,
-                            type = chooseMedia.type), groupId, appApi::uploadCommentsMedia)
-                }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
-                .subscribe( {
-                    progress = it
-                    viewState.showImageUploadingProgress(it, chooseMedia)
-                }, {
-                    it.printStackTrace()
-                    errorHandler.handle(CanNotUploadVideo())
-                    viewState.showImageUploadingError(chooseMedia)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
-                    viewState.showImageUploaded(chooseMedia) })
+        processes[chooseMedia.url] = photoGateway.uploadImage(
+            chooseMedia.urlPreview, groupId,
+            appApi::uploadCommentsMedia
+        )
+            .flatMap {
+                photoGateway.uploadVideoToAws(
+                    ChooseMedia(
+                        chooseMedia.url, urlPreview = it,
+                        name = chooseMedia.name,
+                        duration = chooseMedia.duration,
+                        type = chooseMedia.type
+                    ), groupId, appApi::uploadCommentsMedia
+                )
+            }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
+            .subscribe({
+                progress = it
+                viewState.showImageUploadingProgress(it, chooseMedia)
+            }, {
+                it.printStackTrace()
+                errorHandler.handle(CanNotUploadVideo())
+                viewState.showImageUploadingError(chooseMedia)
+            }, {
+                if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                    viewState.showImageUploaded(chooseMedia)
+            })
         mediaDisposable.add(processes[chooseMedia.url]!!)
     }
 
     fun loadAudio(chooseMedia: ChooseMedia) {
         var progress = 0f
-        processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia,
-                groupId, appApi::uploadCommentsMedia)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
-                .subscribe( {
-                    progress = it
-                    viewState.showImageUploadingProgress(it, chooseMedia)
-                }, {
-                    it.printStackTrace()
-                    errorHandler.handle(CanNotUploadAudio())
-                    viewState.showImageUploadingError(chooseMedia)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
-                    viewState.showImageUploaded(chooseMedia) })
+        processes[chooseMedia.url] = photoGateway.uploadAudioToAws(
+            chooseMedia,
+            groupId, appApi::uploadCommentsMedia
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
+            .subscribe({
+                progress = it
+                viewState.showImageUploadingProgress(it, chooseMedia)
+            }, {
+                it.printStackTrace()
+                errorHandler.handle(CanNotUploadAudio())
+                viewState.showImageUploadingError(chooseMedia)
+            }, {
+                if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                    viewState.showImageUploaded(chooseMedia)
+            })
         mediaDisposable.add(processes[chooseMedia.url]!!)
 
     }
 
-    fun loadImage(chooseMedia:ChooseMedia) {
+    fun loadImage(chooseMedia: ChooseMedia) {
         var progress = 0f
-        processes[chooseMedia.url] = photoGateway.uploadImageToAws(chooseMedia.url, groupId,
-                appApi::uploadCommentsMedia)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    viewState.showImageUploadingStarted(chooseMedia) }
-                .subscribe( {
-                    progress = it
-                    viewState.showImageUploadingProgress(it, chooseMedia)
-                }, {
-                    it.printStackTrace()
-                    errorHandler.handle(CanNotUploadPhoto())
-                    viewState.showImageUploadingError(chooseMedia)
-                }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
-                    viewState.showImageUploaded(chooseMedia) })
+        processes[chooseMedia.url] = photoGateway.uploadImageToAws(
+            chooseMedia.url, groupId,
+            appApi::uploadCommentsMedia
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                viewState.showImageUploadingStarted(chooseMedia)
+            }
+            .subscribe({
+                progress = it
+                viewState.showImageUploadingProgress(it, chooseMedia)
+            }, {
+                it.printStackTrace()
+                errorHandler.handle(CanNotUploadPhoto())
+                viewState.showImageUploadingError(chooseMedia)
+            }, {
+                if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                    viewState.showImageUploaded(chooseMedia)
+            })
         mediaDisposable.add(processes[chooseMedia.url]!!)
     }
 
     fun retryLoading(chooseMedia: ChooseMedia) {
         var progress = 0f
         when (chooseMedia.type) {
-           MediaType.AUDIO -> {
-                processes[chooseMedia.url] = photoGateway.uploadAudioToAws(chooseMedia,
-                        groupId, appApi::uploadPostsMedia)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe( {
-                            progress = it
-                            viewState.showImageUploadingProgress(it, chooseMedia)
-                        }, {
-                            errorHandler.handle(CanNotUploadPhoto())
-                            viewState.showImageUploadingError(chooseMedia)
-                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
-                            viewState.showImageUploaded(chooseMedia) })
+            MediaType.AUDIO -> {
+                processes[chooseMedia.url] = photoGateway.uploadAudioToAws(
+                    chooseMedia,
+                    groupId, appApi::uploadPostsMedia
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        progress = it
+                        viewState.showImageUploadingProgress(it, chooseMedia)
+                    }, {
+                        errorHandler.handle(CanNotUploadPhoto())
+                        viewState.showImageUploadingError(chooseMedia)
+                    }, {
+                        if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                            viewState.showImageUploaded(chooseMedia)
+                    })
             }
             MediaType.VIDEO -> {
-                processes[chooseMedia.url] = photoGateway.uploadImage(chooseMedia.urlPreview,groupId,
-                    appApi::uploadPostsMedia)
-                        .flatMap {
-                            photoGateway.uploadVideoToAws(ChooseMedia(chooseMedia.url,urlPreview = it,
-                                    name = chooseMedia.name,
-                                    duration = chooseMedia.duration, type = MediaType.VIDEO),
-                                    groupId, appApi::uploadPostsMedia)
-                        }.subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
-                        .subscribe( {
-                            progress = it
-                            viewState.showImageUploadingProgress(it, chooseMedia)
-                        }, {
-                            it.printStackTrace()
-                            errorHandler.handle(CanNotUploadVideo())
-                            viewState.showImageUploadingError(chooseMedia)
-                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
-                            viewState.showImageUploaded(chooseMedia) })
+                processes[chooseMedia.url] = photoGateway.uploadImage(
+                    chooseMedia.urlPreview, groupId,
+                    appApi::uploadPostsMedia
+                )
+                    .flatMap {
+                        photoGateway.uploadVideoToAws(
+                            ChooseMedia(
+                                chooseMedia.url, urlPreview = it,
+                                name = chooseMedia.name,
+                                duration = chooseMedia.duration, type = MediaType.VIDEO
+                            ),
+                            groupId, appApi::uploadPostsMedia
+                        )
+                    }.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe { viewState.showImageUploadingStarted(chooseMedia) }
+                    .subscribe({
+                        progress = it
+                        viewState.showImageUploadingProgress(it, chooseMedia)
+                    }, {
+                        it.printStackTrace()
+                        errorHandler.handle(CanNotUploadVideo())
+                        viewState.showImageUploadingError(chooseMedia)
+                    }, {
+                        if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                            viewState.showImageUploaded(chooseMedia)
+                    })
             }
             MediaType.IMAGE -> {
-                processes[chooseMedia.url] = photoGateway.uploadImageToAws(chooseMedia.url, groupId,
-                    appApi::uploadPostsMedia)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe( {
-                            progress = it
-                            viewState.showImageUploadingProgress(it, chooseMedia)
-                        }, {
-                            errorHandler.handle(CanNotUploadPhoto())
-                            viewState.showImageUploadingError(chooseMedia)
-                        }, { if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
-                            viewState.showImageUploaded(chooseMedia) })
+                processes[chooseMedia.url] = photoGateway.uploadImageToAws(
+                    chooseMedia.url, groupId,
+                    appApi::uploadPostsMedia
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        progress = it
+                        viewState.showImageUploadingProgress(it, chooseMedia)
+                    }, {
+                        errorHandler.handle(CanNotUploadPhoto())
+                        viewState.showImageUploadingError(chooseMedia)
+                    }, {
+                        if (progress >= ImageUploadingDelegate.FULL_UPLOADED_PROGRESS)
+                            viewState.showImageUploaded(chooseMedia)
+                    })
             }
         }
         processes[chooseMedia.url]?.let {
@@ -187,8 +227,8 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
         processes.remove(chooseMedia.url)
     }
 
-    fun removeAllContents(){
-        processes.values.forEach{ disposable->
+    fun removeAllContents() {
+        processes.values.forEach { disposable ->
             disposable.dispose()
             mediaDisposable.remove(disposable)
         }
@@ -208,8 +248,8 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
     fun addAudioInAudiosUrl(audios: List<AudioEntity>) {
         photoGateway.setAudioUrls(audios.map { audioEntity ->
             return@map ChooseMedia(
-                "/groups/0/comments/${audioEntity.file.substringAfterLast("/")}",
-                name = audioEntity.song, author = audioEntity.artist,
+                "/groups/0/comments/${audioEntity.urlFile.substringAfterLast("/")}",
+                name = audioEntity.nameSong, author = audioEntity.artist,
                 duration = audioEntity.duration,
                 type = MediaType.AUDIO
             )
@@ -221,7 +261,7 @@ class PostBottomSheetPresenter @Inject constructor(private val photoGateway: Pho
             return@map ChooseMedia(
                 "/groups/0/comments/${videoEntity.file.substringAfterLast("/")}",
                 "/groups/0/comments/${videoEntity.preview.substringAfterLast("/")}",
-                name = videoEntity.title,duration = videoEntity.duration,
+                name = videoEntity.title, duration = videoEntity.duration,
                 type = MediaType.VIDEO
             )
         })

@@ -16,7 +16,8 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
 
-class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<GroupListsAdapter.GroupListViewHolder>() {
+class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>) :
+    RecyclerView.Adapter<GroupListsAdapter.GroupListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupListViewHolder {
         return GroupListViewHolder(parent.inflate(R.layout.fragment_group_category))
@@ -35,13 +36,16 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         var topPadding: Int
     )
 
-    private val positionValues = hashMapOf(0 to Coordinate(0, 0),
+    private val positionValues = hashMapOf(
+        0 to Coordinate(0, 0),
         1 to Coordinate(0, 0),
-        2 to Coordinate(0, 0))
+        2 to Coordinate(0, 0)
+    )
 
-    inner class GroupListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class GroupListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+        private val linearLayoutManager =
+            LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         private val viewBinding by viewBinding(FragmentGroupCategoryBinding::bind)
 
         private val list: RecyclerView = viewBinding.allGroupsList
@@ -56,7 +60,7 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
             scrollToPosition(position)
             if (adapter is ConcatAdapter) {
                 adapter.adapters.forEach { pagingAdapter ->
-                    if (pagingAdapter is PagingDataAdapter<*, *> ) {
+                    if (pagingAdapter is PagingDataAdapter<*, *>) {
                         pagingAdapter.addLoadStateListener {
                             when (it.refresh) {
                                 is LoadState.Loading -> {
@@ -106,4 +110,3 @@ class GroupListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         }
     }
 }
-

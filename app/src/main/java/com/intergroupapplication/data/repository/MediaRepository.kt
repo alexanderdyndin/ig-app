@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.flowable
-import com.intergroupapplication.data.mapper.MediaMapper
+import com.intergroupapplication.data.mappers.MediaMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
 import com.intergroupapplication.data.remotedatasource.AudiosRemoteRXDataSource
@@ -58,6 +58,4 @@ class MediaRepository @Inject constructor(
             pagingSourceFactory = { ImagesRemoteRXDataSource(api, mediaMapper) }
         ).flowable
     }
-
-
 }

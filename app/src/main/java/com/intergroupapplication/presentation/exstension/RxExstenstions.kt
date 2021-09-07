@@ -10,15 +10,15 @@ import io.reactivex.Single
  */
 fun <T> Observable<T>.handleLoading(view: CanShowLoading?): Observable<T> {
     return this.doOnSubscribe { view?.showLoading(true) }
-            .doFinally { view?.showLoading(false) }
+        .doFinally { view?.showLoading(false) }
 }
 
 fun <T> Single<T>.handleLoading(view: CanShowLoading?): Single<T> {
     return this.doOnSubscribe { view?.showLoading(true) }
-            .doFinally { view?.showLoading(false) }
+        .doFinally { view?.showLoading(false) }
 }
 
 fun Completable.handleLoading(view: CanShowLoading?): Completable {
     return this.doOnSubscribe { view?.showLoading(true) }
-            .doFinally { view?.showLoading(false) }
+        .doFinally { view?.showLoading(false) }
 }

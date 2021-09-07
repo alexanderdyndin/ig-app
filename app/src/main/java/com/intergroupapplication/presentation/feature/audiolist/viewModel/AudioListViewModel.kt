@@ -10,12 +10,11 @@ import io.reactivex.Flowable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-class AudioListViewModel @Inject constructor(private val useCase: MediaUseCase): ViewModel() {
+class AudioListViewModel @Inject constructor(private val useCase: MediaUseCase) : ViewModel() {
 
     @ExperimentalCoroutinesApi
     fun getAudios(): Flowable<PagingData<AudioEntity>> {
         return useCase.getAudio()
-                .cachedIn(viewModelScope)
+            .cachedIn(viewModelScope)
     }
-
 }

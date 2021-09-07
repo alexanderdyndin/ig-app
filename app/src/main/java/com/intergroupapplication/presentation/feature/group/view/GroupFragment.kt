@@ -6,7 +6,7 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -29,6 +29,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
@@ -52,9 +53,9 @@ class GroupFragment : BaseFragment(), GroupView,
     companion object {
         private const val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
         const val GROUP_ID = "group_id"
+        const val GROUP = "group"
         const val IS_ADMIN = "is_admin"
         const val POST_ID = "post_id"
-        const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
 
     private val viewBinding by viewBinding(FragmentGroupBinding::bind)
@@ -68,7 +69,8 @@ class GroupFragment : BaseFragment(), GroupView,
 
     private lateinit var groupId: String
 
-    private var isGroupCreatedNow = false
+    private var groupEntity: GroupEntity.Group? = null
+
     private var isAdmin = false
 
     @Inject
@@ -88,14 +90,14 @@ class GroupFragment : BaseFragment(), GroupView,
     lateinit var footerAdapter: PagingLoadingAdapter
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
     private var job: Job = Job()
 
-    private lateinit var viewModel: GroupViewModel
+    private val viewModel: GroupViewModel by viewModels { modelFactory }
 
     private var mIsTheTitleContainerVisible = true
 
@@ -132,8 +134,7 @@ class GroupFragment : BaseFragment(), GroupView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString(GROUP_ID)!!
-        isGroupCreatedNow = arguments?.getBoolean(IS_GROUP_CREATED_NOW)!!
-        viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
+        groupEntity = arguments?.getParcelable(GROUP)
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         prepareAdapter()
         compositeDisposable.add(
@@ -178,6 +179,9 @@ class GroupFragment : BaseFragment(), GroupView,
         groupAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
         toolbarBackAction.setOnClickListener { findNavController().popBackStack() }
         appbar.addOnOffsetChangedListener(this)
+        groupEntity?.let {
+            showGroupInfo(it)
+        }
         presenter.getGroupDetailInfo(groupId)
         groupStrength.setOnClickListener {
             val data = bundleOf(GROUP_ID to groupId, IS_ADMIN to isAdmin)
@@ -339,7 +343,6 @@ class GroupFragment : BaseFragment(), GroupView,
                 compositeDisposable.add(viewModel.editPost(post)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe { }
                     .doFinally { adapter.notifyItemChanged(pos) }
                     .subscribe({
                         item.isPinned = !item.isPinned
@@ -581,5 +584,4 @@ class GroupFragment : BaseFragment(), GroupView,
                 )
             }.let { { d: Disposable -> compositeDisposable.add(d) } }
     }
-
 }

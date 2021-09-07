@@ -1,3 +1,5 @@
 package com.intergroupapplication.domain.exception
 
-class ForbiddenException(override val message: String?) : Exception(message)
+class ForbiddenException(
+    override val message: String?
+) : Exception(message)

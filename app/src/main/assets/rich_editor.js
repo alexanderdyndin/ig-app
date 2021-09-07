@@ -280,7 +280,7 @@ RE.restorerange = function(){
 
 RE.enabledEditingItems = function(e) {
     var items = [];
-    RE.focus()
+   
     if (window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color")) {
         items.push('background_color_' + window.getComputedStyle(window.getSelection().getRangeAt(0).startContainer.parentNode, "background-color").getPropertyValue('background-color'));
      }

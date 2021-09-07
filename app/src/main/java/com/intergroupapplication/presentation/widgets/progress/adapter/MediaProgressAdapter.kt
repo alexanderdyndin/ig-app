@@ -103,5 +103,4 @@ class MediaProgressAdapter : RecyclerView.Adapter<MediaProgressAdapter.MediaProg
         fun cancelUploading(chooseMedia: ChooseMedia)
         fun removeContent(chooseMedia: ChooseMedia)
     }
-
 }

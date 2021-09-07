@@ -11,11 +11,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ShortDynamicLink
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.firebase.dynamiclinks.DynamicLink
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
 import com.intergroupapplication.databinding.ItemCommentAnswerBinding
@@ -436,8 +436,7 @@ class CommentsAdapter(
                 replyButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
-
-                postDislike.setOnClickListener {
+                postDislikes.setOnClickListener {
                     likeClickListener.invoke(
                         item.reacts.isLike,
                         !item.reacts.isDislike,
@@ -445,7 +444,7 @@ class CommentsAdapter(
                         layoutPosition
                     )
                 }
-                postLike.setOnClickListener {
+                postLikes.setOnClickListener {
                     likeClickListener.invoke(
                         !item.reacts.isLike,
                         item.reacts.isDislike,
@@ -532,7 +531,7 @@ class CommentsAdapter(
                 replyAnswerButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
-                postDislike2.setOnClickListener {
+                postDislikes2.setOnClickListener {
                     likeClickListener.invoke(
                         item.reacts.isLike,
                         !item.reacts.isDislike,
@@ -540,7 +539,7 @@ class CommentsAdapter(
                         layoutPosition
                     )
                 }
-                postLike2.setOnClickListener {
+                postLikes2.setOnClickListener {
                     likeClickListener.invoke(
                         !item.reacts.isLike,
                         item.reacts.isDislike,
@@ -599,5 +598,4 @@ class CommentsAdapter(
         }
         super.onViewRecycled(holder)
     }
-
 }

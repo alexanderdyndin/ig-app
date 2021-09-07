@@ -89,5 +89,4 @@ class CreateGroupPresenter @Inject constructor(
     private fun stopImageUploading() {
         uploadingDisposable?.dispose()
     }
-
 }

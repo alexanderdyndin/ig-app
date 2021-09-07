@@ -1,3 +1,5 @@
 package com.intergroupapplication.domain.exception
 
-class ImeiException(override val message: String?) : Exception(message)
+class ImeiException(
+    override val message: String?
+) : Exception(message)

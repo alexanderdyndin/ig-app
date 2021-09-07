@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.customview
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -15,7 +16,6 @@ import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
-import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ui.TimeBar
@@ -166,81 +166,6 @@ class CustomTimeBar @JvmOverloads constructor(
         }
     }
 
-    @JvmOverloads
-    fun showScrubber(showAnimationDurationMs: Long =  /* showAnimationDurationMs= */0) {
-        if (scrubberScalingAnimator.isStarted) {
-            scrubberScalingAnimator.cancel()
-        }
-        scrubberScalingAnimator.setFloatValues(scrubberScale, SHOWN_SCRUBBER_SCALE)
-        scrubberScalingAnimator.duration = showAnimationDurationMs
-        scrubberScalingAnimator.start()
-    }
-
-    /**
-     * Sets the color for the portion of the time bar representing media before the playback position.
-     *
-     * @param playedColor The color for the portion of the time bar representing media before the
-     * playback position.
-     */
-    fun setPlayedColor(@ColorInt playedColor: Int) {
-        playedPaint.color = playedColor
-        invalidate()
-    }
-
-    /**
-     * Sets the color for the scrubber handle.
-     *
-     * @param scrubberColor The color for the scrubber handle.
-     */
-    fun setScrubberColor(@ColorInt scrubberColor: Int) {
-        scrubberPaint.color = scrubberColor
-        invalidate()
-    }
-
-    /**
-     * Sets the color for the portion of the time bar after the current played position up to the
-     * current buffered position.
-     *
-     * @param bufferedColor The color for the portion of the time bar after the current played
-     * position up to the current buffered position.
-     */
-    fun setBufferedColor(@ColorInt bufferedColor: Int) {
-        bufferedPaint.color = bufferedColor
-        invalidate()
-    }
-
-    /**
-     * Sets the color for the portion of the time bar after the current played position.
-     *
-     * @param unPlayedColor The color for the portion of the time bar after the current played
-     * position.
-     */
-    fun setUnPlayedColor(@ColorInt unPlayedColor: Int) {
-        unPlayedPaint.color = unPlayedColor
-        invalidate()
-    }
-
-    /**
-     * Sets the color for unPlayed ad markers.
-     *
-     * @param adMarkerColor The color for unPlayed ad markers.
-     */
-    fun setAdMarkerColor(@ColorInt adMarkerColor: Int) {
-        adMarkerPaint.color = adMarkerColor
-        invalidate()
-    }
-
-    /**
-     * Sets the color for played ad markers.
-     *
-     * @param playedAdMarkerColor The color for played ad markers.
-     */
-    fun setPlayedAdMarkerColor(@ColorInt playedAdMarkerColor: Int) {
-        playedAdMarkerPaint.color = playedAdMarkerColor
-        invalidate()
-    }
-
-    // TimeBar implementation.
     override fun addListener(listener: OnScrubListener) {
         Assertions.checkNotNull(listener)
         listeners.add(listener)
@@ -289,7 +214,7 @@ class CustomTimeBar @JvmOverloads constructor(
     override fun getPreferredUpdateDelay(): Long {
         val timeBarWidthDp: Int = pxToDp(density, progressBar.width())
         return if (timeBarWidthDp == 0 || duration == 0L || duration == C.TIME_UNSET) Long.MAX_VALUE
-            else duration / timeBarWidthDp
+        else duration / timeBarWidthDp
     }
 
     override fun setAdGroupTimesMs(
@@ -306,7 +231,6 @@ class CustomTimeBar @JvmOverloads constructor(
         update()
     }
 
-    // View methods.
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
         if (scrubbing && !enabled) {
@@ -321,6 +245,7 @@ class CustomTimeBar @JvmOverloads constructor(
         canvas.restore()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled || duration <= 0) {
             return false
@@ -350,7 +275,7 @@ class CustomTimeBar @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (scrubbing) {
-                stopScrubbing( /* canceled= */event.action == MotionEvent.ACTION_CANCEL)
+                stopScrubbing(event.action == MotionEvent.ACTION_CANCEL)
                 return true
             }
             else -> {
@@ -377,7 +302,7 @@ class CustomTimeBar @JvmOverloads constructor(
                     return true
                 }
                 KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> if (scrubbing) {
-                    stopScrubbing( /* canceled= */false)
+                    stopScrubbing(false)
                     return true
                 }
                 else -> {
@@ -392,7 +317,7 @@ class CustomTimeBar @JvmOverloads constructor(
     ) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
         if (scrubbing && !gainFocus) {
-            stopScrubbing( /* canceled= */false)
+            stopScrubbing(false)
         }
     }
 
@@ -486,11 +411,11 @@ class CustomTimeBar @JvmOverloads constructor(
         }
         if (action == AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) {
             if (scrubIncrementally(-positionIncrement)) {
-                stopScrubbing( /* canceled= */false)
+                stopScrubbing(false)
             }
         } else if (action == AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) {
             if (scrubIncrementally(positionIncrement)) {
-                stopScrubbing( /* canceled= */false)
+                stopScrubbing(false)
             }
         } else {
             return false
@@ -499,7 +424,6 @@ class CustomTimeBar @JvmOverloads constructor(
         return true
     }
 
-    // Internal methods.
     private fun startScrubbing(scrubPosition: Long) {
         this.scrubPosition = scrubPosition
         scrubbing = true
@@ -702,7 +626,7 @@ class CustomTimeBar @JvmOverloads constructor(
         ) {
             return
         }
-        lastExclusionRectangle = Rect( /* left= */0,  /* top= */0, width, height)
+        lastExclusionRectangle = Rect(0, 0, width, height)
         systemGestureExclusionRects = listOf(lastExclusionRectangle)
     }
 
@@ -774,7 +698,6 @@ class CustomTimeBar @JvmOverloads constructor(
          */
         private const val STOP_SCRUBBING_TIMEOUT_MS: Long = 1000
         private const val DEFAULT_INCREMENT_COUNT = 20
-        private const val SHOWN_SCRUBBER_SCALE = 1.0f
 
         /**
          * The name of the Android SDK view that most closely resembles this custom view. Used as the
@@ -793,5 +716,4 @@ class CustomTimeBar @JvmOverloads constructor(
             return (px / density).toInt()
         }
     }
-
 }

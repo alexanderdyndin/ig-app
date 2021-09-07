@@ -5,5 +5,4 @@ import io.reactivex.Completable
 interface ResendCodeGateway {
 
     fun resendCode(): Completable
-
 }

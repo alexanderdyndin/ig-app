@@ -197,6 +197,11 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registrationFragment_to_loginFragment"
+            app:destination="@id/loginActivity"
+            app:enterAnim="@anim/slide_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -341,10 +346,6 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <argument
-            android:name="isGroupCreatedNow"
-            app:argType="boolean"
-            android:defaultValue="false" />
         <action
             android:id="@+id/action_groupFragment_to_userListFragment"
             app:destination="@id/userListFragment"
@@ -360,6 +361,10 @@
         <argument
             android:name="owner"
             app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="group"
+            app:argType="com.intergroupapplication.domain.entity.GroupEntity$Group"
             app:nullable="true" />
         <action
             android:id="@+id/action_groupFragment_to_editPostFragment"
@@ -403,6 +408,13 @@
             android:name="page"
             app:argType="string"
             android:defaultValue="1" />
+        <action
+            android:id="@+id/action_commentsDetailsActivity_to_groupActivity"
+            app:destination="@id/groupActivity"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/userListFragment"
@@ -426,7 +438,10 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
-    <action android:id="@+id/action_global_newsFragment2" app:destination="@id/newsFragment"/>
+    <action
+        android:id="@+id/action_global_newsFragment2"
+        app:destination="@id/newsFragment"
+        app:popUpTo="@id/nav_graph" />
     <fragment
         android:id="@+id/audioListFragment"
         android:name="com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment"
@@ -448,5 +463,45 @@
             android:name="group_post_entity_key"
             app:argType="com.intergroupapplication.domain.entity.GroupPostEntity$PostEntity"
             app:nullable="false"/>
+    </fragment>
+    <action
+        android:id="@+id/action_global_groupListFragment2"
+        app:destination="@id/groupListFragment2"
+        app:popUpTo="@id/nav_graph" />
+    <action
+        android:id="@+id/action_global_splashActivity"
+        app:destination="@id/splashActivity"
+        app:popUpTo="@id/nav_graph" />
+    <action
+        android:id="@+id/action_global_AgreementsFragment2"
+        app:destination="@id/AgreementsFragment2"
+        app:popUpTo="@id/nav_graph" />
+    <action
+        android:id="@+id/action_global_createUserProfileActivity"
+        app:destination="@id/createUserProfileActivity"
+        app:popUpTo="@id/nav_graph" />
+    <action
+        android:id="@+id/action_global_registrationActivity"
+        app:destination="@id/registrationActivity"
+        app:popUpTo="@id/nav_graph" />
+    <action
+        android:id="@+id/action_global_confirmationMailActivity"
+        app:destination="@id/confirmationMailActivity"
+        app:popUpTo="@id/nav_graph" />
+    <action
+        android:id="@+id/action_global_audioListFragment"
+        app:destination="@id/audioListFragment"
+        app:popUpTo="@id/nav_graph" />
+    <action
+        android:id="@+id/action_global_loginActivity"
+        app:destination="@id/loginActivity"
+        app:popUpTo="@id/nav_graph" />
+    <fragment
+        android:id="@+id/agreementFragment"
+        android:name="com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment"
+        android:label="AgreementFragment" >
+        <argument
+            android:name="resId"
+            app:argType="integer" />
     </fragment>
 </navigation>

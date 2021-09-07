@@ -7,5 +7,4 @@ interface ComplaintsGateway {
     fun complaintPost(id: Int): Completable
 
     fun complaintComment(id: Int): Completable
-
 }

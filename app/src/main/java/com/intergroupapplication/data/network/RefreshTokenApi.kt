@@ -1,7 +1,7 @@
 package com.intergroupapplication.data.network
 
 import com.intergroupapplication.data.model.RefreshTokenModel
-import com.intergroupapplication.data.model.TokenModel
+import com.intergroupapplication.data.network.dto.TokenAccessDto
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -11,5 +11,5 @@ import retrofit2.http.POST
  */
 interface RefreshTokenApi {
     @POST("api/auth/refresh/")
-    fun refreshAccessToken(@Body refreshToken: RefreshTokenModel): Call<TokenModel>
+    fun refreshAccessToken(@Body refreshToken: RefreshTokenModel): Call<TokenAccessDto>
 }

@@ -1,8 +1,8 @@
 package com.intergroupapplication.presentation.feature.creategroup.di
 
 import android.content.Context
-import com.intergroupapplication.data.mapper.CreateGroupMapper
-import com.intergroupapplication.data.mapper.GroupMapper
+import com.intergroupapplication.data.mappers.CreateGroupMapper
+import com.intergroupapplication.data.mappers.group.GroupMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.repository.PhotoRepository
 import com.intergroupapplication.data.service.CreateGroupService
@@ -18,7 +18,6 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.delegate.ImageUploadingDelegate
 import com.intergroupapplication.presentation.feature.creategroup.view.CreateGroupFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import com.mobsandgeeks.saripaar.Validator
 import com.yalantis.ucrop.UCrop
@@ -40,13 +39,13 @@ class CreateGroupViewModule {
         fragment: CreateGroupFragment, cropOptions: UCrop.Options,
         api: AppApi, awsUploadingGateway: AwsUploadingGateway
     ): PhotoGateway =
-        PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
+        PhotoRepository(fragment, cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-        FrescoImageLoader(context)
+    fun provideFrescoImageLoader(): ImageLoader =
+        FrescoImageLoader()
 
     @PerFragment
     @Provides
@@ -78,11 +77,8 @@ class CreateGroupViewModule {
     @PerFragment
     @Provides
     fun dialogDelegate(
-        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        dialogManager: DialogManager, dialogProvider: DialogProvider,
         context: Context
-    )
-            : DialogDelegate =
-        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
-
+    ): DialogDelegate =
+        DialogDelegate(dialogManager, dialogProvider, context)
 }

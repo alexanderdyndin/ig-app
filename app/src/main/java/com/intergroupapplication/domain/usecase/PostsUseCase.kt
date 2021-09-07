@@ -24,9 +24,9 @@ class PostsUseCase @Inject constructor(
             groupPostEntity.images.map { FileRequestEntity(it.file, it.description, it.title) },
             groupPostEntity.audios.map {
                 AudioRequestEntity(
-                    it.file,
+                    it.urlFile,
                     it.description,
-                    it.song,
+                    it.nameSong,
                     it.artist,
                     it.genre,
                     it.duration

@@ -13,7 +13,6 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.MediaAdapter
 import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import com.yalantis.ucrop.UCrop
 import dagger.Module
@@ -62,16 +61,16 @@ class PostBottomSheetViewModule {
     @PerFragment
     @Provides
     fun providePhotoGateway(
-        fragmentComment: PostBottomSheetFragment,
+        fragment: PostBottomSheetFragment,
         cropOptions: UCrop.Options,
         api: AppApi, awsUploadingGateway: AwsUploadingGateway
     ): PhotoGateway =
-        PhotoRepository(fragmentComment.requireActivity(), cropOptions, api, awsUploadingGateway)
+        PhotoRepository(fragment, cropOptions, api, awsUploadingGateway)
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-        FrescoImageLoader(context)
+    fun provideFrescoImageLoader(): ImageLoader =
+        FrescoImageLoader()
 
 
     @PerFragment
@@ -88,8 +87,8 @@ class PostBottomSheetViewModule {
     @PerFragment
     @Provides
     fun dialogDelegate(
-        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        dialogManager: DialogManager, dialogProvider: DialogProvider,
         context: Context
-    )
-            : DialogDelegate = DialogDelegate(dialogManager, dialogProvider, toastManager, context)
+    ): DialogDelegate =
+        DialogDelegate(dialogManager, dialogProvider, context)
 }

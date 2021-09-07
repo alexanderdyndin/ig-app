@@ -6,17 +6,17 @@ import android.content.Context
 import com.google.firebase.messaging.RemoteMessage
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.NotificationCommentModel
-import com.intergroupapplication.device.notification.notificationcreators.NotificationCreator
 import com.intergroupapplication.device.notification.CreatorType
-import timber.log.Timber
+import com.intergroupapplication.device.notification.notificationcreators.NotificationCreator
 
 /**
  * Created by abakarmagomedov on 05/09/2018 at project InterGroupApplication.
  */
 class OnNewCommentAction(
-        private val notificationCreator: NotificationCreator<CreatorType.Comment>,
-        private val notificationManager: NotificationManager,
-        private val context: Context) : NotificationAction<RemoteMessage> {
+    private val notificationCreator: NotificationCreator<CreatorType.Comment>,
+    private val notificationManager: NotificationManager,
+    private val context: Context
+) : NotificationAction<RemoteMessage> {
 
 
     override fun proceed(action: RemoteMessage) {
@@ -33,15 +33,17 @@ class OnNewCommentAction(
 
     private fun onNewComment(comment: NotificationCommentModel) {
         val type = CreatorType.Comment(
-                comment.postId,
-                comment.name,
-                comment.groupId,
-                comment.commentId,
-                comment.message,
-                comment.page
+            comment.postId,
+            comment.name,
+            comment.groupId,
+            comment.commentId,
+            comment.message,
+            comment.page
         )
-        sendNotification(notificationCreator.create(type),
-            createNotificationId(comment.postId.toInt()*10,comment.message))
+        sendNotification(
+            notificationCreator.create(type),
+            createNotificationId(comment.postId.toInt() * 10, comment.message)
+        )
     }
 
     private fun sendNotification(notification: Notification, notificationId: Int) {
@@ -49,7 +51,7 @@ class OnNewCommentAction(
         notificationManager.notify(notificationId, notification)
     }
 
-    private fun createNotificationId(postId:Int,message:String):Int{
+    private fun createNotificationId(postId: Int, message: String): Int {
         return when {
             message.contains(context.getString(R.string.answer_comment)) -> {
                 postId
@@ -67,5 +69,4 @@ class OnNewCommentAction(
         }
 
     }
-
 }

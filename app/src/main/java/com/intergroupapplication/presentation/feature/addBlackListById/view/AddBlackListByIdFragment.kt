@@ -17,7 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -25,6 +25,7 @@ import com.intergroupapplication.R
 import com.intergroupapplication.data.model.AddBlackListUserModel
 import com.intergroupapplication.databinding.DialogAddBlackListByIdBinding
 import com.intergroupapplication.presentation.base.BaseFragment.Companion.GROUP_ID
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.addBlackListById.adapter.AddUserBlackListAdapter
 import com.intergroupapplication.presentation.feature.addBlackListById.viewmodel.AddBlackListByIdViewModel
 import com.intergroupapplication.presentation.feature.userlist.view.DialogFragmentCallBack
@@ -47,10 +48,10 @@ class AddBlackListByIdFragment : DialogFragment(R.layout.dialog_add_black_list_b
     lateinit var userAdapter: AddUserBlackListAdapter
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
     var callBack: DialogFragmentCallBack? = null
-    private lateinit var viewModel: AddBlackListByIdViewModel
+    private val viewModel: AddBlackListByIdViewModel by viewModels { modelFactory }
     private var groupId = ""
     private var compositeDisposable = CompositeDisposable()
     private var lastPosition = 0
@@ -82,10 +83,6 @@ class AddBlackListByIdFragment : DialogFragment(R.layout.dialog_add_black_list_b
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.BlockByIdDialog)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            modelFactory
-        )[AddBlackListByIdViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -214,5 +211,4 @@ class AddBlackListByIdFragment : DialogFragment(R.layout.dialog_add_black_list_b
         if (enable) setTextAppearance(R.style.TextDark12sp)
         else setTextAppearance(R.style.TextHelp12sp)
     }
-
 }

@@ -2,13 +2,13 @@ package com.intergroupapplication.domain.usecase
 
 import android.annotation.SuppressLint
 import androidx.paging.PagingData
-import com.intergroupapplication.data.model.group_followers.UpdateGroupAdmin
+import com.intergroupapplication.data.model.AddBlackListUserModel
+import com.intergroupapplication.data.model.groupfollowers.UpdateGroupAdminDto
 import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.entity.GroupUserEntity
 import com.intergroupapplication.domain.entity.UserRole
 import com.intergroupapplication.domain.gateway.GroupGateway
 import com.intergroupapplication.domain.gateway.UserProfileGateway
-import com.intergroupapplication.data.model.AddBlackListUserModel
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -77,7 +77,7 @@ class GroupUseCase @Inject constructor(
         groupGateway.deleteUserFromBansGroup(userId)
 
     fun updateGroupAdmin(subscriptionId: String, toAdmin: Boolean): Completable {
-        val updateGroupAdmin = UpdateGroupAdmin(
+        val updateGroupAdmin = UpdateGroupAdminDto(
             isAdmin = toAdmin
         )
         return groupGateway.updateGroupAdmin(subscriptionId, updateGroupAdmin)
