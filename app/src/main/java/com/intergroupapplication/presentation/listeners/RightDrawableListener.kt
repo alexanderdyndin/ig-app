@@ -18,14 +18,13 @@ class RightDrawableListener : View.OnTouchListener {
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         val drawableRight = 2
         if (event.action == MotionEvent.ACTION_UP && view is AppCompatEditText
-                && view.compoundDrawables[drawableRight] != null) {
+            && view.compoundDrawables[drawableRight] != null
+        ) {
 
             if (event.rawX >= (view.right - view.compoundDrawables[drawableRight].bounds.width() - CLICK_OFFSET)) {
                 view.text?.let {
-                    //if (it.isNotEmpty()) {
-                        clickListener.invoke()
-                        it.clear()
-                    //}
+                    clickListener.invoke()
+                    it.clear()
                 }
                 return true
             } else {
@@ -36,6 +35,4 @@ class RightDrawableListener : View.OnTouchListener {
         }
         return false
     }
-
-
 }
