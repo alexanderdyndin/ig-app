@@ -1,7 +1,10 @@
 package com.intergroupapplication.domain.gateway
 
+import com.intergroupapplication.data.model.SocialAuthModel
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.SocialAuthEntity
 import com.intergroupapplication.domain.entity.TokenEntity
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -9,4 +12,5 @@ import io.reactivex.Single
  */
 interface LoginGateway {
     fun performLogin(loginEntity: LoginEntity): Single<TokenEntity>
+    fun performLogin(socialAuthEntity: SocialAuthEntity): Single<TokenEntity>
 }

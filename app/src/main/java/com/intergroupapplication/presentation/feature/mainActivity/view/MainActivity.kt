@@ -32,6 +32,7 @@ import com.intergroupapplication.di.qualifier.DashDateFormatter
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.initializators.InitializerLocal
+import com.intergroupapplication.presentation.base.ImageUploadingState
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -117,6 +118,10 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var navController: NavController
 
+    private lateinit var lifecycleDisposable: CompositeDisposable
+
+    private var lastUploadedAvatar: String? = null
+
     /**
      *  Billing
      */
@@ -157,6 +162,9 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
+        lifecycleDisposable = CompositeDisposable()
+        //Appodeal.setTesting(true)
+        viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
         initializerAppodeal.initialize()
         setTheme(R.style.ActivityTheme)
         setContentView(R.layout.activity_main)
@@ -184,19 +192,6 @@ class MainActivity : FragmentActivity() {
             findViewById(R.id.navigationCoordinator),
             false
         )
-        viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
-            .setOnClickListener {
-                if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                    || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
-                ) {
-                    dialogDelegate.showDialog(
-                        R.layout.dialog_camera_or_gallery,
-                        mapOf(
-                            R.id.fromCamera to { loadFromCamera() },
-                            R.id.fromGallery to { loadFromGallery() })
-                    )
-                }
-            }
         val navRecycler = viewDrawer.findViewById<RecyclerView>(R.id.navigationRecycler)
         navRecycler.adapter = navigationAdapter
         navRecycler.itemAnimator = null
@@ -227,11 +222,9 @@ class MainActivity : FragmentActivity() {
             sliderBackgroundColorRes = R.color.mainBlack
             headerView = viewDrawer
             translucentStatusBar = true
-            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
-                .setOnClickListener {
-                    if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
-                    ) {
+            profileAvatarHolder.setOnClickListener {
+                when (profileAvatarHolder.state) {
+                    AvatarImageUploadingView.AvatarUploadingState.UPLOADED -> {
                         dialogDelegate.showDialog(
                             R.layout.dialog_camera_or_gallery,
                             mapOf(
@@ -239,57 +232,84 @@ class MainActivity : FragmentActivity() {
                                 R.id.fromGallery to { loadFromGallery() })
                         )
                     }
+                    AvatarImageUploadingView.AvatarUploadingState.ERROR -> {
+                        lastUploadedAvatar?.let {
+                            viewModel.uploadImageFromGallery(it)
+                        }
+                    }
+                    AvatarImageUploadingView.AvatarUploadingState.NONE -> {
+                        dialogDelegate.showDialog(
+                            R.layout.dialog_camera_or_gallery,
+                            mapOf(
+                                R.id.fromCamera to { loadFromCamera() },
+                                R.id.fromGallery to { loadFromGallery() })
+                        )
+                    }
+                    else -> {
+                    }
                 }
+            }
         }.apply {
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
                 .setOnClickListener { closeDrawer() }
         }
-        compositeDisposable.add(
-            viewModel.getUserProfile()
-                .subscribeOn(Schedulers.io())
+        lifecycleDisposable.add(viewModel.getUserProfile()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ userEntity ->
+                val date = dateFormatter.parse(userEntity.birthday)
+                val current = Date()
+                date?.let {
+                    viewDrawer.findViewById<TextView>(R.id.ageText).text =
+                        getString(R.string.years, getDiffYears(it, current).toString())
+                }
+                when (userEntity.gender) {
+                    "male" ->
+                        viewDrawer.findViewById<TextView>(R.id.ageText)
+                            .setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.ic_male,
+                                0,
+                                0,
+                                0
+                            )
+                    "female" ->
+                        viewDrawer.findViewById<TextView>(R.id.ageText)
+                            .setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.ic_male,
+                                0,
+                                0,
+                                0
+                            )
+                }
+                viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
+                viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
+                viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text =
+                    userEntity.stats.posts.toString()
+                viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text =
+                    userEntity.stats.comments.toString()
+                viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text =
+                    userEntity.stats.dislikes.toString()
+                viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text =
+                    userEntity.stats.likes.toString()
+                doOrIfNull(userEntity.avatar,
+                    { profileAvatarHolder.showAvatar(it) },
+                    { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+            }, {
+                profileAvatarHolder.showImageUploadingError()
+                errorHandler.handle(it)
+            })
+        )
+        lifecycleDisposable.add(
+            viewModel.imageUploadingState
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ userEntity ->
-                    val date = dateFormatter.parse(userEntity.birthday)
-                    val current = Date()
-                    date?.let {
-                        viewDrawer.findViewById<TextView>(R.id.ageText).text =
-                            getString(R.string.years, getDiffYears(it, current).toString())
-                    }
-                    when (userEntity.gender) {
-                        "male" ->
-                            viewDrawer.findViewById<TextView>(R.id.ageText)
-                                .setCompoundDrawablesWithIntrinsicBounds(
-                                    R.drawable.ic_male,
-                                    0,
-                                    0,
-                                    0
-                                )
-                        "female" ->
-                            viewDrawer.findViewById<TextView>(R.id.ageText)
-                                .setCompoundDrawablesWithIntrinsicBounds(
-                                    R.drawable.ic_male,
-                                    0,
-                                    0,
-                                    0
-                                )
-                    }
-                    viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
-                    viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
-                    viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text = "0"
-                    viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text = "0"
-                    viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text = "0"
-                    viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text = "0"
-                    doOrIfNull(userEntity.avatar,
-                        { profileAvatarHolder.showAvatar(it) },
-                        { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+                .subscribe({
+                    profileAvatarHolder.imageState = it
                 }, {
-                    profileAvatarHolder.showImageUploadingError()
                     errorHandler.handle(it)
+                    profileAvatarHolder.imageState =
+                        ImageUploadingState.ImageUploadingError(exception = it)
                 })
         )
-        viewModel.imageUploadingState.observe(this, {
-            profileAvatarHolder.imageState = it
-        })
     }
 
     override fun onStart() {
@@ -552,21 +572,21 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun loadFromGallery() {
-        compositeDisposable.add(
-            RxPaparazzo.single(this)
-                .crop(cropOptions)
-                .usingGallery()
-                .map { response ->
-                    response.data()?.file?.path
+        compositeDisposable.add(RxPaparazzo.single(this)
+            .crop(cropOptions)
+            .usingGallery()
+            .map { response ->
+                response.data()?.file?.path
+            }
+            .filter { it.isNotEmpty() }
+            .subscribe({
+                lastUploadedAvatar = it
+                it?.let {
+                    viewModel.uploadImageFromGallery(it)
                 }
-                .filter { it.isNotEmpty() }
-                .subscribe({
-                    it?.let {
-                        viewModel.uploadImageFromGallery(it)
-                    }
-                }, {
-                    Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
-                })
+            }, {
+                Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
+            })
         )
     }
 
@@ -586,5 +606,10 @@ class MainActivity : FragmentActivity() {
         val cal: Calendar = getInstance(Locale.US)
         cal.time = date
         return cal
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleDisposable.dispose()
     }
 }

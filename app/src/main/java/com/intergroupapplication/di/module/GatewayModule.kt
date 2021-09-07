@@ -76,4 +76,7 @@ interface GatewayModule {
 
     @Binds
     fun provideAvatarRepository(avatarRepository: AvatarRepository): AvatarGateway
+
+    @Binds
+    fun provideAgreementsRepository(agreementsRepository: AgreementsRepository): AgreementsGateway
 }

@@ -5,8 +5,10 @@ import com.intergroupapplication.data.mappers.TokenMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.SocialAuthEntity
 import com.intergroupapplication.domain.entity.TokenEntity
 import com.intergroupapplication.domain.gateway.LoginGateway
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -28,4 +30,11 @@ class LoginService @Inject constructor(
                 tokenEntity
             }
 
+    override fun performLogin(socialAuthEntity: SocialAuthEntity): Single<TokenEntity> =
+        api.socialAuth(loginMapper.mapToDataModel(socialAuthEntity))
+            .map {
+                val tokenEntity = tokenMapper.mapToDomainEntity(it)
+                sessionStorage.token = tokenEntity
+                tokenEntity
+            }
 }

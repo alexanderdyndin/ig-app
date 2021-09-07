@@ -25,8 +25,7 @@ import com.intergroupapplication.presentation.feature.createuserprofile.di.Creat
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
 import com.intergroupapplication.presentation.feature.editpost.di.EditPostViewModule
 import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
-import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
-import com.intergroupapplication.presentation.feature.group.view.GroupFragment
+import com.intergroupapplication.presentation.feature.editpost.di.EditPostViewModule
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.image.di.ImageViewModule
@@ -143,4 +142,8 @@ interface AppBuilderModule {
     @PerFragment
     @ContributesAndroidInjector(modules = [AddBlackListByIdViewModule::class])
     fun provideAddBlackListByIdFragmentFactory(): AddBlackListByIdFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [AgreementViewModule::class])
+    fun provideAgreementFragmentFactory(): AgreementFragment
 }

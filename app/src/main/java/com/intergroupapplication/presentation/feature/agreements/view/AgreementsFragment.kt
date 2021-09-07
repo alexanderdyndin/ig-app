@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.agreements.view
 
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
@@ -14,38 +15,32 @@ import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
-import com.intergroupapplication.presentation.feature.agreements.presenter.AgreementsPresenter
+import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment.Companion.RES_ID
+import com.intergroupapplication.presentation.feature.agreements.viewmodel.AgreementsViewModel
 import com.jakewharton.rxbinding2.view.RxView.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnCheckedChangeListener {
+class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListener {
 
-    private companion object {
-        const val DEBOUNCE_TIMEOUT = 300L
-        const val KEY_PATH = "PATH"
-        const val KEY_TITLE = "TITLE"
-        const val URL_PRIVACY_POLICY = "https://igsn.net/agreement/1.html"
-        const val URL_TERMS_OF_USE = "https://igsn.net/agreement/2.html"
-        const val URL_RIGHT_HOLDERS = "https://igsn.net/agreement/3.html"
+    companion object {
+        private const val DEBOUNCE_TIMEOUT = 200L
         const val RES_ID_PRIVACY_POLICY = R.string.privacy_police
         const val RES_ID_TERMS_OF_USE = R.string.terms_of_use
-        const val RES_ID_RIGHT_HOLDERS = R.string.rightholders
+        const val RES_ID_RIGHTHOLDERS = R.string.rightholders
     }
 
     private val viewBinding by viewBinding(FragmentAgreements2Binding::bind)
 
-
     @Inject
-    @InjectPresenter
-    lateinit var presenter: AgreementsPresenter
+    lateinit var modelFactory: ViewModelFactory
 
-    @ProvidePresenter
-    fun providePresenter(): AgreementsPresenter = presenter
+    private val viewModel: AgreementsViewModel by viewModels { modelFactory }
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_agreements2
@@ -74,6 +69,7 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
         privacyPolicy = viewBinding.privacyPolicy
         userAgreement = viewBinding.userAgreement
         copyrightAgreement = viewBinding.copyrightAgreement
+        initObservers()
         initCheckBox()
         initBtn()
         clicks(btnNext)
@@ -84,11 +80,11 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
 
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.container
 
-    override fun toSplash() {
+    private fun toSplash() {
         findNavController().navigate(R.id.action_global_splashActivity)
     }
 
-    override fun showLoading(show: Boolean) {
+    private fun showLoading(show: Boolean) {
         if (show) {
             progressBar.show()
             btnNext.hide()
@@ -135,5 +131,26 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
             )
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
+    }
+
+    private fun initObservers() {
+        compositeDisposable.add(viewModel.isLoading
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showLoading(it) })
+
+        compositeDisposable.add(viewModel.isNext
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it) {
+                    toSplash()
+                }
+            })
+
+        compositeDisposable.add(viewModel.errorState
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { errorHandler.handle(it) })
     }
 }

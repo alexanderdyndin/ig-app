@@ -185,6 +185,9 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
+            account.idToken?.let {
+                presenter.performLogin(SocialAuthEntity(it))
+            }
             Toast.makeText(requireContext(), account.displayName, Toast.LENGTH_SHORT).show()
         } catch (e: ApiException) {
             Timber.w("signInResult:failed code=%s", e.statusCode)

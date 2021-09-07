@@ -59,5 +59,15 @@ abstract class ViewModelModule {
     internal abstract fun bindAudiosViewModel(audiosViewModel: AudioListViewModel): ViewModel
 
     @Binds
+    @IntoMap
+    @ViewModelKey(AgreementsViewModel::class)
+    internal abstract fun bindAgreementsViewModel(agreementsViewModel: AgreementsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AgreementViewModel::class)
+    internal abstract fun bindAgreementViewModel(agreementViewModel: AgreementViewModel): ViewModel
+
+    @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }
