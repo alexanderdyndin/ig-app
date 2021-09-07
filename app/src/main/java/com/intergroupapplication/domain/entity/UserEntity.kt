@@ -12,4 +12,6 @@ data class UserEntity(val id: String,
                       val email: String,
                       val isBlocked: Boolean,
                       val isActive: Boolean,
-                      val avatar: String?)
+                      val avatar: String?,
+                      val stats: StatsEntity
+                      )

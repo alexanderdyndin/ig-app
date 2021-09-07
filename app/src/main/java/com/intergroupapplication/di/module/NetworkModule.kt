@@ -61,7 +61,7 @@ class NetworkModule {
                     builder.addHeader(TOKEN, "$TOKEN_PREFIX ${sessionStorage.token?.access}")
                 } else {
                     builder.addHeader(DEVICE_ID, sessionStorage.firebaseToken?.token
-                            ?: FirebaseMessaging.getInstance().token.result )  //not sure in this command
+                            ?: FirebaseMessaging.getInstance().token.result )
                 }
                 val newRequest = builder.build()
                 chain.proceed(newRequest)
@@ -192,5 +192,8 @@ class NetworkModule {
             .baseUrl(BuildConfig.BASE_URL)
             .build().create(AppApi::class.java)
 
+    @PerApplication
+    @Provides
+    fun provideAgreementsApi(): AgreementsApi = AgreementsApi()
 
 }

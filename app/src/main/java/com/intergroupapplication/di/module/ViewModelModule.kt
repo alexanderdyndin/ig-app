@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.intergroupapplication.di.qualifier.ViewModelKey
 import com.intergroupapplication.presentation.factory.ViewModelFactory
+import com.intergroupapplication.presentation.feature.agreement.viewmodel.AgreementViewModel
+import com.intergroupapplication.presentation.feature.agreements.viewmodel.AgreementsViewModel
 import com.intergroupapplication.presentation.feature.audiolist.viewModel.AudioListViewModel
 import com.intergroupapplication.presentation.feature.commentsbottomsheet.viewmodel.BottomViewModel
 import com.intergroupapplication.presentation.feature.commentsdetails.viewmodel.CommentsViewModel
@@ -63,6 +65,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AudioListViewModel::class)
     internal abstract fun bindAudiosViewModel(audiosViewModel: AudioListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AgreementsViewModel::class)
+    internal abstract fun bindAgreementsViewModel(agreementsViewModel: AgreementsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AgreementViewModel::class)
+    internal abstract fun bindAgreementViewModel(agreementViewModel: AgreementViewModel): ViewModel
 
     @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

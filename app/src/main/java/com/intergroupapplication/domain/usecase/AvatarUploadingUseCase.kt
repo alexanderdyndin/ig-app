@@ -25,10 +25,6 @@ class AvatarUploadingUseCase @Inject constructor(
     private val avatarGateway: AvatarGateway
 ) {
 
-    companion object {
-        const val FULL_UPLOADED_PROGRESS = 100F
-    }
-
     fun upload(
         file: String,
         groupId: String? = null

@@ -60,7 +60,6 @@ interface GatewayModule {
     @Binds
     fun provideMediaRepository(mediaRepository: MediaRepository): MediaGateway
 
-    @Binds
     fun provideAddLocalMediaRepository(addLocalMediaRepository: AddLocalMediaRepository)
         :AddLocalMediaGateway
 
@@ -70,4 +69,7 @@ interface GatewayModule {
 
     @Binds
     fun provideAvatarRepository(avatarRepository: AvatarRepository): AvatarGateway
+
+    @Binds
+    fun provideAgreementsRepository(agreementsRepository: AgreementsRepository): AgreementsGateway
 }

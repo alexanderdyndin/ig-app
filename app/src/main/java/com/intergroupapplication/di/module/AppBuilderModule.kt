@@ -4,6 +4,8 @@ import com.intergroupapplication.device.service.InterGroupPushService
 import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.di.scope.PerService
+import com.intergroupapplication.presentation.feature.agreement.di.AgreementViewModule
+import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment
 import com.intergroupapplication.presentation.feature.agreements.di.AgreementsViewModule
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.intergroupapplication.presentation.feature.audiolist.di.AudioListViewModule
@@ -141,4 +143,8 @@ interface AppBuilderModule {
     @PerFragment
     @ContributesAndroidInjector(modules = [AddBlackListByIdViewModule::class])
     fun provideAddBlackListByIdFragmentFactory(): AddBlackListByIdFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [AgreementViewModule::class])
+    fun provideAgreementFragmentFactory(): AgreementFragment
 }

@@ -109,7 +109,9 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                     email = from.userModel.email,
                     isBlocked = from.userModel.isBlocked,
                     isActive = from.userModel.isActive,
-                    avatar = from.avatar)
+                    avatar = from.avatar,
+                    stats = mapToDomainEntity(from.stats)
+            )
 
     fun mapToDomainEntity(from: AdModel) =
             AdEntity(
@@ -137,6 +139,20 @@ class UserProfileMapper @Inject constructor(@DashDateFormatter private val dashF
                     from.noOfDataBetweenAdsComments
             )
 
+        fun mapToDataModel(from: StatsEntity): StatsModel =
+                StatsModel(
+                        from.posts,
+                        from.comments,
+                        from.likes,
+                        from.dislikes
+                )
 
+        fun mapToDomainEntity(from: StatsModel): StatsEntity =
+                StatsEntity(
+                        from.posts,
+                        from.comments,
+                        from.likes,
+                        from.dislikes
+                )
 
 }
