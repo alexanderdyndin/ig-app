@@ -4,17 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.androidnetworking.AndroidNetworking
 import com.intergroupapplication.data.network.AppApi
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 import com.intergroupapplication.domain.gateway.AvatarGateway
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.presentation.base.ImageUploadingState
 import id.zelory.compressor.Compressor
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
+import io.reactivex.subjects.PublishSubject
 import java.io.File
 import javax.inject.Inject
 
