@@ -13,4 +13,6 @@ class UserProfileModelResponse(@SerializedName("first_name")
                                val gender: String,
                                @SerializedName("user")
                                val userModel: UserModel,
-                               val avatar: String)
+                               val avatar: String,
+                               val stats: StatsModel
+                               )

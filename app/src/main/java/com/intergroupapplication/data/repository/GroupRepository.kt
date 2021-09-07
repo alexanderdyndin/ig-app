@@ -76,7 +76,7 @@ class GroupRepository @Inject constructor(
                 config = PagingConfig(
                         pageSize = PAGE_SIZE,
                         initialLoadSize = 20,
-                        prefetchDistance = 1),
+                        prefetchDistance = 10),
                 pagingSourceFactory = { GroupsRemoteRXDataSource(api, groupMapper, searchFilter) }
         ).flowable
     }
@@ -86,7 +86,7 @@ class GroupRepository @Inject constructor(
                 config = PagingConfig(
                         pageSize = PAGE_SIZE,
                         initialLoadSize = 20,
-                        prefetchDistance = 1),
+                        prefetchDistance = 10),
                 pagingSourceFactory = {
                     val ds = GroupsRemoteRXDataSource(api, groupMapper, searchFilter)
                     ds.applyAdminGroupList()
@@ -100,7 +100,7 @@ class GroupRepository @Inject constructor(
                 config = PagingConfig(
                         pageSize = PAGE_SIZE,
                         initialLoadSize = 20,
-                        prefetchDistance = 1),
+                        prefetchDistance = 10),
                 pagingSourceFactory = {
                     val ds = GroupsRemoteRXDataSource(api, groupMapper, searchFilter)
                     ds.applySubscribedGroupList()

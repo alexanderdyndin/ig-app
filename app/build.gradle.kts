@@ -107,8 +107,8 @@ android {
         }
 
         getByName("release") {
-            isMinifyEnabled = true
-            isDebuggable = false
+            isMinifyEnabled = false
+            isDebuggable = true
             proguardFiles.add(getDefaultProguardFile("proguard-android.txt"))
             proguardFiles.add(file("proguard-rules.pro"))
             //proguardFiles.addAll(fileTree("proguard").toMutableList())
@@ -168,16 +168,15 @@ detekt {
     reports {
         html.enabled = true // observe findings in your browser with structure and code snippets
         xml.enabled = true // checkstyle like format mainly for integrations like Jenkins
-        txt.enabled =
-            true // similar to the console output, contains issue signature to manually edit baseline files
-        sarif.enabled =
-            true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
+        txt.enabled = true // similar to the console output, contains issue signature to manually edit baseline files
+        sarif.enabled = true // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with Github Code Scanning
     }
 }
 
 dependencies {
 
     implementation("com.google.firebase:firebase-invites:17.0.0")
+    implementation("com.google.firebase:firebase-dynamic-links-ktx:20.1.1")
     val kotlin_version = project.rootProject.ext["kotlin_version"]
     val nav_version = project.rootProject.ext["nav_version"]
     val jakeWhartonInstaTime = project.rootProject.ext["jakeWhartonInstaTime"]
@@ -186,23 +185,23 @@ dependencies {
 
     //tests
     val junitVersion = "4.13.2"
-    val mockitoVersion = "2.19.0"
-    val mockitoKotlinVersion = "1.5.0"
-    val assertVersion = "3.19.0"
+    val mockitoVersion = "3.11.2"
+    val mockitoKotlinVersion = "1.6.0"
+    val assertVersion = "3.20.2"
     val junitTestVersion = "1.1.2"
-    val espressoVersion = "3.3.0"
+    val espressoVersion = "3.4.0"
 
     val moxyVersion = "2.2.2"
 
     //networking
     val retrofitVersion = "2.9.0"
-    val loggingInterceptorVersion = "4.9.0"
+    val loggingInterceptorVersion = "5.0.0-alpha.2"
     val androidNetworkingVersion = "1.0.2"
 
     val daggerVersion = "2.37"
 
     //rx
-    val rxJavaVersion = "2.2.6"
+    val rxJavaVersion = "2.2.21"
     val rxAndroidVersion = "2.1.1"
     val rxBindingVersion = "2.2.0"
     val rxPaparazzoVersion = "0.6.1-2.x"
@@ -226,22 +225,22 @@ dependencies {
     val circleProgressBarVersion = "1.2.2"
     val refreshVersion = "1.2.3@aar"
     val browserVersion = "1.3.0"
-    val materialVersion = "1.3.0"
+    val materialVersion = "1.4.0"
 
     val linkBuilderVersion = "2.0.5"
 
-    val firebaseVersion = "18.0.2"
-    val firebaseMessagingVersion = "21.0.1"
+    val firebaseVersion = "19.0.0"
+    val firebaseMessagingVersion = "22.0.0"
 
-    val adsVersion = "19.7.0"
+    val adsVersion = "20.2.0"
     val gmsVersion = "17.2.1"
 
     val compressorVersion = "2.1.0"
 
     val mediaVersion = "1.3.1"
 
-    val activityVersion = "1.3.0-beta01"
-    val fragmentVersion = "1.3.4"
+    val activityVersion = "1.3.0-rc01"
+    val fragmentVersion = "1.3.5"
 
     val lifecycleExtensionsVersion = "2.2.0"
 
@@ -269,7 +268,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:$assertVersion")
 
     //Kotlin
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 
     //Reactive
@@ -372,7 +371,7 @@ dependencies {
 
     implementation("com.github.florent37:shapeofview:1.4.7")
 
-    implementation("androidx.viewpager2:viewpager2:1.1.0-alpha01")
+    implementation("androidx.viewpager2:viewpager2:1.1.0-beta01")
     //appodeal
     implementation("com.appodeal.ads:sdk:2.9.2.+")
     implementation("com.explorestack:consent:1.0.2")
@@ -390,7 +389,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     // To use only without reflection variants of viewBinding
-    implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.6")
+    implementation("com.github.kirich1409:viewbindingpropertydelegate-noreflection:1.4.7")
 
     implementation("com.github.Omega-R.OmegaIntentBuilder:core:1.1.5")
     // For extras
@@ -402,4 +401,6 @@ dependencies {
     implementation("androidx.room:room-rxjava2:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
 
+
+    implementation("org.jsoup:jsoup:1.13.1")
 }
