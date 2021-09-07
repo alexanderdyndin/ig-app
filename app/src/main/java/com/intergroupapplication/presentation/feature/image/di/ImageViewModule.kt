@@ -20,6 +20,4 @@ class ImageViewModule {
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
         ImageLoadingDelegate(imageLoader)
-
-
 }

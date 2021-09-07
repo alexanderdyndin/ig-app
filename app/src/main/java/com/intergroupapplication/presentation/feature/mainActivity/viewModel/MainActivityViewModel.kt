@@ -18,12 +18,13 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivityViewModel @Inject constructor(private val appStatusUseCase: AppStatusUseCase,
-                                                private val sessionStorage: UserSession,
-                                                private val userProfileUseCase: UserProfileUseCase,
-                                                private val avatarUploadingUseCase: AvatarUploadingUseCase,
-                                                private val errorHandler: ErrorHandler
-                                                ): ViewModel() {
+class MainActivityViewModel @Inject constructor(
+    private val appStatusUseCase: AppStatusUseCase,
+    private val sessionStorage: UserSession,
+    private val userProfileUseCase: UserProfileUseCase,
+    private val avatarUploadingUseCase: AvatarUploadingUseCase,
+    private val errorHandler: ErrorHandler
+) : ViewModel() {
 
     val imageUploadingState: MutableLiveData<ImageUploadingState> by lazy {
         MutableLiveData<ImageUploadingState>()
@@ -32,11 +33,13 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
     private val compositeDisposable = CompositeDisposable()
 
     fun checkNewVersionAvaliable(fragmentManager: FragmentManager) {
-        compositeDisposable.add(appStatusUseCase.getAppStatus(BuildConfig.VERSION_NAME)
+        compositeDisposable.add(
+            appStatusUseCase.getAppStatus(BuildConfig.VERSION_NAME)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({  },
-                        { if (it is NewVersionException) {
+                .subscribe({ },
+                    {
+                        if (it is NewVersionException) {
                             Timber.d(it)
                             val myDialogFragment = NewVersionDialog()
                             val manager = fragmentManager
@@ -45,15 +48,18 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
                         } else {
                             Timber.e(it)
                         }
-                        }))
+                    })
+        )
     }
 
     fun getAdCount() {
-        compositeDisposable.add(appStatusUseCase.getAdParameters()
+        compositeDisposable.add(
+            appStatusUseCase.getAdParameters()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ sessionStorage.countAd = it },
-                        { Timber.e(it) }))
+                    { Timber.e(it) })
+        )
     }
 
     fun getUserProfile() = userProfileUseCase.getUserProfile()
@@ -74,24 +80,26 @@ class MainActivityViewModel @Inject constructor(private val appStatusUseCase: Ap
             }, {
                 imageUploadingState.value = ImageUploadingState.ImageUploadingError(file)
                 errorHandler.handle(it)
-            }))
+            })
+        )
     }
 
     private fun changeAvatar(photo: String) {
-        compositeDisposable.add( userProfileUseCase.changeAvatar(photo)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                imageUploadingState.value = ImageUploadingState.ImageUploaded(it)
-            }, {
-                imageUploadingState.value = ImageUploadingState.ImageUploadingError()
-                errorHandler.handle(it)
-            }))
+        compositeDisposable.add(
+            userProfileUseCase.changeAvatar(photo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    imageUploadingState.value = ImageUploadingState.ImageUploaded(it)
+                }, {
+                    imageUploadingState.value = ImageUploadingState.ImageUploadingError()
+                    errorHandler.handle(it)
+                })
+        )
     }
 
     override fun onCleared() {
         compositeDisposable.clear()
         super.onCleared()
     }
-
 }

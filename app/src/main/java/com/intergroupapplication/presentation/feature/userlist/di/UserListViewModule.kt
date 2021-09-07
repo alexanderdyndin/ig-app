@@ -151,5 +151,4 @@ class UserListViewModule {
             : AddUserBlackListAdapter {
         return AddUserBlackListAdapter(imageLoadingDelegate)
     }
-
 }

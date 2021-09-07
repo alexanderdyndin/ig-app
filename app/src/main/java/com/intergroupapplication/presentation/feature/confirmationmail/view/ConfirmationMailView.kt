@@ -12,4 +12,3 @@ interface ConfirmationMailView : MvpView, CanShowLoading, CanClearViewErrorState
     fun fillData(email: String)
     fun completed()
 }
-

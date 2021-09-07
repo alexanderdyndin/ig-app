@@ -136,6 +136,4 @@ class AgreementsFragment : BaseFragment(), AgreementsView, CompoundButton.OnChec
             findNavController().navigate(R.id.action_AgreementsFragment2_to_webFragment, bundle)
         }.also { compositeDisposable.add(it) }
     }
-
-
 }

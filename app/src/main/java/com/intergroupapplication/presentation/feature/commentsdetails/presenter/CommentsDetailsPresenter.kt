@@ -14,50 +14,54 @@ import javax.inject.Inject
 
 @InjectViewState
 class CommentsDetailsPresenter @Inject constructor(
-                                                   private val postGateway: GroupPostGateway,
-                                                   private val complaintsGateway: ComplaintsGateway,
-                                                   private val errorHandler: ErrorHandler,
-                                                   )
-    : BasePresenter<CommentsDetailsView>() {
+    private val postGateway: GroupPostGateway,
+    private val complaintsGateway: ComplaintsGateway,
+    private val errorHandler: ErrorHandler,
+) : BasePresenter<CommentsDetailsView>() {
 
     private val commentsDisposable = CompositeDisposable()
     var postId: String? = null
 
     fun getPostDetailsInfo(postId: String) {
-        compositeDisposable.add(postGateway.getPostById(postId)
+        compositeDisposable.add(
+            postGateway.getPostById(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ viewState.showPostDetailInfo(it) }, {
                     errorHandler.handle(it)
                     viewState.hideSwipeLayout()
-                }))
+                })
+        )
     }
 
     fun complaintPost(postId: Int) {
-        commentsDisposable.add(complaintsGateway.complaintPost(postId)
+        commentsDisposable.add(
+            complaintsGateway.complaintPost(postId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     viewState?.showMessage(R.string.complaint_send)
                 }, {
                     errorHandler.handle(it)
-                }))
+                })
+        )
     }
 
     fun complaintComment(commentId: Int) {
-        commentsDisposable.add(complaintsGateway.complaintComment(commentId)
+        commentsDisposable.add(
+            complaintsGateway.complaintComment(commentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     viewState?.showMessage(R.string.complaint_send)
                 }, {
                     errorHandler.handle(it)
-                }))
+                })
+        )
     }
 
     override fun onDestroy() {
         super.onDestroy()
         commentsDisposable.clear()
     }
-
 }

@@ -106,12 +106,6 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         tvErrorPass = viewBinding.tvErrorPass
         tvSendCode = viewBinding.tvSendCode
 
-        //setSupportActionBar(toolbar)
-//        toolbar.apply {
-//            this.setNavigationOnClickListener { findNavController().popBackStack() }
-//            setTitle(R.string.settings_password)
-//        }
-
         listenInputs()
         initValidator()
         setErrorHandler()
@@ -153,7 +147,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         password.setHintTextColor(hintColor)
     }
 
-    override fun successSaveSetings() {
+    override fun successSaveSettings() {
         findNavController().popBackStack()
         Toast.makeText(requireContext(), R.string.save_password, Toast.LENGTH_SHORT).show()
     }
@@ -178,7 +172,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         }
     }
 
-    override fun showLodingCode(load: Boolean) {
+    override fun showLoadingCode(load: Boolean) {
         if (load) {
             etCode.hide()
             pbCode.show()
@@ -371,5 +365,4 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
             )
         }
     }
-
 }

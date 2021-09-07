@@ -6,7 +6,7 @@ import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -29,6 +29,7 @@ import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
@@ -55,7 +56,6 @@ class GroupFragment : BaseFragment(), GroupView,
         const val GROUP = "group"
         const val IS_ADMIN = "is_admin"
         const val POST_ID = "post_id"
-        const val IS_GROUP_CREATED_NOW = "isGroupCreatedNow"
     }
 
     private val viewBinding by viewBinding(FragmentGroupBinding::bind)
@@ -90,14 +90,14 @@ class GroupFragment : BaseFragment(), GroupView,
     lateinit var footerAdapter: PagingLoadingAdapter
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
     private var job: Job = Job()
 
-    private lateinit var viewModel: GroupViewModel
+    private val viewModel: GroupViewModel by viewModels { modelFactory }
 
     private var mIsTheTitleContainerVisible = true
 
@@ -135,7 +135,6 @@ class GroupFragment : BaseFragment(), GroupView,
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString(GROUP_ID)!!
         groupEntity = arguments?.getParcelable(GROUP)
-        viewModel = ViewModelProvider(this, modelFactory)[GroupViewModel::class.java]
         lifecycleScope.newCoroutineContext(this.coroutineContext)
         prepareAdapter()
         compositeDisposable.add(
@@ -585,5 +584,4 @@ class GroupFragment : BaseFragment(), GroupView,
                 )
             }.let { { d: Disposable -> compositeDisposable.add(d) } }
     }
-
 }

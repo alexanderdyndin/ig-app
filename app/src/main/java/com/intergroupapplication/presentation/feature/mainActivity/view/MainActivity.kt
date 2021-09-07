@@ -15,9 +15,9 @@ import android.os.IBinder
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -36,6 +36,7 @@ import com.intergroupapplication.presentation.customview.AvatarImageUploadingVie
 import com.intergroupapplication.presentation.delegate.DialogDelegate
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.mainActivity.adapter.NavigationAdapter
 import com.intergroupapplication.presentation.feature.mainActivity.other.NavigationEntity
@@ -76,9 +77,9 @@ class MainActivity : FragmentActivity() {
     }
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
-    private lateinit var viewModel: MainActivityViewModel
+    private val viewModel: MainActivityViewModel by viewModels { modelFactory }
 
     @Inject
     lateinit var initializerAppodeal: InitializerLocal
@@ -156,12 +157,11 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
-        viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
         initializerAppodeal.initialize()
         setTheme(R.style.ActivityTheme)
         setContentView(R.layout.activity_main)
         try {
-            val filePatch = externalCacheDir?.path//externalCacheDir?.path+"/RxPaparazzo/"
+            val filePatch = externalCacheDir?.path
             val file = File("/$filePatch.nomedia")
             if (!file.exists())
                 file.createNewFile()
@@ -542,12 +542,12 @@ class MainActivity : FragmentActivity() {
                 .map { response ->
                     response.data()?.file?.path
                 }
-            .filter { it.isNotEmpty() }
-            .subscribe {
-                it?.let {
-                    viewModel.uploadImageFromGallery(it)
+                .filter { it.isNotEmpty() }
+                .subscribe {
+                    it?.let {
+                        viewModel.uploadImageFromGallery(it)
+                    }
                 }
-            }
         )
     }
 
@@ -559,14 +559,14 @@ class MainActivity : FragmentActivity() {
                 .map { response ->
                     response.data()?.file?.path
                 }
-            .filter { it.isNotEmpty() }
-            .subscribe({
-                it?.let {
-                    viewModel.uploadImageFromGallery(it)
-                }
-            }, {
-                Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
-            })
+                .filter { it.isNotEmpty() }
+                .subscribe({
+                    it?.let {
+                        viewModel.uploadImageFromGallery(it)
+                    }
+                }, {
+                    Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
+                })
         )
     }
 

@@ -1,7 +1,6 @@
 package com.intergroupapplication.presentation.feature.group.presenter
 
 import com.intergroupapplication.R
-import com.intergroupapplication.domain.entity.GroupEntity
 import com.intergroupapplication.domain.exception.ForbiddenException
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupGateway
@@ -88,23 +87,6 @@ class GroupPresenter @Inject constructor(
                 if (it !is ForbiddenException) errorHandler.handle(it)
             })
         )
-    }
-
-    fun getGroupRole(groupEntity: GroupEntity.Group) {
-        compositeDisposable.add(groupUseCase.getUserRole(groupEntity)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                viewState.showGroupInfoLoading(true)
-            }
-            .doFinally {
-                viewState.showGroupInfoLoading(false)
-            }
-            .subscribe({
-                viewState.renderViewByRole(it)
-            }, {
-                if (it !is ForbiddenException) errorHandler.handle(it)
-            }))
     }
 
     fun followGroup(groupId: String, followersCount: Int) {

@@ -2,7 +2,7 @@ package com.intergroupapplication.presentation.feature.audiolist.view
 
 import android.os.Bundle
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -19,6 +19,7 @@ import com.intergroupapplication.di.qualifier.Footer
 import com.intergroupapplication.di.qualifier.Header
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListAdapter
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListsAdapter
 import com.intergroupapplication.presentation.feature.audiolist.viewModel.AudioListViewModel
@@ -31,7 +32,7 @@ import javax.inject.Inject
 class AudioListFragment : BaseFragment() {
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
     @Inject
     @All
@@ -51,11 +52,7 @@ class AudioListFragment : BaseFragment() {
 
     private val viewBinding by viewBinding(FragmentAudiosListBinding::bind)
 
-    private lateinit var viewModel: AudioListViewModel
-
-    private var doubleBackToExitPressedOnce = false
-
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
+    private val viewModel: AudioListViewModel by viewModels { modelFactory }
 
     private var currentScreen = 1
 
@@ -65,7 +62,6 @@ class AudioListFragment : BaseFragment() {
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this, modelFactory)[AudioListViewModel::class.java]
         compositeDisposable.add(
             viewModel.getAudios()
                 .subscribe {
@@ -128,5 +124,4 @@ class AudioListFragment : BaseFragment() {
             }
         }
     }
-
 }

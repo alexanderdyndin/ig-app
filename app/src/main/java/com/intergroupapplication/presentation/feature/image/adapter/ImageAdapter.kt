@@ -7,7 +7,7 @@ import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.exstension.inflate
 
 
-class ImageAdapter(private val items: List<FileEntity>): RecyclerView.Adapter<ImageViewHolder>() {
+class ImageAdapter(private val items: List<FileEntity>) : RecyclerView.Adapter<ImageViewHolder>() {
 
     companion object {
         var imageClickListener: () -> Unit = {}
@@ -27,5 +27,4 @@ class ImageAdapter(private val items: List<FileEntity>): RecyclerView.Adapter<Im
         holder.image.controller = null
         super.onViewRecycled(holder)
     }
-
 }

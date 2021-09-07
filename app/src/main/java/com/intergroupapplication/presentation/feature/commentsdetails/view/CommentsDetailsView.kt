@@ -6,8 +6,8 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface CommentsDetailsView : MvpView{
+interface CommentsDetailsView : MvpView {
     fun showPostDetailInfo(groupPostEntity: CommentEntity.PostEntity)
     fun hideSwipeLayout()
-    fun showMessage(value:Int)
+    fun showMessage(value: Int)
 }

@@ -31,15 +31,15 @@ class RecoveryPasswordPresenter @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState?.showLoadingSendEmail(true) }
-                .doFinally { viewState?.showLoadingSendEmail(false) }
-                .subscribe({
-                    viewState?.showSendEmail(true)
-                    viewState?.showPassword(false)
-                }, {
-                    viewState?.showSendEmail(false)
-                    errorHandler.handle(it)
-                })
-                .also { compositeDisposable.add(it) }
+            .doFinally { viewState?.showLoadingSendEmail(false) }
+            .subscribe({
+                viewState?.showSendEmail(true)
+                viewState?.showPassword(false)
+            }, {
+                viewState?.showSendEmail(false)
+                errorHandler.handle(it)
+            })
+            .also { compositeDisposable.add(it) }
     }
 
     fun sendCode(code: String) {
@@ -47,30 +47,29 @@ class RecoveryPasswordPresenter @Inject constructor(
             return
         val codeModel = CodeDto(email.orEmpty(), code)
         resetPasswordGateway.resetPasswordCode(codeModel)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
-                            token = "$TOKEN_PREFIX ${it.token}"
-                            viewState?.showPassword(true)
-                        },
-                        {
-                            viewState?.showPassword(false)
-                            errorHandler.handle(it)
-                        })
-                .also { compositeDisposable.add(it) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    token = "$TOKEN_PREFIX ${it.token}"
+                    viewState?.showPassword(true)
+                },
+                {
+                    viewState?.showPassword(false)
+                    errorHandler.handle(it)
+                })
+            .also { compositeDisposable.add(it) }
     }
 
     fun saveSettings(password: String, passwordConfirm: String) {
         val newPassword = NewPasswordDto(token.orEmpty(), password, passwordConfirm)
         resetPasswordGateway.newPassword(newPassword)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe(
-                        { viewState?.successSaveSetings() },
-                        { errorHandler.handle(it) })
-                .also { compositeDisposable.add(it) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .handleLoading(viewState)
+            .subscribe(
+                { viewState?.successSaveSettings() },
+                { errorHandler.handle(it) })
+            .also { compositeDisposable.add(it) }
     }
-
 }

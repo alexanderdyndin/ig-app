@@ -13,10 +13,10 @@ interface RecoveryPasswordView : MvpView, CanShowLoading, CanClearViewErrorState
 
     fun showLoadingSendEmail(value: Boolean)
 
-    fun showLodingCode(load: Boolean)
+    fun showLoadingCode(load: Boolean)
 
     fun showPassword(enable: Boolean)
 
-    fun successSaveSetings()
+    fun successSaveSettings()
 
 }

@@ -16,7 +16,8 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
 
-class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<AudioListsAdapter.AudioListViewHolder>() {
+class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>) :
+    RecyclerView.Adapter<AudioListsAdapter.AudioListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioListViewHolder {
         return AudioListViewHolder(parent.inflate(R.layout.fragment_group_category))
@@ -30,7 +31,7 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         return items.count()
     }
 
-    inner class AudioListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class AudioListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val viewBinding by viewBinding(FragmentGroupCategoryBinding::bind)
 
@@ -41,10 +42,11 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
             list.adapter = adapter
             list.itemAnimator = null
-            list.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            list.layoutManager =
+                LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             if (adapter is ConcatAdapter) {
                 adapter.adapters.forEach { pagingAdapter ->
-                    if (pagingAdapter is PagingDataAdapter<*, *> ) {
+                    if (pagingAdapter is PagingDataAdapter<*, *>) {
                         pagingAdapter.addLoadStateListener {
                             when (it.refresh) {
                                 is LoadState.Loading -> {
@@ -73,4 +75,3 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         }
     }
 }
-

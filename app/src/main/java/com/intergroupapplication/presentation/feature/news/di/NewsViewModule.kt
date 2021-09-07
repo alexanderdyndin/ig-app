@@ -34,12 +34,12 @@ class NewsViewModule {
     @PerFragment
     @Provides
     fun provideImageLoadingDelegate(imageLoader: ImageLoader): ImageLoadingDelegate =
-            ImageLoadingDelegate(imageLoader)
+        ImageLoadingDelegate(imageLoader)
 
     @PerFragment
     @Provides
     fun provideDialogManager(fragment: NewsFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
+        DialogManager(fragment.requireActivity().supportFragmentManager)
 
     @PerFragment
     @Provides
@@ -52,8 +52,10 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    fun provideNewsAdapter(imageLoadingDelegate: ImageLoadingDelegate,
-                           userSession: UserSession, cacheServer: HttpProxyCacheServer): NewsAdapter {
+    fun provideNewsAdapter(
+        imageLoadingDelegate: ImageLoadingDelegate,
+        userSession: UserSession, cacheServer: HttpProxyCacheServer
+    ): NewsAdapter {
         if (userSession.isAdEnabled) {
             NewsAdapter.AD_TYPE = userSession.countAd?.limitOfAdsNews ?: 1
             NewsAdapter.AD_FREQ = userSession.countAd?.noOfDataBetweenAdsNews ?: 7
@@ -82,43 +84,11 @@ class NewsViewModule {
 
     @PerFragment
     @Provides
-    fun provideConcatAdapter(newsAdapter: NewsAdapter,
-                             @Footer footerAdapter: PagingLoadingAdapter,
-                             @Header headerAdapter: PagingLoadingAdapter
-                             ): ConcatAdapter {
+    fun provideConcatAdapter(
+        newsAdapter: NewsAdapter,
+        @Footer footerAdapter: PagingLoadingAdapter,
+        @Header headerAdapter: PagingLoadingAdapter
+    ): ConcatAdapter {
         return newsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
     }
-
-//    @PerFragment
-//    @Provides
-//    fun provideAdmobBammerAdapter(context: Context,
-//                                  newsAdapter: ConcatAdapter, activity: NewsFragment,
-//                                  userSession: UserSession): AdmobBannerRecyclerAdapterWrapper =
-//            AdmobBannerRecyclerAdapterWrapper.builder(context)
-//                    .setLimitOfAds(userSession.countAd?.limitOfAdsNews ?: 20)
-//                    .setFirstAdIndex(userSession.countAd?.firstAdIndexNews ?: 10)
-//                    .setAdViewWrappingStrategy(object : BannerAdViewWrappingStrategy() {
-//                        override fun addAdViewToWrapper(wrapper: ViewGroup, ad: AdView) {
-//                            val container = wrapper.findViewById(R.id.adsCardView) as ViewGroup
-//                            container.removeAllViews()
-//                            val t = Appodeal.getNativeAds(1)
-//                            if (t.size>0) {
-//                                val nativeAdView = NativeAdViewAppWall(activity.requireActivity(), t[0], NEWS)
-//                                container.addView(nativeAdView)
-//                            }
-//                        }
-//                        override fun getAdViewWrapper(parent: ViewGroup?): ViewGroup {
-//                            return LayoutInflater.from(parent?.context).inflate(R.layout.layout_admob_news,
-//                                    parent, false) as ViewGroup
-//                        }
-//                    })
-//                    .setNoOfDataBetweenAds(userSession.countAd?.noOfDataBetweenAdsNews ?: 7)
-//                    .setAdapter(newsAdapter)
-//                    .build()
-//
-//    @PerFragment
-//    @Provides
-//    fun provideLinearLayoutManager(fragment: NewsFragment): RecyclerView.LayoutManager =
-//            LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
-
 }

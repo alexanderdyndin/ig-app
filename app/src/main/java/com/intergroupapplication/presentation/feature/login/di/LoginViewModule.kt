@@ -41,5 +41,4 @@ class LoginViewModule {
     @Provides
     @LoginHandler
     fun errorHandler(): ErrorHandler = ErrorHandler.createIsolated()
-
 }

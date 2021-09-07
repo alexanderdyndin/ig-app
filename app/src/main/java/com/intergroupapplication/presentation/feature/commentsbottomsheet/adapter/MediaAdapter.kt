@@ -37,7 +37,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
         fun changeTextColor(color: Int)
     }
 
-    abstract fun getChooseMedias():Set<ChooseMedia>
+    abstract fun getChooseMedias(): Set<ChooseMedia>
 
     class GalleryAdapter(
         private val imageLoadingDelegate: ImageLoadingDelegate,
@@ -47,6 +47,7 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
 
         val photos = mutableListOf(GalleryModel("photos", 0, false))
         val choosePhoto = mutableSetOf<ChooseMedia>()
+
         companion object {
             private const val PHOTO_HOLDER_KEY = 0
             private const val IMAGE_HOLDER_KEY = 1
@@ -123,14 +124,22 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         setOnClickListener {
                             data.run {
                                 if (!isChoose && choosePhoto.size < 10 &&
-                                    !choosePhoto.contains(ChooseMedia(url,
-                                        name = url.substringAfterLast("/"),
-                                        type = MediaType.IMAGE))
+                                    !choosePhoto.contains(
+                                        ChooseMedia(
+                                            url,
+                                            name = url.substringAfterLast("/"),
+                                            type = MediaType.IMAGE
+                                        )
+                                    )
                                 ) {
                                     isChoose = true
-                                    choosePhoto.addChooseMedia(ChooseMedia(url,
-                                        name = url.substringAfterLast("/"),
-                                        type = MediaType.IMAGE))
+                                    choosePhoto.addChooseMedia(
+                                        ChooseMedia(
+                                            url,
+                                            name = url.substringAfterLast("/"),
+                                            type = MediaType.IMAGE
+                                        )
+                                    )
                                 } else if (isChoose) {
                                     isChoose = false
                                     choosePhoto.removeChooseMedia(url)
@@ -184,7 +193,8 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         setOnClickListener {
                             data.run {
                                 if (!isChoose && chooseAudio.size < 10 &&
-                                    !chooseAudio.containsMedia(url)) {
+                                    !chooseAudio.containsMedia(url)
+                                ) {
                                     isChoose = true
                                     chooseAudio.addChooseMedia(
                                         ChooseMedia(
@@ -265,8 +275,10 @@ sealed class MediaAdapter<T> : RecyclerView.Adapter<BaseHolder<T>>() {
                         }
                     }
                     imagePreview.setOnClickListener {
-                        dialogDelegate.showPreviewDialog(false, data.url, data.isChoose,
-                            createFile(imagePreview.drawable))
+                        dialogDelegate.showPreviewDialog(
+                            false, data.url, data.isChoose,
+                            createFile(imagePreview.drawable)
+                        )
                     }
                 }
             }

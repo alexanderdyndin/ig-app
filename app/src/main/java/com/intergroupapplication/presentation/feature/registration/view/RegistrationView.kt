@@ -11,4 +11,3 @@ interface RegistrationView : MvpView, CanShowLoading, CanClearViewErrorState {
     fun deviceInfoExtracted()
     fun confirmMail(email: String)
 }
-

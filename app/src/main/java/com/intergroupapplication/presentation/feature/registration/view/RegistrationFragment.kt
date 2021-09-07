@@ -446,5 +446,4 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
         })
     }
-
 }

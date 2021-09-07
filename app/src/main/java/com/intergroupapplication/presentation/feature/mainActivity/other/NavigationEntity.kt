@@ -1,10 +1,10 @@
 package com.intergroupapplication.presentation.feature.mainActivity.other
 
 data class NavigationEntity(
-        val name: Int,
-        val icon: Int,
-        val action: () -> Unit = {},
-        var checked: Boolean? = false
+    val name: Int,
+    val icon: Int,
+    val action: () -> Unit = {},
+    var checked: Boolean? = false
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

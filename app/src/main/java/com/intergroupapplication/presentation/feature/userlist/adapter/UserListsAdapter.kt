@@ -16,9 +16,13 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
 
-class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>) : RecyclerView.Adapter<UserListsAdapter.UserListViewHolder>() {
+class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>) :
+    RecyclerView.Adapter<UserListsAdapter.UserListViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListsAdapter.UserListViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): UserListViewHolder {
         return UserListViewHolder(parent.inflate(R.layout.fragment_user_category))
     }
 
@@ -28,7 +32,7 @@ class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView
 
     override fun getItemCount(): Int = items.count()
 
-    class UserListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class UserListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val viewBinding by viewBinding(FragmentUserCategoryBinding::bind)
 
@@ -39,7 +43,8 @@ class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView
         fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
             list.adapter = adapter
             list.itemAnimator = null
-            list.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            list.layoutManager =
+                LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             if (adapter is ConcatAdapter) {
                 adapter.adapters.forEach { currentAdapter ->
                     if (currentAdapter is PagingDataAdapter<*, *>) {
@@ -70,5 +75,4 @@ class UserListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView
             }
         }
     }
-
 }

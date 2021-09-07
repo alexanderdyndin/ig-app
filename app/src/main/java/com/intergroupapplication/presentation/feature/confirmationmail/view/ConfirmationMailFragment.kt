@@ -73,16 +73,16 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
         setErrorHandler()
 
         btnNext.clicks()
-                .subscribe { presenter.confirmMail(confirmation.text.toString()) }
-                .let { compositeDisposable.add(it) }
+            .subscribe { presenter.confirmMail(confirmation.text.toString()) }
+            .let { compositeDisposable.add(it) }
 
         btnRepeatCode.clicks()
-                .subscribe { logOut() }
-                .also { compositeDisposable.add(it) }
+            .subscribe { logOut() }
+            .also { compositeDisposable.add(it) }
 
         btnChangeEmail.clicks()
-                .subscribe { presenter.performRegistration() }
-                .also { compositeDisposable.add(it) }
+            .subscribe { presenter.performRegistration() }
+            .also { compositeDisposable.add(it) }
     }
 
 
@@ -132,5 +132,4 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
             }
         }
     }
-
 }

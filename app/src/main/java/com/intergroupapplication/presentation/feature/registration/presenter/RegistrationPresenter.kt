@@ -14,32 +14,34 @@ import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState
-class RegistrationPresenter @Inject constructor(private val registrationGateway: RegistrationGateway,
-                                                private val imeiGateway: ImeiGateway,
-                                                @RegistrationHandler
-                                                private val errorHandler: ErrorHandler)
-    : BasePresenter<RegistrationView>() {
+class RegistrationPresenter @Inject constructor(
+    private val registrationGateway: RegistrationGateway,
+    private val imeiGateway: ImeiGateway,
+    @RegistrationHandler
+    private val errorHandler: ErrorHandler
+) : BasePresenter<RegistrationView>() {
 
     fun performRegistration(entity: RegistrationEntity) {
         compositeDisposable.add(
-                registrationGateway.performRegistration(entity)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .handleLoading(viewState)
-                        .subscribe({
-                            viewState.confirmMail(entity.email)
-                        }) {
-                            errorHandler.handle(it)
-                        })
+            registrationGateway.performRegistration(entity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .handleLoading(viewState)
+                .subscribe({
+                    viewState.confirmMail(entity.email)
+                }) {
+                    errorHandler.handle(it)
+                })
     }
 
     fun extractDeviceInfo() {
-        compositeDisposable.addAll(imeiGateway.extractDeviceInfo()
+        compositeDisposable.addAll(
+            imeiGateway.extractDeviceInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ viewState.deviceInfoExtracted() }, {
                     errorHandler.handle(it)
-                }))
+                })
+        )
     }
-
 }

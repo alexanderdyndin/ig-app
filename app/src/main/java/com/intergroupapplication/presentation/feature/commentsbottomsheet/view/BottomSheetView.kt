@@ -7,7 +7,7 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface BottomSheetView: MvpView, ImageUploadingView{
+interface BottomSheetView : MvpView, ImageUploadingView {
     fun commentCreated(commentEntity: CommentEntity)
     fun answerToCommentCreated(commentEntity: CommentEntity)
     fun showCommentUploading(show: Boolean)

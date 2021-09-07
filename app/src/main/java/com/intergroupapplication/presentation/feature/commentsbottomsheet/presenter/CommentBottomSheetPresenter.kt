@@ -152,7 +152,7 @@ class CommentBottomSheetPresenter @Inject constructor(
     }
 
     fun attachMedia(
-        loadMedia: (chooseMedia: ChooseMedia) -> Unit, chooseMedias:Set<ChooseMedia>
+        loadMedia: (chooseMedia: ChooseMedia) -> Unit, chooseMedias: Set<ChooseMedia>
     ) {
         mediaDisposable.add(Observable.fromIterable(chooseMedias)
             .subscribeOn(Schedulers.io())
@@ -172,9 +172,11 @@ class CommentBottomSheetPresenter @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                val chooseMedia = ChooseMedia(it,
+                val chooseMedia = ChooseMedia(
+                    it,
                     name = it.substringAfterLast("/"),
-                    type = MediaType.IMAGE)
+                    type = MediaType.IMAGE
+                )
                 loadImage(chooseMedia)
             }, {
                 errorHandler.handle(CanNotUploadPhoto())
@@ -404,8 +406,8 @@ class CommentBottomSheetPresenter @Inject constructor(
         processes.remove(chooseMedia.url)
     }
 
-    fun removeAllContents(){
-        processes.values.forEach{ disposable->
+    fun removeAllContents() {
+        processes.values.forEach { disposable ->
             disposable.dispose()
             mediaDisposable.remove(disposable)
         }

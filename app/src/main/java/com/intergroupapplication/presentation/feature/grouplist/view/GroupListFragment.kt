@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.grouplist.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,10 +8,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -30,6 +34,7 @@ import com.intergroupapplication.domain.exception.GroupAlreadyFollowingException
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.ExitActivity
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListsAdapter
@@ -43,7 +48,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class GroupListFragment: BaseFragment() {
+class GroupListFragment : BaseFragment() {
 
     private val viewBinding by viewBinding(FragmentGroupListBinding::bind)
 
@@ -51,9 +56,9 @@ class GroupListFragment: BaseFragment() {
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    lateinit var modelFactory: ViewModelFactory
 
-    private lateinit var viewModel: GroupListViewModel
+    private val viewModel: GroupListViewModel by viewModels { modelFactory }
 
     private var exitHandler: Handler? = null
 
@@ -113,12 +118,10 @@ class GroupListFragment: BaseFragment() {
     private lateinit var createGroup: Button
     private lateinit var activityMainBtnFilter: ImageButton
     private lateinit var activityMainSearchInput: EditText
-    private lateinit var toolbarMenu: TextView
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, modelFactory)[GroupListViewModel::class.java]
         fetchGroups()
         prepareAdapter()
         activity?.onBackPressedDispatcher?.addCallback(this,
@@ -194,6 +197,7 @@ class GroupListFragment: BaseFragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun prepareAdapter() {
         with(GroupListAdapter) {
             userID = userSession.user?.id
@@ -314,7 +318,8 @@ class GroupListFragment: BaseFragment() {
         lifecycleScope.launchWhenResumed {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
-                    is LoadState.Loading -> { }
+                    is LoadState.Loading -> {
+                    }
                     is LoadState.Error -> {
                         swipeGroups.isRefreshing = false
                         if (adapter.itemCount == 0) {
@@ -370,135 +375,4 @@ class GroupListFragment: BaseFragment() {
     private fun openCreateGroup() {
         findNavController().navigate(R.id.action_groupListFragment2_to_createGroupActivity)
     }
-
-
-
-   /* override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
-        profileAvatarHolder.showImageUploadingStartedWithoutFile()
-    }
-
-    override fun showImageUploaded(chooseMedia: ChooseMedia) {
-        presenter.changeUserAvatar()
-    }
-
-
-    override fun avatarChanged(url: String) {
-        profileAvatarHolder.showAvatar(url)
-        profileAvatarHolder.showImageUploaded()
-    }
-
-    override fun showLastAvatar(lastAvatar: String?) {
-        profileAvatarHolder.clearUploadingState(lastAvatar)
-    }
-
-
-    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
-        profileAvatarHolder.showImageUploadingProgress(progress)
-    }
-
-
-    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
-        profileAvatarHolder.clearUploadingState()
-        presenter.showLastUserAvatar()
-    }
-
-
-    override fun showUserInfo(userEntity: UserEntity) {
-        val userName = userEntity.firstName + " " + userEntity.surName
-        viewDrawer.findViewById<TextView>(R.id.profileName).text = userName
-        doOrIfNull(userEntity.avatar,
-            { profileAvatarHolder.showAvatar(it) },
-            { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
-    }
-
-    override fun viewCreated() {
-        toolbarMenu = viewBinding.navigationToolbar.toolbarMenu
-        viewDrawer = layoutInflater.inflate(
-            R.layout.layout_profile_header,
-            viewBinding.groupListCoordinator, false
-        )
-        profileAvatarHolder = viewDrawer.findViewById(R.id.profileAvatarHolder)
-        profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
-        lateinit var drawerItem: PrimaryDrawerItem
-        drawer = drawer {                           //FIXME ЧТО ЗА БЛЯДСКИЙ ГОВНОКОД??
-            sliderBackgroundColorRes = R.color.profileTabColor
-            headerView = viewDrawer
-            actionBarDrawerToggleEnabled = true
-            translucentStatusBar = true
-            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
-                .setOnClickListener {
-                    if (profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED
-                        || profileAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE
-                    ) {
-                        dialogDelegate.showDialog(
-                            R.layout.dialog_camera_or_gallery,
-                            mapOf(R.id.fromCamera to { presenter.attachFromCamera() },
-                                R.id.fromGallery to { presenter.attachFromGallery() })
-                        )
-                    }
-                }
-            primaryItem(getString(R.string.news)) {
-                icon = R.drawable.ic_news
-                selectedIcon = R.drawable.ic_news_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
-                onClick { _ ->
-                    findNavController().navigate(R.id.action_groupListFragment2_to_newsFragment2)
-                    viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.news)
-                    false
-                }
-            }
-            drawerItem = primaryItem(getString(R.string.groups)) {
-                icon = R.drawable.ic_groups
-                selectedIcon = R.drawable.ic_groups_blue
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
-            }
-            primaryItem(getString(R.string.buy_premium)) {
-                icon = R.drawable.icon_like
-                selectedIcon = R.drawable.icon_like
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                typeface = Typeface.createFromAsset(requireActivity().assets, TYPEFACE_TEXT)
-                selectable = false
-                onClick { _ ->
-                    (requireActivity() as MainActivity).bill()
-                    false
-                }
-            }
-            primaryItem(getString(R.string.logout)) {
-                typeface = Typeface.createFromAsset(
-                    requireActivity().assets,
-                    TYPEFACE_TEXT
-                )
-                textColorRes = R.color.whiteTextColor
-                selectedColorRes = R.color.profileTabColor
-                selectedTextColorRes = R.color.selectedItemTabColor
-                onClick { _ ->
-                    presenter.goOutFromProfile()
-                    findNavController().navigate(R.id.action_groupListFragment2_to_loginActivity2)
-                    false
-                }
-            }
-        }.apply {
-            setSelection(drawerItem)
-            drawerItem.withOnDrawerItemClickListener { _, _, _ ->
-                findNavController().navigate(R.id.action_groupListFragment2_self)
-                viewBinding.navigationToolbar.toolbarTittle.text = getString(R.string.groups)
-                false
-            }
-            viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
-                .setOnClickListener { closeDrawer() }
-        }
-        toolbarMenu.setOnClickListener {
-            drawer.openDrawer()
-        }
-        presenter.getUserInfo()
-    }
-*/
 }

@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.web
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -31,11 +32,12 @@ class WebFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_web, container, false)
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding.webView.clearCache(true)
         path?.let { url ->
-            viewBinding.webView.run{
+            viewBinding.webView.run {
                 loadUrl(url)
                 webViewClient = WebViewClient()
                 settings.javaScriptEnabled = true
@@ -49,5 +51,4 @@ class WebFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }

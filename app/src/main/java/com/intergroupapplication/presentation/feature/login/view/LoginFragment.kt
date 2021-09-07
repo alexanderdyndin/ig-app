@@ -300,5 +300,4 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             }
         }
     }
-
 }

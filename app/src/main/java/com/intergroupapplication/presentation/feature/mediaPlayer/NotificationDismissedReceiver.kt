@@ -6,7 +6,5 @@ import android.content.Intent
 
 class NotificationDismissedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent) {
-
-        /* Your code to handle the event here */
     }
 }

@@ -41,10 +41,11 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by abakarmagomedov on 28/08/2018 at project InterGroupApplication.
  */
-class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-                      private val proxyCacheServer: HttpProxyCacheServer,
-                      private val manager:FragmentManager)
-    : PagingDataAdapter<CommentEntity, RecyclerView.ViewHolder>(diffUtil) {
+class CommentsAdapter(
+    private val imageLoadingDelegate: ImageLoadingDelegate,
+    private val proxyCacheServer: HttpProxyCacheServer,
+    private val manager: FragmentManager
+) : PagingDataAdapter<CommentEntity, RecyclerView.ViewHolder>(diffUtil) {
 
     companion object {
         private const val POST_IN_COMMENT_HOLDER = 332
@@ -62,7 +63,11 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean {
+
+            override fun areContentsTheSame(
+                oldItem: CommentEntity,
+                newItem: CommentEntity
+            ): Boolean {
                 return if (oldItem is CommentEntity.Comment && newItem is CommentEntity.Comment) {
                     oldItem == newItem
                 } else if (oldItem is CommentEntity.AdEntity && newItem is CommentEntity.AdEntity) {
@@ -76,12 +81,13 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var deleteAnswerLayout: () -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
         var imageClickListener: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
-        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: CommentEntity.Comment, position: Int) -> Unit = { _, _, _, _ -> }
-        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
-        var showPostDetailInfo: (groupPostEntity:CommentEntity.PostEntity) ->Unit = {_->}
-        var clicksSettingPost: (settingPost: ImageView)->Unit = { _->}
-        var changeCountComments: (count:Int)->Unit = {_->}
-        var progressBarVisibility:(visibility:Boolean) -> Unit = {_->}
+        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: CommentEntity.Comment, position: Int) -> Unit =
+            { _, _, _, _ -> }
+        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ -> }
+        var showPostDetailInfo: (groupPostEntity: CommentEntity.PostEntity) -> Unit = { _ -> }
+        var clicksSettingPost: (settingPost: ImageView) -> Unit = { _ -> }
+        var changeCountComments: (count: Int) -> Unit = { _ -> }
+        var progressBarVisibility: (visibility: Boolean) -> Unit = { _ -> }
         var AD_TYPE = 1
         var AD_FREQ = 3
         var AD_FIRST = 3
@@ -90,9 +96,9 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
 
     private var compositeDisposable = CompositeDisposable()
-    private  var groupPostEntity:CommentEntity.PostEntity? = null
+    private var groupPostEntity: CommentEntity.PostEntity? = null
     lateinit var errorHandler: ErrorHandler
-    lateinit var viewModel:CommentsViewModel
+    lateinit var viewModel: CommentsViewModel
     lateinit var postInCommentHolder: PostInCommentHolder
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -102,7 +108,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 view = parent.inflate(R.layout.layout_admob_news)
                 AdViewHolder(view)
             }
-            POST_IN_COMMENT_HOLDER ->{
+            POST_IN_COMMENT_HOLDER -> {
                 view = parent.inflate(R.layout.item_group_post)
                 postInCommentHolder = PostInCommentHolder(view)
                 postInCommentHolder
@@ -121,7 +127,11 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             when (holder) {
                 is CommentViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
                 is CommentAnswerViewHolder -> if (it is CommentEntity.Comment) holder.bind(it)
-                is AdViewHolder -> if (it is CommentEntity.AdEntity) holder.bind(it.nativeAd, AD_TYPE, "comments")
+                is AdViewHolder -> if (it is CommentEntity.AdEntity) holder.bind(
+                    it.nativeAd,
+                    AD_TYPE,
+                    "comments"
+                )
                 is PostInCommentHolder -> if (it is CommentEntity.PostEntity) {
                     groupPostEntity = it
                     holder.bind(it)
@@ -144,12 +154,12 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         }
     }
 
-    fun positionAnswerComment(commentId:String):Int{
-        val rangePosition = IntRange(0,itemCount-1)
-        rangePosition.forEach {position->
+    fun positionAnswerComment(commentId: String): Int {
+        val rangePosition = IntRange(0, itemCount - 1)
+        rangePosition.forEach { position ->
             val item = getItem(position)
-            if(item is CommentEntity.Comment){
-                if (item.id == commentId){
+            if (item is CommentEntity.Comment) {
+                if (item.id == commentId) {
                     return@positionAnswerComment position
                 }
             }
@@ -158,17 +168,17 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         return 0
     }
 
-    inner class PostInCommentHolder(val view:View):RecyclerView.ViewHolder(view){
+    inner class PostInCommentHolder(val view: View) : RecyclerView.ViewHolder(view) {
         private val settingPostInComments = view.findViewById<ImageView>(R.id.settingsPost)
-        private val viewBinding by viewBinding (ItemGroupPostBinding::bind)
+        private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
         private val countComments = view.findViewById<TextView>(R.id.countComments)
 
-        fun bind(groupPostEntity: CommentEntity.PostEntity){
-            with(viewBinding){
+        fun bind(groupPostEntity: CommentEntity.PostEntity) {
+            with(viewBinding) {
                 compositeDisposable.add(getDateDescribeByString(groupPostEntity.date)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe{ text -> postPrescription.text = text })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { text -> postPrescription.text = text })
 
                 postCustomView.proxy = proxyCacheServer
                 postCustomView.imageClickListener = imageClickListener
@@ -177,78 +187,101 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
 
                 idpGroupPost.text = view.context.getString(R.string.idp, groupPostEntity.id)
                 countComments.text = groupPostEntity.commentsCount
-                idpGroupPost.text = view.context.getString(R.string.idp, groupPostEntity.idp.toString())
+                idpGroupPost.text =
+                    view.context.getString(R.string.idp, groupPostEntity.idp.toString())
                 countComments.text = groupPostEntity.commentsCount
                 groupName.text = groupPostEntity.groupInPost.name
                 postDislike.text = groupPostEntity.reacts.dislikesCount.toString()
                 postLike.text = groupPostEntity.reacts.likesCount.toString()
                 subCommentBtn.text = groupPostEntity.bells.count.toString()
                 btnRepost.setOnClickListener {
-                    sharePost(groupPostEntity,view.context)
+                    sharePost(groupPostEntity, view.context)
                 }
                 clicksSettingPost.invoke(settingPostInComments)
 
                 if (groupPostEntity.reacts.isLike) {
-                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_like_active,
+                        0,
+                        0,
+                        0
+                    )
                 } else {
                     postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
                 }
                 if (groupPostEntity.reacts.isDislike) {
-                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_dislike_active,
+                        0,
+                        0,
+                        0
+                    )
                 } else {
-                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_dislike,
+                        0,
+                        0,
+                        0
+                    )
                 }
 
-                doOrIfNull(groupPostEntity.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
+                doOrIfNull(groupPostEntity.groupInPost.avatar,
+                    { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
+                    {
+                        imageLoadingDelegate.loadImageFromResources(
+                            R.drawable.variant_10,
+                            postAvatarHolder
+                        )
+                    })
 
                 subCommentBtn.setOnClickListener {
                     if (!groupPostEntity.isLoading) {
                         if (groupPostEntity.bells.isActive) {
                             compositeDisposable.add(viewModel.deleteBell(groupPostEntity.id)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .doOnSubscribe { groupPostEntity.isLoading = true }
-                                    .doFinally {
-                                        groupPostEntity.isLoading = false
-                                        showPostDetailInfo(groupPostEntity)
-                                    }
-                                    .subscribe({
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe { groupPostEntity.isLoading = true }
+                                .doFinally {
+                                    groupPostEntity.isLoading = false
+                                    showPostDetailInfo(groupPostEntity)
+                                }
+                                .subscribe({
+                                    groupPostEntity.bells.isActive = false
+                                    groupPostEntity.bells.count--
+                                }, { exception ->
+                                    if (exception is NotFoundException) {
                                         groupPostEntity.bells.isActive = false
                                         groupPostEntity.bells.count--
-                                    }, { exception ->
-                                        if (exception is NotFoundException) {
-                                            groupPostEntity.bells.isActive = false
-                                            groupPostEntity.bells.count--
-                                        } else
-                                            errorHandler.handle(exception)
-                                    }))
+                                    } else
+                                        errorHandler.handle(exception)
+                                })
+                            )
                         } else {
                             compositeDisposable.add(viewModel.setBell(groupPostEntity.id)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .doOnSubscribe { groupPostEntity.isLoading = true }
-                                    .doFinally {
-                                        groupPostEntity.isLoading = false
-                                        showPostDetailInfo(groupPostEntity)
-                                    }
-                                    .subscribe({
-                                        groupPostEntity.bells.isActive = true
-                                        groupPostEntity.bells.count++
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnSubscribe { groupPostEntity.isLoading = true }
+                                .doFinally {
+                                    groupPostEntity.isLoading = false
+                                    showPostDetailInfo(groupPostEntity)
+                                }
+                                .subscribe({
+                                    groupPostEntity.bells.isActive = true
+                                    groupPostEntity.bells.count++
 
-                                    }, { exception ->
-                                        if (exception is CompositeException) {
-                                            exception.exceptions.forEach { ex ->
-                                                (ex as? FieldException)?.let {
-                                                    if (it.field == "post") {
-                                                        groupPostEntity.bells.isActive = true
-                                                        groupPostEntity.bells.count++
-                                                    }
+                                }, { exception ->
+                                    if (exception is CompositeException) {
+                                        exception.exceptions.forEach { ex ->
+                                            (ex as? FieldException)?.let {
+                                                if (it.field == "post") {
+                                                    groupPostEntity.bells.isActive = true
+                                                    groupPostEntity.bells.count++
                                                 }
                                             }
-                                        } else
-                                            errorHandler.handle(exception)
-                                    }
+                                        }
+                                    } else
+                                        errorHandler.handle(exception)
+                                }
                                 )
                             )
                         }
@@ -256,64 +289,75 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 }
                 postLikesClickArea.setOnClickListener {
                     if (!groupPostEntity.isLoading) {
-                        compositeDisposable.add(viewModel.setReact(isLike = !groupPostEntity.reacts.isLike,
-                                isDislike = groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSubscribe {
-                                    groupPostEntity.isLoading = true
-                                }
-                                .doFinally {
-                                    groupPostEntity.isLoading = false
-                                    showPostDetailInfo(groupPostEntity)
-                                }
-                                .subscribe({
-                                    groupPostEntity.reacts = it
-                                },
-                                        {
-                                            errorHandler.handle(it)
-                                        }))
+                        compositeDisposable.add(viewModel.setReact(
+                            isLike = !groupPostEntity.reacts.isLike,
+                            isDislike = groupPostEntity.reacts.isDislike,
+                            postId = groupPostEntity.id
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe {
+                                groupPostEntity.isLoading = true
+                            }
+                            .doFinally {
+                                groupPostEntity.isLoading = false
+                                showPostDetailInfo(groupPostEntity)
+                            }
+                            .subscribe({
+                                groupPostEntity.reacts = it
+                            },
+                                {
+                                    errorHandler.handle(it)
+                                })
+                        )
                     }
                 }
                 postDislikesClickArea.setOnClickListener {
                     if (!groupPostEntity.isLoading) {
-                        compositeDisposable.add(viewModel.setReact(isLike = groupPostEntity.reacts.isLike,
-                                isDislike = !groupPostEntity.reacts.isDislike, postId = groupPostEntity.id)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnSubscribe {
-                                    groupPostEntity.isLoading = true
-                                }
-                                .doFinally {
-                                    groupPostEntity.isLoading = false
-                                    showPostDetailInfo(groupPostEntity)
-                                }
-                                .subscribe({
-                                    groupPostEntity.reacts = it
-                                },
-                                        {
-                                            errorHandler.handle(it)
-                                        }))
+                        compositeDisposable.add(viewModel.setReact(
+                            isLike = groupPostEntity.reacts.isLike,
+                            isDislike = !groupPostEntity.reacts.isDislike,
+                            postId = groupPostEntity.id
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe {
+                                groupPostEntity.isLoading = true
+                            }
+                            .doFinally {
+                                groupPostEntity.isLoading = false
+                                showPostDetailInfo(groupPostEntity)
+                            }
+                            .subscribe({
+                                groupPostEntity.reacts = it
+                            },
+                                {
+                                    errorHandler.handle(it)
+                                })
+                        )
                     }
                 }
             }
         }
 
         private fun mapToGroupEntityPost(postEntity: CommentEntity.PostEntity) =
-                MarkupModel(postEntity.postText,postEntity.images,postEntity.audios,postEntity.videos,
-                        postEntity.imagesExpanded,postEntity.audiosExpanded,postEntity.videosExpanded)
+            MarkupModel(
+                postEntity.postText, postEntity.images, postEntity.audios, postEntity.videos,
+                postEntity.imagesExpanded, postEntity.audiosExpanded, postEntity.videosExpanded
+            )
 
-        private fun sharePost(item: CommentEntity.PostEntity,context: Context){
+        private fun sharePost(item: CommentEntity.PostEntity, context: Context) {
             progressBarVisibility.invoke(true)
             FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setDomainUriPrefix( context.getString(R.string.deeplinkDomain))
+                .setDomainUriPrefix(context.getString(R.string.deeplinkDomain))
                 .setLink(Uri.parse("https://intergroup.com/post/${item.id}"))
                 .setAndroidParameters(
                     DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
-                        .setMinimumVersion(1).build())
+                        .setMinimumVersion(1).build()
+                )
                 .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
                 .addOnCompleteListener {
-                    createShareIntent(item ,it.result.previewLink.toString(),context)
+                    createShareIntent(item, it.result.previewLink.toString(), context)
                 }
         }
 
@@ -321,15 +365,19 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             var commentsCount = if (countComments.text.toString() != "")
                 countComments.text.toString().toInt()
             else {
-                groupPostEntity?.activeCommentsCount?.toInt()?:0
+                groupPostEntity?.activeCommentsCount?.toInt() ?: 0
             }
             commentsCount++
             countComments.text = commentsCount.toString()
             changeCountComments.invoke(commentsCount)
         }
 
-        private fun createShareIntent(item:CommentEntity.PostEntity, url:String,context: Context){
-            val text = url +"/${item.id}"
+        private fun createShareIntent(
+            item: CommentEntity.PostEntity,
+            url: String,
+            context: Context
+        ) {
+            val text = url + "/${item.id}"
             val filesUrls = mutableListOf<String>()
             filesUrls.addAll(item.videos.map { it.file })
             filesUrls.addAll(item.images.map { it.file })
@@ -337,14 +385,17 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                 .share()
                 .text(text)
                 .filesUrls(filesUrls)
-                .download(object: DownloadCallback {
-                    override fun onDownloaded(success: Boolean, contextIntentHandler: ContextIntentHandler) {
+                .download(object : DownloadCallback {
+                    override fun onDownloaded(
+                        success: Boolean,
+                        contextIntentHandler: ContextIntentHandler
+                    ) {
                         progressBarVisibility.invoke(false)
                         contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                .startActivity()
+                            .startActivity()
                     }
                 }
-            )
+                )
         }
     }
 
@@ -355,38 +406,54 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         fun bind(item: CommentEntity.Comment) {
             with(viewBinding) {
                 val name = item.commentOwner
-                        ?.let { "${it.firstName} ${it.secondName}" }
-                        ?: let { itemView.resources.getString(R.string.unknown_user) }
+                    ?.let { "${it.firstName} ${it.secondName}" }
+                    ?: let { itemView.resources.getString(R.string.unknown_user) }
                 userName.text = name
-                idUser.text = itemView.context.getString(R.string.id,
-                        item.commentOwner?.user ?: "нет id")
+                idUser.text = itemView.context.getString(
+                    R.string.id,
+                    item.commentOwner?.user ?: "нет id"
+                )
                 //postText3.text = item.text
                 compositeDisposable.add(getDateDescribeByString(item.date)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe{ text->
-                            timeComment.text = text
-                        })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { text ->
+                        timeComment.text = text
+                    })
                 postDislike.text = item.reacts.dislikesCount.toString()
                 postLike.text = item.reacts.likesCount.toString()
                 userAvatarHolder.run {
                     doOrIfNull(item.commentOwner?.avatar, {
-                        imageLoadingDelegate.loadImageFromUrl(it, this) },
+                        imageLoadingDelegate.loadImageFromUrl(it, this)
+                    },
                         {
-                            imageLoadingDelegate.
-                            loadImageFromResources(R.drawable.application_logo, this) })
+                            imageLoadingDelegate.loadImageFromResources(
+                                R.drawable.application_logo,
+                                this
+                            )
+                        })
                 }
                 replyButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
                 postDislikes.setOnClickListener {
-                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(
+                        item.reacts.isLike,
+                        !item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
                 postLikes.setOnClickListener {
-                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(
+                        !item.reacts.isLike,
+                        item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
                 idcGroupUser.text = itemView.context.getString(R.string.idc, item.idc.toString())
-                settingsBtn.setOnClickListener { showPopupMenu(it,item) }
+                settingsBtn.setOnClickListener { showPopupMenu(it, item) }
 
                 commentCustomView.proxy = proxyCacheServer
                 commentCustomView.imageClickListener = imageClickListener
@@ -396,7 +463,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             }
         }
 
-        private fun showPopupMenu(view: View,item: CommentEntity.Comment) {
+        private fun showPopupMenu(view: View, item: CommentEntity.Comment) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
             popupMenu.menu.findItem(R.id.edit).isVisible = item.commentOwner?.user == USER_ID
@@ -416,7 +483,7 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         }
 
         private fun mapToGroupEntityPost(comment: CommentEntity.Comment) =
-                MarkupModel(comment.text,comment.images,comment.audios,comment.videos)
+            MarkupModel(comment.text, comment.images, comment.audios, comment.videos)
     }
 
     inner class CommentAnswerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -427,52 +494,79 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
             with(viewBinding) {
                 idcGroupUser2.text = itemView.context.getString(R.string.idc, item.idc.toString())
                 compositeDisposable.add(getDateDescribeByString(item.date)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe{ text ->
-                            timeComment2.text = text
-                        })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { text ->
+                        timeComment2.text = text
+                    })
                 userName2.text = item.commentOwner
-                        ?.let { "${it.firstName} ${it.secondName}" }
-                        ?: let { itemView.resources.getString(R.string.unknown_user) }
-                idUser2.text = itemView.context.getString(R.string.id,
-                        item.commentOwner?.user ?: "нет id")
+                    ?.let { "${it.firstName} ${it.secondName}" }
+                    ?: let { itemView.resources.getString(R.string.unknown_user) }
+                idUser2.text = itemView.context.getString(
+                    R.string.id,
+                    item.commentOwner?.user ?: "нет id"
+                )
                 postDislike2.text = item.reacts.dislikesCount.toString()
                 postLike2.text = item.reacts.likesCount.toString()
                 userAvatarHolder2.run {
-                    doOrIfNull(item.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
-                            { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
+                    doOrIfNull(item.commentOwner?.avatar,
+                        { imageLoadingDelegate.loadImageFromUrl(it, this) },
+                        {
+                            imageLoadingDelegate.loadImageFromResources(
+                                R.drawable.application_logo,
+                                this
+                            )
+                        })
                 }
                 userReplyAvatarHolder.run {
-                    doOrIfNull(item.answerTo?.commentOwner?.avatar, { imageLoadingDelegate.loadImageFromUrl(it, this) },
-                            { imageLoadingDelegate.loadImageFromResources(R.drawable.application_logo, this) })
+                    doOrIfNull(item.answerTo?.commentOwner?.avatar,
+                        { imageLoadingDelegate.loadImageFromUrl(it, this) },
+                        {
+                            imageLoadingDelegate.loadImageFromResources(
+                                R.drawable.application_logo,
+                                this
+                            )
+                        })
                 }
                 replyAnswerButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
                 postDislikes2.setOnClickListener {
-                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(
+                        item.reacts.isLike,
+                        !item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
                 postLikes2.setOnClickListener {
-                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                    likeClickListener.invoke(
+                        !item.reacts.isLike,
+                        item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
                 settingsBtn2.setOnClickListener { showPopupMenu(it, item) }
 
-                val replyName =  item.answerTo?.commentOwner
-                        ?.let { "${it.firstName} ${it.secondName}, " }
-                        ?: let { itemView.resources.getString(R.string.unknown_user) }
+                val replyName = item.answerTo?.commentOwner
+                    ?.let { "${it.firstName} ${it.secondName}, " }
+                    ?: let { itemView.resources.getString(R.string.unknown_user) }
                 answerCommentCustomView.proxy = proxyCacheServer
                 answerCommentCustomView.imageClickListener = imageClickListener
                 answerCommentCustomView.imageLoadingDelegate = imageLoadingDelegate
-                answerCommentCustomView.setUpPost(mapToGroupEntityPost(item,replyName+item.text))
+                answerCommentCustomView.setUpPost(mapToGroupEntityPost(item, replyName + item.text))
 
             }
         }
 
-        private fun mapToGroupEntityPost(comment: CommentEntity.Comment, textAnswerComment:String) =
-                MarkupModel(textAnswerComment,comment.images,comment.audios,comment.videos)
+        private fun mapToGroupEntityPost(
+            comment: CommentEntity.Comment,
+            textAnswerComment: String
+        ) =
+            MarkupModel(textAnswerComment, comment.images, comment.audios, comment.videos)
 
-        private fun showPopupMenu(view: View, item:CommentEntity.Comment) {
+        private fun showPopupMenu(view: View, item: CommentEntity.Comment) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
             popupMenu.menu.findItem(R.id.edit).isVisible = item.commentOwner?.user == USER_ID
@@ -504,5 +598,4 @@ class CommentsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         }
         super.onViewRecycled(holder)
     }
-
 }

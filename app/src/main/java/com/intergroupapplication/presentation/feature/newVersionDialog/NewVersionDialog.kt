@@ -20,9 +20,9 @@ class NewVersionDialog : DialogFragment() {
                 .setMessage("Вам необходимо обновиться для продолжения работы")
                 .setPositiveButton("ОК") { _, _ ->
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(NEW_VERSION_URL))
-                        startActivity(intent)
-                    }
-                    .setCancelable(false)
+                    startActivity(intent)
+                }
+                .setCancelable(false)
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

@@ -14,6 +14,6 @@ interface ConfirmationUserProfileGatewayModule {
 
     @PerFragment
     @Binds
-    fun provideConfirmationMailGateway(confirmationMailService: ConfirmationMailService): ConfirmationMailGateway
-
+    fun provideConfirmationMailGateway(confirmationMailService: ConfirmationMailService)
+            : ConfirmationMailGateway
 }

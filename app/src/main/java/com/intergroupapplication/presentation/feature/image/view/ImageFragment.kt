@@ -16,7 +16,7 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.image.adapter.ImageAdapter
 import dagger.android.support.AndroidSupportInjection
 
-class ImageFragment: Fragment(R.layout.fragment_image) {
+class ImageFragment : Fragment(R.layout.fragment_image) {
 
     private val viewBinding by viewBinding(FragmentImageBinding::bind)
 
@@ -56,5 +56,4 @@ class ImageFragment: Fragment(R.layout.fragment_image) {
         viewBinding.toolbarUpstairs.setNavigationIcon(R.drawable.ic_arrow_gray)
         viewBinding.toolbarUpstairs.setNavigationOnClickListener { findNavController().popBackStack() }
     }
-
 }

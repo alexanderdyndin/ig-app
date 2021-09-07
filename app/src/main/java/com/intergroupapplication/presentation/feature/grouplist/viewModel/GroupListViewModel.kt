@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.grouplist.viewModel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -27,6 +28,7 @@ class GroupListViewModel @Inject constructor(
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
+    @SuppressLint("BinaryOperationInTimber")
     @ExperimentalCoroutinesApi
     fun fetchGroups(query: String = ""): Flowable<PagingData<GroupEntity>> {
         return useCase.getGroupList(query)
@@ -43,8 +45,10 @@ class GroupListViewModel @Inject constructor(
                             after == null -> null
                             else -> if (i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
                                 var nativeAd: NativeAd?
-                                Timber.d("trying to get all group list ad, avaible ad:" +
-                                        "${Appodeal.getAvailableNativeAdsCount()}")
+                                Timber.d(
+                                    "trying to get all group list ad, avaible ad:" +
+                                            "${Appodeal.getAvailableNativeAdsCount()}"
+                                )
                                 if (nativeAdItem.also { nativeAd = it } != null) {
                                     GroupEntity.AdEntity(i, nativeAd, "all_groups")
                                 } else null
@@ -71,8 +75,10 @@ class GroupListViewModel @Inject constructor(
                             after == null -> null
                             else -> if (i % GroupListAdapter.AD_FREQ == 0 && i >= 0) {
                                 if (Appodeal.getAvailableNativeAdsCount() > 0)
-                                    GroupEntity.AdEntity(i, null,
-                                        "subscribed_groups")
+                                    GroupEntity.AdEntity(
+                                        i, null,
+                                        "subscribed_groups"
+                                    )
                                 else null
                             } else null
                         }
@@ -113,6 +119,4 @@ class GroupListViewModel @Inject constructor(
     fun unsubscribeGroup(groupID: String): Completable {
         return useCase.unsubscribeGroup(groupID)
     }
-
-
 }

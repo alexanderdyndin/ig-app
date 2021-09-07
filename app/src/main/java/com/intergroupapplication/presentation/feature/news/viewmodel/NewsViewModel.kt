@@ -42,8 +42,10 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase) : Vie
                             after == null -> null
                             else -> if (i % NewsAdapter.AD_FREQ == 0 && i >= 0) {
                                 var nativeAd: NativeAd?
-                                Timber.d("trying to get news ad, avaible ad:" +
-                                        "${Appodeal.getAvailableNativeAdsCount()}")
+                                Timber.d(
+                                    "trying to get news ad, avaible ad:" +
+                                            "${Appodeal.getAvailableNativeAdsCount()}"
+                                )
                                 if (nativeAdItem.also { nativeAd = it } != null) {
                                     NewsEntity.AdEntity(i, nativeAd)
                                 } else null
@@ -66,3 +68,4 @@ class NewsViewModel @Inject constructor(private val useCase: PostsUseCase) : Vie
     fun sendComplaint(postId: Int) = useCase.sendComplaint(postId)
 
 }
+

@@ -25,7 +25,7 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
         when {
             !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_global_AgreementsFragment2)
             !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_global_registrationActivity)
-            else ->  {
+            else -> {
                 val activity = requireActivity()
                 if (activity is MainActivity) {
                     activity.createDrawer()
@@ -33,6 +33,4 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
             }
         }
     }
-
-
 }

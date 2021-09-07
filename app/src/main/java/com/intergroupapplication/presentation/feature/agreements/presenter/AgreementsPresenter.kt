@@ -33,5 +33,4 @@ class AgreementsPresenter @Inject constructor(
                 }, { errorHandler.handle(it) })
         )
     }
-
 }

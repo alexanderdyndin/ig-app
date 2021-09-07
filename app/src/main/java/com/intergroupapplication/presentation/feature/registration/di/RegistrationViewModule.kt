@@ -19,7 +19,7 @@ class RegistrationViewModule {
     @PerFragment
     @Provides
     fun provideDialogManager(fragment: RegistrationFragment): DialogManager =
-            DialogManager(fragment.requireActivity().supportFragmentManager)
+        DialogManager(fragment.requireActivity().supportFragmentManager)
 
 
     @PerFragment
@@ -35,7 +35,7 @@ class RegistrationViewModule {
     @PerFragment
     @Provides
     fun provideValidator(fragment: RegistrationFragment): Validator =
-            Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
+        Validator(fragment.requireActivity()).apply { setValidationListener(fragment) }
 
     @PerFragment
     @Provides

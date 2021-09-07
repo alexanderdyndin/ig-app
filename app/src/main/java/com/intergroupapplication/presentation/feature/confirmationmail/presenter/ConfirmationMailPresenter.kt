@@ -14,11 +14,12 @@ import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState
-class ConfirmationMailPresenter @Inject constructor(private val confirmationMailGateway: ConfirmationMailGateway,
-                                                    @ConfirmationProfileHandler
-                                                    private val errorHandler: ErrorHandler,
-                                                    private val resendCodeGateway: ResendCodeGateway)
-    : BasePresenter<ConfirmationMailView>() {
+class ConfirmationMailPresenter @Inject constructor(
+    private val confirmationMailGateway: ConfirmationMailGateway,
+    @ConfirmationProfileHandler
+    private val errorHandler: ErrorHandler,
+    private val resendCodeGateway: ResendCodeGateway
+) : BasePresenter<ConfirmationMailView>() {
 
 
     fun start(entity: String?) {
@@ -29,26 +30,28 @@ class ConfirmationMailPresenter @Inject constructor(private val confirmationMail
     }
 
     fun performRegistration() {
-        compositeDisposable.add(resendCodeGateway.resendCode()
+        compositeDisposable.add(
+            resendCodeGateway.resendCode()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { viewState?.showMessage(R.string.send_code_on_email) },
-                        { errorHandler.handle(it) }))
+                    { viewState?.showMessage(R.string.send_code_on_email) },
+                    { errorHandler.handle(it) })
+        )
     }
 
     fun confirmMail(confirmCode: String) {
         compositeDisposable.add(
-                confirmationMailGateway.confirmMail(confirmCode)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .handleLoading(viewState)
-                        .subscribe({
-                            viewState.completed()
-                        }) {
-                            viewState.clearViewErrorState()
-                            errorHandler.handle(it)
-                        })
+            confirmationMailGateway.confirmMail(confirmCode)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .handleLoading(viewState)
+                .subscribe({
+                    viewState.completed()
+                }) {
+                    viewState.clearViewErrorState()
+                    errorHandler.handle(it)
+                }
+        )
     }
-
 }

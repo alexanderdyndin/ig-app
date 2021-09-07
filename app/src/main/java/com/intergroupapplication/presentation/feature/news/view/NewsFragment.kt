@@ -47,7 +47,7 @@ import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class NewsFragment: BaseFragment() {
+class NewsFragment : BaseFragment() {
 
     @Inject
     lateinit var imageLoadingDelegate: ImageLoadingDelegate
@@ -131,7 +131,7 @@ class NewsFragment: BaseFragment() {
         newsPosts.adapter = concatAdapter
         lifecycleScope.launchWhenResumed {
             adapter.loadStateFlow.collectLatest { loadStates ->
-                when(loadStates.refresh) {
+                when (loadStates.refresh) {
                     is LoadState.Loading -> {
                         if (adapter.itemCount == 0) {
                             progressBar.show()
@@ -168,15 +168,17 @@ class NewsFragment: BaseFragment() {
     @ExperimentalCoroutinesApi
     private fun setAdapter() {
         NewsAdapter.apply {
-            complaintListener = {  id ->
-                compositeDisposable.add(viewModel.sendComplaint(id)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        showToast(R.string.complaint_send)
-                    }, {
-                        errorHandler.handle(it)
-                    }))
+            complaintListener = { id ->
+                compositeDisposable.add(
+                    viewModel.sendComplaint(id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            showToast(R.string.complaint_send)
+                        }, {
+                            errorHandler.handle(it)
+                        })
+                )
             }
             commentClickListener = {
                 clickedPostId = it.id

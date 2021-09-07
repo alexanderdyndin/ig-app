@@ -19,6 +19,6 @@ interface GroupView : MvpView, ImageUploadingView {
     fun showGroupInfoLoading(show: Boolean)
     fun changeCommentsCount(pair: Pair<String, String>)
     fun avatarChanged(url: String)
-    fun showMessage(res:Int)
+    fun showMessage(res: Int)
     fun showMessage(msg: String)
 }
