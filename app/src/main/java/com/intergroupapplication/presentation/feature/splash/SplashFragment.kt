@@ -23,8 +23,8 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         when {
-            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_global_AgreementsFragment2)
-            !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_global_registrationActivity)
+            !userSession.isAcceptTerms() -> findNavController().navigate(R.id.action_global_AgreementsFragment)
+            !userSession.isLoggedIn() -> findNavController().navigate(R.id.action_global_registrationFragment)
             else -> {
                 val activity = requireActivity()
                 if (activity is MainActivity) {

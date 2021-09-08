@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.creategroup.view
 
+import android.annotation.SuppressLint
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.text.Editable
 import android.text.TextWatcher
@@ -47,6 +48,7 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     @ProvidePresenter
     fun providePresenter(): CreateGroupPresenter = presenter
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var groupName: EditText
 
@@ -366,10 +368,8 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     }
 
     override fun goToGroupScreen(id: String) {
-        // findNavController().previousBackStackEntry?.savedStateHandle?.set(CREATED_GROUP_ID, id)
-        // findNavController().popBackStack()
         val data = bundleOf(GroupFragment.GROUP_ID to id)
-        findNavController().navigate(R.id.action_createGroupActivity_to_groupActivity, data)
+        findNavController().navigate(R.id.action_createGroupFragment_to_groupFragment, data)
     }
 
     override fun showLoading(show: Boolean) {

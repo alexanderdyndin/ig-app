@@ -186,7 +186,7 @@ class NewsFragment : BaseFragment() {
             }
             groupClickListener = {
                 val data = bundleOf(GROUP_ID to it.id, GROUP to it)
-                findNavController().navigate(R.id.action_newsFragment2_to_groupActivity, data)
+                findNavController().navigate(R.id.action_newsFragment_to_groupFragment, data)
             }
             imageClickListener = { list: List<FileEntity>, i: Int ->
                 val data = bundleOf("images" to list.toTypedArray(), "selectedId" to i)

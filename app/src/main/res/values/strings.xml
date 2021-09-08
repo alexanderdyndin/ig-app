@@ -242,11 +242,9 @@
     <string name="close">Close</string>
     <string name="delete_all">Delete all</string>
     <string name="playlist">Playlist</string>
-    <string name="add">Add</string>
     <string name="add_to_black_list_by_id">Add user into black list by ID</string>
     <string name="enter_user_id">Enter user ID</string>
     <string name="user_not_found">User not found</string>
-    <string name="user_can_not_fount_your_group">User will not be able to find your group</string>
     <string name="ultimate_all_inclusive">Ultimate - all inclusive</string>
     <string name="without_advertising">Advertising blocks in the application will be disabled, you can install an animated avatar, write anonymous comments and offer anonymous posts, download audio and video files.</string>
     <string name="user_advertising_can_not_disable">* Ads posted by users cannot be disabled / removed. Users will still be able to add you to the blacklist.</string>

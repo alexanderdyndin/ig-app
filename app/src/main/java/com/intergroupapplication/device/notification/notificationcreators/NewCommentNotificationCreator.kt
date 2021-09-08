@@ -64,7 +64,7 @@ class NewCommentNotificationCreator constructor(
         return NavDeepLinkBuilder(context)
             .setComponentName(MainActivity::class.java)
             .setGraph(R.navigation.nav_graph)
-            .setDestination(R.id.commentsDetailsActivity)
+            .setDestination(R.id.commentsDetailsFragment)
             .setArguments(bundle)
             .createPendingIntent()
     }

@@ -190,8 +190,6 @@
     <string name="demote">Разжаловать</string>
     <string name="unblock">Разблокировать</string>
     <string name="edit_post">Редактировать</string>
-    <string name="user_can_not_fount_your_group">Пользователь не сможет найти вашу группу</string>
-    <string name="add">Добавить</string>
     <string name="years">%1$s года</string>
     <string name="answer_comment">ответил на ваш комментарий</string>
     <string name="dislike_your_comment">не понравился ваш</string>

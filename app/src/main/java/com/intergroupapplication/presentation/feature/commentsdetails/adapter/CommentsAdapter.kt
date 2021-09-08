@@ -436,7 +436,7 @@ class CommentsAdapter(
                 replyButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
-                postDislikes.setOnClickListener {
+                postDislike.setOnClickListener {
                     likeClickListener.invoke(
                         item.reacts.isLike,
                         !item.reacts.isDislike,
@@ -444,7 +444,7 @@ class CommentsAdapter(
                         layoutPosition
                     )
                 }
-                postLikes.setOnClickListener {
+                postLike.setOnClickListener {
                     likeClickListener.invoke(
                         !item.reacts.isLike,
                         item.reacts.isDislike,
@@ -531,7 +531,7 @@ class CommentsAdapter(
                 replyAnswerButton.setOnClickListener {
                     replyListener.invoke(item)
                 }
-                postDislikes2.setOnClickListener {
+                postDislike2.setOnClickListener {
                     likeClickListener.invoke(
                         item.reacts.isLike,
                         !item.reacts.isDislike,
@@ -539,7 +539,7 @@ class CommentsAdapter(
                         layoutPosition
                     )
                 }
-                postLikes2.setOnClickListener {
+                postLike2.setOnClickListener {
                     likeClickListener.invoke(
                         !item.reacts.isLike,
                         item.reacts.isDislike,

@@ -197,7 +197,7 @@ class NewsAdapter(
                 headerPostFromGroup.setOnClickListener {
                     groupClickListener.invoke(item.post.groupInPost)
                 }
-                postLikesClickArea.setOnClickListener {
+                postLike.setOnClickListener {
                     likeClickListener.invoke(
                         !item.post.reacts.isLike,
                         item.post.reacts.isDislike,
@@ -205,7 +205,7 @@ class NewsAdapter(
                         layoutPosition
                     )
                 }
-                postDislikesClickArea.setOnClickListener {
+                postDislike.setOnClickListener {
                     likeClickListener.invoke(
                         item.post.reacts.isLike,
                         !item.post.reacts.isDislike,

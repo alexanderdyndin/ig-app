@@ -11,8 +11,6 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentConfirmationMailBinding
-import com.intergroupapplication.domain.exception.*
-import com.intergroupapplication.databinding.FragmentConfirmationMail2Binding
 import com.intergroupapplication.di.qualifier.ConfirmationProfileHandler
 import com.intergroupapplication.domain.exception.CODE
 import com.intergroupapplication.domain.exception.FieldException
@@ -22,6 +20,7 @@ import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.confirmationmail.presenter.ConfirmationMailPresenter
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
@@ -29,28 +28,15 @@ import javax.inject.Inject
 
 class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
-    companion object {
-        const val REGISTRATION_ENTITY = "REGISTRATION_ENTITY"
-    }
-
-    private val viewBinding by viewBinding(FragmentConfirmationMailBinding::bind)
-
     @Inject
     @InjectPresenter
     lateinit var presenter: ConfirmationMailPresenter
-
-    @LayoutRes
-    override fun layoutRes() = R.layout.fragment_confirmation_mail
-
-    @ProvidePresenter
-    fun providePresenter(): ConfirmationMailPresenter = presenter
-
-    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
     @Inject
     @ConfirmationProfileHandler
     override lateinit var errorHandler: ErrorHandler
 
+    private val viewBinding by viewBinding(FragmentConfirmationMailBinding::bind)
     private lateinit var btnNext: AppCompatButton
     private lateinit var btnRepeatCode: TextView
     private lateinit var btnChangeEmail: TextView
@@ -59,6 +45,14 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
     private lateinit var emailConfirmation: TextView
     private lateinit var textConfirmation: TextView
     private lateinit var textConfirmation2: TextView
+
+    @LayoutRes
+    override fun layoutRes() = R.layout.fragment_confirmation_mail
+
+    @ProvidePresenter
+    fun providePresenter(): ConfirmationMailPresenter = presenter
+
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
     override fun viewCreated() {
         btnNext = viewBinding.btnNext

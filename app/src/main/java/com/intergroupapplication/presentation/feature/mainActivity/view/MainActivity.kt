@@ -199,7 +199,7 @@ class MainActivity : FragmentActivity() {
                 drawer.closeDrawer()
             }, checked = true),
             NavigationEntity(R.string.groups, R.drawable.ic_groups, {
-                navController.navigate(R.id.action_global_groupListFragment2)
+                navController.navigate(R.id.action_global_groupListFragment)
                 drawer.closeDrawer()
             }),
             NavigationEntity(R.string.buy_premium, R.drawable.icon_like, {
@@ -208,7 +208,7 @@ class MainActivity : FragmentActivity() {
             }, null),
             NavigationEntity(R.string.logout, 0, {
                 userSession.logout()
-                navController.navigate(R.id.action_global_loginActivity)
+                navController.navigate(R.id.action_global_loginFragment)
                 drawer.closeDrawer()
             }, null),
         )
@@ -543,13 +543,13 @@ class MainActivity : FragmentActivity() {
     private fun openConfirmationEmail() = Action { _, _ ->
         val email = userSession.email?.email.orEmpty()
         val data = bundleOf("entity" to email)
-        navController.navigate(R.id.action_global_confirmationMailActivity, data)
+        navController.navigate(R.id.action_global_confirmationMailFragment, data)
         Timber.e("403 catched")
     }
 
     private fun openAutorize() = Action { _, _ ->
         userSession.logout()
-        navController.navigate(R.id.action_global_loginActivity)
+        navController.navigate(R.id.action_global_loginFragment)
     }
 
     private fun loadFromCamera() {

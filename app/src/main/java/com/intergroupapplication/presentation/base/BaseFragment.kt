@@ -88,6 +88,6 @@ abstract class BaseFragment : MvpAppCompatFragment() {
 
     fun logOut() {
         userSession.logout()
-        findNavController().navigate(R.id.action_global_loginActivity)
+        findNavController().navigate(R.id.action_global_loginFragment)
     }
 }

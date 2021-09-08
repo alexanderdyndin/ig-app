@@ -112,21 +112,21 @@ class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
         privacyPolicy.clicks().subscribe {
             val bundle = bundleOf(RES_ID to RES_ID_PRIVACY_POLICY)
             findNavController().navigate(
-                R.id.action_AgreementsFragment2_to_agreementFragment,
+                R.id.action_AgreementsFragment_to_agreementFragment,
                 bundle
             )
         }.also { compositeDisposable.add(it) }
         userAgreement.clicks().subscribe {
             val bundle = bundleOf(RES_ID to RES_ID_TERMS_OF_USE)
             findNavController().navigate(
-                R.id.action_AgreementsFragment2_to_agreementFragment,
+                R.id.action_AgreementsFragment_to_agreementFragment,
                 bundle
             )
         }.also { compositeDisposable.add(it) }
         copyrightAgreement.clicks().subscribe {
             val bundle = bundleOf(RES_ID to RES_ID_RIGHTHOLDERS)
             findNavController().navigate(
-                R.id.action_AgreementsFragment2_to_agreementFragment,
+                R.id.action_AgreementsFragment_to_agreementFragment,
                 bundle
             )
         }.also { compositeDisposable.add(it) }

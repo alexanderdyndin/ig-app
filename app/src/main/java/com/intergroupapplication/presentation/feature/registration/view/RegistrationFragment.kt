@@ -26,7 +26,7 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentRegistration2Binding
+import com.intergroupapplication.databinding.FragmentRegistrationBinding
 import com.intergroupapplication.di.qualifier.RegistrationHandler
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*

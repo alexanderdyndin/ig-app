@@ -15,9 +15,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
-import com.intergroupapplication.databinding.FragmentRecoveryPassword2Binding
-import com.intergroupapplication.di.qualifier.RecoveryHandler
 import com.intergroupapplication.databinding.FragmentRecoveryPasswordBinding
+import com.intergroupapplication.di.qualifier.RecoveryHandler
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
