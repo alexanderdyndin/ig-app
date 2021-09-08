@@ -19,7 +19,6 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.intergroupapplication.R
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import timber.log.Timber
 
 
 class IGMediaService : MediaBrowserService() {
@@ -45,19 +44,15 @@ class IGMediaService : MediaBrowserService() {
         AudioManager.OnAudioFocusChangeListener { focusChange ->
             when (focusChange) {
                 AudioManager.AUDIOFOCUS_LOSS -> {
-                    Timber.tag("tut_loss").d("stop")
-                    exoPlayer?.stop()
+                    exoPlayer?.pause()
                 }
                 AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                    Timber.tag("tut_loss_transient").d("pause")
                     exoPlayer?.pause()
                 }
                 AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
-                    Timber.tag("tut_can_suck").d("low_volume")
                     exoPlayer?.volume = 0.1f
                 }
                 AudioManager.AUDIOFOCUS_GAIN -> {
-                    Timber.tag("tut_gain").d("play")
                     exoPlayer?.let {
                         it.volume = 1f
                         it.play()
@@ -72,25 +67,6 @@ class IGMediaService : MediaBrowserService() {
      */
     override fun onBind(intent: Intent?): IBinder {
         exoPlayer?.playWhenReady = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            audioManager.requestAudioFocus(
-                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
-                    setAudioAttributes(AudioAttributes.Builder().run {
-                        setUsage(AudioAttributes.USAGE_GAME)
-                        setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        build()
-                    })
-                    setAcceptsDelayedFocusGain(true)
-                    setOnAudioFocusChangeListener(afChangeListener)
-                    build()
-                })
-        } else {
-            audioManager.requestAudioFocus(
-                afChangeListener,
-                AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN
-            )
-        }
         return ServiceBinder()
     }
 
@@ -209,6 +185,7 @@ class IGMediaService : MediaBrowserService() {
     )
 
     private fun displayNotification(startForeground: Boolean) {
+        requestAudioFocus()
         val isPlaying = exoPlayer?.playWhenReady == true
 
         val audioTitle = notificationTitle.let { if (it.isNullOrBlank()) "Unknown song" else it }
@@ -223,18 +200,10 @@ class IGMediaService : MediaBrowserService() {
         }
         val pendingIntent = PendingIntent.getService(this, 0, intent, 0)
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//        val notificationBuilder = NotificationCompat.Builder(this, MainActivity.MEDIA_CHANNEL_ID)
-//        notificationBuilder.setCustomBigContentView(remoteView)
-//        notificationBuilder.setSmallIcon(android.R.drawable.sym_def_app_icon)
         val notificationBuilder = NotificationCompat.Builder(this, MainActivity.MEDIA_CHANNEL_ID)
-            // Show controls on lock screen even when user hides sensitive content.
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setSmallIcon(R.drawable.exo_notification_small_icon)
-            // Add media control buttons that invoke intents in your media service
-//                .addAction(R.drawable.ic_media_notification_previous_track, "Previous", prevPendingIntent) // #0
             .addAction(playPauseButtonId, if (isPlaying) "Pause" else "Play", pendingIntent) // #1
-//                .addAction(R.drawable.ic_media_notification_next_track, "Next", nextPendingIntent) // #2
-            // Apply the media style template
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setShowActionsInCompactView(0)
@@ -243,13 +212,34 @@ class IGMediaService : MediaBrowserService() {
             .setContentTitle(audioTitle)
             .setContentText(audioAuthor)
 
-        //Check for version and create a channel if needed.
         if (Build.VERSION.SDK_INT > 26) {
             notificationBuilder.setChannelId(MainActivity.MEDIA_CHANNEL_ID)
         }
         val notification = notificationBuilder.build()
         if (startForeground) startForeground(NOTIFICATION_ID, notification)
         manager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun requestAudioFocus() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioManager.requestAudioFocus(
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                    setAudioAttributes(AudioAttributes.Builder().run {
+                        setUsage(AudioAttributes.USAGE_GAME)
+                        setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        build()
+                    })
+                    setAcceptsDelayedFocusGain(true)
+                    setOnAudioFocusChangeListener(afChangeListener)
+                    build()
+                })
+        } else {
+            audioManager.requestAudioFocus(
+                afChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN
+            )
+        }
     }
 
     override fun onDestroy() {
