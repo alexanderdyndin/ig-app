@@ -151,18 +151,74 @@ class CommentBottomSheetPresenter @Inject constructor(
         )
     }
 
+    fun editComment(commentId: String, textComment: String, finalNamesMedia: List<String>) {
+        compositeDisposable.add(Single.zip(photoGateway.getImageUrls(), photoGateway.getAudioUrls(),
+            photoGateway.getVideoUrls(),
+            object :
+                Function3<List<ChooseMedia>, List<ChooseMedia>, List<ChooseMedia>, CreateCommentEntity> {
+                override fun invoke(
+                    photos: List<ChooseMedia>,
+                    audios: List<ChooseMedia>,
+                    videos: List<ChooseMedia>
+                )
+                        : CreateCommentEntity {
+                    return CreateCommentEntity(
+                        textComment,
+                        photos.filter { finalNamesMedia.contains(it.name) }
+                            .map {
+                                FileRequestEntity(
+                                    file = it.url, description = null,
+                                    title = it.name
+                                )
+                            },
+                        audios.filter { finalNamesMedia.contains(it.name) }
+                            .map {
+                                AudioRequestEntity(
+                                    it.url, null,
+                                    it.name, it.author, null, duration = it.duration
+                                )
+                            },
+                        videos.filter { finalNamesMedia.contains(it.name) }
+                            .map {
+                                FileRequestEntity(
+                                    file = it.url, description = null, title =
+                                    it.name, it.urlPreview,
+                                    duration = it.duration
+                                )
+                            },
+                    )
+                }
+            })
+            .subscribeOn(Schedulers.io())
+            .flatMap { commentEntity ->
+                commentGateway.editComment(commentId, commentEntity)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { viewState.showCommentUploading(true) }
+            .doFinally { viewState.showCommentUploading(false) }
+            .subscribe({
+                viewState.commentCreated(it)
+                photoGateway.removeAllContent()
+            }, {
+                errorHandler.handle(it)
+                viewState.hideSwipeLayout()
+            })
+        )
+    }
+
     fun attachMedia(
         loadMedia: (chooseMedia: ChooseMedia) -> Unit, chooseMedias: Set<ChooseMedia>
     ) {
-        mediaDisposable.add(Observable.fromIterable(chooseMedias)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                loadMedia(it)
-            }, {
-                it.printStackTrace()
-            }
-            )
+        mediaDisposable.add(
+            Observable.fromIterable(chooseMedias)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    loadMedia(it)
+                }, {
+                    it.printStackTrace()
+                }
+                )
         )
     }
 

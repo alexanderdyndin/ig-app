@@ -1,6 +1,5 @@
 package com.intergroupapplication.data.network
 
-import com.intergroupapplication.data.model.CreateCommentModel
 import com.intergroupapplication.data.model.RegistrationResponse
 import com.intergroupapplication.data.model.SocialAuthModel
 import com.intergroupapplication.data.model.groupfollowers.GroupBanDto
@@ -79,13 +78,13 @@ interface AppApi {
     @POST("groups/posts/{post_pk}/comments/")
     fun createComment(
         @Path("post_pk") postId: String,
-        @Body createCommentModel: CreateCommentModel
+        @Body createCommentDto: CreateCommentDto
     ): Single<CommentDto>
 
     @POST("groups/comments/{comment_pk}/answers/")
     fun createAnswerToComment(
         @Path("comment_pk") answerToCommentId: String,
-        @Body createCommentModel: CreateCommentModel
+        @Body createCommentDto: CreateCommentDto
     ): Single<CommentDto>
 
     @POST("groups/{group_pk}/posts/")
@@ -99,6 +98,12 @@ interface AppApi {
         @Body data: ReactsRequestDto,
         @Path("post_pk") postId: String
     ): Single<ReactsDto>
+
+    @PUT("groups/comments/{id}/")
+    fun editCommentById(
+        @Path("id") commentId: String,
+        @Body createCommentModel: CreateCommentDto
+    ): Single<CommentDto>
 
     @GET("groups/posts/{id}/")
     fun getPostById(@Path("id") postId: String): Single<GroupPostDto>

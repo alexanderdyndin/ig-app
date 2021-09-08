@@ -180,6 +180,13 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
                     val show = result.getBoolean(CommentBottomSheetFragment.DATA_KEY)
                     showCommentUploading(show)
                 }
+                CommentBottomSheetFragment.EDIT_COMMENT_DATA -> {
+                    val data: CreateCommentDataModel? =
+                        result.getParcelable(CommentBottomSheetFragment.DATA_KEY)
+                    val commentId =
+                        result.getString(CommentBottomSheetFragment.COMMENT_ID_KEY) ?: ""
+                    data?.let { editComment(it, commentId) }
+                }
             }
         }
         try {
@@ -364,6 +371,14 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
                 dataModel.textComment, dataModel.finalNameMedia
             )
         }
+    }
+
+    private fun editComment(dataModel: CreateCommentDataModel, commentId: String) {
+        dataModel.commentBottomSheetPresenter.editComment(
+            commentId,
+            dataModel.textComment,
+            dataModel.finalNameMedia
+        )
     }
 
 

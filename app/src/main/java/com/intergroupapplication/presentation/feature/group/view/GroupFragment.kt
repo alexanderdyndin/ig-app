@@ -443,11 +443,7 @@ class GroupFragment : BaseFragment(), GroupView,
     override fun avatarChanged(url: String) {
         groupAvatarHolder.showAvatar(url)
         groupAvatarHolder.showImageUploaded()
-        compositeDisposable.add(
-            viewModel.fetchPosts(groupId)
-                .subscribe {
-                    adapter.submitData(lifecycle, it)
-                })
+        adapter.refresh()
     }
 
     override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {

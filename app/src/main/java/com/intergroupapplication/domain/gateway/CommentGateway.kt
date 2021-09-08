@@ -24,6 +24,11 @@ interface CommentGateway {
         createCommentEntity: CreateCommentEntity
     ): Single<CommentEntity.Comment>
 
+    fun editComment(
+        commentId: String,
+        createCommentEntity: CreateCommentEntity
+    ): Single<CommentEntity.Comment>
+
     fun deleteComment(commentId: String): Completable
     fun setCommentReact(
         commentId: String,

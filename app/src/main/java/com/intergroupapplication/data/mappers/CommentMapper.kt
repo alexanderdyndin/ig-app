@@ -1,8 +1,8 @@
 package com.intergroupapplication.data.mappers
 
-import com.intergroupapplication.data.model.CreateCommentModel
 import com.intergroupapplication.data.network.dto.CommentDto
 import com.intergroupapplication.data.network.dto.CommentsDto
+import com.intergroupapplication.data.network.dto.CreateCommentDto
 import com.intergroupapplication.domain.entity.CommentEntity
 import com.intergroupapplication.domain.entity.CommentsEntity
 import com.intergroupapplication.domain.entity.CreateCommentEntity
@@ -54,15 +54,15 @@ class CommentMapper @Inject constructor(
             )
         } ?: let { null }
 
-    fun mapToDto(from: CreateCommentEntity): CreateCommentModel =
-        CreateCommentModel(
+    fun mapToDto(from: CreateCommentEntity): CreateCommentDto =
+        CreateCommentDto(
             text = from.text,
             images = from.images,
             audios = from.audios,
             videos = from.videos,
         )
 
-    fun mapToDomainEntity(from: CreateCommentModel): CreateCommentEntity =
+    fun mapToDomainEntity(from: CreateCommentDto): CreateCommentEntity =
         CreateCommentEntity(
             text = from.text,
             images = from.images,
