@@ -15,19 +15,23 @@ import com.intergroupapplication.data.model.AudioInAddFileModel
 class AudioForAddFilesBottomSheetPlayerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val _exoPlayer = LayoutInflater.from(context).
-        inflate(R.layout.item_audio_for_add_files_bottom_sheet, this)
-    val exoPlayer by lazy<PlayerView> { _exoPlayer.findViewById(R.id.musicExoPlayerView) }
-    private val nameTrack =  _exoPlayer.findViewById<TextView>(R.id.trackName)
+    val exoPlayer: PlayerView by lazy(LazyThreadSafetyMode.NONE) {
+        _exoPlayer.findViewById(R.id.musicExoPlayerView)
+    }
+    val addAudioButton: Button by lazy(LazyThreadSafetyMode.NONE) {
+        _exoPlayer.findViewById(R.id.addAudioButton)
+    }
+    private val _exoPlayer =
+        LayoutInflater.from(context).inflate(R.layout.item_audio_for_add_files_bottom_sheet, this)
+    private val nameTrack = _exoPlayer.findViewById<TextView>(R.id.trackName)
     private val durationTrack = _exoPlayer.findViewById<TextView>(R.id.audioDuration)
-    val addAudioButton = _exoPlayer.findViewById<Button>(R.id.addAudioButton)
     private var trackName: String = ""
         set(value) {
             field = value
             nameTrack?.text = value
         }
 
-    private var duration:String = ""
+    private var duration: String = ""
         set(value) {
             field = value
             durationTrack?.text = value
@@ -39,7 +43,8 @@ class AudioForAddFilesBottomSheetPlayerView @JvmOverloads constructor(
 
 
     fun setupDownloadAudioPlayerView(
-        audioModel: AudioInAddFileModel) {
+        audioModel: AudioInAddFileModel
+    ) {
         val player = makeAudioPlayer(audioModel)
         trackName = audioModel.name
         duration = audioModel.duration

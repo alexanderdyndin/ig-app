@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainBlack"
-    android:fitsSystemWindows="true">
+    tools:context=".presentation.feature.agreements.view.AgreementsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,17 +17,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/logo"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:src="@drawable/logo_2"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/tvWelcome"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo_big_blue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvTitle"
+                    style="@style/TextAccent24spBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/big_margin"
+                    android:text="@string/intergroup" />
+
+            </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvWelcome"
@@ -59,6 +74,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
+                    android:id="@+id/privacyPolicy"
                     style="@style/TextNoActive12sp"
                     android:layout_width="143dp"
                     android:layout_height="wrap_content"
@@ -72,16 +88,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:button="@drawable/checkbox_selector" />
-
-                <TextView
-                    android:id="@+id/textAgreement1"
-                    style="@style/TextNoActive12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/middle_margin"
-                    android:layout_weight="0"
+                    android:button="@drawable/checkbox_selector"
+                    android:padding="6dp"
                     android:text="@string/terms_accept" />
+
 
             </LinearLayout>
 
@@ -111,6 +121,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
+                    android:id="@+id/userAgreement"
                     style="@style/TextNoActive12sp"
                     android:layout_width="143dp"
                     android:layout_height="wrap_content"
@@ -124,15 +135,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:button="@drawable/checkbox_selector" />
-
-                <TextView
-                    android:id="@+id/textAgreement2"
-                    style="@style/TextNoActive12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/middle_margin"
-                    android:layout_weight="0"
+                    android:button="@drawable/checkbox_selector"
+                    android:padding="6dp"
                     android:text="@string/terms_accept" />
 
             </LinearLayout>
@@ -162,6 +166,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
+                    android:id="@+id/copyrightAgreement"
                     style="@style/TextNoActive12sp"
                     android:layout_width="143dp"
                     android:layout_height="wrap_content"
@@ -175,15 +180,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:button="@drawable/checkbox_selector" />
-
-                <TextView
-                    android:id="@+id/textAgreement3"
-                    style="@style/TextNoActive12sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/middle_margin"
-                    android:layout_weight="0"
+                    android:button="@drawable/checkbox_selector"
+                    android:padding="6dp"
                     android:text="@string/terms_accept" />
 
             </LinearLayout>
@@ -212,16 +210,12 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnNext"
-                style="@style/TextGrey16sp"
+                style="@style/btnBigStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/low_big_margin"
-                android:layout_marginEnd="@dimen/low_big_margin"
                 android:layout_marginBottom="@dimen/large_margin"
-                android:background="@drawable/selector_btn_big"
                 android:enabled="false"
                 android:text="@string/next"
-                android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -231,12 +225,10 @@
                 layout="@layout/layout_auth_loader_small"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="@dimen/small_big_margin"
-                app:layout_constraintBottom_toBottomOf="@+id/btnNext"
-                app:layout_constraintEnd_toEndOf="@id/btnNext"
-                app:layout_constraintStart_toStartOf="@id/btnNext"
+                app:layout_constraintBottom_toBottomOf="@id/btnNext"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/btnNext" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

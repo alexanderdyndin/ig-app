@@ -30,13 +30,15 @@ fun View.hide() {
 
 fun View.hideKeyboard() {
     requestFocus()
-    val inputManager = this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    val inputManager =
+        this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     inputManager?.hideSoftInputFromWindow(this.windowToken, 0)
 }
 
 fun View.showKeyBoard() {
     requestFocus()
-    val inputManager = this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+    val inputManager =
+        this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
     inputManager?.showSoftInput(this, 0)
 }
 
@@ -47,13 +49,14 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
 fun View.clicks(time: Long = 600): Observable<Any> {
     return RxView.clicks(this).throttleFirst(time, TimeUnit.MILLISECONDS)
 }
-fun View.activated(isActivated:Boolean){
+
+fun View.activated(isActivated: Boolean) {
     this.isActivated = isActivated
 }
 
-fun View.changeActivated(thisActivated:Boolean, vararg views:View){
+fun View.changeActivated(thisActivated: Boolean, vararg views: View) {
     this.activated(thisActivated)
-    views.forEach { view->
+    views.forEach { view ->
         view.activated(false)
     }
 }

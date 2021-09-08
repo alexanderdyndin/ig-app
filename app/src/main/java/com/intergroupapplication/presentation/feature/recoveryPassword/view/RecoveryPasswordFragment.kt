@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentRecoveryPasswordBinding
+import com.intergroupapplication.di.qualifier.RecoveryHandler
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
@@ -31,6 +32,7 @@ import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
@@ -60,9 +62,13 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     @Inject
     lateinit var validator: Validator
 
-    override fun layoutRes() = R.layout.fragment_recovery_password
+    @Inject
+    @RecoveryHandler
+    override lateinit var errorHandler: ErrorHandler
 
     override fun getSnackBarCoordinator() = viewBinding.coordinator
+
+    override fun layoutRes() = R.layout.fragment_recovery_password
 
     private lateinit var btnSave: AppCompatButton
     private lateinit var btnSend: AppCompatButton
@@ -100,12 +106,6 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         tvErrorPass = viewBinding.tvErrorPass
         tvSendCode = viewBinding.tvSendCode
 
-        //setSupportActionBar(toolbar)
-//        toolbar.apply {
-//            this.setNavigationOnClickListener { findNavController().popBackStack() }
-//            setTitle(R.string.settings_password)
-//        }
-
         listenInputs()
         initValidator()
         setErrorHandler()
@@ -125,6 +125,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
                 presenter.sendCode(code)
             }
             .also { compositeDisposable.add(it) }
+        visibilityPassword(!passwordVisible)
         passwordVisibility.setOnClickListener(this)
         passwordVisibility2.setOnClickListener(this)
     }
@@ -146,7 +147,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         password.setHintTextColor(hintColor)
     }
 
-    override fun successSaveSetings() {
+    override fun successSaveSettings() {
         findNavController().popBackStack()
         Toast.makeText(requireContext(), R.string.save_password, Toast.LENGTH_SHORT).show()
     }
@@ -171,7 +172,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
         }
     }
 
-    override fun showLodingCode(load: Boolean) {
+    override fun showLoadingCode(load: Boolean) {
         if (load) {
             etCode.hide()
             pbCode.show()
@@ -364,5 +365,4 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
             )
         }
     }
-
 }

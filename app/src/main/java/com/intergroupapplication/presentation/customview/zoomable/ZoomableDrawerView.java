@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.ScrollingView;
+
 import com.facebook.common.internal.Preconditions;
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.controller.AbstractDraweeController;

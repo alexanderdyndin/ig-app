@@ -46,7 +46,7 @@ interface GatewayModule {
 
     @Binds
     fun providePermissionRepository(permissionAuthorizeRepository: PermissionAuthorizeRepository):
-            PermissionAuthorizeGetaway
+            PermissionAuthorizeGateway
 
     @Binds
     fun provideResendCodeGetawayRepository(resendCodeRepository: ResendCodeRepository):
@@ -54,7 +54,7 @@ interface GatewayModule {
 
     @Binds
     fun provideResetPasswordRepository(resendCodeRepository: ResetPasswordRepository):
-            ResetPasswordGetaway
+            ResetPasswordGateway
 
     @Binds
     fun provideComplaintsRepository(complaintsRepository: ComplaintsRepository): ComplaintsGateway
@@ -68,9 +68,15 @@ interface GatewayModule {
 
     @Binds
     fun provideAddLocalMediaRepository(addLocalMediaRepository: AddLocalMediaRepository)
-        :AddLocalMediaGateway
+            : AddLocalMediaGateway
 
     @Binds
     fun provideColorDrawableRepository(colorDrawableRepository: ColorDrawableRepository)
-        :ColorDrawableGateway
+            : ColorDrawableGateway
+
+    @Binds
+    fun provideAvatarRepository(avatarRepository: AvatarRepository): AvatarGateway
+
+    @Binds
+    fun provideAgreementsRepository(agreementsRepository: AgreementsRepository): AgreementsGateway
 }

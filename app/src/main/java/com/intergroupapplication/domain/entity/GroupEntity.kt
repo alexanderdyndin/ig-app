@@ -2,31 +2,33 @@ package com.intergroupapplication.domain.entity
 
 import android.os.Parcelable
 import com.appodeal.ads.NativeAd
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by abakarmagomedov on 02/08/2018 at project InterGroupApplication.
  */
 sealed class GroupEntity {
-    @Parcelize data class Group(val id: String,
-                                   var followersCount: String,
-                                   var postsCount: String,
-                                   var postsLikes: String,
-                                   var postsDislikes: String,
-                                   var CommentsCount: String,
-                                   val timeBlocked: String?,
-                                   val name: String,
-                                   val description: String,
-                                   val isBlocked: Boolean,
-                                   val owner: String,
-                                   var isFollowing: Boolean,
-                                   val avatar: String?,
-                                   val subject: String,
-                                   val rules: String,
-                                   val isClosed: Boolean,
-                                   val ageRestriction: String,
-                                   var isSubscribing: Boolean = false
-    ): GroupEntity(), Parcelable {
+    @Parcelize
+    data class Group(
+        val id: String,
+        var followersCount: String,
+        var postsCount: String,
+        var postsLikes: String,
+        var postsDislikes: String,
+        var CommentsCount: String,
+        val timeBlocked: String?,
+        val name: String,
+        val description: String,
+        val isBlocked: Boolean,
+        val owner: String,
+        var isFollowing: Boolean,
+        val avatar: String?,
+        val subject: String,
+        val rules: String,
+        val isClosed: Boolean,
+        val ageRestriction: String,
+        var isSubscribing: Boolean = false
+    ) : GroupEntity(), Parcelable {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
@@ -76,8 +78,10 @@ sealed class GroupEntity {
         }
     }
 
-    data class AdEntity(val position: Int, var nativeAd: NativeAd?,
-                        var placement: String = "default") : GroupEntity() {
+    data class AdEntity(
+        val position: Int, var nativeAd: NativeAd?,
+        var placement: String = "default"
+    ) : GroupEntity() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false

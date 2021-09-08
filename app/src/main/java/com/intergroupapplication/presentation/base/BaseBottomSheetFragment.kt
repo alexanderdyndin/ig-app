@@ -8,9 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.DimenRes
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,9 +26,8 @@ import com.intergroupapplication.domain.gateway.AddLocalMediaGateway
 import com.intergroupapplication.domain.gateway.ColorDrawableGateway
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.*
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.adapter.MediaAdapter
 import com.intergroupapplication.presentation.widgets.PreviewDialog
-import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -34,10 +35,11 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallback, ImageUploadingView {
+abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallback,
+    ImageUploadingView {
 
 
-    companion object{
+    companion object {
         const val PROGRESS_KEY = "progress_key"
         const val PROGRESS_MODEL_KEY = "progress_model_key"
     }
@@ -66,9 +68,6 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
     @Inject
     lateinit var colorDrawableGateway: ColorDrawableGateway
 
-    @NotEmpty(messageResId = R.string.comment_should_contain_text)
-    lateinit var commentEditText: AppCompatEditText
-
     private val permissions by lazy { RxPermissions(this) }
 
     protected lateinit var mediaRecyclerView: RecyclerView
@@ -88,7 +87,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
     protected var currentState = BottomSheetBehavior.STATE_COLLAPSED
     protected val heightTextStylePanel by lazy { context?.dpToPx(40) ?: 0 }
     protected val heightIconPanel by lazy { context?.dpToPx(40) ?: 0 }
-    private val recyclerPadding by lazy { context?.dpToPx(14)?:0 }
+    private val recyclerPadding by lazy { context?.dpToPx(14) ?: 0 }
 
 
     override fun onCreateView(
@@ -103,7 +102,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
             val isPhoto = bundle.getBoolean(PreviewDialog.IS_PHOTO_KEY)
             val result = bundle.getString(PreviewDialog.ADD_URI_KEY)
             val isChoose = bundle.getBoolean(PreviewDialog.IS_CHOOSE_KEY)
-            val urlPreview = bundle.getString(PreviewDialog.VIDEO_PREVIEW_KEY)?:""
+            val urlPreview = bundle.getString(PreviewDialog.VIDEO_PREVIEW_KEY) ?: ""
             result?.let { url ->
                 if (isPhoto) {
                     galleryAdapter.run {
@@ -111,12 +110,15 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                             if (galleryModel.url == url) {
                                 galleryModel.isChoose = isChoose
                                 notifyItemChanged(index)
-                                if (isChoose){
-                                    choosePhoto.addChooseMedia(ChooseMedia(url = galleryModel.url,
-                                        name = galleryModel.url.substringAfterLast("/"),
-                                        type = MediaType.IMAGE))
-                                }
-                                else{
+                                if (isChoose) {
+                                    choosePhoto.addChooseMedia(
+                                        ChooseMedia(
+                                            url = galleryModel.url,
+                                            name = galleryModel.url.substringAfterLast("/"),
+                                            type = MediaType.IMAGE
+                                        )
+                                    )
+                                } else {
                                     choosePhoto.removeChooseMedia(galleryModel.url)
                                 }
                             }
@@ -129,14 +131,17 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                             if (videoGallery.url == url) {
                                 videoGallery.isChoose = isChoose
                                 notifyItemChanged(index)
-                                if (isChoose){
-                                    chooseVideo.addChooseMedia(ChooseMedia(url = videoGallery.url,
-                                        name = videoGallery.url.substringAfterLast("/"),
-                                        urlPreview = urlPreview,
-                                        duration = videoGallery.duration,
-                                        type = MediaType.IMAGE))
-                                }
-                                else{
+                                if (isChoose) {
+                                    chooseVideo.addChooseMedia(
+                                        ChooseMedia(
+                                            url = videoGallery.url,
+                                            name = videoGallery.url.substringAfterLast("/"),
+                                            urlPreview = urlPreview,
+                                            duration = videoGallery.duration,
+                                            type = MediaType.IMAGE
+                                        )
+                                    )
+                                } else {
                                     chooseVideo.removeChooseMedia(videoGallery.url)
                                 }
                             }
@@ -243,7 +248,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     choosePhoto.clear()
                 }
                 layoutManager = GridLayoutManager(context, 3)
-                setPadding(recyclerPadding,0,recyclerPadding,0)
+                setPadding(recyclerPadding, 0, recyclerPadding, 0)
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivatedTextView(
@@ -259,7 +264,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     chooseAudio.clear()
                 }
                 layoutManager = LinearLayoutManager(context)
-                setPadding(0,0,0,0)
+                setPadding(0, 0, 0, 0)
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivatedTextView(
@@ -275,7 +280,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     chooseVideo.clear()
                 }
                 layoutManager = GridLayoutManager(context, 3)
-                setPadding(recyclerPadding,0,recyclerPadding,0)
+                setPadding(recyclerPadding, 0, recyclerPadding, 0)
             }
             setVisibilityForAddFiles()
             (it as TextView).changeActivatedTextView(
@@ -376,7 +381,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
             show()
             adapter = colorAdapter
             layoutManager = GridLayoutManager(context, 8)
-            setPadding(0,0,0,0)
+            setPadding(0, 0, 0, 0)
         }
     }
 
@@ -564,5 +569,4 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
         changeStateViewAfterAddMedia()
         galleryButton.changeActivatedTextView(false, videoButton, musicButton, playlistButton)
     }
-
 }

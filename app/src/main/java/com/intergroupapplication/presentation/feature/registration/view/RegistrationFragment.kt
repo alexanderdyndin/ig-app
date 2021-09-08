@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.registration.view
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -28,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.intergroupapplication.BuildConfig
 import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentRegistrationBinding
+import com.intergroupapplication.di.qualifier.RegistrationHandler
 import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
@@ -47,6 +47,7 @@ import com.mobsandgeeks.saripaar.annotation.Email
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.mobsandgeeks.saripaar.annotation.Password
 import com.tbruyelle.rxpermissions2.RxPermissions
+import com.workable.errorhandler.ErrorHandler
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
@@ -55,7 +56,6 @@ import moxy.presenter.ProvidePresenter
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
 
 class RegistrationFragment : BaseFragment(), RegistrationView, Validator.ValidationListener,
     ActionMode.Callback {
@@ -87,6 +87,10 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     @Inject
     lateinit var validator: Validator
+
+    @Inject
+    @RegistrationHandler
+    override lateinit var errorHandler: ErrorHandler
 
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -141,7 +145,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         tvDoubleMailError = viewBinding.tvDoubleMailError
         tvDoublePasswdError = viewBinding.tvDoublePasswdError
         tvErrorPassword = viewBinding.tvErrorPassword
-        tvMailError = viewBinding.tvErrorPassword
+        tvMailError = viewBinding.tvMailError
         progressBar = viewBinding.progressBar
         mail = viewBinding.etMail
         password = viewBinding.etPassword
@@ -161,6 +165,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             .also { compositeDisposable.add(it) }
         initValidator()
         initEditText()
+        visibilityPassword(!passwordVisible)
         signInButton.setOnClickListener {
             startForResult.launch(mGoogleSignInClient.signInIntent)
         }
@@ -224,16 +229,6 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        setErrorHandler()
-    }
-
-    override fun onPause() {
-        errorHandler.clear()
-        super.onPause()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
@@ -290,21 +285,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(
-            rxPermission.request(Manifest.permission.READ_PHONE_STATE)
-                .subscribe({
-                    if (it) {
-                        presenter.extractDeviceInfo()
-                    } else {
-                        dialogDelegate.showDialog(
-                            R.layout.dialog_explain_phone_state_permission,
-                            mapOf(R.id.permissionOk to {
-                                presenter.goToSettingsScreen()
-                            })
-                        )
-                    }
-                }, { Timber.e(it) })
-        )
+        presenter.extractDeviceInfo()
     }
 
     override fun clearViewErrorState() {
@@ -465,5 +446,4 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
         })
     }
-
 }

@@ -7,7 +7,6 @@ import com.intergroupapplication.data.network.ErrorParser
 import com.intergroupapplication.di.scope.PerApplication
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 /**
  * Created by abakarmagomedov on 24/08/2018 at project InterGroupApplication.
@@ -22,5 +21,4 @@ interface NetworkErrorHandlingModule {
     @PerApplication
     @Binds
     fun provideErrorAdapter(baseErrorAdapter: BaseErrorAdapter): ErrorAdapter
-
 }

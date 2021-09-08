@@ -10,5 +10,4 @@ class MediaUseCase @Inject constructor(private val mediaGateway: MediaGateway) {
     fun getVideo() = mediaGateway.getVideoList()
 
     fun getImages() = mediaGateway.getImageList()
-
 }

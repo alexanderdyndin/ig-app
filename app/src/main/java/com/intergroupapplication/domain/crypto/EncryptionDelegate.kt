@@ -8,10 +8,6 @@ import javax.inject.Inject
  */
 class EncryptionDelegate @Inject constructor() : Encryptor {
 
-    companion object {
-        const val ENCRYPTION_SEED = "seed"
-    }
-
     override fun encryptSha224Hex(value: String): String =
-            Digest.sha224Hex(value)
+        Digest.sha224Hex(value)
 }

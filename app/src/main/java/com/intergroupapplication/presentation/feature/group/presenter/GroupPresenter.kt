@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.group.presenter
 
-import moxy.InjectViewState
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.exception.ForbiddenException
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
@@ -16,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import moxy.InjectViewState
 import javax.inject.Inject
 
 @InjectViewState
@@ -88,7 +88,6 @@ class GroupPresenter @Inject constructor(
             })
         )
     }
-
 
     fun followGroup(groupId: String, followersCount: Int) {
         compositeDisposable.add(groupGateway.followGroup(groupId)

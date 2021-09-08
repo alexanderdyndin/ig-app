@@ -8,6 +8,7 @@
 package com.intergroupapplication.presentation.customview.zoomable;
 
 import android.view.MotionEvent;
+
 import androidx.annotation.Nullable;
 
 /**
@@ -22,36 +23,45 @@ public class MultiPointerGestureDetector {
 
   /** The listener for receiving notifications when gestures occur. */
   public interface Listener {
-    /** A callback called right before the gesture is about to start. */
-    public void onGestureBegin(MultiPointerGestureDetector detector);
+    /**
+     * A callback called right before the gesture is about to start.
+     */
+    void onGestureBegin(MultiPointerGestureDetector detector);
 
-    /** A callback called each time the gesture gets updated. */
-    public void onGestureUpdate(MultiPointerGestureDetector detector);
+      /**
+       * A callback called each time the gesture gets updated.
+       */
+      void onGestureUpdate(MultiPointerGestureDetector detector);
 
-    /** A callback called right after the gesture has finished. */
-    public void onGestureEnd(MultiPointerGestureDetector detector);
+      /**
+       * A callback called right after the gesture has finished.
+       */
+      void onGestureEnd(MultiPointerGestureDetector detector);
   }
 
-  private static final int MAX_POINTERS = 2;
+    private static final int MAX_POINTERS = 2;
 
-  private boolean mGestureInProgress;
-  private int mPointerCount;
-  private int mNewPointerCount;
-  private final int mId[] = new int[MAX_POINTERS];
-  private final float mStartX[] = new float[MAX_POINTERS];
-  private final float mStartY[] = new float[MAX_POINTERS];
-  private final float mCurrentX[] = new float[MAX_POINTERS];
-  private final float mCurrentY[] = new float[MAX_POINTERS];
+    private boolean mGestureInProgress;
+    private int mPointerCount;
+    private int mNewPointerCount;
+    private final int[] mId = new int[MAX_POINTERS];
+    private final float[] mStartX = new float[MAX_POINTERS];
+    private final float[] mStartY = new float[MAX_POINTERS];
+    private final float[] mCurrentX = new float[MAX_POINTERS];
+    private final float[] mCurrentY = new float[MAX_POINTERS];
 
-  @Nullable private Listener mListener = null;
+    @Nullable
+    private Listener mListener = null;
 
-  public MultiPointerGestureDetector() {
-    reset();
-  }
+    public MultiPointerGestureDetector() {
+        reset();
+    }
 
-  /** Factory method that creates a new instance of MultiPointerGestureDetector */
-  public static MultiPointerGestureDetector newInstance() {
-    return new MultiPointerGestureDetector();
+    /**
+     * Factory method that creates a new instance of MultiPointerGestureDetector
+     */
+    public static MultiPointerGestureDetector newInstance() {
+        return new MultiPointerGestureDetector();
   }
 
   /**

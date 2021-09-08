@@ -2,16 +2,10 @@ package com.intergroupapplication.domain.exception
 
 const val IMEI_BLOCKED = "imei.is_blocked"
 const val GROUP_IS_BLOCKED = "group-posts-list.is_blocked"
-const val ALREADY_FOLLOWING = "groups_follows-list.group.invalid"
 const val ALREADY_NOT_FOLLOWING = "groups_follows-detail.not_found"
-const val IMEI_EMPTY = "IMEI.is_empty"
-const val SERIAL_IS_BLOCKED = "SERIAL.is_blocked"
-const val SERIAL_IS_EMPTY = "SERIAL.is_empty"
 const val USER_BLOCKED = "login.user_is_blocked"
 const val NOT_PROFILE = "users_profile-me.not_found"
-const val GROUP_BLOCKED = "groups-detail.is_blocked"
 const val INVALID_REFRESH = "refresh.refresh.invalid"
-const val INVALID_LOGIN = "login.invalid"
 const val INVALID_VERSION = "app_status.invalid"
 
 const val PAGE_ERROR_GROUP = "groups-list.not_found"

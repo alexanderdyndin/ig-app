@@ -1,8 +1,8 @@
 package com.intergroupapplication.data.repository
 
-import com.intergroupapplication.data.mapper.UserProfileMapper
-import com.intergroupapplication.data.model.VersionModel
+import com.intergroupapplication.data.mappers.UserProfileMapper
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.dto.VersionDto
 import com.intergroupapplication.domain.entity.AdEntity
 import com.intergroupapplication.domain.gateway.AppStatusGateway
 import io.reactivex.Single
@@ -18,5 +18,5 @@ class AppStatusRepository @Inject constructor(
     }
 
     override fun getAppStatus(version: String): Single<String> =
-        api.getAppStatus(VersionModel(version))
+        api.getAppStatus(VersionDto(version))
 }

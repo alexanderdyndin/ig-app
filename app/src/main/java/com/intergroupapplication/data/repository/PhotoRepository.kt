@@ -1,11 +1,12 @@
 package com.intergroupapplication.data.repository
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import androidx.fragment.app.Fragment
 import com.androidnetworking.AndroidNetworking
 import com.intergroupapplication.data.model.ChooseMedia
-import com.intergroupapplication.data.model.ImageUploadDto
 import com.intergroupapplication.data.network.AppApi
+import com.intergroupapplication.data.network.dto.ImageUploadDto
 import com.intergroupapplication.domain.entity.MediaType
 import com.intergroupapplication.domain.gateway.AwsUploadingGateway
 import com.intergroupapplication.domain.gateway.PhotoGateway
@@ -25,14 +26,11 @@ import javax.inject.Inject
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
 class PhotoRepository @Inject constructor(
-    private val activity: Activity,
+    private val fragment: Fragment,
     private val cropOptions: UCrop.Options,
     private val appApi: AppApi,
     private val awsUploadingGateway: AwsUploadingGateway
 ) : PhotoGateway {
-    companion object {
-        const val CAN_NOT_GET_PICTURE = "Can not get picture"
-    }
 
     private var lastAttachedImagePath: String? = null
     private var lastPhotoUrl: String = ""
@@ -46,7 +44,7 @@ class PhotoRepository @Inject constructor(
     private val fileToUrl: MutableMap<String, String> = mutableMapOf()
 
     override fun loadFromGallery(): Observable<String> =
-        RxPaparazzo.single(activity)
+        RxPaparazzo.single(fragment)
             .crop(cropOptions)
             .usingGallery()
             .map {
@@ -57,7 +55,7 @@ class PhotoRepository @Inject constructor(
             }
 
     override fun loadFromCamera(): Observable<String> =
-        RxPaparazzo.single(activity)
+        RxPaparazzo.single(fragment)
             .crop(cropOptions)
             .usingCamera()
             .map {
@@ -108,7 +106,7 @@ class PhotoRepository @Inject constructor(
             : Observable<Float> {
         val subject = PublishSubject.create<Float>()
         val file = File(chooseMedia.url)
-        val myFile = File(activity.externalCacheDir, "upload_music_$count.mp3")
+        val myFile = File(fragment.requireActivity().externalCacheDir, "upload_music_$count.mp3")
         myFile.createNewFile()
         val byteArray = file.readBytes()
         myFile.writeBytes(byteArray)
@@ -117,8 +115,10 @@ class PhotoRepository @Inject constructor(
             .doAfterSuccess {
                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, myFile)
             }
-            .flatMapObservable {
-                subject
+            .flatMapObservable { it ->
+                subject.doOnDispose {
+                    //  AndroidNetworking.cancelAll()
+                }
                     .doOnComplete {
                         audioUrls.addMediaIfNotContains(
                             ChooseMedia(
@@ -131,6 +131,7 @@ class PhotoRepository @Inject constructor(
                         fileToUrl[chooseMedia.url] = it.fields.key
                         myFile.delete()
                     }
+                //.doOnError { lastPhotoUrl = "" }
             }
     }
 
@@ -145,18 +146,22 @@ class PhotoRepository @Inject constructor(
             .doAfterSuccess {
                 awsUploadingGateway.uploadImageToAws(it.url, subject, it.fields, file)
             }
-            .flatMapObservable {
-                subject.doOnComplete {
-                    videoUrls.addMediaIfNotContains(
-                        ChooseMedia(
-                            it.fields.key,
-                            urlPreview = chooseMedia.urlPreview, duration = chooseMedia.duration,
-                            name = chooseMedia.url.substringAfterLast("/"),
-                            type = chooseMedia.type
-                        )
-                    )
-                    fileToUrl[chooseMedia.url] = it.fields.key
+            .flatMapObservable { it ->
+                subject.doOnDispose {
+                    //AndroidNetworking.cancelAll()
                 }
+                    .doOnComplete {
+                        videoUrls.addMediaIfNotContains(
+                            ChooseMedia(
+                                it.fields.key,
+                                urlPreview = chooseMedia.urlPreview,
+                                duration = chooseMedia.duration,
+                                name = chooseMedia.url.substringAfterLast("/"),
+                                type = chooseMedia.type
+                            )
+                        )
+                        fileToUrl[chooseMedia.url] = it.fields.key
+                    }
             }
     }
 
@@ -178,7 +183,7 @@ class PhotoRepository @Inject constructor(
                     try {
                         awsUploadingGateway.uploadImageToAws(
                             it.url, subject, it.fields,
-                            Compressor(activity).setQuality(75)
+                            Compressor(fragment.requireActivity()).setQuality(75)
                                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                 .compressToFile(file)
                         )
@@ -190,20 +195,25 @@ class PhotoRepository @Inject constructor(
                     }
                 }
             }
-            .flatMapObservable {
-                subject.doOnComplete {
-                    imageUrls.addMediaIfNotContains(
-                        ChooseMedia(
-                            url = it.fields.key,
-                            name = path.substringAfterLast("/"),
-                            type = MediaType.IMAGE
-                        )
-                    )
-                    fileToUrl[path] = it.fields.key
+            .flatMapObservable { it ->
+                subject.doOnDispose {
+                    //AndroidNetworking.cancelAll()
                 }
+                    .doOnComplete {
+                        imageUrls.addMediaIfNotContains(
+                            ChooseMedia(
+                                url = it.fields.key,
+                                name = path.substringAfterLast("/"),
+                                type = MediaType.IMAGE
+                            )
+                        )
+                        fileToUrl[path] = it.fields.key
+                    }
+                //.doOnError { lastPhotoUrl = "" }
             }
     }
 
+    @SuppressLint("CheckResult")
     override fun uploadImage(
         path: String, groupId: String?,
         upload: (imageExs: String, id: String?) -> Single<ImageUploadDto>
@@ -222,7 +232,7 @@ class PhotoRepository @Inject constructor(
                     try {
                         awsUploadingGateway.uploadImageToAws(
                             it.url, subject, it.fields,
-                            Compressor(activity).setQuality(75)
+                            Compressor(fragment.requireActivity()).setQuality(75)
                                 .setCompressFormat(Bitmap.CompressFormat.JPEG)
                                 .compressToFile(file)
                         )
@@ -234,7 +244,7 @@ class PhotoRepository @Inject constructor(
                     }
                 }
             }
-            .flatMapObservable {
+            .flatMapObservable { it ->
                 subject.doOnDispose { AndroidNetworking.cancelAll() }
                     .doOnComplete {
                         if (file.exists()) {
@@ -258,12 +268,12 @@ class PhotoRepository @Inject constructor(
                 else
                     awsUploadingGateway.uploadImageToAws(
                         it.url, subject, it.fields,
-                        Compressor(activity).setQuality(75)
+                        Compressor(fragment.requireActivity()).setQuality(75)
                             .setCompressFormat(Bitmap.CompressFormat.JPEG)
                             .compressToFile(file)
                     )
             }
-            .flatMapObservable {
+            .flatMapObservable { it ->
                 subject.doOnDispose { AndroidNetworking.cancelAll() }
                     .doOnComplete {
                         lastPhotoUrl = it.fields.key
@@ -285,12 +295,12 @@ class PhotoRepository @Inject constructor(
                 else
                     awsUploadingGateway.uploadImageToAws(
                         it.url, subject, it.fields,
-                        Compressor(activity).setQuality(75)
+                        Compressor(fragment.requireActivity()).setQuality(75)
                             .setCompressFormat(Bitmap.CompressFormat.JPEG)
                             .compressToFile(file)
                     )
             }
-            .flatMapObservable {
+            .flatMapObservable { it ->
                 subject.doOnDispose { AndroidNetworking.cancelAll() }
                     .doOnComplete {
                         lastPhotoUrl = it.fields.key
@@ -312,12 +322,12 @@ class PhotoRepository @Inject constructor(
                 else
                     awsUploadingGateway.uploadImageToAws(
                         it.url, subject, it.fields,
-                        Compressor(activity).setQuality(75)
+                        Compressor(fragment.requireActivity()).setQuality(75)
                             .setCompressFormat(Bitmap.CompressFormat.JPEG)
                             .compressToFile(file)
                     )
             }
-            .flatMapObservable {
+            .flatMapObservable { it ->
                 subject.doOnDispose { AndroidNetworking.cancelAll() }
                     .doOnComplete {
                         lastPhotoUrl = it.fields.key

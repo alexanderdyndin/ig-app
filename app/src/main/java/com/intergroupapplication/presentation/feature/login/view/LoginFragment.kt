@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.login.view
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
@@ -14,7 +13,6 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.gms.auth.api.signin.*
@@ -26,7 +24,10 @@ import com.intergroupapplication.R
 import com.intergroupapplication.databinding.FragmentLoginBinding
 import com.intergroupapplication.di.qualifier.LoginHandler
 import com.intergroupapplication.domain.entity.LoginEntity
-import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.domain.entity.SocialAuthEntity
+import com.intergroupapplication.domain.exception.EMAIL
+import com.intergroupapplication.domain.exception.FieldException
+import com.intergroupapplication.domain.exception.PASSWORD
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.exstension.clicks
@@ -69,10 +70,12 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     @ProvidePresenter
     fun providePresenter(): LoginPresenter = presenter
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     @Email(messageResId = R.string.email_not_valid)
     lateinit var mail: AppCompatEditText
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     @Password(
         scheme = Password.Scheme.ALPHA_NUMERIC, min = PASSWORD_REQUIRED_LENGTH,
@@ -128,8 +131,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         tvMailError = viewBinding.tvMailError
         tvPasswdError = viewBinding.tvPasswdError
         progressBar = viewBinding.progressBar
-
-        initErrorHandler(errorHandlerLogin)
         rxPermission = RxPermissions(this)
         mail = viewBinding.etMail
         password = viewBinding.password
@@ -155,10 +156,12 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         signInButton.setOnClickListener {
             startForResult.launch(mGoogleSignInClient.signInIntent)
         }
+        visibilityPassword(!passwordVisible)
         passwordVisibility.setOnClickListener {
             visibilityPassword(passwordVisible)
             passwordVisible = !passwordVisible
         }
+        setErrorHandler()
     }
 
     private fun visibilityPassword(isVisible: Boolean) {
@@ -185,6 +188,9 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
+            account.idToken?.let {
+                presenter.performLogin(SocialAuthEntity(it))
+            }
             Toast.makeText(requireContext(), account.displayName, Toast.LENGTH_SHORT).show()
         } catch (e: ApiException) {
             Timber.w("signInResult:failed code=%s", e.statusCode)
@@ -204,16 +210,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setErrorHandler()
-    }
-
-    override fun onPause() {
-        errorHandlerLogin.clear()
-        super.onPause()
     }
 
     override fun deviceInfoExtracted() {
@@ -249,12 +245,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     override fun onValidationSucceeded() {
-        compositeDisposable.add(
-            rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe({
-                    presenter.extractDeviceInfo()
-                }, { Timber.e(it) })
-        )
+        presenter.extractDeviceInfo()
     }
 
     override fun clearViewErrorState() {
@@ -293,7 +284,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     private fun setErrorHandler() {
-        errorHandlerLogin.on(CompositeException::class.java) { throwable, _ ->
+        errorHandler.on(CompositeException::class.java) { throwable, _ ->
             run {
                 (throwable as? CompositeException)?.exceptions?.forEach { ex ->
                     (ex as? FieldException)?.let {
@@ -308,20 +299,5 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 }
             }
         }
-        errorHandlerLogin.on(UserNotVerifiedException::class.java) { _, _ ->
-            val email = mail.text.toString()
-            val data = bundleOf("entity" to email)
-            findNavController().navigate(
-                R.id.action_loginFragment_to_confirmationMailFragment,
-                data
-            )
-        }
-        errorHandlerLogin.on(UserNotProfileException::class.java) { _, _ ->
-            findNavController().navigate(R.id.action_loginActivity_to_createUserProfileActivity)
-        }
-        errorHandlerLogin.on(BadRequestException::class.java) { throwable, _ ->
-            dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message)
-        }
     }
-
 }

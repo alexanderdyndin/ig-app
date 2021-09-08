@@ -19,7 +19,6 @@ import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.feature.commentsdetails.adapter.CommentsAdapter
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.manager.DialogManager
-import com.intergroupapplication.presentation.manager.ToastManager
 import com.intergroupapplication.presentation.provider.DialogProvider
 import com.yalantis.ucrop.UCrop
 import dagger.Module
@@ -34,13 +33,13 @@ class CommentsDetailsViewModule {
         fragment: CommentsDetailsFragment, cropOptions: UCrop.Options,
         api: AppApi, awsUploadingGateway: AwsUploadingGateway
     ): PhotoGateway =
-        PhotoRepository(fragment.requireActivity(), cropOptions, api, awsUploadingGateway)
+        PhotoRepository(fragment, cropOptions, api, awsUploadingGateway)
 
 
     @PerFragment
     @Provides
-    fun provideFrescoImageLoader(context: Context): ImageLoader =
-        FrescoImageLoader(context)
+    fun provideFrescoImageLoader(): ImageLoader =
+        FrescoImageLoader()
 
 
     @PerFragment
@@ -58,16 +57,11 @@ class CommentsDetailsViewModule {
     @PerFragment
     @Provides
     fun dialogDelegate(
-        dialogManager: DialogManager, dialogProvider: DialogProvider, toastManager: ToastManager,
+        dialogManager: DialogManager, dialogProvider: DialogProvider,
         context: Context
     )
             : DialogDelegate =
-        DialogDelegate(dialogManager, dialogProvider, toastManager, context)
-
-//    @PerFragment
-//    @Provides
-//    fun provideLinearLayoutManager(fragment: CommentsDetailsFragment): RecyclerView.LayoutManager =
-//            LinearLayoutManager(fragment.requireActivity(), LinearLayoutManager.VERTICAL, false)
+        DialogDelegate(dialogManager, dialogProvider, context)
 
     @PerFragment
     @Provides
@@ -115,5 +109,4 @@ class CommentsDetailsViewModule {
     ): ConcatAdapter {
         return commentsAdapter.withLoadStateHeaderAndFooter(headerAdapter, footerAdapter)
     }
-
 }

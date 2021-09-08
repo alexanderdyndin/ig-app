@@ -29,7 +29,7 @@ class ViewPager2Circular(private val pager: ViewPager2,
         mScrollState = state
     }
 
-    fun toggleRefreshing(enabled: Boolean) {
+    private fun toggleRefreshing(enabled: Boolean) {
         swipeRefreshLayout?.isEnabled = enabled
     }
 

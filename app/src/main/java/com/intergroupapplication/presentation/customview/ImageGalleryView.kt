@@ -5,10 +5,8 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.core.view.*
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.ResizeOptions
@@ -17,9 +15,11 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
 import com.intergroupapplication.domain.entity.FileEntity
 
-class ImageGalleryView @JvmOverloads constructor(context: Context,
-        private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0):
-        LinearLayout(context, attrs, defStyleAttr) {
+class ImageGalleryView @JvmOverloads constructor(
+    context: Context,
+    private val attrs: AttributeSet? = null, private val defStyleAttr: Int = 0
+) :
+    LinearLayout(context, attrs, defStyleAttr) {
 
     companion object {
         var pxWidth = 1080
@@ -36,10 +36,10 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
     }
 
     private var uris: List<FileEntity> = emptyList()
-    private var allUrls:List<FileEntity> = emptyList()
+    private var allUrls: List<FileEntity> = emptyList()
     private var isExpanded: Boolean = false
 
-    fun setImages(uris: List<FileEntity>, isExpanded: Boolean = false, allUrls:List<FileEntity>) {
+    fun setImages(uris: List<FileEntity>, isExpanded: Boolean = false, allUrls: List<FileEntity>) {
         this.uris = uris
         this.isExpanded = isExpanded
         this.allUrls = allUrls
@@ -52,7 +52,7 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
             for (i in 0 until urls.size / 3) {
                 createContainer(urls.subList(i * 3, i * 3 + 3))
             }
-            when (urls.size % 3){
+            when (urls.size % 3) {
                 2 -> createContainer(urls.subList(urls.size - 2, urls.size))
                 1 -> createContainer(urls.subList(urls.size - 1, urls.size))
             }
@@ -84,7 +84,7 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
         container.orientation = HORIZONTAL
         container.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         urls.forEach {
-            container.addView(createPic(it, pxWidth/urls.size))
+            container.addView(createPic(it, pxWidth / urls.size))
         }
         this.addView(container)
     }
@@ -97,26 +97,11 @@ class ImageGalleryView @JvmOverloads constructor(context: Context,
             .build()
         val pic = image.findViewById<SimpleDraweeView>(R.id.pic)
         pic.controller = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setOldController(pic.controller)
-                .setImageRequest(request)
-                .build()
+            .setAutoPlayAnimations(true)
+            .setOldController(pic.controller)
+            .setImageRequest(request)
+            .build()
         pic.setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(img)) }
         return image
-    }
-
-    fun destroy() {
-        this.children.forEach { container ->
-            if (container is ViewGroup) {
-                container.children.forEach { cornerView ->
-                    if (cornerView is ViewGroup) {
-                        cornerView.children.forEach {
-                            if (it is SimpleDraweeView)
-                                it.controller = null
-                        }
-                    }
-                }
-            }
-        }
     }
 }

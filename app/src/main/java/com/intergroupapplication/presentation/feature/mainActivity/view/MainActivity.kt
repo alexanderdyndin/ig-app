@@ -1,6 +1,5 @@
 package com.intergroupapplication.presentation.feature.mainActivity.view
 
-
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ComponentName
@@ -10,31 +9,65 @@ import android.content.ServiceConnection
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.IBinder
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.RecyclerView
+import co.zsmb.materialdrawerkt.builders.drawer
 import com.android.billingclient.api.*
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.intergroupapplication.R
 import com.intergroupapplication.data.session.UserSession
+import com.intergroupapplication.di.qualifier.DashDateFormatter
+import com.intergroupapplication.domain.exception.*
+import com.intergroupapplication.initializators.ErrorHandlerInitializer
 import com.intergroupapplication.initializators.InitializerLocal
+import com.intergroupapplication.presentation.base.ImageUploadingState
+import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
+import com.intergroupapplication.presentation.delegate.DialogDelegate
+import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
+import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
+import com.intergroupapplication.presentation.feature.mainActivity.adapter.NavigationAdapter
+import com.intergroupapplication.presentation.feature.mainActivity.other.NavigationEntity
 import com.intergroupapplication.presentation.feature.mainActivity.viewModel.MainActivityViewModel
 import com.intergroupapplication.presentation.feature.mediaPlayer.IGMediaService
+import com.miguelbcr.ui.rx_paparazzo2.RxPaparazzo
+import com.mikepenz.materialdrawer.Drawer
+import com.workable.errorhandler.Action
+import com.workable.errorhandler.ErrorHandler
+import com.yalantis.ucrop.UCrop
 import dagger.android.AndroidInjection
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.io.File
+import java.io.IOException
+import java.net.ConnectException
+import java.net.UnknownHostException
+import java.text.DateFormat
+import java.util.*
+import java.util.Calendar.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.coroutines.suspendCoroutine
-
 
 class MainActivity : FragmentActivity() {
 
@@ -45,15 +78,49 @@ class MainActivity : FragmentActivity() {
     }
 
     @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
-
-    private lateinit var viewModel: MainActivityViewModel
+    lateinit var modelFactory: ViewModelFactory
 
     @Inject
     lateinit var initializerAppodeal: InitializerLocal
 
     @Inject
     lateinit var userSession: UserSession
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
+
+    @Inject
+    lateinit var errorHandlerInitializer: ErrorHandlerInitializer
+
+    @Inject
+    lateinit var dialogDelegate: DialogDelegate
+
+    @Inject
+    lateinit var imageLoadingDelegate: ImageLoadingDelegate
+
+    @Inject
+    lateinit var compositeDisposable: CompositeDisposable
+
+    @Inject
+    lateinit var cropOptions: UCrop.Options
+
+    @Inject
+    @DashDateFormatter
+    lateinit var dateFormatter: DateFormat
+
+    lateinit var drawer: Drawer
+
+    private val navigationAdapter = NavigationAdapter()
+
+    lateinit var profileAvatarHolder: AvatarImageUploadingView
+
+    private lateinit var navController: NavController
+
+    private lateinit var lifecycleDisposable: CompositeDisposable
+
+    private var lastUploadedAvatar: String? = null
+
+    private val viewModel: MainActivityViewModel by viewModels { modelFactory }
 
     /**
      *  Billing
@@ -95,12 +162,157 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
-        viewModel = ViewModelProvider(this, modelFactory)[MainActivityViewModel::class.java]
+        lifecycleDisposable = CompositeDisposable()
         initializerAppodeal.initialize()
+        setTheme(R.style.ActivityTheme)
         setContentView(R.layout.activity_main)
+        try {
+            val filePatch = externalCacheDir?.path
+            val file = File("/$filePatch.nomedia")
+            if (!file.exists())
+                file.createNewFile()
+        } catch (e: IOException) {
+            Timber.e(e)
+        }
         viewModel.getAdCount()
         createNotificationChannel()
         initBilling()
+        initErrorHandler(errorHandler)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.my_nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+    }
+
+    fun createDrawer() {
+        navController.navigate(R.id.action_global_newsFragment2)
+        val viewDrawer = layoutInflater.inflate(
+            R.layout.layout_left_drawer_header,
+            findViewById(R.id.navigationCoordinator),
+            false
+        )
+        val navRecycler = viewDrawer.findViewById<RecyclerView>(R.id.navigationRecycler)
+        navRecycler.adapter = navigationAdapter
+        navRecycler.itemAnimator = null
+        navigationAdapter.items = listOf(
+            NavigationEntity(R.string.news, R.drawable.ic_bell_menu, {
+                navController.navigate(R.id.action_global_newsFragment2)
+                drawer.closeDrawer()
+            }, checked = true),
+            NavigationEntity(R.string.groups, R.drawable.ic_groups, {
+                navController.navigate(R.id.action_global_groupListFragment)
+                drawer.closeDrawer()
+            }),
+            NavigationEntity(R.string.buy_premium, R.drawable.icon_like, {
+                bill()
+                drawer.closeDrawer()
+            }, null),
+            NavigationEntity(R.string.logout, 0, {
+                userSession.logout()
+                navController.navigate(R.id.action_global_loginFragment)
+                drawer.closeDrawer()
+            }, null),
+        )
+        profileAvatarHolder =
+            viewDrawer.findViewById<AvatarImageUploadingView>(R.id.profileAvatarHolder)
+        profileAvatarHolder.imageLoaderDelegate = imageLoadingDelegate
+        drawer = drawer {
+            fullscreen = false
+            sliderBackgroundColorRes = R.color.mainBlack
+            headerView = viewDrawer
+            translucentStatusBar = true
+            profileAvatarHolder.setOnClickListener {
+                when (profileAvatarHolder.state) {
+                    AvatarImageUploadingView.AvatarUploadingState.UPLOADED -> {
+                        dialogDelegate.showDialog(
+                            R.layout.dialog_camera_or_gallery,
+                            mapOf(
+                                R.id.fromCamera to { loadFromCamera() },
+                                R.id.fromGallery to { loadFromGallery() })
+                        )
+                    }
+                    AvatarImageUploadingView.AvatarUploadingState.ERROR -> {
+                        lastUploadedAvatar?.let {
+                            viewModel.uploadImageFromGallery(it)
+                        }
+                    }
+                    AvatarImageUploadingView.AvatarUploadingState.NONE -> {
+                        dialogDelegate.showDialog(
+                            R.layout.dialog_camera_or_gallery,
+                            mapOf(
+                                R.id.fromCamera to { loadFromCamera() },
+                                R.id.fromGallery to { loadFromGallery() })
+                        )
+                    }
+                    else -> {
+                    }
+                }
+            }
+        }.apply {
+            viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
+                .setOnClickListener { closeDrawer() }
+        }
+        lifecycleDisposable.add(viewModel.getUserProfile()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ userEntity ->
+                val date = dateFormatter.parse(userEntity.birthday)
+                val current = Date()
+                date?.let {
+                    viewDrawer.findViewById<TextView>(R.id.ageText).text =
+                        getString(R.string.years, getDiffYears(it, current).toString())
+                }
+                when (userEntity.gender) {
+                    "male" ->
+                        viewDrawer.findViewById<TextView>(R.id.ageText)
+                            .setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.ic_male,
+                                0,
+                                0,
+                                0
+                            )
+                    "female" ->
+                        viewDrawer.findViewById<TextView>(R.id.ageText)
+                            .setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.ic_male,
+                                0,
+                                0,
+                                0
+                            )
+                }
+                viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
+                viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
+                viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text =
+                    userEntity.stats.posts.toString()
+                viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text =
+                    userEntity.stats.comments.toString()
+                viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text =
+                    userEntity.stats.dislikes.toString()
+                viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text =
+                    userEntity.stats.likes.toString()
+                doOrIfNull(userEntity.avatar,
+                    { profileAvatarHolder.showAvatar(it) },
+                    { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+            }, {
+                profileAvatarHolder.showImageUploadingError()
+                errorHandler.handle(it)
+            })
+        )
+        lifecycleDisposable.add(
+            viewModel.imageUploadingState
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    profileAvatarHolder.imageState = it
+                }, {
+                    errorHandler.handle(it)
+                    profileAvatarHolder.imageState =
+                        ImageUploadingState.ImageUploadingError(exception = it)
+                })
+        )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialogDelegate.coordinator = this.findViewById(R.id.navigationCoordinator)
     }
 
     override fun onResume() {
@@ -129,6 +341,11 @@ class MainActivity : FragmentActivity() {
                 }
             }
             .addOnFailureListener(this) { e -> e.printStackTrace() }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dialogDelegate.coordinator = null
     }
 
     suspend fun bindMediaService(): IGMediaService.ServiceBinder? {
@@ -182,7 +399,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    fun initBilling() {
+    private fun initBilling() {
         billingClient = BillingClient.newBuilder(applicationContext)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
@@ -238,14 +455,159 @@ class MainActivity : FragmentActivity() {
         return null
     }
 
-    fun bill() {
+    private fun bill() {
         val disableAdsSubscriptionSku = skuDetails.find { it.sku == DISABLE_ADS_ID }
         disableAdsSubscriptionSku?.let { skuDet ->
-            val flowParams = BillingFlowParams.newBuilder()
+            BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDet)
                 .build()
-            val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
         }
     }
 
+    private fun initErrorHandler(errorHandler: ErrorHandler) {
+        errorHandler.clear()
+        val errorMap = mapOf(
+            BadRequestException::class.java to
+                    Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as BadRequestException).message) },
+            UserBlockedException::class.java to getActionForBlockedUser(),
+            ServerException::class.java to
+                    Action { _, _ -> dialogDelegate.showErrorSnackBar(getString(R.string.server_error)) },
+            NotFoundException::class.java to
+                    Action { throwable, _ -> dialogDelegate.showErrorSnackBar((throwable as NotFoundException).message.orEmpty()) },
+            UnknownHostException::class.java to createSnackBarAction(R.string.no_network_connection),
+            CanNotUploadPhoto::class.java to createToast(R.string.can_not_change_avatar),
+            CanNotUploadVideo::class.java to createToast(R.string.can_not_upload_video),
+            CanNotUploadAudio::class.java to createToast(R.string.can_not_upload_audio),
+            UserNotProfileException::class.java to openCreateProfile(),
+            GroupBlockedException::class.java to getActionForBlockedGroup(),
+            UserNotVerifiedException::class.java to openConfirmationEmail(),
+            ForbiddenException::class.java to createSnackBarAction(R.string.forbidden_error),
+            ImeiException::class.java to getActionForBlockedImei(),
+            InvalidRefreshException::class.java to openAutorize(),
+            GroupAlreadyFollowingException::class.java to Action { _, _ -> },
+            PageNotFoundException::class.java to
+                    Action { throwable, _ ->
+                        dialogDelegate.showErrorSnackBar((throwable as PageNotFoundException).message.orEmpty())
+                    },
+            UnknownServerException::class.java to Action { _, _ ->
+                createSnackBarAction(R.string.unknown_error)
+            },
+            ConnectException::class.java to Action { _, _ ->
+                dialogDelegate.showErrorSnackBar(this.getString(R.string.no_network_connection))
+            }
+        )
+
+        errorHandlerInitializer.initializeErrorHandler(
+            errorMap,
+            createSnackBarAction(R.string.unknown_error)
+        )
+    }
+
+    private fun getActionForBlockedImei() = Action { _, _ ->
+        userSession.clearAllData()
+        finish()
+    }
+
+    private fun getActionForBlockedUser() =
+        if (userSession.isLoggedIn()) {
+            actionForBlockedUser()
+        } else {
+            createSnackBarAction(R.string.user_blocked)
+        }
+
+
+    private fun getActionForBlockedGroup() = actionForBlockedGroup
+
+    private val actionForBlockedGroup = Action { _, _ ->
+        dialogDelegate.showErrorSnackBar("Группа заблокирована")
+        navController.popBackStack()
+    }
+
+    private fun actionForBlockedUser() = Action { _, _ ->
+        userSession.logout()
+        finish()
+    }
+
+    private fun createSnackBarAction(message: Int) =
+        Action { _, _ -> dialogDelegate.showErrorSnackBar(getString(message)) }
+
+    private fun createToast(message: Int) =
+        Action { _, _ -> Toast.makeText(this, getString(message), Toast.LENGTH_SHORT).show() }
+
+
+    private fun openCreateProfile() = Action { _, _ ->
+        Timber.e("403 catched")
+        navController.navigate(R.id.action_global_createUserProfileActivity)
+    }
+
+    private fun openConfirmationEmail() = Action { _, _ ->
+        val email = userSession.email?.email.orEmpty()
+        val data = bundleOf("entity" to email)
+        navController.navigate(R.id.action_global_confirmationMailFragment, data)
+        Timber.e("403 catched")
+    }
+
+    private fun openAutorize() = Action { _, _ ->
+        userSession.logout()
+        navController.navigate(R.id.action_global_loginFragment)
+    }
+
+    private fun loadFromCamera() {
+        compositeDisposable.add(
+            RxPaparazzo.single(this)
+                .crop(cropOptions)
+                .usingCamera()
+                .map { response ->
+                    response.data()?.file?.path
+                }
+                .filter { it.isNotEmpty() }
+                .subscribe {
+                    it?.let {
+                        viewModel.uploadImageFromGallery(it)
+                    }
+                }
+        )
+    }
+
+    private fun loadFromGallery() {
+        compositeDisposable.add(RxPaparazzo.single(this)
+            .crop(cropOptions)
+            .usingGallery()
+            .map { response ->
+                response.data()?.file?.path
+            }
+            .filter { it.isNotEmpty() }
+            .subscribe({
+                lastUploadedAvatar = it
+                it?.let {
+                    viewModel.uploadImageFromGallery(it)
+                }
+            }, {
+                Toast.makeText(this, it.localizedMessage, Toast.LENGTH_LONG).show()
+            })
+        )
+    }
+
+    private fun getDiffYears(first: Date, last: Date): Int {
+        val a: Calendar = getCalendar(first)
+        val b: Calendar = getCalendar(last)
+        var diff: Int = b.get(YEAR) - a.get(YEAR)
+        if (a.get(MONTH) > b.get(MONTH) ||
+            a.get(MONTH) == b.get(MONTH) && a.get(DATE) > b.get(DATE)
+        ) {
+            diff--
+        }
+        return diff
+    }
+
+    private fun getCalendar(date: Date): Calendar {
+        val cal: Calendar = getInstance(Locale.US)
+        cal.time = date
+        return cal
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleDisposable.dispose()
+    }
 }

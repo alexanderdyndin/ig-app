@@ -1,18 +1,15 @@
 package com.intergroupapplication.data.network
 
-import com.intergroupapplication.data.model.ApiErrorElement
+import com.intergroupapplication.data.network.dto.ApiErrorElement
 import com.intergroupapplication.domain.exception.*
 import io.reactivex.exceptions.CompositeException
 import retrofit2.HttpException
-import timber.log.Timber
 import javax.inject.Inject
-import kotlin.Exception
 
 /**
  * Created by abakarmagomedov on 24/08/2018 at project InterGroupApplication.
  */
-class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
-    : ErrorAdapter {
+class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser) : ErrorAdapter {
 
     override fun adapt(throwable: Throwable): Throwable {
         return if (throwable is HttpException) {
@@ -31,7 +28,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                             }
                         }
                         it.fieldError.isNotEmpty() -> getListFieldException(it.fieldError)
-                        else -> UnknowServerException()
+                        else -> UnknownServerException()
                     }
                     401 -> InvalidRefreshException()
                     404 -> when {
@@ -48,7 +45,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                             }
                         }
                         it.fieldError.isNotEmpty() -> NotFoundException(it.nonFieldError?.message)
-                        else -> UnknowServerException()
+                        else -> UnknownServerException()
                     }
                     403 -> {
                         when {
@@ -58,7 +55,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                         }
                     }
                     500 -> ServerException()
-                    else -> UnknowServerException()
+                    else -> UnknownServerException()
                 }
             } ?: when (throwable.code()) {
                 500 -> ServerException()
@@ -66,7 +63,7 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
                 403 -> ForbiddenException("Нет доступа")
                 401 -> InvalidRefreshException()
                 400 -> NotFoundException(null)
-                else -> UnknowServerException()
+                else -> UnknownServerException()
             }
         } else {
             ConnectionException()
@@ -74,9 +71,9 @@ class BaseErrorAdapter @Inject constructor(private val errorParser: ErrorParser)
     }
 
     private fun getListFieldException(apiErrors: List<ApiErrorElement>): Exception =
-            if (apiErrors[0].uniqueCode == INVALID_REFRESH) {
-                InvalidRefreshException()
-            } else {
-                CompositeException(apiErrors.map { FieldException(it.field.orEmpty(), it.message) })
-            }
+        if (apiErrors[0].uniqueCode == INVALID_REFRESH) {
+            InvalidRefreshException()
+        } else {
+            CompositeException(apiErrors.map { FieldException(it.field.orEmpty(), it.message) })
+        }
 }

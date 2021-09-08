@@ -24,14 +24,14 @@ fun MutableSet<ChooseMedia>.containsMedia(url: String): Boolean {
     return false
 }
 
-fun MutableList<ChooseMedia>.addMediaIfNotContains(newChooseMedia: ChooseMedia){
-    this.forEach {chooseMedia ->
-        if (chooseMedia.name == newChooseMedia.name)return@addMediaIfNotContains
+fun MutableList<ChooseMedia>.addMediaIfNotContains(newChooseMedia: ChooseMedia) {
+    this.forEach { chooseMedia ->
+        if (chooseMedia.name == newChooseMedia.name) return@addMediaIfNotContains
     }
     this.add(newChooseMedia)
 }
 
-fun MutableList<ChooseMedia>.removeMedia(url: String?):Boolean {
+fun MutableList<ChooseMedia>.removeMedia(url: String?): Boolean {
     this.forEach {
         if (it.url == url) {
             remove(it)

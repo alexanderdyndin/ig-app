@@ -13,13 +13,19 @@ import com.intergroupapplication.presentation.exstension.show
 class ViewHolderLoadingState(itemView: View, retry: () -> Unit) :
     RecyclerView.ViewHolder(itemView) {
 
-    private val errorLayout: ConstraintLayout by lazy { itemView.findViewById(R.id.error_layout) }
-    private val loadingLayout: FrameLayout by lazy { itemView.findViewById(R.id.loading_layout) }
-    private val btnRetry: Button by lazy { itemView.findViewById(R.id.buttonRetry) }
+    private val errorLayout: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.error_layout)
+    }
+    private val loadingLayout: FrameLayout by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.loading_layout)
+    }
+    private val btnRetry: Button by lazy(LazyThreadSafetyMode.NONE) {
+        itemView.findViewById(R.id.buttonRetry)
+    }
 
     init {
         btnRetry.setOnClickListener {
-            retry.invoke()
+            retry()
         }
     }
 
@@ -30,5 +36,4 @@ class ViewHolderLoadingState(itemView: View, retry: () -> Unit) :
         loadingLayout.isVisible = loadState is LoadState.Loading
         errorLayout.isVisible = loadState !is LoadState.Loading
     }
-
 }

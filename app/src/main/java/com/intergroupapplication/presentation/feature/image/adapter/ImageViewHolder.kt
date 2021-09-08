@@ -9,15 +9,15 @@ import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.presentation.customview.zoomable.DoubleTapGestureListener
 import com.intergroupapplication.presentation.customview.zoomable.ZoomableDrawerView
 
-class ImageViewHolder(view: View): RecyclerView.ViewHolder(view) {
+class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    val image = itemView.findViewById<ZoomableDrawerView>(R.id.image)
+    val image: ZoomableDrawerView = itemView.findViewById(R.id.image)
 
     fun bind(file: FileEntity) {
         val controller = Fresco.newDraweeControllerBuilder()
-                .setUri(Uri.parse(file.file))
-                .setAutoPlayAnimations(true)
-                .build()
+            .setUri(Uri.parse(file.file))
+            .setAutoPlayAnimations(true)
+            .build()
         image.controller = controller
         image.setOnClickListener {
             ImageAdapter.imageClickListener.invoke()
