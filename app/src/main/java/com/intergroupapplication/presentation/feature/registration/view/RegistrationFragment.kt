@@ -32,13 +32,14 @@ import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.exception.*
 import com.intergroupapplication.presentation.base.BaseActivity.Companion.PASSWORD_REQUIRED_LENGTH
 import com.intergroupapplication.presentation.base.BaseFragment
-import com.intergroupapplication.presentation.exstension.clicks
 import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.registration.presenter.RegistrationPresenter
+import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.TextViewAfterTextChangeEvent
 import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
+import com.jakewharton.rxbinding3.widget.textChanges
 import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -94,7 +95,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private var passwordVisible = false
+    private var passwordVisible = true
     private val startForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -154,14 +155,14 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
         btnSendEmail.clicks()
             .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { validator.validate() }.let(compositeDisposable::add)
+            .subscribe { validator.validate() }.also(compositeDisposable::add)
         setErrorHandler()
 
-        textLogin.clicks().subscribe {
+        textLogin.setOnClickListener {
             findNavController()
                 .navigate(R.id.action_registrationFragment_to_loginFragment)
         }
-            .also { compositeDisposable.add(it) }
+
         initValidator()
         initEditText()
         visibilityPassword(!passwordVisible)
@@ -180,17 +181,17 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     private fun visibilityPassword(isVisible: Boolean) {
         if (isVisible) {
-            mail.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
             etDoublePassword.inputType =
                 InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
             passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_password_visible,
+                R.drawable.ic_password_invisible,
                 0,
                 0,
                 0
             )
             passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_password_visible,
+                R.drawable.ic_password_invisible,
                 0,
                 0,
                 0
@@ -199,13 +200,13 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_password_invisible,
+                R.drawable.ic_password_visible,
                 0,
                 0,
                 0
             )
             passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_password_invisible,
+                R.drawable.ic_password_visible,
                 0,
                 0,
                 0
@@ -406,43 +407,19 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     private fun initEditText() {
-        password.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val textEntered = password.text.toString()
+        fun passwordTextChanges(view: AppCompatEditText) {
+            view.textChanges()
+                .subscribe {
+                    val textEntered = it.toString()
 
-                if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
-                    password.setText(password.text.toString().replace(" ", ""))
-                    password.setSelection(password.text?.length ?: 0)
-                }
-            }
+                    if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
+                        view.setText(it.toString().replace(" ", ""))
+                        view.setSelection(password.text?.length ?: 0)
+                    }
+                }.also(compositeDisposable::add)
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
-                Unit
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
-        })
-
-        etDoublePassword.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val textEntered = etDoublePassword.text.toString()
-
-                if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
-                    etDoublePassword.setText(
-                        etDoublePassword.text.toString().replace(
-                            " ",
-                            ""
-                        )
-                    )
-                    etDoublePassword.setSelection(etDoublePassword.text?.length ?: 0)
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
-                Unit
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
-        })
+        passwordTextChanges(password)
+        passwordTextChanges(etDoublePassword)
     }
 }
