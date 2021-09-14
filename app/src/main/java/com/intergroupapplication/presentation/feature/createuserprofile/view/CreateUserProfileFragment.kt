@@ -31,7 +31,7 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createuserprofile.presenter.CreateUserProfilePresenter
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -212,11 +212,11 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     private fun listenEditTexts() {
         Observable.merge(
-            RxTextView.afterTextChangeEvents(name),
-            RxTextView.afterTextChangeEvents(surName)
+            name.afterTextChangeEvents(),
+            surName.afterTextChangeEvents()
         )
             .subscribe({
-                when (it.view().id) {
+                when (it.view.id) {
                     R.id.surName -> tvSurname.gone()
                     R.id.name -> tvFirstname.gone()
                 }

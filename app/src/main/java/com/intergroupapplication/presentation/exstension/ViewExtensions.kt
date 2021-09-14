@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
-import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -46,8 +46,8 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
-fun View.clicks(time: Long = 600): Observable<Any> {
-    return RxView.clicks(this).throttleFirst(time, TimeUnit.MILLISECONDS)
+fun View.clicks(time: Long = 600): Observable<Unit> {
+    return this.clicks().throttleFirst(time, TimeUnit.MILLISECONDS)
 }
 
 fun View.activated(isActivated: Boolean) {

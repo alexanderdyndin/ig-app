@@ -18,7 +18,7 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment.Companion.RES_ID
 import com.intergroupapplication.presentation.feature.agreements.viewmodel.AgreementsViewModel
-import com.jakewharton.rxbinding2.view.RxView.clicks
+import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -71,7 +71,7 @@ class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
         initObservers()
         initCheckBox()
         initBtn()
-        clicks(btnNext)
+        btnNext.clicks()
             .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewModel.next() }.let(compositeDisposable::add)

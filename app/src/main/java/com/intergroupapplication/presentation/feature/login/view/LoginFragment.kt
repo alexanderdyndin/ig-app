@@ -36,8 +36,7 @@ import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.login.presenter.LoginPresenter
 import com.intergroupapplication.presentation.listeners.RightDrawableListener
-import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.Email
@@ -135,7 +134,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
         mail = viewBinding.etMail
         password = viewBinding.password
         listenInputs()
-        RxView.clicks(next)
+        next.clicks()
             .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { validator.validate() }
@@ -268,10 +267,10 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     private fun listenInputs() {
         Observable.merge(
-            RxTextView.afterTextChangeEvents(mail),
-            RxTextView.afterTextChangeEvents(password)
+            mail.afterTextChangeEvents(),
+            password.afterTextChangeEvents()
         ).subscribe { afterTextChanged ->
-            when (afterTextChanged.view().id) {
+            when (afterTextChanged.view.id) {
                 R.id.etMail -> {
                     tvMailError.gone()
                 }

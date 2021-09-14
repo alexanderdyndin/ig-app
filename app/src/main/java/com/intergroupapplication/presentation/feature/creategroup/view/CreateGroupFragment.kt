@@ -27,8 +27,8 @@ import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
-import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding3.view.focusChanges
+import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
@@ -223,9 +223,9 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
         viewBinding.navigationToolbar.toolbarBackAction.setOnClickListener {
             findNavController().popBackStack()
         }
-        RxTextView.afterTextChangeEvents(groupName).subscribe { groupName.error = null }
+        groupName.afterTextChangeEvents().subscribe { groupName.error = null }
             .let { { d: Disposable -> compositeDisposable.add(d) } }
-        RxView.focusChanges(groupName).subscribe { groupName.error = null }
+        groupName.focusChanges().subscribe { groupName.error = null }
             .let { { d: Disposable -> compositeDisposable.add(d) } }
 
         viewBinding.groupAvatarHolder.imageLoaderDelegate = imageLoaderDelegate

@@ -203,7 +203,7 @@ dependencies {
     //rx
     val rxJavaVersion = "2.2.21"
     val rxAndroidVersion = "2.1.1"
-    val rxBindingVersion = "2.2.0"
+    val rxBindingVersion = "3.1.0"
     val rxPaparazzoVersion = "0.6.1-2.x"
 
     val cryptoLibraryVersion = "1.0.0"
@@ -333,7 +333,16 @@ dependencies {
     implementation("com.workable:error-handler:$errorHandlerVersion")
 
     //RxBindings
-    implementation("com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion")
+//    implementation("com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-core:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-appcompat:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-drawerlayout:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-leanback:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-recyclerview:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-slidingpanelayout:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-swiperefreshlayout:$rxBindingVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-viewpager:$rxBindingVersion")
     implementation("com.github.miguelbcr:RxPaparazzo:$rxPaparazzoVersion")
 
     //CryptoLibrary

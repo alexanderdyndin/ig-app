@@ -78,6 +78,11 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         super.onPause()
     }
 
+    override fun onStop() {
+        super.onStop()
+        compositeDisposable.clear()
+    }
+
     fun showToast(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }

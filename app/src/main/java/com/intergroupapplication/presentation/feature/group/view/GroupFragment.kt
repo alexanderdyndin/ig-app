@@ -34,7 +34,6 @@ import com.intergroupapplication.presentation.feature.editpost.view.EditPostFrag
 import com.intergroupapplication.presentation.feature.group.adapter.GroupPostsAdapter
 import com.intergroupapplication.presentation.feature.group.presenter.GroupPresenter
 import com.intergroupapplication.presentation.feature.group.viewmodel.GroupViewModel
-import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.exceptions.CompositeException
@@ -565,7 +564,7 @@ class GroupFragment : BaseFragment(), GroupView,
     }
 
     private fun listenButtonClicks() {
-        RxView.clicks(joinToGroup)
+        joinToGroup.clicks()
             .take(1)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -574,7 +573,7 @@ class GroupFragment : BaseFragment(), GroupView,
                         .split(" ")[0].toInt()
                 )
             }.let { { d: Disposable -> compositeDisposable.add(d) } }
-        RxView.clicks(goOutFromGroup)
+        goOutFromGroup.clicks()
             .take(1)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

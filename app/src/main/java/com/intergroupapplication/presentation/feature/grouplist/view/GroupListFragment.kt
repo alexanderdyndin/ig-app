@@ -41,11 +41,15 @@ import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupLis
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
 import com.intergroupapplication.presentation.feature.grouplist.viewModel.GroupListViewModel
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
+import com.jakewharton.rxbinding3.widget.textChanges
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GroupListFragment : BaseFragment() {
@@ -97,17 +101,6 @@ class GroupListFragment : BaseFragment() {
     @Inject
     lateinit var viewPagerAdapter: GroupListsAdapter
 
-
-    @ExperimentalCoroutinesApi
-    private val textWatcher = object : TextWatcher {
-        override fun afterTextChanged(s: Editable) {
-            fetchGroups(s.toString())
-        }
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-    }
-
     override fun layoutRes() = R.layout.fragment_group_list
 
     override fun getSnackBarCoordinator(): ViewGroup = viewBinding.groupListCoordinator
@@ -119,7 +112,6 @@ class GroupListFragment : BaseFragment() {
     private lateinit var activityMainBtnFilter: ImageButton
     private lateinit var activityMainSearchInput: EditText
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fetchGroups()
@@ -359,17 +351,45 @@ class GroupListFragment : BaseFragment() {
         )
     }
 
-
-    @ExperimentalCoroutinesApi
     override fun onResume() {
         super.onResume()
-        activityMainSearchInput.addTextChangedListener(textWatcher)
-    }
-
-    @ExperimentalCoroutinesApi
-    override fun onPause() {
-        super.onPause()
-        activityMainSearchInput.removeTextChangedListener(textWatcher)
+        //activityMainSearchInput.addTextChangedListener(textWatcher)
+        activityMainSearchInput.textChanges()
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .toFlowable(BackpressureStrategy.LATEST)
+            .observeOn(AndroidSchedulers.mainThread())
+            .switchMap {
+                val query = it.toString()
+                viewModel.fetchGroups(query)
+            }
+            .subscribe {
+                adapterAll.submitData(lifecycle, it)
+            }
+            .also(compositeDisposable::add)
+        activityMainSearchInput.textChanges()
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .toFlowable(BackpressureStrategy.LATEST)
+            .observeOn(AndroidSchedulers.mainThread())
+            .switchMap {
+                val query = it.toString()
+                viewModel.fetchSubGroups(query)
+            }
+            .subscribe {
+                adapterSubscribed.submitData(lifecycle, it)
+            }
+            .also(compositeDisposable::add)
+        activityMainSearchInput.textChanges()
+            .debounce(200, TimeUnit.MILLISECONDS)
+            .toFlowable(BackpressureStrategy.LATEST)
+            .observeOn(AndroidSchedulers.mainThread())
+            .switchMap {
+                val query = it.toString()
+                viewModel.fetchAdmGroups(query)
+            }
+            .subscribe {
+                adapterOwned.submitData(lifecycle, it)
+            }
+            .also(compositeDisposable::add)
     }
 
     private fun openCreateGroup() {

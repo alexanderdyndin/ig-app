@@ -25,8 +25,9 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.recoveryPassword.presenter.RecoveryPasswordPresenter
-import com.jakewharton.rxbinding2.widget.RxTextView
-import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent
+import com.jakewharton.rxbinding3.widget.TextViewAfterTextChangeEvent
+import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
+import com.jakewharton.rxbinding3.widget.textChangeEvents
 import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -119,7 +120,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
                 val email = etMail.text.toString()
                 presenter.sendEmail(email)
             }.also { compositeDisposable.add(it) }
-        RxTextView.textChangeEvents(etCode)
+        etCode.textChangeEvents()
             .subscribe {
                 val code = etCode.text.toString()
                 presenter.sendCode(code)
@@ -226,10 +227,10 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
 
     private fun listenInputs() {
         Observable.merge(
-            RxTextView.afterTextChangeEvents(etDoublePassword),
-            RxTextView.afterTextChangeEvents(password),
-            RxTextView.afterTextChangeEvents(etMail),
-            RxTextView.afterTextChangeEvents(etCode)
+            etDoublePassword.afterTextChangeEvents(),
+            password.afterTextChangeEvents(),
+            etMail.afterTextChangeEvents(),
+            etCode.afterTextChangeEvents()
         )
             .subscribe { afterTextChanged ->
                 handleAfterTextChangeEvents(afterTextChanged)
@@ -237,7 +238,7 @@ class RecoveryPasswordFragment : BaseFragment(), RecoveryPasswordView, Validator
     }
 
     private fun handleAfterTextChangeEvents(afterTextChanged: TextViewAfterTextChangeEvent) {
-        when (afterTextChanged.view().id) {
+        when (afterTextChanged.view.id) {
             R.id.etPassword -> tvErrorPass.gone()
             R.id.etDoublePassword -> tvErrorDoublePass.gone()
             R.id.etMail -> tvErrorMail.gone()

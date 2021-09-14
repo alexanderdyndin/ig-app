@@ -37,9 +37,8 @@ import com.intergroupapplication.presentation.exstension.gone
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.registration.presenter.RegistrationPresenter
-import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxTextView
-import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent
+import com.jakewharton.rxbinding3.widget.TextViewAfterTextChangeEvent
+import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -152,7 +151,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
         rxPermission = RxPermissions(this)
         listenInputs()
-        RxView.clicks(btnSendEmail)
+        btnSendEmail.clicks()
             .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { validator.validate() }.let(compositeDisposable::add)
@@ -313,10 +312,10 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
     private fun listenInputs() {
         Observable.merge(
-            RxTextView.afterTextChangeEvents(mail),
-            RxTextView.afterTextChangeEvents(password),
-            RxTextView.afterTextChangeEvents(etDoublePassword),
-            RxTextView.afterTextChangeEvents(etDoubleMail)
+            mail.afterTextChangeEvents(),
+            password.afterTextChangeEvents(),
+            etDoublePassword.afterTextChangeEvents(),
+            etDoubleMail.afterTextChangeEvents()
         )
             .subscribe { afterTextChanged ->
                 handleAfterTextChangeEvents(afterTextChanged)
@@ -329,7 +328,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     private fun handleAfterTextChangeEvents(afterTextChanged: TextViewAfterTextChangeEvent) {
-        when (afterTextChanged.view().id) {
+        when (afterTextChanged.view.id) {
             R.id.etMail -> {
                 tvMailError.gone()
             }
