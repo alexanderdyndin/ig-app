@@ -69,5 +69,5 @@ class PostsUseCase @Inject constructor(
     fun deleteBell(postId: String) = groupPostGateway.deleteBell(postId)
 
     fun setBell(postId: String) =
-        groupPostGateway.setPostBell(BellFollowEntity(null, null, postId.toInt()))
+        groupPostGateway.setPostBell(postId)
 }

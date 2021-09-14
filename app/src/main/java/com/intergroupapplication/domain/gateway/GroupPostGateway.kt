@@ -23,6 +23,6 @@ interface GroupPostGateway {
     fun deleteGroupPost(postId: String): Completable
     fun deleteNewsPost(postId: String): Completable
     fun getPostBell(postId: String): Single<BellFollowEntity>
-    fun setPostBell(bellFollowEntity: BellFollowEntity): Single<BellFollowEntity>
+    fun setPostBell(postId: String): Single<BellsEntity>
     fun deleteBell(postId: String): Completable
 }

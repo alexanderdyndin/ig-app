@@ -240,7 +240,7 @@ class GroupPostsAdapter(
                     })
 
                 btnRepost.setOnClickListener {
-                    sharePost(view.context, item)
+                    sharePost(view.context, item, postCustomView.getTextWithoutHtml())
                 }
 
             }
@@ -252,8 +252,8 @@ class GroupPostsAdapter(
                 postEntity.imagesExpanded, postEntity.audiosExpanded, postEntity.videosExpanded
             )
 
-        private fun sharePost(context: Context, item: GroupPostEntity.PostEntity) {
-            progressBarVisibility.invoke(true)
+        private fun sharePost(context: Context, item: GroupPostEntity.PostEntity, text: String) {
+            progressBarVisibility(true)
             /*val link = Firebase.dynamicLinks.dynamicLink {
                 domainUriPrefix = context.getString(R.string.deeplinkDomain)
                 link = Uri.parse("https://intergroup.com/post/${item.id}")
@@ -271,19 +271,21 @@ class GroupPostsAdapter(
                 )
                 .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
                 .addOnCompleteListener {
-                    createShareIntent(context, item, it.result.previewLink.toString())
+                    createShareIntent(context, item, it.result.previewLink.toString(), text)
                 }
         }
 
         private fun createShareIntent(
             context: Context,
             item: GroupPostEntity.PostEntity,
-            url: String
+            url: String,
+            postText: String
         ) {
-            val text = url + "/${item.id}"
+            val text = url + "/${item.id} \n $postText"
             val filesUrls = mutableListOf<String>()
-            filesUrls.addAll(item.videos.map { it.file })
             filesUrls.addAll(item.images.map { it.file })
+            filesUrls.addAll(item.audios.map { it.urlFile })
+            filesUrls.addAll(item.videos.map { it.file })
             OmegaIntentBuilder.from(context)
                 .share()
                 .text(text)
@@ -293,7 +295,7 @@ class GroupPostsAdapter(
                         success: Boolean,
                         contextIntentHandler: ContextIntentHandler
                     ) {
-                        progressBarVisibility.invoke(false)
+                        progressBarVisibility(false)
                         contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                             .startActivity()
                     }

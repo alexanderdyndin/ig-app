@@ -12,6 +12,7 @@ import com.intergroupapplication.data.mappers.group.GroupPostDtoToDbMapper
 import com.intergroupapplication.data.mappers.group.GroupPostMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.PAGE_SIZE
+import com.intergroupapplication.data.network.dto.BellsDto
 import com.intergroupapplication.data.remote_mediator.GroupPostMediatorRXDataSource
 import com.intergroupapplication.data.remote_mediator.NewsPostMediatorRXDataSource
 import com.intergroupapplication.domain.entity.*
@@ -113,10 +114,17 @@ class GroupPostsRepository @Inject constructor(
         return api.getBell(postId).map { groupPostMapper.mapToDomainEntity(it) }
     }
 
-    override fun setPostBell(bellFollowEntity: BellFollowEntity): Single<BellFollowEntity> {
+    override fun setPostBell(postId: String): Single<BellsEntity> {
+        return api.createBell(postId, BellsDto(0, false))
+            .map {
+                groupPostMapper.mapToDomainEntity(it)
+            }
+    }
+
+    /*override fun setPostBell(bellFollowEntity: BellFollowEntity): Single<BellFollowEntity> {
         return api.setBell(groupPostMapper.mapToDto(bellFollowEntity))
             .map { groupPostMapper.mapToDomainEntity(it) }
-    }
+    }*/
 
     override fun deleteBell(postId: String): Completable {
         return api.deleteBell(postId)

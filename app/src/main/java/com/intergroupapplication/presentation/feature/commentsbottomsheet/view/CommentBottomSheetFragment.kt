@@ -308,6 +308,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 MAIN_IC_EDIT_COLOR_DRAWABLE
             )
         )
+        sendButton.hide()
         changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
         iconPanel.changeMargin(8)
     }

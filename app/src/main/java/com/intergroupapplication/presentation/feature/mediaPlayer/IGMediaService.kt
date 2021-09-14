@@ -65,25 +65,6 @@ class IGMediaService : MediaBrowserService() {
     /**
      * Will be called by our activity to get information about exo player.
      */
-    override fun onBind(intent: Intent?): IBinder {
-        exoPlayer?.playWhenReady = false
-        return ServiceBinder()
-    }
-
-    override fun onGetRoot(
-        clientPackageName: String,
-        clientUid: Int,
-        rootHints: Bundle?
-    ): BrowserRoot? {
-        return null
-    }
-
-    override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaBrowser.MediaItem>>
-    ) {
-
-    }
 
     private fun stop() {
         stopForeground(true)
@@ -112,6 +93,31 @@ class IGMediaService : MediaBrowserService() {
             }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onBind(intent: Intent?): IBinder {
+        exoPlayer?.playWhenReady = false
+        return ServiceBinder()
+    }
+
+    override fun onGetRoot(
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
+    ): BrowserRoot? {
+        return null
+    }
+
+    override fun onLoadChildren(
+        parentId: String,
+        result: Result<MutableList<MediaBrowser.MediaItem>>
+    ) {
+
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        exoPlayer?.stop()
+        return super.onUnbind(intent)
     }
 
     /**

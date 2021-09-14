@@ -184,7 +184,7 @@ class MainActivity : FragmentActivity() {
     }
 
     fun createDrawer() {
-        navController.navigate(R.id.action_global_newsFragment2)
+        navController.navigate(R.id.action_global_newsFragment)
         val viewDrawer = layoutInflater.inflate(
             R.layout.layout_left_drawer_header,
             findViewById(R.id.navigationCoordinator),
@@ -194,19 +194,19 @@ class MainActivity : FragmentActivity() {
         navRecycler.adapter = navigationAdapter
         navRecycler.itemAnimator = null
         navigationAdapter.items = listOf(
-            NavigationEntity(R.string.news, R.drawable.ic_bell_menu, {
-                navController.navigate(R.id.action_global_newsFragment2)
+            NavigationEntity(R.string.news, R.drawable.ic_menu_news, {
+                navController.navigate(R.id.action_global_newsFragment)
                 drawer.closeDrawer()
             }, checked = true),
-            NavigationEntity(R.string.groups, R.drawable.ic_groups, {
+            NavigationEntity(R.string.groups, R.drawable.ic_menu_group, {
                 navController.navigate(R.id.action_global_groupListFragment)
                 drawer.closeDrawer()
             }),
-            NavigationEntity(R.string.buy_premium, R.drawable.icon_like, {
+            NavigationEntity(R.string.buy_premium, R.drawable.ic_menu_premium, {
                 bill()
                 drawer.closeDrawer()
             }, null),
-            NavigationEntity(R.string.logout, 0, {
+            NavigationEntity(R.string.logout, R.drawable.ic_menu_exit, {
                 userSession.logout()
                 navController.navigate(R.id.action_global_loginFragment)
                 drawer.closeDrawer()
@@ -251,51 +251,58 @@ class MainActivity : FragmentActivity() {
             viewDrawer.findViewById<ImageView>(R.id.drawerArrow)
                 .setOnClickListener { closeDrawer() }
         }
-        lifecycleDisposable.add(viewModel.getUserProfile()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ userEntity ->
-                val date = dateFormatter.parse(userEntity.birthday)
-                val current = Date()
-                date?.let {
-                    viewDrawer.findViewById<TextView>(R.id.ageText).text =
-                        getString(R.string.years, getDiffYears(it, current).toString())
-                }
-                when (userEntity.gender) {
-                    "male" ->
-                        viewDrawer.findViewById<TextView>(R.id.ageText)
-                            .setCompoundDrawablesWithIntrinsicBounds(
-                                R.drawable.ic_male,
-                                0,
-                                0,
-                                0
-                            )
-                    "female" ->
-                        viewDrawer.findViewById<TextView>(R.id.ageText)
-                            .setCompoundDrawablesWithIntrinsicBounds(
-                                R.drawable.ic_male,
-                                0,
-                                0,
-                                0
-                            )
-                }
-                viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
-                viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
-                viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text =
-                    userEntity.stats.posts.toString()
-                viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text =
-                    userEntity.stats.comments.toString()
-                viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text =
-                    userEntity.stats.dislikes.toString()
-                viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text =
-                    userEntity.stats.likes.toString()
-                doOrIfNull(userEntity.avatar,
-                    { profileAvatarHolder.showAvatar(it) },
-                    { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
-            }, {
-                profileAvatarHolder.showImageUploadingError()
-                errorHandler.handle(it)
-            })
+        lifecycleDisposable.add(
+            viewModel.getUserProfile()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ userEntity ->
+                    val date = dateFormatter.parse(userEntity.birthday)
+                    val current = Date()
+                    date?.let {
+                        val age = getDiffYears(it, current)
+                        viewDrawer.findViewById<TextView>(R.id.ageText).text =
+                            when {
+                                age % 10 == 0 -> getString(R.string.years1, age.toString())
+                                age % 10 == 1 -> getString(R.string.years2, age.toString())
+                                age % 10 < 5 -> getString(R.string.years, age.toString())
+                                else -> getString(R.string.years1, age.toString())
+                            }
+                    }
+                    when (userEntity.gender) {
+                        "male" ->
+                            viewDrawer.findViewById<TextView>(R.id.ageText)
+                                .setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.ic_male,
+                                    0,
+                                    0,
+                                    0
+                                )
+                        "female" ->
+                            viewDrawer.findViewById<TextView>(R.id.ageText)
+                                .setCompoundDrawablesWithIntrinsicBounds(
+                                    R.drawable.ic_woman,
+                                    0,
+                                    0,
+                                    0
+                                )
+                    }
+                    viewDrawer.findViewById<TextView>(R.id.profileName).text = userEntity.firstName
+                    viewDrawer.findViewById<TextView>(R.id.profileSurName).text = userEntity.surName
+                    viewDrawer.findViewById<TextView>(R.id.countPublicationsTxt).text =
+                        userEntity.stats.posts.toString()
+                    viewDrawer.findViewById<TextView>(R.id.countCommentsTxt).text =
+                        userEntity.stats.comments.toString()
+                    viewDrawer.findViewById<TextView>(R.id.countDislikesTxt).text =
+                        userEntity.stats.dislikes.toString()
+                    viewDrawer.findViewById<TextView>(R.id.countLikesTxt).text =
+                        userEntity.stats.likes.toString()
+                    doOrIfNull(userEntity.avatar,
+                        { profileAvatarHolder.showAvatar(it) },
+                        { profileAvatarHolder.showAvatar(R.drawable.application_logo) })
+                }, {
+                    profileAvatarHolder.showImageUploadingError()
+                    errorHandler.handle(it)
+                })
         )
         lifecycleDisposable.add(
             viewModel.imageUploadingState

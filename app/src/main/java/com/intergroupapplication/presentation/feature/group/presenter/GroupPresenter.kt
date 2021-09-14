@@ -16,6 +16,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import moxy.InjectViewState
+import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
@@ -67,20 +68,28 @@ class GroupPresenter @Inject constructor(
     }
 
     fun getGroupDetailInfo(groupId: String) {
+        Timber.tag("tut_start").d("отправили запрос об инфе")
         compositeDisposable.add(groupGateway.getGroupDetailInfo(groupId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map {
+                Timber.tag("tut_middle").d("отправили инфу")
                 viewState.showGroupInfo(it)
                 it
             }
             .observeOn(Schedulers.io())
-            .flatMap { groupUseCase.getUserRole(it) }
+            .flatMap {
+                Timber.tag("tut_middle").d("отправили запрос о правилах")
+                groupUseCase.getUserRole(it)
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .map { viewState.renderViewByRole(it) }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { viewState.showGroupInfoLoading(true) }
-            .doFinally { viewState.showGroupInfoLoading(false) }
+            .doFinally {
+                Timber.tag("tut_end").d("получили все данные")
+                viewState.showGroupInfoLoading(false)
+            }
             .subscribe({
                 //getGroupPosts(groupId)
             }, {

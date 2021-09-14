@@ -422,7 +422,7 @@
             app:argType="integer" />
     </fragment>
     <action
-        android:id="@+id/action_global_newsFragment2"
+        android:id="@+id/action_global_newsFragment"
         app:destination="@id/newsFragment"
         app:popUpTo="@id/nav_graph" />
     <fragment

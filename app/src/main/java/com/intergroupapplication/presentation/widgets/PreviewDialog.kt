@@ -24,7 +24,6 @@ class PreviewDialog : DialogFragment() {
     }
 
     private lateinit var videoView: VideoView
-    private lateinit var gestureDetector: GestureDetector
     private val previewViewBinding by viewBinding(DialogPreviewBinding::bind)
     var url: String = ""
     var isPhoto = false
@@ -67,9 +66,6 @@ class PreviewDialog : DialogFragment() {
         imageView.setOnClickListener {
             this@PreviewDialog.dismiss()
         }
-        imageView.setOnTouchListener { _, event ->
-            return@setOnTouchListener gestureDetector.onTouchEvent(event)
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -79,9 +75,6 @@ class PreviewDialog : DialogFragment() {
         videoView.setMediaController(MediaController(context))
         videoView.show()
         videoView.start()
-        videoView.setOnTouchListener { _, event ->
-            return@setOnTouchListener gestureDetector.onTouchEvent(event)
-        }
     }
 
 

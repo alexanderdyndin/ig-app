@@ -223,7 +223,7 @@ class NewsAdapter(
                 }
 
                 btnRepost.setOnClickListener {
-                    sharePost(view.context, item)
+                    sharePost(view.context, item, postCustomView.getTextWithoutHtml())
                 }
 
                 doOrIfNull(item.post.groupInPost.avatar, {
@@ -245,7 +245,7 @@ class NewsAdapter(
                 postEntity.imagesExpanded, postEntity.audiosExpanded, postEntity.videosExpanded
             )
 
-        private fun sharePost(context: Context, item: NewsEntity.Post) {
+        private fun sharePost(context: Context, item: NewsEntity.Post, postText: String) {
             progressBarVisibility.invoke(true)
             FirebaseDynamicLinks.getInstance().createDynamicLink()
                 .setDomainUriPrefix(context.getString(R.string.deeplinkDomain))
@@ -256,15 +256,21 @@ class NewsAdapter(
                 )
                 .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
                 .addOnCompleteListener {
-                    createShareIntent(context, item, it.result.previewLink.toString())
+                    createShareIntent(context, item, it.result.previewLink.toString(), postText)
                 }
         }
 
-        private fun createShareIntent(context: Context, item: NewsEntity.Post, url: String) {
-            val text = url + "/${item.post.id}"
+        private fun createShareIntent(
+            context: Context,
+            item: NewsEntity.Post,
+            url: String,
+            postText: String
+        ) {
+            val text = url + "/${item.post.id} \n $postText"
             val filesUrls = mutableListOf<String>()
-            filesUrls.addAll(item.post.videos.map { it.file })
             filesUrls.addAll(item.post.images.map { it.file })
+            filesUrls.addAll(item.post.audios.map { it.urlFile })
+            filesUrls.addAll(item.post.videos.map { it.file })
             OmegaIntentBuilder.from(context)
                 .share()
                 .text(text)

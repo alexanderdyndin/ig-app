@@ -237,6 +237,12 @@ interface AppApi {
     @POST("groups/bells/")
     fun setBell(@Body bellFollowDto: BellFollowDto): Single<BellFollowDto>
 
+    @POST("groups/posts/{post_pk}/bells/")
+    fun createBell(
+        @Path("post_pk") postId: String,
+        @Body bellsDto: BellsDto
+    ): Single<BellsDto>
+
     @GET("groups/bells/{post__id}/")
     fun getBell(@Path("post__id") postId: String): Single<BellFollowDto>
 
