@@ -90,7 +90,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
 
     @Inject
     @LoginHandler
-    lateinit var errorHandlerLogin: ErrorHandler
+    override lateinit var errorHandler: ErrorHandler
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_login

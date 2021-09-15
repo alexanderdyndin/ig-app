@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
@@ -17,6 +18,7 @@ import com.intergroupapplication.presentation.feature.agreement.viewmodel.Agreem
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment.Companion.RES_ID_PRIVACY_POLICY
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment.Companion.RES_ID_RIGHTHOLDERS
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment.Companion.RES_ID_TERMS_OF_USE
+import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -30,7 +32,6 @@ class AgreementFragment: BaseFragment() {
     }
 
     private val viewBinding by viewBinding(FragmentAgreementBinding::bind)
-    private lateinit var viewModel: AgreementViewModel
 
     override fun layoutRes() = R.layout.fragment_agreement
 
@@ -39,13 +40,14 @@ class AgreementFragment: BaseFragment() {
     @Inject
     lateinit var modelFactory: ViewModelProvider.Factory
 
+    private val viewModel: AgreementViewModel by viewModels { modelFactory }
+
     private var resId: Int? = null
 
     private var retryCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, modelFactory)[AgreementViewModel::class.java]
         resId = arguments?.getInt(RES_ID)
         getTermsById(resId)
     }
@@ -60,40 +62,41 @@ class AgreementFragment: BaseFragment() {
         compositeDisposable.add(viewModel.isLoading
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe({
                 if (it) {
                     viewBinding.loadingError.errorLayout.gone()
                     viewBinding.loadingError.loadingLayout.show()
                 } else {
                     viewBinding.loadingError.loadingLayout.gone()
                 }
-            })
+            }, { Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show() }))
 
         compositeDisposable.add(viewModel.value
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{
+            .subscribe ({
                 viewBinding.text.text = HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_COMPACT)
-            })
+            }, { Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show() }))
 
         compositeDisposable.add(viewModel.errorState
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { //todo говнокод из за неправильно настроенного сайта, пофиксить
+            .subscribe ({ //todo говнокод из за неправильно настроенного сайта, пофиксить
                 if (it is SSLPeerUnverifiedException && retryCount<4) {
                     retryCount++
                     getTermsById(resId)
                 } else {
                     viewBinding.loadingError.errorLayout.show()
                 }
-            })
+            }, { Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show() }))
     }
 
     private fun setListeners() {
-        viewBinding.loadingError.buttonRetry.setOnClickListener {
-            retryCount = 0
-            getTermsById(resId)
-        }
+        viewBinding.loadingError.buttonRetry
+            .clicks().subscribe {
+                retryCount = 0
+                getTermsById(resId)
+            }.also(compositeDisposable::add)
     }
 
     private fun getTermsById(resId: Int?) {

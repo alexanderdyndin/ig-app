@@ -40,5 +40,5 @@ class LoginViewModule {
     @PerFragment
     @Provides
     @LoginHandler
-    fun errorHandler(): ErrorHandler = ErrorHandler.createIsolated()
+    fun errorHandler(): ErrorHandler = ErrorHandler.create()
 }

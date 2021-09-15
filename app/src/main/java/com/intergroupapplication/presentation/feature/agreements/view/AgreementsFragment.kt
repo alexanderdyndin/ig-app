@@ -136,20 +136,22 @@ class AgreementsFragment : BaseFragment(), CompoundButton.OnCheckedChangeListene
         compositeDisposable.add(viewModel.isLoading
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { showLoading(it) })
+            .subscribe({ showLoading(it) },
+                { Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show() }))
 
         compositeDisposable.add(viewModel.isNext
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe ({
                 if (it) {
                     toSplash()
                 }
-            })
+            }, { Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show() }))
 
         compositeDisposable.add(viewModel.errorState
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { errorHandler.handle(it) })
+            .subscribe({ errorHandler.handle(it) },
+                { Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show() }))
     }
 }

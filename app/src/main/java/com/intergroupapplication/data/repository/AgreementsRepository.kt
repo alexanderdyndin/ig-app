@@ -14,7 +14,7 @@ class AgreementsRepository @Inject constructor(private val api: AgreementsApi): 
                 val html = api.privacyPolicy()
                 it.onSuccess(html)
             } catch (exception: Exception) {
-                it.onError(exception)
+                it.tryOnError(exception)
             }
 
         }
@@ -26,7 +26,7 @@ class AgreementsRepository @Inject constructor(private val api: AgreementsApi): 
                 val html = api.termsOfUse()
                 it.onSuccess(html)
             } catch (exception: Exception) {
-                it.onError(exception)
+                it.tryOnError(exception)
             }
 
         }
@@ -38,7 +38,7 @@ class AgreementsRepository @Inject constructor(private val api: AgreementsApi): 
                 val html = api.rightHolders()
                 it.onSuccess(html)
             } catch (exception: Exception) {
-                it.onError(exception)
+                it.tryOnError(exception)
             }
         }
     }

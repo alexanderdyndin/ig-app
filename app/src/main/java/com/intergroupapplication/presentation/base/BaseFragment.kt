@@ -78,9 +78,9 @@ abstract class BaseFragment : MvpAppCompatFragment() {
         super.onPause()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroyView() {
         compositeDisposable.clear()
+        super.onDestroyView()
     }
 
     fun showToast(msg: String) {
