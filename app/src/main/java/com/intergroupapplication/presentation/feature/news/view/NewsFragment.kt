@@ -114,7 +114,7 @@ class NewsFragment : BaseFragment() {
         emptyText = viewBinding.emptyText
         newPaging()
         newsPosts.itemAnimator = null
-
+        adapter.refresh()
         viewBinding.navigationToolbar.toolbarTittle.setText(R.string.news)
         viewBinding.navigationToolbar.toolbarMenu.setOnClickListener {
             val activity = requireActivity()

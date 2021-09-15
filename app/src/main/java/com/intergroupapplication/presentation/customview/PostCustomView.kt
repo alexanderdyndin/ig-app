@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.forEach
 import com.danikula.videocache.HttpProxyCacheServer
 import com.intergroupapplication.R
 import com.intergroupapplication.data.model.MarkupModel
@@ -44,6 +45,18 @@ class PostCustomView @JvmOverloads constructor(
         this.removeAllViews()
         this.markupModel = markupModel
         parsingTextInPost()
+    }
+
+    fun getTextWithoutHtml(): String {
+        var text = ""
+        this.forEach { view ->
+            (view as LinearLayout).forEach { container ->
+                if (container is TextView) {
+                    text += "${container.text} \n"
+                }
+            }
+        }
+        return text
     }
 
     private fun createFinalText(text: String): String {

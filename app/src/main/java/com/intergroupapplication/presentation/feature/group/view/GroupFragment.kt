@@ -42,6 +42,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
@@ -293,13 +294,11 @@ class GroupFragment : BaseFragment(), GroupView,
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnSubscribe { item.isLoading = true }
-                            .doFinally {
-                                item.isLoading = false
-                                adapter.notifyItemChanged(pos)
-                            }
                             .subscribe({
                                 item.bells.isActive = false
                                 item.bells.count--
+                                item.isLoading = false
+                                adapter.notifyItemChanged(pos)
                             }, { exception ->
                                 if (exception is NotFoundException) {
                                     item.bells.isActive = false
@@ -313,13 +312,11 @@ class GroupFragment : BaseFragment(), GroupView,
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnSubscribe { item.isLoading = true }
-                            .doFinally {
-                                item.isLoading = false
-                                adapter.notifyItemChanged(pos)
-                            }
                             .subscribe({
                                 item.bells.isActive = true
                                 item.bells.count++
+                                item.isLoading = false
+                                adapter.notifyItemChanged(pos)
                             }, { exception ->
                                 if (exception is CompositeException) {
                                     exception.exceptions.forEach { ex ->
@@ -401,6 +398,7 @@ class GroupFragment : BaseFragment(), GroupView,
     }
 
     override fun renderViewByRole(userRole: UserRole) {
+        Timber.tag("tut_middle").d("получили правила")
         when (userRole) {
             UserRole.ADMIN -> renderAdminPage()
             UserRole.USER_FOLLOWER -> renderUserPage(R.id.goOutFromGroup)
@@ -442,11 +440,7 @@ class GroupFragment : BaseFragment(), GroupView,
     override fun avatarChanged(url: String) {
         groupAvatarHolder.showAvatar(url)
         groupAvatarHolder.showImageUploaded()
-        compositeDisposable.add(
-            viewModel.fetchPosts(groupId)
-                .subscribe {
-                    adapter.submitData(lifecycle, it)
-                })
+        adapter.refresh()
     }
 
     override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {

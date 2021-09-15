@@ -524,8 +524,8 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     btnAdd.isEnabled = true
                     amountFiles.text = when (count) {
                         1 -> context?.getString(R.string.choose_one_photo)
-                        in 2..4 -> context?.getString(R.string.choose_two_photo, count)
-                        else -> context?.getString(R.string.choose_five_photo, count)
+                        in 2..4 -> context?.getString(R.string.choose_two_photo, count.toString())
+                        else -> context?.getString(R.string.choose_five_photo, count.toString())
                     }
                 } else {
                     btnAdd.isEnabled = false
@@ -541,7 +541,8 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
             .subscribe { count ->
                 if (count > 0) {
                     btnAdd.isEnabled = true
-                    amountFiles.text = context?.getString(R.string.choose_count_video, count)
+                    amountFiles.text =
+                        context?.getString(R.string.choose_count_video, count.toString())
                 } else {
                     btnAdd.isEnabled = false
                     amountFiles.text = context?.getString(R.string.choose_video)
@@ -556,7 +557,8 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
             .subscribe { count ->
                 if (count > 0) {
                     btnAdd.isEnabled = true
-                    amountFiles.text = context?.getString(R.string.choose_count_audio, count)
+                    amountFiles.text =
+                        context?.getString(R.string.choose_count_audio, count.toString())
                 } else {
                     btnAdd.isEnabled = false
                     amountFiles.text = context?.getString(R.string.choose_audio)

@@ -93,7 +93,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
     @Footer
     lateinit var adapterFooter: PagingLoadingAdapter
 
-    private val viewModel: CommentsViewModel by viewModels { modelFactory }
+    private val commentsViewModel: CommentsViewModel by viewModels { modelFactory }
 
     private var infoForCommentEntity: InfoForCommentEntity? = null
 
@@ -152,6 +152,10 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
         swipeLayout = viewBinding.swipeLayout
         commentHolder = viewBinding.commentHolder
         commentLoader = viewBinding.commentLoader
+        adapter.run {
+            viewModel = commentsViewModel
+            handler = errorHandler
+        }
         childFragmentManager.setFragmentResultListener(
             CommentBottomSheetFragment.CALL_METHOD_KEY,
             viewLifecycleOwner
@@ -179,6 +183,13 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
                 CommentBottomSheetFragment.SHOW_COMMENT_UPLOADING_DATA -> {
                     val show = result.getBoolean(CommentBottomSheetFragment.DATA_KEY)
                     showCommentUploading(show)
+                }
+                CommentBottomSheetFragment.EDIT_COMMENT_DATA -> {
+                    val data: CreateCommentDataModel? =
+                        result.getParcelable(CommentBottomSheetFragment.DATA_KEY)
+                    val commentId =
+                        result.getString(CommentBottomSheetFragment.COMMENT_ID_KEY) ?: ""
+                    data?.let { editComment(it, commentId) }
                 }
             }
         }
@@ -304,14 +315,14 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
         this.groupPostEntity = groupPostEntity
         if (infoForCommentEntity != null) {
             compositeDisposable.add(
-                viewModel.fetchComments(groupPostEntity, page).subscribe {
+                commentsViewModel.fetchComments(groupPostEntity, page).subscribe {
                     page = (groupPostEntity.commentsCount.toInt() / 20 + 1).toString()
                     adapter.submitData(lifecycle, it)
                 }
             )
         } else if (postId != null) {
             compositeDisposable.add(
-                viewModel.fetchComments(groupPostEntity, page).subscribe {
+                commentsViewModel.fetchComments(groupPostEntity, page).subscribe {
                     adapter.submitData(lifecycle, it)
                     page = (groupPostEntity.commentsCount.toInt() / 20 + 1).toString()
                 }
@@ -364,6 +375,14 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
                 dataModel.textComment, dataModel.finalNameMedia
             )
         }
+    }
+
+    private fun editComment(dataModel: CreateCommentDataModel, commentId: String) {
+        dataModel.commentBottomSheetPresenter.editComment(
+            commentId,
+            dataModel.textComment,
+            dataModel.finalNameMedia
+        )
     }
 
 
@@ -429,7 +448,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
             complaintListener = { id -> presenter.complaintComment(id) }
             deleteClickListener = { id, pos ->
                 compositeDisposable.add(
-                    viewModel.deleteComment(id)
+                    commentsViewModel.deleteComment(id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ adapter.notifyItemRemoved(pos) },
@@ -438,7 +457,7 @@ class CommentsDetailsFragment : BaseFragment(), CommentsDetailsView, CoroutineSc
             }
             likeClickListener = { isLike, isDislike, comment, pos ->
                 compositeDisposable.add(
-                    viewModel.setCommentReact(isLike, isDislike, comment.id.toInt())
+                    commentsViewModel.setCommentReact(isLike, isDislike, comment.id.toInt())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({

@@ -97,7 +97,7 @@ class CommentsAdapter(
 
     private var compositeDisposable = CompositeDisposable()
     private var groupPostEntity: CommentEntity.PostEntity? = null
-    lateinit var errorHandler: ErrorHandler
+    lateinit var handler: ErrorHandler
     lateinit var viewModel: CommentsViewModel
     lateinit var postInCommentHolder: PostInCommentHolder
 
@@ -195,7 +195,7 @@ class CommentsAdapter(
                 postLike.text = groupPostEntity.reacts.likesCount.toString()
                 subCommentBtn.text = groupPostEntity.bells.count.toString()
                 btnRepost.setOnClickListener {
-                    sharePost(groupPostEntity, view.context)
+                    sharePost(groupPostEntity, view.context, postCustomView.getTextWithoutHtml())
                 }
                 clicksSettingPost.invoke(settingPostInComments)
 
@@ -253,7 +253,7 @@ class CommentsAdapter(
                                         groupPostEntity.bells.isActive = false
                                         groupPostEntity.bells.count--
                                     } else
-                                        errorHandler.handle(exception)
+                                        handler.handle(exception)
                                 })
                             )
                         } else {
@@ -280,7 +280,7 @@ class CommentsAdapter(
                                             }
                                         }
                                     } else
-                                        errorHandler.handle(exception)
+                                        handler.handle(exception)
                                 }
                                 )
                             )
@@ -307,7 +307,7 @@ class CommentsAdapter(
                                 groupPostEntity.reacts = it
                             },
                                 {
-                                    errorHandler.handle(it)
+                                    handler.handle(it)
                                 })
                         )
                     }
@@ -332,7 +332,7 @@ class CommentsAdapter(
                                 groupPostEntity.reacts = it
                             },
                                 {
-                                    errorHandler.handle(it)
+                                    handler.handle(it)
                                 })
                         )
                     }
@@ -346,7 +346,7 @@ class CommentsAdapter(
                 postEntity.imagesExpanded, postEntity.audiosExpanded, postEntity.videosExpanded
             )
 
-        private fun sharePost(item: CommentEntity.PostEntity, context: Context) {
+        private fun sharePost(item: CommentEntity.PostEntity, context: Context, postText: String) {
             progressBarVisibility.invoke(true)
             FirebaseDynamicLinks.getInstance().createDynamicLink()
                 .setDomainUriPrefix(context.getString(R.string.deeplinkDomain))
@@ -357,7 +357,7 @@ class CommentsAdapter(
                 )
                 .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
                 .addOnCompleteListener {
-                    createShareIntent(item, it.result.previewLink.toString(), context)
+                    createShareIntent(item, it.result.previewLink.toString(), context, postText)
                 }
         }
 
@@ -375,12 +375,14 @@ class CommentsAdapter(
         private fun createShareIntent(
             item: CommentEntity.PostEntity,
             url: String,
-            context: Context
+            context: Context,
+            postText: String
         ) {
-            val text = url + "/${item.id}"
+            val text = url + "/${item.id}  \n $postText"
             val filesUrls = mutableListOf<String>()
-            filesUrls.addAll(item.videos.map { it.file })
             filesUrls.addAll(item.images.map { it.file })
+            filesUrls.addAll(item.videos.map { it.file })
+            filesUrls.addAll(item.videos.map { it.file })
             OmegaIntentBuilder.from(context)
                 .share()
                 .text(text)

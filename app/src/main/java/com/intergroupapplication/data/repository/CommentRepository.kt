@@ -63,6 +63,16 @@ class CommentRepository @Inject constructor(
         api.createAnswerToComment(answerToCommentId, commentMapper.mapToDto(createCommentEntity))
             .map { commentMapper.mapToDomainEntity(it) }
 
+    override fun editComment(
+        commentId: String,
+        createCommentEntity: CreateCommentEntity
+    ): Single<CommentEntity.Comment> {
+        return api.editCommentById(commentId, commentMapper.mapToDto(createCommentEntity))
+            .map {
+                commentMapper.mapToDomainEntity(it)
+            }
+    }
+
     override fun deleteComment(commentId: String): Completable {
         return api.deleteComment(commentId)
     }

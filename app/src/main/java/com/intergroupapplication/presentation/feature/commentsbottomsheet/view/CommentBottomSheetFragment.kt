@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intergroupapplication.R
@@ -44,6 +43,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         const val CALL_METHOD_KEY = "call_method_key"
         const val METHOD_KEY = "method_key"
         const val DATA_KEY = "data_key"
+        const val COMMENT_ID_KEY = "comment_id_key"
         const val CREATE_COMMENT_DATA = 0
         const val CHANGE_STATE_BOTTOM_SHEET_DATA = 1
         const val ADD_HEIGHT_CONTAINER = 2
@@ -51,18 +51,17 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         const val ANSWER_COMMENT_CREATED_DATA = 4
         const val SHOW_COMMENT_UPLOADING_DATA = 5
         const val HIDE_SWIPE_DATA = 6
+        const val EDIT_COMMENT_DATA = 7
         private const val MAIN_IC_EDIT_COLOR_DRAWABLE = 228
         private const val MAIN_COLOR = "#12161E"
     }
-
-    private val viewBinding by viewBinding(FragmentCommentBottomSheetBinding::bind)
 
     @Inject
     @InjectPresenter
     lateinit var presenter: CommentBottomSheetPresenter
 
-    @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+    private var commentId: String? = null
+    private val viewBinding by viewBinding(FragmentCommentBottomSheetBinding::bind)
 
     @ProvidePresenter
     fun providePresenter(): CommentBottomSheetPresenter = presenter
@@ -281,7 +280,16 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     private fun sendComment() {
-        parentFragmentManager.setResult(
+        commentId?.let {
+            parentFragmentManager.setResult(
+                CALL_METHOD_KEY,
+                METHOD_KEY to EDIT_COMMENT_DATA, DATA_KEY to CreateCommentDataModel(
+                    richEditor.createFinalText(namesMap, finalNamesMedia),
+                    presenter, finalNamesMedia
+                ), COMMENT_ID_KEY to it
+            )
+            commentId = null
+        } ?: parentFragmentManager.setResult(
             CALL_METHOD_KEY,
             METHOD_KEY to CREATE_COMMENT_DATA, DATA_KEY to
                     CreateCommentDataModel(
@@ -300,6 +308,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 MAIN_IC_EDIT_COLOR_DRAWABLE
             )
         )
+        sendButton.hide()
         changeBottomConstraintRichEditor(horizontalGuideCollapsed.id)
         iconPanel.changeMargin(8)
     }
@@ -774,6 +783,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         answerLayout.gone()
         richEditor.html = changeNameOnUrl(comment)
         presenter.addMediaUrl(comment)
+        commentId = comment.id
     }
 
     private fun changeNameOnUrl(comment: CommentEntity.Comment): String {

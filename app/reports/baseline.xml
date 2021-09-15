@@ -178,7 +178,7 @@
       NewLineAtEndOfFile:CreateCommentEntity.kt$com.intergroupapplication.domain.entity.CreateCommentEntity.kt
     </ID>
     <ID>
-      NewLineAtEndOfFile:CreateCommentModel.kt$com.intergroupapplication.data.model.CreateCommentModel.kt
+      NewLineAtEndOfFile:CreateCommentModel.kt$com.intergroupapplication.data.network.dto.CreateCommentDto.kt
     </ID>
     <ID>
       NewLineAtEndOfFile:CreateGroupEntity.kt$com.intergroupapplication.domain.entity.CreateGroupEntity.kt
@@ -419,8 +419,10 @@
     <ID>UnusedImports:AwsUploadingGateway.kt$import org.reactivestreams.Subscriber</ID>
     <ID>UnusedImports:BaseActivity.kt$import android.app.Application</ID>
     <ID>UnusedImports:BaseActivity.kt$import android.support.design.widget.CoordinatorLayout</ID>
-    <ID>UnusedImports:BaseActivity.kt$import com.intergroupapplication.initializators.Initializer</ID>
-    <ID>UnusedImports:BaseActivity.kt$import com.intergroupapplication.presentation.exstension.on</ID>
+    <ID>UnusedImports:BaseActivity.kt$import com.intergroupapplication.initializators.Initializer
+    </ID>
+    <ID>UnusedImports:BaseActivity.kt$import com.intergroupapplication.presentation.exstension.on
+    </ID>
     <ID>UnusedImports:BaseActivity.kt$import com.workable.errorhandler.Action</ID>
     <ID>UnusedImports:BaseActivity.kt$import dagger.Provides</ID>
     <ID>UnusedImports:BaseActivity.kt$import dagger.multibindings.IntoSet</ID>
@@ -429,30 +431,60 @@
     <ID>UnusedImports:BaseFragment.kt$import javax.inject.Inject</ID>
     <ID>UnusedImports:BaseFragment.kt$</ID>
     <ID>UnusedImports:BaseFragment.kt$import ru.terrakok.cicerone.android.SupportAppNavigator</ID>
-    <ID>UnusedImports:BasePagingAdapter.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:BasePagingAdapter.kt$import
+      com.intergroupapplication.domain.entity.GroupPostEntity
+    </ID>
     <ID>UnusedImports:CommentDividerItemDecorator.kt$import android.view.View</ID>
     <ID>UnusedImports:CommentEntity.kt$import android.os.Parcelable</ID>
     <ID>UnusedImports:CommentEntity.kt$import kotlinx.android.parcel.Parcelize</ID>
-    <ID>UnusedImports:CommentGateway.kt$import com.intergroupapplication.data.model.CreateCommentModel</ID>
-    <ID>UnusedImports:CommentRepository.kt$import com.intergroupapplication.data.model.CreateCommentModel</ID>
-    <ID>UnusedImports:CommentRepository.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
+    <ID>UnusedImports:CommentGateway.kt$import
+      com.intergroupapplication.data.network.dto.CreateCommentDto
+    </ID>
+    <ID>UnusedImports:CommentRepository.kt$import
+      com.intergroupapplication.data.network.dto.CreateCommentDto
+    </ID>
+    <ID>UnusedImports:CommentRepository.kt$import
+      com.intergroupapplication.domain.entity.GroupPostEntity
+    </ID>
     <ID>UnusedImports:CommentUserEntity.kt$import com.google.gson.annotations.SerializedName</ID>
     <ID>UnusedImports:CommentsDataSource.kt$import android.util.Log</ID>
-    <ID>UnusedImports:CommentsDataSource.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
-    <ID>UnusedImports:CommentsDataSource.kt$import com.intergroupapplication.domain.gateway.GroupPostGateway</ID>
-    <ID>UnusedImports:CommentsDataSourceFactory.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
-    <ID>UnusedImports:CommentsDataSourceFactory.kt$import com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource</ID>
-    <ID>UnusedImports:CommentsDetailsFragment.kt$import android.view.inputmethod.InputMethodManager</ID>
+    <ID>UnusedImports:CommentsDataSource.kt$import
+      com.intergroupapplication.domain.entity.GroupPostEntity
+    </ID>
+    <ID>UnusedImports:CommentsDataSource.kt$import
+      com.intergroupapplication.domain.gateway.GroupPostGateway
+    </ID>
+    <ID>UnusedImports:CommentsDataSourceFactory.kt$import
+      com.intergroupapplication.domain.entity.GroupPostEntity
+    </ID>
+    <ID>UnusedImports:CommentsDataSourceFactory.kt$import
+      com.intergroupapplication.presentation.feature.group.pagingsource.GroupPostDataSource
+    </ID>
+    <ID>UnusedImports:CommentsDetailsFragment.kt$import
+      android.view.inputmethod.InputMethodManager
+    </ID>
     <ID>UnusedImports:CommentsDetailsFragment.kt$import android.widget.TextView</ID>
     <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.R</ID>
-    <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
-    <ID>UnusedImports:CommentsDetailsViewModule.kt$import com.intergroupapplication.domain.entity.GroupPostEntity</ID>
-    <ID>UnusedImports:CommentsDto.kt$import com.intergroupapplication.domain.entity.CommentEntity</ID>
-    <ID>UnusedImports:ConfirmationMailPresenter.kt$import com.intergroupapplication.domain.gateway.UserProfileGateway</ID>
-    <ID>UnusedImports:ConfirmationMailView.kt$import com.intergroupapplication.presentation.base.CanShowError</ID>
+    <ID>UnusedImports:CommentsDetailsViewModule.kt$import
+      com.intergroupapplication.data.network.AmazonApi
+    </ID>
+    <ID>UnusedImports:CommentsDetailsViewModule.kt$import
+      com.intergroupapplication.domain.entity.GroupPostEntity
+    </ID>
+    <ID>UnusedImports:CommentsDto.kt$import com.intergroupapplication.domain.entity.CommentEntity
+    </ID>
+    <ID>UnusedImports:ConfirmationMailPresenter.kt$import
+      com.intergroupapplication.domain.gateway.UserProfileGateway
+    </ID>
+    <ID>UnusedImports:ConfirmationMailView.kt$import
+      com.intergroupapplication.presentation.base.CanShowError
+    </ID>
     <ID>UnusedImports:CreateGroupFragment.kt$import android.net.Uri</ID>
-    <ID>UnusedImports:CreateGroupFragment.kt$import com.intergroupapplication.domain.entity.CreateGroupEntity</ID>
-    <ID>UnusedImports:CreateGroupPostEntity.kt$import com.google.gson.annotations.SerializedName</ID>
+    <ID>UnusedImports:CreateGroupFragment.kt$import
+      com.intergroupapplication.domain.entity.CreateGroupEntity
+    </ID>
+    <ID>UnusedImports:CreateGroupPostEntity.kt$import com.google.gson.annotations.SerializedName
+    </ID>
     <ID>UnusedImports:CreateGroupPresenter.kt$import com.intergroupapplication.domain.gateway.PhotoGateway</ID>
     <ID>UnusedImports:CreateGroupViewModule.kt$import com.intergroupapplication.data.network.AmazonApi</ID>
     <ID>UnusedImports:CreateGroupViewModule.kt$import
