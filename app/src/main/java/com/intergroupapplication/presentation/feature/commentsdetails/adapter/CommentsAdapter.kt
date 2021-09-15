@@ -550,6 +550,8 @@ class CommentsAdapter(
                     )
                 }
                 settingsBtn2.setOnClickListener { showPopupMenu(it, item) }
+                endReply.text =
+                    root.context.getString(R.string.reply_to, item.answerTo?.idc.toString())
 
                 val replyName = item.answerTo?.commentOwner
                     ?.let { "${it.firstName} ${it.secondName}, " }

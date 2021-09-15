@@ -1,446 +1,445 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:focusable="true">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/mainBlack">
 
-    <Button
-        android:id="@+id/pushUpDown"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:background="@drawable/btn_push_down"
-        app:layout_constraintBottom_toTopOf="@+id/iconPanel"
-        app:layout_constraintEnd_toEndOf="@+id/iconPanel"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="@+id/iconPanel"
-        app:layout_constraintTop_toTopOf="@+id/iconPanel"
-        app:layout_constraintVertical_bias="1.0" />
-
-
-    <LinearLayout
-        android:id="@+id/overall_panel_style_text"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-        <LinearLayout
-            android:id="@+id/panelStyleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_colorinput_radius_2dp"
-            android:orientation="horizontal"
-            android:padding="4dp"
-            android:visibility="gone"
-            android:layout_marginBottom="3dp"
-            >
+        android:layout_height="match_parent"
+        android:background="@color/mainBlack">
 
-            <ImageView
-                android:id="@+id/selectBoldText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_bold"
-                android:focusable="true"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/selectItalicText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_italic"
-                android:focusable="true"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/selectStrikeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_strike"
-                android:focusable="true"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/selectUnderlineText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_underline"
-                android:focusable="true"
-                android:contentDescription="@null" />
-        </LinearLayout>
-
-        <RadioGroup
-            android:id="@+id/panelGravityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="4dp"
-            android:layout_marginBottom="3dp"
-            android:visibility="gone"
-            android:background="@drawable/bg_colorinput_radius_2dp"
-            android:layout_gravity="center">
-
-            <RadioButton
-                android:id="@+id/left_gravity_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="10dp"
-                android:button="@drawable/selector_ic_edit_align_left" />
-
-            <RadioButton
-                android:id="@+id/center_gravity_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="10dp"
-                android:button="@drawable/selector_ic_edit_align_center" />
-
-            <RadioButton
-                android:id="@+id/right_gravity_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:button="@drawable/selector_ic_edit_align_right" />
-
-        </RadioGroup>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/iconPanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_comment_panel"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/middle_margin"
-        app:layout_constraintTop_toBottomOf="@+id/overall_panel_style_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:baselineAligned="false">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/very_big_margin"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/icEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_edit_text"
-                android:focusable="true"
-                tools:ignore="ContentDescription,NestedWeights" />
-
-            <ImageView
-                android:id="@+id/icEditColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_edit_color"
-                android:focusable="true"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/icEditAlign"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_edit_gravity"
-                android:focusable="true"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/very_big_margin"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/icSticker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_edit_stick"
-                android:focusable="true"
-                tools:ignore="NestedWeights"
-                android:contentDescription="@null"/>
-
-            <ImageView
-                android:id="@+id/icMicro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_micro"
-                android:focusable="true"
-                android:contentDescription="@null"/>
-
-            <ImageView
-                android:id="@+id/icAttachFile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:src="@drawable/selector_ic_attach"
-                android:focusable="true"
-                android:contentDescription="@null"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/panelAddFile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorInput"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/iconPanel"
-        >
-
-        <TextView
-            android:id="@+id/galleryButton"
-            style="@style/TextAccent10sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="2dp"
-            android:gravity="center"
-            android:text="@string/from_gallery"
-            android:drawableTop="@drawable/selector_add_files_gallery" />
-
-        <TextView
-            android:id="@+id/videoButton"
-            style="@style/TextAccent10sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="2dp"
-            android:gravity="center"
-            android:text="@string/video"
-            android:drawableTop="@drawable/selector_add_files_video" />
-
-        <TextView
-            android:id="@+id/musicButton"
-            style="@style/TextAccent10sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="2dp"
-            android:gravity="center"
-            android:text="@string/music"
-            android:drawableTop="@drawable/selector_add_files_music" />
-
-        <TextView
-            android:id="@+id/playlistButton"
-            style="@style/TextAccent10sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="2dp"
-            android:gravity="center"
-            android:text="@string/playlist"
-            android:drawableTop="@drawable/selector_add_files_playlist" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/answer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="true"
-        android:paddingBottom="@dimen/middle_padding"
-        android:paddingEnd="@dimen/big_padding"
-        android:paddingStart="@dimen/big_padding"
-        android:paddingTop="@dimen/middle_padding"
-        android:visibility="gone"
-        android:background="@color/colorInput"
-        app:layout_constraintTop_toBottomOf="@id/panelAddFile"
-        app:layout_constraintStart_toStartOf="parent"
-        >
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_answer_to_user"
-            android:layout_marginEnd="@dimen/big_margin"
-            tools:ignore="ContentDescription" />
-        <TextView
-            style="@style/InterGroupGreyTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/big_margin"
-            android:text="@string/comment_response" />
-
-        <TextView
-            android:id="@+id/responseToUser"
-            style="@style/InterGroupBlueTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/big_margin"
-            android:textSize="@dimen/middle_high_size"
-            />
-        <TextView
-            android:id="@+id/textAnswer"
-            style="@style/InterGroupGreyTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/container_for_rich_editor_and_send_button"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/answer_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/horizontal_guide_collapsed"
-        android:background="@color/colorInput"
-        android:orientation="horizontal">
-        <com.intergroupapplication.presentation.customview.RichEditor
-            android:id="@+id/rich_editor"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="24"
-            android:background="@color/colorInput"
-            android:autoLink="web|email"
-            android:layout_marginBottom="4dp"
-            />
         <Button
-            android:id="@+id/send_comment_button"
-            android:layout_width="32dp"
-            android:layout_height="25dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginTop="8dp"
-            android:visibility="invisible"
+            android:id="@+id/pushUpDown"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:background="@drawable/btn_push_down"
+            app:layout_constraintBottom_toTopOf="@+id/iconPanel"
+            app:layout_constraintEnd_toEndOf="@+id/iconPanel"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="@+id/iconPanel"
+            app:layout_constraintTop_toTopOf="@+id/iconPanel"
+            app:layout_constraintVertical_bias="1.0" />
+
+
+        <LinearLayout
+            android:id="@+id/overall_panel_style_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/answer_layout"
-            android:background="@drawable/ic_send"
-            />
-    </LinearLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/colorInput"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/container_for_rich_editor_and_send_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-    <TextView
-        android:id="@+id/amountFiles"
-        style="@style/TextAccent14sp"
-        android:layout_width="match_parent"
-        android:layout_height="37dp"
-        android:background="@drawable/bg_edit_input"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:text="@string/choose_photo"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/answer_layout"
-        tools:ignore="RtlSymmetry" />
+            <LinearLayout
+                android:id="@+id/panelStyleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/bg_colorinput_radius_2dp"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:visibility="gone">
 
-    <TextView
-        android:id="@+id/btnAdd"
-        style="@style/TextAccent12sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/selector_btn_add"
-        android:gravity="center"
-        android:text="@string/add"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/amountFiles"
-        app:layout_constraintEnd_toEndOf="@+id/amountFiles"
-        app:layout_constraintTop_toTopOf="@+id/amountFiles" />
+                <ImageView
+                    android:id="@+id/selectBoldText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_bold"
+                    tools:ignore="ContentDescription" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mediaRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/amountFiles"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/horizontal_guide_end"
-        />
+                <ImageView
+                    android:id="@+id/selectItalicText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_italic"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@+id/selectStrikeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_strike"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@+id/selectUnderlineText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:contentDescription="@null"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_underline" />
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/panelGravityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/bg_colorinput_radius_2dp"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:visibility="gone">
+
+                <RadioButton
+                    android:id="@+id/left_gravity_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:button="@drawable/selector_ic_edit_align_left" />
+
+                <RadioButton
+                    android:id="@+id/center_gravity_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:button="@drawable/selector_ic_edit_align_center" />
+
+                <RadioButton
+                    android:id="@+id/right_gravity_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/selector_ic_edit_align_right" />
+
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/iconPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/middle_margin"
+            android:background="@drawable/bg_comment_panel"
+            android:baselineAligned="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/overall_panel_style_text">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/very_big_margin"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/icEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_edit_text"
+                    tools:ignore="ContentDescription,NestedWeights" />
+
+                <ImageView
+                    android:id="@+id/icEditColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_edit_color"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@+id/icEditAlign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_edit_gravity"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
 
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guide_collapsed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.13" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/very_big_margin"
+                android:layout_weight="1">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guide_collapsed_with_panel_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.18" />
+                <ImageView
+                    android:id="@+id/icSticker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:contentDescription="@null"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_edit_stick"
+                    tools:ignore="NestedWeights" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guide_collapsed_with_panel_style_and_answer_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.22" />
+                <ImageView
+                    android:id="@+id/icMicro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:contentDescription="@null"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_micro" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guide_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+                <ImageView
+                    android:id="@+id/icAttachFile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:contentDescription="@null"
+                    android:focusable="true"
+                    android:src="@drawable/selector_ic_attach" />
+            </LinearLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guide_end_with_keyboard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.53" />
+        </LinearLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/horizontal_guide_end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="1" />
+        <LinearLayout
+            android:id="@+id/panelAddFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorInput"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/iconPanel">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/galleryButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_gallery"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/from_gallery" />
+
+            <TextView
+                android:id="@+id/videoButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_video"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/video" />
+
+            <TextView
+                android:id="@+id/musicButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_music"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/music" />
+
+            <TextView
+                android:id="@+id/playlistButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_playlist"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/playlist" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/answer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorInput"
+            android:baselineAligned="true"
+            android:paddingStart="@dimen/big_padding"
+            android:paddingTop="@dimen/middle_padding"
+            android:paddingEnd="@dimen/big_padding"
+            android:paddingBottom="@dimen/middle_padding"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/panelAddFile">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:src="@drawable/ic_answer_to_user"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                style="@style/InterGroupGreyTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:text="@string/comment_response" />
+
+            <TextView
+                android:id="@+id/responseToUser"
+                style="@style/InterGroupBlueTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/big_margin"
+                android:textSize="@dimen/middle_high_size" />
+
+            <TextView
+                android:id="@+id/textAnswer"
+                style="@style/InterGroupGreyTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_for_rich_editor_and_send_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorInput"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/horizontal_guide_collapsed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/answer_layout">
+
+            <com.intergroupapplication.presentation.customview.RichEditor
+                android:id="@+id/rich_editor"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="24"
+                android:autoLink="web|email"
+                android:background="@color/colorInput" />
+
+            <Button
+                android:id="@+id/send_comment_button"
+                android:layout_width="28dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/ic_send"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/answer_layout" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorInput"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_for_rich_editor_and_send_button" />
+
+        <TextView
+            android:id="@+id/amountFiles"
+            style="@style/TextAccent14sp"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:background="@drawable/bg_edit_input"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="@string/choose_photo"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/answer_layout"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/btnAdd"
+            style="@style/TextAccent12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/selector_btn_add"
+            android:gravity="center"
+            android:text="@string/add"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/amountFiles"
+            app:layout_constraintEnd_toEndOf="@+id/amountFiles"
+            app:layout_constraintTop_toTopOf="@+id/amountFiles" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mediaRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/horizontal_guide_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/amountFiles" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_collapsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.13" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_collapsed_with_panel_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.18" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_collapsed_with_panel_style_and_answer_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.22" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_end_with_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.53" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

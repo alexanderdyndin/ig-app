@@ -103,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
             android:background="@drawable/start_line_seek_bar"
             app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
             app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
