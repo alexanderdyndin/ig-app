@@ -316,12 +316,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     fun answerComment(comment: CommentEntity.Comment) {
         answerLayout.show()
         answerLayout.activated(true)
-        responseToUser
-            .apply {
-                text = comment.commentOwner?.firstName
-                    ?: getString(R.string.unknown_user)
-            }
-        textAnswer.text = comment.text.substringBefore("<")
+        setupAnswerLayout(comment)
         var height = heightEditText + heightIconPanel + pushUpDown.height / 2 + heightAnswerPanel
         if (panelStyleText.isVisible() || panelGravityText.isVisible()) {
             height += heightTextStylePanel
@@ -336,6 +331,15 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
             CALL_METHOD_KEY,
             METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height
         )
+    }
+
+    private fun setupAnswerLayout(comment: CommentEntity.Comment) {
+        responseToUser
+            .apply {
+                text = comment.commentOwner?.firstName
+                    ?: getString(R.string.unknown_user)
+            }
+        textAnswer.text = comment.text.substringBefore("<")
     }
 
     override fun attachFileNotActivated() {
@@ -779,8 +783,16 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     private fun setupEditComment(comment: CommentEntity.Comment) {
-        answerLayout.activated(false)
-        answerLayout.gone()
+        sendButton.show()
+        if (comment.answerTo == null) {
+            answerLayout.activated(false)
+            answerLayout.gone()
+        } else {
+            answerLayout.activated(true)
+            setupAnswerLayout(comment)
+            //TODO чекнуть что с констрейтом
+            answerLayout.show()
+        }
         richEditor.html = changeNameOnUrl(comment)
         presenter.addMediaUrl(comment)
         commentId = comment.id
