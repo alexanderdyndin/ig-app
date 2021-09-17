@@ -11,4 +11,5 @@ interface UserProfileGateway {
     fun createUserProfile(createUserEntity: CreateUserEntity): Single<UserEntity>
     fun getUserProfile(): Single<UserEntity>
     fun changeUserProfileAvatar(avatar: String): Single<String>
+    fun setEmail(email: String)
 }

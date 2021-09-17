@@ -1,5 +1,6 @@
 package com.intergroupapplication.presentation.feature.confirmationmail.view
 
+import android.os.Bundle
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -54,10 +55,15 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
 
     override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.confirmationCoordinator
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setErrorHandler()
+    }
+
     override fun viewCreated() {
         btnNext = viewBinding.btnNext
-        btnRepeatCode = viewBinding.btnRepeatCode
-        btnChangeEmail = viewBinding.btnChangeEmail
+        btnRepeatCode = viewBinding.btnChangeEmail
+        btnChangeEmail = viewBinding.btnRepeatCode
         confirmation = viewBinding.confirmation
         progressBar = viewBinding.loader.progressBar
         emailConfirmation = viewBinding.emailConfirmation
@@ -65,18 +71,17 @@ class ConfirmationMailFragment : BaseFragment(), ConfirmationMailView {
         textConfirmation2 = viewBinding.textConfirmation2
 
         presenter.start(arguments?.getString("entity"))
-        setErrorHandler()
 
         btnNext.clicks()
             .subscribe { presenter.confirmMail(confirmation.text.toString()) }
             .let { compositeDisposable.add(it) }
 
         btnRepeatCode.clicks()
-            .subscribe { logOut() }
+            .subscribe { presenter.performRegistration() }
             .also { compositeDisposable.add(it) }
 
         btnChangeEmail.clicks()
-            .subscribe { presenter.performRegistration() }
+            .subscribe { logOut() }
             .also { compositeDisposable.add(it) }
     }
 

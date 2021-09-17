@@ -82,5 +82,5 @@ class CreateUserProfileViewModule {
     @PerFragment
     @Provides
     @UserProfileHandler
-    fun errorHandler(): ErrorHandler = ErrorHandler.createIsolated()
+    fun errorHandler(): ErrorHandler = ErrorHandler.create()
 }

@@ -62,7 +62,6 @@ class CreateUserProfilePresenter @Inject constructor(
 
     fun takePhotoFromCamera() {
         stopImageUploading()
-        //uploadingDisposable = imageUploadingDelegate.uploadFromCameraAvatarUser(viewState, errorHandler)
         uploadingDisposable = imageUploadingDelegate.uploadFromCamera(
             viewState,
             errorHandler,
@@ -72,7 +71,6 @@ class CreateUserProfilePresenter @Inject constructor(
 
     fun takePhotoFromGallery() {
         stopImageUploading()
-        //uploadingDisposable = imageUploadingDelegate.uploadFromGalleryAvatarUser(viewState, errorHandler)
         uploadingDisposable = imageUploadingDelegate.uploadFromGallery(
             viewState,
             errorHandler,
@@ -88,9 +86,5 @@ class CreateUserProfilePresenter @Inject constructor(
 
     private fun stopImageUploading() {
         uploadingDisposable?.dispose()
-    }
-
-    private fun goToNavigationScreen() {
-        //router.newRootScreen(NavigationScreen())
     }
 }

@@ -160,7 +160,6 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             visibilityPassword(passwordVisible)
             passwordVisible = !passwordVisible
         }
-        setErrorHandler()
     }
 
     private fun visibilityPassword(isVisible: Boolean) {
@@ -209,6 +208,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
             .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        setErrorHandler()
     }
 
     override fun deviceInfoExtracted() {

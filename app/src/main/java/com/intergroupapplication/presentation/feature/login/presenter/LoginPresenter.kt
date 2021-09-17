@@ -1,10 +1,14 @@
 package com.intergroupapplication.presentation.feature.login.presenter
 
 import com.intergroupapplication.di.qualifier.LoginHandler
+import com.intergroupapplication.domain.entity.EmailEntity
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.RegistrationEntity
 import com.intergroupapplication.domain.entity.SocialAuthEntity
+import com.intergroupapplication.domain.exception.UserNotVerifiedException
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.LoginGateway
+import com.intergroupapplication.domain.gateway.RegistrationGateway
 import com.intergroupapplication.domain.usecase.UserProfileUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
@@ -32,6 +36,8 @@ class LoginPresenter @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .handleLoading(viewState)
             .subscribe({ viewState.login() }) {
+                if (it is UserNotVerifiedException)
+                    userProfileUseCase.setEmail(loginEntity.email)
                 errorHandler.handle(it)
             })
     }

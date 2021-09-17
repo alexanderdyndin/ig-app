@@ -141,16 +141,12 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/next"
-                style="@style/TextGrey16sp"
+                style="@style/btnBigStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/low_big_margin"
                 android:layout_marginTop="@dimen/big_margin"
-                android:layout_marginEnd="@dimen/low_big_margin"
-                android:background="@drawable/selector_btn_big"
                 android:paddingTop="@dimen/middle_padding"
                 android:text="@string/enter"
-                android:textAllCaps="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvPasswdError" />

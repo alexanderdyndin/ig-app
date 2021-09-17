@@ -132,6 +132,7 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             .requestIdToken(BuildConfig.GOOGLE_ID_TOKEN)
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        setErrorHandler()
     }
 
     override fun viewCreated() {
@@ -156,7 +157,6 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
             .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { validator.validate() }.also(compositeDisposable::add)
-        setErrorHandler()
 
         textLogin.setOnClickListener {
             findNavController()

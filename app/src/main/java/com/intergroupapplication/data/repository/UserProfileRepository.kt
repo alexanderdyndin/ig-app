@@ -6,6 +6,7 @@ import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.network.dto.UpdateAvatarDto
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.entity.CreateUserEntity
+import com.intergroupapplication.domain.entity.EmailEntity
 import com.intergroupapplication.domain.entity.UserEntity
 import com.intergroupapplication.domain.exception.CanNotUploadPhoto
 import com.intergroupapplication.domain.gateway.UserProfileGateway
@@ -50,6 +51,10 @@ class UserProfileRepository @Inject constructor(
                     sessionStorage.user = newUser
                 }
             }
+
+    override fun setEmail(email: String) {
+        sessionStorage.email = EmailEntity(email)
+    }
 
     override fun getUserProfile(): Single<UserEntity> {
         return if (sessionStorage.user != null) {

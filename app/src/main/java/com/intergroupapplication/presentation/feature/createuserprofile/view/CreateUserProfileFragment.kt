@@ -3,6 +3,7 @@ package com.intergroupapplication.presentation.feature.createuserprofile.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
@@ -32,6 +33,7 @@ import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.createuserprofile.presenter.CreateUserProfilePresenter
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
+import com.jakewharton.rxbinding3.widget.textChanges
 import com.mobsandgeeks.saripaar.QuickRule
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
@@ -41,6 +43,7 @@ import io.reactivex.Observable
 import io.reactivex.exceptions.CompositeException
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.time.Year
 import java.util.*
 import javax.inject.Inject
 
@@ -68,7 +71,7 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     @Inject
     @UserProfileHandler
-    lateinit var errorHandlerLogin: ErrorHandler
+    override lateinit var errorHandler: ErrorHandler
 
     @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
@@ -96,6 +99,11 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
     private lateinit var genderRadioGroup: RadioGroup
     private lateinit var userCreateAddAvatar: TextView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setErrorHandler()
+    }
+
     override fun viewCreated() {
         userAvatarHolder = viewBinding.userAvatarHolder
         createGroup = viewBinding.createGroup
@@ -109,9 +117,8 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
         inputMonth = viewBinding.inputMonth
         genderRadioGroup = viewBinding.genderRadioGroup
         userCreateAddAvatar = viewBinding.userCreateAddAvatar
-
-        name = requireView().findViewById(R.id.name)
-        surName = requireView().findViewById(R.id.surName)
+        name = viewBinding.name
+        surName = viewBinding.surName
 
         userAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
 
@@ -125,7 +132,6 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
             .also { compositeDisposable.add(it) }
         initRadioButton()
         initValidator()
-        setErrorHandler()
         initEditText()
     }
 
@@ -232,7 +238,6 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
     private fun listenAvatarClicks() {
         userCreateAddAvatar.clicks().subscribe { openPhoto() }.also { compositeDisposable.add(it) }
-//        change.setLinkClickable { openPhoto() }
     }
 
     private fun openPhoto() {
@@ -324,68 +329,36 @@ class CreateUserProfileFragment : BaseFragment(), CreateUserProfileView,
 
             override fun isValid(view: TextView?): Boolean {
                 if (view?.text.toString().isEmpty()) return false
+                val year = Calendar.getInstance().get(Calendar.YEAR) - 1
                 val value = Integer.parseInt(view?.text.toString())
-                return value in 1..2100
+                return value in 1900..year
             }
         })
 
     }
 
+
     private fun initEditText() {
+        fun nameListener(view: AppCompatEditText) {
+            view.textChanges()
+                .subscribe {
+                    var textEntered = it.toString()
+                    if (textEntered.length == 1 && textEntered[0].isLetter() &&
+                        !textEntered[0].isUpperCase()
+                    ) {
+                        textEntered = textEntered.uppercase()
+                        view.setText(textEntered)
+                        view.setSelection(view.text?.length ?: 0)
+                    }
 
-        name.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                var textEntered = s.toString()
-
-                if (textEntered.length == 1 && textEntered[0].isLetter() &&
-                    !textEntered[0].isUpperCase()
-                ) {
-                    textEntered = s?.toString().orEmpty().uppercase()
-                    name.setText(textEntered)
-                    name.setSelection(name.text?.length ?: 0)
-                }
-
-                if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
-                    textEntered = s.toString().replace(" ", "")
-                    name.setText(textEntered)
-                    name.setSelection(name.text?.length ?: 0)
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
-                Unit
-
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
-        })
-
-        surName.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                var textEntered = s.toString()
-
-                if (textEntered.length == 1 && textEntered[0].isLetter() &&
-                    !textEntered[0].isUpperCase()
-                ) {
-                    textEntered = s?.toString().orEmpty().uppercase(Locale.getDefault())
-                    surName.setText(textEntered)
-                    surName.setSelection(surName.text?.length ?: 0)
-                }
-
-                if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
-                    textEntered = s.toString().replace(" ", "")
-                    surName.setText(textEntered)
-                    surName.setSelection(surName.text?.length ?: 0)
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
-                Unit
-
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-
-        })
-
+                    if (textEntered.isNotEmpty() && textEntered.contains(" ")) {
+                        textEntered = textEntered.replace(" ", "")
+                        view.setText(textEntered)
+                        view.setSelection(view.text?.length ?: 0)
+                    }
+                }.let(compositeDisposable::add)
+        }
+        nameListener(name)
+        nameListener(surName)
     }
 }
