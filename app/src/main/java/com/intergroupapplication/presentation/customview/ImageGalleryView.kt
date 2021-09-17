@@ -21,18 +21,14 @@ class ImageGalleryView @JvmOverloads constructor(
 ) :
     LinearLayout(context, attrs, defStyleAttr) {
 
-    companion object {
-        var pxWidth = 1080
-    }
-
     var imageClick: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
     var expand: (isExpanded: Boolean) -> Unit = {}
+
+    private val pxWidth by lazy(LazyThreadSafetyMode.NONE) { layoutParams.width }
 
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         orientation = VERTICAL
-        val displayMetrics = resources.displayMetrics
-        pxWidth = displayMetrics.widthPixels - 30
     }
 
     private var uris: List<FileEntity> = emptyList()
@@ -86,6 +82,11 @@ class ImageGalleryView @JvmOverloads constructor(
         urls.forEach {
             container.addView(createPic(it, pxWidth / urls.size))
         }
+        when (urls.size) {
+            1 -> container.addView(createPic(urls[0], pxWidth))
+            2 -> container.addView(createTwoPic(urls[0], urls[1]))
+            3 -> container.addView(createThreePic(urls[0], urls[1], urls[2]))
+        }
         this.addView(container)
     }
 
@@ -102,6 +103,82 @@ class ImageGalleryView @JvmOverloads constructor(
             .setImageRequest(request)
             .build()
         pic.setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(img)) }
+        return image
+    }
+
+    private fun createTwoPic(firstImage: FileEntity, secondImage: FileEntity): View {
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_2pic, this, false)
+        image.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        val request1: ImageRequest =
+            ImageRequestBuilder.newBuilderWithSource(Uri.parse(firstImage.file))
+                .setResizeOptions(ResizeOptions(500, 500))
+                .build()
+        val request2: ImageRequest =
+            ImageRequestBuilder.newBuilderWithSource(Uri.parse(secondImage.file))
+                .setResizeOptions(ResizeOptions(500, 500))
+                .build()
+        image.findViewById<SimpleDraweeView>(R.id.pic1).apply {
+            controller = Fresco.newDraweeControllerBuilder()
+                .setAutoPlayAnimations(true)
+                .setOldController(controller)
+                .setImageRequest(request1)
+                .build()
+            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(firstImage)) }
+        }
+        image.findViewById<SimpleDraweeView>(R.id.pic2).apply {
+            controller = Fresco.newDraweeControllerBuilder()
+                .setAutoPlayAnimations(true)
+                .setOldController(controller)
+                .setImageRequest(request2)
+                .build()
+            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(secondImage)) }
+        }
+        return image
+    }
+
+    private fun createThreePic(
+        firstImage: FileEntity,
+        secondImage: FileEntity,
+        thirdImage: FileEntity
+    ): View {
+        val image = LayoutInflater.from(context).inflate(R.layout.layout_3pic, this, false)
+        image.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        val request1: ImageRequest =
+            ImageRequestBuilder.newBuilderWithSource(Uri.parse(firstImage.file))
+                .setResizeOptions(ResizeOptions(500, 500))
+                .build()
+        val request2: ImageRequest =
+            ImageRequestBuilder.newBuilderWithSource(Uri.parse(secondImage.file))
+                .setResizeOptions(ResizeOptions(500, 500))
+                .build()
+        val request3: ImageRequest =
+            ImageRequestBuilder.newBuilderWithSource(Uri.parse(thirdImage.file))
+                .setResizeOptions(ResizeOptions(500, 500))
+                .build()
+        image.findViewById<SimpleDraweeView>(R.id.pic11).apply {
+            controller = Fresco.newDraweeControllerBuilder()
+                .setAutoPlayAnimations(true)
+                .setOldController(controller)
+                .setImageRequest(request1)
+                .build()
+            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(firstImage)) }
+        }
+        image.findViewById<SimpleDraweeView>(R.id.pic22).apply {
+            controller = Fresco.newDraweeControllerBuilder()
+                .setAutoPlayAnimations(true)
+                .setOldController(controller)
+                .setImageRequest(request2)
+                .build()
+            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(secondImage)) }
+        }
+        image.findViewById<SimpleDraweeView>(R.id.pic33).apply {
+            controller = Fresco.newDraweeControllerBuilder()
+                .setAutoPlayAnimations(true)
+                .setOldController(controller)
+                .setImageRequest(request3)
+                .build()
+            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(thirdImage)) }
+        }
         return image
     }
 }

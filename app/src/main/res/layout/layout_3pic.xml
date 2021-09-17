@@ -9,6 +9,7 @@
     <com.github.florent37.shapeofview.shapes.CutCornerView
         android:id="@+id/postGalleryShape1"
         android:layout_width="wrap_content"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         app:shape_cutCorner_bottomLeftSize="8dp"
         app:shape_cutCorner_bottomRightSize="8dp"
@@ -17,16 +18,16 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/pic11"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="1dp"
-            app:viewAspectRatio="1.0" />
+            android:layout_margin="1dp" />
 
     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
     <com.github.florent37.shapeofview.shapes.CutCornerView
         android:id="@+id/postGalleryShape2"
         android:layout_width="wrap_content"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         app:shape_cutCorner_bottomLeftSize="8dp"
         app:shape_cutCorner_bottomRightSize="8dp"
@@ -35,16 +36,16 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/pic22"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="1dp"
-            app:viewAspectRatio="1.0" />
+            android:layout_margin="1dp" />
 
     </com.github.florent37.shapeofview.shapes.CutCornerView>
 
     <com.github.florent37.shapeofview.shapes.CutCornerView
         android:id="@+id/postGalleryShape3"
         android:layout_width="wrap_content"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         app:shape_cutCorner_bottomLeftSize="8dp"
         app:shape_cutCorner_bottomRightSize="8dp"
@@ -53,10 +54,9 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/pic33"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="1dp"
-            app:viewAspectRatio="1.0" />
+            android:layout_margin="1dp" />
 
     </com.github.florent37.shapeofview.shapes.CutCornerView>
 </LinearLayout>

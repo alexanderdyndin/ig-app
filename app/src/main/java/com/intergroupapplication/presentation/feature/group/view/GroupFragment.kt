@@ -43,7 +43,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
@@ -399,7 +398,6 @@ class GroupFragment : BaseFragment(), GroupView,
     }
 
     override fun renderViewByRole(userRole: UserRole) {
-        Timber.tag("tut_middle").d("получили правила")
         when (userRole) {
             UserRole.ADMIN -> renderAdminPage()
             UserRole.USER_FOLLOWER -> renderUserPage(R.id.goOutFromGroup)

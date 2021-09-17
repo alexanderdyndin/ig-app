@@ -4,15 +4,12 @@ import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
+import android.net.http.SslError
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
+import android.widget.Toast
 import com.intergroupapplication.data.model.TextType
 import com.intergroupapplication.domain.entity.ParseConstants.MEDIA_PREFIX
 import com.intergroupapplication.presentation.exstension.dpToPx
@@ -62,7 +59,12 @@ class RichEditor
     init {
         isVerticalScrollBarEnabled = true
         isHorizontalScrollBarEnabled = false
-        settings.javaScriptEnabled = true
+        settings.run {
+            javaScriptEnabled = true
+            allowContentAccess = true
+            allowFileAccess = true
+            domStorageEnabled = true
+        }
         webChromeClient = WebChromeClient()
         webViewClient = EditorWebViewClient()
         loadUrl(SETUP_HTML)
@@ -80,6 +82,9 @@ class RichEditor
         loadListener = listener
     }
 
+    fun setFocus() {
+        exec("javascript:RE.setFirstEditor()")
+    }
 
     private fun callback(text: String) {
         content = text.replaceFirst(CALLBACK_SCHEME.toRegex(), "")
@@ -185,17 +190,8 @@ class RichEditor
         exec("javascript:RE.setBackgroundImage('url($url)');")
     }
 
-    fun setEditorHeight(px: Int): RichEditor {
-        exec("javascript:RE.setHeight('" + px + "px');")
-        return this
-    }
-
     fun setPlaceholder(placeholder: String) {
         exec("javascript:RE.setPlaceholder('$placeholder');")
-    }
-
-    fun setInputEnabled(inputEnabled: Boolean) {
-        exec("javascript:RE.setInputEnabled($inputEnabled)")
     }
 
     fun setBold() {
@@ -206,14 +202,6 @@ class RichEditor
     fun setItalic() {
         clearAndFocusEditor()
         exec("javascript:RE.setItalic();")
-    }
-
-    fun setSubscript() {
-        exec("javascript:RE.setSubscript();")
-    }
-
-    fun setSuperscript() {
-        exec("javascript:RE.setSuperscript();")
     }
 
     fun setStrikeThrough() {
@@ -232,19 +220,8 @@ class RichEditor
         exec("javascript:RE.setTextColor('$hex');")
     }
 
-    fun setFontSize(fontSize: Int) {
-        if (fontSize > 7 || fontSize < 1) {
-            Log.e("RichEditor", "Font size should have a value between 1-7")
-        }
-        exec("javascript:RE.setFontSize('$fontSize');")
-    }
-
     fun removeFormat() {
         exec("javascript:RE.removeFormat();")
-    }
-
-    fun setHeading(heading: Int) {
-        exec("javascript:RE.setHeading('$heading');")
     }
 
     fun setAlignLeft() {
@@ -259,40 +236,32 @@ class RichEditor
         exec("javascript:RE.setJustifyRight();")
     }
 
-    fun setBlockquote() {
-        exec("javascript:RE.setBlockquote();")
-    }
-
-    fun setBullets() {
-        exec("javascript:RE.setBullets();")
-    }
-
-    fun setNumbers() {
-        exec("javascript:RE.setNumbers();")
-    }
-
     fun insertImage(url: String, alt: String) {
         exec("javascript:RE.prepareInsert();")
-        exec("javascript:RE.insertImage('$url', '$alt');")
+        //exec("javascript:RE.insertImage('$url', '$alt');")
+        if (html == null) {
+            html = ""
+        }
+        html += "<img src='$url' alt='$alt'/>"
     }
 
     fun insertAudio(url: String) {
         exec("javascript:RE.prepareInsert();")
-        exec("javascript:RE.insertAudio('$url');")
+        //exec("javascript:RE.insertAudio('$url');")
+        if (html == null) {
+            html = ""
+        }
+        html += "<audio src='$url' controls></audio> <br>"
     }
 
     fun insertVideo(url: String) {
         exec("javascript:RE.prepareInsert();")
         val width = context.dpToPx(115)
-        exec("javascript:RE.insertVideo('$url', '$width');")
-    }
-
-    private fun insertHtml(html: String) {
-        exec("javascript:RE.insertHTML('$html');")
-    }
-
-    fun clearFocusEditor() {
-        exec("javascript:RE.blurFocus();")
+        //exec("javascript:RE.insertVideo('$url', '$width');")
+        if (html == null) {
+            html = ""
+        }
+        html += "<video src='$url' width='$width' controls></video> <br>"
     }
 
     private fun clearAndFocusEditor() {
@@ -305,7 +274,7 @@ class RichEditor
     ): String {
         var text = html?.substringBeforeLast("re-state://") ?: ""
         namesMap.forEach { (key, value) ->
-            if (text.contains(key)) {
+            while (text.contains(key)) {
                 finalNamesMedia.add(value)
                 text = text.substringBefore(key) + "$value${MEDIA_PREFIX}" +
                         text.substringAfter(key)
@@ -328,17 +297,32 @@ class RichEditor
     }
 
     private fun load(trigger: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            evaluateJavascript(trigger, null)
-        } else {
-            loadUrl(trigger)
-        }
+        evaluateJavascript(trigger, null)
     }
 
     inner class EditorWebViewClient : WebViewClient() {
         override fun onPageFinished(view: WebView, url: String) {
             isReady = url.equals(SETUP_HTML, ignoreCase = true)
             loadListener?.onAfterInitialLoad(isReady)
+        }
+
+        override fun onReceivedError(
+            view: WebView?,
+            request: WebResourceRequest?,
+            error: WebResourceError?
+        ) {
+            super.onReceivedError(view, request, error)
+            Toast.makeText(context, "error " + error?.description.toString(), Toast.LENGTH_LONG)
+                .show()
+        }
+
+        override fun onReceivedSslError(
+            view: WebView?,
+            handler: SslErrorHandler?,
+            error: SslError?
+        ) {
+            super.onReceivedSslError(view, handler, error)
+            Toast.makeText(context, "ssl " + error?.url, Toast.LENGTH_LONG).show()
         }
 
         override fun shouldOverrideUrlLoading(

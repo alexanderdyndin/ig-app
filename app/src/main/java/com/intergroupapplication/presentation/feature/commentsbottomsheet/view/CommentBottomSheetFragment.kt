@@ -182,6 +182,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         richEditor = viewBinding.richEditor.apply {
+            setFocus()
             setEditorFontSize(18)
             val padding = context.dpToPx(4)
             setEditorPadding(padding, padding, padding, padding)
@@ -701,7 +702,6 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 )
                 namesMap[chooseMedia.url] = fileEntity.title
                 richEditor.insertImage(chooseMedia.url, "alt")
-
             }
             MediaType.VIDEO -> {
                 val fileEntity = FileEntity(
