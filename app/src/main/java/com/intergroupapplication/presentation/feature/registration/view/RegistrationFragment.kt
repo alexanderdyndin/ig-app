@@ -180,6 +180,8 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     }
 
     private fun visibilityPassword(isVisible: Boolean) {
+        val position1 = password.selectionStart
+        val position2 = etDoublePassword.selectionStart
         if (isVisible) {
             password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
             etDoublePassword.inputType =
@@ -212,6 +214,8 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
                 0
             )
         }
+        password.setSelection(position1)
+        etDoublePassword.setSelection(position2)
     }
 
     private fun handleSignInResult(data: Intent?) {

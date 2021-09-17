@@ -163,6 +163,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
     }
 
     private fun visibilityPassword(isVisible: Boolean) {
+        val position = password.selectionStart
         if (isVisible) {
             password.inputType =
                 InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
@@ -181,6 +182,7 @@ class LoginFragment : BaseFragment(), LoginView, Validator.ValidationListener {
                 0
             )
         }
+        password.setSelection(position)
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
