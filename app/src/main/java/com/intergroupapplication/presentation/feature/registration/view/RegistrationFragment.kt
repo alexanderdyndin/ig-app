@@ -95,7 +95,9 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
     private lateinit var rxPermission: RxPermissions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private var passwordVisible = true
+    private var passwordVisible1 = true
+    private var passwordVisible2 = true
+
     private val startForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -165,57 +167,41 @@ class RegistrationFragment : BaseFragment(), RegistrationView, Validator.Validat
 
         initValidator()
         initEditText()
-        visibilityPassword(!passwordVisible)
+        visibilityPassword(!passwordVisible1, password, passwordVisibility)
+        visibilityPassword(!passwordVisible2, etDoublePassword, passwordVisibility2)
         signInButton.setOnClickListener {
             startForResult.launch(mGoogleSignInClient.signInIntent)
         }
         passwordVisibility.setOnClickListener {
-            visibilityPassword(passwordVisible)
-            passwordVisible = !passwordVisible
+            visibilityPassword(passwordVisible1, password, passwordVisibility)
+            passwordVisible1 = !passwordVisible1
         }
         passwordVisibility2.setOnClickListener {
-            visibilityPassword(passwordVisible)
-            passwordVisible = !passwordVisible
+            visibilityPassword(passwordVisible2, etDoublePassword, passwordVisibility2)
+            passwordVisible2 = !passwordVisible2
         }
     }
 
-    private fun visibilityPassword(isVisible: Boolean) {
-        val position1 = password.selectionStart
-        val position2 = etDoublePassword.selectionStart
+    private fun visibilityPassword(isVisible: Boolean, editText: AppCompatEditText, visibleButton: TextView) {
+        val position = editText.selectionStart
         if (isVisible) {
-            password.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            etDoublePassword.inputType =
-                InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_password_invisible,
-                0,
-                0,
-                0
-            )
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            editText.inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD or InputType.TYPE_CLASS_TEXT
+            visibleButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_password_invisible,
                 0,
                 0,
                 0
             )
         } else {
-            password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            etDoublePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            passwordVisibility.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.ic_password_visible,
-                0,
-                0,
-                0
-            )
-            passwordVisibility2.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            editText.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            visibleButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.ic_password_visible,
                 0,
                 0,
                 0
             )
         }
-        password.setSelection(position1)
-        etDoublePassword.setSelection(position2)
+        editText.setSelection(position)
     }
 
     private fun handleSignInResult(data: Intent?) {
