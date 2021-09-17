@@ -406,7 +406,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun initBilling() {
+    fun initBilling() {
         billingClient = BillingClient.newBuilder(applicationContext)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
@@ -441,7 +441,7 @@ class MainActivity : FragmentActivity() {
             val params = SkuDetailsParams.newBuilder()
             params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS)
             withContext(Dispatchers.IO) {
-                billingClient.querySkuDetailsAsync(params.build()) { _, skuDetailsList ->
+                billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
                     skuDetails = skuDetailsList ?: listOf()
                     // Process the result.
                 }
@@ -449,25 +449,27 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private suspend fun handlePurchase(purchase: Purchase): BillingResult? {
+    suspend fun handlePurchase(purchase: Purchase): BillingResult? {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                     .setPurchaseToken(purchase.purchaseToken)
-                return withContext(Dispatchers.IO) {
+                val ackPurchaseResult = withContext(Dispatchers.IO) {
                     billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
                 }
+                return ackPurchaseResult
             }
         }
         return null
     }
 
-    private fun bill() {
+    fun bill() {
         val disableAdsSubscriptionSku = skuDetails.find { it.sku == DISABLE_ADS_ID }
         disableAdsSubscriptionSku?.let { skuDet ->
-            BillingFlowParams.newBuilder()
+            val flowParams = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDet)
                 .build()
+            val responseCode = billingClient.launchBillingFlow(this, flowParams).responseCode
         }
     }
 
