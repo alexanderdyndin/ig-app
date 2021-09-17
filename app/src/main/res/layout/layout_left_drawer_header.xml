@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:scaleType="fitStart"
             android:adjustViewBounds="true"
-            android:src="@drawable/drawer_header_background"/>
+            android:src="@drawable/drawer_header_background2"/>
 
         <ImageView
             android:id="@+id/drawerSettings"
