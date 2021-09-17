@@ -126,29 +126,22 @@ class MainActivity : FragmentActivity() {
      *  Billing
      */
     private val purchasesUpdatedListener =
-        PurchasesUpdatedListener { _, purchases ->
+        PurchasesUpdatedListener { billingResult, purchases ->
             val disableAdsPurchase = purchases?.find { it.sku == DISABLE_ADS_ID }
-            disableAdsPurchase?.let {
+            disableAdsPurchase?.let{
                 CoroutineScope(Dispatchers.IO).launch {
                     val result = handlePurchase(disableAdsPurchase)
                     withContext(Main) {
-                        Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_LONG)
-                            .show()
+                        Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_LONG).show()
                     }
                     if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
                         withContext(Main) {
-                            Toast.makeText(
-                                this@MainActivity, "BILLING RESPONCE OK",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(this@MainActivity, "BILLING RESPONCE OK", Toast.LENGTH_LONG).show()
                         }
                     }
                     if (disableAdsPurchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                         withContext(Main) {
-                            Toast.makeText(
-                                this@MainActivity, "DISABLE ADS SUBSCRIBED",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(this@MainActivity, "DISABLE ADS SUBSCRIBED", Toast.LENGTH_LONG).show()
                         }
                         userSession.isAdEnabled = false
                     }
