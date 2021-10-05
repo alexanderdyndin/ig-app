@@ -26,6 +26,8 @@ class DialogDelegate(
 
     var coordinator: ViewGroup? = null
 
+    private val progressDialog = dialogProvider.newProgressDialog()
+
     fun showDialog(dialogLayout: Int, actionsMap: Map<Int, () -> Unit>) {
         dialogProvider.newDialog(dialogLayout, actionsMap).show(
             dialogManager.getManager(),
@@ -44,7 +46,11 @@ class DialogDelegate(
     }
 
     fun showProgressDialog() {
-        dialogProvider.newProgressDialog().show(dialogManager.getManager(), INTERGROUP_DIALOG)
+        progressDialog.show(dialogManager.getManager(), INTERGROUP_DIALOG)
+    }
+
+    fun dismissProgressDialog() {
+        progressDialog.dismiss()
     }
 
     fun showErrorSnackBar(message: String) {

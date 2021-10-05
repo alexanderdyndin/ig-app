@@ -755,6 +755,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         }
         if (allViewsIsUpload) {
             sendButton.show()
+            dialogDelegate.dismissProgressDialog()
         } else {
             sendButton.hide()
         }

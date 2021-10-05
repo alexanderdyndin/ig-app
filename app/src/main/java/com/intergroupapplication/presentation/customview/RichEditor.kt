@@ -242,7 +242,7 @@ class RichEditor
         if (html == null) {
             html = ""
         }
-        html += "<img src='$url' alt='$alt'/>"
+        html += "<img src=\"$url\" alt=\"$alt\"/>"
     }
 
     fun insertAudio(url: String) {
@@ -251,7 +251,7 @@ class RichEditor
         if (html == null) {
             html = ""
         }
-        html += "<audio src='$url' controls></audio> <br>"
+        html += "<audio src=\"$url\" controls></audio> <br>"
     }
 
     fun insertVideo(url: String) {
@@ -261,7 +261,7 @@ class RichEditor
         if (html == null) {
             html = ""
         }
-        html += "<video src='$url' width='$width' controls></video> <br>"
+        html += "<video src=\"$url\" width=\"$width\" controls></video> <br>"
     }
 
     private fun clearAndFocusEditor() {
