@@ -12,4 +12,34 @@
         android:layout_height="wrap_content"
         app:viewAspectRatio="1.0" />
 
+    <ImageView
+        android:id="@+id/mask1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:background="@drawable/mask1"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/mask2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:background="@drawable/mask2"
+        android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/mask3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:background="@drawable/mask3"
+        android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/mask4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:background="@drawable/mask4"
+        android:visibility="gone"/>
+
 </FrameLayout>

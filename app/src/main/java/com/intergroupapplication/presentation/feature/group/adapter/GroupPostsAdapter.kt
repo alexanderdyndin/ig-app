@@ -310,6 +310,7 @@ class GroupPostsAdapter(
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
             popupMenu.menu.findItem(R.id.edit).isVisible = isAdmin
+            popupMenu.menu.findItem(R.id.delete).isVisible = isAdmin
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)

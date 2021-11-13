@@ -290,7 +290,7 @@ class NewsAdapter(
         private fun showPopupMenu(view: View, postId: Int, newsId: Int, userId: Int) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-//            popupMenu.menu.findItem(R.id.delete).isVisible = USER_ID == userId
+            popupMenu.menu.findItem(R.id.delete).isVisible = USER_ID == userId
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(postId)
