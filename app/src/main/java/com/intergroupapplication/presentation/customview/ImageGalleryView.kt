@@ -6,10 +6,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.ResizeOptions
+import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.intergroupapplication.R
@@ -21,14 +25,18 @@ class ImageGalleryView @JvmOverloads constructor(
 ) :
     LinearLayout(context, attrs, defStyleAttr) {
 
+    companion object {
+        var pxWidth = 1080
+    }
+
     var imageClick: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
     var expand: (isExpanded: Boolean) -> Unit = {}
-
-    private val pxWidth by lazy(LazyThreadSafetyMode.NONE) { layoutParams.width }
 
     init {
         this.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         orientation = VERTICAL
+        val displayMetrics = resources.displayMetrics
+        pxWidth = displayMetrics.widthPixels - 30
     }
 
     private var uris: List<FileEntity> = emptyList()
@@ -82,11 +90,6 @@ class ImageGalleryView @JvmOverloads constructor(
         urls.forEach {
             container.addView(createPic(it, pxWidth / urls.size))
         }
-        when (urls.size) {
-            1 -> container.addView(createPic(urls[0], pxWidth))
-            2 -> container.addView(createTwoPic(urls[0], urls[1]))
-            3 -> container.addView(createThreePic(urls[0], urls[1], urls[2]))
-        }
         this.addView(container)
     }
 
@@ -97,88 +100,62 @@ class ImageGalleryView @JvmOverloads constructor(
             .setResizeOptions(ResizeOptions(500, 500))
             .build()
         val pic = image.findViewById<SimpleDraweeView>(R.id.pic)
+
+        val mask1 = image.findViewById<ImageView>(R.id.mask1)
+        val mask2 = image.findViewById<ImageView>(R.id.mask2)
+        val mask3 = image.findViewById<ImageView>(R.id.mask3)
+        val mask4 = image.findViewById<ImageView>(R.id.mask4)  // Костыльное решение с отображением 1 фотки
+
+        val listener = object : BaseControllerListener<ImageInfo>() {
+
+            var isChanging = true
+
+            override fun onFinalImageSet(
+                id: String?,
+                imageInfo: ImageInfo?,
+                animatable: android.graphics.drawable.Animatable?
+            ) {
+                // Изображение успешно загружено
+                if (imageInfo != null && isChanging) {
+                    isChanging = false
+                    when(uris.size){ // переделать конструкцию на if
+                        1 ->{
+                            mask1.visibility = View.VISIBLE
+                            mask2.visibility = View.VISIBLE
+                            mask3.visibility = View.VISIBLE
+                            mask4.visibility = View.VISIBLE
+                            image.foreground = null
+                            val ratio = imageInfo.width.toFloat() / imageInfo.height
+                            if(ratio < 0.6F){
+                                pic.aspectRatio = 0.6F
+                            }else{
+                                pic.aspectRatio = ratio
+                            }
+                        }
+                        else -> {
+                            mask1.visibility = View.GONE
+                            mask2.visibility = View.GONE
+                            mask3.visibility = View.GONE
+                            mask4.visibility = View.GONE
+                            image.foreground = ContextCompat.getDrawable(context, R.drawable.mask_foreground)
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(id: String?, throwable: Throwable?) {
+
+            }
+
+        }
+
         pic.controller = Fresco.newDraweeControllerBuilder()
             .setAutoPlayAnimations(true)
             .setOldController(pic.controller)
             .setImageRequest(request)
+            .setControllerListener(listener)
             .build()
         pic.setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(img)) }
-        return image
-    }
-
-    private fun createTwoPic(firstImage: FileEntity, secondImage: FileEntity): View {
-        val image = LayoutInflater.from(context).inflate(R.layout.layout_2pic, this, false)
-        image.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        val request1: ImageRequest =
-            ImageRequestBuilder.newBuilderWithSource(Uri.parse(firstImage.file))
-                .setResizeOptions(ResizeOptions(500, 500))
-                .build()
-        val request2: ImageRequest =
-            ImageRequestBuilder.newBuilderWithSource(Uri.parse(secondImage.file))
-                .setResizeOptions(ResizeOptions(500, 500))
-                .build()
-        image.findViewById<SimpleDraweeView>(R.id.pic1).apply {
-            controller = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setOldController(controller)
-                .setImageRequest(request1)
-                .build()
-            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(firstImage)) }
-        }
-        image.findViewById<SimpleDraweeView>(R.id.pic2).apply {
-            controller = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setOldController(controller)
-                .setImageRequest(request2)
-                .build()
-            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(secondImage)) }
-        }
-        return image
-    }
-
-    private fun createThreePic(
-        firstImage: FileEntity,
-        secondImage: FileEntity,
-        thirdImage: FileEntity
-    ): View {
-        val image = LayoutInflater.from(context).inflate(R.layout.layout_3pic, this, false)
-        image.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        val request1: ImageRequest =
-            ImageRequestBuilder.newBuilderWithSource(Uri.parse(firstImage.file))
-                .setResizeOptions(ResizeOptions(500, 500))
-                .build()
-        val request2: ImageRequest =
-            ImageRequestBuilder.newBuilderWithSource(Uri.parse(secondImage.file))
-                .setResizeOptions(ResizeOptions(500, 500))
-                .build()
-        val request3: ImageRequest =
-            ImageRequestBuilder.newBuilderWithSource(Uri.parse(thirdImage.file))
-                .setResizeOptions(ResizeOptions(500, 500))
-                .build()
-        image.findViewById<SimpleDraweeView>(R.id.pic11).apply {
-            controller = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setOldController(controller)
-                .setImageRequest(request1)
-                .build()
-            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(firstImage)) }
-        }
-        image.findViewById<SimpleDraweeView>(R.id.pic22).apply {
-            controller = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setOldController(controller)
-                .setImageRequest(request2)
-                .build()
-            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(secondImage)) }
-        }
-        image.findViewById<SimpleDraweeView>(R.id.pic33).apply {
-            controller = Fresco.newDraweeControllerBuilder()
-                .setAutoPlayAnimations(true)
-                .setOldController(controller)
-                .setImageRequest(request3)
-                .build()
-            setOnClickListener { imageClick.invoke(allUrls, allUrls.indexOf(thirdImage)) }
-        }
         return image
     }
 }

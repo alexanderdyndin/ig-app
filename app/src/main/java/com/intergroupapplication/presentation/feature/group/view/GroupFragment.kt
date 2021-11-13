@@ -1,6 +1,7 @@
 package com.intergroupapplication.presentation.feature.group.view
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.ViewStub
 import android.widget.*
 import androidx.annotation.LayoutRes
@@ -43,7 +44,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
@@ -169,6 +172,7 @@ class GroupFragment : BaseFragment(), GroupView,
                 if (createdPostId != id) {
                     createdPostId = id
                     adapter.refresh()
+                    Toast.makeText(context, "Новый пост грузится", Toast.LENGTH_SHORT).show()
                 }
             }
         groupPosts.layoutManager = LinearLayoutManager(
@@ -224,10 +228,15 @@ class GroupFragment : BaseFragment(), GroupView,
                         }
                         loadingLayout.gone()
                         swipeLayout.isRefreshing = false
-                        if (createdPostId != null) {
-                            groupPosts.scrollToPosition(0)
-                            createdPostId = null
-                        }
+                        //
+                            if (createdPostId != null) {
+                                Handler().postDelayed({
+                                    groupPosts.scrollToPosition(0)
+                                    createdPostId = null
+                                    Toast.makeText(context, "Новый пост обновлён", Toast.LENGTH_SHORT).show()
+                                }, 100)
+                            }
+                        //
                     }
                     else -> {
                         swipeLayout.isRefreshing = false
