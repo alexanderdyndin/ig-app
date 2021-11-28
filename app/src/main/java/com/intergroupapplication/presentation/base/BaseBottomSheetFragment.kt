@@ -234,6 +234,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     galleryAdapter.photos.cancelChoose()
                     videoAdapter.videos.cancelChoose()
                     audioAdapter.audios.cancelChoose()
+                    mediaRecyclerView.adapter = null
                 } else {
                     activated(true)
                     attachFileActivated()
@@ -329,6 +330,7 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
                     changeCountChooseAudio()
                 }
             }
+            mediaRecyclerView.adapter = null
             galleryButton.changeActivatedTextView(false, videoButton, musicButton, playlistButton)
             changeStateViewAfterAddMedia()
         }
@@ -336,6 +338,11 @@ abstract class BaseBottomSheetFragment : BaseFragment(), MediaAdapter.MediaCallb
         playlistButton.setOnClickListener {
             Toast.makeText(requireContext(), "Пока недоступно", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mediaRecyclerView.adapter = null
     }
 
     abstract fun gonePanelStyleText()

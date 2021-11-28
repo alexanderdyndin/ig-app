@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_age12"
-        android:padding="2dp"
+        android:padding="1dp"
         android:text="@string/_12"
         app:layout_constraintStart_toStartOf="@+id/bgListResize"
         app:layout_constraintTop_toTopOf="@+id/bgListResize" />
@@ -88,8 +88,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
+        android:layout_marginTop="2dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@id/bgListResize"
         app:layout_constraintStart_toEndOf="@id/group_avatar"
@@ -103,6 +102,7 @@
             android:layout_weight="1"
             android:drawableLeft="@drawable/icon_subscribers"
             android:drawablePadding="4dp"
+
             android:paddingStart="3dp"
             tools:ignore="RtlSymmetry"
             tools:text="500" />

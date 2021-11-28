@@ -1,7 +1,6 @@
 package com.intergroupapplication.presentation
 
 import android.content.Context
-import com.intergroupapplication.domain.FakeData
 import com.intergroupapplication.domain.gateway.CommentGateway
 import com.intergroupapplication.domain.gateway.ComplaintsGateway
 import com.intergroupapplication.domain.gateway.GroupPostGateway
@@ -10,10 +9,7 @@ import com.intergroupapplication.presentation.feature.commentsdetails.view.Comme
 import com.intergroupapplication.testingutils.RxSchedulesRule
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
 import com.workable.errorhandler.ErrorHandler
-import io.reactivex.Single
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

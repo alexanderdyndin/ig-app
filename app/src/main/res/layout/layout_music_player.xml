@@ -103,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/start_line_seek_bar"
             app:layout_constraintBottom_toBottomOf="@+id/bgPostMusic"
             app:layout_constraintStart_toStartOf="@+id/bgPostMusic"
@@ -112,8 +113,9 @@
         <com.intergroupapplication.presentation.customview.CustomTimeBar
             android:id="@+id/exo_progress"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:paddingTop="8dp"
+            android:layout_marginTop="2dp"
             app:layout_constraintEnd_toEndOf="@+id/exoDuration"
             app:layout_constraintStart_toEndOf="@+id/startLineSeekBar"
             app:layout_constraintTop_toTopOf="@id/startLineSeekBar"

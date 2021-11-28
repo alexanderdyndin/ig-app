@@ -182,6 +182,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         richEditor = viewBinding.richEditor.apply {
+            setFocus()
             setEditorFontSize(18)
             val padding = context.dpToPx(4)
             setEditorPadding(padding, padding, padding, padding)
@@ -316,12 +317,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     fun answerComment(comment: CommentEntity.Comment) {
         answerLayout.show()
         answerLayout.activated(true)
-        responseToUser
-            .apply {
-                text = comment.commentOwner?.firstName
-                    ?: getString(R.string.unknown_user)
-            }
-        textAnswer.text = comment.text.substringBefore("<")
+        setupAnswerLayout(comment)
         var height = heightEditText + heightIconPanel + pushUpDown.height / 2 + heightAnswerPanel
         if (panelStyleText.isVisible() || panelGravityText.isVisible()) {
             height += heightTextStylePanel
@@ -336,6 +332,15 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
             CALL_METHOD_KEY,
             METHOD_KEY to ADD_HEIGHT_CONTAINER, DATA_KEY to height
         )
+    }
+
+    private fun setupAnswerLayout(comment: CommentEntity.Comment) {
+        responseToUser
+            .apply {
+                text = comment.commentOwner?.firstName
+                    ?: getString(R.string.unknown_user)
+            }
+        textAnswer.text = comment.text.substringBefore("<")
     }
 
     override fun attachFileNotActivated() {
@@ -697,7 +702,6 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
                 )
                 namesMap[chooseMedia.url] = fileEntity.title
                 richEditor.insertImage(chooseMedia.url, "alt")
-
             }
             MediaType.VIDEO -> {
                 val fileEntity = FileEntity(
@@ -751,6 +755,7 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
         }
         if (allViewsIsUpload) {
             sendButton.show()
+            dialogDelegate.dismissProgressDialog()
         } else {
             sendButton.hide()
         }
@@ -779,8 +784,16 @@ class CommentBottomSheetFragment : BaseBottomSheetFragment(), BottomSheetView {
     }
 
     private fun setupEditComment(comment: CommentEntity.Comment) {
-        answerLayout.activated(false)
-        answerLayout.gone()
+        sendButton.show()
+        if (comment.answerTo == null) {
+            answerLayout.activated(false)
+            answerLayout.gone()
+        } else {
+            answerLayout.activated(true)
+            setupAnswerLayout(comment)
+            //TODO чекнуть что с констрейтом
+            answerLayout.show()
+        }
         richEditor.html = changeNameOnUrl(comment)
         presenter.addMediaUrl(comment)
         commentId = comment.id
