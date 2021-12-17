@@ -1,17 +1,17 @@
 package com.intergroupapplication.device.service
 
+import android.annotation.SuppressLint
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.intergroupapplication.data.model.DeviceModel
-import com.intergroupapplication.data.repository.FbTokenRepository
+import com.intergroupapplication.data.network.dto.DeviceDto
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.device.notification.NotificationTypes
 import com.intergroupapplication.device.notification.actions.NotificationAction
 import com.intergroupapplication.domain.entity.FirebaseTokenEntity
+import com.intergroupapplication.domain.gateway.FbTokenGateway
 import dagger.android.AndroidInjection
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -20,13 +20,14 @@ import javax.inject.Inject
 class InterGroupPushService : FirebaseMessagingService() {
 
     @Inject
-    lateinit var messageActions: Map<NotificationTypes, @JvmSuppressWildcards NotificationAction<RemoteMessage>>
+    lateinit var messageActions: Map<NotificationTypes,
+            @JvmSuppressWildcards NotificationAction<RemoteMessage>>
 
     @Inject
     lateinit var session: UserSession
 
     @Inject
-    lateinit var fbTokenRepository: FbTokenRepository
+    lateinit var fbTokenRepository: FbTokenGateway
 
     override fun onCreate() {
         AndroidInjection.inject(this)
@@ -42,21 +43,22 @@ class InterGroupPushService : FirebaseMessagingService() {
 
         //FIXME -> bug if it receives notification without group_id, comment_id etc.
         //temporary solution -> check if contains key group_id
-        message.takeIf { it.data.containsKey("group_id") }?.let { messageActions[NotificationTypes.NEW_COMMENT]?.proceed(it) }
+        message.takeIf { it.data.containsKey("group_id") }
+            ?.let { messageActions[NotificationTypes.NEW_COMMENT]?.proceed(it) }
 
     }
 
+    @SuppressLint("CheckResult")
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         val idUser = session.user?.id.orEmpty()
         //todo при релизе проверить
         token.let { t ->
-            fbTokenRepository.refreshToken(DeviceModel(token), idUser)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({},
-                            { it.printStackTrace() })
+            fbTokenRepository.refreshToken(DeviceDto(token), idUser)
+                .subscribeOn(Schedulers.io())
+                .subscribe({},
+                    { it.printStackTrace() })
             session.firebaseToken = FirebaseTokenEntity(t)
         }
     }
-
 }

@@ -2,7 +2,6 @@ package com.intergroupapplication.di.qualifier
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey
-import java.lang.annotation.Documented
 import kotlin.reflect.KClass
 
 @kotlin.annotation.MustBeDocumented

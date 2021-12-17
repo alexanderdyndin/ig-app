@@ -11,14 +11,18 @@ import javax.inject.Inject
 /**
  * Created by abakarmagomedov on 03/08/2018 at project InterGroupApplication.
  */
-class ImeiRepository @Inject constructor(private val infoManager: PhoneCharacteristicManager,
-                                         private val session: UserSession,
-                                         private val encryptor: Encryptor) : ImeiGateway {
+class ImeiRepository @Inject constructor(
+    private val infoManager: PhoneCharacteristicManager,
+    private val session: UserSession,
+    private val encryptor: Encryptor
+) : ImeiGateway {
 
     override fun extractDeviceInfo(): Completable = Completable.fromAction {
         val imei = infoManager.getImei()
         val serialNumber = infoManager.getSerialNumber()
-        session.deviceInfoEntity = DeviceInfoEntity(encryptor.encryptSha224Hex(imei),
-                encryptor.encryptSha224Hex(serialNumber))
+        session.deviceInfoEntity = DeviceInfoEntity(
+            encryptor.encryptSha224Hex(imei),
+            encryptor.encryptSha224Hex(serialNumber)
+        )
     }
 }

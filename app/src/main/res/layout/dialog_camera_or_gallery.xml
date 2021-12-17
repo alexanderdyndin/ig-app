@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -12,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/small_margin"
         android:text="@string/from_gallery"
-        android:theme="@style/PrimaryFlatButton"
         android:textSize="@dimen/middle_low_size"
+        android:theme="@style/PrimaryFlatButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fromCamera"
         app:layout_constraintHorizontal_bias="0.5"
@@ -26,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/small_margin"
         android:text="@string/from_camera"
-        android:theme="@style/PrimaryFlatButton"
         android:textSize="@dimen/middle_low_size"
+        android:theme="@style/PrimaryFlatButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cancelButton"
         app:layout_constraintHorizontal_bias="0.5"
@@ -39,8 +38,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
-        android:theme="@style/PrimaryCancelFlatButton"
         android:textSize="@dimen/middle_low_size"
+        android:theme="@style/PrimaryCancelFlatButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainBlack">
+
+        <LinearLayout
+            android:id="@+id/iconPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/bg_post_panel"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/icEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/selector_ic_edit_text"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/icEditColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/selector_ic_edit_color"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/icEditAlign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/selector_ic_edit_gravity"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/icMicro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/selector_ic_micro"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/icAttachFile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/selector_ic_attach"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/greyView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/GreyElement"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iconPanel" />
+
+        <LinearLayout
+            android:id="@+id/panelAddFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorInput"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@id/greyView">
+
+            <TextView
+                android:id="@+id/galleryButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_gallery"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/from_gallery" />
+
+            <TextView
+                android:id="@+id/videoButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_video"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/video" />
+
+            <TextView
+                android:id="@+id/musicButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_music"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/music" />
+
+            <TextView
+                android:id="@+id/playlistButton"
+                style="@style/TextAccent10sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/selector_add_files_playlist"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:text="@string/playlist" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/amountFiles"
+            style="@style/TextAccent14sp"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:background="@drawable/bg_edit_input"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="@string/choose_photo"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/panelAddFile"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/btnAdd"
+            style="@style/TextAccent12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/selector_btn_add"
+            android:gravity="center"
+            android:text="@string/add"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/amountFiles"
+            app:layout_constraintEnd_toEndOf="@+id/amountFiles"
+            app:layout_constraintTop_toTopOf="@+id/amountFiles" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mediaRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/colorInput"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/horizontal_guide_end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/amountFiles" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_guide_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

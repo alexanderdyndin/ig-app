@@ -1,12 +1,11 @@
 package com.intergroupapplication.data.service
 
-import com.intergroupapplication.data.mapper.RegistrationMapper
+import com.intergroupapplication.data.mappers.RegistrationMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.FakeData
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test

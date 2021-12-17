@@ -1,12 +1,8 @@
 package com.intergroupapplication.presentation.feature.audiolist.view
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
@@ -14,99 +10,81 @@ import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.intergroupapplication.R
-import com.intergroupapplication.di.scope.PerFragment
+import com.intergroupapplication.databinding.FragmentAudiosListBinding
+import com.intergroupapplication.di.qualifier.All
+import com.intergroupapplication.di.qualifier.Footer
+import com.intergroupapplication.di.qualifier.Header
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.base.adapter.PagingLoadingAdapter
-import com.intergroupapplication.presentation.feature.ExitActivity
+import com.intergroupapplication.presentation.factory.ViewModelFactory
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListAdapter
 import com.intergroupapplication.presentation.feature.audiolist.adapter.AudioListsAdapter
 import com.intergroupapplication.presentation.feature.audiolist.viewModel.AudioListViewModel
-import com.intergroupapplication.presentation.feature.grouplist.adapter.GroupListAdapter
 import com.intergroupapplication.presentation.feature.grouplist.other.ViewPager2Circular
-import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
-import dagger.Provides
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
-import kotlinx.android.synthetic.main.fragment_audios_list.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
-class AudioListFragment(): BaseFragment() {
-
-    @Inject
-    lateinit var modelFactory: ViewModelProvider.Factory
+class AudioListFragment : BaseFragment() {
 
     @Inject
-    @Named("all")
+    lateinit var modelFactory: ViewModelFactory
+
+    @Inject
+    @All
     lateinit var adapter: AudioListAdapter
 
     @Inject
-    @Named("all")
+    @All
     lateinit var adapterCon: ConcatAdapter
 
     @Inject
-    @Named("footer")
+    @Footer
     lateinit var adapterFooter: PagingLoadingAdapter
 
     @Inject
-    @Named("header")
+    @Header
     lateinit var adapterHeader: PagingLoadingAdapter
 
+    private val viewBinding by viewBinding(FragmentAudiosListBinding::bind)
 
-    private lateinit var viewModel: AudioListViewModel
-
-    private var exitHandler: Handler? = null
-
-    private var doubleBackToExitPressedOnce = false
-
-    val exitFlag = Runnable { this.doubleBackToExitPressedOnce = false }
+    private val viewModel: AudioListViewModel by viewModels { modelFactory }
 
     private var currentScreen = 1
 
     override fun layoutRes() = R.layout.fragment_audios_list
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout? = audioListCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.audioListCoordinator
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this, modelFactory)[AudioListViewModel::class.java]
-//        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                if (doubleBackToExitPressedOnce) {
-//                    ExitActivity.exitApplication(requireContext())
-//                    return
-//                }
-//                doubleBackToExitPressedOnce = true
-//                Toast.makeText(requireContext(), getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-//                exitHandler = Handler(Looper.getMainLooper())
-//                exitHandler?.postDelayed(exitFlag, MainActivity.EXIT_DELAY)
-//            }
-//        })
         compositeDisposable.add(
-                viewModel.getAudios()
-                        .subscribe {
-                            adapter.submitData(lifecycle, it)
-                        }
+            viewModel.getAudios()
+                .subscribe {
+                    adapter.submitData(lifecycle, it)
+                }
         )
         super.onCreate(savedInstanceState)
     }
 
     override fun viewCreated() {
-        toolbarTittle.setText(R.string.music)
-        toolbarBackAction.setOnClickListener {
+        viewBinding.navigationToolbar.toolbarTittle.setText(R.string.music)
+        viewBinding.navigationToolbar.toolbarBackAction.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> = mutableListOf()
+        val adapterList: MutableList<RecyclerView.Adapter<RecyclerView.ViewHolder>> =
+            mutableListOf()
         adapterList.add(adapterCon)
         setAdapter(adapter, adapterFooter)
 
-        pager.apply {
+        viewBinding.pager.apply {
             adapter = AudioListsAdapter(adapterList)
-            val handler = ViewPager2Circular(this, swipeLayout)
+            val handler = ViewPager2Circular(this, viewBinding.swipeLayout)
             handler.pageChanged = {
                 currentScreen = it
             }
@@ -114,9 +92,10 @@ class AudioListFragment(): BaseFragment() {
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
 
-        val tabTitles = arrayOf(resources.getString(R.string.music)/*, resources.getString(R.string.my_music)*/)
+        val tabTitles =
+            arrayOf(resources.getString(R.string.music)/*, resources.getString(R.string.my_music)*/)
 
-        TabLayoutMediator(slidingCategories, pager) { tab, position ->
+        TabLayoutMediator(viewBinding.slidingCategories, viewBinding.pager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
 
@@ -124,25 +103,25 @@ class AudioListFragment(): BaseFragment() {
     }
 
     private fun setAdapter(adapter: PagingDataAdapter<*, *>, footer: LoadStateAdapter<*>) {
-        swipeLayout.setOnRefreshListener { adapter.refresh() }
+        viewBinding.swipeLayout.setOnRefreshListener { adapter.refresh() }
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 when (loadStates.refresh) {
                     is LoadState.Loading -> {
                     }
                     is LoadState.Error -> {
-                        swipeLayout.isRefreshing = false
+                        viewBinding.swipeLayout.isRefreshing = false
                         if (adapter.itemCount == 0) {
-                            footer.loadState = LoadState.Error((loadStates.refresh as LoadState.Error).error)
+                            footer.loadState =
+                                LoadState.Error((loadStates.refresh as LoadState.Error).error)
                         }
                         errorHandler.handle((loadStates.refresh as LoadState.Error).error)
                     }
                     is LoadState.NotLoading -> {
-                        swipeLayout.isRefreshing = false
+                        viewBinding.swipeLayout.isRefreshing = false
                     }
                 }
             }
         }
     }
-
 }

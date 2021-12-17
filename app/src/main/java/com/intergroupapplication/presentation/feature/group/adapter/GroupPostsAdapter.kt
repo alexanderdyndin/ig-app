@@ -1,49 +1,53 @@
 package com.intergroupapplication.presentation.feature.group.adapter
 
-import android.view.LayoutInflater
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.appodeal.ads.*
-import com.appodeal.ads.native_ad.views.NativeAdViewAppWall
-import com.appodeal.ads.native_ad.views.NativeAdViewContentStream
-import com.appodeal.ads.native_ad.views.NativeAdViewNewsFeed
 import com.danikula.videocache.HttpProxyCacheServer
+import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.MarkupModel
+import com.intergroupapplication.databinding.ItemGroupPostBinding
 import com.intergroupapplication.domain.entity.FileEntity
 import com.intergroupapplication.domain.entity.GroupPostEntity
-import com.intergroupapplication.presentation.customview.AudioGalleryView
-import com.intergroupapplication.presentation.customview.ImageGalleryView
-import com.intergroupapplication.presentation.customview.VideoGalleryView
+import com.intergroupapplication.presentation.base.AdViewHolder
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
 import com.intergroupapplication.presentation.exstension.*
-import com.intergroupapplication.presentation.feature.news.adapter.NewsAdapter
+import com.omega_r.libs.omegaintentbuilder.OmegaIntentBuilder
+import com.omega_r.libs.omegaintentbuilder.downloader.DownloadCallback
+import com.omega_r.libs.omegaintentbuilder.handlers.ContextIntentHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.item_group_post.view.*
-import kotlinx.android.synthetic.main.item_loading.view.*
 import timber.log.Timber
+import java.io.*
+import java.util.*
 
-class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
-                        private val proxyCacheServer: HttpProxyCacheServer)
-    : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
+class GroupPostsAdapter(
+    private val imageLoadingDelegate: ImageLoadingDelegate,
+    private val proxyCacheServer: HttpProxyCacheServer
+) : PagingDataAdapter<GroupPostEntity, RecyclerView.ViewHolder>(diffUtil) {
+
+    var isAdmin = false
 
     companion object {
-        private const val NATIVE_TYPE_NEWS_FEED = 1
-        private const val NATIVE_TYPE_APP_WALL = 2
-        private const val NATIVE_TYPE_CONTENT_STREAM = 3
-        private const val NATIVE_WITHOUT_ICON = 4
-        private const val VIEW_HOLDER_NATIVE_AD_TYPE = 600
         private const val DEFAULT_HOLDER = 1488
         private val diffUtil = object : DiffUtil.ItemCallback<GroupPostEntity>() {
-            override fun areItemsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
+            override fun areItemsTheSame(
+                oldItem: GroupPostEntity,
+                newItem: GroupPostEntity
+            ): Boolean {
                 return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
                     oldItem.id == newItem.id
                 } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
@@ -52,7 +56,11 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
                     false
                 }
             }
-            override fun areContentsTheSame(oldItem: GroupPostEntity, newItem: GroupPostEntity): Boolean {
+
+            override fun areContentsTheSame(
+                oldItem: GroupPostEntity,
+                newItem: GroupPostEntity
+            ): Boolean {
                 return if (oldItem is GroupPostEntity.PostEntity && newItem is GroupPostEntity.PostEntity) {
                     oldItem == newItem
                 } else if (oldItem is GroupPostEntity.AdEntity && newItem is GroupPostEntity.AdEntity) {
@@ -67,12 +75,19 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         var AD_FIRST = 3
         var commentClickListener: (groupPostEntity: GroupPostEntity.PostEntity) -> Unit = {}
         var complaintListener: (Int) -> Unit = {}
-        var imageClickListener: (List<FileEntity>, Int) -> Unit = { list: List<FileEntity>, i: Int -> }
-        var likeClickListener: (isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _, _, _ -> }
-        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ ->}
-        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
-        var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit = { _, _ ->}
+        var imageClickListener: (List<FileEntity>, Int) -> Unit = { _: List<FileEntity>, _: Int -> }
+        var likeClickListener: (
+            isLike: Boolean, isDislike: Boolean, item: GroupPostEntity.PostEntity,
+            position: Int
+        ) -> Unit = { _, _, _, _ -> }
+        var deleteClickListener: (postId: Int, position: Int) -> Unit = { _, _ -> }
+        var editPostClickListener: (postEntity: GroupPostEntity.PostEntity) -> Unit = {}
+        var bellClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit =
+            { _, _ -> }
+        var pinClickListener: (item: GroupPostEntity.PostEntity, position: Int) -> Unit =
+            { _, _ -> }
         var isOwner = false
+        var progressBarVisibility: (visibility: Boolean) -> Unit = { _ -> }
     }
 
     private var compositeDisposable = CompositeDisposable()
@@ -80,30 +95,9 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
         return when (viewType) {
-            NATIVE_TYPE_NEWS_FEED -> {
-                view = NativeAdViewNewsFeed(parent.context)
-                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
-                NativeCreatedAdViewHolder(view)
-            }
-            NATIVE_TYPE_APP_WALL -> {
-                view = NativeAdViewAppWall(parent.context)
-                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
-                NativeCreatedAdViewHolder(view)
-            }
-            NATIVE_TYPE_CONTENT_STREAM -> {
-                view = NativeAdViewContentStream(parent.context)
-                view.setBackgroundColor(ContextCompat.getColor(parent.context, R.color.whiteTextColor))
-                NativeCreatedAdViewHolder(view)
-            }
-            NATIVE_WITHOUT_ICON -> {
-                view = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.native_ads_without_icon, parent, false)
-                NativeWithoutIconHolder(view)
-            }
-            VIEW_HOLDER_NATIVE_AD_TYPE -> {
-                view = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.include_native_ads, parent, false)
-                NativeCustomAdViewHolder(view)
+            AdViewHolder.NATIVE_AD -> {
+                view = parent.inflate(R.layout.layout_admob_news)
+                AdViewHolder(view)
             }
             else -> {
                 PostViewHolder(parent.inflate(R.layout.item_group_post))
@@ -115,15 +109,17 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         getItem(position)?.let {
             if (holder is PostViewHolder && it is GroupPostEntity.PostEntity)
                 holder.bind(it)
-            else if (holder is NativeAdViewHolder && it is GroupPostEntity.AdEntity) {
-                holder.fillNative(it.nativeAd)
+            else if (holder is AdViewHolder && it is GroupPostEntity.AdEntity) {
+                holder.bind(it.nativeAd, AD_TYPE, "group_feed")
             }
         }
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is PostViewHolder) {
-            holder.imageContainer.destroy()
+            //holder.imageContainer.destroy()
+        } else if (holder is AdViewHolder) {
+            holder.clear()
         }
         super.onViewRecycled(holder)
     }
@@ -131,108 +127,193 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is GroupPostEntity.PostEntity -> DEFAULT_HOLDER
-            is GroupPostEntity.AdEntity -> AD_TYPE
+            is GroupPostEntity.AdEntity -> AdViewHolder.NATIVE_AD
             null -> throw IllegalStateException("Unknown view")
         }
     }
 
     inner class PostViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val audioContainer = itemView.findViewById<AudioGalleryView>(R.id.audioBody)
-        val videoContainer = itemView.findViewById<VideoGalleryView>(R.id.videoBody)
-        val imageContainer = itemView.findViewById<ImageGalleryView>(R.id.imageBody)
+
+        private val viewBinding by viewBinding(ItemGroupPostBinding::bind)
 
         fun bind(item: GroupPostEntity.PostEntity) {
-            with(itemView) {
-                idpGroupPost.text = context.getString(R.string.idp, item.idp.toString())
+            with(viewBinding) {
+                idpGroupPost.text = itemView.context.getString(R.string.idp, item.idp.toString())
                 postLike.text = item.reacts.likesCount.toString()
                 postDislike.text = item.reacts.dislikesCount.toString()
                 if (item.reacts.isLike) {
-                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like_active, 0, 0, 0)
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_like_active,
+                        0, 0, 0
+                    )
                 } else {
-                    postLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_like, 0, 0, 0)
+                    postLike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_like, 0,
+                        0, 0
+                    )
                 }
                 if (item.reacts.isDislike) {
-                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike_active, 0, 0, 0)
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_dislike_active,
+                        0,
+                        0,
+                        0
+                    )
                 } else {
-                    postDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_dislike, 0, 0, 0)
+                    postDislike.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.icon_dislike,
+                        0,
+                        0,
+                        0
+                    )
                 }
-                compositeDisposable.add(getDateDescribeByString(item.date)
+                compositeDisposable.add(
+                    getDateDescribeByString(item.date)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ postPrescription.text = it }, { Timber.e(it) }))
-                commentBtn.text = context.getString(R.string.comments_count, item.commentsCount, item.unreadComments)
-                item.postText.let { it ->
-                    if (it.isNotEmpty()) {
-                        postText.text = item.postText
-                        postText.show()
-                        postText.setOnClickListener {
-                            commentClickListener.invoke(item)
-                        }
-                    } else {
-                        postText.gone()
-                    }
-                }
+                        .subscribe({ postPrescription.text = it }, { Timber.e(it) })
+                )
+                countComments.text = view.context.getString(
+                    R.string.comments_count,
+                    item.commentsCount,
+                    item.unreadComments
+                )
+                postCustomView.proxy = proxyCacheServer
+                postCustomView.imageClickListener = imageClickListener
+                postCustomView.imageLoadingDelegate = imageLoadingDelegate
+                postCustomView.setUpPost(mapToGroupEntityPost(item))
+
                 groupName.text = item.groupInPost.name
                 subCommentBtn.text = item.bells.count.toString()
                 if (item.bells.isActive) {
-                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_blue, 0, 0, 0)
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_sub_comnts_blue,
+                        0,
+                        0,
+                        0
+                    )
                 } else {
-                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sub_comnts_grey, 0, 0, 0)
+                    subCommentBtn.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_sub_comnts_grey,
+                        0,
+                        0,
+                        0
+                    )
                 }
 
                 anchorBtn.setOnClickListener { pinClickListener.invoke(item, layoutPosition) }
 
-//                if (isOwner) {
-//                    anchorBtn.show()
-//                    if (item.isPinned) {
-//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor_act)
-//                        anchorBtn.setImageResource(R.drawable.ic_anchor_act)
-//                    } else {
-//                        anchorBtn.setBackgroundResource(R.drawable.btn_anchor)
-//                        anchorBtn.setImageResource(R.drawable.ic_anchor)
-//                    }
-//                } else {
-//                    anchorBtn.gone()
-//                }
-
                 subCommentBtn.setOnClickListener {
                     bellClickListener.invoke(item, layoutPosition)
                 }
-                commentBtn.setOnClickListener {
+                countComments.setOnClickListener {
                     commentClickListener.invoke(item)
                 }
-                postLikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(!item.reacts.isLike, item.reacts.isDislike, item, layoutPosition)
+                postLike.setOnClickListener {
+                    likeClickListener.invoke(
+                        !item.reacts.isLike,
+                        item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
-                postDislikesClickArea.setOnClickListener {
-                    likeClickListener.invoke(item.reacts.isLike, !item.reacts.isDislike, item, layoutPosition)
+                postDislike.setOnClickListener {
+                    likeClickListener.invoke(
+                        item.reacts.isLike,
+                        !item.reacts.isDislike,
+                        item,
+                        layoutPosition
+                    )
                 }
-                settingsPost.setOnClickListener { showPopupMenu(settingsPost, Integer.parseInt(item.id)) }
+                settingsPost.setOnClickListener {
+                    showPopupMenu(settingsPost, Integer.parseInt(item.id), item)
+                }
 
-                doOrIfNull(item.groupInPost.avatar, { imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder) },
-                        { imageLoadingDelegate.loadImageFromResources(R.drawable.variant_10, postAvatarHolder) })
+                doOrIfNull(item.groupInPost.avatar, {
+                    imageLoadingDelegate.loadImageFromUrl(it, postAvatarHolder)
+                },
+                    {
+                        imageLoadingDelegate.loadImageFromResources(
+                            R.drawable.variant_10,
+                            postAvatarHolder
+                        )
+                    })
 
-                videoContainer.proxy = proxyCacheServer
-                videoContainer.setVideos(item.videos, item.videosExpanded)
-                videoContainer.expand = { item.videosExpanded = it }
+                btnRepost.setOnClickListener {
+                    sharePost(view.context, item, postCustomView.getTextWithoutHtml())
+                }
 
-                audioContainer.proxy = proxyCacheServer
-                audioContainer.setAudios(item.audios, item.audiosExpanded)
-                audioContainer.expand = { item.audiosExpanded = it }
-
-                imageContainer.setImages(item.images, item.imagesExpanded)
-                imageContainer.imageClick = imageClickListener
-                imageContainer.expand = { item.imagesExpanded = it }
             }
         }
 
-        private fun showPopupMenu(view: View, id: Int) {
+        private fun mapToGroupEntityPost(postEntity: GroupPostEntity.PostEntity) =
+            MarkupModel(
+                postEntity.postText, postEntity.images, postEntity.audios, postEntity.videos,
+                postEntity.imagesExpanded, postEntity.audiosExpanded, postEntity.videosExpanded
+            )
+
+        private fun sharePost(context: Context, item: GroupPostEntity.PostEntity, text: String) {
+            progressBarVisibility(true)
+            /*val link = Firebase.dynamicLinks.dynamicLink {
+                domainUriPrefix = context.getString(R.string.deeplinkDomain)
+                link = Uri.parse("https://intergroup.com/post/${item.id}")
+                androidParameters(packageName = "com.intergroupapplication"){
+                    minimumVersion = 1
+                }
+            }*/
+            FirebaseDynamicLinks.getInstance().createDynamicLink()
+                //.setLongLink(link.uri)
+                .setDomainUriPrefix(context.getString(R.string.deeplinkDomain))
+                .setLink(Uri.parse("https://intergroup.com/post/${item.id}"))
+                .setAndroidParameters(
+                    DynamicLink.AndroidParameters.Builder("com.intergroupapplication")
+                        .setMinimumVersion(1).build()
+                )
+                .buildShortDynamicLink(ShortDynamicLink.Suffix.SHORT)
+                .addOnCompleteListener {
+                    createShareIntent(context, item, it.result.previewLink.toString(), text)
+                }
+        }
+
+        private fun createShareIntent(
+            context: Context,
+            item: GroupPostEntity.PostEntity,
+            url: String,
+            postText: String
+        ) {
+            val text = url + "/${item.id} \n $postText"
+            val filesUrls = mutableListOf<String>()
+            filesUrls.addAll(item.images.map { it.file })
+            filesUrls.addAll(item.audios.map { it.urlFile })
+            filesUrls.addAll(item.videos.map { it.file })
+            OmegaIntentBuilder.from(context)
+                .share()
+                .text(text)
+                .filesUrls(filesUrls)
+                .download(object : DownloadCallback {
+                    override fun onDownloaded(
+                        success: Boolean,
+                        contextIntentHandler: ContextIntentHandler
+                    ) {
+                        progressBarVisibility(false)
+                        contextIntentHandler.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            .startActivity()
+                    }
+                })
+        }
+
+        private fun showPopupMenu(
+            view: View,
+            id: Int,
+            groupPostEntity: GroupPostEntity.PostEntity
+        ) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.inflate(R.menu.settings_menu)
-//            popupMenu.menu.findItem(R.id.delete).isVisible = isOwner
+            popupMenu.menu.findItem(R.id.edit).isVisible = isAdmin
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.complaint -> complaintListener.invoke(id)
+                    R.id.edit -> editPostClickListener.invoke(groupPostEntity)
                     R.id.delete -> deleteClickListener.invoke(id, layoutPosition)
                 }
                 return@setOnMenuItemClickListener true
@@ -246,182 +327,4 @@ class GroupPostsAdapter(private val imageLoadingDelegate: ImageLoadingDelegate,
         super.unregisterAdapterDataObserver(observer)
         compositeDisposable.clear()
     }
-
-
-    internal class NativeCustomAdViewHolder(itemView: View) : NativeAdViewHolder(itemView) {
-        private val nativeAdView: NativeAdView
-        private val tvTitle: TextView
-        private val tvDescription: TextView
-        private val ratingBar: RatingBar
-        private val ctaButton: Button
-        private val nativeIconView: NativeIconView
-        private val tvAgeRestrictions: TextView
-        private val nativeMediaView: NativeMediaView
-        private val providerViewContainer: FrameLayout
-        override fun fillNative(nativeAd: NativeAd?) {
-            tvTitle.text = nativeAd?.title
-            tvDescription.text = nativeAd?.description
-            if (nativeAd?.rating == 0f) {
-                ratingBar.visibility = View.INVISIBLE
-            } else {
-                ratingBar.visibility = View.VISIBLE
-                nativeAd?.rating?.let {
-                    ratingBar.rating = it }
-                ratingBar.stepSize = 0.1f
-            }
-            ctaButton.text = nativeAd?.callToAction
-            val providerView = nativeAd?.getProviderView(nativeAdView.context)
-            if (providerView != null) {
-                if (providerView.parent != null && providerView.parent is ViewGroup) {
-                    (providerView.parent as ViewGroup).removeView(providerView)
-                }
-                providerViewContainer.removeAllViews()
-                val layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT)
-                providerViewContainer.addView(providerView, layoutParams)
-            }
-            if (nativeAd?.ageRestrictions != null) {
-                tvAgeRestrictions.text = nativeAd.ageRestrictions
-                tvAgeRestrictions.visibility = View.VISIBLE
-            } else {
-                tvAgeRestrictions.visibility = View.GONE
-            }
-            if (nativeAd?.containsVideo() == true) {
-                nativeAdView.nativeMediaView = nativeMediaView
-                nativeMediaView.visibility = View.VISIBLE
-            } else {
-                nativeMediaView.visibility = View.GONE
-            }
-            nativeAdView.titleView = tvTitle
-            nativeAdView.descriptionView = tvDescription
-            nativeAdView.ratingView = ratingBar
-            nativeAdView.callToActionView = ctaButton
-            nativeAdView.setNativeIconView(nativeIconView)
-            nativeAdView.providerView = providerView
-            nativeAdView.registerView(nativeAd)
-            nativeAdView.visibility = View.VISIBLE
-        }
-
-        override fun unregisterViewForInteraction() {
-            nativeAdView.unregisterViewForInteraction()
-        }
-
-        init {
-            nativeAdView = itemView.findViewById(R.id.native_item)
-            tvTitle = itemView.findViewById(R.id.tv_title)
-            tvDescription = itemView.findViewById(R.id.tv_description)
-            ratingBar = itemView.findViewById(R.id.rb_rating)
-            ctaButton = itemView.findViewById(R.id.b_cta)
-            nativeIconView = itemView.findViewById(R.id.icon)
-            providerViewContainer = itemView.findViewById(R.id.provider_view)
-            tvAgeRestrictions = itemView.findViewById(R.id.tv_age_restriction)
-            nativeMediaView = itemView.findViewById(R.id.appodeal_media_view_content)
-        }
-    }
-
-    /**
-     * View holder for create custom NativeAdView without NativeIconView
-     */
-    internal class NativeWithoutIconHolder(itemView: View) : NativeAdViewHolder(itemView) {
-        private val nativeAdView: NativeAdView
-        private val tvTitle: TextView
-        private val tvDescription: TextView
-        private val ratingBar: RatingBar
-        private val ctaButton: Button
-        private val tvAgeRestrictions: TextView
-        private val nativeMediaView: NativeMediaView
-        private val providerViewContainer: FrameLayout
-        override fun fillNative(nativeAd: NativeAd?) {
-            tvTitle.text = nativeAd?.title
-            tvDescription.text = nativeAd?.description
-            if (nativeAd?.rating == 0f) {
-                ratingBar.visibility = View.INVISIBLE
-            } else {
-                ratingBar.visibility = View.VISIBLE
-                nativeAd?.rating?.let {
-                    ratingBar.rating = it }
-                ratingBar.stepSize = 0.1f
-            }
-            ctaButton.text = nativeAd?.callToAction
-            val providerView = nativeAd?.getProviderView(nativeAdView.context)
-            if (providerView != null) {
-                if (providerView.parent != null && providerView.parent is ViewGroup) {
-                    (providerView.parent as ViewGroup).removeView(providerView)
-                }
-                providerViewContainer.removeAllViews()
-                val layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT)
-                providerViewContainer.addView(providerView, layoutParams)
-            }
-            if (nativeAd?.ageRestrictions != null) {
-                tvAgeRestrictions.text = nativeAd.ageRestrictions
-                tvAgeRestrictions.visibility = View.VISIBLE
-            } else {
-                tvAgeRestrictions.visibility = View.GONE
-            }
-            if (nativeAd?.containsVideo() == true) {
-                nativeAdView.nativeMediaView = nativeMediaView
-            } else {
-                nativeMediaView.visibility = View.GONE
-            }
-            nativeAdView.titleView = tvTitle
-            nativeAdView.descriptionView = tvDescription
-            nativeAdView.ratingView = ratingBar
-            nativeAdView.callToActionView = ctaButton
-            nativeAdView.providerView = providerView
-            nativeAdView.registerView(nativeAd)
-            nativeAdView.visibility = View.VISIBLE
-        }
-
-        override fun unregisterViewForInteraction() {
-            nativeAdView.unregisterViewForInteraction()
-        }
-
-        init {
-            nativeAdView = itemView.findViewById(R.id.native_item)
-            tvTitle = itemView.findViewById(R.id.tv_title)
-            tvDescription = itemView.findViewById(R.id.tv_description)
-            ratingBar = itemView.findViewById(R.id.rb_rating)
-            ctaButton = itemView.findViewById(R.id.b_cta)
-            providerViewContainer = itemView.findViewById(R.id.provider_view)
-            tvAgeRestrictions = itemView.findViewById(R.id.tv_age_restriction)
-            nativeMediaView = itemView.findViewById(R.id.appodeal_media_view_content)
-        }
-    }
-
-    /**
-     * View holder for create NativeAdView by template
-     */
-    internal class NativeCreatedAdViewHolder(itemView: View?) : NativeAdViewHolder(itemView) {
-        override fun fillNative(nativeAd: NativeAd?) {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.setNativeAd(nativeAd)
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.setNativeAd(nativeAd)
-            }
-        }
-
-        override fun unregisterViewForInteraction() {
-            if (itemView is NativeAdViewNewsFeed) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewAppWall) {
-                itemView.unregisterViewForInteraction()
-            } else if (itemView is NativeAdViewContentStream) {
-                itemView.unregisterViewForInteraction()
-            }
-        }
-    }
-
-    /**
-     * Abstract view holders for create NativeAdView
-     */
-    internal abstract class NativeAdViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        abstract fun fillNative(nativeAd: NativeAd?)
-        abstract fun unregisterViewForInteraction()
-    }
-
 }

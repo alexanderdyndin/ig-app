@@ -38,6 +38,7 @@
     <string name="comment_should_contain_text">Comment cannot be empty</string>
     <string name="intergroup_notification">Notification from InterGroup</string>
     <string name="here_no_groups_yet">There are no groups yet</string>
+    <string name="here_no_users_yet">There are no users yet</string>
     <string name="user_blocked">User blocked</string>
     <string name="loading_error">Loading error</string>
     <string name="retry">Retry</string>
@@ -47,21 +48,23 @@
     <string name="logout">Logout</string>
     <string name="press_again_to_exit">Press again to exit</string>
     <string name="error">Error</string>
-    <string name="advertising">ad</string>
+    <string name="advertising">Advertisement</string>
     <string name="cancel">Cancel</string>
     <string name="image_still_uploading">Media is still uploading</string>
     <string name="can_not_change_avatar">You can not add the picture</string>
     <string name="add_photo_or_text">Type the text (enter the text or attach photo)</string>
     <string name="unknown">Unknown</string>
     <string name="unknown_user">Unknown user</string>
+
+    <!--New Design-->
     <string name="intergroup">InterGroup</string>
-    <string name="welcome">Welcome! Our social network allows to chat, listen to music, read news, view photos and create groups by interests.</string>
-    <string name="privacy_police">Privacy policy</string>
+    <string name="welcome">Welcome!\nOur social network allows to chat, listen to music, read news, view photos and create groups by interests.</string>
+    <string name="privacy_police"><u>Privacy policy</u></string>
     <string name="terms_accept">Accept conditions\t\t\t</string>
-    <string name="terms_of_use">User agreement</string>
-    <string name="rightholders">To copyright owners</string>
-    <string name="hardware_access">Provide access\nto soft hardware</string>
-    <string name="already_registered">I am authorized user</string>
+    <string name="terms_of_use"><u>User agreement</u></string>
+    <string name="rightholders"><u>To copyright owners</u></string>
+    <string name="hardware_access">Provide access to soft hardware</string>
+    <string name="already_registered">I am authorized user InterGroup</string>
     <string name="your_email">E-mail</string>
     <string name="your_pswd">Password</string>
     <string name="your_double_email">Please re-enter E-mail</string>
@@ -71,7 +74,7 @@
     <string name="repeat_code">Please resend confirmation code</string>
     <string name="your_code">Please enter confirmation code</string>
     <string name="spam">If you did not receive code,\nplease check spam folder</string>
-    <string name="add_photo">Add you logo image</string>
+    <string name="add_photo">Add your logo image</string>
     <string name="your_name">First name</string>
     <string name="your_surname">Last Name</string>
     <string name="your_berthday">Date of Birth</string>
@@ -81,8 +84,8 @@
     <string name="your_gender">Sex</string>
     <string name="save_settings">Save settings</string>
     <string name="editor_profile">Profile Editor</string>
-    <string name="description_email_part_1">Confirmation  code was sent to E-mail\n</string>
-    <string name="description_email_part_2">\nFor confirmation of Your E-mail please enter\nconfirmation code to the white field below</string>
+    <string name="description_email_part_1">Confirmation  code was sent to E-mail</string>
+    <string name="description_email_part_2">For confirmation of Your E-mail please enter \n confirmation code to the white field below</string>
     <string name="create_new_profile">Create new profile</string>
     <string name="autorization">Authorization</string>
     <string name="repeat_passwd">Forgot password? Send to the E-mail</string>
@@ -102,6 +105,7 @@
     <string name="admGroups">Management</string>
     <string name="terms_accept_privacy">Accept privacy policy conditions\t \t\t</string>
     <string name="terms_accept_agreement">Accept user agreement conditions\t \t\t</string>
+    <string name="reputation">Reputation</string>
 
     <string-array name="countries">
         <item>Abkhazia</item>
@@ -163,4 +167,102 @@
     <string name="comments_count" translatable="false">%1$s / %2$s</string>
     <string name="post_pinned">Pinned</string>
     <string name="post_unpinned">Unpinned</string>
+
+
+<!--    group followers-->
+    <string name="followers">Followers</string>
+    <string name="blocked">Blocked</string>
+    <string name="administrators">Administrators</string>
+
+    <string-array name="listOfActionFromAll">
+        <item>To administrators</item>
+        <item>To black list</item>
+    </string-array>
+
+    <string-array name="listOfActionFromAdministrators">
+        <item>Demote</item>
+        <item>To black list</item>
+    </string-array>
+
+    <string name="toBlackList">To black list</string>
+    <string name="demote">Demote</string>
+    <string name="unblock">Unblock</string>
+    <string name="edit_post">Edit</string>
+    <string name="deeplinkDomain" translatable="false">https://intergroupapplication.page.link</string>
+    <string name="nickname">Come up with a nickname</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="family_status">Family status</string>
+
+    <string name="publications">Publications</string>
+    <string name="comments">Comments</string>
+
+    <string name="filter_group">Filter group</string>
+    <string name="by_age">By age</string>
+    <string name="by_status">By status</string>
+    <string name="by_visit">By visit</string>
+    <string name="by_amount">By amount</string>
+    <string name="by_activity">By activity</string>
+    <string name="by_date_create">By date create</string>
+    <string-array name="filterVisit">
+        <item>For all time</item>
+        <item>For a month</item>
+        <item>For a week</item>
+        <item>For a day</item>
+    </string-array>
+    <string-array name="filterAmount">
+        <item>Followers</item>
+        <item>Posts</item>
+        <item>Comments</item>
+        <item>Likes</item>
+        <item>Dislikes</item>
+    </string-array>
+    <string name="reset_filter">Reset</string>
+    <string name="apply_filter">Apply</string>
+    <string name="user_can_not_fount_your_group">User can not found your group</string>
+    <string name="add">Add</string>
+    <string name="years">Age: %1$s</string>
+    <string name="answer_comment">answer your comment</string>
+    <string name="dislike_your_comment">dislike your comment</string>
+    <string name="like_your_comment">like your comment</string>
+    <string name="have_new_comment">new comment under the post</string>
+    <string name="video">Video</string>
+    <string name="my_video">My video</string>
+    <string name="group_name_is_not_empty">Group name must not be empty</string>
+    <string name="choose_audio">Select audio</string>
+    <string name="choose_count_audio">Select %1$s audio</string>
+    <string name="choose_video">Select video</string>
+    <string name="choose_count_video">Select %1$s video</string>
+    <string name="choose_photo">Select photo</string>
+    <string name="choose_one_photo">Select 1 photo</string>
+    <string name="choose_two_photo">Select %1$s photo</string>
+    <string name="choose_five_photo">Select %1$s photo</string>
+    <string name="close">Close</string>
+    <string name="delete_all">Delete all</string>
+    <string name="playlist">Playlist</string>
+    <string name="add_to_black_list_by_id">Add user into black list by ID</string>
+    <string name="enter_user_id">Enter user ID</string>
+    <string name="user_not_found">User not found</string>
+    <string name="ultimate_all_inclusive">Ultimate - all inclusive</string>
+    <string name="without_advertising">Advertising blocks in the application will be disabled, you can install an animated avatar, write anonymous comments and offer anonymous posts, download audio and video files.</string>
+    <string name="user_advertising_can_not_disable">* Ads posted by users cannot be disabled / removed. Users will still be able to add you to the blacklist.</string>
+    <string name="disabled_all_advertising">Disable all ad units in the app</string>
+    <string name="you_subscribe">You are subscribed</string>
+    <string name="user_advertising_can_not_disable_or_delete">* Ads posted by users cannot be disabled / removed</string>
+    <string name="anim_profile_avatar">Animated profile avatar</string>
+    <string name="you_can_make_anim_avatar">You can install an animated Avatar (GIF) on your profile</string>
+    <string name="anonymous_comments_and_posts">Anonymous comments and suggested posts</string>
+    <string name="you_can_write_anonymous_comments">You will be able to write comments anonymously and offer anonymous posts for publication in groups</string>
+    <string name="user_can_still_add_to_black_list">* Users will still be able to add you to the blacklist</string>
+    <string name="download_audio_and_video">Downloading audio and video files</string>
+    <string name="you_can_download_files">You can download any file from your playlist, publications or comments of other users and groups</string>
+    <string name="all_time">During all this time</string>
+    <string name="subscribers">Followers</string>
+    <string name="art">Art</string>
+    <string name="add_by_id">Add by ID</string>
+    <string name="create_new_post">Create post</string>
+    <string name="years1">%1$s years</string>
+    <string name="years2">%1$s years</string>
 </resources>

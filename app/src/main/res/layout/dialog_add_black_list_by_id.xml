@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bgPopUpAddId"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/bg_mainblack_radius_4dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_del_nobg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/titlePopUp"
+        style="@style/TextLight14sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:gravity="center_horizontal"
+        android:padding="8dp"
+        android:text="@string/add_to_black_list_by_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/inputBlackListAddId"
+        style="@style/InputDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/enter_user_id"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titlePopUp"
+        android:importantForAutofill="no" />
+
+    <ImageView
+        android:id="@+id/lineInput"
+        style="@style/ImageSeparatorLineActive"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
+        app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
+        app:layout_constraintTop_toBottomOf="@+id/inputBlackListAddId"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/textNoFoundId"
+        style="@style/TextPink10sp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@color/greyElement"
+        android:gravity="center"
+        android:padding="3dp"
+        android:text="@string/user_not_found"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
+        app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
+        app:layout_constraintTop_toBottomOf="@+id/lineInput" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listUsers"
+        style="@style/ScrollBar"
+        android:scrollbars="vertical"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
+        app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
+        app:layout_constraintTop_toBottomOf="@+id/textNoFoundId" />
+
+    <TextView
+        android:id="@+id/textPromt"
+        style="@style/TextHelp12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="@string/user_can_not_fount_your_group"
+        app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
+        app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
+        app:layout_constraintTop_toBottomOf="@+id/listUsers" />
+
+    <TextView
+        android:id="@+id/addBlackListBtn"
+        style="@style/TextHelp12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/add_btn_background_selector"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/inputBlackListAddId"
+        app:layout_constraintStart_toStartOf="@+id/inputBlackListAddId"
+        app:layout_constraintTop_toBottomOf="@+id/textPromt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

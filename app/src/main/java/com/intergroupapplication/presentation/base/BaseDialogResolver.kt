@@ -55,8 +55,10 @@ class BaseDialogResolver : DialogFragment() {
         return view
     }
 
-    private fun addDialogToList(fragmentManager: FragmentManager?,
-                                sameDialogs: MutableList<BaseDialogResolver>) {
+    private fun addDialogToList(
+        fragmentManager: FragmentManager?,
+        sameDialogs: MutableList<BaseDialogResolver>
+    ) {
         fragmentManager?.fragments?.let {
             it.forEach { fragment ->
                 if (fragment is BaseDialogResolver) {
@@ -71,5 +73,4 @@ class BaseDialogResolver : DialogFragment() {
             sameDialogs.dropLast(1).forEach { it.dismiss() }
         }
     }
-
 }

@@ -10,8 +10,7 @@ import java.lang.reflect.Type
 /**
  * Created by abakarmagomedov on 17/08/2018 at project InterGroupApplication.
  */
-class RxErrorCallAdapterFactory(private val errorAdapter: ErrorAdapter)
-    : CallAdapter.Factory() {
+class RxErrorCallAdapterFactory(private val errorAdapter: ErrorAdapter) : CallAdapter.Factory() {
 
     companion object {
         fun create(errorAdapter: ErrorAdapter):
@@ -21,14 +20,22 @@ class RxErrorCallAdapterFactory(private val errorAdapter: ErrorAdapter)
     private val original: RxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create()
 
     @Suppress("UNCHECKED_CAST")
-    override fun get(returnType: Type, annotations: Array<out Annotation>, retrofit: Retrofit): CallAdapter<*, *>? =
-            RxCallAdapterWrapper(original.get(returnType, annotations, retrofit) as CallAdapter<Any, Any>,
-                    errorAdapter)
+    override fun get(
+        returnType: Type,
+        annotations: Array<out Annotation>,
+        retrofit: Retrofit
+    ): CallAdapter<*, *> =
+        RxCallAdapterWrapper(
+            original.get(returnType, annotations, retrofit) as CallAdapter<Any, Any>,
+            errorAdapter
+        )
 
 
-    class RxCallAdapterWrapper<R>(private val wrapped: CallAdapter<R, Any>,
-                                  private val errorAdapter: ErrorAdapter) :
-            CallAdapter<R, Any> {
+    class RxCallAdapterWrapper<R>(
+        private val wrapped: CallAdapter<R, Any>,
+        private val errorAdapter: ErrorAdapter
+    ) :
+        CallAdapter<R, Any> {
 
         override fun adapt(call: Call<R>): Any {
             return when (val result = wrapped.adapt(call)) {
@@ -39,8 +46,18 @@ class RxErrorCallAdapterFactory(private val errorAdapter: ErrorAdapter)
                 is Flowable<*> -> result.onErrorResumeNext { t: Throwable ->
                     Flowable.error(asInterGroupException(t))
                 }
-                is Completable -> result.onErrorResumeNext { Completable.error(asInterGroupException(it)) }
-                is Maybe<*> -> result.onErrorResumeNext { t: Throwable -> Maybe.error(asInterGroupException(t)) }
+                is Completable -> result.onErrorResumeNext {
+                    Completable.error(
+                        asInterGroupException(
+                            it
+                        )
+                    )
+                }
+                is Maybe<*> -> result.onErrorResumeNext { t: Throwable ->
+                    Maybe.error(
+                        asInterGroupException(t)
+                    )
+                }
                 else -> result
             }
         }

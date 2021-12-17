@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="32dp"
+    android:background="@color/mainBlack"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    app:popupTheme="@style/ToolbarPopupTheme">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mainBlack">
+
+        <ImageView
+            android:id="@+id/groupCreate__headerBg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_toolbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/toolbarTittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="40dp"
+            android:text="@string/groups"
+            android:textColor="@color/mainBlack"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:fontFamily="@font/play_bold"
+            app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
+            app:layout_constraintEnd_toEndOf="@+id/groupCreate__headerBg"
+            app:layout_constraintTop_toTopOf="@+id/groupCreate__headerBg" />
+
+        <TextView
+            android:id="@+id/toolbarMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableLeft="@drawable/icon_menu"
+            android:paddingStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
+            app:layout_constraintStart_toStartOf="@+id/groupCreate__headerBg"
+            app:layout_constraintTop_toTopOf="@+id/groupCreate__headerBg"
+            tools:ignore="RtlSymmetry" />
+
+        <Button
+            android:id="@+id/createGroup"
+            style="@style/TextDark12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_create_group"
+            android:paddingBottom="2dp"
+            android:text="@string/create_group"
+            android:textAllCaps="false"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/groupCreate__headerBg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/groupCreate__headerBg" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.Toolbar>

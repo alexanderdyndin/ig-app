@@ -1,116 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="@dimen/attached_image_width"
     android:layout_height="@dimen/attached_image_height"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <com.github.florent37.shapeofview.shapes.CutCornerView
-            android:id="@+id/previewShape"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:shape_cutCorner_bottomLeftSize="8dp"
-            app:shape_cutCorner_bottomRightSize="8dp"
-            app:shape_cutCorner_topLeftSize="8dp"
-            app:shape_cutCorner_topRightSize="8dp"
-            android:layout_margin="1dp">
+            android:background="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/imagePreview"
+            <com.github.florent37.shapeofview.shapes.CutCornerView
+                android:id="@+id/previewShape"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:viewAspectRatio="1.0"
-                app:placeholderImage="@drawable/variant_10"/>
+                android:layout_margin="1dp"
+                app:shape_cutCorner_bottomLeftSize="8dp"
+                app:shape_cutCorner_bottomRightSize="8dp"
+                app:shape_cutCorner_topLeftSize="8dp"
+                app:shape_cutCorner_topRightSize="8dp">
 
-            <TextView
-                android:id="@+id/darkCard"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/uploading_image_foreground_rectangle_shadow_drawable"
-                android:visibility="invisible" />
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/imagePreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:placeholderImage="@drawable/variant_10"
+                    app:viewAspectRatio="1.0" />
 
-        </com.github.florent37.shapeofview.shapes.CutCornerView>
+                <TextView
+                    android:id="@+id/darkCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/uploading_image_foreground_rectangle_shadow_drawable"
+                    android:visibility="invisible" />
+
+            </com.github.florent37.shapeofview.shapes.CutCornerView>
 
 
-        <com.budiyev.android.circularprogressbar.CircularProgressBar
-            android:id="@+id/imageUploadingProgressBar"
-            android:layout_width="@dimen/image_uploading_circular_bar_size"
-            android:layout_height="@dimen/image_uploading_circular_bar_size"
-            android:layout_gravity="center"
-            android:visibility="invisible"
-            app:animateProgress="true"
-            app:backgroundStrokeColor="#424242"
-            app:backgroundStrokeWidth="2dp"
-            app:foregroundStrokeColor="#ffffff"
-            app:foregroundStrokeWidth="3dp"
-            app:progressAnimationDuration="2000" />
-
-        <ImageView
-            android:id="@+id/stopUploading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="invisible"
-            android:src="@drawable/ic_close_white" />
-
-        <LinearLayout
-            android:id="@+id/refreshContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="invisible">
+            <com.budiyev.android.circularprogressbar.CircularProgressBar
+                android:id="@+id/imageUploadingProgressBar"
+                android:layout_width="@dimen/image_uploading_circular_bar_size"
+                android:layout_height="@dimen/image_uploading_circular_bar_size"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                app:animateProgress="true"
+                app:backgroundStrokeColor="#424242"
+                app:backgroundStrokeWidth="2dp"
+                app:foregroundStrokeColor="#ffffff"
+                app:foregroundStrokeWidth="3dp"
+                app:progressAnimationDuration="2000" />
 
             <ImageView
+                android:id="@+id/stopUploading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_replay" />
+                android:layout_gravity="center"
+                android:src="@drawable/ic_close_white"
+                android:visibility="invisible"
+                tools:ignore="ContentDescription" />
 
-            <TextView
-                style="@style/InterGroupSmallWhiteTextStyle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/refreshContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/little_margin"
-                android:text="@string/error" />
-        </LinearLayout>
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                tools:ignore="UseCompoundDrawables">
 
-    </FrameLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_replay"
+                    tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/detachImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:visibility="invisible"
-        android:src="@drawable/ic_edit_delete"
-        android:layout_margin="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible"/>
+                <TextView
+                    style="@style/InterGroupSmallWhiteTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/little_margin"
+                    android:text="@string/error" />
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/detachImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_edit_delete"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"
+            tools:ignore="ContentDescription" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/nameView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/detachImage"
         android:layout_gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="название"/>
+        app:layout_constraintStart_toEndOf="@+id/detachImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="название" />
 </LinearLayout>

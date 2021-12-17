@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.intergroupapplication.R
 
-class CommentDividerItemDecorator(private val context: Context) : RecyclerView.ItemDecoration() {
+class CommentDividerItemDecorator(context: Context) : RecyclerView.ItemDecoration() {
 
     companion object {
         private const val ITEM_SIDE_OFFSET = 0.20

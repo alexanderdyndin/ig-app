@@ -11,8 +11,8 @@ import java.util.*
 
 fun getDateDescribeByString(dateString: String): Single<String> {
     val postDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-            .apply { timeZone = TimeZone.getTimeZone("GMT") }
-    val postDate = postDateFormat.parse(dateString)
+        .apply { timeZone = TimeZone.getTimeZone("GMT") }
+    val postDate = postDateFormat.parse(dateString) ?: Date()
     return if (Locale.getDefault().displayLanguage == "русский") {
         getTrueTime().map {
             translateEnglishStringToRussian(TimeAgo.using(postDate.time, currentTime = it))
@@ -71,8 +71,7 @@ fun translateEnglishStringToRussian(english: String): String {
     }
 
     if (english.contains("minutes ago")) {
-        val minutes = english.substringBefore(" ").toInt()
-        return when (minutes) {
+        return when (val minutes = english.substringBefore(" ").toInt()) {
             2, 3, 4 -> "$minutes минуты назад"
             in 5..20 -> "$minutes минут назад"
             21 -> "$minutes минуту назад"
@@ -93,8 +92,7 @@ fun translateEnglishStringToRussian(english: String): String {
 
 
     if (english.contains("hours ago")) {
-        val hours = english.substringBefore(" ").toInt()
-        return when (hours) {
+        return when (val hours = english.substringBefore(" ").toInt()) {
             2, 3, 4 -> "$hours  часа назад"
             in 5..20 -> "$hours часов назад"
             21 -> "$hours час назад"
@@ -104,8 +102,7 @@ fun translateEnglishStringToRussian(english: String): String {
     }
 
     if (english.contains("days ago")) {
-        val days = english.substringBefore(" ").toInt()
-        return when (days) {
+        return when (val days = english.substringBefore(" ").toInt()) {
             2, 3, 4 -> "$days дня назад"
             7 -> "неделю назад"
             14 -> "2 недели назад"
@@ -118,8 +115,7 @@ fun translateEnglishStringToRussian(english: String): String {
     }
 
     if (english.contains("months ago")) {
-        val months = english.substringBefore(" ").toInt()
-        return when (months) {
+        return when (val months = english.substringBefore(" ").toInt()) {
             2, 3, 4 -> "$months месяца назад"
             6 -> "полгода назад"
             in 5..12 -> "$months месяцев назад"
@@ -129,26 +125,11 @@ fun translateEnglishStringToRussian(english: String): String {
     }
 
     if (english.contains("years ago")) {
-        val years = english.substringBefore(" ").toInt()
-        return when (years) {
+        return when (val years = english.substringBefore(" ").toInt()) {
             2, 3, 4 -> "$years года назад"
             in 5..12 -> "$years лет назад"
             else -> english
         }
     }
     return english
-}
-
-fun isSameDay(date1: Date, date2: Date): Boolean {
-    val cal1 = Calendar.getInstance()
-    cal1.time = date1
-    val cal2 = Calendar.getInstance()
-    cal2.time = date2
-    return isSameDay(cal1, cal2)
-}
-
-fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
-    return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
-            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
 }

@@ -3,11 +3,18 @@ package com.intergroupapplication.presentation.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import android.widget.TextView
+import com.budiyev.android.circularprogressbar.CircularProgressBar
+import com.facebook.drawee.view.SimpleDraweeView
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.domain.entity.MediaType
+import com.intergroupapplication.presentation.base.ImageUploadingState
 import com.intergroupapplication.presentation.base.ImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
-import com.intergroupapplication.presentation.exstension.*
-import kotlinx.android.synthetic.main.layout_avatar.view.*
+import com.intergroupapplication.presentation.exstension.doOrIfNull
+import com.intergroupapplication.presentation.exstension.hide
+import com.intergroupapplication.presentation.exstension.show
 
 class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
 
@@ -19,6 +26,61 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     var state = AvatarUploadingState.NONE
         private set
 
+    private val avatar by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById<SimpleDraweeView>(R.id.avatar)
+    }
+
+    var imageState: ImageUploadingState? = null
+        set(value) {
+            field = value
+            value?.let {
+                when (it) {
+                    is ImageUploadingState.ImageUploadingStarted -> {
+                        if (it.path.isNotEmpty())
+                            showImageUploadingStarted(
+                                ChooseMedia(
+                                    url = it.path,
+                                    name = it.path.substringAfterLast("/"),
+                                    type = MediaType.IMAGE
+                                )
+                            )
+                        else
+                            showImageUploadingStartedWithoutFile()
+                    }
+                    is ImageUploadingState.ImageUploadingError -> {
+                        clearUploadingState()
+                        showImageUploadingError(
+                            ChooseMedia(
+                                url = it.path,
+                                name = it.path.substringAfterLast("/"),
+                                type = MediaType.IMAGE
+                            )
+                        )
+                    }
+                    is ImageUploadingState.ImageUploaded -> {
+                        showAvatar(it.path)
+                        showImageUploaded(
+                            ChooseMedia(
+                                url = it.path,
+                                name = it.path.substringAfterLast("/"),
+                                type = MediaType.IMAGE
+                            )
+                        )
+                    }
+                    is ImageUploadingState.ImageUploadingProgress ->
+                        showImageUploadingProgress(
+                            it.progress,
+                            ChooseMedia(
+                                url = it.path,
+                                name = it.path.substringAfterLast("/"),
+                                type = MediaType.IMAGE
+                            )
+                        )
+                }
+            }
+
+        }
+
     constructor(context: Context) : super(context) {
         init()
     }
@@ -27,7 +89,11 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         init()
     }
 
@@ -44,6 +110,10 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     fun clearUploadingState() {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar =
+            findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.hide()
         imageUploadingProgressBar.hide()
@@ -52,6 +122,10 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     fun showImageUploadingStartedWithoutFile() {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar =
+            findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.show()
         imageUploadingProgressBar.show()
@@ -60,28 +134,39 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
     fun clearUploadingState(lastAvatar: String?) {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar =
+            findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.hide()
         imageUploadingProgressBar.hide()
         imageUploadingProgressBar.progress = 0f
-      /*  lastAvatar.apply {
-            ifNull { showAvatar(R.drawable.application_logo) }
-            ifNotNull { showAvatar(it) }
-        }*/
+        /*  lastAvatar.apply {
+              ifNull { showAvatar(R.drawable.application_logo) }
+              ifNotNull { showAvatar(it) }
+          }*/
         doOrIfNull(lastAvatar, { showAvatar(it) }, { showAvatar(R.drawable.variant_10) })
         state = AvatarUploadingState.NONE
     }
 
-    override fun showImageUploadingStarted(path: String) {
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar =
+            findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         errorView.hide()
         darkCard.show()
         imageUploadingProgressBar.show()
-        imageLoaderDelegate?.loadImageFromFile(path, avatar)
+        imageLoaderDelegate?.loadImageFromFile(chooseMedia.url, avatar)
         imageUploadingProgressBar.progress = 0f
         state = AvatarUploadingState.UPLOADING
     }
 
-    override fun showImageUploaded(path: String) {
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar =
+            findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         darkCard.hide()
         imageUploadingProgressBar.hide()
         imageUploadingProgressBar.progress = 0f
@@ -89,17 +174,22 @@ class AvatarImageUploadingView : FrameLayout, ImageUploadingView {
     }
 
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
+        val imageUploadingProgressBar =
+            findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         imageUploadingProgressBar.progress = progress
     }
 
 
-    override fun showImageUploadingError(path: String) {
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
+        val errorView = findViewById<TextView>(R.id.errorView)
+        val darkCard = findViewById<TextView>(R.id.darkCard)
+        val imageUploadingProgressBar =
+            findViewById<CircularProgressBar>(R.id.imageUploadingProgressBar)
         darkCard.show()
         errorView.show()
         imageUploadingProgressBar.hide()
         imageUploadingProgressBar.progress = 0f
         state = AvatarUploadingState.ERROR
     }
-
 }

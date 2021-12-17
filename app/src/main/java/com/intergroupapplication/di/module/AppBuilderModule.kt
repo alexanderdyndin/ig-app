@@ -4,12 +4,16 @@ import com.intergroupapplication.device.service.InterGroupPushService
 import com.intergroupapplication.di.scope.PerActivity
 import com.intergroupapplication.di.scope.PerFragment
 import com.intergroupapplication.di.scope.PerService
+import com.intergroupapplication.presentation.feature.addBlackListById.di.AddBlackListByIdViewModule
+import com.intergroupapplication.presentation.feature.addBlackListById.view.AddBlackListByIdFragment
+import com.intergroupapplication.presentation.feature.agreement.di.AgreementViewModule
+import com.intergroupapplication.presentation.feature.agreement.view.AgreementFragment
 import com.intergroupapplication.presentation.feature.agreements.di.AgreementsViewModule
 import com.intergroupapplication.presentation.feature.agreements.view.AgreementsFragment
 import com.intergroupapplication.presentation.feature.audiolist.di.AudioListViewModule
 import com.intergroupapplication.presentation.feature.audiolist.view.AudioListFragment
-import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
-import com.intergroupapplication.presentation.feature.group.view.GroupFragment
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.di.BottomSheetViewModule
+import com.intergroupapplication.presentation.feature.commentsbottomsheet.view.CommentBottomSheetFragment
 import com.intergroupapplication.presentation.feature.commentsdetails.di.CommentsDetailsViewModule
 import com.intergroupapplication.presentation.feature.commentsdetails.view.CommentsDetailsFragment
 import com.intergroupapplication.presentation.feature.confirmationmail.di.ConfirmationMailViewModule
@@ -21,6 +25,10 @@ import com.intergroupapplication.presentation.feature.createpost.di.CreatePostVi
 import com.intergroupapplication.presentation.feature.createpost.view.CreatePostFragment
 import com.intergroupapplication.presentation.feature.createuserprofile.di.CreateUserProfileViewModule
 import com.intergroupapplication.presentation.feature.createuserprofile.view.CreateUserProfileFragment
+import com.intergroupapplication.presentation.feature.editpost.di.EditPostViewModule
+import com.intergroupapplication.presentation.feature.editpost.view.EditPostFragment
+import com.intergroupapplication.presentation.feature.group.di.GroupViewModule
+import com.intergroupapplication.presentation.feature.group.view.GroupFragment
 import com.intergroupapplication.presentation.feature.grouplist.di.GroupListViewModule
 import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment
 import com.intergroupapplication.presentation.feature.image.di.ImageViewModule
@@ -31,6 +39,8 @@ import com.intergroupapplication.presentation.feature.mainActivity.di.MainActivi
 import com.intergroupapplication.presentation.feature.mainActivity.view.MainActivity
 import com.intergroupapplication.presentation.feature.news.di.NewsViewModule
 import com.intergroupapplication.presentation.feature.news.view.NewsFragment
+import com.intergroupapplication.presentation.feature.postbottomsheet.di.PostBottomSheetViewModule
+import com.intergroupapplication.presentation.feature.postbottomsheet.view.PostBottomSheetFragment
 import com.intergroupapplication.presentation.feature.recoveryPassword.di.RecoveryPasswordModule
 import com.intergroupapplication.presentation.feature.recoveryPassword.view.RecoveryPasswordFragment
 import com.intergroupapplication.presentation.feature.registration.di.RegistrationViewModule
@@ -62,8 +72,10 @@ interface AppBuilderModule {
     fun provideCreateProfileActivityFactory(): CreateUserProfileFragment
 
     @PerFragment
-    @ContributesAndroidInjector(modules = [ConfirmationMailViewModule::class,
-        ConfirmationUserProfileGatewayModule::class])
+    @ContributesAndroidInjector(
+        modules = [ConfirmationMailViewModule::class,
+            ConfirmationUserProfileGatewayModule::class]
+    )
     fun provideConfirmationMailActivityFactory(): ConfirmationMailFragment
 
     @PerFragment
@@ -83,8 +95,20 @@ interface AppBuilderModule {
     fun provideCommentsDetailsActivityFactory(): CommentsDetailsFragment
 
     @PerFragment
+    @ContributesAndroidInjector(modules = [BottomSheetViewModule::class])
+    fun provideBottomSheetFragment(): CommentBottomSheetFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [PostBottomSheetViewModule::class])
+    fun provideEditPostBottomSheetFragment(): PostBottomSheetFragment
+
+    @PerFragment
     @ContributesAndroidInjector(modules = [CreatePostViewModule::class])
     fun provideCreatePostFragmentFactory(): CreatePostFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [EditPostViewModule::class])
+    fun provideEditPostFragmentFactory(): EditPostFragment
 
     @PerFragment
     @ContributesAndroidInjector(modules = [AgreementsViewModule::class])
@@ -118,4 +142,11 @@ interface AppBuilderModule {
     @ContributesAndroidInjector(modules = [AudioListViewModule::class])
     fun provideAudioFragmentFactory(): AudioListFragment
 
+    @PerFragment
+    @ContributesAndroidInjector(modules = [AddBlackListByIdViewModule::class])
+    fun provideAddBlackListByIdFragmentFactory(): AddBlackListByIdFragment
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = [AgreementViewModule::class])
+    fun provideAgreementFragmentFactory(): AgreementFragment
 }

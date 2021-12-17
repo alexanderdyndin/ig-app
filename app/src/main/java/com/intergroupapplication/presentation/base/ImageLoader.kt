@@ -7,6 +7,7 @@ import com.facebook.drawee.view.SimpleDraweeView
  */
 interface ImageLoader {
     fun loadImageFromFile(filePath: String, target: SimpleDraweeView)
+    fun loadCompressedImageFromFile(filePath: String, target: SimpleDraweeView)
     fun loadImageFromResources(resId: Int, target: SimpleDraweeView)
     fun loadImageFromUrl(url: String, target: SimpleDraweeView)
 }

@@ -5,7 +5,7 @@
     android:id="@+id/registrationCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_base"
+    android:background="@color/mainBlack"
     tools:context=".presentation.feature.registration.view.RegistrationFragment">
 
     <ScrollView
@@ -17,181 +17,262 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogin"
-                style="@style/ButtonAuthStyle"
-                android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvRegistration"
+                style="@style/TextTitleAuth20sp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginTop="@dimen/large_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:text="@string/already_registered"
+                android:layout_marginTop="@dimen/middle_high_big_margin"
+                android:text="@string/registration"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvRegistration"
-                style="@style/TextViewAuthStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:text="@string/registration"
-                android:textSize="28sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
-
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etMail"
-                style="@style/EditTextAuthStyle"
-                android:layout_width="match_parent"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:background="@drawable/background_edit_text"
-                android:fontFamily="@font/roboto"
+                style="@style/EditTextAuth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/middle_high_big_margin"
                 android:hint="@string/your_email"
                 android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
                 android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvRegistration" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvMailError"
+            <ImageView
+                android:id="@+id/lineEditText1"
+                style="@style/ImageSeparatorLine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="8dp"
-                android:fontFamily="@font/roboto"
-                android:hint="@string/your_email"
-                android:imeOptions="actionNext"
-                android:textColor="@color/red"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintEnd_toEndOf="@+id/etMail"
+                app:layout_constraintStart_toStartOf="@+id/etMail"
+                app:layout_constraintTop_toBottomOf="@+id/etMail" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvMailError"
+                style="@style/EditTextError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/etMail"
                 app:layout_constraintStart_toStartOf="@+id/etMail"
-                app:layout_constraintTop_toBottomOf="@+id/etMail"
-                tools:text="пример ошибки"
+                app:layout_constraintTop_toBottomOf="@+id/lineEditText1"
+                tools:text="Пример ошибки"
                 tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etDoubleMail"
-                style="@style/EditTextAuthStyle"
-                android:layout_width="match_parent"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:background="@drawable/background_edit_text"
-                android:fontFamily="@font/roboto"
+                style="@style/EditTextAuth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/middle_margin"
                 android:hint="@string/your_double_email"
                 android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
                 android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMailError" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvDoubleMailError"
+            <ImageView
+                android:id="@+id/lineEditText2"
+                style="@style/ImageSeparatorLine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:hint="@string/your_email"
-                android:imeOptions="actionNext"
-                android:textColor="@color/red"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintEnd_toEndOf="@+id/etDoubleMail"
+                app:layout_constraintStart_toStartOf="@+id/etDoubleMail"
+                app:layout_constraintTop_toBottomOf="@+id/etDoubleMail" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDoubleMailError"
+                style="@style/EditTextError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/etDoubleMail"
                 app:layout_constraintStart_toStartOf="@+id/etDoubleMail"
-                app:layout_constraintTop_toBottomOf="@+id/etDoubleMail"
-                tools:text="пример ошибки"
+                app:layout_constraintTop_toBottomOf="@+id/lineEditText2"
+                tools:text="Пример ошибки"
                 tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etPassword"
-                style="@style/EditTextAuthStyle"
-                android:layout_width="match_parent"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:background="@drawable/background_edit_text"
-                android:fontFamily="@font/roboto"
-                android:hint="@string/your_password"
+                style="@style/EditTextAuth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/middle_margin"
+                android:hint="@string/your_pswd"
                 android:imeOptions="actionNext"
+                android:inputType="textPassword"
                 android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDoubleMailError" />
 
             <TextView
-                android:id="@+id/tvErrorPassword"
+                android:id="@+id/passwordVisibility"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/middle_margin"
+                android:drawableStart="@drawable/ic_password_visible"
+                android:padding="@dimen/middle_padding"
+                app:layout_constraintBottom_toBottomOf="@+id/etPassword"
+                app:layout_constraintEnd_toEndOf="@+id/etPassword"
+                app:layout_constraintTop_toTopOf="@+id/etPassword" />
+
+            <ImageView
+                android:id="@+id/lineEditText3"
+                style="@style/ImageSeparatorLine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:hint="@string/your_email"
-                android:imeOptions="actionNext"
-                android:textColor="@color/red"
+                android:contentDescription="@string/separateline"
+                app:layout_constraintEnd_toEndOf="@+id/etPassword"
+                app:layout_constraintStart_toStartOf="@+id/etPassword"
+                app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+
+
+            <TextView
+                android:id="@+id/tvErrorPassword"
+                style="@style/EditTextError"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/etPassword"
                 app:layout_constraintStart_toStartOf="@+id/etPassword"
-                app:layout_constraintTop_toBottomOf="@+id/etPassword"
-                tools:text="пример ошибки"
+                app:layout_constraintTop_toBottomOf="@+id/lineEditText3"
+                tools:text="Пример ошибки"
                 tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etDoublePassword"
-                style="@style/EditTextAuthStyle"
-                android:layout_width="match_parent"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:background="@drawable/background_edit_text"
-                android:fontFamily="@font/roboto"
+                style="@style/EditTextAuth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/middle_margin"
                 android:hint="@string/your_double_password"
                 android:imeOptions="actionNext"
+                android:inputType="textPassword"
                 android:longClickable="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvErrorPassword" />
 
+            <!-- Не получается выровнять по середине -->
             <TextView
-                android:id="@+id/tvDoublePasswdError"
+                android:id="@+id/passwordVisibility2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/middle_margin"
+                android:drawableStart="@drawable/ic_password_visible"
+                android:padding="@dimen/middle_padding"
+                app:layout_constraintBottom_toBottomOf="@+id/etDoublePassword"
+                app:layout_constraintEnd_toEndOf="@+id/etDoublePassword"
+                app:layout_constraintTop_toTopOf="@+id/etDoublePassword" />
+
+            <ImageView
+                android:id="@+id/lineEditText4"
+                style="@style/ImageSeparatorLine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto"
-                android:hint="@string/your_email"
-                android:imeOptions="actionNext"
-                android:textColor="@color/red"
-                android:visibility="invisible"
-                app:layout_constraintVertical_chainStyle="spread_inside"
+                android:contentDescription="@string/separateline"
                 app:layout_constraintEnd_toEndOf="@+id/etDoublePassword"
                 app:layout_constraintStart_toStartOf="@+id/etDoublePassword"
-                app:layout_constraintTop_toBottomOf="@+id/etDoublePassword"
-                app:layout_constraintBottom_toTopOf="@+id/frameLayout2"
-                tools:text="пример ошибки"
-                tools:visibility="visible"/>
+                app:layout_constraintTop_toBottomOf="@+id/etDoublePassword" />
 
-            <FrameLayout
-                android:id="@+id/frameLayout2"
+
+            <TextView
+                android:id="@+id/tvDoublePasswdError"
+                style="@style/EditTextError"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:layout_marginBottom="@dimen/large_margin"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/etDoublePassword"
+                app:layout_constraintStart_toStartOf="@+id/etDoublePassword"
+                app:layout_constraintTop_toBottomOf="@+id/lineEditText4"
+                tools:text="Пример ошибки"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSendEmail"
+                style="@style/btnBigStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/big_margin"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="@string/send_code"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDoublePasswdError" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@id/btnSendEmail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnSendEmail"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textLogin"
+                style="@style/TextNoActive14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/middle_margin"
+                android:padding="@dimen/middle_padding"
+                android:text="@string/already_registered"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnSendEmail" />
+
+            <LinearLayout
+                android:id="@+id/logo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDoublePasswdError">
+                app:layout_constraintTop_toBottomOf="@+id/textLogin">
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnSendEmail"
-                    style="@style/ButtonAuthStyle"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo_big_blue" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    style="@style/TextAccent24spBold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/big_margin"
+                    android:text="@string/intergroup" />
+
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/sign_in_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/send_code" />
+                    android:layout_marginStart="@dimen/large_margin"
+                    android:layout_marginTop="@dimen/middle_high_big_margin"
+                    android:layout_marginEnd="@dimen/large_margin"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textLogin" />
 
-                <include layout="@layout/auth_loader" />
+            </LinearLayout>
 
-            </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

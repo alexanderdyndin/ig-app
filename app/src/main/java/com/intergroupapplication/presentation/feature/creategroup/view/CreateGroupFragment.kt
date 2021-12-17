@@ -1,23 +1,24 @@
 package com.intergroupapplication.presentation.feature.creategroup.view
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.chip.Chip
 import com.intergroupapplication.R
+import com.intergroupapplication.data.model.ChooseMedia
+import com.intergroupapplication.databinding.FragmentGroupCreateBinding
 import com.intergroupapplication.presentation.base.BaseFragment
 import com.intergroupapplication.presentation.customview.AvatarImageUploadingView
 import com.intergroupapplication.presentation.delegate.ImageLoadingDelegate
@@ -26,23 +27,19 @@ import com.intergroupapplication.presentation.exstension.setViewErrorState
 import com.intergroupapplication.presentation.exstension.show
 import com.intergroupapplication.presentation.feature.creategroup.presenter.CreateGroupPresenter
 import com.intergroupapplication.presentation.feature.group.view.GroupFragment
-import com.intergroupapplication.presentation.feature.group.view.GroupFragment.Companion.IS_GROUP_CREATED_NOW
-import com.intergroupapplication.presentation.feature.grouplist.view.GroupListFragment.Companion.CREATED_GROUP_ID
-import com.jakewharton.rxbinding2.view.RxView
-import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding3.view.focusChanges
+import com.jakewharton.rxbinding3.widget.afterTextChangeEvents
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_group_create.*
-import kotlinx.android.synthetic.main.auth_loader.*
-import kotlinx.android.synthetic.main.creategroup_toolbar_layout.*
 import moxy.presenter.InjectPresenter
 import moxy.presenter.ProvidePresenter
-
 import javax.inject.Inject
 
 class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.ValidationListener {
+
+    private val viewBinding by viewBinding(FragmentGroupCreateBinding::bind)
 
     @Inject
     @InjectPresenter
@@ -51,6 +48,7 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     @ProvidePresenter
     fun providePresenter(): CreateGroupPresenter = presenter
 
+    @SuppressLint("NonConstantResourceId")
     @NotEmpty(messageResId = R.string.field_should_not_be_empty, trim = true)
     lateinit var groupName: EditText
 
@@ -61,107 +59,143 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     lateinit var imageLoaderDelegate: ImageLoadingDelegate
 
     private var age: String = "12"
-    private var subjects: MutableList<String> = mutableListOf<String>()
+    private var subjects: MutableList<String> = mutableListOf()
 
     @LayoutRes
     override fun layoutRes() = R.layout.fragment_group_create
 
-    override fun getSnackBarCoordinator(): CoordinatorLayout = createGroupCoordinator
+    override fun getSnackBarCoordinator(): CoordinatorLayout = viewBinding.createGroupCoordinator
+
+    private lateinit var autoCompleteTextViewCountry: AutoCompleteTextView
+    private lateinit var autoCompleteTextViewCity: AutoCompleteTextView
+    private lateinit var autoCompleteTextViewLang: AutoCompleteTextView
+    private lateinit var toolbarTittle: TextView
 
     override fun viewCreated() {
+        autoCompleteTextViewCountry = viewBinding.autoCompleteTextViewCountry
+        autoCompleteTextViewCity = viewBinding.autoCompleteTextViewCity
+        autoCompleteTextViewLang = viewBinding.autoCompleteTextViewLang
+        toolbarTittle = viewBinding.navigationToolbar.toolbarTittle
+
         val countries = resources.getStringArray(R.array.countries)
         val adapter = ArrayAdapter<String>(
-                requireContext(), R.layout.item_autocomplete, R.id.autoCompleteItem, countries
+            requireContext(), R.layout.item_autocomplete, R.id.autoCompleteItem, countries
         )
-        val imm: InputMethodManager = requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm: InputMethodManager =
+            requireContext().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         autoCompleteTextViewCountry.setAdapter(adapter)
         autoCompleteTextViewCountry.threshold = 2
         toolbarTittle.text = getString(R.string.create_group)
-        groupCreate__desc.setOnClickListener {
+        viewBinding.groupCreateDesc.setOnClickListener {
             it.visibility = View.GONE
-            groupCreate__descContainer.visibility = View.VISIBLE
+            viewBinding.groupCreateDescContainer.visibility = View.VISIBLE
             hideKeyboard(imm)
-            groupCreate__descContainer.performClick()
+            viewBinding.groupCreateDescContainer.performClick()
         }
 
-        groupCreate__descEdit.setOnFocusChangeListener { _, b ->
+        viewBinding.groupCreateDescEdit.setOnFocusChangeListener { _, b ->
             if (!b) {
-                groupCreate__desc.visibility = View.VISIBLE
-                groupCreate__descContainer.visibility = View.GONE
+                viewBinding.groupCreateDesc.visibility = View.VISIBLE
+                viewBinding.groupCreateDescContainer.visibility = View.GONE
             }
         }
 
-        groupCreate__rule.setOnClickListener {
+        viewBinding.groupCreateRule.setOnClickListener {
             it.visibility = View.GONE
-            groupCreate__ruleContainer.visibility = View.VISIBLE
+            viewBinding.groupCreateRuleContainer.visibility = View.VISIBLE
             hideKeyboard(imm)
-            groupCreate__ruleContainer.performClick()
+            viewBinding.groupCreateRuleContainer.performClick()
         }
 
-        groupCreate__ruleEdit.setOnFocusChangeListener { _, b ->
+        viewBinding.groupCreateRuleEdit.setOnFocusChangeListener { _, b ->
             if (!b) {
-                groupCreate__rule.visibility = View.VISIBLE
-                groupCreate__ruleContainer.visibility = View.GONE
+                viewBinding.groupCreateRule.visibility = View.VISIBLE
+                viewBinding.groupCreateRuleContainer.visibility = View.GONE
             }
         }
-        groupCreate__ruleContainer.setOnClickListener {
-            groupCreate__ruleEdit.requestFocus()
+        viewBinding.groupCreateRuleContainer.setOnClickListener {
+            viewBinding.groupCreateRuleEdit.requestFocus()
             showKeyboard(imm)
         }
-        groupCreate__descContainer.setOnClickListener {
-            groupCreate__descEdit.requestFocus()
+        viewBinding.groupCreateDescContainer.setOnClickListener {
+            viewBinding.groupCreateDescEdit.requestFocus()
             showKeyboard(imm)
         }
 
 
-        groupCreate__radioGroup.setOnCheckedChangeListener { _, i ->
+        viewBinding.groupCreateRadioGroup.setOnCheckedChangeListener { _, i ->
             when (i) {
                 R.id.groupCreate_btnOpen -> {
-                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_open_btn_act), null, null, null)
-                    groupCreate_btnOpen.setTextColor(requireContext().getColor(R.color.ActiveText))
-                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_btn), null, null, null)
-                    groupCreate_btnClose.setTextColor(requireContext().getColor(R.color.colorPink))
+                    viewBinding.groupCreateBtnOpen.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_open_btn_act),
+                        null,
+                        null,
+                        null
+                    )
+                    viewBinding.groupCreateBtnOpen.setTextColor(requireContext().getColor(R.color.ActiveText))
+                    viewBinding.groupCreateBtnClose.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_btn),
+                        null,
+                        null,
+                        null
+                    )
+                    viewBinding.groupCreateBtnClose.setTextColor(requireContext().getColor(R.color.colorPink))
                 }
                 R.id.groupCreate_btnClose -> {
-                    groupCreate_btnOpen.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_open_btn), null, null, null)
-                    groupCreate_btnOpen.setTextColor(requireContext().getColor(R.color.colorAccent))
-                    groupCreate_btnClose.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_btn_act), null, null, null)
-                    groupCreate_btnClose.setTextColor(requireContext().getColor(R.color.ActiveText))
+                    viewBinding.groupCreateBtnOpen.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_open_btn),
+                        null,
+                        null,
+                        null
+                    )
+                    viewBinding.groupCreateBtnOpen.setTextColor(requireContext().getColor(R.color.colorAccent))
+                    viewBinding.groupCreateBtnClose.setCompoundDrawablesWithIntrinsicBounds(
+                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_close_btn_act),
+                        null,
+                        null,
+                        null
+                    )
+                    viewBinding.groupCreateBtnClose.setTextColor(requireContext().getColor(R.color.ActiveText))
                 }
             }
         }
 
-        groupCreate__subject_btn.setOnClickListener {
-            val keyword: String = groupCreate__subject.text.toString()
+        viewBinding.groupCreateSubjectBtn.setOnClickListener {
+            val keyword: String = viewBinding.groupCreateSubject.text.toString()
             if (keyword.isEmpty()) {
-                Toast.makeText(requireContext(), R.string.empty_subject_error, Toast.LENGTH_SHORT).show()
-            } else if (subjects.size>=5) {
-                Toast.makeText(requireContext(), R.string.full_subject_error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.empty_subject_error, Toast.LENGTH_SHORT)
+                    .show()
+            } else if (subjects.size >= 5) {
+                Toast.makeText(requireContext(), R.string.full_subject_error, Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 try {
                     val inflater = LayoutInflater.from(requireContext())
-                    val newChip = inflater.inflate(R.layout.layout_chip_entry, chipGroupSubject, false) as Chip
+                    val newChip = inflater.inflate(
+                        R.layout.layout_chip_entry,
+                        viewBinding.chipGroupSubject,
+                        false
+                    ) as Chip
                     newChip.text = keyword
                     subjects.add(keyword)
-                    chipGroupSubject.addView(newChip)
+                    viewBinding.chipGroupSubject.addView(newChip)
                     newChip.setOnCloseIconClickListener {
                         subjects.remove((it as Chip).text)
-                        chipGroupSubject.removeView(it)
-                        groupCreate__lineInput4.changeSeparatorBackground(subjects.isNotEmpty())
+                        viewBinding.chipGroupSubject.removeView(it)
+                        viewBinding.groupCreateLineInput4.changeSeparatorBackground(subjects.isNotEmpty())
                     }
-                    groupCreate__subject.setText("")
-                    groupCreate__lineInput4.changeSeparatorBackground(subjects.isNotEmpty())
+                    viewBinding.groupCreateSubject.setText("")
+                    viewBinding.groupCreateLineInput4.changeSeparatorBackground(subjects.isNotEmpty())
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Toast.makeText(requireContext(), "Error: " + e.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Error: " + e.message, Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
 
-
-
-        groupCreate__checkAge.setOnCheckedChangeListener { _, i ->
-            groupCreate__lineAge.setBackgroundResource(R.drawable.line_input_act)
+        viewBinding.groupCreateCheckAge.setOnCheckedChangeListener { _, i ->
+            viewBinding.groupCreateLineAge.setBackgroundResource(R.drawable.line_input_act)
             when (i) {
                 R.id.groupCreate__btnAge12 -> age = "12"
                 R.id.groupCreate__btnAge16 -> age = "16"
@@ -171,48 +205,59 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
 
 
 
-        groupCreate__ageHelp.setOnClickListener {
+        viewBinding.groupCreateAgeHelp.setOnClickListener {
             Toast.makeText(requireContext(), "12+\n16+\n18+", Toast.LENGTH_LONG).show()
         }
         groupName = requireView().findViewById(R.id.groupCreate_title)
-        createGroup.setOnClickListener {
-            //todo write rules for validator
+        viewBinding.createGroup.setOnClickListener {
             validator.validate()
         }
-        groupCreate__addAvatar.setOnClickListener {
-            dialogDelegate.showDialog(R.layout.dialog_camera_or_gallery,
-                    mapOf(R.id.fromCamera to { loadFromCamera() }, R.id.fromGallery to { loadFromGallery() }))
+        viewBinding.groupCreateAddAvatar.setOnClickListener {
+            dialogDelegate.showDialog(
+                R.layout.dialog_camera_or_gallery,
+                mapOf(
+                    R.id.fromCamera to { loadFromCamera() },
+                    R.id.fromGallery to { loadFromGallery() })
+            )
         }
-        toolbarBackAction.setOnClickListener {
-//            setResult(Activity.RESULT_OK)
-//            finish()
+        viewBinding.navigationToolbar.toolbarBackAction.setOnClickListener {
             findNavController().popBackStack()
         }
-        RxTextView.afterTextChangeEvents(groupName).subscribe { groupName.error = null }
-                .let { { d: Disposable -> compositeDisposable.add(d) } }
-        RxView.focusChanges(groupName).subscribe { groupName.error = null }
-                .let { { d: Disposable -> compositeDisposable.add(d) } }
+        groupName.afterTextChangeEvents().subscribe { groupName.error = null }
+            .let { { d: Disposable -> compositeDisposable.add(d) } }
+        groupName.focusChanges().subscribe { groupName.error = null }
+            .let { { d: Disposable -> compositeDisposable.add(d) } }
 
-        groupAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
-        checkBoxAgreement.setOnCheckedChangeListener { _, b ->
+        viewBinding.groupAvatarHolder.imageLoaderDelegate = imageLoaderDelegate
+        viewBinding.checkBoxAgreement.setOnCheckedChangeListener { _, b ->
             if (b) {
-                createGroup.setBackgroundResource(R.drawable.selector_btn_create)
-                createGroup.setTextColor(resources.getColor(R.color.ActiveText, requireContext().theme))
-                createGroup.isEnabled = true
+                viewBinding.createGroup.setBackgroundResource(R.drawable.selector_btn_create)
+                viewBinding.createGroup.setTextColor(
+                    resources.getColor(
+                        R.color.ActiveText,
+                        requireContext().theme
+                    )
+                )
+                viewBinding.createGroup.isEnabled = true
             } else {
-                createGroup.setBackgroundResource(R.drawable.btn_main)
-                createGroup.setTextColor(resources.getColor(R.color.colorTextBtnNoActive, requireContext().theme))
-                createGroup.isEnabled = false
+                viewBinding.createGroup.setBackgroundResource(R.drawable.btn_main)
+                viewBinding.createGroup.setTextColor(
+                    resources.getColor(
+                        R.color.colorTextBtnNoActive,
+                        requireContext().theme
+                    )
+                )
+                viewBinding.createGroup.isEnabled = false
             }
         }
 
         groupName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 if (s.isNotEmpty()) {
-                    groupCreate__lineOpenClose.setBackgroundResource(R.drawable.line_openclose_act)
-                    groupCreate__lineAge.setBackgroundResource(R.drawable.line_input_act)
+                    viewBinding.groupCreateLineOpenClose.setBackgroundResource(R.drawable.line_openclose_act)
+                    viewBinding.groupCreateLineAge.setBackgroundResource(R.drawable.line_input_act)
                 } else {
-                    groupCreate__lineOpenClose.setBackgroundResource(R.drawable.line_openclose)
+                    viewBinding.groupCreateLineOpenClose.setBackgroundResource(R.drawable.line_openclose)
                 }
             }
 
@@ -222,7 +267,7 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
 
         autoCompleteTextViewCountry.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                groupCreate__lineInput.changeSeparatorBackground(s.isNotEmpty())
+                viewBinding.groupCreateLineInput.changeSeparatorBackground(s.isNotEmpty())
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -231,7 +276,7 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
 
         autoCompleteTextViewCity.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                groupCreate__lineInput2.changeSeparatorBackground(s.isNotEmpty())
+                viewBinding.groupCreateLineInput2.changeSeparatorBackground(s.isNotEmpty())
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -240,25 +285,25 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
 
         autoCompleteTextViewLang.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                groupCreate__lineInput3.changeSeparatorBackground(s.isNotEmpty())
+                viewBinding.groupCreateLineInput3.changeSeparatorBackground(s.isNotEmpty())
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
 
-        groupCreate__descEdit.addTextChangedListener(object : TextWatcher {
+        viewBinding.groupCreateDescEdit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                groupCreate__lineInput5.changeSeparatorBackground(s.isNotEmpty())
+                viewBinding.groupCreateLineInput5.changeSeparatorBackground(s.isNotEmpty())
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
 
-        groupCreate__ruleEdit.addTextChangedListener(object : TextWatcher {
+        viewBinding.groupCreateRuleEdit.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                groupCreate__lineInput6.changeSeparatorBackground(s.isNotEmpty())
+                viewBinding.groupCreateLineInput6.changeSeparatorBackground(s.isNotEmpty())
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -266,35 +311,39 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
         })
 
 
-        groupCreate_btnOpen.isChecked = true
-        groupCreate__btnAge12.isChecked = true
+        viewBinding.groupCreateBtnOpen.isChecked = true
+        viewBinding.groupCreateBtnAge12.isChecked = true
     }
 
-    override fun showImageUploadingStarted(path: String) {
-       groupAvatarHolder.showImageUploadingStarted(path)
-    }
-
-
-
-    override fun showImageUploaded(path: String) {
-        groupAvatarHolder.showImageUploaded()
-        groupCreate_line_r.setBackgroundResource(R.drawable.line_addava_act)
+    override fun showImageUploadingStarted(chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploadingStarted(chooseMedia)
     }
 
 
-    override fun showImageUploadingProgress(progress: Float, path: String) {
-        groupAvatarHolder.showImageUploadingProgress(progress)
+    override fun showImageUploaded(chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploaded(chooseMedia)
+        viewBinding.groupCreateLineR.setBackgroundResource(R.drawable.line_addava_act)
     }
 
 
-    override fun showImageUploadingError(path: String) {
-        groupAvatarHolder.showImageUploadingError()
+    override fun showImageUploadingProgress(progress: Float, chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploadingProgress(progress, chooseMedia)
+    }
+
+
+    override fun showImageUploadingError(chooseMedia: ChooseMedia) {
+        viewBinding.groupAvatarHolder.showImageUploadingError(chooseMedia)
     }
 
     override fun onValidationFailed(errors: MutableList<ValidationError>) {
         for (error in errors) {
             val view = error.view
             val message = error.getCollatedErrorMessage(requireContext())
+            context?.let { context ->
+                dialogDelegate.showErrorSnackBar(
+                    context.getString(R.string.group_name_is_not_empty)
+                )
+            }
             if (view is AppCompatEditText) {
                 groupName.error = message
                 setViewErrorState(view)
@@ -303,31 +352,33 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     }
 
     override fun onValidationSucceeded() {
-        if (groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
-                groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
-                groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR) {
-            presenter.createGroup(groupName.text.toString().trim(),
-                    groupCreate__desc.text.toString().trim(), "no theme",
-                    groupCreate__rule.text.toString().trim(), groupCreate_btnClose.isChecked, age)
+        if (viewBinding.groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.UPLOADED ||
+            viewBinding.groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.NONE ||
+            viewBinding.groupAvatarHolder.state == AvatarImageUploadingView.AvatarUploadingState.ERROR
+        ) {
+            presenter.createGroup(
+                groupName.text.toString().trim(),
+                viewBinding.groupCreateDesc.text.toString().trim(), "no theme",
+                viewBinding.groupCreateRule.text.toString().trim(),
+                viewBinding.groupCreateBtnClose.isChecked, age
+            )
         } else {
             dialogDelegate.showErrorSnackBar(getString(R.string.image_still_uploading))
         }
     }
 
     override fun goToGroupScreen(id: String) {
-        val data = bundleOf(GroupFragment.GROUP_ID to id, IS_GROUP_CREATED_NOW to true)
-        //findNavController().navigate(R.id.action_createGroupActivity_to_groupActivity, data)
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(CREATED_GROUP_ID, id)
-        findNavController().popBackStack()
+        val data = bundleOf(GroupFragment.GROUP_ID to id)
+        findNavController().navigate(R.id.action_createGroupFragment_to_groupFragment, data)
     }
 
     override fun showLoading(show: Boolean) {
         if (show) {
-            createGroup.hide()
-            progressBar.show()
+            viewBinding.createGroup.hide()
+            viewBinding.loader.progressBar.show()
         } else {
-            progressBar.hide()
-            createGroup.show()
+            viewBinding.loader.progressBar.hide()
+            viewBinding.createGroup.show()
         }
     }
 
@@ -356,5 +407,4 @@ class CreateGroupFragment : BaseFragment(), CreateGroupView, Validator.Validatio
     private fun showKeyboard(imm: InputMethodManager) {
         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
     }
-
 }

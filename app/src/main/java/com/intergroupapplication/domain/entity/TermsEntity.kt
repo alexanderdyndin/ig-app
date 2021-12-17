@@ -1,3 +1,5 @@
 package com.intergroupapplication.domain.entity
 
-data class TermsEntity(val isAcceptTerms: Boolean)
+data class TermsEntity(
+    val isAcceptTerms: Boolean
+)

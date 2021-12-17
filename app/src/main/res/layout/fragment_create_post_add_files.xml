@@ -13,55 +13,12 @@
         android:orientation="vertical"
         tools:context=".presentation.feature.createpost.view.CreatePostFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mainBlack"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_toolbarback"
-                android:src="@drawable/ic_back"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/backToolbarTittle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Создать пост"
-                android:textColor="@color/colorAccent"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:fontFamily="@font/play_bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-                app:layout_constraintEnd_toStartOf="@+id/textView"
-                app:layout_constraintStart_toEndOf="@+id/imageButton"
-                app:layout_constraintTop_toTopOf="@+id/imageButton" />
-
-            <TextView
-                android:id="@+id/textView"
-                style="@style/TextDark12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_publish"
-                android:drawableRight="@drawable/ic_check_black"
-                android:paddingRight="4dp"
-                android:text="Опубликовать"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <include
+            android:id="@+id/navigationToolbar"
+            layout="@layout/layout_create_post_toolbar" />
 
 <!-- Панель редактирование текста -->
+
        <ImageView
             android:id="@+id/bdShadow1"
             android:layout_width="0dp"
@@ -84,7 +41,7 @@
             android:id="@+id/secondPanel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_second_panel"
+            android:background="@drawable/bg_colorinput_radius_2dp"
             android:orientation="horizontal"
             android:padding="4dp"
             android:layout_marginBottom="3dp"
@@ -113,7 +70,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:src="@drawable/selector_ic_strice" />
+                android:src="@drawable/selector_ic_strike" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -149,7 +106,7 @@
             android:orientation="horizontal"
             android:padding="4dp"
             android:layout_marginBottom="3dp"
-            android:background="@drawable/bg_second_panel"
+            android:background="@drawable/bg_colorinput_radius_2dp"
             app:layout_constraintBottom_toTopOf="@+id/iconPanel"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -203,7 +160,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
             android:gravity="center"
-            android:background="@drawable/bg_second_panel"
+            android:background="@drawable/bg_colorinput_radius_2dp"
             android:orientation="horizontal"
             android:padding="4dp"
             app:layout_constraintBottom_toTopOf="@+id/iconPanel"

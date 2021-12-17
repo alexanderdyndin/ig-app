@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="true"
+    android:paddingStart="@dimen/big_padding"
+    android:paddingTop="@dimen/middle_padding"
+    android:paddingEnd="@dimen/big_padding"
+    android:paddingBottom="@dimen/middle_padding">
+
+    <TextView
+        style="@style/InterGroupGreyTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/big_margin"
+        android:text="@string/comment_response" />
+
+    <TextView
+        android:id="@+id/responseToUser"
+        style="@style/InterGroupBlueTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/middle_high_size"
+        tools:text="Маше" />
+
+</LinearLayout>

@@ -6,5 +6,4 @@ import javax.inject.Inject
 
 class ResendCodeRepository @Inject constructor(private val api: AppApi) : ResendCodeGateway {
     override fun resendCode() = api.resendCode()
-
 }

@@ -1,17 +1,13 @@
 package com.intergroupapplication.presentation.feature.commentsdetails.view
 
+import com.intergroupapplication.domain.entity.CommentEntity
 import moxy.MvpView
 import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
-import com.intergroupapplication.domain.entity.CommentEntity
-import com.intergroupapplication.domain.entity.GroupPostEntity
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface CommentsDetailsView : MvpView {
-    fun commentCreated(commentEntity: CommentEntity)
-    fun answerToCommentCreated(commentEntity: CommentEntity)
-    fun showPostDetailInfo(groupPostEntity: GroupPostEntity.PostEntity)
-    fun showCommentUploading(show: Boolean)
+    fun showPostDetailInfo(groupPostEntity: CommentEntity.PostEntity)
     fun hideSwipeLayout()
-    fun showMessage(value:Int)
+    fun showMessage(value: Int)
 }

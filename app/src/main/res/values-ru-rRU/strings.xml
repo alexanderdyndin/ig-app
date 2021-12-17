@@ -38,6 +38,7 @@
     <string name="comment_should_contain_text">Комментарий должен содержать текст</string>
     <string name="intergroup_notification">Нотификация от  InterGroup</string>
     <string name="here_no_groups_yet">Здесь пока нет групп</string>
+    <string name="here_no_users_yet">Здесь пока нет пользователей</string>
     <string name="user_blocked">Пользователь заблокирован</string>
     <string name="loading_error">Ошибка загрузки</string>
     <string name="retry">Повторить</string>
@@ -58,12 +59,12 @@
 
     <!--New Design-->
     <string name="intergroup">InterGroup</string>
-    <string name="welcome">Добро пожаловать! Наша социальная сеть предоставляет возможность общаться, слушать хорошую музыку, читать интересные новости, а также создавать группы по интересам.</string>
-    <string name="privacy_police">Политика конфиденциальности</string>
+    <string name="welcome">Добро пожаловать!\nНаша социальная сеть предоставляет возможность общаться, слушать хорошую музыку, читать интересные новости, а также создавать группы по интересам.</string>
+    <string name="privacy_police"><u>Политика конфиденциальности</u></string>
     <string name="terms_accept">Условия принимаю\t\t\t</string>
-    <string name="terms_of_use">Пользовательское соглашение</string>
-    <string name="rightholders">Правообладателям</string>
-    <string name="hardware_access">Предоставить доступ\nк аппаратным данным</string>
+    <string name="terms_of_use"><u>Пользовательское соглашение</u></string>
+    <string name="rightholders"><u>Правообладателям</u></string>
+    <string name="hardware_access">Предоставить доступ к аппаратным данным</string>
     <string name="already_registered">Я уже зарегистрирован в InterGroup</string>
     <string name="your_email">Укажите Ваш E-mail</string>
     <string name="your_pswd">Укажите Ваш пароль</string>
@@ -84,8 +85,8 @@
     <string name="your_gender">Укажите Ваш пол</string>
     <string name="save_settings">СОХРАНИТЬ НАСТРОЙКИ</string>
     <string name="editor_profile">Редактор профиля</string>
-    <string name="description_email_part_1">На указанный Вами арес электронной  почты\n</string>
-    <string name="description_email_part_2">\nбыл отправлен проверочный код.\nДля подтверждения Вашего E-mail\nвведите проверочный код в белое поле ниже.</string>
+    <string name="description_email_part_1">На указанный Вами адрес электронной почты</string>
+    <string name="description_email_part_2">был отправлен проверочный код.\nДля подтверждения Вашего E-mail\nвведите проверочный код в белое поле ниже.</string>
     <string name="create_new_profile">СОЗДАТЬ НОВЫЙ ПРОФИЛЬ</string>
     <string name="autorization">Авторизация</string>
     <string name="repeat_passwd">Забыл пароль. Отправить на E-mail</string>
@@ -128,6 +129,40 @@
     <string name="reply">Ответить</string>
     <string name="expand">Развернуть</string>
     <string name="publish">Опубликовать</string>
+    <string name="nickname">Придумайте псевдоним</string>
+    <string name="day">День</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
+    <string name="family_status">Семейное положение</string>
+
+    <string name="publications">Публикации</string>
+    <string name="comments">Комментарии</string>
+    <string name="reputation">Репутация</string>
+
+    <string name="filter_group">Фильтр групп</string>
+    <string name="by_age">По возрасту</string>
+    <string name="by_status">По статусу</string>
+    <string name="by_visit">По посещению</string>
+    <string name="by_amount">По количеству</string>
+    <string name="by_activity">По активности</string>
+    <string name="by_date_create">По дате создания</string>
+    <string-array name="filterVisit">
+        <item>За все время</item>
+        <item>За месяц</item>
+        <item>За неделю</item>
+        <item>За день</item>
+    </string-array>
+    <string-array name="filterAmount">
+        <item>Подписчиков</item>
+        <item>Постов</item>
+        <item>Комментариев</item>
+        <item>Лайков</item>
+        <item>Дизлайков</item>
+    </string-array>
+    <string name="reset_filter">Сбросить</string>
+    <string name="apply_filter">Применить</string>
+
     <string name="hide">Скрыть</string>
     <string name="my_music">Моя музыка</string>
     <string name="music">Музыка</string>
@@ -136,4 +171,67 @@
     <string name="forbidden_error">У вас нет соответствующих прав доступа</string>
     <string name="post_pinned">Закреплено</string>
     <string name="post_unpinned">Откреплено</string>
+
+    <string name="followers">Все</string>
+    <string name="blocked">Черный список</string>
+    <string name="administrators">Админы</string>
+
+    <string-array name="listOfActionFromAll">
+        <item>В администраторы</item>
+        <item>Заблокировать</item>
+    </string-array>
+
+    <string-array name="listOfActionFromAdministrators">
+        <item>Разжаловать</item>
+        <item>Заблокировать</item>
+    </string-array>
+
+    <string name="toBlackList">Заблокировать</string>
+    <string name="demote">Разжаловать</string>
+    <string name="unblock">Разблокировать</string>
+    <string name="edit_post">Редактировать</string>
+    <string name="years">%1$s года</string>
+    <string name="answer_comment">ответил на ваш комментарий</string>
+    <string name="dislike_your_comment">не понравился ваш</string>
+    <string name="like_your_comment">понравился ваш</string>
+    <string name="have_new_comment">новый комментарий под постом</string>
+    <string name="video">Видео</string>
+    <string name="my_video">Моё видео</string>
+    <string name="group_name_is_not_empty">Название группы не должно быть пустым</string>
+    <string name="choose_audio">Выберите аудио</string>
+    <string name="choose_count_audio">Выбрано %1$s аудио</string>
+    <string name="choose_video">Выберите видео</string>
+    <string name="choose_count_video">Выбрано %1$s видео</string>
+    <string name="choose_photo">Выберите фото</string>
+    <string name="choose_one_photo">Выбрана 1 фотография</string>
+    <string name="choose_two_photo">Выбрано %1$s фотографии</string>
+    <string name="choose_five_photo">Выбрано %1$s фотографий</string>
+    <string name="close">Закрыть</string>
+    <string name="delete_all">Удалить всё</string>
+    <string name="playlist">Плейлист</string>
+    <string name="add">Добавить</string>
+    <string name="add_to_black_list_by_id">Добавьте в черный список пользователя по ID</string>
+    <string name="enter_user_id">Введите ID пользователя</string>
+    <string name="user_not_found">Пользователь не найден</string>
+    <string name="user_can_not_fount_your_group">Пользователь не сможет найти вашу группу</string>
+    <string name="ultimate_all_inclusive">Ultimate - всё включено</string>
+    <string name="disabled_all_advertising">Отключить все рекламные блоки в приложении</string>
+    <string name="without_advertising">Рекламные блоки в приложении будут отключены, Вы сможете установить анимированную аватарку, сможете писать анонимные комментарии и предлагать анонимные посты, скачивать аудио и видео файлы.</string>
+    <string name="user_advertising_can_not_disable">*Реклама размещенная пользователями не может быть отключена/удалена. Пользователи все равно смогут добавлять Вас в черный список.</string>
+    <string name="you_subscribe">Вы подписаны</string>
+    <string name="user_advertising_can_not_disable_or_delete">*Реклама размещенная пользователями не может быть отключена/удалена</string>
+    <string name="anim_profile_avatar">Анимированая Аватарка профиля</string>
+    <string name="you_can_make_anim_avatar">Вы сможете установить на свой профиль анимированую Аватарку (GIF)</string>
+    <string name="anonymous_comments_and_posts">Анонимные комментарии и предложенные посты</string>
+    <string name="you_can_write_anonymous_comments">Вы сможете писать комментарии анонимно и предлагать анонимно посты на публикацию в группы</string>
+    <string name="user_can_still_add_to_black_list">*Пользователи все равно смогут добавлять Вас в черный список</string>
+    <string name="download_audio_and_video">Скачивание аудио и видео файлов</string>
+    <string name="you_can_download_files">Вы сможете скачать любой файл из своего плейлиста, публикаций или комментарий других пользователей и групп</string>
+    <string name="all_time">За всё время</string>
+    <string name="subscribers">Подписчиков</string>
+    <string name="art">Искусство</string>
+    <string name="add_by_id">Добавить по ID</string>
+    <string name="create_new_post">Создать пост</string>
+    <string name="years1">%1$s лет</string>
+    <string name="years2">%1$s год</string>
 </resources>

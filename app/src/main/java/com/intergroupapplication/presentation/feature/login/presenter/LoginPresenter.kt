@@ -1,61 +1,66 @@
 package com.intergroupapplication.presentation.feature.login.presenter
 
-import moxy.InjectViewState
+import com.intergroupapplication.di.qualifier.LoginHandler
+import com.intergroupapplication.domain.entity.EmailEntity
 import com.intergroupapplication.domain.entity.LoginEntity
+import com.intergroupapplication.domain.entity.RegistrationEntity
+import com.intergroupapplication.domain.entity.SocialAuthEntity
+import com.intergroupapplication.domain.exception.UserNotVerifiedException
 import com.intergroupapplication.domain.gateway.ImeiGateway
 import com.intergroupapplication.domain.gateway.LoginGateway
-import com.intergroupapplication.domain.usecase.GetProfileUseCase
+import com.intergroupapplication.domain.gateway.RegistrationGateway
+import com.intergroupapplication.domain.usecase.UserProfileUseCase
 import com.intergroupapplication.presentation.base.BasePresenter
 import com.intergroupapplication.presentation.exstension.handleLoading
 import com.intergroupapplication.presentation.feature.login.view.LoginView
 import com.workable.errorhandler.ErrorHandler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-
+import moxy.InjectViewState
 import javax.inject.Inject
-import javax.inject.Named
 
 @InjectViewState
-class LoginPresenter @Inject constructor(private val loginGateway: LoginGateway,
-                                         private val imeiGateway: ImeiGateway,
-                                         @Named("loginHandler")
-                                         private val errorHandler: ErrorHandler,
-                                         private val getProfileUseCase: GetProfileUseCase)
-    : BasePresenter<LoginView>() {
-
+class LoginPresenter @Inject constructor(
+    private val loginGateway: LoginGateway,
+    private val imeiGateway: ImeiGateway,
+    @LoginHandler
+    private val errorHandler: ErrorHandler,
+    private val userProfileUseCase: UserProfileUseCase
+) : BasePresenter<LoginView>() {
 
 
     fun performLogin(loginEntity: LoginEntity) {
         compositeDisposable.add(loginGateway.performLogin(loginEntity)
-                .flatMap { getProfileUseCase.getUserProfile() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .handleLoading(viewState)
-                .subscribe({ viewState.login() }) {
-                    errorHandler.handle(it)
-                })
+            .flatMap { userProfileUseCase.getUserProfile() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .handleLoading(viewState)
+            .subscribe({ viewState.login() }) {
+                if (it is UserNotVerifiedException)
+                    userProfileUseCase.setEmail(loginEntity.email)
+                errorHandler.handle(it)
+            })
+    }
+
+    fun performLogin(socialAuthEntity: SocialAuthEntity) {
+        compositeDisposable.add(loginGateway.performLogin(socialAuthEntity)
+            .flatMap { userProfileUseCase.getUserProfile() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .handleLoading(viewState)
+            .subscribe({
+                viewState.login()
+            }) {
+                errorHandler.handle(it)
+            })
     }
 
     fun extractDeviceInfo() {
-        compositeDisposable.addAll(imeiGateway.extractDeviceInfo()
+        compositeDisposable.addAll(
+            imeiGateway.extractDeviceInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ viewState.deviceInfoExtracted() }, { errorHandler.handle(it) }))
-    }
-
-    fun goToRegistrationScreen() {
-        //router.newRootScreen(RegistrationScreen())
-    }
-
-    fun goToSettingsScreen() {
-        //router.navigateTo(ActionApplicationDetailsScreen())
-    }
-
-    fun goToRecoveryPassword() {
-        //router.navigateTo(RecoveryPasswordScreen())
-    }
-
-    private fun goToNavigationScreen() {
-        //router.newRootScreen(SplashScreen())
+                .subscribe({ viewState.deviceInfoExtracted() }, { errorHandler.handle(it) })
+        )
     }
 }

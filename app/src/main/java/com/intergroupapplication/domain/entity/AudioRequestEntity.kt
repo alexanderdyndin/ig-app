@@ -1,9 +1,14 @@
 package com.intergroupapplication.domain.entity
 
-data class AudioRequestEntity (
-        val file: String,
-        val description: String?,
-        val song: String?,
-        val artist: String?,
-        val genre: String?
+import com.google.gson.annotations.SerializedName
+
+data class AudioRequestEntity(
+    @SerializedName("file")
+    val urlFile: String,
+    val description: String?,
+    @SerializedName("song")
+    val nameSong: String?,
+    val artist: String?,
+    val genre: String?,
+    val duration: String?
 )

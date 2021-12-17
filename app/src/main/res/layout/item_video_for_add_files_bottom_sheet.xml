@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.github.florent37.shapeofview.shapes.CutCornerView
+        android:id="@+id/editPostGallery3"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_cutCorner_bottomLeftSize="8dp"
+        app:shape_cutCorner_bottomRightSize="8dp"
+        app:shape_cutCorner_topLeftSize="8dp"
+        app:shape_cutCorner_topRightSize="8dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/imagePreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:placeholderImage="@drawable/variant_10"
+            app:viewAspectRatio="1.0" />
+
+        <Button
+            android:id="@+id/addVideoFiles"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:background="@drawable/selector_choice" />
+
+        <TextView
+            android:id="@+id/timeVideo"
+            style="@style/TextAccent12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_shadow"
+            android:drawableStart="@drawable/ic_video_play_mini"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            tools:text="01:57" />
+
+    </com.github.florent37.shapeofview.shapes.CutCornerView>
+</androidx.constraintlayout.widget.ConstraintLayout>

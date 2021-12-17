@@ -1,8 +1,6 @@
 package com.intergroupapplication
 
 import android.annotation.SuppressLint
-import android.content.Context
-import androidx.multidex.MultiDex
 import com.intergroupapplication.di.DaggerAppComponent
 import com.intergroupapplication.initializators.Initializer
 import com.intergroupapplication.presentation.base.BaseCrashlyticsTree
@@ -20,22 +18,17 @@ class App : DaggerApplication() {
     @SuppressLint("CheckResult")
     override fun onCreate() {
         super.onCreate()
-        initializers.forEach { it.initialize(this) }
+        initializers.forEach {
+            it.initialize(this)
+        }
         if (BuildConfig.DEBUG) {
-            //AndroidDevMetrics.initWith(this)
             Timber.plant(Timber.DebugTree())
         } else {
             Timber.plant(BaseCrashlyticsTree())
         }
-
-    }
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> =
-            DaggerAppComponent.builder().create(this)
+        DaggerAppComponent.factory().create(this)
 
 }

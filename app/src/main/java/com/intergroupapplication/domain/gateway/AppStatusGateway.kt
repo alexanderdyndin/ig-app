@@ -5,5 +5,5 @@ import io.reactivex.Single
 
 interface AppStatusGateway {
     fun getAdParameters(): Single<AdEntity>
-    fun getAppStatus(version:String): Single<String>
+    fun getAppStatus(version: String): Single<String>
 }

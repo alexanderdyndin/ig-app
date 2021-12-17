@@ -1,6 +1,6 @@
 package com.intergroupapplication.data.service
 
-import com.intergroupapplication.data.mapper.TokenMapper
+import com.intergroupapplication.data.mappers.TokenMapper
 import com.intergroupapplication.data.network.AppApi
 import com.intergroupapplication.data.session.UserSession
 import com.intergroupapplication.domain.FakeData

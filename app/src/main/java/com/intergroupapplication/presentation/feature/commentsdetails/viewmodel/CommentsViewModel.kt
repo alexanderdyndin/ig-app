@@ -16,8 +16,10 @@ import io.reactivex.Flowable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
-class CommentsViewModel @Inject constructor(private val commentsUseCase: CommentsUseCase,
-                                            private val postsUseCase: PostsUseCase): ViewModel() {
+class CommentsViewModel @Inject constructor(
+    private val commentsUseCase: CommentsUseCase,
+    private val postsUseCase: PostsUseCase
+) : ViewModel() {
 
     private val nativeAdItem: NativeAd?
         get() {
@@ -25,38 +27,42 @@ class CommentsViewModel @Inject constructor(private val commentsUseCase: Comment
             return if (ads.isNotEmpty()) ads[0] else null
         }
 
-
-    fun fetchComments(postId: String, page: String): Flowable<PagingData<CommentEntity>> {
+    @ExperimentalCoroutinesApi
+    fun fetchComments(
+        postEntity: CommentEntity.PostEntity,
+        page: String
+    ): Flowable<PagingData<CommentEntity>> {
         return commentsUseCase
-                .getComments(postId, page)
-                .map { pagingData ->
-                    var i = -CommentsAdapter.AD_FIRST - 1
-                    pagingData.map {
-                        it as CommentEntity.Comment
-                    }
-                            .insertSeparators<CommentEntity.Comment, CommentEntity>
-                            { before: CommentEntity.Comment?, after: CommentEntity.Comment? ->
-                                i++
-                                when {
-                                    before == null -> null
-                                    after == null -> null
-                                    else -> if ( i % CommentsAdapter.AD_FREQ == 0 && i >= 0) {
-                                        var nativeAd: NativeAd?
-                                        if (nativeAdItem.also { nativeAd = it } != null) {
-                                            CommentEntity.AdEntity(i, nativeAd)
-                                        } else null
-                                    } else null
-                                }
-                            }
+            .getComments(postEntity.id, page)
+            .map { pagingData ->
+                var i = -CommentsAdapter.AD_FIRST - 1
+                pagingData.map {
+                    it as CommentEntity.Comment
                 }
-                .cachedIn(viewModelScope)
+                    .insertSeparators<CommentEntity.Comment, CommentEntity>
+                    { before: CommentEntity.Comment?, after: CommentEntity.Comment? ->
+                        i++
+                        when {
+                            //для того, чтобы запихнуть первой позицией сам пост
+                            before == null -> postEntity
+                            after == null -> null
+                            else -> if (i % CommentsAdapter.AD_FREQ == 0 && i >= 0) {
+                                var nativeAd: NativeAd?
+                                if (nativeAdItem.also { nativeAd = it } != null) {
+                                    CommentEntity.AdEntity(i, nativeAd)
+                                } else null
+                            } else null
+                        }
+                    }
+            }
+            .cachedIn(viewModelScope)
     }
 
     fun setReact(isLike: Boolean, isDislike: Boolean, postId: String) =
-            postsUseCase.setReact(isLike, isDislike, postId)
+        postsUseCase.setReact(isLike, isDislike, postId)
 
     fun setCommentReact(isLike: Boolean, isDislike: Boolean, commentId: Int) =
-            commentsUseCase.setReact(isLike, isDislike, commentId)
+        commentsUseCase.setReact(isLike, isDislike, commentId)
 
     fun deleteComment(commentId: Int) = commentsUseCase.deleteComment(commentId)
 

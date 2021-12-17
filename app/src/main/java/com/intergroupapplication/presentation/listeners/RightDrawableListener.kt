@@ -1,8 +1,8 @@
 package com.intergroupapplication.presentation.listeners
 
-import androidx.appcompat.widget.AppCompatEditText
 import android.view.MotionEvent
 import android.view.View
+import androidx.appcompat.widget.AppCompatEditText
 
 /**
  * Created by abakarmagomedov on 22/08/2018 at project InterGroupApplication.
@@ -17,15 +17,14 @@ class RightDrawableListener : View.OnTouchListener {
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         val drawableRight = 2
-
         if (event.action == MotionEvent.ACTION_UP && view is AppCompatEditText
-                && view.compoundDrawables[drawableRight] != null) {
+            && view.compoundDrawables[drawableRight] != null
+        ) {
+
             if (event.rawX >= (view.right - view.compoundDrawables[drawableRight].bounds.width() - CLICK_OFFSET)) {
                 view.text?.let {
-                    if (!it.isEmpty()) {
-                        clickListener.invoke()
-                        it.clear()
-                    }
+                    clickListener.invoke()
+                    it.clear()
                 }
                 return true
             } else {
@@ -36,6 +35,4 @@ class RightDrawableListener : View.OnTouchListener {
         }
         return false
     }
-
-
 }

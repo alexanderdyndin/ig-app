@@ -9,14 +9,15 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-//import com.clockbyte.admobadapter.bannerads.AdmobBannerRecyclerAdapterWrapper
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.intergroupapplication.R
+import com.intergroupapplication.databinding.FragmentGroupCategoryBinding
 import com.intergroupapplication.presentation.exstension.hide
 import com.intergroupapplication.presentation.exstension.inflate
 import com.intergroupapplication.presentation.exstension.show
-import kotlinx.android.synthetic.main.fragment_group_category.view.*
 
-class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>): RecyclerView.Adapter<AudioListsAdapter.AudioListViewHolder>() {
+class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerView.ViewHolder>>) :
+    RecyclerView.Adapter<AudioListsAdapter.AudioListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioListViewHolder {
         return AudioListViewHolder(parent.inflate(R.layout.fragment_group_category))
@@ -30,23 +31,26 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         return items.count()
     }
 
-    inner class AudioListViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class AudioListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val list: RecyclerView = view.allGroupsList
-        val emptyState: TextView = view.emptyText
-        val progress: ProgressBar = view.progress_loading
+        private val viewBinding by viewBinding(FragmentGroupCategoryBinding::bind)
+
+        private val list: RecyclerView = viewBinding.allGroupsList
+        private val emptyState: TextView = viewBinding.emptyText
+        private val progress: ProgressBar = viewBinding.progressLoading
 
         fun bind(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
             list.adapter = adapter
             list.itemAnimator = null
-            list.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+            list.layoutManager =
+                LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             if (adapter is ConcatAdapter) {
-                adapter.adapters.forEach { adapter ->
-                    if (adapter is PagingDataAdapter<*, *> ) {
-                        adapter.addLoadStateListener {
+                adapter.adapters.forEach { pagingAdapter ->
+                    if (pagingAdapter is PagingDataAdapter<*, *>) {
+                        pagingAdapter.addLoadStateListener {
                             when (it.refresh) {
                                 is LoadState.Loading -> {
-                                    if (adapter.itemCount == 0) {
+                                    if (pagingAdapter.itemCount == 0) {
                                         progress.show()
                                     }
                                     emptyState.hide()
@@ -57,7 +61,7 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
                                 }
                                 is LoadState.NotLoading -> {
                                     progress.hide()
-                                    if (adapter.itemCount == 0) {
+                                    if (pagingAdapter.itemCount == 0) {
                                         emptyState.show()
                                     } else {
                                         emptyState.hide()
@@ -71,4 +75,3 @@ class AudioListsAdapter(private val items: List<RecyclerView.Adapter<RecyclerVie
         }
     }
 }
-
